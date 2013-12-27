@@ -24,5 +24,7 @@
 	{ "keys": ["ctrl+l"], "command": "show_overlay", "args": {"overlay": "goto", "text": ":"} },
 	{ "keys": ["shift+ctrl+f4"], "command": "close_all" },
 	{ "keys": ["shift+ctrl+y"], "command": "lower_case" },
-	{ "keys": ["shift+ctrl+x"], "command": "upper_case" }
+	{ "keys": ["shift+ctrl+x"], "command": "upper_case" },
+	{ "keys": ["ctrl+shift+l"], "command": "split_selection_into_lines" },
+	{ "keys": ["alt+shift+r"], "command": "renamevariable" }
 ]
