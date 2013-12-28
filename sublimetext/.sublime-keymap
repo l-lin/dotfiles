@@ -1,5 +1,5 @@
 [
-	{ "keys": ["f12"], "command": "htmlprettify"},
+	{ "keys": ["f12"], "command": "reindent"},
 	{ "keys": ["f1"], "command": "fold" },
 	{ "keys": ["f2"], "command": "unfold" },
 	{ "keys": ["ctrl+l"], "command": "show_overlay", "args": {"overlay": "goto", "text": "@"} },
