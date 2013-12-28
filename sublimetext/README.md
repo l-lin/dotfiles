@@ -5,3 +5,4 @@ SublimeText
 * **Packages**: 
 	* [AngularJS](https://sublime.wbond.net/packages/AngularJS) - AngularJS editor compliance
 	* [JS Refactor](https://github.com/s-a/sublime-text-refactor) - JS Variable refactor
+	* [JSHint](https://github.com/uipoet/sublime-jshint) - Code quality tool
