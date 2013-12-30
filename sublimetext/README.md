@@ -8,3 +8,4 @@ SublimeText
 	* [JSHint](https://github.com/uipoet/sublime-jshint) - Code quality tool
 	* [Markdown Extended](https://github.com/jonschlinkert/sublime-markdown-extended) - Markdown support
 	* [Monokai Extended](https://github.com/jonschlinkert/sublime-monokai-extended) - Monokai color scheme support
+	* [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter) - Lint your code
