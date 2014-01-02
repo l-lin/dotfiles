@@ -9,3 +9,4 @@ SublimeText
 	* [Markdown Extended](https://github.com/jonschlinkert/sublime-markdown-extended) - Markdown support
 	* [Monokai Extended](https://github.com/jonschlinkert/sublime-monokai-extended) - Monokai color scheme support
 	* [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter) - Lint your code
+	* [DocBlockr](https://github.com/spadgos/sublime-jsdocs) - JS Autodoc
