@@ -13,8 +13,8 @@
 		]
 	},
 	{ "keys": ["ctrl+d"], "command": "run_macro_file", "args": {"file": "Packages/Default/Delete Line.sublime-macro"} },
-	{ "keys": ["ctrl+shift+c"], "command": "toggle_comment", "args": { "block": false } },
-	{ "keys": ["ctrl+shift+c"], "command": "toggle_comment", "args": { "block": true } },
+	{ "keys": ["ctrl+:"], "command": "toggle_comment", "args": { "block": false } },
+	{ "keys": ["ctrl+shift+/"], "command": "toggle_comment", "args": { "block": true } },
 	{ "keys": ["ctrl+shift+f"], "command": "reindent" , "args": {"single_line": false}},
 	{ "keys": ["alt+up"], "command": "swap_line_up" },
 	{ "keys": ["alt+down"], "command": "swap_line_down" },
