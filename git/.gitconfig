@@ -1,0 +1,18 @@
+[user]
+	email = louis.lin.87@gmail.com
+	name = Louis LIN
+[credential]
+	helper = cache
+[core]
+	editor = vim
+[alias]
+	st = status
+	df = diff
+	co = checkout
+	ci = commit
+	undo = reset --soft HEAD^
+	adda = add -A
+[push]
+	default = simple
+[color]
+	ui = true
