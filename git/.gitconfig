@@ -5,6 +5,7 @@
 	helper = cache
 [core]
 	editor = vim
+	excludesfile = ~/.gitignore_global
 [alias]
 	st = status
 	df = diff
@@ -14,7 +15,28 @@
 	adda = add -A
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 	wdiff = diff --word-diff
+	ff = flow feature
+	fh = flow hotfix
+	fr = flow release
 [push]
-	default = simple
+	default = upstream
+# activate color for all commands
 [color]
-	ui = true
+	ui = auto
+# diff with meaningful prefix and word-diff will find a letter as a word
+[diff]
+	mnemonicprefix = true
+	wordRegex = .
+# commands will be autocorrect (rset -> reset)
+[help]
+	autocorrect = -1
+# remember previous conflict resolutions
+[rerere]
+	enabled = true
+# pull will do a rebase instead of a merge
+[pull]
+	rebase = true
+
+# merge is looking harder for renames
+[merge]
+	renamelimit = 3000
