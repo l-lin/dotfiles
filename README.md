@@ -1,4 +1,4 @@
-Config
+Dotfiles
 ======
 
-List of configurations for various tools.
+See [dotfiles](http://dotfiles.github.io).
