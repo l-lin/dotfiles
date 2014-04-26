@@ -13,6 +13,7 @@
 	undo = reset --soft HEAD^
 	adda = add -A
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	wdiff = diff --word-diff
 [push]
 	default = simple
 [color]
