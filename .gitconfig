@@ -16,11 +16,11 @@
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 	wdiff = diff --word-diff
 	ffs = flow feature start
-        fff = flow feature finish
-        fhs = flow hotfix start
-        fhf = flow hotfix finish
-        frs = flow release start
-        frf = flow release finish
+    fff = flow feature finish
+    fhs = flow hotfix start
+    fhf = flow hotfix finish
+    frs = flow release start
+    frf = flow release finish
 [push]
 	default = upstream
 # activate color for all commands
