@@ -21,6 +21,9 @@
     fhf = flow hotfix finish
     frs = flow release start
     frf = flow release finish
+    ignore = update-index --assume-unchanged
+    unignore = update-index --no-assume-unchanged 
+    ignored = !git ls-files -v | grep "^[[:lower:]]"
 [push]
 	default = upstream
 # activate color for all commands
