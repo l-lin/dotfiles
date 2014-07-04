@@ -25,6 +25,8 @@ alias cpv="rsync -poghb --backup-dir=/tmp/rsync -e /dev/null --progress --"
 # Compute space disk
 alias df="df -Th"
 alias du="du -sh *"
+# Record a GIF
+alias gif="byzanz-record --duration=2 --x=0 --y=55 --width=1440 --height=805 ~/tmp/byzanz.gif"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
