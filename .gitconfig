@@ -24,6 +24,8 @@
     ignore = update-index --assume-unchanged
     unignore = update-index --no-assume-unchanged 
     ignored = !git ls-files -v | grep "^[[:lower:]]"
+    ba = branch -a
+    bd = branch -D
 [push]
 	default = upstream
 # activate color for all commands
