@@ -10,3 +10,4 @@ Atom.io
 * seti-syntax
 * seti-ui
 * cut-lines
+* ask-stack
