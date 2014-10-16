@@ -26,6 +26,7 @@
     ignored = !git ls-files -v | grep "^[[:lower:]]"
     ba = branch -avv
     bd = branch -D
+    oops = commit --amend
 [push]
 	default = upstream
 # activate color for all commands
