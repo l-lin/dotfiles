@@ -24,7 +24,7 @@
     ignore = update-index --assume-unchanged
     unignore = update-index --no-assume-unchanged 
     ignored = !git ls-files -v | grep "^[[:lower:]]"
-    ba = branch -a
+    ba = branch -avv
     bd = branch -D
 [push]
 	default = upstream
