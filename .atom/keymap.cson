@@ -21,7 +21,7 @@
 # * https://atom.io/docs/latest/advanced/keymaps
 '.editor:not(.mini)':
   'ctrl-d': 'editor:delete-line'
+  
 '.workspace .editor:not(.mini)':
   'alt-down': 'editor:move-line-down'
-'.workspace .editor:not(.mini)':
   'alt-up': 'editor:move-line-up'
