@@ -35,6 +35,10 @@ alias gif="byzanz-record --duration=20 --x=0 --y=115 --width=1440 --height=745 ~
 alias usedports="netstat -taupen"
 alias whousethatport="lsof -i" # losf -i :8000
 alias rmf="rm -rf"
+diffWithColor() {
+    diff -u $1 $2|colordiff|less -R
+}
+alias diff="diffWithColor"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
