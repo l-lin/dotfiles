@@ -11,3 +11,4 @@ Atom.io
 * seti-ui
 * cut-lines
 * ask-stack
+* recent-projects
