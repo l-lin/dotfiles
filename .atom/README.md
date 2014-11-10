@@ -12,3 +12,4 @@ Atom.io
 * cut-lines
 * ask-stack
 * recent-projects
+* esformatter
