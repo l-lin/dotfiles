@@ -39,6 +39,9 @@ diffWithColor() {
     diff -u $1 $2|colordiff|less -R
 }
 alias diff="diffWithColor"
+# tar
+alias tarx="tar xzvf"
+alias tarc="tar czvf"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
