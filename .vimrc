@@ -1,5 +1,6 @@
-call pathogen#infect()
-call pathogen#helptags()
+call plug#begin()
+Plug 'tpope/vim-sensible'
+call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " BASIC EDITING CONFIGURATION
@@ -27,6 +28,4 @@ nmap <C-N><C-N> :set invnumber<CR>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 syntax on
 syntax enable
-
-filetype plugin indent on
 
