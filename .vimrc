@@ -1,6 +1,9 @@
 call plug#begin()
 Plug 'tpope/vim-sensible'
 Plug 'vim-scripts/SQLComplete.vim'
+Plug 'vim-scripts/taglist.vim'
+Plug 'scrooloose/nerdcommenter'
+" Plug 'ervandew/supertab'
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -17,16 +20,53 @@ set tabstop=4
 set shiftwidth=4
 set expandtab
 
+set completeopt=longest,menuone
+
+" Set leader
+let mapleader=","
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " KEY MAPS
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-nmap <C-N><C-N> :set invnumber<CR>
+" Display a completion menu
+inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
+  \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
 
+inoremap <expr> <M-,> pumvisible() ? '<C-n>' :
+  \ '<C-x><C-o><C-n><C-p><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
+
+" open omni completion menu closing previous if open and opening new menu
+" without changing the text
+inoremap <expr> <C-Space> (pumvisible() ? (col('.') > 1 ? '<Esc>i<Right>' : '<Esc>i') : '') .
+            \ '<C-x><C-o><C-r>=pumvisible() ? "\<lt>C-n>\<lt>C-p>\<lt>Down>" : ""<CR>'
+" open user completion menu closing previous if open and opening new menu
+" without changing the text
+inoremap <expr> <S-Space> (pumvisible() ? (col('.') > 1 ? '<Esc>i<Right>' : '<Esc>i') : '') .
+            \ '<C-x><C-u><C-r>=pumvisible() ? "\<lt>C-n>\<lt>C-p>\<lt>Down>" : ""<CR>'
+
+
+" Set ctrl-space instead of ctrl-n
+if has("gui_running")
+    " C-Space seems to work under gVim on both Linux and win32
+    inoremap <C-Space> <C-n>
+else " no gui
+    if has("unix")
+        inoremap <Nul> <C-n>
+    else
+        " I have no idea of the name of Ctrl-Space elsewhere
+    endif
+endif
+
+"inoremap ,c <C-o>:call NERDComment(0,"toggle")<C-m>
+nmap <c-b> :NERDComment(0, "toggle")<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " COLORS
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 syntax on
 syntax enable
+
+filetype plugin on
+set omnifunc=syntaxcomplete#Complete
 
