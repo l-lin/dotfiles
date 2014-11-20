@@ -58,8 +58,11 @@ else " no gui
     endif
 endif
 
-"inoremap ,c <C-o>:call NERDComment(0,"toggle")<C-m>
-nmap <c-b> :NERDComment(0, "toggle")<cr>
+" Switch back and forth from buffer
+map ,, <C-^>
+
+" Map comment
+nmap <c-b> :call NERDComment(0, "toggle")<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " COLORS
