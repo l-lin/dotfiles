@@ -42,6 +42,10 @@ alias diff="diffWithColor"
 # tar
 alias tarx="tar xzvf"
 alias tarc="tar czvf"
+# sudo
+alias sudo="sudo "
+alias _="sudo "
+alias please="sudo "
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
