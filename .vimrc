@@ -64,6 +64,9 @@ map ,, <C-^>
 " Map comment
 nmap <c-b> :call NERDComment(0, "toggle")<cr>
 
+" Show/Hide line number
+nmap <c-n> :set invnumber<CR>
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " COLORS
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
