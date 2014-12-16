@@ -5,7 +5,8 @@
 	helper = cache
 [core]
 	editor = vim
-	excludesfile = ~/.gitignore_global
+    excludesfile = ~/.gitignore_global
+    autocrlf = input
 [alias]
 	st = status
 	df = diff
