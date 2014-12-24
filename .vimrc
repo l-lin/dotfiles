@@ -67,6 +67,9 @@ nmap <c-b> :call NERDComment(0, "toggle")<cr>
 " Show/Hide line number
 nmap <c-n> :set invnumber<CR>
 
+" Press Space to toggle highlighting on/off, and show current value.
+noremap <silent> <Space> :set hlsearch! hlsearch?<CR>
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " COLORS
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
