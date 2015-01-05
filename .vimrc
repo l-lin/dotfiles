@@ -1,8 +1,12 @@
+" Using https://github.com/junegunn/vim-plug as depency manager
+" Execute :PlugInstall
 call plug#begin()
 Plug 'tpope/vim-sensible'
 Plug 'vim-scripts/SQLComplete.vim'
 Plug 'vim-scripts/taglist.vim'
 Plug 'scrooloose/nerdcommenter'
+Plug 'fatih/vim-go'
+Plug 'majutsushi/tagbar'
 " Plug 'ervandew/supertab'
 call plug#end()
 
@@ -69,6 +73,9 @@ nmap <c-n> :set invnumber<CR>
 
 " Press Space to toggle highlighting on/off, and show current value.
 noremap <silent> <Space> :set hlsearch! hlsearch?<CR>
+
+" Tagbar
+nmap <F8> :TagbarToggle<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " COLORS
