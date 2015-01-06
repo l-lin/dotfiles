@@ -1,4 +1,4 @@
-" Using https://github.com/junegunn/vim-plug as depency manager
+" Using https://github.com/junegunn/vim-plug as dependency manager
 " Execute :PlugInstall
 call plug#begin()
 Plug 'tpope/vim-sensible'
