@@ -26,6 +26,9 @@ set expandtab
 
 set completeopt=longest,menuone
 
+" Copy paste without vim formatter. Use 'set nopaste' to revert
+set paste
+
 " Set leader
 let mapleader=","
 
