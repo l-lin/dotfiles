@@ -11,7 +11,7 @@
 	st = status -sb
 	df = diff
 	co = checkout
-	ci = commit
+	ci = !git add -A && git commit
 	undo = reset --soft HEAD^
 	adda = add -A
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
