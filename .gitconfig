@@ -8,7 +8,7 @@
     excludesfile = ~/.gitignore_global
     autocrlf = input
 [alias]
-	st = status
+	st = status -sb
 	df = diff
 	co = checkout
 	ci = commit
