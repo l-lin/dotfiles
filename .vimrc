@@ -26,9 +26,6 @@ set expandtab
 
 set completeopt=longest,menuone
 
-" Copy paste without vim formatter. Use 'set nopaste' to revert
-set paste
-
 " Set leader
 let mapleader=","
 
@@ -79,6 +76,11 @@ noremap <silent> <Space> :set hlsearch! hlsearch?<CR>
 
 " Tagbar
 nmap <F8> :TagbarToggle<CR>
+
+" Toggle auto-indenting for code paste
+nnoremap <F2> :set invpaste paste?<CR>
+set pastetoggle=<F2>
+set showmode
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " COLORS
