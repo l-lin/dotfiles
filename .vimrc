@@ -6,6 +6,7 @@ Plug 'vim-scripts/SQLComplete.vim'
 Plug 'vim-scripts/taglist.vim'
 Plug 'scrooloose/nerdcommenter'
 Plug 'fatih/vim-go'
+Plug 'Valloric/YouCompleteMe'
 Plug 'majutsushi/tagbar'
 " Plug 'ervandew/supertab'
 call plug#end()
