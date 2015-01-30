@@ -90,5 +90,9 @@ syntax on
 syntax enable
 
 filetype plugin on
+
+" Omnicomplete
 set omnifunc=syntaxcomplete#Complete
+hi Pmenu ctermfg=153 ctermbg=NONE cterm=NONE guifg=#bcdbff guibg=NONE gui=NONE
+hi PmenuSel ctermfg=NONE ctermbg=59 cterm=NONE guifg=NONE guibg=#3f4b52 gui=NONE
 
