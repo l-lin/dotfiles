@@ -1,0 +1,85 @@
+" vim: filetype=help foldmethod=marker foldmarker=<<<,>>> modifiable noreadonly
+
+==============================================================================
+1 - SHORTCUTS
+
+Cursor movement
+---------------
+w  - jump by start of words (punctuation considered words)
+W  - jump by words (spaces separate words)
+e  - jump to end of words (punctuation considered words)
+E  - jump to end of words (no punctuation)
+b  - jump backward by words (punctuation considered words)
+B  - jump backward by words (no punctuation)
+0  - (zero) start of line
+^  - first non-blank character of line
+$ - end of line
+5G - go go command (prefix with number - 5G goes to line 5)
+gg - go to first line of file
+G  - go to last line of file
+
+Copy and paste
+--------------
+yy      - yank (copy) a line
+2yy     - yank 2 lines
+yw      - yank word
+y$      - yank to end of line
+p       - put (paste) the clipboard after cursor
+P       - put (paste) before cursor
+dd      - delete (cut) a line
+dw      - delete (cut) the current word
+x       - delete (cut) current character
+shift-v - to visual mode (to copy multiple lines)
+
+Search/Replace
+--------------
+/pattern               - search for pattern
+?pattern               - search backward for pattern
+n                      - repeat search in same direction
+N                      - repeat search in opposite direction
+:%s/old/new/g          - replace all old with new throughout file
+:%s/old/new/gc         - replace all old with new throughout file with confirmations
+:/\v(\w+)              - search with regexp
+:%s/\v([0-9]+)/Foo\1/g - search with regexp and replace with group
+
+Insert Mode - Inserting/Appending text
+--------------------------------------
+i   - start insert mode at cursor
+I   - insert at the beginning of the line
+a   - append after the cursor
+A   - append at the end of the line
+o   - open (append) blank line below current line (no need to press return)
+O   - open blank line above current line
+ea  - append at end of word
+Esc - exit insert mod
+
+Undo - Redo
+-----------
+u   - undo
+C-r - undo the undo
+
+Custom shortcuts
+----------------
+C-Tab - omnicompletion
+,     - switch buffer
+C-b   - comment line
+C-n   - show/hide line numbers
+space - toggle highlighting on/off
+F2    - toggle auto-indenting for code paste
+C-j   - move current line one line down
+C-k   - move current line one line above
+
+
+==============================================================================
+2 - COMMANDS                 
+
+Buffers
+-------
+:enew - create a new buffer
+:bd   - remove current buffer
+
+Explorer
+--------
+:e       - open a file
+:Explore - open explorer
+

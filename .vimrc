@@ -8,6 +8,7 @@ Plug 'scrooloose/nerdcommenter'
 Plug 'fatih/vim-go'
 Plug 'Valloric/YouCompleteMe'
 Plug 'majutsushi/tagbar'
+Plug 'bling/vim-airline'
 " Plug 'ervandew/supertab'
 call plug#end()
 
@@ -29,6 +30,12 @@ set completeopt=longest,menuone
 
 " Set leader
 let mapleader=","
+
+" Airline configuration
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme='badwolf'
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '>'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " KEY MAPS
@@ -82,6 +89,20 @@ nmap <F8> :TagbarToggle<CR>
 nnoremap <F2> :set invpaste paste?<CR>
 set pastetoggle=<F2>
 set showmode
+
+" Move line
+nnoremap <C-j> :m .+1<CR>==
+nnoremap <C-k> :m .-2<CR>==
+inoremap <C-j> <Esc>:m .+1<CR>==gi
+inoremap <C-k> <Esc>:m .-2<CR>==gi
+vnoremap <C-j> :m '>+1<CR>gv=gv
+vnoremap <C-k> :m '<-2<CR>gv=gv
+
+" New buffer
+nmap <C-t> :enew<CR>
+
+" Add
+command Cheatsheet split ~/.vim/doc/cheat_sheet.txt
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " COLORS
