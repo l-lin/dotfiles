@@ -52,6 +52,8 @@ o   - open (append) blank line below current line (no need to press return)
 O   - open blank line above current line
 ea  - append at end of word
 Esc - exit insert mod
+C-w - delete word before cursor
+C-d - delete word after cursor
 
 Undo - Redo
 -----------
@@ -68,7 +70,6 @@ space - toggle highlighting on/off
 F2    - toggle auto-indenting for code paste
 C-j   - move current line one line down
 C-k   - move current line one line above
-
 
 ==============================================================================
 2 - COMMANDS                 

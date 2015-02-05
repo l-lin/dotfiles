@@ -104,6 +104,9 @@ nmap <C-t> :enew<CR>
 " Add
 command Cheatsheet split ~/.vim/doc/cheat_sheet.txt
 
+" Delete word after cursor
+imap <C-d> <C-o>diw
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " COLORS
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
