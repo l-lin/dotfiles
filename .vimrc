@@ -9,6 +9,7 @@ Plug 'fatih/vim-go'
 Plug 'Valloric/YouCompleteMe'
 Plug 'majutsushi/tagbar'
 Plug 'bling/vim-airline'
+Plug 'plasticboy/vim-markdown'
 " Plug 'ervandew/supertab'
 call plug#end()
 
@@ -36,6 +37,9 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline_theme='badwolf'
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '>'
+
+" Disable folding
+let g:vim_markdown_folding_disabled=1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " KEY MAPS
