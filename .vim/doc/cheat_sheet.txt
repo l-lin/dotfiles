@@ -5,18 +5,19 @@
 
 Cursor movement
 ---------------
-w  - jump by start of words (punctuation considered words)
-W  - jump by words (spaces separate words)
-e  - jump to end of words (punctuation considered words)
-E  - jump to end of words (no punctuation)
-b  - jump backward by words (punctuation considered words)
-B  - jump backward by words (no punctuation)
-0  - (zero) start of line
-^  - first non-blank character of line
-$ - end of line
-5G - go go command (prefix with number - 5G goes to line 5)
-gg - go to first line of file
-G  - go to last line of file
+w      - jump by start of words (punctuation considered words)
+W      - jump by words (spaces separate words)
+e      - jump to end of words (punctuation considered words)
+E      - jump to end of words (no punctuation)
+b      - jump backward by words (punctuation considered words)
+B      - jump backward by words (no punctuation)
+0      - (zero) start of line
+^      - first non-blank character of line
+$      - end of line
+5G     - go go command (prefix with number - 5G goes to line 5)
+gg     - go to first line of file
+G      - go to last line of file
+Ctrl-G - Show line state
 
 Copy and paste
 --------------
@@ -31,6 +32,13 @@ dw      - delete (cut) the current word
 x       - delete (cut) current character
 shift-v - to visual mode (to copy multiple lines)
 
+Delete
+------
+dd - remove line
+dw - delete until next word, excluding the first character
+de - delete until end of the current, excluding the last character
+d$ - delete until end of line
+
 Search/Replace
 --------------
 /pattern               - search for pattern
@@ -41,6 +49,11 @@ N                      - repeat search in opposite direction
 :%s/old/new/gc         - replace all old with new throughout file with confirmations
 :/\v(\w+)              - search with regexp
 :%s/\v([0-9]+)/Foo\1/g - search with regexp and replace with group
+
+Correct words
+-------------
+ce - Correct the word from the cursor position (it will put in Insert mode)
+c$ - Correct from the cursor position to the end of line
 
 Insert Mode - Inserting/Appending text
 --------------------------------------
