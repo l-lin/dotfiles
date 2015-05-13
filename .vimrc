@@ -10,6 +10,7 @@ Plug 'Valloric/YouCompleteMe'
 Plug 'majutsushi/tagbar'
 Plug 'bling/vim-airline'
 Plug 'plasticboy/vim-markdown'
+Plug 'airblade/vim-gitgutter'
 " Plug 'ervandew/supertab'
 call plug#end()
 
