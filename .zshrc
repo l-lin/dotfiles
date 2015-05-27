@@ -31,6 +31,10 @@ alias df="df -Th"
 alias du="du -sh *"
 # Record a GIF
 alias gif="byzanz-record --duration=20 --x=0 --y=115 --width=1440 --height=745 ~/tmp/byzanz.gif"
+# Stellar - DB snaphost https://github.com/fastmonkeys/stellar
+alias stellars="stellar snaphost"
+alias stellarr="stellar restore"
+alias stellarl="stellar list"
 # Check used port
 alias usedports="netstat -taupen"
 alias whousethatport="lsof -i" # losf -i :8000
