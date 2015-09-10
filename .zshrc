@@ -109,7 +109,7 @@ export GOROOT="$APPS_HOME/go"
 export GOPATH="$HOME/go"
 export NODEJS_HOME="$APPS_HOME/nodejs"
 
-export PATH="/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"
+export PATH="/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:$HOME/bin"
 export PATH="$JAVA_HOME/bin:$MAVEN_HOME/bin:$SCALA_HOME/bin:$PLAY_HOME/bin:$ACTIVATOR_HOME:$SBT_HOME/bin:$GAE_HOME/bin:$HEROKU_HOME/bin:$GOROOT/bin:$GOPATH/bin:$NODEJS_HOME/bin:$PATH"
 
 # export MANPATH="/usr/local/man:$MANPATH"
