@@ -28,6 +28,7 @@
     ba = branch -avv
     bd = branch -D
     oops = commit --amend
+    me = merge --no-ff
 [push]
 	default = upstream
 # activate color for all commands
