@@ -50,4 +50,9 @@
 
 # merge is looking harder for renames
 [merge]
-	renamelimit = 3000
+    renamelimit = 3000
+
+# Automatically stash any local changes before rebasing
+[rebase]
+	autostash = true
+
