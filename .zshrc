@@ -158,3 +158,11 @@ setopt NO_BEEP
 #echo Hi! What a good day $USER! | cowsay -f $(/bin/ls /usr/share/cowsay/cows -1 | head -n $(expr $$$(date +%s) % $(ls /usr/share/cowsay/cows | wc -w) + 1) | tail -n 1)
 fortune | cowsay -f $(/bin/ls /usr/share/cowsay/cows -1 | head -n $(expr $$$(date +%s) % $(ls /usr/share/cowsay/cows | wc -w) + 1) | tail -n 1)
 
+echo "------------------------------------------------"
+echo "If you want to have a real time monitoring of your system, execute "
+echo ""
+echo "\tsudo /usr/sbin/netdata"
+echo ""
+echo "Then access to http://127.0.0.1:19999/"
+echo "------------------------------------------------"
+
