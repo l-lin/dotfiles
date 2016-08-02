@@ -13,3 +13,5 @@ Atom.io
 * ask-stack
 * recent-projects
 * esformatter
+* go-plus
+
