@@ -14,4 +14,9 @@ Atom.io
 * recent-projects
 * esformatter
 * go-plus
+* https://atom.io/packages/atom-typescript
+
+ ```
+ apm install atom-typescript
+```
 

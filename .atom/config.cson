@@ -1,0 +1,12 @@
+"*":
+  autosave:
+    enabled: true
+  editor: {}
+  "exception-reporting":
+    userId: "d051addd-e3dd-5288-81da-d625a2c3143a"
+  minimap:
+    plugins:
+      "git-diff": true
+      "git-diffDecorationsZIndex": 0
+  welcome:
+    showOnStartup: false
