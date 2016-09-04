@@ -1,5 +1,6 @@
-Atom.io
-=======
+# Atom.io
+
+## Packages
 
 * git-log
 * git-tab-status
@@ -14,9 +15,14 @@ Atom.io
 * recent-projects
 * esformatter
 * go-plus
+
+## Atom additionnal packages
+
 * https://atom.io/packages/atom-typescript
 
  ```
  apm install atom-typescript
 ```
-
+* git-time-machine
+* editorconfig
+* file-icons
