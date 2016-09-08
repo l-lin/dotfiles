@@ -18,11 +18,12 @@
 
 ## Atom additionnal packages
 
-* https://atom.io/packages/atom-typescript
-
- ```
- apm install atom-typescript
 ```
+apm install <package>
+```
+
+* atom-typescript
 * git-time-machine
+* git-diff-details
 * editorconfig
 * file-icons
