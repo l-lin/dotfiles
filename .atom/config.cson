@@ -1,12 +1,19 @@
 "*":
   autosave:
     enabled: true
-  editor: {}
+  editor:
+    softWrap: true
   "exception-reporting":
     userId: "d051addd-e3dd-5288-81da-d625a2c3143a"
   minimap:
     plugins:
       "git-diff": true
       "git-diffDecorationsZIndex": 0
+  "split-diff":
+    diffWords: true
+    ignoreWhitespace: true
+    leftEditorColor: "red"
+    rightEditorColor: "green"
+    syncHorizontalScroll: true
   welcome:
     showOnStartup: false
