@@ -27,3 +27,5 @@ apm install <package>
 * git-diff-details
 * editorconfig
 * file-icons
+* zentabs
+  * Disable the shortcut `alt-t` as it's in conflict with `git-time-machine`
