@@ -25,3 +25,4 @@
 '.workspace .editor:not(.mini)':
   'alt-down': 'editor:move-line-down'
   'alt-up': 'editor:move-line-up'
+  'alt-d': 'git-diff-details:toggle-git-diff-details'
