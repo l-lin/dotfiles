@@ -29,6 +29,7 @@
     bd = branch -D
     oops = commit --amend
     me = merge --no-ff
+    rl = reflog --pretty=reflog
 [push]
 	default = upstream
 # activate color for all commands
@@ -55,4 +56,7 @@
 # Automatically stash any local changes before rebasing
 [rebase]
 	autostash = true
+[pretty]
+    # reflog, with relative date (but for commits, not reflog entries!):
+    reflog = %C(auto)%h %<|(17)%gd %<|(31)%C(green)%ci%C(reset) %gs (%s)
 
