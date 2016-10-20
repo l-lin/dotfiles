@@ -11,7 +11,6 @@ then
         --exclude "idea" \
         --exclude "README.md" \
         --exclude "sublimetext/" \
-        --exclude "vscode" \
         -av -- . ~
     echo
     echo "Remember to execute the following command:"
