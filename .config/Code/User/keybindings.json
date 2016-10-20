@@ -14,5 +14,10 @@
         "key": "f3",
         "command": "editor.action.previewDeclaration",
         "when": "editorHasDefinitionProvider && editorTextFocus && !inReferenceSearchEditor"
+    },
+    {
+        "key": "ctrl+alt+l",
+        "command": "editor.action.format",
+        "when": "editorHasFormattingProvider && editorTextFocus && !editorReadonly"
     }
 ]
