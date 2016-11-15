@@ -27,6 +27,7 @@
     ignored = !git ls-files -v | grep "^[[:lower:]]"
     ba = branch -avv
     bd = branch -D
+    bdr = !git branch --merged | egrep -v \"(master|dev)\" | xargs git branch -d
     oops = commit --amend
     me = merge --no-ff
     rl = reflog --pretty=reflog
