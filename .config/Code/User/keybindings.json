@@ -17,7 +17,7 @@
     },
     {
         "key": "ctrl+alt+l",
-        "command": "editor.action.format",
-        "when": "editorHasFormattingProvider && editorTextFocus && !editorReadonly"
+        "command": "editor.action.formatDocument",
+        "when": "editorHasDocumentFormattingProvider && editorTextFocus && !editorReadonly"
     }
 ]
