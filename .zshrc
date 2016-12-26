@@ -156,6 +156,9 @@ setopt NO_FLOW_CONTROL
 # beeps are annoying
 setopt NO_BEEP
 
+# extention to do cmd like "rm -rf ^file/folder"
+setopt extended_glob
+
 # cowsay
 #echo Hi! What a good day $USER! | cowsay -f $(/bin/ls /usr/share/cowsay/cows -1 | head -n $(expr $$$(date +%s) % $(ls /usr/share/cowsay/cows | wc -w) + 1) | tail -n 1)
 fortune | cowsay -f $(/bin/ls /usr/share/cowsay/cows -1 | head -n $(expr $$$(date +%s) % $(ls /usr/share/cowsay/cows | wc -w) + 1) | tail -n 1)
