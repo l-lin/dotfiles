@@ -1,6 +1,6 @@
 // Placez vos paramètres dans ce fichier pour remplacer les paramètres par défaut
 {
     "editor.wordWrap": true,
-    "editor.stablePeek": true",
+    "editor.stablePeek": true,
     "files.autoSave": "onFocusChange"
 }
