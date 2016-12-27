@@ -6,7 +6,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]
 then
     rsync -poghb --backup-dir=/tmp/rsync -e /dev/null --progress \
         --exclude "bootstrap.sh" \
-        --exclude "dotfile.gif" \
+        --exclude "dotfiles.gif" \
         --exclude ".git/" \
         --exclude "idea" \
         --exclude "README.md" \
