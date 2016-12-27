@@ -12,6 +12,7 @@ Plug 'bling/vim-airline'
 Plug 'plasticboy/vim-markdown'
 Plug 'airblade/vim-gitgutter'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'tpope/vim-fugitive'
 " Plug 'ervandew/supertab'
 call plug#end()
 
@@ -42,6 +43,8 @@ let g:airline#extensions#tabline#left_alt_sep = '>'
 
 " Disable folding
 let g:vim_markdown_folding_disabled=1
+
+let g:airline_powerline_fonts = 1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " KEY MAPS
