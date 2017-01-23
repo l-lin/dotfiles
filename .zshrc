@@ -12,21 +12,28 @@ export ZSH=$HOME/.oh-my-zsh
 # ZSH_THEME="robbyrussell"
 ZSH_THEME="crunch"
 
-eval "$(thefuck --alias)"
-# You can use whatever you want as an alias, like for Mondays:
-eval "$(thefuck --alias FUCK)"
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+HIST_STAMPS="yyyy-mm-dd"
+
+# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
+# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+plugins=(git zsh-syntax-highlighting z)
+
+source $ZSH/oh-my-zsh.sh
 
 # --------------------------------------------------------
 # ALIASES 
 # --------------------------------------------------------
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
 alias sz="source ~/.zshrc"
 alias ez="vim ~/.zshrc"
 alias agi="sudo apt-get install"
 alias agr="sudo apt-get remove"
 alias v="vim"
 alias g="git"
+alias gr="/usr/local/bin/gr"
 alias grep="grep --color=auto"
 # copy with a progress bar.
 alias cpv="rsync -poghb --backup-dir=/tmp/rsync -e /dev/null --progress --"
@@ -46,7 +53,7 @@ alias rmf="rm -rf"
 diffWithColor() {
     diff -u $1 $2|colordiff|less -R
 }
-alias diff="diffWithColor"
+alias diffc="diffWithColor"
 # tar
 alias tarx="tar xzvf"
 alias tarc="tar czvf"
@@ -55,48 +62,9 @@ alias sudo="sudo "
 alias _="sudo "
 alias please="sudo "
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to disable command auto-correction.
-# DISABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git zsh-syntax-highlighting z)
-
-source $ZSH/oh-my-zsh.sh
-
+# --------------------------------------------------------
 # User configuration
+# --------------------------------------------------------
 
 export APPS_HOME="$HOME/apps"
 export JAVA_HOME="$APPS_HOME/java"
@@ -118,24 +86,6 @@ export GRADLE_HOME="$APPS_HOME/gradle"
 export PATH="/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:$HOME/bin"
 export PATH="$JAVA_HOME/bin:$MAVEN_HOME/bin:$SCALA_HOME/bin:$PLAY_HOME/bin:$ACTIVATOR_HOME:$SBT_HOME/bin:$GAE_HOME/bin:$HEROKU_HOME/bin:$GOROOT/bin:$GOPATH/bin:$GRADLE_HOME/bin:$PATH"
 
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# ssh
-# export SSH_KEY_PATH="~/.ssh/dsa_id"
-
 export GREP_COLOR=32
 
 # --------------------------------------------------------
@@ -145,7 +95,7 @@ export GREP_COLOR=32
 # why would you type 'cd dir' if you could just type 'dir'?
 setopt AUTO_CD
 
-# Spell check commands!  (Sometimes annoying)
+# Spell check commands! (Sometimes annoying)
 setopt CORRECT
 
 # 10 second wait if you do something that will delete everything.  I wish I'd had this before...
@@ -163,7 +113,8 @@ setopt NO_BEEP
 # extention to do cmd like "rm -rf ^file/folder"
 setopt extended_glob
 
+# --------------------------------------------------------
 # cowsay
-#echo Hi! What a good day $USER! | cowsay -f $(/bin/ls /usr/share/cowsay/cows -1 | head -n $(expr $$$(date +%s) % $(ls /usr/share/cowsay/cows | wc -w) + 1) | tail -n 1)
 fortune | cowsay -f $(/bin/ls /usr/share/cowsay/cows -1 | head -n $(expr $$$(date +%s) % $(ls /usr/share/cowsay/cows | wc -w) + 1) | tail -n 1)
+# --------------------------------------------------------
 
