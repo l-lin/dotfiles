@@ -2,6 +2,11 @@
 [[ $- != *i* ]] && return
 [[ -z "$TMUX" ]] && exec tmux
 
+# Set to 256 colors
+if [ "$COLORTERM" = "xfce4-terminal" ] ; then
+    export TERM=screen-256color
+fi
+
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
 
@@ -20,47 +25,17 @@ HIST_STAMPS="yyyy-mm-dd"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git zsh-syntax-highlighting z)
+plugins=(git z git-open zsh-navigation-tools copyfile copydir colorize colored-man-pages extract web-search zsh-autosuggestions zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
 # --------------------------------------------------------
 # ALIASES 
 # --------------------------------------------------------
-alias sz="source ~/.zshrc"
-alias ez="vim ~/.zshrc"
-alias agi="sudo apt-get install"
-alias agr="sudo apt-get remove"
-alias v="vim"
-alias g="git"
-alias gr="/usr/local/bin/gr"
-alias grep="grep --color=auto"
-# copy with a progress bar.
-alias cpv="rsync -poghb --backup-dir=/tmp/rsync -e /dev/null --progress --"
-# Compute space disk
-alias df="df -Th"
-alias du="du -sh *"
-# Record a GIF
-alias gif="byzanz-record --duration=20 --x=0 --y=115 --width=1440 --height=745 ~/tmp/byzanz.gif"
-# Stellar - DB snaphost https://github.com/fastmonkeys/stellar
-alias stellars="stellar snapshot"
-alias stellarr="stellar restore"
-alias stellarl="stellar list"
-# Check used port
-alias usedports="netstat -taupen"
-alias whousethatport="lsof -i" # losf -i :8000
-alias rmf="rm -rf"
-diffWithColor() {
-    diff -u $1 $2|colordiff|less -R
-}
-alias diffc="diffWithColor"
-# tar
-alias tarx="tar xzvf"
-alias tarc="tar czvf"
-# sudo
-alias sudo="sudo "
-alias _="sudo "
-alias please="sudo "
+
+if [ -f ~/.aliases ]; then
+    . ~/.aliases
+fi
 
 # --------------------------------------------------------
 # User configuration
@@ -83,7 +58,7 @@ export GOPATH="$HOME/go"
 export NODEJS_HOME="$APPS_HOME/nodejs"
 export GRADLE_HOME="$APPS_HOME/gradle"
 
-export PATH="/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:$HOME/bin"
+export PATH="/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:$HOME/bin:$PATH"
 export PATH="$JAVA_HOME/bin:$MAVEN_HOME/bin:$SCALA_HOME/bin:$PLAY_HOME/bin:$ACTIVATOR_HOME:$SBT_HOME/bin:$GAE_HOME/bin:$HEROKU_HOME/bin:$GOROOT/bin:$GOPATH/bin:$GRADLE_HOME/bin:$PATH"
 
 export GREP_COLOR=32
@@ -112,6 +87,12 @@ setopt NO_BEEP
 
 # extention to do cmd like "rm -rf ^file/folder"
 setopt extended_glob
+
+# zsh-autosuggestions config
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=1"
+
+# zsh-syntax-highlighting config
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
 
 # --------------------------------------------------------
 # cowsay

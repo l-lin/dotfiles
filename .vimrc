@@ -122,6 +122,8 @@ imap <C-d> <C-o>diw
 syntax on
 syntax enable
 
+colorscheme peachpuff
+
 filetype plugin on
 
 " Omnicomplete

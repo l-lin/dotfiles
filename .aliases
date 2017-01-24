@@ -1,0 +1,35 @@
+alias sz="source ~/.zshrc"
+alias ez="vim ~/.zshrc"
+alias agi="sudo apt-get install"
+alias agr="sudo apt-get remove"
+alias v="vim"
+alias g="git"
+alias gr="/usr/local/bin/gr"
+alias grep="grep --color=auto"
+# copy with a progress bar.
+alias cpv="rsync -poghb --backup-dir=/tmp/rsync -e /dev/null --progress --"
+# Compute space disk
+alias df="df -Th"
+alias du="du -sh *"
+# Record a GIF
+alias gif="byzanz-record --duration=20 --x=0 --y=115 --width=1440 --height=745 ~/tmp/byzanz.gif"
+# Stellar - DB snaphost https://github.com/fastmonkeys/stellar
+alias stellars="stellar snapshot"
+alias stellarr="stellar restore"
+alias stellarl="stellar list"
+# Check used port
+alias usedports="netstat -taupen"
+alias whousethatport="lsof -i" # losf -i :8000
+alias rmf="rm -rf"
+diffWithColor() {
+        diff -u $1 $2|colordiff|less -R
+}
+alias diffc="diffWithColor"
+# tar
+alias tarx="tar xzvf"
+alias tarc="tar czvf"
+# sudo
+alias sudo="sudo "
+alias _="sudo "
+alias please="sudo "
+
