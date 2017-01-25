@@ -96,7 +96,7 @@ ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=10
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
 
 # zsh-navigation-tools config
-znt_list_bold=1
+znt_list_bold=0
 znt_list_border=1
 znt_list_instant_select=1
 znt_history_active_text=reverse
