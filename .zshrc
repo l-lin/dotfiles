@@ -90,6 +90,7 @@ setopt extended_glob
 
 # zsh-autosuggestions config
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=1"
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=10
 
 # zsh-syntax-highlighting config
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
