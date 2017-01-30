@@ -26,6 +26,8 @@ sudo apt-get install byzanz colordiff htop
 sudo npm install -g n
 # Install https://github.com/mixu/gr
 sudo npm install -g git-run
+# Install https://github.com/Fakerr/git-recall
+sudo npm install -g git-recall
 # Install zsh plugins
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 git clone https://github.com/paulirish/git-open.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/git-open
