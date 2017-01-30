@@ -104,8 +104,3 @@ znt_history_active_text=reverse
 # Add gr tab completion
 . <(gr completion)
 
-# --------------------------------------------------------
-# cowsay
-fortune | cowsay -f $(/bin/ls /usr/share/cowsay/cows -1 | head -n $(expr $$$(date +%s) % $(ls /usr/share/cowsay/cows | wc -w) + 1) | tail -n 1)
-# --------------------------------------------------------
-

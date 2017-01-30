@@ -20,7 +20,7 @@ sudo pip install powerline-status
 # Instal TMUX plugin manager
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 # Install stuffs
-sudo apt-get install byzanz fortune cowsay colordiff
+sudo apt-get install byzanz colordiff htop
 # Install NodeJS on root
 # Install https://github.com/tj/n
 sudo npm install -g n
@@ -32,5 +32,7 @@ git clone https://github.com/paulirish/git-open.git ${ZSH_CUSTOM:-~/.oh-my-zsh/c
 git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 # Bootstrap dotfiles
 ./bootstrap.sh
+# https://github.com/psprint/zsh-navigation-tools#fixing-tmux-screen-and-linux-vt 
+{ infocmp -x screen-256color; printf '\t%s\n' 'ncv@,'; } > /tmp/t && tic -x /tmp/t
 ```
 
