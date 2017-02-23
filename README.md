@@ -38,3 +38,12 @@ git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-~/.
 { infocmp -x screen-256color; printf '\t%s\n' 'ncv@,'; } > /tmp/t && tic -x /tmp/t
 ```
 
+# Install VIM plugins
+
+- Edit a file with VIM
+- Execute `:PlugInstall`
+
+# Install TMUX plugins
+
+- Press "Prefix + I" (capital i)
+
