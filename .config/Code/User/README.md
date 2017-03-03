@@ -2,9 +2,12 @@
 
 ## Extensions
 
-* One Monokai Theme
-* Git history
-* VSCode Gret Icons
 * Angular 2 TypeScript Snippets
-* File peek
 * EditorConfig for VS Code
+* File peek
+* Git history
+* One Monokai Theme
+* Subword Navigation
+* TSLint
+* VSCode Gret Icons
+
