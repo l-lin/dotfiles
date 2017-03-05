@@ -49,12 +49,12 @@ export GAE_HOME="$APPS_HOME/bin"
 export HEROKU_HOME="/usr/local/heroku"
 export GOROOT="$APPS_HOME/go"
 export GOPATH="$HOME/go"
-# NODEJS should be installed for root user too, so https://github.com/tj/n can be installed too
 export NODEJS_HOME="$APPS_HOME/nodejs"
 export GRADLE_HOME="$APPS_HOME/gradle"
+export NVM_DIR="$HOME/.nvm"
 
 export PATH="/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:$HOME/bin:$PATH"
-export PATH="$JAVA_HOME/bin:$MAVEN_HOME/bin:$SCALA_HOME/bin:$PLAY_HOME/bin:$ACTIVATOR_HOME:$SBT_HOME/bin:$GAE_HOME/bin:$HEROKU_HOME/bin:$GOROOT/bin:$GOPATH/bin:$GRADLE_HOME/bin:$PATH"
+export PATH="$JAVA_HOME/bin:$MAVEN_HOME/bin:$SCALA_HOME/bin:$PLAY_HOME/bin:$ACTIVATOR_HOME:$SBT_HOME/bin:$GAE_HOME/bin:$HEROKU_HOME/bin:$GOROOT/bin:$GOPATH/bin:$GRADLE_HOME/bin:$NODEJS_HOME/bin:$PATH"
 
 export GREP_COLOR=32
 
@@ -95,6 +95,9 @@ znt_list_bold=0
 znt_list_border=1
 znt_list_instant_select=1
 znt_history_active_text=reverse
+
+# NVM
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
 # Add gr tab completion
 . <(gr completion)

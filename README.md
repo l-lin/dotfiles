@@ -4,6 +4,17 @@ See [dotfiles](http://dotfiles.github.io).
 
 ![dotfiles](dotfiles.gif)
 
+# List of applications to install after reinstalling Manjaro
+
+```
+sudo pacman -S vim zsh ctags tmux python-pip
+# Install nodeJS: https://nodejs.org/en/
+# Install NVM: https://github.com/creationix/nvm
+# Launch stuff installation
+./install.sh
+# Bootstrap dotfiles
+```
+
 # List of applications to install after reinstalling Xubuntu
 
 ```
