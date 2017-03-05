@@ -51,11 +51,9 @@
 # pull will do a rebase instead of a merge
 [pull]
 	rebase = true
-
 # merge is looking harder for renames
 [merge]
     renamelimit = 3000
-
 # Automatically stash any local changes before rebasing
 [rebase]
 	autostash = true
@@ -63,7 +61,3 @@
     # reflog, with relative date (but for commits, not reflog entries!):
     reflog = %C(auto)%h %<|(17)%gd %<|(31)%C(green)%ci%C(reset) %gs (%s)
 
-[gitopen "gitlab"]
-	domain = oogit.oodrive.net
-[gitopen "gitlab.ssh"]
-	domain = oogit.oodrive.net
