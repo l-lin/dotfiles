@@ -2,12 +2,13 @@
 
 ## Extensions
 
-* Angular 2 TypeScript Snippets
+* Angular v4 TypeScript Snippets
+* Angular Language Service
 * EditorConfig for VS Code
 * File peek
 * Git history
 * One Monokai Theme
 * Subword Navigation
 * TSLint
-* VSCode Gret Icons
+* VSCode Great Icons
 
