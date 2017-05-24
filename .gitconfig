@@ -8,31 +8,26 @@
     excludesfile = ~/.gitignore_global
     autocrlf = input
 [alias]
-	st = status -sb
-	df = diff
-	co = checkout
-	ci = !git add -A && git commit
-	undo = reset --soft HEAD^
-	adda = add -A
-	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)<%an>%Creset' --abbrev-commit
-    wdiff = diff --word-diff --color-words=.
-	ffs = flow feature start
-    fff = flow feature finish
-    fhs = flow hotfix start
-    fhf = flow hotfix finish
-    frs = flow release start
-    frf = flow release finish
-    ignore = update-index --assume-unchanged
-    unignore = update-index --no-assume-unchanged 
-    ignored = !git ls-files -v | grep "^[[:lower:]]"
+    adda = add -A
     ba = branch -avv
     bd = branch -D
     bdr = !git branch --merged | egrep -v \"(master|dev)\" | xargs git branch -d
-    oops = commit --amend
-    me = merge --no-ff
-    rl = reflog --pretty=reflog
-    rh = reset --hard
     cdiff = log --oneline --no-merges
+    ci = !git add -A && git commit
+    co = checkout
+    df = diff
+    ignore = update-index --assume-unchanged
+    ignored = !git ls-files -v | grep "^[[:lower:]]"
+    lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)<%an>%Creset' --abbrev-commit
+    logv = log --graph --all --decorate --stat --date=iso
+    me = merge --no-ff
+    oops = commit --amend
+    rh = reset --hard
+    rl = reflog --pretty=reflog
+    st = status -sb 
+    undo = reset --soft HEAD^
+    unignore = update-index --no-assume-unchanged 
+    wdiff = diff --word-diff --color-words=.
 [push]
 	default = upstream
 # activate color for all commands
