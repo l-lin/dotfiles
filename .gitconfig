@@ -32,7 +32,7 @@
     me = merge --no-ff
     rl = reflog --pretty=reflog
     rh = reset --hard
-    compare = "!f() { git log --pretty=format:'%s - %ci <%an>' $1...$2|grep \"^$3\"; }; f"
+    cdiff = log --oneline --no-merges
 [push]
 	default = upstream
 # activate color for all commands
