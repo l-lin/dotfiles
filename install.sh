@@ -6,6 +6,7 @@ echo "[-] Installing stuffs..."
 sudo pip install --upgrade pip 
 sudo pip install --upgrade virtualenv 
 echo "[-] Installing power-line for VIM airline"
+sudo apt-get install python-setuptools
 sudo pip install powerline-status
 echo "[-] Instaling TMUX plugin manager"
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
@@ -26,6 +27,6 @@ docker-compose -version
 echo "[-] Add Docker compose bash completion"
 sudo curl -L https://raw.githubusercontent.com/docker/compose/$(docker-compose version --short)/contrib/completion/bash/docker-compose -o /etc/bash_completion.d/docker-compose
 
-echo "[-] Installation SUCCESS!"
+echo "[-] Installation SUCCESS! Please restart your terminal"
 exit 0
 

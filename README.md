@@ -10,9 +10,8 @@ See [dotfiles](http://dotfiles.github.io).
 sudo add-apt-repository ppa:git-core/ppa
 sudo apt-get update
 # Install additional commands
-sudo apt-get install build-essential cmake git zsh fortune cowsay colorDiff vim exuberant-ctags tmux python-pip python-dev
-# Install nodeJS: https://nodejs.org/en/
-# Install NVM: https://github.com/creationix/nvm
+sudo apt-get install build-essential cmake git zsh fortune cowsay colordiff vim exuberant-ctags tmux python-pip python-dev
+# Install nodeJS https://nodejs.org/en/ in $HOME/apps/nodejs folder
 # Launch stuff installation
 ./install.sh
 # Bootstrap dotfiles
