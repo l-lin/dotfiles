@@ -22,6 +22,7 @@
     logv = log --graph --all --decorate --stat --date=iso
     me = merge --no-ff
     oops = commit --amend
+    pushf = push --force-with-lease
     rh = reset --hard
     rl = reflog --pretty=reflog
     st = status -sb 
