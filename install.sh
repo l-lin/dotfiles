@@ -21,8 +21,8 @@ echo "[-] Installing Docker"
 curl -fsSL https://get.docker.com/ | sh
 docker --version
 echo "[-] Installing Docker Compose"
-curl -L https://github.com/docker/compose/releases/download/1.13.0/docker-compose-`uname -s`-`uname -m` > /tmp/docker-compose
-chmod +x /tmp/docker-compose && sudo mv /tmp/docker-compose /usr/local/bin/
+curl -L https://github.com/docker/compose/releases/download/1.14.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
 docker-compose -version
 echo "[-] Add Docker compose bash completion"
 sudo curl -L https://raw.githubusercontent.com/docker/compose/$(docker-compose version --short)/contrib/completion/bash/docker-compose -o /etc/bash_completion.d/docker-compose
