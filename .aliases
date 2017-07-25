@@ -32,4 +32,6 @@ alias tarc="tar czvf"
 alias sudo="sudo "
 alias _="sudo "
 alias please="sudo "
+# docker
+alias dc="docker-compose"
 
