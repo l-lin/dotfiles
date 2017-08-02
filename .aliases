@@ -33,5 +33,6 @@ alias sudo="sudo "
 alias _="sudo "
 alias please="sudo "
 # docker
+alias d="docker"
 alias dc="docker-compose"
 
