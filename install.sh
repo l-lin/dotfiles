@@ -17,6 +17,10 @@ git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-~/.
 git clone https://github.com/lukechilds/zsh-nvm ~/.oh-my-zsh/custom/plugins/zsh-nvm
 echo "[-] Installing Git Run: https://github.com/mixu/gr"
 npm install -g git-run
+echo "[-] Installing colorls: https://github.com/athityakumar/colorls"
+git clone https://github.com/ryanoasis/nerd-fonts --depth 1 /tmp/nerd-fonts
+cd /tmp/nerd-fonts && ./install.sh
+gem install colorls
 echo "[-] Installing Docker"
 curl -fsSL https://get.docker.com/ | sh
 docker --version

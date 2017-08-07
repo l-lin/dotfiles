@@ -35,4 +35,6 @@ alias please="sudo "
 # docker
 alias d="docker"
 alias dc="docker-compose"
+# colorls
+alias l="colorls -l -a -sd
 
