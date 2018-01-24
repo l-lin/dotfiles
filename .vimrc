@@ -1,19 +1,17 @@
 " Using https://github.com/junegunn/vim-plug as dependency manager
 " Execute :PlugInstall
 call plug#begin()
-Plug 'tpope/vim-sensible'
-Plug 'vim-scripts/SQLComplete.vim'
-Plug 'vim-scripts/taglist.vim'
-Plug 'scrooloose/nerdcommenter'
-Plug 'fatih/vim-go'
-" Plug 'Valloric/YouCompleteMe'
-Plug 'majutsushi/tagbar'
-Plug 'bling/vim-airline'
-Plug 'plasticboy/vim-markdown'
-Plug 'airblade/vim-gitgutter'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'tpope/vim-fugitive'
-" Plug 'ervandew/supertab'
+Plug 'tpope/vim-sensible' " VIM minimal config
+Plug 'vim-scripts/taglist.vim' " Add taglist when autocompleting
+Plug 'scrooloose/nerdcommenter' " Add shortcut to comment
+Plug 'fatih/vim-go' " Golang support
+Plug 'bling/vim-airline' " Display the bottom status bar
+Plug 'vim-airline/vim-airline-themes' " Themes for the airline
+Plug 'plasticboy/vim-markdown' " Markdown support
+Plug 'airblade/vim-gitgutter' " Show git diff in the gutter
+Plug 'tpope/vim-fugitive' " Git wrapper (cmd Gstatus, Glog, ...)
+Plug 'ervandew/supertab' " Use tab instead of <C-n> for autocompletion
+Plug 'morhetz/gruvbox' " VIM theme
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -37,7 +35,7 @@ let mapleader=","
 
 " Airline configuration
 let g:airline#extensions#tabline#enabled = 1
-let g:airline_theme='badwolf'
+let g:airline_theme='gruvbox'
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '>'
 
@@ -91,9 +89,6 @@ nmap <c-n> :set invnumber<CR>
 " Press Space to toggle highlighting on/off, and show current value.
 noremap <silent> <Space> :set hlsearch! hlsearch?<CR>
 
-" Tagbar
-nmap <F8> :TagbarToggle<CR>
-
 " Toggle auto-indenting for code paste
 nnoremap <F2> :set invpaste paste?<CR>
 set pastetoggle=<F2>
@@ -115,14 +110,15 @@ command Cheatsheet split ~/.vim/doc/cheat_sheet.txt
 
 " Delete word after cursor
 imap <C-d> <C-o>diw
-
+ 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " COLORS
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 syntax on
 syntax enable
 
-colorscheme peachpuff
+colorscheme gruvbox
+set background=dark " Welcome to the dark side
 
 filetype plugin on
 
