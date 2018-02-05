@@ -37,4 +37,8 @@ alias d="docker"
 alias dc="docker-compose"
 # colorls
 alias l="colorls -l -a --sd"
-
+# postgres with docker
+alias psql="docker exec -i local_postgres psql"
+alias pg_dump="docker exec -i local_postgres pg_dump"
+# kubernetes
+alias k="kubectl"
