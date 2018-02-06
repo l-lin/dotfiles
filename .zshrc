@@ -10,8 +10,8 @@ export ZSH_CUSTOM=$ZSH/custom
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-# ZSH_THEME="robbyrussell"
-# ZSH_THEME="crunch"
+#ZSH_THEME="robbyrussell"
+#ZSH_THEME="crunch"
 ZSH_THEME="spaceship"
 
 # Configure spaceship prompt
@@ -25,7 +25,7 @@ HIST_STAMPS="yyyy-mm-dd"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git z git-open zsh-navigation-tools copyfile copydir colorize colored-man-pages extract web-search tmuxinator zsh-autosuggestions zsh-syntax-highlighting zsh-nvm)
+plugins=(z git-open zsh-navigation-tools copyfile copydir colored-man-pages extract web-search zsh-autosuggestions zsh-syntax-highlighting httpie nvm) 
 
 source $ZSH/oh-my-zsh.sh
 
@@ -101,9 +101,8 @@ znt_list_border=1
 znt_list_instant_select=1
 znt_history_active_text=reverse
 
-# NVM
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-
 # Add gr tab completion
-. <(gr completion)
+if hash gr 2>/dev/null; then
+    . <(gr completion)
+fi
 
