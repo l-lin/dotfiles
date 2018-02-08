@@ -25,7 +25,7 @@ HIST_STAMPS="yyyy-mm-dd"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(z git-open zsh-navigation-tools copyfile copydir colored-man-pages extract web-search zsh-autosuggestions zsh-syntax-highlighting httpie nvm) 
+plugins=(z git-open zsh-navigation-tools copyfile copydir colored-man-pages extract web-search zsh-autosuggestions zsh-syntax-highlighting httpie nvm wd) 
 
 source $ZSH/oh-my-zsh.sh
 
