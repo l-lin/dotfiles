@@ -4,7 +4,11 @@ set -e
 set -x
 
 DC_VERSION="1.18.0"
+GO_VERSION="1.10.1"
 
+echo "[-] Creating folders..."
+mkdir -p $HOME/apps
+mkdir -p $HOME/bin
 echo "[-] Installing stuffs..."
 sudo pip install --upgrade pip 
 sudo pip install --upgrade virtualenv 
@@ -37,6 +41,18 @@ chmod +x /usr/local/bin/docker-compose
 docker-compose -version
 echo "[-] Add Docker compose bash completion"
 sudo curl -L https://raw.githubusercontent.com/docker/compose/$(docker-compose version --short)/contrib/completion/bash/docker-compose -o /etc/bash_completion.d/docker-compose
+echo "[-] Installing fuzzy finder"
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
+echo "[-] Installing ctop"
+sudo wget https://github.com/bcicen/ctop/releases/download/v0.7.1/ctop-0.7.1-linux-amd64 -O /usr/local/bin/ctop
+sudo chmod +x /usr/local/bin/ctop
+echo "[-] Installing Golang"
+GO_FILE=go${GO_VERSION}.linux-amd64
+curl -o /tmp/${GO_FILE}.tar.gz https://dl.google.com/go/${GO_FILE}.tar.gz
+tar xzvf /tmp/${GO_FILE}.tar.gz -C $HOME
+echo "[-] Installing pet"
+go get -u github.com/knqyf263/pet
 
 echo "[-] Installation SUCCESS! Please restart your terminal"
 exit 0
