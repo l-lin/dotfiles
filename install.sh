@@ -44,6 +44,9 @@ sudo curl -L https://raw.githubusercontent.com/docker/compose/$(docker-compose v
 echo "[-] Installing fuzzy finder"
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install
+echo "[-] Installing pet: https://github.com/knqyf263/pet#debian-ubuntu"
+wget -O /tmp/pet.deb https://github.com/knqyf263/pet/releases/download/v0.3.0/pet_0.3.0_linux_amd64.deb
+sudo dpkg -i /tmp/pet.deb
 echo "[-] Installing ctop"
 sudo wget https://github.com/bcicen/ctop/releases/download/v0.7.1/ctop-0.7.1-linux-amd64 -O /usr/local/bin/ctop
 sudo chmod +x /usr/local/bin/ctop

@@ -101,8 +101,27 @@ znt_list_border=1
 znt_list_instant_select=1
 znt_history_active_text=reverse
 
-# Add gr tab completion
+# --------------------------------------------------------
+# Initialization
+# --------------------------------------------------------
+
+# Add git-run tab completion
 if hash gr 2>/dev/null; then
     . <(gr completion)
+fi
+
+# fuzzyfinder
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# pet: https://github.com/knqyf263/pet
+if hash pet 2>/dev/null; then
+    function pet-select() {
+        BUFFER=$(pet search --query "$LBUFFER")
+        CURSOR=$#BUFFER
+        zle redisplay
+    }
+    zle -N pet-select
+    stty -ixon
+    bindkey '^s' pet-select
 fi
 
