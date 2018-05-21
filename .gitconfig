@@ -1,6 +1,9 @@
+[includeIf "gitdir:~/work/"]
+    path = ~/work/.gitconfig
+[includeIf "gitdir:~/perso/"]
+    path = ~/perso/.gitconfig
 [user]
-	email = louis.lin.87@gmail.com
-	name = Louis LIN
+	name = Louis Lin
 [credential]
 	helper = cache
 [core]
