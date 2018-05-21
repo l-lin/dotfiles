@@ -16,6 +16,7 @@ ZSH_THEME="spaceship"
 
 # Configure spaceship prompt
 export SPACESHIP_TIME_SHOW=true
+export SPACESHIP_DIR_LOCK_SYMBOL=" "
 
 # Uncomment the following line if you want to change the command execution time
 # stamp shown in the history command output.
@@ -114,7 +115,7 @@ fi
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # pet: https://github.com/knqyf263/pet
-if hash pet 2>/dev/null; then
+if type pet >/dev/null 2>&1; then
     function pet-select() {
         BUFFER=$(pet search --query "$LBUFFER")
         CURSOR=$#BUFFER
@@ -123,5 +124,9 @@ if hash pet 2>/dev/null; then
     zle -N pet-select
     stty -ixon
     bindkey '^s' pet-select
+fi
+
+if [ ! -f ~/.work.zsh ]; then
+    source ~/.work.zsh
 fi
 
