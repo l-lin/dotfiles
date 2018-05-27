@@ -17,7 +17,10 @@ sudo apt-get install python-setuptools
 sudo pip install powerline-status
 echo "[-] Instaling TMUX plugin manager"
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+echo "[-] Instaling oh-my-zsh"
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 echo "[-]  Installing zsh plugins"
+/usr/bin/zsh
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting
 git clone https://github.com/paulirish/git-open.git ${ZSH_CUSTOM}/plugins/git-open
 git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM}/plugins/zsh-autosuggestions

@@ -4,7 +4,7 @@ See [dotfiles](http://dotfiles.github.io).
 
 ![dotfiles](dotfiles.gif)
 
-# List of applications to install after reinstalling Xubuntu
+# List of applications to install after reinstalling the OS
 
 ```bash
 sudo add-apt-repository ppa:git-core/ppa
@@ -12,6 +12,8 @@ sudo apt-get update
 # Install additional commands
 sudo apt-get install build-essential cmake git zsh fortune cowsay colordiff vim exuberant-ctags tmux python-pip python-dev ruby-dev ruby htop xclip httpie silversearcher-ag
 # Install nodeJS https://nodejs.org/en/ in $HOME/apps/nodejs folder
+# Set zsh as default
+chsh -s $(which zsh)
 # Launch stuff installation
 ./install.sh
 # Bootstrap dotfiles
@@ -26,4 +28,3 @@ sudo apt-get install build-essential cmake git zsh fortune cowsay colordiff vim 
 # Install TMUX plugins
 
 - Press "Prefix + I" (capital i)
-
