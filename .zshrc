@@ -126,7 +126,7 @@ if type pet >/dev/null 2>&1; then
     bindkey '^s' pet-select
 fi
 
-if [ ! -f ~/.work.zsh ]; then
+if [ -f ~/.work.zsh ]; then
     source ~/.work.zsh
 fi
 
