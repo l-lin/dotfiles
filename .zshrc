@@ -17,6 +17,23 @@ ZSH_THEME="spaceship"
 # Configure spaceship prompt
 export SPACESHIP_TIME_SHOW=true
 export SPACESHIP_DIR_LOCK_SYMBOL=" "
+export SPACESHIP_PROMPT_ORDER=(
+  time
+  user
+  dir
+  host
+  git
+  hg
+  package
+  node
+  exec_time
+  line_sep
+  battery
+  vi_mode
+  jobs
+  exit_code
+  char
+)
 
 # Uncomment the following line if you want to change the command execution time
 # stamp shown in the history command output.
