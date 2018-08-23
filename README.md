@@ -7,17 +7,18 @@ See [dotfiles](http://dotfiles.github.io).
 # List of applications to install after reinstalling the OS
 
 ```bash
-sudo add-apt-repository ppa:git-core/ppa
-sudo apt-get update
-# Install additional commands
-sudo apt-get install build-essential cmake git zsh fortune cowsay colordiff vim exuberant-ctags tmux python-pip python-dev ruby-dev ruby htop xclip httpie silversearcher-ag
-# Install nodeJS https://nodejs.org/en/ in $HOME/apps/nodejs folder
-# Set zsh as default
-chsh -s $(which zsh)
+# Install ubuntu packages
+./install_ubuntu.sh
 # Launch stuff installation
 ./install.sh
+# Install node extensions
+./install_node_extensions.sh
+# Install zsh plugins: use zsh
+./install_zsh_plugins.sh
 # Bootstrap dotfiles
 ./bootstrap.sh
+# Long installation
+./install_long.sh
 ```
 
 # Install VIM plugins

@@ -2,13 +2,12 @@
 
 ## Extensions
 
-* Angular Language Service
-* Angular v4 TypeScript Snippets
-* angular2-inline
+* Angular Essentials
 * Better TOML
 * Bracket Pair Colorizer
-* Debugger for Chrome
 * EditorConfig for VS Code
+* Excel Viewer
+* Kubernetes
 * File peek
 * Git history
 * Go
@@ -17,5 +16,7 @@
 * One Dark Pro
 * Path Intellisense
 * Subword Navigation
-* TSLint
-
+* Polacode
+* YAML support by Red Hat
+* Docker
+* Docker Linter

@@ -123,8 +123,8 @@ znt_history_active_text=reverse
 # Initialization
 # --------------------------------------------------------
 
-# Add git-run tab completion
-if hash gr 2>/dev/null; then
+# Add git-run tab completion: https://github.com/mixu/gr
+if type gr >/dev/null 2>&1; then
     . <(gr completion)
 fi
 
@@ -143,7 +143,12 @@ if type pet >/dev/null 2>&1; then
     bindkey '^s' pet-select
 fi
 
+# Work specific environment variables
 if [ -f ~/.work.zsh ]; then
     source ~/.work.zsh
 fi
+
+# Add custom completions, like docker-compose autocompletion
+fpath=(~/.zsh/completion $fpath)
+autoload -Uz compinit && compinit -i
 
