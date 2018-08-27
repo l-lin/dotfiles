@@ -15,6 +15,7 @@ mkdir -p $HOME/bin
 mkdir -p $HOME/work
 mkdir -p $HOME/perso
 mkdir -p $HOME/.zsh/completion
+mkdir -p $HOME/go
 echo "[-] Installing stuffs..."
 sudo pip install --upgrade pip 
 sudo pip install --upgrade virtualenv 
@@ -57,10 +58,16 @@ sudo chmod +x /usr/local/bin/ctop
 echo "[-] Installing Golang"
 go_file_name=go${go_version}.linux-amd64
 curl -o /tmp/${go_file_name}.tar.gz https://dl.google.com/go/${go_file_name}.tar.gz
-tar xzvf /tmp/${go_file_name}.tar.gz -C $HOME
+tar xzvf /tmp/${go_file_name}.tar.gz -C $HOME/apps
+export GOROOT="$HOME/apps/go"
+export GOPATH="$HOME/go"
+export PATH="$GOROOT/bin:$GOPATH/bin:$PATH"
 
 echo "[-] Installing pet"
 go get -u github.com/knqyf263/pet
+
+echo "[-] Installing bush"
+go get github.com/arsham/blush
 
 echo "[-] Installation SUCCESS!"
 exit 0
