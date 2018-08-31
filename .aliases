@@ -4,13 +4,13 @@ alias agi="sudo apt-get install"
 alias agr="sudo apt-get remove"
 alias v="vim"
 alias g="git"
-alias gr="~/.nvm/versions/node/v$(cat ~/.nvm/alias/default)/lib/node_modules/git-run/bin/gr"
 alias grep="grep --color=auto"
 # copy with a progress bar.
 alias cpv="rsync -poghb --backup-dir=/tmp/rsync -e /dev/null --progress --"
 # Compute space disk
 alias df="df -Th"
-alias du="du -sh *"
+# alias du="du -sh *"
+alias du="nnn -S"
 # Record a GIF
 alias gif="byzanz-record --duration=20 --x=0 --y=115 --width=1440 --height=745 ~/tmp/byzanz.gif"
 # Stellar - DB snaphost https://github.com/fastmonkeys/stellar
@@ -44,4 +44,8 @@ alias pg_dump="docker exec -i local_postgres pg_dump"
 alias k="kubectl"
 # weather
 alias weather="curl https://wttr.in/"
+# prettyping
+alias ping="prettyping --nolegend"
+# preview files
+alias preview="fzf --preview 'bat --color \"always\" {}'"
 
