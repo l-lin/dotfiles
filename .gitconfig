@@ -14,7 +14,6 @@
     adda = add -A
     ba = branch -avv
     bd = branch -D
-    bdr = !git branch --merged | egrep -v \"(master|dev)\" | xargs git branch -d
     cdiff = log --oneline --no-merges
     ci = !git add -A && git commit
     co = checkout
@@ -47,6 +46,9 @@
 # remember previous conflict resolutions
 [rerere]
 	enabled = true
+[pager]
+    diff = diff-so-fancy | less --tabs=1,5 -RFX
+    show = diff-so-fancy | less --tabs=1,5 -RFX
 # pull will do a rebase instead of a merge
 [pull]
 	rebase = true

@@ -4,6 +4,7 @@ alias agi="sudo apt-get install"
 alias agr="sudo apt-get remove"
 alias v="vim"
 alias g="git"
+alias gbdr='git branch -r | awk "{print \$1}" | egrep -v -f /dev/fd/0 <(git branch -vv | grep origin) | awk "{print \$1}" | xargs git branch -D'
 alias grep="grep --color=auto"
 # copy with a progress bar.
 alias cpv="rsync -poghb --backup-dir=/tmp/rsync -e /dev/null --progress --"
