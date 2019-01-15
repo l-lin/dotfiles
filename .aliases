@@ -13,7 +13,7 @@ alias df="df -Th"
 # alias du="du -sh *"
 alias du="nnn -S"
 # Record a GIF
-alias gif="byzanz-record --duration=20 --x=0 --y=115 --width=1440 --height=745 ~/tmp/byzanz.gif"
+alias gif="byzanz-record --duration=5 --x=250 --y=235 --width=1200 --height=800 ~/tmp/byzanz.gif"
 # Stellar - DB snaphost https://github.com/fastmonkeys/stellar
 alias stellars="stellar snapshot"
 alias stellarr="stellar restore"
@@ -43,10 +43,12 @@ alias psql="docker exec -it local_postgres psql"
 alias pg_dump="docker exec -i local_postgres pg_dump"
 # kubernetes
 alias k="kubectl"
+alias f="fluxctl"
 # weather
 alias weather="curl https://wttr.in/"
 # prettyping
 alias ping="prettyping --nolegend"
 # preview files
 alias preview="fzf --preview 'bat --color \"always\" {}'"
-
+# find configured local DNS servers
+alias find-dns-servers="nmcli dev show | grep 'IP4.DNS'"
