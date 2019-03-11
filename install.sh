@@ -86,5 +86,9 @@ go get -u github.com/knqyf263/pet
 echo "[-] Installing bush"
 go get github.com/arsham/blush
 
+echo "[-] Installing cht.sh: https://github.com/chubin/cheat.sh"
+sudo curl -o /usr/local/bin/cht.sh https://cht.sh/:cht.sh
+sudo chmod +x /usr/local/bin/cht.sh
+
 echo "[-] Installation SUCCESS!"
 exit 0
