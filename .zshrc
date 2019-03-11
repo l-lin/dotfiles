@@ -43,7 +43,7 @@ HIST_STAMPS="yyyy-mm-dd"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(z git-open zsh-navigation-tools copyfile copydir colored-man-pages extract web-search zsh-autosuggestions zsh-syntax-highlighting httpie nvm wd) 
+plugins=(z git-open zsh-navigation-tools copyfile copydir colored-man-pages extract web-search zsh-autosuggestions zsh-syntax-highlighting httpie nvm wd kubectl) 
 
 source $ZSH/oh-my-zsh.sh
 
@@ -86,7 +86,7 @@ export GREP_COLOR=32
 # --------------------------------------------------------
 
 # why would you type 'cd dir' if you could just type 'dir'?
-setopt AUTO_CD
+#setopt AUTO_CD
 
 # Spell check commands! (Sometimes annoying)
 setopt CORRECT
@@ -146,6 +146,11 @@ fi
 # Work specific environment variables
 if [ -f ~/.work.zsh ]; then
     source ~/.work.zsh
+fi
+
+# Export tiny-care-terminal if the config exists
+if [ -f ~/.tiny-care-terminal.zsh ]; then
+    source ~/.tiny-care-terminal.zsh
 fi
 
 # Add custom completions, like docker-compose autocompletion
