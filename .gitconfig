@@ -61,4 +61,15 @@
 [pretty]
     # reflog, with relative date (but for commits, not reflog entries!):
     reflog = %C(auto)%h %<|(17)%gd %<|(31)%C(green)%ci%C(reset) %gs (%s)
+[url "https://github.com/"]
+	insteadOf = github:
+	insteadOf = gh:
+
+[url "git@github.com:"]
+	pushInsteadOf = github:
+	pushInsteadOf = gh:
+
+[url "git@oogit.oodrive.net:"]
+	insteadOf = oogit:
+	insteadOf = oo:
 
