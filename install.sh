@@ -83,7 +83,7 @@ export PATH="$GOROOT/bin:$GOPATH/bin:$PATH"
 echo "[-] Installing pet"
 go get -u github.com/knqyf263/pet
 
-echo "[-] Installing bush"
+echo "[-] Installing blush"
 go get github.com/arsham/blush
 
 echo "[-] Installing cht.sh: https://github.com/chubin/cheat.sh"
