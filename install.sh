@@ -93,5 +93,8 @@ sudo chmod +x /usr/local/bin/cht.sh
 echo "[-] Installing fac: https://github.com/mkchoi212/fac"
 go get github.com/mkchoi212/fac
 
+echo "[-] Installing IntelliJ CE"
+sudo snap install intellij-idea-community --classic 
+
 echo "[-] Installation SUCCESS!"
 exit 0
