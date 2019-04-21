@@ -42,15 +42,6 @@ set autowrite
 " Set leader
 let mapleader=","
 
-" Fast saving
-nmap <leader>w :w!<CR>
-
-" Fast quitting
-nmap <leader>q :q!<CR>
-
-" Fast saving & quitting
-nmap <leader>x :x<CR>
-
 " Airline configuration
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_theme='gruvbox'
@@ -102,6 +93,10 @@ nmap <c-n> :set invnumber<CR>
 " Go to definition
 nmap <c-b> :GoDef<CR>
 
+" Build & test
+map <F9> :GoBuild<CR>
+map <F8> :GoTest<CR>
+
 " Close buffer
 nmap <c-w> :bd<CR>
 
@@ -130,6 +125,15 @@ imap <C-d> <C-o>diw
 " Pressing ,ss will toggle and untoggle spell checking
 map <leader>ss :setlocal spell!<cr>
  
+" Fast saving
+nmap <leader>w :w!<CR>
+
+" Fast quitting
+nmap <leader>q :q<CR>
+
+" Fast saving & quitting
+nmap <leader>x :x<CR>
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " COLORS
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
