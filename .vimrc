@@ -3,15 +3,17 @@
 call plug#begin()
 Plug 'tpope/vim-sensible' " VIM minimal config
 Plug 'vim-scripts/taglist.vim' " Add taglist when autocompleting
-Plug 'scrooloose/nerdcommenter' " Add shortcut to comment
-Plug 'fatih/vim-go' " Golang support
-Plug 'bling/vim-airline' " Display the bottom status bar
+Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' } " Golang support
+Plug 'vim-airline/vim-airline' " Display the bottom status bar
 Plug 'vim-airline/vim-airline-themes' " Themes for the airline
 Plug 'plasticboy/vim-markdown' " Markdown support
 Plug 'airblade/vim-gitgutter' " Show git diff in the gutter
 Plug 'tpope/vim-fugitive' " Git wrapper (cmd Gstatus, Glog, ...)
 Plug 'ervandew/supertab' " Use tab instead of <C-n> for autocompletion
 Plug 'morhetz/gruvbox' " VIM theme
+Plug 'ctrlpvim/ctrlp.vim' " Used for GoDecls
+Plug 'dbeniamine/cheat.sh-vim' " Cheat sheet
+Plug 'Valloric/YouCompleteMe' "Auto completion
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -30,6 +32,9 @@ set expandtab
 
 set completeopt=longest,menuone
 
+" Automatically save file
+set autowrite
+
 " Set leader
 let mapleader=","
 
@@ -42,28 +47,9 @@ let g:airline#extensions#tabline#left_alt_sep = '>'
 " Disable folding
 let g:vim_markdown_folding_disabled=1
 
-let g:airline_powerline_fonts = 1
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " KEY MAPS
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" Display a completion menu
-inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
-  \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
-
-inoremap <expr> <M-,> pumvisible() ? '<C-n>' :
-  \ '<C-x><C-o><C-n><C-p><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
-
-" open omni completion menu closing previous if open and opening new menu
-" without changing the text
-inoremap <expr> <C-Space> (pumvisible() ? (col('.') > 1 ? '<Esc>i<Right>' : '<Esc>i') : '') .
-            \ '<C-x><C-o><C-r>=pumvisible() ? "\<lt>C-n>\<lt>C-p>\<lt>Down>" : ""<CR>'
-" open user completion menu closing previous if open and opening new menu
-" without changing the text
-inoremap <expr> <S-Space> (pumvisible() ? (col('.') > 1 ? '<Esc>i<Right>' : '<Esc>i') : '') .
-            \ '<C-x><C-u><C-r>=pumvisible() ? "\<lt>C-n>\<lt>C-p>\<lt>Down>" : ""<CR>'
-
 
 " Set ctrl-space instead of ctrl-n
 if has("gui_running")
@@ -80,11 +66,14 @@ endif
 " Switch back and forth from buffer
 map ,, <C-^>
 
-" Map comment
-nmap <c-b> :call NERDComment(0, "toggle")<cr>
-
 " Show/Hide line number
 nmap <c-n> :set invnumber<CR>
+
+" Go to definition
+nmap <c-b> :GoDef<CR>
+
+" Close buffer
+nmap <c-w> :bd<CR>
 
 " Press Space to toggle highlighting on/off, and show current value.
 noremap <silent> <Space> :set hlsearch! hlsearch?<CR>
@@ -127,3 +116,18 @@ set omnifunc=syntaxcomplete#Complete
 hi Pmenu ctermfg=153 ctermbg=NONE cterm=NONE guifg=#bcdbff guibg=NONE gui=NONE
 hi PmenuSel ctermfg=NONE ctermbg=59 cterm=NONE guifg=NONE guibg=#3f4b52 gui=NONE
 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" VIM-GO customization
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Call goimports on save
+let g:go_fmt_command = "goimports"
+" Call vet, golint & errcheck on save
+let g:go_metalinter_autosave = 1
+" Highlight variable when cursor is on it
+let g:go_auto_sameids = 1
+" Syntax highlighting
+let g:go_highlight_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_function_calls = 1
+let g:go_highlight_build_constraints = 1
