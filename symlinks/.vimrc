@@ -19,6 +19,10 @@ call plug#end()
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " BASIC EDITING CONFIGURATION
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Enable spell checking to english
+set spelllang=en
+set spell
+
 set nocompatible
 set autoindent
 
@@ -38,6 +42,15 @@ set autowrite
 " Set leader
 let mapleader=","
 
+" Fast saving
+nmap <leader>w :w!<CR>
+
+" Fast quitting
+nmap <leader>q :q!<CR>
+
+" Fast saving & quitting
+nmap <leader>x :x<CR>
+
 " Airline configuration
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_theme='gruvbox'
@@ -48,8 +61,25 @@ let g:airline#extensions#tabline#left_alt_sep = '>'
 let g:vim_markdown_folding_disabled=1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" VIM user interface
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Set 7 lines to the cursor - when moving vertically using j/k
+set so=7
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Files, backups and undo
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Turn backup off, since most stuff is in SVN, git et.c anyway...
+set nobackup
+set nowb
+set noswapfile
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " KEY MAPS
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Visual mode pressing * or # searches for the current selection
+vnoremap <silent> * :call VisualSelection('f')<CR>
+vnoremap <silent> # :call VisualSelection('b')<CR>
 
 " Set ctrl-space instead of ctrl-n
 if has("gui_running")
@@ -91,14 +121,14 @@ set showmode
 "vnoremap <C-j> :m '>+1<CR>gv=gv
 "vnoremap <C-k> :m '<-2<CR>gv=gv
 
-" New buffer
-nmap <C-t> :enew<CR>
-
 " Add
 command Cheatsheet split ~/.vim/doc/cheat_sheet.txt
 
 " Delete word after cursor
 imap <C-d> <C-o>diw
+
+" Pressing ,ss will toggle and untoggle spell checking
+map <leader>ss :setlocal spell!<cr>
  
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " COLORS

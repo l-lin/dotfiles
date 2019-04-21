@@ -31,6 +31,7 @@ dd      - delete (cut) a line
 dw      - delete (cut) the current word
 x       - delete (cut) current character
 shift-v - to visual mode (to copy multiple lines)
+ctrl-v  - multiline
 
 Delete
 ------
@@ -73,16 +74,33 @@ Undo - Redo
 u   - undo
 C-r - undo the undo
 
+Spell checking
+--------------
+]s - go to next misspelled word
+[s - go to previous misspelled word
+z= - find suggestions for the word
+
+Tips & Tricks
+-------------
+Comment multiple lines: 
+- ctrl-v
+- select the lines you want to comment
+- press I (capital i)
+- insert your comment, e.g. `/`
+- press Escape
+- voila!
+
 Custom shortcuts
 ----------------
 C-Tab - omnicompletion
 ,     - switch buffer
-C-b   - comment line
+C-b   - execute godef (Go to definition in Golang)
 C-n   - show/hide line numbers
 space - toggle highlighting on/off
 F2    - toggle auto-indenting for code paste
 C-j   - move current line one line down
 C-k   - move current line one line above
+,w    - fast saving
 
 ==============================================================================
 2 - COMMANDS                 
