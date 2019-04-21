@@ -43,7 +43,8 @@ HIST_STAMPS="yyyy-mm-dd"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(z git-open zsh-navigation-tools copyfile copydir colored-man-pages extract web-search zsh-autosuggestions zsh-syntax-highlighting httpie nvm wd kubectl) 
+# plugins that took time to load: nvm kubectl
+plugins=(z git-open zsh-navigation-tools copyfile copydir colored-man-pages extract web-search zsh-autosuggestions zsh-syntax-highlighting httpie wd) 
 
 source $ZSH/oh-my-zsh.sh
 
@@ -123,11 +124,6 @@ znt_history_active_text=reverse
 # Initialization
 # --------------------------------------------------------
 
-# Add git-run tab completion: https://github.com/mixu/gr
-if type gr >/dev/null 2>&1; then
-    . <(gr completion)
-fi
-
 # fuzzyfinder
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
@@ -147,15 +143,6 @@ fi
 if [ -f ~/.work.zsh ]; then
     source ~/.work.zsh
 fi
-
-# Export tiny-care-terminal if the config exists
-if [ -f ~/.tiny-care-terminal.zsh ]; then
-    source ~/.tiny-care-terminal.zsh
-fi
-
-# Add custom completions, like docker-compose autocompletion
-fpath=(~/.zsh/completion $fpath)
-autoload -Uz compinit && compinit -i
 
 # Add support for ctrl-o to open selected file in VS Code
 export FZF_DEFAULT_OPTS="--bind='ctrl-o:execute(code {})+abort'"

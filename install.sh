@@ -41,9 +41,6 @@ curl -o /usr/local/bin/docker-compose -L https://github.com/docker/compose/relea
 sudo chmod +x /usr/local/bin/docker-compose
 docker-compose -version
 
-echo "[-] Add Docker compose completion"
-curl -L https://raw.githubusercontent.com/docker/compose/$(docker-compose version --short)/contrib/completion/zsh/_docker-compose > ~/.zsh/completion/_docker-compose
-
 echo "[-] Installing fuzzy finder"
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install
