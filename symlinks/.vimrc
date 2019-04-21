@@ -157,8 +157,6 @@ hi PmenuSel ctermfg=NONE ctermbg=59 cterm=NONE guifg=NONE guibg=#3f4b52 gui=NONE
 let g:go_fmt_command = "goimports"
 " Call vet, golint & errcheck on save
 let g:go_metalinter_autosave = 1
-" Highlight variable when cursor is on it
-let g:go_auto_sameids = 1
 " Syntax highlighting
 let g:go_highlight_types = 1
 let g:go_highlight_fields = 1
