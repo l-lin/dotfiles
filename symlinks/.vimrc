@@ -88,17 +88,20 @@ endif
 map ,, <C-^>
 
 " Show/Hide line number
-nmap <c-n> :set invnumber<CR>
+nmap <C-n> :set invnumber<CR>
 
 " Go to definition
-nmap <c-b> :GoDef<CR>
+nmap <C-b> :GoDef<CR>
 
 " Build & test
 map <F9> :GoBuild<CR>
 map <F8> :GoTest<CR>
 
 " Close buffer
-nmap <c-w> :bd<CR>
+nmap <C-w> :bd<CR>
+
+" Delete line
+nmap <C-y> dd
 
 " Press Space to toggle highlighting on/off, and show current value.
 noremap <silent> <Space> :set hlsearch! hlsearch?<CR>
@@ -123,7 +126,7 @@ command Cheatsheet split ~/.vim/doc/cheat_sheet.txt
 imap <C-d> <C-o>diw
 
 " Pressing ,ss will toggle and untoggle spell checking
-map <leader>ss :setlocal spell!<cr>
+map <leader>ss :setlocal spell!<CR>
  
 " Fast saving
 nmap <leader>w :w!<CR>
