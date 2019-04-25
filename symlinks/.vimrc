@@ -4,6 +4,7 @@ call plug#begin()
 Plug 'tpope/vim-sensible' " VIM minimal config
 Plug 'vim-scripts/taglist.vim' " Add taglist when autocompleting
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' } " Golang support
+Plug 'SirVer/ultisnips' " Snippets
 Plug 'vim-airline/vim-airline' " Display the bottom status bar
 Plug 'vim-airline/vim-airline-themes' " Themes for the airline
 Plug 'plasticboy/vim-markdown' " Markdown support
@@ -149,6 +150,9 @@ nmap <leader>q :q<CR>
 " Fast saving & quitting
 nmap <leader>x :x<CR>
 
+" Trigger snippet (also works with Ctrl+Enter)
+let g:UltiSnipsExpandTrigger="<C-m>"
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " COLORS
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -178,3 +182,4 @@ let g:go_highlight_fields = 1
 let g:go_highlight_functions = 1
 let g:go_highlight_function_calls = 1
 let g:go_highlight_build_constraints = 1
+
