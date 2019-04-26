@@ -15,6 +15,8 @@ Plug 'morhetz/gruvbox' " VIM theme
 Plug 'ctrlpvim/ctrlp.vim' " Used for GoDecls
 Plug 'dbeniamine/cheat.sh-vim' " Cheat sheet
 Plug 'Valloric/YouCompleteMe' "Auto completion
+Plug 'scrooloose/nerdtree' " Tree explorer
+Plug 'Xuyuanp/nerdtree-git-plugin' " Tree explorer with Git status
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -37,8 +39,11 @@ set expandtab
 
 set completeopt=longest,menuone
 
-" Automatically save file
-set autowrite
+" Change how vim represents characters on the screen
+set encoding=utf-8
+
+" Set the encoding of files written
+set fileencoding=utf-8
 
 " Set leader
 let mapleader=","
@@ -69,6 +74,9 @@ if has("autocmd")
     \ endif
   au VimLeave * silent execute '!echo -ne "\e[5 q"' | redraw!
 endif
+
+" Close VIM if only window left is NERDTree
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Files, backups and undo
@@ -124,14 +132,6 @@ nnoremap <F2> :set invpaste paste?<CR>
 set pastetoggle=<F2>
 set showmode
 
-" Move line
-"nnoremap <C-j> :m .+1<CR>==
-"nnoremap <C-k> :m .-2<CR>==
-"inoremap <C-j> <Esc>:m .+1<CR>==gi
-"inoremap <C-k> <Esc>:m .-2<CR>==gi
-"vnoremap <C-j> :m '>+1<CR>gv=gv
-"vnoremap <C-k> :m '<-2<CR>gv=gv
-
 " Add
 command Cheatsheet split ~/.vim/doc/cheat_sheet.txt
 
@@ -152,6 +152,9 @@ nmap <leader>x :x<CR>
 
 " Trigger snippet (also works with Ctrl+Enter)
 let g:UltiSnipsExpandTrigger="<C-m>"
+
+" Open NERDTree
+nmap <leader>o :NERDTreeToggle<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " COLORS
@@ -182,4 +185,3 @@ let g:go_highlight_fields = 1
 let g:go_highlight_functions = 1
 let g:go_highlight_function_calls = 1
 let g:go_highlight_build_constraints = 1
-
