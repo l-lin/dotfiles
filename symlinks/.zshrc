@@ -44,7 +44,7 @@ HIST_STAMPS="yyyy-mm-dd"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # plugins that took time to load: nvm kubectl
-plugins=(z git-open zsh-navigation-tools copyfile copydir colored-man-pages extract web-search zsh-autosuggestions zsh-syntax-highlighting httpie wd) 
+plugins=(z git-open zsh-navigation-tools copyfile copydir colored-man-pages extract web-search zsh-autosuggestions zsh-syntax-highlighting httpie wd nvm) 
 
 source $ZSH/oh-my-zsh.sh
 
@@ -146,4 +146,8 @@ fi
 
 # Add support for ctrl-o to open selected file in VS Code
 export FZF_DEFAULT_OPTS="--bind='ctrl-o:execute(code {})+abort'"
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="${HOME}/.sdkman"
+[[ -s "${HOME}/.sdkman/bin/sdkman-init.sh" ]] && source "${HOME}/.sdkman/bin/sdkman-init.sh"
 
