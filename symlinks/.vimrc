@@ -17,6 +17,7 @@ Plug 'dbeniamine/cheat.sh-vim' " Cheat sheet
 Plug 'Valloric/YouCompleteMe' "Auto completion
 Plug 'scrooloose/nerdtree' " Tree explorer
 Plug 'Xuyuanp/nerdtree-git-plugin' " Tree explorer with Git status
+Plug 'easymotion/vim-easymotion' " Easily navigate through the file
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -94,7 +95,7 @@ else " no gui
 endif
 
 " Switch back and forth from buffer
-map ,, <C-^>
+map ;; <C-^>
 
 " Show/Hide line number
 nmap <C-n> :set invnumber<CR>
