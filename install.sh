@@ -86,6 +86,7 @@ go get github.com/arsham/blush
 echo "[-] Installing cht.sh: https://github.com/chubin/cheat.sh"
 sudo curl -o /usr/local/bin/cht.sh https://cht.sh/:cht.sh
 sudo chmod +x /usr/local/bin/cht.sh
+curl https://cheat.sh/:zsh > $HOME/.zsh/completion/_cht
 
 echo "[-] Installing fac: https://github.com/mkchoi212/fac"
 go get github.com/mkchoi212/fac

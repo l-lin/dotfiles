@@ -13,7 +13,6 @@ Plug 'tpope/vim-fugitive' " Git wrapper (cmd Gstatus, Glog, ...)
 Plug 'ervandew/supertab' " Use tab instead of <C-n> for autocompletion
 Plug 'morhetz/gruvbox' " VIM theme
 Plug 'ctrlpvim/ctrlp.vim' " Used for GoDecls
-Plug 'dbeniamine/cheat.sh-vim' " Cheat sheet
 Plug 'Valloric/YouCompleteMe' "Auto completion
 Plug 'scrooloose/nerdtree' " Tree explorer
 Plug 'Xuyuanp/nerdtree-git-plugin' " Tree explorer with Git status
