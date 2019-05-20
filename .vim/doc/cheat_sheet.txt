@@ -17,7 +17,7 @@ $      - end of line
 5G     - go go command (prefix with number - 5G goes to line 5)
 gg     - go to first line of file
 G      - go to last line of file
-Ctrl-G - Show line state
+C-o    - jump to previous location
 
 Copy and paste
 --------------
@@ -31,7 +31,7 @@ dd      - delete (cut) a line
 dw      - delete (cut) the current word
 x       - delete (cut) current character
 shift-v - to visual mode (to copy multiple lines)
-ctrl-v  - multiline
+C-v  - multiline
 
 Delete
 ------
@@ -53,8 +53,9 @@ N                      - repeat search in opposite direction
 
 Correct words
 -------------
-ce - Correct the word from the cursor position (it will put in Insert mode)
-c$ - Correct from the cursor position to the end of line
+ce - correct the word from the cursor position (it will put in Insert mode)
+cw - same as previous 
+c$ - correct from the cursor position to the end of line
 
 Insert Mode - Inserting/Appending text
 --------------------------------------
@@ -83,7 +84,7 @@ z= - find suggestions for the word
 Tips & Tricks
 -------------
 Comment multiple lines: 
-- ctrl-v
+- C-v
 - select the lines you want to comment
 - press I (capital i)
 - insert your comment, e.g. `/`
@@ -93,14 +94,15 @@ Comment multiple lines:
 Custom shortcuts
 ----------------
 C-Tab - omnicompletion
-,     - switch buffer
+;;    - switch buffer
 C-b   - execute godef (Go to definition in Golang)
 C-n   - show/hide line numbers
 space - toggle highlighting on/off
 F2    - toggle auto-indenting for code paste
-C-j   - move current line one line down
-C-k   - move current line one line above
 ,w    - fast saving
+,q    - fast quitting
+,x    - fast saving & quitting
+C-y   - cut line
 
 ==============================================================================
 2 - COMMANDS                 
@@ -109,6 +111,8 @@ Buffers
 -------
 :enew - create a new buffer
 :bd   - remove current buffer
+:bn   - open to next buffer
+:bp   - open to previous buffer
 
 Explorer
 --------
