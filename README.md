@@ -11,8 +11,6 @@ See [dotfiles](http://dotfiles.github.io).
 ./install_ubuntu.sh
 # Launch stuff installation
 ./install.sh
-# Install node extensions
-./install_node_extensions.sh
 # Install zsh plugins: use zsh
 ./install_zsh_plugins.sh
 # Bootstrap dotfiles

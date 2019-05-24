@@ -30,7 +30,8 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 echo "[-] Installing NVM"
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v${nvm_version}/install.sh | bash
 
-sudo gem install colorls
+echo "[-] Installing LSD: https://github.com/Peltoche/lsd"
+snap install lsd --classic
 
 echo "[-] Installing Docker"
 curl -fsSL https://get.docker.com/ | sh
