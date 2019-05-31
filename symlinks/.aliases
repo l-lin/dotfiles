@@ -37,7 +37,6 @@ alias please="sudo "
 alias d="docker"
 alias dc="docker-compose"
 # lsd
-alias ls="lsd"
 alias l="lsd -la --group-dirs first"
 # postgres with docker
 alias psql="docker exec -it local_postgres psql"

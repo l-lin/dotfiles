@@ -57,6 +57,12 @@ let g:airline#extensions#tabline#left_alt_sep = '>'
 " Disable folding
 let g:vim_markdown_folding_disabled=1
 
+"autoclose tags
+inoremap ( ()<Left>
+inoremap { {}<Left>
+inoremap [ []<Left>
+inoremap " ""<Left>
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " VIM user interface
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -120,7 +126,7 @@ nnoremap <F2> :set invpaste paste?<CR>
 set pastetoggle=<F2>
 set showmode
 
-" Add
+" Add documentation
 command Cheatsheet split ~/.vim/doc/cheat_sheet.txt
 
 " Delete word after cursor
@@ -143,6 +149,12 @@ let g:UltiSnipsExpandTrigger="<C-m>"
 
 " Open NERDTree
 nmap <leader>o :NERDTreeToggle<CR>
+
+"move lines around
+nnoremap <leader>k :m-2<cr>==
+nnoremap <leader>j :m+<cr>==
+xnoremap <leader>k :m-2<cr>gv=gv
+xnoremap <leader>j :m'>+<cr>gv=gv
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " COLORS
