@@ -150,11 +150,17 @@ let g:UltiSnipsExpandTrigger="<C-m>"
 " Open NERDTree
 nmap <leader>o :NERDTreeToggle<CR>
 
-"move lines around
+" move lines around
 nnoremap <leader>k :m-2<cr>==
 nnoremap <leader>j :m+<cr>==
 xnoremap <leader>k :m-2<cr>gv=gv
 xnoremap <leader>j :m'>+<cr>gv=gv
+
+" Move around split windows
+nmap <C-k> :wincmd k<CR>
+nmap <C-j> :wincmd j<CR>
+nmap <C-h> :wincmd h<CR>
+nmap <C-l> :wincmd l<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " COLORS
