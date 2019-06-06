@@ -3,7 +3,8 @@
 call plug#begin()
 Plug 'tpope/vim-sensible' " VIM minimal config
 Plug 'vim-scripts/taglist.vim' " Add taglist when autocompleting
-Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' } " Golang support
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' } " Golang support
+Plug 'w0rp/ale' " Linting
 Plug 'SirVer/ultisnips' " Snippets
 Plug 'vim-airline/vim-airline' " Display the bottom status bar
 Plug 'vim-airline/vim-airline-themes' " Themes for the airline
@@ -191,3 +192,46 @@ let g:go_highlight_fields = 1
 let g:go_highlight_functions = 1
 let g:go_highlight_function_calls = 1
 let g:go_highlight_build_constraints = 1
+" Display var type info
+let g:go_auto_type_info = 1
+" :GoAddTags should transform in camelCase
+let g:go_addtags_transform = "camelcase"
+" Use source code
+let g:go_gocode_propose_source=1
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Linting
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Error and warning signs.
+let g:ale_sign_error = '⤫'
+let g:ale_sign_warning = '⚠'
+
+" Enable integration with airline.
+let g:airline#extensions#ale#enabled = 1
+
+" Keep sign in gutter open
+let g:ale_sign_column_always = 1
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Language: SQL
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+au FileType sql set expandtab
+au FileType sql set shiftwidth=2
+au FileType sql set softtabstop=2
+au FileType sql set tabstop=2
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Language: JSON
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+au FileType json set expandtab
+au FileType json set shiftwidth=2
+au FileType json set softtabstop=2
+au FileType json set tabstop=2
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Language: YAML
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+au FileType yaml set expandtab
+au FileType yaml set shiftwidth=2
+au FileType yaml set softtabstop=2
+au FileType yaml set tabstop=2
