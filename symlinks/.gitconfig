@@ -2,6 +2,8 @@
     path = ~/work/.gitconfig
 [includeIf "gitdir:~/perso/"]
     path = ~/perso/.gitconfig
+[includeIf "gitdir:/tmp/"]
+    path = ~/perso/.gitconfig
 [user]
 	name = Louis Lin
 [credential]

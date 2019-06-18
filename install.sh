@@ -24,8 +24,10 @@ sudo pip install --upgrade virtualenv
 echo "[-] Installing power-line for VIM airline"
 sudo apt-get install python-setuptools
 sudo pip install powerline-status
-echo "[-] Instaling TMUX plugin manager"
+echo "[-] Installing TMUX plugin manager"
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+echo "[-] Installing pgcli"
+sudo pip install --upgrade pgcli
 
 echo "[-] Installing NVM"
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v${nvm_version}/install.sh | bash
