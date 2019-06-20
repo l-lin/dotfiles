@@ -89,9 +89,6 @@ export GREP_COLOR=32
 # OPTIONS
 # --------------------------------------------------------
 
-# why would you type 'cd dir' if you could just type 'dir'?
-#setopt AUTO_CD
-
 # Spell check commands! (Sometimes annoying)
 setopt CORRECT
 
@@ -150,9 +147,6 @@ fi
 # Add autocompletion
 fpath=(~/.zsh/completion $fpath)
 autoload -Uz compinit && compinit -i
-
-# Add support for ctrl-o to open selected file in VS Code
-export FZF_DEFAULT_OPTS="--bind='ctrl-o:execute(code {})+abort'"
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="${HOME}/.sdkman"
