@@ -18,6 +18,7 @@ mkdir -p $HOME/work
 mkdir -p $HOME/perso
 mkdir -p $HOME/.zsh/completion
 mkdir -p $HOME/go
+mkdir -p $HOME/.undodir
 echo "[-] Installing stuffs..."
 sudo pip install --upgrade pip 
 sudo pip install --upgrade virtualenv 

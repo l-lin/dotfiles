@@ -45,8 +45,8 @@ HIST_STAMPS="yyyy-mm-dd"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # plugins that took time to load: nvm kubectl
 plugins=(z git-open copyfile copydir colored-man-pages extract web-search zsh-autosuggestions zsh-syntax-highlighting httpie wd
-#    kubectl
-#    nvm
+    kubectl
+    nvm
 ) 
 
 source $ZSH/oh-my-zsh.sh

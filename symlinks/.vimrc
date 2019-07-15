@@ -18,6 +18,7 @@ Plug 'Valloric/YouCompleteMe' "Auto completion
 Plug 'scrooloose/nerdtree' " Tree explorer
 Plug 'Xuyuanp/nerdtree-git-plugin' " Tree explorer with Git status
 Plug 'easymotion/vim-easymotion' " Easily navigate through the file
+Plug 'mbbill/undotree' " Undo history
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -163,6 +164,9 @@ nmap <C-j> :wincmd j<CR>
 nmap <C-h> :wincmd h<CR>
 nmap <C-l> :wincmd l<CR>
 
+" Open undo history
+nmap <leader>u :UndotreeToggle<CR> :UndotreeFocus<CR>
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Cursor shape
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -225,6 +229,15 @@ let g:airline#extensions#ale#enabled = 1
 
 " Keep sign in gutter open
 let g:ale_sign_column_always = 1
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Undo
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Persistent undo
+if has("persistent_undo")
+    set undodir=$HOME/.undodir/
+    set undofile
+endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Language: SQL
