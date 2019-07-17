@@ -52,3 +52,7 @@ alias ping="prettyping --nolegend"
 alias preview="fzf --preview 'bat --color \"always\" {}'"
 # find configured local DNS servers
 alias find-dns-servers="nmcli dev show | grep 'IP4.DNS'"
+# Enable NVM
+alias enable_nvm="sed -i 's/# nvm/nvm/' $HOME/.zshrc"
+alias disable_nvm="sed -i 's/nvm/# nvm/' $HOME/.zshrc"
+
