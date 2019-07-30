@@ -5,7 +5,7 @@ set -x
 
 sudo apt-get update
 # Install additional commands
-sudo apt-get install build-essential cmake git zsh fortune cowsay colordiff vim exuberant-ctags tmux python-pip python-dev ruby-dev ruby htop xclip httpie silversearcher-ag nfs-common net-tools lm-sensors libgtop network-manager-openvpn openvpn network-manager-openvpn-gnome curl nnn jq ubuntu-restricted-extras libpqdev
+sudo apt-get install build-essential cmake git zsh fortune cowsay colordiff exuberant-ctags tmux python-pip python-dev ruby-dev ruby htop xclip httpie silversearcher-ag nfs-common net-tools lm-sensors libgtop network-manager-openvpn openvpn network-manager-openvpn-gnome curl nnn jq ubuntu-restricted-extras libpqdev software-properties-common python3-dev python3-pip python3-distutils neovim
 echo "[-] Switch zsh as default shell"
 chsh -s $(which zsh)
 

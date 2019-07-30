@@ -2,23 +2,29 @@
 " Execute :PlugInstall
 call plug#begin()
 Plug 'tpope/vim-sensible' " VIM minimal config
-Plug 'vim-scripts/taglist.vim' " Add taglist when autocompleting
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' } " Golang support
 Plug 'w0rp/ale' " Linting
 Plug 'SirVer/ultisnips' " Snippets
+Plug 'honza/vim-snippets' " Snippets
 Plug 'vim-airline/vim-airline' " Display the bottom status bar
 Plug 'vim-airline/vim-airline-themes' " Themes for the airline
 Plug 'plasticboy/vim-markdown' " Markdown support
 Plug 'airblade/vim-gitgutter' " Show git diff in the gutter
-Plug 'tpope/vim-fugitive' " Git wrapper (cmd Gstatus, Glog, ...)
-Plug 'ervandew/supertab' " Use tab instead of <C-n> for autocompletion
 Plug 'morhetz/gruvbox' " VIM theme
-Plug 'ctrlpvim/ctrlp.vim' " Used for GoDecls
-Plug 'Valloric/YouCompleteMe' "Auto completion
+Plug 'ctrlpvim/ctrlp.vim' " Open file directory directly with C-p + used for GoDecls
 Plug 'scrooloose/nerdtree' " Tree explorer
 Plug 'Xuyuanp/nerdtree-git-plugin' " Tree explorer with Git status
 Plug 'easymotion/vim-easymotion' " Easily navigate through the file
 Plug 'mbbill/undotree' " Undo history
+" Neovim plugins
+Plug 'roxma/nvim-yarp' " Remote plugin framework
+Plug 'ncm2/ncm2' " Completion framework for NeoVim
+Plug 'ncm2/ncm2-bufword' " Completion word from current buffer
+Plug 'ncm2/ncm2-path' " Completion word for path
+Plug 'ncm2/ncm2-tmux' " Completion for TMUX
+Plug 'ncm2/ncm2-go' " Completion for Golang
+Plug 'ncm2/ncm2-tern' " Completion for JS
+Plug 'ncm2/ncm2-cssomni' " Completion for CSS
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -211,7 +217,7 @@ let g:go_highlight_functions = 1
 let g:go_highlight_function_calls = 1
 let g:go_highlight_build_constraints = 1
 " Display var type info
-let g:go_auto_type_info = 1
+" let g:go_auto_type_info = 1
 " :GoAddTags should transform in camelCase
 let g:go_addtags_transform = "camelcase"
 " Use source code
@@ -238,6 +244,19 @@ if has("persistent_undo")
     set undodir=$HOME/.undodir/
     set undofile
 endif
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ncm2
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" enable ncm2 for all buffers
+autocmd BufEnter * call ncm2#enable_for_buffer()
+
+" IMPORTANT: :help Ncm2PopupOpen for more information
+set completeopt=noinsert,menuone,noselect
+
+" suppress the annoying 'match x of y', 'The only match' and 'Pattern not
+" found' messages
+set shortmess+=c
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Language: SQL

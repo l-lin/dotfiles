@@ -1,8 +1,8 @@
 alias sz="source ~/.zshrc"
-alias ez="vim ~/.zshrc"
+alias ez="nvim ~/.zshrc"
 alias agi="sudo apt-get install"
 alias agr="sudo apt-get remove"
-alias v="vim"
+alias v="nvim"
 alias g="git"
 alias gbdr='git branch -r | awk "{print \$1}" | egrep -v -f /dev/fd/0 <(git branch -vv | grep origin) | awk "{print \$1}" | xargs git branch -D'
 alias grep="grep --color=auto"
@@ -44,6 +44,7 @@ alias pg_dump="docker exec -it local_postgres pg_dump"
 # kubernetes
 alias k="kubectl"
 alias f="fluxctl"
+alias h="helm"
 # weather
 alias weather="curl https://wttr.in/"
 # prettyping
