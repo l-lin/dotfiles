@@ -258,6 +258,21 @@ set completeopt=noinsert,menuone,noselect
 " found' messages
 set shortmess+=c
 
+" When the <Enter> key is pressed while the popup menu is visible, it only
+" hides the menu. Use this mapping to close the menu and also start a new
+" line.
+inoremap <expr> <C-j> pumvisible() ? "\<c-y>\<cr>" : "\<CR>"
+" Use <TAB> to select the popup menu:
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+" When the <Alt-*> is pressed while the popup menu is visible, perform
+" the cursor reposition and set to mode normal
+inoremap <expr> <A-h> pumvisible() ? "\<c-y>\<A-h>" : "\<A-h>"
+inoremap <expr> <A-j> pumvisible() ? "\<c-y>\<A-j>" : "\<A-j>"
+inoremap <expr> <A-k> pumvisible() ? "\<c-y>\<A-k>" : "\<A-k>"
+inoremap <expr> <A-l> pumvisible() ? "\<c-y>\<A-l>" : "\<A-l>"
+inoremap <expr> <A-o> pumvisible() ? "\<c-y>\<A-o>" : "\<A-o>"
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Language: SQL
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

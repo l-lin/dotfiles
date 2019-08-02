@@ -9,7 +9,7 @@
 [credential]
 	helper = cache
 [core]
-	editor = vim
+	editor = nvim
     excludesfile = ~/.gitignore_global
     autocrlf = input
 [alias]
