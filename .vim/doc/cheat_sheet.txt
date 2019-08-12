@@ -60,7 +60,9 @@ dd      - delete (cut) a line
 dw      - delete (cut) the current word
 x       - delete (cut) current character
 shift-v - to visual mode (to copy multiple lines)
-C-v  - multiline
+C-v     - multiline visual mode
+"*y     - copy selected text in visual mode to clipboard (3rd mouse click)
+"*yy    - copy current line to clipboard (3rd mouse click)
 
 ==================================================================================
 DELETE                                                                 cs-delete
