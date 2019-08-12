@@ -272,6 +272,10 @@ inoremap <expr> <A-j> pumvisible() ? "\<c-y>\<A-j>" : "\<A-j>"
 inoremap <expr> <A-k> pumvisible() ? "\<c-y>\<A-k>" : "\<A-k>"
 inoremap <expr> <A-l> pumvisible() ? "\<c-y>\<A-l>" : "\<A-l>"
 inoremap <expr> <A-o> pumvisible() ? "\<c-y>\<A-o>" : "\<A-o>"
+inoremap <expr> <A-b> pumvisible() ? "\<c-y>\<A-b>" : "\<A-b>"
+inoremap <expr> <A-u> pumvisible() ? "\<c-y>\<A-u>" : "\<A-u>"
+inoremap <expr> <A-e> pumvisible() ? "\<c-y>\<A-e>" : "\<A-e>"
+inoremap <expr> <A-$> pumvisible() ? "\<c-y>\<A-$>" : "\<A-$>"
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Language: SQL
