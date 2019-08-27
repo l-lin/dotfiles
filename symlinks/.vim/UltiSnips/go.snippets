@@ -1,0 +1,21 @@
+# table testing
+snippet tt
+var tests = map[string]struct {
+	given string
+	expected string
+}{
+	"${1}": {
+		given: "${2}",
+		expected: "${3}",
+	},
+}
+for name, tt := range tests {
+	t.Run(name, func(t *testing.T){
+		actual := ${0:${VISUAL}}(tt.given)
+		if actual != tt.expected {
+				t.Errorf("$0(%s): expected %v, actual %v", tt.given, tt.expected, actual)
+		}
+
+	})
+}
+endsnippet
