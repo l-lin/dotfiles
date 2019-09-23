@@ -1,3 +1,15 @@
+" Basic editing configuration                                   vimrcbasic 
+" VIM user interface                                            vimrcui
+" Files, backups and undo                                       vimrcbackup
+" Key maps                                                      vimrckeymaps
+" Cursor shape                                                  vimrccursor
+" Colors                                                        vimrccolors
+" VIM-GO customization                                          vimrcgo
+" Linting                                                       vimrclinting
+" ncm2                                                          vimrcncm2
+" Editorconfig                                                  vimrceditor
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 " Using https://github.com/junegunn/vim-plug as dependency manager
 " Execute :PlugInstall
 call plug#begin()
@@ -28,7 +40,7 @@ Plug 'ncm2/ncm2-cssomni' " Completion for CSS
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" BASIC EDITING CONFIGURATION
+" Basic editing configuration                                   vimrcbasic 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Enable spell checking to english
 set spelllang=en
@@ -75,7 +87,7 @@ set ic
 let g:UltiSnipsSnippetDirectories=["UltiSnips", $HOME.'/.vim/UltiSnips']
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" VIM user interface
+" VIM user interface                                            vimrcui
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Set 7 lines to the cursor - when moving vertically using j/k
 set so=7
@@ -84,15 +96,21 @@ set so=7
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Files, backups and undo
+" Files, backups and undo                                       vimrcbackup
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Turn backup off, since most stuff is in SVN, git et.c anyway...
+" Turn backup off, since most stuff is in SVN, git etc anyway...
 set nobackup
 set nowb
 set noswapfile
 
+" Persistent undo
+if has("persistent_undo")
+    set undodir=$HOME/.undodir/
+    set undofile
+endif
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" KEY MAPS
+" Key maps                                                      vimrckeymaps
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Visual mode pressing * or # searches for the current selection
 vnoremap <silent> * :call VisualSelection('f')<CR>
@@ -177,7 +195,7 @@ nmap <C-l> :wincmd l<CR>
 nmap <leader>u :UndotreeToggle<CR> :UndotreeFocus<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Cursor shape
+" Cursor shape                                                  vimrccursor
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if has("autocmd")
   au VimEnter,InsertLeave * silent execute '!echo -ne "\e[1 q"' | redraw!
@@ -191,7 +209,7 @@ if has("autocmd")
 endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" COLORS
+" Colors                                                        vimrccolors
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 syntax on
 syntax enable
@@ -207,7 +225,7 @@ hi Pmenu ctermfg=153 ctermbg=NONE cterm=NONE guifg=#bcdbff guibg=NONE gui=NONE
 hi PmenuSel ctermfg=NONE ctermbg=59 cterm=NONE guifg=NONE guibg=#3f4b52 gui=NONE
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" VIM-GO customization
+" VIM-GO customization                                          vimrcgo
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Call goimports on save
 let g:go_fmt_command = "goimports"
@@ -227,7 +245,7 @@ let g:go_addtags_transform = "camelcase"
 let g:go_gocode_propose_source=1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Linting
+" Linting                                                       vimrclinting
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Error and warning signs.
 let g:ale_sign_error = '⤫'
@@ -240,16 +258,7 @@ let g:airline#extensions#ale#enabled = 1
 let g:ale_sign_column_always = 1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Undo
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Persistent undo
-if has("persistent_undo")
-    set undodir=$HOME/.undodir/
-    set undofile
-endif
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" ncm2
+" ncm2                                                          vimrcncm2
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " enable ncm2 for all buffers
 autocmd BufEnter * call ncm2#enable_for_buffer()
@@ -281,24 +290,19 @@ inoremap <expr> <A-e> pumvisible() ? "\<c-y>\<A-e>" : "\<A-e>"
 inoremap <expr> <A-$> pumvisible() ? "\<c-y>\<A-$>" : "\<A-$>"
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Language: SQL
+" Editorconfig                                                  vimrceditor
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Language: SQL
 au FileType sql set expandtab
 au FileType sql set shiftwidth=2
 au FileType sql set softtabstop=2
 au FileType sql set tabstop=2
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Language: JSON
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 au FileType json set expandtab
 au FileType json set shiftwidth=2
 au FileType json set softtabstop=2
 au FileType json set tabstop=2
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Language: YAML
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 au FileType yaml set expandtab
 au FileType yaml set shiftwidth=2
 au FileType yaml set softtabstop=2
