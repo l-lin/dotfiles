@@ -8,6 +8,7 @@
 " Linting                                                       vimrclinting
 " ncm2                                                          vimrcncm2
 " Editorconfig                                                  vimrceditor
+" Spell checking                                                vimrcspell
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Using https://github.com/junegunn/vim-plug as dependency manager
@@ -22,7 +23,7 @@ Plug 'vim-airline/vim-airline' " Display the bottom status bar
 Plug 'vim-airline/vim-airline-themes' " Themes for the airline
 Plug 'plasticboy/vim-markdown' " Markdown support
 Plug 'airblade/vim-gitgutter' " Show git diff in the gutter
-Plug 'morhetz/gruvbox' " VIM theme
+Plug 'joshdick/onedark.vim' " VIM theme
 Plug 'ctrlpvim/ctrlp.vim' " Open file directory directly with C-p + used for GoDecls
 Plug 'scrooloose/nerdtree' " Tree explorer
 Plug 'Xuyuanp/nerdtree-git-plugin' " Tree explorer with Git status
@@ -37,15 +38,12 @@ Plug 'ncm2/ncm2-tmux' " Completion for TMUX
 Plug 'ncm2/ncm2-go' " Completion for Golang
 Plug 'ncm2/ncm2-tern' " Completion for JS
 Plug 'ncm2/ncm2-cssomni' " Completion for CSS
+Plug 'rhysd/vim-grammarous' " Grammar checker
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Basic editing configuration                                   vimrcbasic 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Enable spell checking to english
-set spelllang=en
-set spell
-
 set nocompatible
 set autoindent
 
@@ -70,7 +68,7 @@ let mapleader=","
 
 " Airline configuration
 let g:airline#extensions#tabline#enabled = 1
-let g:airline_theme='gruvbox'
+let g:airline_theme='onedark'
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '>'
 
@@ -194,6 +192,9 @@ nmap <C-l> :wincmd l<CR>
 " Open undo history
 nmap <leader>u :UndotreeToggle<CR> :UndotreeFocus<CR>
 
+" Grammar check
+nmap <leader>c :GrammarousCheck<CR>
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Cursor shape                                                  vimrccursor
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -214,8 +215,11 @@ endif
 syntax on
 syntax enable
 
-colorscheme gruvbox
-set background=dark " Welcome to the dark side
+" Set onedark theme
+colorscheme onedark
+if (has("termguicolors"))
+  set termguicolors
+endif
 
 filetype plugin on
 
@@ -307,3 +311,11 @@ au FileType yaml set expandtab
 au FileType yaml set shiftwidth=2
 au FileType yaml set softtabstop=2
 au FileType yaml set tabstop=2
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Spell checking                                                vimrcspell
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Enable spell checking to english
+set spelllang=en
+set spell
+
