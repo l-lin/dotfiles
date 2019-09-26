@@ -117,7 +117,8 @@ SPELL CHECKING                                                 cs-spell-checking
 ]s - go to next misspelled word
 [s - go to previous misspelled word
 z= - find suggestions for the word
-
+zg - add word under the cursor as good word
+,c - perform :GrammarousCheck to check grammar errors
 
 ==================================================================================
 CUSTOM SHORTCUTS                                             cs-custom-shortcuts
