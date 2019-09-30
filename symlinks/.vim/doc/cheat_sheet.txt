@@ -163,3 +163,10 @@ Comment multiple lines:
 - insert your comment, e.g. `/`
 - press Escape
 - voila!
+
+Format existing text at X characters (defined in your .vimrc) for your markdown
+file:
+- select the lines you want to format with `v`, `C-v` or `S-v`
+- press `gq`
+Ref: https://thoughtbot.com/blog/wrap-existing-text-at-80-characters-in-vim
+

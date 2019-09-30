@@ -84,6 +84,9 @@ set ic
 " snippets
 let g:UltiSnipsSnippetDirectories=["UltiSnips", $HOME.'/.vim/UltiSnips']
 
+" Wrap markdown files to 100 characters
+au BufRead,BufNewFile *.md setlocal textwidth=100
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " VIM user interface                                            vimrcui
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
