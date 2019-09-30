@@ -66,12 +66,6 @@ set fileencoding=utf-8
 " Set leader
 let mapleader=","
 
-" Airline configuration
-let g:airline#extensions#tabline#enabled = 1
-let g:airline_theme='onedark'
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep = '>'
-
 " Disable folding
 let g:vim_markdown_folding_disabled=1
 
@@ -87,6 +81,14 @@ let g:UltiSnipsSnippetDirectories=["UltiSnips", $HOME.'/.vim/UltiSnips']
 " Wrap markdown files to 100 characters
 au BufRead,BufNewFile *.md setlocal textwidth=100
 
+" Use one space, not two, after punctuation.
+set nojoinspaces
+
+" display incomplete commands
+set showcmd
+" do incremental searching
+set incsearch
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " VIM user interface                                            vimrcui
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -95,6 +97,12 @@ set so=7
 
 " Close VIM if only window left is NERDTree
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+" Airline configuration
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme='onedark'
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '>'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Files, backups and undo                                       vimrcbackup
@@ -197,6 +205,9 @@ nmap <leader>u :UndotreeToggle<CR> :UndotreeFocus<CR>
 
 " Grammar check
 nmap <leader>c :GrammarousCheck<CR>
+
+" Move between linting errors
+nnoremap <leader>r :ALENextWrap<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Cursor shape                                                  vimrccursor
