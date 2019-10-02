@@ -45,45 +45,34 @@ call plug#end()
 " Basic editing configuration                                   vimrcbasic 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set nocompatible
+" Copy indent from current line when starting a new line
 set autoindent
-
 " Show line numbers
 set number
-
+" Do smart autoindenting when starting a new line
 set smartindent
 set tabstop=2
 set shiftwidth=2
+" Use the appropriate number of spaces to insert a <Tab> in insert mode
 set expandtab
-
-set completeopt=longest,menuone
-
 " Change how vim represents characters on the screen
 set encoding=utf-8
-
 " Set the encoding of files written
 set fileencoding=utf-8
-
 " Set leader
 let mapleader=","
-
 " Disable folding
 let g:vim_markdown_folding_disabled=1
-
 " Highlight line
 set cursorline
-
 " Ignore case
 set ic
-
 " snippets
 let g:UltiSnipsSnippetDirectories=["UltiSnips", $HOME.'/.vim/UltiSnips']
-
 " Wrap markdown files to 100 characters
 au BufRead,BufNewFile *.md setlocal textwidth=100
-
 " Use one space, not two, after punctuation.
 set nojoinspaces
-
 " display incomplete commands
 set showcmd
 " do incremental searching
@@ -94,10 +83,8 @@ set incsearch
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Set 7 lines to the cursor - when moving vertically using j/k
 set so=7
-
 " Close VIM if only window left is NERDTree
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-
 " Airline configuration
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_theme='onedark'
@@ -111,7 +98,6 @@ let g:airline#extensions#tabline#left_alt_sep = '>'
 set nobackup
 set nowb
 set noswapfile
-
 " Persistent undo
 if has("persistent_undo")
     set undodir=$HOME/.undodir/
@@ -124,88 +110,57 @@ endif
 " Visual mode pressing * or # searches for the current selection
 vnoremap <silent> * :call VisualSelection('f')<CR>
 vnoremap <silent> # :call VisualSelection('b')<CR>
-
-" Set ctrl-space instead of ctrl-n
-if has("gui_running")
-    " C-Space seems to work under gVim on both Linux and win32
-    inoremap <C-Space> <C-n>
-else " no gui
-    if has("unix")
-        inoremap <Nul> <C-n>
-    else
-        " I have no idea of the name of Ctrl-Space elsewhere
-    endif
-endif
-
+" Set ctrl-space behavior same as ctrl-n
+inoremap <C-Space> <C-n>
 " Switch back and forth from buffer
 map ;; <C-^>
-
 " Show/Hide line number
 nmap <C-n> :set invnumber<CR>
-
 " Go to definition
 nmap <C-b> :GoDef<CR>
-
 " Build & test
 map <F9> :GoBuild<CR>
 map <F8> :GoTest<CR>
-
 " Close buffer
 nmap <C-w> :bd<CR>
-
 " Delete line
 nmap <C-y> dd
-
 " Press Space to toggle highlighting on/off, and show current value.
 noremap <silent> <Space> :set hlsearch! hlsearch?<CR>
-
 " Toggle auto-indenting for code paste
 nnoremap <F2> :set invpaste paste?<CR>
 set pastetoggle=<F2>
 set showmode
-
 " Add documentation
 command Cheatsheet split ~/.vim/doc/cheat_sheet.txt
-
 " Delete word after cursor
 imap <C-d> <C-o>diw
-
 " Pressing ,ss will toggle and untoggle spell checking
 map <leader>ss :setlocal spell!<CR>
- 
 " Fast saving
 nmap <leader>w :w!<CR>
-
 " Fast quitting
 nmap <leader>q :q<CR>
-
 " Fast saving & quitting
 nmap <leader>x :x<CR>
-
 " Trigger snippet (also works with Ctrl+Enter)
 let g:UltiSnipsExpandTrigger="<C-m>"
-
 " Open NERDTree
 nmap <leader>o :NERDTreeToggle<CR>
-
 " move lines around
 nnoremap <leader>k :m-2<cr>==
 nnoremap <leader>j :m+<cr>==
 xnoremap <leader>k :m-2<cr>gv=gv
 xnoremap <leader>j :m'>+<cr>gv=gv
-
 " Move around split windows
 nmap <C-k> :wincmd k<CR>
 nmap <C-j> :wincmd j<CR>
 nmap <C-h> :wincmd h<CR>
 nmap <C-l> :wincmd l<CR>
-
 " Open undo history
 nmap <leader>u :UndotreeToggle<CR> :UndotreeFocus<CR>
-
 " Grammar check
 nmap <leader>c :GrammarousCheck<CR>
-
 " Move between linting errors
 nnoremap <leader>r :ALENextWrap<CR>
 
@@ -228,15 +183,13 @@ endif
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 syntax on
 syntax enable
-
 " Set onedark theme
 colorscheme onedark
 if (has("termguicolors"))
   set termguicolors
 endif
-
+" File type detection
 filetype plugin on
-
 " Omnicomplete
 set omnifunc=syntaxcomplete#Complete
 hi Pmenu ctermfg=153 ctermbg=NONE cterm=NONE guifg=#bcdbff guibg=NONE gui=NONE
@@ -268,10 +221,8 @@ let g:go_gocode_propose_source=1
 " Error and warning signs.
 let g:ale_sign_error = '⤫'
 let g:ale_sign_warning = '⚠'
-
 " Enable integration with airline.
 let g:airline#extensions#ale#enabled = 1
-
 " Keep sign in gutter open
 let g:ale_sign_column_always = 1
 
@@ -280,14 +231,11 @@ let g:ale_sign_column_always = 1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " enable ncm2 for all buffers
 autocmd BufEnter * call ncm2#enable_for_buffer()
-
 " IMPORTANT: :help Ncm2PopupOpen for more information
 set completeopt=noinsert,menuone,noselect
-
 " suppress the annoying 'match x of y', 'The only match' and 'Pattern not
 " found' messages
 set shortmess+=c
-
 " When the <Enter> key is pressed while the popup menu is visible, it only
 " hides the menu. Use this mapping to close the menu and also start a new
 " line.
