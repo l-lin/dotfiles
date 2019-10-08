@@ -30,7 +30,7 @@
     rh = reset --hard
     rl = reflog --pretty=reflog
     st = status -sb 
-    undo = reset --soft HEAD^
+    iundo = reset --soft HEAD^
     unignore = update-index --no-assume-unchanged 
     wdiff = diff --word-diff --color-words=.
 [push]
@@ -62,7 +62,7 @@
 	autostash = true
 [pretty]
     # reflog, with relative date (but for commits, not reflog entries!):
-    reflog = %C(auto)%h %<|(17)%gd %<|(31)%C(green)%ci%C(reset) %gs (%s)
+    reflog = %Cred%h%Creset - %Cblue%gd%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)<%an>%Creset
 [url "https://github.com/"]
 	insteadOf = github:
 	insteadOf = gh:
