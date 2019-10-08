@@ -30,7 +30,7 @@
     rh = reset --hard
     rl = reflog --pretty=reflog
     st = status -sb 
-    iundo = reset --soft HEAD^
+    undo = reset --soft HEAD^
     unignore = update-index --no-assume-unchanged 
     wdiff = diff --word-diff --color-words=.
 [push]

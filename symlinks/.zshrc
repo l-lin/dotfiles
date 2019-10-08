@@ -153,7 +153,7 @@ if type fzf >/dev/null 2>&1; then
         fi
     }
     zle -N preview
-    bindkey '^f' preview
+    bindkey '^q' preview
 fi
 
 # Work specific environment variables
