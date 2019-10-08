@@ -1,0 +1,3 @@
+#compdef note
+
+compadd $(ls ~/perso/notes/$(date +%Y))

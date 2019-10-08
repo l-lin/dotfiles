@@ -56,4 +56,13 @@ alias find-dns-servers="nmcli dev show | grep 'IP4.DNS'"
 # Enable NVM
 alias enable_nvm="sed -i 's/# nvm/nvm/' $HOME/.zshrc"
 alias disable_nvm="sed -i 's/nvm/# nvm/' $HOME/.zshrc"
-
+# notes
+noteFn() {
+  if [[ "$1" == "new" ]]; then
+    mkdir -p ~/perso/notes/$(date +%Y)
+    v ~/perso/notes/$(date +%Y)/$(date +%F)-$2.md
+  else
+    v ~/perso/notes/$1
+  fi
+}
+alias note="noteFn"
