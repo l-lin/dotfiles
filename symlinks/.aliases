@@ -1,8 +1,8 @@
 alias sz="source ~/.zshrc"
-alias ez="nvim ~/.zshrc"
 alias agi="sudo apt-get install"
 alias agr="sudo apt-get remove"
 alias v="nvim"
+alias ez="v ~/.zshrc"
 alias g="git"
 alias gbdr='git branch -r | awk "{print \$1}" | egrep -v -f /dev/fd/0 <(git branch -vv | grep origin) | awk "{print \$1}" | xargs git branch -D'
 alias grep="grep --color=auto"
@@ -49,8 +49,6 @@ alias h="helm"
 alias weather="curl https://wttr.in/"
 # prettyping
 alias ping="prettyping --nolegend"
-# preview files
-alias preview="fzf --preview 'bat --color \"always\" {}'"
 # find configured local DNS servers
 alias find-dns-servers="nmcli dev show | grep 'IP4.DNS'"
 # Enable NVM
@@ -58,11 +56,14 @@ alias enable_nvm="sed -i 's/# nvm/nvm/' $HOME/.zshrc"
 alias disable_nvm="sed -i 's/nvm/# nvm/' $HOME/.zshrc"
 # notes
 noteFn() {
-  if [[ "$1" == "new" ]]; then
-    mkdir -p ~/perso/notes/$(date +%Y)
-    v ~/perso/notes/$(date +%Y)/$(date +%F)-$2.md
+  local noteDir="$HOME/perso/notes"
+  if [ $# -eq 0 ]; then
+    cd ${noteDir}
+  elif [[ "$1" == "new" ]]; then
+    mkdir -p ${noteDir}/$(date +%Y)
+    v ${noteDir}/$(date +%Y)/$(date +%F)-$2.md
   else
-    v ~/perso/notes/$1
+    v ${noteDir}/$1
   fi
 }
 alias note="noteFn"

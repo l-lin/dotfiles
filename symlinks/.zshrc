@@ -43,10 +43,10 @@ HIST_STAMPS="yyyy-mm-dd"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-# plugins that took time to load: nvm kubectl
+# plugins that took time to load: # nvm kubectl
 plugins=(z git-open copyfile copydir colored-man-pages extract web-search zsh-autosuggestions zsh-syntax-highlighting httpie wd
     kubectl
-    #nvm
+    ## nvm
 ) 
 
 source $ZSH/oh-my-zsh.sh
@@ -78,7 +78,7 @@ export GOROOT="$APPS_HOME/go"
 export GOPATH="$HOME/go"
 export NODEJS_HOME="$APPS_HOME/nodejs"
 export GRADLE_HOME="$APPS_HOME/gradle"
-export NVM_DIR="$HOME/.nvm"
+export NVM_DIR="$HOME/.# nvm"
 export PACT_DIR="/opt/pact"
 
 export PATH="/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:$HOME/bin:$PATH"
@@ -93,19 +93,19 @@ export GREP_COLOR=32
 # Spell check commands! (Sometimes annoying)
 setopt CORRECT
 
-# 10 second wait if you do something that will delete everything.  I wish I'd had this before...
+# 10 second wait if you do something that will delete everything.
 setopt RM_STAR_WAIT
 
-# only fools wouldn't do this ;-)
-export EDITOR="vim"
+# Only fools wouldn't do this ;-)
+export EDITOR="nvim"
 
 # If I could disable Ctrl-s completely I would!
 setopt NO_FLOW_CONTROL
 
-# beeps are annoying
+# Beeps are annoying
 setopt NO_BEEP
 
-# extention to do cmd like "rm -rf ^file/folder"
+# Extension to do cmd like "rm -rf ^file/folder"
 setopt extended_glob
 
 # zsh-autosuggestions config
@@ -140,6 +140,22 @@ if type pet >/dev/null 2>&1; then
     bindkey '^s' pet-select
 fi
 
+if type fzf >/dev/null 2>&1; then
+    function preview() {
+        local file
+        file=$(ls -t | fzf --preview 'bat --color "always" {}')
+        if [[ -f $file ]]; then
+            v $file
+        elif [[ -d $file ]]; then
+            cd $file
+            preview
+            zle reset-prompt
+        fi
+    }
+    zle -N preview
+    bindkey '^f' preview
+fi
+
 # Work specific environment variables
 if [ -f ~/.work.zsh ]; then
     source ~/.work.zsh
@@ -149,7 +165,7 @@ fi
 fpath=(~/.zsh/completion $fpath)
 autoload -Uz compinit && compinit -i
 
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+# THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="${HOME}/.sdkman"
 [[ -s "${HOME}/.sdkman/bin/sdkman-init.sh" ]] && source "${HOME}/.sdkman/bin/sdkman-init.sh"
 
