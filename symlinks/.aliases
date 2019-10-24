@@ -63,7 +63,7 @@ noteFn() {
     mkdir -p ${noteDir}/$(date +%Y)
     v ${noteDir}/$(date +%Y)/$(date +%F)-$2.md
   else
-    v ${noteDir}/$1
+    v ${noteDir}/$(date +%Y)/$1
   fi
 }
 alias note="noteFn"

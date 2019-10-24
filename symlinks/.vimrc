@@ -5,6 +5,7 @@
 " Cursor shape                                                  vimrccursor
 " Colors                                                        vimrccolors
 " VIM-GO customization                                          vimrcgo
+" VIM-JS customization                                          vimrcjs
 " Linting                                                       vimrclinting
 " ncm2                                                          vimrcncm2
 " Editorconfig                                                  vimrceditor
@@ -29,6 +30,9 @@ Plug 'scrooloose/nerdtree' " Tree explorer
 Plug 'Xuyuanp/nerdtree-git-plugin' " Tree explorer with Git status
 Plug 'easymotion/vim-easymotion' " Easily navigate through the file
 Plug 'mbbill/undotree' " Undo history
+Plug 'editorconfig/editorconfig-vim' " .editorconfig support
+Plug 'pangloss/vim-javascript' " Javascript support
+Plug 'ternjs/tern_for_vim', { 'do': 'npm install && npm install -g tern' } " Javascript autocompletion
 " Neovim plugins
 Plug 'roxma/nvim-yarp' " Remote plugin framework
 Plug 'ncm2/ncm2' " Completion framework for NeoVim
@@ -84,6 +88,8 @@ autocmd BufReadPost *
   \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") |
   \   exe "normal g`\"" |
   \ endif
+" display tab
+set list
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " VIM user interface                                            vimrcui
@@ -110,6 +116,8 @@ if has("persistent_undo")
     set undodir=$HOME/.undodir/
     set undofile
 endif
+" Exclude files & folders from full path fuzzy ctrlp
+let g:ctrlp_custom_ignore = 'node_modules'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Key maps                                                      vimrckeymaps
@@ -221,6 +229,11 @@ let g:go_highlight_build_constraints = 1
 let g:go_addtags_transform = "camelcase"
 " Use source code
 let g:go_gocode_propose_source=1
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" VIM-JS customization                                          vimrcjs
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:javascript_plugin_jsdoc = 1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Linting                                                       vimrclinting
