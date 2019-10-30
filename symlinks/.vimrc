@@ -17,7 +17,7 @@
 call plug#begin()
 Plug 'tpope/vim-sensible' " VIM minimal config
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' } " Golang support
-Plug 'w0rp/ale' " Linting
+Plug 'dense-analysis/ale' " Linting
 Plug 'SirVer/ultisnips' " Snippets
 Plug 'honza/vim-snippets' " Snippets
 Plug 'vim-airline/vim-airline' " Display the bottom status bar

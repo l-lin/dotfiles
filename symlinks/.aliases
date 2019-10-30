@@ -55,7 +55,7 @@ alias find-dns-servers="nmcli dev show | grep 'IP4.DNS'"
 alias enable_nvm="sed -i 's/# nvm/nvm/' $HOME/.zshrc"
 alias disable_nvm="sed -i 's/nvm/# nvm/' $HOME/.zshrc"
 # notes
-noteFn() {
+note() {
   local noteDir="$HOME/perso/notes"
   if [ $# -eq 0 ]; then
     cd ${noteDir}/$(date +%Y)
@@ -66,4 +66,18 @@ noteFn() {
     v ${noteDir}/$(date +%Y)/$1
   fi
 }
-alias note="noteFn"
+# test gitlab ci jobs
+ci() {
+  [[ ! -f .gitlab-ci.yml ]] && echo "Missing .gitlab-ci.yml file" 1>&2 && return 1
+  [[ $# -eq 0 ]] && echo "Missing job name" 1>&2 && return 1
+  gitlab-runner exec docker --docker-volumes /var/run/docker.sock:/var/run/docker.sock $1
+}
+# test helm chart in sandbox
+helm_apply() {
+  local project_name=$(basename "$(pwd)")
+  helm template . --name ${project_name}-llin -f values.loukoum.yaml | kubectl apply -f -
+}
+helm_delete() {
+  local project_name=$(basename "$(pwd)")
+  helm template . --name ${project_name}-llin -f values.loukoum.yaml | kubectl delete -f -
+}

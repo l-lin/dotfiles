@@ -28,3 +28,8 @@
 # Editors #
 ###########
 *.iml
+
+# Specific #
+############
+values.loukoum.yaml
+
