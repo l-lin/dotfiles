@@ -13,7 +13,37 @@ for name, tt := range tests {
 	t.Run(name, func(t *testing.T){
 		actual := ${0:${VISUAL}}(tt.given)
 		if actual != tt.expected {
-				t.Errorf("$0(%v): expected %v, actual %v", tt.given, tt.expected, actual)
+				t.Errorf("expected %v, actual %v", tt.expected, actual)
+		}
+	})
+}
+endsnippet
+# table testing with expected error
+snippet tte
+var tests = map[string]struct {
+	type expected struct {
+		value string
+		hasErr bool
+	}
+	given string
+	expected expected
+}{
+	"${1}": {
+		given: "${2}",
+		expected: expected{
+			value: "${3}",
+			hasErr: false,
+		},
+	},
+}
+for name, tt := range tests {
+	t.Run(name, func(t *testing.T){
+		actualValue, actualErr := ${0:${VISUAL}}(tt.given)
+		if tt.expected.hasErr && actualErr != nil {
+			t.Error("expected an error")
+		}
+		if actualValue != tt.expected.value {
+				t.Errorf("expected %v, actual %v", tt.expected.value, actualValue)
 		}
 	})
 }
