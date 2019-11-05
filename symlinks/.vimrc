@@ -90,6 +90,8 @@ autocmd BufReadPost *
   \ endif
 " display tab
 set list
+" yank in clipboard
+set clipboard=unnamedplus
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " VIM user interface                                            vimrcui
