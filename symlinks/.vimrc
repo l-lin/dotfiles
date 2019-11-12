@@ -134,7 +134,8 @@ map ;; <C-^>
 " Show/Hide line number
 nmap <C-n> :set invnumber<CR>
 " Go to definition
-nmap <C-b> :GoDef<CR>
+autocmd FileType go nmap <C-b> :GoDef<CR>
+autocmd FileType javascript nmap <C-b> :TernDef<CR>
 " Build & test
 map <F9> :GoBuild<CR>
 map <F8> :GoTest<CR>
