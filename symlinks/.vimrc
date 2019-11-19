@@ -33,6 +33,7 @@ Plug 'mbbill/undotree' " Undo history
 Plug 'editorconfig/editorconfig-vim' " .editorconfig support
 Plug 'pangloss/vim-javascript' " Javascript support
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install && npm install -g tern' } " Javascript autocompletion
+Plug 'terryma/vim-multiple-cursors' " Sublime text's multiple selection
 " Neovim plugins
 Plug 'roxma/nvim-yarp' " Remote plugin framework
 Plug 'ncm2/ncm2' " Completion framework for NeoVim
