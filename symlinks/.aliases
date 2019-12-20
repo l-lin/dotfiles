@@ -47,16 +47,26 @@ alias find-dns-servers="nmcli dev show | grep 'IP4.DNS'"
 # Enable NVM
 alias enable_nvm="sed -i 's/# nvm/nvm/' $HOME/.zshrc"
 alias disable_nvm="sed -i 's/nvm/# nvm/' $HOME/.zshrc"
+# Enable Elasticsearch in local
+alias enable_elastic="sudo sysctl -w vm.max_map_count=262144"
 # notes
 note() {
-  local noteDir="$HOME/perso/notes"
+  local noteDir="$HOME/perso/notes/$(date +%Y)"
   if [ $# -eq 0 ]; then
-    cd ${noteDir}/$(date +%Y)
+    cd ${noteDir}
   elif [[ "$1" == "new" ]]; then
-    mkdir -p ${noteDir}/$(date +%Y)
-    v ${noteDir}/$(date +%Y)/$(date +%F)-$2.md
+    mkdir -p ${noteDir}
+    local filePath="${noteDir}/$(date +%F)-$2.md"
+    cat > ${filePath} <<EOF
+---
+title: $2
+tags: #
+---
+
+EOF
+    v ${filePath}
   else
-    v ${noteDir}/$(date +%Y)/$1
+    v ${noteDir}/$1
   fi
 }
 # test gitlab ci jobs
