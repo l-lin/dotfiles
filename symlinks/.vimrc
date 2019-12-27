@@ -35,6 +35,7 @@ Plug 'pangloss/vim-javascript' " Javascript support
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install && npm install -g tern' } " Javascript autocompletion
 "Plug 'leafgarland/typescript-vim' " Typescript support
 Plug 'terryma/vim-multiple-cursors' " Sublime text's multiple selection
+Plug 'Chiel92/vim-autoformat' " Format code
 " Neovim plugins
 Plug 'roxma/nvim-yarp' " Remote plugin framework
 Plug 'ncm2/ncm2' " Completion framework for NeoVim
@@ -185,6 +186,8 @@ nmap <leader>u :UndotreeToggle<CR> :UndotreeFocus<CR>
 nmap <leader>c :GrammarousCheck<CR>
 " Move between linting errors
 nnoremap <leader>r :ALENextWrap<CR>
+" Format
+noremap <leader>l :Autoformat<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Cursor shape                                                  vimrccursor

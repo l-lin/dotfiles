@@ -135,6 +135,7 @@ F2    - toggle auto-indenting for code paste
 ,o    - open explorer
 ,u    - open undo tree
 C-y   - cut line
+,l    - format code
 
 ==================================================================================
 COMMANDS                                                             cs-commands
