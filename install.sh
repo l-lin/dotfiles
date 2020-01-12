@@ -4,11 +4,11 @@ set -e
 set -x
 
 docker_compose_version="1.18.0"
-go_version="1.10.1"
+go_version="1.12.15"
 nvm_version="0.33.11"
-pet_version="0.3.0"
+pet_version="0.3.6"
 ctop_version="0.7.1"
-bat_version="0.6.0"
+bat_version="0.12.1"
 fd_version="7.1.0"
 
 echo "[-] Creating folders..."
@@ -31,6 +31,7 @@ echo "[-] Installing pgcli"
 sudo pip install --upgrade pgcli
 
 echo "[-] Installing NVM"
+mkdir -p $HOME/.nvm
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v${nvm_version}/install.sh | bash
 
 echo "[-] Installing LSD: https://github.com/Peltoche/lsd"
@@ -41,7 +42,7 @@ curl -fsSL https://get.docker.com/ | sh
 docker --version
 
 echo "[-] Installing Docker Compose: https://github.com/docker/compose"
-curl -o /usr/local/bin/docker-compose -L https://github.com/docker/compose/releases/download/${docker_compose_version}/docker-compose-`uname -s`-`uname -m`
+sudo curl -o /usr/local/bin/docker-compose -L https://github.com/docker/compose/releases/download/${docker_compose_version}/docker-compose-`uname -s`-`uname -m`
 sudo chmod +x /usr/local/bin/docker-compose
 docker-compose -version
 
@@ -50,23 +51,23 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install
 
 echo "[-] Installing pet: https://github.com/knqyf263/pet#debian-ubuntu"
-curl -o /tmp/pet.deb https://github.com/knqyf263/pet/releases/download/v${pet_version}/pet_${pet_version}_linux_amd64.deb
+curl -L -o /tmp/pet.deb https://github.com/knqyf263/pet/releases/download/v${pet_version}/pet_${pet_version}_linux_amd64.deb
 sudo dpkg -i /tmp/pet.deb
 
 echo "[-] Installing bat: https://github.com/sharkdp/bat"
-curl -o /tmp/bat.deb https://github.com/sharkdp/bat/releases/download/v${bat_version}/bat_${bat_version}_amd64.deb
+curl -L -o /tmp/bat.deb https://github.com/sharkdp/bat/releases/download/v${bat_version}/bat_${bat_version}_amd64.deb
 sudo dpkg -i /tmp/bat.deb
 
 echo "[-] Installing prettyping: https://github.com/denilsonsa/prettyping"
-sudo curl -o /usr/local/bin/prettyping https://raw.githubusercontent.com/denilsonsa/prettyping/master/prettyping
-chmod +x /usr/local/bin/prettyping
+sudo curl -L -o /usr/local/bin/prettyping https://raw.githubusercontent.com/denilsonsa/prettyping/master/prettyping
+sudo chmod +x /usr/local/bin/prettyping
 
 echo "[-] Installing ctop"
-sudo curl -o /usr/local/bin/ctop https://github.com/bcicen/ctop/releases/download/v${ctop_version}/ctop-${ctop_version}-linux-amd64
+sudo curl -L -o /usr/local/bin/ctop https://github.com/bcicen/ctop/releases/download/v${ctop_version}/ctop-${ctop_version}-linux-amd64
 sudo chmod +x /usr/local/bin/ctop
 
 echo "[-] Installing diff-so-fancy: https://github.com/so-fancy/diff-so-fancy"
-sudo curl -o /usr/local/bin/diff-so-fancy https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party/build_fatpack/diff-so-fancy
+sudo curl -L -o /usr/local/bin/diff-so-fancy https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party/build_fatpack/diff-so-fancy
 sudo chmod +x /usr/local/bin/diff-so-fancy
 
 echo "[-] Installing fd (> find): https://github.com/sharkdp/fd/"
@@ -93,13 +94,13 @@ echo "[-] Installing fac: https://github.com/mkchoi212/fac"
 go get github.com/mkchoi212/fac
 
 echo "[-] Installing vscode"
-snap code
+sudo snap install code --classic
 
 echo "[-] Installing gohugo"
-snap hugo
+sudo snap install hugo
 
 echo "[-] Installing IntelliJ CE"
-snap install intellij-idea-community --classic 
+sudo snap install intellij-idea-community --classic 
 
 echo "[-] Installation SUCCESS!"
 exit 0

@@ -46,7 +46,7 @@ HIST_STAMPS="yyyy-mm-dd"
 # plugins that took time to load: # nvm kubectl
 plugins=(z git-open copyfile copydir colored-man-pages extract web-search zsh-autosuggestions zsh-syntax-highlighting httpie wd
     kubectl
-    ## nvm
+    # nvm
 ) 
 
 source $ZSH/oh-my-zsh.sh
@@ -78,7 +78,7 @@ export GOROOT="$APPS_HOME/go"
 export GOPATH="$HOME/go"
 export NODEJS_HOME="$APPS_HOME/nodejs"
 export GRADLE_HOME="$APPS_HOME/gradle"
-export NVM_DIR="$HOME/.# nvm"
+export NVM_DIR="$HOME/.nvm"
 export PACT_DIR="/opt/pact"
 
 export PATH="/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:$HOME/bin:$PATH"
