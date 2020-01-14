@@ -27,3 +27,14 @@ See [dotfiles](http://dotfiles.github.io).
 # Install TMUX plugins
 
 - Press "Prefix + I" (capital i)
+
+# Install Ubuntu gnome extensions
+
+- Install browser extension `GNOME shell`
+- Install the following:
+  - [Clipboard indicator](https://extensions.gnome.org/extension/779/clipboard-indicator/)
+  - [Dash to panel](https://extensions.gnome.org/extension/1160/dash-to-panel/)
+  - [Do not disturb](https://extensions.gnome.org/extension/964/do-not-disturb-button/)
+  - [Sensory perception](https://extensions.gnome.org/extension/1145/sensory-perception/)
+  - [System monitor](https://extensions.gnome.org/extension/120/system-monitor/)
+  - [User themes](https://extensions.gnome.org/extension/19/user-themes/)
