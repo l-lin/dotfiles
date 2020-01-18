@@ -38,3 +38,7 @@ See [dotfiles](http://dotfiles.github.io).
   - [Sensory perception](https://extensions.gnome.org/extension/1145/sensory-perception/)
   - [System monitor](https://extensions.gnome.org/extension/120/system-monitor/)
   - [User themes](https://extensions.gnome.org/extension/19/user-themes/)
+
+# Terminal configuration
+
+- Font: OverpassMono Nerd Font Regular

@@ -14,6 +14,8 @@ sudo apt-get update
 echo "[-] Installing lots of stuffs"
 # Install additional commands
 sudo apt-get install build-essential cmake git zsh colordiff exuberant-ctags tmux python-pip python-dev ruby-dev ruby htop xclip httpie silversearcher-ag nfs-common net-tools lm-sensors network-manager-openvpn openvpn network-manager-openvpn-gnome curl nnn jq ubuntu-restricted-extras software-properties-common python3-dev python3-pip python3-distutils neovim gnome-tweak-tool
+# Install missing gir needed for ubuntu sytem-monitor extension
+sudo apt-get install gir1.2-clutter-1.0 gir1.2-gtop-2.0 gir1.2-networkmanager-1.0
 
 echo "[-] Installing ubuntu arc theme"
 sudo apt-get install arc-theme arc-icons
