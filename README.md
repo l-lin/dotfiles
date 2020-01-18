@@ -42,3 +42,24 @@ See [dotfiles](http://dotfiles.github.io).
 # Terminal configuration
 
 - Font: OverpassMono Nerd Font Regular
+
+# Calibre
+
+## Installation
+
+```bash
+sudo -v && wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sudo sh /dev/stdin
+```
+## Configuration
+
+- Go to "Fetch news > Add or edit a custom resource"
+- Click on "New recipe"
+  - Set "Oldest article": 2 days
+  - Feed URL: http://getpocket.com/users/<username>/feed/unread
+- Click on "Preferences > Sharing books by email"
+  - Add email
+  - Setup the email server
+    - Hostname: smtp.gmail.com
+    - Port: 587
+    - Encryption: TLS
+
