@@ -12,20 +12,22 @@ cheatsheet
 ==================================================================================
 CONTENTS                                                             cs-contents
 
- 1.   Shortcuts..................................cs-shortcuts
- 1.1. Cursor movement............................cs-cursor-movement
- 1.2. Copy / paste...............................cs-copy-paste
- 1.3. Delete.....................................cs-delete
- 1.4. Search / Replace...........................cs-search-replace
- 1.5. Correct words..............................cs-correct-words
- 1.6. Insert mode................................cs-insert-mode
- 1.7. Undo / Redo................................cs-undo-redo
- 1.8. Spell checking.............................cs-spell-checking
- 1.9. Custom shortcuts...........................cs-custom-shortcuts
- 2.   Commands...................................cs-commands
- 2.1. Buffers....................................cs-buffers
- 2.2. Explorer...................................cs-explorer
- 3.   Tips & tricks..............................cs-tips-n-tricks
+ 1.    Shortcuts..................................cs-shortcuts
+ 1.1.  Cursor movement............................cs-cursor-movement
+ 1.2.  Copy / paste...............................cs-copy-paste
+ 1.3.  Delete.....................................cs-delete
+ 1.4.  Search / Replace...........................cs-search-replace
+ 1.5.  Correct words..............................cs-correct-words
+ 1.6.  Insert mode................................cs-insert-mode
+ 1.7.  Undo / Redo................................cs-undo-redo
+ 1.8.  Spell checking.............................cs-spell-checking
+ 1.9.  Folding....................................cs-folding
+ 1.10. DBExt......................................cs-dbext
+ 1.11. Custom shortcuts...........................cs-custom-shortcuts
+ 2.    Commands...................................cs-commands
+ 2.1.  Buffers....................................cs-buffers
+ 2.2.  Explorer...................................cs-explorer
+ 3.    Tips & tricks..............................cs-tips-n-tricks
 
 ==================================================================================
 SHORTCUTS                                                          cs-shortcuts
@@ -46,6 +48,8 @@ $      - end of line
 gg     - go to first line of file
 G      - go to last line of file
 C-o    - jump to previous location
+,,s    - navigate through the entire buffer screen (easymotion)
+,,w    - navigate from the cursor to the end of the buffer screen (easymotion)
 
 ==================================================================================
 COPY / PASTE                                                       cs-copy-paste
@@ -128,6 +132,13 @@ zo - open fold
 za - toggle fold
 zM - close all folds
 zR - open all folds
+
+==================================================================================
+DBEXT                                                                   cs-dbext
+
+,se  - execute sql query
+,sbp - change profile
+,sdt - describe table
 
 ==================================================================================
 CUSTOM SHORTCUTS                                             cs-custom-shortcuts
