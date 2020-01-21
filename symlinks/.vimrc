@@ -105,6 +105,10 @@ if has("persistent_undo")
     set undodir=$HOME/.undodir/
     set undofile
 endif
+" Source other vim config files
+if isdirectory($HOME . "/work/.vim")
+  source $HOME/work/.vim/*.vim
+endif
 " Exclude files & folders from full path fuzzy ctrlp
 let g:ctrlp_custom_ignore = 'node_modules'
 " }}}
