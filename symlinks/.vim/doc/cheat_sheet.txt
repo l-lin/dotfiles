@@ -121,6 +121,15 @@ zg - add word under the cursor as good word
 ,c - perform :GrammarousCheck to check grammar errors
 
 ==================================================================================
+FOLDING                                                               cs-folding
+
+zc - close fold
+zo - open fold
+za - toggle fold
+zM - close all folds
+zR - open all folds
+
+==================================================================================
 CUSTOM SHORTCUTS                                             cs-custom-shortcuts
 
 C-Tab - omnicompletion

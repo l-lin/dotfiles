@@ -39,8 +39,8 @@ alias please="sudo "
 # lsd
 alias l="lsd -la --group-dirs first"
 # postgres with docker
-alias psql="docker exec -it local_postgres psql"
-alias pg_dump="docker exec -it local_postgres pg_dump"
+#alias psql="docker exec -it local_postgres psql"
+#alias pg_dump="docker exec -it local_postgres pg_dump"
 # weather
 alias weather="curl https://wttr.in/"
 # prettyping

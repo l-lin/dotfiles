@@ -1,17 +1,4 @@
-" Basic editing configuration                                   vimrcbasic 
-" VIM user interface                                            vimrcui
-" Files, backups and undo                                       vimrcbackup
-" Key maps                                                      vimrckeymaps
-" Cursor shape                                                  vimrccursor
-" Colors                                                        vimrccolors
-" VIM-GO customization                                          vimrcgo
-" VIM-JS customization                                          vimrcjs
-" Linting                                                       vimrclinting
-" ncm2                                                          vimrcncm2
-" Editorconfig                                                  vimrceditor
-" Spell checking                                                vimrcspell
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
+" Plugins {{{
 " Using https://github.com/junegunn/vim-plug as dependency manager
 " Execute :PlugInstall
 call plug#begin()
@@ -36,6 +23,7 @@ Plug 'ternjs/tern_for_vim', { 'do': 'npm install && npm install -g tern' } " Jav
 "Plug 'leafgarland/typescript-vim' " Typescript support
 Plug 'terryma/vim-multiple-cursors' " Sublime text's multiple selection
 Plug 'Chiel92/vim-autoformat' " Format code
+Plug 'vim-scripts/dbext.vim' " DB access (exec SQL directly from VIM)
 " Neovim plugins
 Plug 'roxma/nvim-yarp' " Remote plugin framework
 Plug 'ncm2/ncm2' " Completion framework for NeoVim
@@ -49,10 +37,8 @@ Plug 'rhysd/vim-grammarous' " Grammar checker
 "Plug 'HerringtonDarkholme/yats.vim'
 "Plug 'mhartington/nvim-typescript', {'do': './install.sh'} " Typescript support
 call plug#end()
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Basic editing configuration                                   vimrcbasic 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" }}}
+" Basic editing configuration {{{
 set nocompatible
 " Copy indent from current line when starting a new line
 set autoindent
@@ -97,10 +83,8 @@ autocmd BufReadPost *
 set list
 " yank in clipboard
 set clipboard=unnamedplus
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" VIM user interface                                            vimrcui
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" }}}
+" VIM user interface {{{
 " Set 7 lines to the cursor - when moving vertically using j/k
 set so=7
 " Close VIM if only window left is NERDTree
@@ -110,10 +94,8 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline_theme='onedark'
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '>'
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Files, backups and undo                                       vimrcbackup
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" }}}
+" Files, backups and undo {{{
 " Turn backup off, since most stuff is in SVN, git etc anyway...
 set nobackup
 set nowb
@@ -125,10 +107,8 @@ if has("persistent_undo")
 endif
 " Exclude files & folders from full path fuzzy ctrlp
 let g:ctrlp_custom_ignore = 'node_modules'
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Key maps                                                      vimrckeymaps
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" }}}
+" Key maps {{{
 " Visual mode pressing * or # searches for the current selection
 vnoremap <silent> * :call VisualSelection('f')<CR>
 vnoremap <silent> # :call VisualSelection('b')<CR>
@@ -188,10 +168,8 @@ nmap <leader>c :GrammarousCheck<CR>
 nnoremap <leader>r :ALENextWrap<CR>
 " Format
 noremap <leader>l :Autoformat<CR>
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Cursor shape                                                  vimrccursor
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" }}}
+" Cursor shape {{{
 if has("autocmd")
   au VimEnter,InsertLeave * silent execute '!echo -ne "\e[1 q"' | redraw!
   au InsertEnter,InsertChange *
@@ -202,10 +180,8 @@ if has("autocmd")
     \ endif
   au VimLeave * silent execute '!echo -ne "\e[ q"' | redraw!
 endif
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Colors                                                        vimrccolors
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" }}}
+" Colors {{{
 syntax on
 syntax enable
 " Set onedark theme
@@ -219,10 +195,8 @@ filetype plugin on
 set omnifunc=syntaxcomplete#Complete
 hi Pmenu ctermfg=153 ctermbg=NONE cterm=NONE guifg=#bcdbff guibg=NONE gui=NONE
 hi PmenuSel ctermfg=NONE ctermbg=59 cterm=NONE guifg=NONE guibg=#3f4b52 gui=NONE
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" VIM-GO customization                                          vimrcgo
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" }}}
+" VIM-GO customization {{{
 " Call goimports on save
 let g:go_fmt_command = "goimports"
 " Call vet, golint & errcheck on save
@@ -239,15 +213,11 @@ let g:go_highlight_build_constraints = 1
 let g:go_addtags_transform = "camelcase"
 " Use source code
 let g:go_gocode_propose_source=1
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" VIM-JS customization                                          vimrcjs
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" }}}
+" VIM-JS customization {{{
 let g:javascript_plugin_jsdoc = 1
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Linting                                                       vimrclinting
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" }}}
+" Linting {{{
 " Error and warning signs.
 let g:ale_sign_error = '⤫'
 let g:ale_sign_warning = '⚠'
@@ -255,10 +225,8 @@ let g:ale_sign_warning = '⚠'
 let g:airline#extensions#ale#enabled = 1
 " Keep sign in gutter open
 let g:ale_sign_column_always = 1
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" ncm2                                                          vimrcncm2
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" }}}
+" ncm2 {{{
 " enable ncm2 for all buffers
 autocmd BufEnter * call ncm2#enable_for_buffer()
 " IMPORTANT: :help Ncm2PopupOpen for more information
@@ -284,10 +252,8 @@ inoremap <expr> <A-b> pumvisible() ? "\<c-y>\<A-b>" : "\<A-b>"
 inoremap <expr> <A-u> pumvisible() ? "\<c-y>\<A-u>" : "\<A-u>"
 inoremap <expr> <A-e> pumvisible() ? "\<c-y>\<A-e>" : "\<A-e>"
 inoremap <expr> <A-$> pumvisible() ? "\<c-y>\<A-$>" : "\<A-$>"
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Editorconfig                                                  vimrceditor
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" }}}
+" Editorconfig {{{
 " Language: SQL
 au FileType sql set expandtab
 au FileType sql set shiftwidth=2
@@ -303,11 +269,15 @@ au FileType yaml set expandtab
 au FileType yaml set shiftwidth=2
 au FileType yaml set softtabstop=2
 au FileType yaml set tabstop=2
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Spell checking                                                vimrcspell
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" }}}
+" Spell checking {{{
 " Enable spell checking to english
 set spelllang=en
 set spell
+" }}}
+" Database access {{{
+let g:dbext_default_profile_PG_localhost = 'type=PGSQL:user=postgres:dbname=oodev:host=localhost'
+let g:dbext_default_profile = 'PG_localhost'
+" }}}
 
+" vim:foldmethod=marker:foldlevel=0
