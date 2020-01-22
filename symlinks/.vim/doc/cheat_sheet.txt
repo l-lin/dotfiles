@@ -139,6 +139,7 @@ DBEXT                                                                   cs-dbext
 ,se  - execute sql query
 ,sbp - change profile
 ,sdt - describe table
+,slt - list tables
 
 ==================================================================================
 CUSTOM SHORTCUTS                                             cs-custom-shortcuts
