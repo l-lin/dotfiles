@@ -14,16 +14,17 @@ CONTENTS                                                             cs-contents
 
  1.    Shortcuts..................................cs-shortcuts
  1.1.  Cursor movement............................cs-cursor-movement
- 1.2.  Copy / paste...............................cs-copy-paste
- 1.3.  Delete.....................................cs-delete
- 1.4.  Search / Replace...........................cs-search-replace
- 1.5.  Correct words..............................cs-correct-words
- 1.6.  Insert mode................................cs-insert-mode
- 1.7.  Undo / Redo................................cs-undo-redo
- 1.8.  Spell checking.............................cs-spell-checking
- 1.9.  Folding....................................cs-folding
- 1.10. DBExt......................................cs-dbext
- 1.11. Custom shortcuts...........................cs-custom-shortcuts
+ 1.2.  Marks......................................cs-marks
+ 1.3.  Copy / paste...............................cs-copy-paste
+ 1.5.  Delete.....................................cs-delete
+ 1.5.  Search / Replace...........................cs-search-replace
+ 1.6.  Correct words..............................cs-correct-words
+ 1.7.  Insert mode................................cs-insert-mode
+ 1.8.  Undo / Redo................................cs-undo-redo
+ 1.9.  Spell checking.............................cs-spell-checking
+ 1.10. Folding....................................cs-folding
+ 1.11. DBExt......................................cs-dbext
+ 1.12. Custom shortcuts...........................cs-custom-shortcuts
  2.    Commands...................................cs-commands
  2.1.  Buffers....................................cs-buffers
  2.2.  Explorer...................................cs-explorer
@@ -35,128 +36,149 @@ SHORTCUTS                                                          cs-shortcuts
 ==================================================================================
 CURSOR MOVEMENT                                               cs-cursor-movement
 
-w      - jump by start of words (punctuation considered words)
-W      - jump by words (spaces separate words)
-e      - jump to end of words (punctuation considered words)
-E      - jump to end of words (no punctuation)
-b      - jump backward by words (punctuation considered words)
-B      - jump backward by words (no punctuation)
-0      - (zero) start of line
-^      - first non-blank character of line
-$      - end of line
-5G     - go go command (prefix with number - 5G goes to line 5)
-gg     - go to first line of file
-G      - go to last line of file
-C-o    - jump to previous location
-,,s    - navigate through the entire buffer screen (easymotion)
-,,w    - navigate from the cursor to the end of the buffer screen (easymotion)
+`w`   - jump by start of words (punctuation considered words)
+`W`   - jump by words (spaces separate words)
+`e`   - jump to end of words (punctuation considered words)
+`E`   - jump to end of words (no punctuation)
+`b`   - jump backward by words (punctuation considered words)
+`B`   - jump backward by words (no punctuation)
+`0`   - (zero) start of line
+`^`   - first non-blank character of line
+`$`   - end of line
+`#G`  - go to # line command (prefix with number - 5G goes to line 5)
+`gg`  - go to first line of file
+`G`   - go to last line of file
+`C-o` - jump to previous location
+`,,s` - navigate through the entire buffer screen (easymotion)
+`,,w` - navigate from the cursor to the end of the buffer screen (easymotion)
+`H`   - jump to TOP of screen
+`M`   - Jump to BOTTOM of screen
+`g;`  - jump to last edited position
+
+==================================================================================
+MARKS                                                                   cs-marks
+
+`ma`     - set mark `a` at current cursor location
+`'a`     - jump to line of mark
+``a`     - jump to position of mark `a`
+`'V`     - jump to .vimrc
+`'Z`     - jump to .zshrc
+`:marks` - list all current marks
 
 ==================================================================================
 COPY / PASTE                                                       cs-copy-paste
 
-yy      - yank (copy) a line
-2yy     - yank 2 lines
-yw      - yank word
-y$      - yank to end of line
-p       - put (paste) the clipboard after cursor
-P       - put (paste) before cursor
-dd      - delete (cut) a line
-dw      - delete (cut) the current word
-x       - delete (cut) current character
-shift-v - to visual mode (to copy multiple lines)
-C-v     - multiline visual mode
-"*y     - copy selected text in visual mode to clipboard (3rd mouse click)
-"*yy    - copy current line to clipboard (3rd mouse click)
+`yy`      - yank (copy) a line
+`2yy`     - yank 2 lines
+`yw`      - yank word
+`y$`      - yank to end of line
+`p`       - put (paste) the clipboard after cursor
+`P`       - put (paste) before cursor
+`dd`      - delete (cut) a line
+`dw`      - delete (cut) the current word
+`x`       - delete (cut) current character
+`shift-v` - to visual mode (to copy multiple lines)
+`C-v`     - multiline visual mode
+`"*y`     - copy selected text in visual mode to clipboard (3rd mouse click)
+`"*yy`    - copy current line to clipboard (3rd mouse click)
 
 ==================================================================================
 DELETE                                                                 cs-delete
 
-dd - remove line
-dw - delete until next word, excluding the first character
-de - delete until end of the current, excluding the last character
-d$ - delete until end of line
+`dd` - remove line
+`dw` - delete until next word, excluding the first character
+`de` - delete until end of the current, excluding the last character
+`d$` - delete until end of line
+`D`  - same as d$
+`d^` - delete up unto the beginning of the line
 
 ==================================================================================
 SEARCH / REPLACE                                               cs-search-replace
 
-/pattern               - search for pattern
-?pattern               - search backward for pattern
-n                      - repeat search in same direction
-N                      - repeat search in opposite direction
-:%s/old/new/g          - replace all old with new throughout file
-:%s/old/new/gc         - replace all old with new throughout file with confirmations
-:/\v(\w+)              - search with regexp
-:%s/\v([0-9]+)/Foo\1/g - search with regexp and replace with group
+`/pattern`               - search for pattern
+`?pattern`               - search backward for pattern
+`n`                      - repeat search in same direction
+`N`                      - repeat search in opposite direction
+`:%s/old/new/g`          - replace all old with new throughout file
+`:%s/old/new/gc`         - replace all old with new throughout file with confirmations
+`:/\v(\w+)`              - search with regexp
+`:%s/\v([0-9]+)/Foo\1/g` - search with regexp and replace with group
 
 ==================================================================================
 CORRECT WORDS                                                   cs-correct-words
 
-ce - correct the word from the cursor position (it will put in Insert mode)
-cw - same as previous 
-c$ - correct from the cursor position to the end of line
+`x`  - delete char UNDER cursor
+`X`  - delete char BEFORE cursor
+`#x` - delete the next # chars, starting from char under cursor
+`ce` - correct the word from the cursor position (it will put in Insert mode)
+`cw` - same as previous 
+`c$` - correct from the cursor position to the end of line
+`cc` - correct the entire line
+`#J` - merge # number of lines together
 
 ==================================================================================
 INSERT MODE                                                       cs-insert-mode
 
-i   - start insert mode at cursor
-I   - insert at the beginning of the line
-a   - append after the cursor
-A   - append at the end of the line
-o   - open (append) blank line below current line (no need to press return)
-O   - open blank line above current line
-ea  - append at end of word
-Esc - exit insert mod
-C-w - delete word before cursor
-C-d - delete word after cursor
+`i`     - start insert mode at cursor
+`I`     - insert at the beginning of the line
+`a`     - append after the cursor
+`A`     - append at the end of the line
+`o`     - open (append) blank line below current line (no need to press return)
+`O`     - open blank line above current line
+`ea`    - append at end of word
+`Esc`   - exit insert mode
+`alt-,` - exit insert mode
+`C-w`   - delete word before cursor
+`C-d`   - delete word after cursor
 
 ==================================================================================
 UNDO - REDO                                                         cs-undo-redo
 
-u   - undo
-C-r - undo the undo
+`u`   - undo
+`C-r` - undo the undo
 
 ==================================================================================
 SPELL CHECKING                                                 cs-spell-checking
 
-]s - go to next misspelled word
-[s - go to previous misspelled word
-z= - find suggestions for the word
-zg - add word under the cursor as good word
-,c - perform :GrammarousCheck to check grammar errors
+`]s` - go to next misspelled word
+`[s` - go to previous misspelled word
+`z=` - find suggestions for the word
+`zg` - add word under the cursor as good word
+`,c` - perform :GrammarousCheck to check grammar errors
 
 ==================================================================================
 FOLDING                                                               cs-folding
 
-zc - close fold
-zo - open fold
-za - toggle fold
-zM - close all folds
-zR - open all folds
+`zc` - close fold
+`zo` - open fold
+`za` - toggle fold
+`zM` - close all folds
+`zR` - open all folds
 
 ==================================================================================
 DBEXT                                                                   cs-dbext
 
-,se  - execute sql query
-,sbp - change profile
-,sdt - describe table
-,slt - list tables
+`,se`  - execute sql query
+`,sbp` - change profile
+`,sdt` - describe table
+`,slt` - list tables
 
 ==================================================================================
 CUSTOM SHORTCUTS                                             cs-custom-shortcuts
 
-C-Tab - omnicompletion
-;;    - switch buffer
-C-b   - execute godef (Go to definition in Golang)
-C-n   - show/hide line numbers
-space - toggle highlighting on/off
-F2    - toggle auto-indenting for code paste
-,w    - fast saving
-,q    - fast quitting
-,x    - fast saving & quitting
-,o    - open explorer
-,u    - open undo tree
-C-y   - cut line
-,l    - format code
+`C-Tab` - omnicompletion
+`;;`    - switch buffer
+`C-b`   - execute godef (Go to definition in Golang)
+`C-n`   - show/hide line numbers
+`space` - toggle highlighting on/off
+`F2`    - toggle auto-indenting for code paste
+`,w`    - fast saving
+`,q`    - fast quitting
+`,x`    - fast saving & quitting
+`,o`    - open explorer
+`,u`    - open undo tree
+`C-y`   - cut line
+`,l`    - format code
 
 ==================================================================================
 COMMANDS                                                             cs-commands
@@ -164,31 +186,37 @@ COMMANDS                                                             cs-commands
 ==================================================================================
 BUFFERS                                                               cs-buffers
 
-:enew - create a new buffer
-:bd   - remove current buffer
-:bn   - open to next buffer
-:bp   - open to previous buffer
+`:enew`   - create a new buffer
+`:bd`     - remove current buffer
+`:bn`     - open to next buffer
+`:bp`     - open to previous buffer
+`:!<cmd>` - execute <cmd>
 
 ==================================================================================
 EXPLORER                                                             cs-explorer
 
-:e       - open a file
-:Explore - open explorer
+`:e`       - open a file
+`:Explore` - open explorer
 
 ==================================================================================
 TIPS & TRICKS                                                   cs-tips-n-tricks
 
-Comment multiple lines: 
-- C-v
+Comment multiple lines
+----------------------
+- `C-v`
 - select the lines you want to comment
-- press I (capital i)
-- insert your comment, e.g. `/`
+- press `I` (capital i)
+- insert your comment, e.g. `//`
 - press Escape
 - voila!
 
 Format existing text at X characters (defined in your .vimrc) for your markdown
-file:
+-------------------------------------------------------------------------------
 - select the lines you want to format with `v`, `C-v` or `S-v`
 - press `gq`
 Ref: https://thoughtbot.com/blog/wrap-existing-text-at-80-characters-in-vim
+
+Insert # times "Foobar"
+-----------------------
+`3i Foobar <ESC>` in normal mode
 
