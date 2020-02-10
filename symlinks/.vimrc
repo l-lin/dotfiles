@@ -218,6 +218,11 @@ let g:go_highlight_build_constraints = 1
 let g:go_addtags_transform = "camelcase"
 " Use source code
 let g:go_gocode_propose_source=1
+" Debug window config
+let g:go_debug_windows = {
+      \ 'vars':       'rightbelow 60vnew',
+      \ 'stack':      'rightbelow 10new',
+\ }
 " }}}
 " VIM-JS customization {{{
 let g:javascript_plugin_jsdoc = 1
