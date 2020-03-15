@@ -204,8 +204,10 @@ hi PmenuSel ctermfg=NONE ctermbg=59 cterm=NONE guifg=NONE guibg=#3f4b52 gui=NONE
 " VIM-GO customization {{{
 " Call goimports on save
 let g:go_fmt_command = "goimports"
+let g:go_def_mode='gopls'
+let g:go_info_mode='gopls'
 " Call vet, golint & errcheck on save
-let g:go_metalinter_autosave = 1
+let g:go_metalinter_autosave = 0
 " Syntax highlighting
 let g:go_highlight_types = 1
 let g:go_highlight_fields = 1
@@ -235,6 +237,11 @@ let g:ale_sign_warning = '⚠'
 let g:airline#extensions#ale#enabled = 1
 " Keep sign in gutter open
 let g:ale_sign_column_always = 1
+let g:ale_linters = {
+	\ 'go': ['gopls'],
+	\}
+" If no Go error are not displayed in gutter with Go 1.13+, edit the file ~/.vim/plugged/ale/autoload/ale/handlers/go.vim
+" see https://github.com/dense-analysis/ale/issues/2761
 " }}}
 " ncm2 {{{
 " enable ncm2 for all buffers
