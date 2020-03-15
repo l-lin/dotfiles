@@ -5,11 +5,11 @@
 [includeIf "gitdir:/tmp/"]
     path = ~/perso/.gitconfig
 [user]
-	name = Louis Lin
+    name = Louis Lin
 [credential]
-	helper = cache
+    helper = cache
 [core]
-	editor = nvim
+    editor = nvim
     excludesfile = ~/.gitignore_global
     autocrlf = input
 [alias]
@@ -22,7 +22,7 @@
     df = diff
     ignore = update-index --assume-unchanged
     ignored = !git ls-files -v | grep "^[[:lower:]]"
-    lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)<%an>%Creset' --abbrev-commit
+    lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)%an <%ae>%Creset' --abbrev-commit
     logv = log --graph --all --decorate --stat --date=iso
     me = merge --no-ff
     oops = commit --amend
@@ -34,44 +34,42 @@
     unignore = update-index --no-assume-unchanged 
     wdiff = diff --word-diff --color-words=.
 [push]
-	default = upstream
+    default = upstream
 # activate color for all commands
 [color]
-	ui = auto
+    ui = auto
 # diff with meaningful prefix and word-diff will find a letter as a word
 [diff]
-	mnemonicprefix = true
-	wordRegex = .
+    mnemonicprefix = true
+    wordRegex = .
 # commands will be autocorrect (rset -> reset)
 [help]
-	autocorrect = -1
+    autocorrect = -1
 # remember previous conflict resolutions
 [rerere]
-	enabled = true
+    enabled = true
 [pager]
     diff = diff-so-fancy | less --tabs=1,5 -RFX
     show = diff-so-fancy | less --tabs=1,5 -RFX
 # pull will do a rebase instead of a merge
 [pull]
-	rebase = true
+    rebase = true
 # merge is looking harder for renames
 [merge]
     renamelimit = 3000
+    tool = meld
 # Automatically stash any local changes before rebasing
 [rebase]
-	autostash = true
+    autostash = true
 [pretty]
     # reflog, with relative date (but for commits, not reflog entries!):
     reflog = %Cred%h%Creset - %Cblue%gd%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)<%an>%Creset
+# shortcuts
 [url "https://github.com/"]
-	insteadOf = github:
-	insteadOf = gh:
-
-[url "git@github.com:"]
-	pushInsteadOf = github:
-	pushInsteadOf = gh:
+    insteadOf = github:
+    insteadOf = gh:
 
 [url "git@oogit.oodrive.net:"]
-	insteadOf = oogit:
-	insteadOf = oo:
+    insteadOf = oogit:
+    insteadOf = oo:
 
