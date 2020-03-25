@@ -4,7 +4,7 @@ set -e
 set -x
 
 docker_compose_version="1.18.0"
-go_version="1.12.15"
+go_version="1.14.1"
 nvm_version="0.33.11"
 pet_version="0.3.6"
 ctop_version="0.7.1"
@@ -40,6 +40,7 @@ snap install lsd --classic
 echo "[-] Installing Docker"
 curl -fsSL https://get.docker.com/ | sh
 docker --version
+sudo usermod -aG docker $USER
 
 echo "[-] Installing Docker Compose: https://github.com/docker/compose"
 sudo curl -o /usr/local/bin/docker-compose -L https://github.com/docker/compose/releases/download/${docker_compose_version}/docker-compose-`uname -s`-`uname -m`

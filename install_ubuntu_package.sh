@@ -4,7 +4,7 @@ set -e
 set -x
 
 # Add neovim repository
-sudo add-apt-repository ppa:neovim-ppa/stable
+# sudo add-apt-repository ppa:neovim-ppa/stable
 # Add ubuntu arc theme
 sudo add-apt-repository ppa:noobslab/themes
 sudo add-apt-repository ppa:noobslab/icons
