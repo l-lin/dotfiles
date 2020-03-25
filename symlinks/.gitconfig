@@ -65,7 +65,7 @@
     # reflog, with relative date (but for commits, not reflog entries!):
     reflog = %Cred%h%Creset - %Cblue%gd%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)<%an>%Creset
 # shortcuts
-[url "https://github.com/"]
+[url "git@github.com:"]
     insteadOf = github:
     insteadOf = gh:
 
