@@ -25,6 +25,7 @@ Plug 'terryma/vim-multiple-cursors' " Sublime text's multiple selection
 Plug 'Chiel92/vim-autoformat' " Format code
 Plug 'vim-scripts/dbext.vim' " DB access (exec SQL directly from VIM)
 Plug 'kshenoy/vim-signature' " Display marks
+Plug 'vim-scripts/DrawIt'
 " Neovim plugins
 Plug 'roxma/nvim-yarp' " Remote plugin framework
 Plug 'ncm2/ncm2' " Completion framework for NeoVim
