@@ -47,7 +47,7 @@ HIST_STAMPS="yyyy-mm-dd"
 plugins=(z git-open copyfile copydir colored-man-pages extract web-search zsh-autosuggestions zsh-syntax-highlighting httpie wd
     kubectl
     nvm
-) 
+)
 
 source $ZSH/oh-my-zsh.sh
 
