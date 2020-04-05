@@ -291,7 +291,8 @@ au FileType yaml set tabstop=2
 " Spell checking {{{
 " Enable spell checking to english
 set spelllang=en
-set spell
+" by default, do not spell check
+set nospell
 " }}}
 " Database access {{{
 let g:dbext_default_profile_PG_localhost = 'type=PGSQL:user=postgres:dbname=oodev:host=localhost'
