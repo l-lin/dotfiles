@@ -11,7 +11,7 @@ Plug 'vim-airline/vim-airline' " Display the bottom status bar
 Plug 'vim-airline/vim-airline-themes' " Themes for the airline
 Plug 'plasticboy/vim-markdown' " Markdown support
 Plug 'airblade/vim-gitgutter' " Show git diff in the gutter
-Plug 'joshdick/onedark.vim' " VIM theme
+Plug 'morhetz/gruvbox' " VIM theme
 Plug 'ctrlpvim/ctrlp.vim' " Open file directory directly with C-p + used for GoDecls
 Plug 'scrooloose/nerdtree' " Tree explorer
 Plug 'Xuyuanp/nerdtree-git-plugin' " Tree explorer with Git status
@@ -20,7 +20,6 @@ Plug 'mbbill/undotree' " Undo history
 Plug 'editorconfig/editorconfig-vim' " .editorconfig support
 Plug 'pangloss/vim-javascript' " Javascript support
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install && npm install -g tern' } " Javascript autocompletion
-"Plug 'leafgarland/typescript-vim' " Typescript support
 Plug 'terryma/vim-multiple-cursors' " Sublime text's multiple selection
 Plug 'Chiel92/vim-autoformat' " Format code
 Plug 'vim-scripts/dbext.vim' " DB access (exec SQL directly from VIM)
@@ -37,8 +36,6 @@ Plug 'ncm2/ncm2-go' " Completion for Golang
 Plug 'ncm2/ncm2-tern' " Completion for JS
 Plug 'ncm2/ncm2-cssomni' " Completion for CSS
 Plug 'rhysd/vim-grammarous' " Grammar checker
-"Plug 'HerringtonDarkholme/yats.vim'
-"Plug 'mhartington/nvim-typescript', {'do': './install.sh'} " Typescript support
 call plug#end()
 " }}}
 " Basic editing configuration {{{
@@ -94,7 +91,7 @@ set so=7
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 " Airline configuration
 let g:airline#extensions#tabline#enabled = 1
-let g:airline_theme='onedark'
+let g:airline_theme='gruvbox'
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '>'
 " }}}
@@ -191,7 +188,10 @@ endif
 " Colors {{{
 syntax on
 syntax enable
-colorscheme onedark
+" Highlight spell errors: https://github.com/morhetz/gruvbox/issues/175#issuecomment-390428621
+let g:gruvbox_guisp_fallback='bg'
+colorscheme gruvbox
+set background=dark
 if (has("termguicolors"))
   set termguicolors
 endif
