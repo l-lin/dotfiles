@@ -63,3 +63,24 @@ sudo -v && wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | 
     - Port: 587
     - Encryption: TLS
 
+# IntellIJ plugins
+
+- AceJump
+- AsciiDoc
+- CodeGlance
+- Emoji support plugin
+- Error prone compiler
+- Grep console
+- Handlebars/Mustache
+- IdeaVim
+- IdeaVim-EasyMotion
+- Ideolog
+- IntelliJDeodorant
+- Lombok
+- MyGruvbox Theme
+- Property sorter
+- Scala
+- SonarLint
+- Spring assistant
+- WakaTime
+
