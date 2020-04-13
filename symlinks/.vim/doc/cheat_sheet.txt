@@ -50,7 +50,11 @@ CURSOR MOVEMENT                                               cs-cursor-movement
 `G`   - go to last line of file
 `C-o` - jump to previous location
 `,,s` - navigate through the entire buffer screen (easymotion)
-`,,w` - navigate from the cursor to the end of the buffer screen (easymotion)
+`,,b` - navigate from the cursor to the beginning of the buffer screen (easymotion)
+`,,w` - navigate from the cursor to the end of the buffer screen and highlight start of words (easymotion)
+`,,e` - navigate from the cursor to the end of the buffer screen and highlight end of words (easymotion)
+`,,j` - navigate in lines from the current line to the beginning of the buffer screen (easymotion)
+`,,k` - navigate in lines from the current line to the end of the buffer screen (easymotion)
 `H`   - jump to TOP of screen
 `M`   - Jump to BOTTOM of screen
 `g;`  - jump to last edited position
