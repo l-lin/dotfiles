@@ -98,7 +98,7 @@ echo "[-] Installing vscode"
 sudo snap install code --classic
 
 echo "[-] Installing gohugo"
-sudo snap install hugo
+sudo snap install hugo --channel=extended
 
 echo "[-] Installing IntelliJ CE"
 sudo snap install intellij-idea-community --classic 
