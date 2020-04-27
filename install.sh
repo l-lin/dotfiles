@@ -3,13 +3,13 @@
 set -e
 set -x
 
-docker_compose_version="1.18.0"
-go_version="1.14.1"
-nvm_version="0.33.11"
+docker_compose_version="1.25.5"
+go_version="1.14.2"
+nvm_version="0.35.3"
 pet_version="0.3.6"
-ctop_version="0.7.1"
-bat_version="0.12.1"
-fd_version="7.1.0"
+ctop_version="0.7.3"
+bat_version="0.15.0"
+fd_version="8.0.0"
 
 echo "[-] Creating folders..."
 mkdir -p $HOME/apps
@@ -19,23 +19,30 @@ mkdir -p $HOME/perso
 mkdir -p $HOME/.zsh/completion
 mkdir -p $HOME/go
 mkdir -p $HOME/.undodir
+
 echo "[-] Installing stuffs..."
 sudo pip install --upgrade pip 
 sudo pip install --upgrade virtualenv 
+
 echo "[-] Installing power-line for VIM airline"
 sudo apt-get install python-setuptools
 sudo pip install powerline-status
+
 echo "[-] Installing TMUX plugin manager"
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
 echo "[-] Installing pgcli"
 sudo pip install --upgrade pgcli
+
+echo "[-] Installing Neovim"
+sudo snap install --beta nvim --classic
 
 echo "[-] Installing NVM"
 mkdir -p $HOME/.nvm
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v${nvm_version}/install.sh | bash
 
 echo "[-] Installing LSD: https://github.com/Peltoche/lsd"
-snap install lsd --classic
+sudo snap install lsd --classic
 
 echo "[-] Installing Docker"
 curl -fsSL https://get.docker.com/ | sh
