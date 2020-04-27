@@ -2,40 +2,42 @@
 " Using https://github.com/junegunn/vim-plug as dependency manager
 " Execute :PlugInstall
 call plug#begin()
-Plug 'tpope/vim-sensible' " VIM minimal config
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' } " Golang support
-Plug 'dense-analysis/ale' " Linting
-Plug 'SirVer/ultisnips' " Snippets
-Plug 'honza/vim-snippets' " Snippets
-Plug 'vim-airline/vim-airline' " Display the bottom status bar
+Plug 'tpope/vim-sensible'             " VIM minimal config
+
+" GUI stuffs
+Plug 'morhetz/gruvbox'                " VIM theme
+Plug 'vim-airline/vim-airline'        " Display the bottom status bar
 Plug 'vim-airline/vim-airline-themes' " Themes for the airline
-Plug 'plasticboy/vim-markdown' " Markdown support
-Plug 'airblade/vim-gitgutter' " Show git diff in the gutter
-Plug 'morhetz/gruvbox' " VIM theme
-Plug 'ctrlpvim/ctrlp.vim' " Open file directory directly with C-p + used for GoDecls
-Plug 'scrooloose/nerdtree' " Tree explorer
-Plug 'Xuyuanp/nerdtree-git-plugin' " Tree explorer with Git status
-Plug 'easymotion/vim-easymotion' " Easily navigate through the file
-Plug 'mbbill/undotree' " Undo history
-Plug 'editorconfig/editorconfig-vim' " .editorconfig support
-Plug 'pangloss/vim-javascript' " Javascript support
-Plug 'ternjs/tern_for_vim', { 'do': 'npm install && npm install -g tern' } " Javascript autocompletion
+Plug 'ryanoasis/vim-devicons'         " Icons everywhere
+Plug 'dense-analysis/ale'             " Linting
+Plug 'airblade/vim-gitgutter'         " Show git diff in the gutter
+Plug 'kshenoy/vim-signature'          " Display marks
+
+" Completions
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+" Languages
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' } " Golang support
+Plug 'plasticboy/vim-markdown'                     " Markdown support
+Plug 'editorconfig/editorconfig-vim'               " .editorconfig support
+
+" Snippets
+Plug 'SirVer/ultisnips'   " Snippets
+Plug 'honza/vim-snippets' " Snippets
+
+" Others
+Plug 'ctrlpvim/ctrlp.vim'           " Open file directory directly with C-p + used for GoDecls
+Plug 'scrooloose/nerdtree'          " Tree explorer
+Plug 'Xuyuanp/nerdtree-git-plugin'  " Tree explorer with Git status
+Plug 'easymotion/vim-easymotion'    " Easily navigate through the file
+Plug 'mbbill/undotree'              " Undo history
 Plug 'terryma/vim-multiple-cursors' " Sublime text's multiple selection
-Plug 'Chiel92/vim-autoformat' " Format code
-Plug 'vim-scripts/dbext.vim' " DB access (exec SQL directly from VIM)
-Plug 'kshenoy/vim-signature' " Display marks
-Plug 'vim-scripts/DrawIt' " Help draw ascii schemas
-Plug 'wakatime/vim-wakatime' " Time tracking
-" Neovim plugins
-Plug 'roxma/nvim-yarp' " Remote plugin framework
-Plug 'ncm2/ncm2' " Completion framework for NeoVim
-Plug 'ncm2/ncm2-bufword' " Completion word from current buffer
-Plug 'ncm2/ncm2-path' " Completion word for path
-Plug 'ncm2/ncm2-tmux' " Completion for TMUX
-Plug 'ncm2/ncm2-go' " Completion for Golang
-Plug 'ncm2/ncm2-tern' " Completion for JS
-Plug 'ncm2/ncm2-cssomni' " Completion for CSS
-Plug 'rhysd/vim-grammarous' " Grammar checker
+Plug 'Chiel92/vim-autoformat'       " Format code
+Plug 'vim-scripts/dbext.vim'        " DB access (exec SQL directly from VIM)
+Plug 'vim-scripts/DrawIt'           " Help draw ascii schemas
+Plug 'wakatime/vim-wakatime'        " Time tracking
+Plug 'psliwka/vim-smoothie'         " Smooth scrolling
+Plug 'rhysd/vim-grammarous'         " Grammar checker
 call plug#end()
 " }}}
 " Basic editing configuration {{{
@@ -94,6 +96,21 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline_theme='gruvbox'
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '>'
+
+syntax on
+syntax enable
+" Highlight spell errors: https://github.com/morhetz/gruvbox/issues/175#issuecomment-390428621
+let g:gruvbox_guisp_fallback='bg'
+" Theme colorscheme
+colorscheme gruvbox
+set background=dark
+if (has("termguicolors"))
+  set termguicolors
+endif
+" File type detection
+filetype plugin on
+" Omnicomplete
+set omnifunc=syntaxcomplete#Complete
 " }}}
 " Files, backups and undo {{{
 " Turn backup off, since most stuff is in SVN, git etc anyway...
@@ -117,7 +134,7 @@ let g:ctrlp_custom_ignore = 'node_modules'
 vnoremap <silent> * :call VisualSelection('f')<CR>
 vnoremap <silent> # :call VisualSelection('b')<CR>
 " Set ctrl-space behavior same as ctrl-n
-inoremap <C-Space> <C-n>
+"inoremap <C-Space> <C-n>
 " Switch back and forth from buffer
 map ;; <C-^>
 " Show/Hide line number
@@ -185,23 +202,6 @@ if has("autocmd")
   au VimLeave * silent execute '!echo -ne "\e[ q"' | redraw!
 endif
 " }}}
-" Colors {{{
-syntax on
-syntax enable
-" Highlight spell errors: https://github.com/morhetz/gruvbox/issues/175#issuecomment-390428621
-let g:gruvbox_guisp_fallback='bg'
-colorscheme gruvbox
-set background=dark
-if (has("termguicolors"))
-  set termguicolors
-endif
-" File type detection
-filetype plugin on
-" Omnicomplete
-set omnifunc=syntaxcomplete#Complete
-hi Pmenu ctermfg=153 ctermbg=NONE cterm=NONE guifg=#bcdbff guibg=NONE gui=NONE
-hi PmenuSel ctermfg=NONE ctermbg=59 cterm=NONE guifg=NONE guibg=#3f4b52 gui=NONE
-" }}}
 " VIM-GO customization {{{
 " Call goimports on save
 let g:go_fmt_command = "goimports"
@@ -227,9 +227,6 @@ let g:go_debug_windows = {
       \ 'stack':      'rightbelow 10new',
 \ }
 " }}}
-" VIM-JS customization {{{
-let g:javascript_plugin_jsdoc = 1
-" }}}
 " Linting {{{
 " Error and warning signs.
 let g:ale_sign_error = '⤫'
@@ -244,32 +241,54 @@ let g:ale_linters = {
 " If no Go error are not displayed in gutter with Go 1.13+, edit the file ~/.vim/plugged/ale/autoload/ale/handlers/go.vim
 " see https://github.com/dense-analysis/ale/issues/2761
 " }}}
-" ncm2 {{{
-" enable ncm2 for all buffers
-autocmd BufEnter * call ncm2#enable_for_buffer()
-" IMPORTANT: :help Ncm2PopupOpen for more information
-set completeopt=noinsert,menuone,noselect
-" suppress the annoying 'match x of y', 'The only match' and 'Pattern not
-" found' messages
+" Conquer of completion {{{
+" TextEdit might fail if hidden is not set.
+set hidden
+" Some servers have issues with backup files, see #649.
+set nowritebackup
+" Give more space for displaying messages.
+set cmdheight=2
+" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+" delays and poor user experience.
+set updatetime=300
+" Don't pass messages to |ins-completion-menu|.
 set shortmess+=c
-" When the <Enter> key is pressed while the popup menu is visible, it only
-" hides the menu. Use this mapping to close the menu and also start a new
-" line.
-inoremap <expr> <C-j> pumvisible() ? "\<c-y>\<cr>" : "\<CR>"
-" Use <TAB> to select the popup menu:
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-" When the <Alt-*> is pressed while the popup menu is visible, perform
-" the cursor reposition and set to mode normal
-inoremap <expr> <A-h> pumvisible() ? "\<c-y>\<A-h>" : "\<A-h>"
-inoremap <expr> <A-j> pumvisible() ? "\<c-y>\<A-j>" : "\<A-j>"
-inoremap <expr> <A-k> pumvisible() ? "\<c-y>\<A-k>" : "\<A-k>"
-inoremap <expr> <A-l> pumvisible() ? "\<c-y>\<A-l>" : "\<A-l>"
-inoremap <expr> <A-o> pumvisible() ? "\<c-y>\<A-o>" : "\<A-o>"
-inoremap <expr> <A-b> pumvisible() ? "\<c-y>\<A-b>" : "\<A-b>"
-inoremap <expr> <A-u> pumvisible() ? "\<c-y>\<A-u>" : "\<A-u>"
-inoremap <expr> <A-e> pumvisible() ? "\<c-y>\<A-e>" : "\<A-e>"
-inoremap <expr> <A-$> pumvisible() ? "\<c-y>\<A-$>" : "\<A-$>"
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+set signcolumn=yes
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
+
+" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
+" position. Coc only does snippet and additional edit on confirm.
+if exists('*complete_info')
+  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+else
+  imap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+endif
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
 " }}}
 " Editorconfig {{{
 " Language: SQL
