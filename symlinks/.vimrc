@@ -133,15 +133,10 @@ let g:ctrlp_custom_ignore = 'node_modules'
 " Visual mode pressing * or # searches for the current selection
 vnoremap <silent> * :call VisualSelection('f')<CR>
 vnoremap <silent> # :call VisualSelection('b')<CR>
-" Set ctrl-space behavior same as ctrl-n
-"inoremap <C-Space> <C-n>
 " Switch back and forth from buffer
 map ;; <C-^>
 " Show/Hide line number
-nmap <C-n> :set invnumber<CR>
-" Go to definition
-autocmd FileType go nmap <C-b> :GoDef<CR>
-autocmd FileType javascript nmap <C-b> :TernDef<CR>
+nmap <C-m> :set invnumber<CR>
 " Build & test
 map <F9> :GoBuild<CR>
 map <F8> :GoTest<CR>
@@ -189,6 +184,50 @@ nmap <leader>c :GrammarousCheck<CR>
 nnoremap <leader>r :ALENextWrap<CR>
 " Format
 noremap <leader>l :Autoformat<CR>
+" use a different buffer for delete and paste
+nnoremap d "_d
+vnoremap d "_d
+vnoremap p "_dP
+nnoremap x "_x
+" new line in normal mode and back
+nmap <Enter> o<ESC>
+nmap <S-Enter> O<ESC>
+
+" coc key mappings
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+" Use <c-space> to trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
+" Use `[g` and `]g` to navigate diagnostics
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+" Show documentation in preview window.
+nnoremap <C-q> :call <SID>show_documentation()<CR>
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+" GoTo code navigation.
+nmap <C-b> <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <A-7> <Plug>(coc-references)
+" Symbol renaming.
+nmap <F6> <Plug>(coc-rename)
 " }}}
 " Cursor shape {{{
 if has("autocmd")
@@ -256,22 +295,6 @@ set shortmess+=c
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
 set signcolumn=yes
-" Use tab for trigger completion with characters ahead and navigate.
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-" Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
 
 " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
 " position. Coc only does snippet and additional edit on confirm.
@@ -280,15 +303,8 @@ if exists('*complete_info')
 else
   imap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 endif
-" Use K to show documentation in preview window.
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
 " }}}
 " Editorconfig {{{
 " Language: SQL
