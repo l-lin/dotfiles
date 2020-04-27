@@ -10,6 +10,7 @@ pet_version="0.3.6"
 ctop_version="0.7.3"
 bat_version="0.15.0"
 fd_version="8.0.0"
+java_id="11.0.7.hs-adpt"
 
 echo "[-] Creating folders..."
 mkdir -p $HOME/apps
@@ -108,7 +109,12 @@ echo "[-] Installing gohugo"
 sudo snap install hugo --channel=extended
 
 echo "[-] Installing IntelliJ CE"
-sudo snap install intellij-idea-community --classic 
+sudo snap install intellij-idea-community --classic
+
+echo "[-] Installing SDKMan"
+curl -s "https://get.sdkman.io" | bash
+sdk install maven
+sdk install java "${java_id}"
 
 echo "[-] Installation SUCCESS!"
 exit 0

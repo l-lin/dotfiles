@@ -64,26 +64,10 @@ fi
 # --------------------------------------------------------
 
 export APPS_HOME="$HOME/apps"
-export JAVA_HOME="$APPS_HOME/java"
-export MAVEN_HOME="$APPS_HOME/maven"
-export M2_HOME="$MAVEN_HOME"
-export SCALA_HOME="$APPS_HOME/scala"
-export PLAY_HOME="$APPS_HOME/play"
-export ACTIVATOR_HOME="$APPS_HOME/activator"
-export TOMCAT_HOME="$APPS_HOME/tomcat"
-export SBT_HOME="$APPS_HOME/sbt"
-export GAE_HOME="$APPS_HOME/bin"
-export HEROKU_HOME="/usr/local/heroku"
 export GOROOT="$APPS_HOME/go"
 export GOPATH="$HOME/go"
-export NODEJS_HOME="$APPS_HOME/nodejs"
-export GRADLE_HOME="$APPS_HOME/gradle"
-export NVM_DIR="$HOME/.nvm"
-export PACT_DIR="/opt/pact"
-export SNAP_HOME="/snap"
 
-export PATH="/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:$HOME/bin:$PATH"
-export PATH="$JAVA_HOME/bin:$MAVEN_HOME/bin:$SCALA_HOME/bin:$PLAY_HOME/bin:$ACTIVATOR_HOME:$SBT_HOME/bin:$GAE_HOME/bin:$HEROKU_HOME/bin:$GOROOT/bin:$GOPATH/bin:$GRADLE_HOME/bin:$PACT_DIR/bin:$SNAP_HOME/bin:$PATH"
+export PATH="$HOME/bin:$GOROOT/bin:$GOPATH/bin:$PATH"
 
 export GREP_COLOR=32
 
