@@ -27,7 +27,8 @@ CONTENTS                                                             cs-contents
  1.12. Custom shortcuts...........................cs-custom-shortcuts
  2.    Commands...................................cs-commands
  2.1.  Buffers....................................cs-buffers
- 2.2.  Explorer...................................cs-explorer
+ 2.2.  Splits.....................................cs-splits
+ 2.3.  Explorer...................................cs-explorer
  3.    Tips & tricks..............................cs-tips-n-tricks
 
 ==================================================================================
@@ -187,6 +188,8 @@ CUSTOM SHORTCUTS                                             cs-custom-shortcuts
 ==================================================================================
 COMMANDS                                                             cs-commands
 
+`:!<cmd>` - execute <cmd>
+
 ==================================================================================
 BUFFERS                                                               cs-buffers
 
@@ -194,7 +197,15 @@ BUFFERS                                                               cs-buffers
 `:bd`     - remove current buffer
 `:bn`     - open to next buffer
 `:bp`     - open to previous buffer
-`:!<cmd>` - execute <cmd>
+`<C-w>w`  - move to floating buffer
+`<C-w>p`  - move to floating buffer
+
+==================================================================================
+SPLITS                                                                 cs-splits
+
+`<C-w>`  - "leader" key mapping to handle splits
+`<C-w>v` - split vertically
+`<C-w>s` - split horizontally
 
 ==================================================================================
 EXPLORER                                                             cs-explorer

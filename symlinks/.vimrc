@@ -20,6 +20,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' } " Golang support
 Plug 'plasticboy/vim-markdown'                     " Markdown support
 Plug 'editorconfig/editorconfig-vim'               " .editorconfig support
+Plug 'rust-lang/rust.vim'                          " Rust support
 
 " Snippets
 Plug 'SirVer/ultisnips'   " Snippets
@@ -140,8 +141,6 @@ nmap <C-m> :set invnumber<CR>
 " Build & test
 map <F9> :GoBuild<CR>
 map <F8> :GoTest<CR>
-" Close buffer
-nmap <C-w> :bd<CR>
 " Delete line
 nmap <C-y> dd
 " Press Space to toggle highlighting on/off, and show current value.
@@ -188,10 +187,6 @@ noremap <leader>l :Autoformat<CR>
 nnoremap d "_d
 vnoremap d "_d
 vnoremap p "_dP
-nnoremap x "_x
-" new line in normal mode and back
-nmap <Enter> o<ESC>
-nmap <S-Enter> O<ESC>
 
 " coc key mappings
 " Use tab for trigger completion with characters ahead and navigate.
@@ -213,7 +208,7 @@ inoremap <silent><expr> <c-space> coc#refresh()
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
 " Show documentation in preview window.
-nnoremap <C-q> :call <SID>show_documentation()<CR>
+nnoremap <silent> K :call <SID>show_documentation()<CR>
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
@@ -227,7 +222,7 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <A-7> <Plug>(coc-references)
 " Symbol renaming.
-nmap <F6> <Plug>(coc-rename)
+nmap <S-F6> <Plug>(coc-rename)
 " }}}
 " Cursor shape {{{
 if has("autocmd")
