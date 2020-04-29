@@ -236,7 +236,7 @@ if has("autocmd")
   au VimLeave * silent execute '!echo -ne "\e[ q"' | redraw!
 endif
 " }}}
-" VIM-GO customization {{{
+" vim-go customization {{{
 " Call goimports on save
 let g:go_fmt_command = "goimports"
 let g:go_def_mode='gopls'
@@ -260,6 +260,10 @@ let g:go_debug_windows = {
       \ 'vars':       'rightbelow 60vnew',
       \ 'stack':      'rightbelow 10new',
 \ }
+" }}}
+" rust.vim customization {{{
+" fmt on save
+let g:rustfmt_autosave = 1
 " }}}
 " Linting {{{
 " Error and warning signs.
