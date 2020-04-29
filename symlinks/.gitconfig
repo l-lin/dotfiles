@@ -19,7 +19,6 @@
     cdiff = log --oneline --no-merges
     ci = !git add -A && git commit
     co = checkout
-    df = diff
     ignore = update-index --assume-unchanged
     ignored = !git ls-files -v | grep "^[[:lower:]]"
     lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)%an <%ae>%Creset' --abbrev-commit
@@ -29,10 +28,26 @@
     pushf = push --force-with-lease
     rh = reset --hard
     rl = reflog --pretty=reflog
-    st = status -sb 
+    st = status -sb
     undo = reset --soft HEAD^
     unignore = update-index --no-assume-unchanged 
     wdiff = diff --word-diff --color-words=.
+    # reminders: read history
+    # - grep logs
+    #   git log -p -G'pattern' path/to/file
+    # - find all files that were deleted
+    #   git log --diff-filter=D --summary | grep delete
+    # - display full history for a given file
+    #   git log --all --full-history -- path/to/file
+    # - find 10 most modified files
+    #   git log --format=format: --name-only | grep -v '^$' | sort | uniq -c | sort -rg | head -10
+    # - pattern to search on revisions
+    #   git show :/pattern
+    # - show revision changes
+    #   git show revision:path/to/file
+    # reminders: fix past errors
+    # - remove sensitive files from git history
+    #   git filter-branch --force --index-filter "git rm --cached --ignore-unmatch path/to/file" --prune-empty --tag-name-filter cat -- --all
 [push]
     default = upstream
 # activate color for all commands

@@ -1,6 +1,4 @@
 alias sz="source ~/.zshrc"
-alias agi="sudo apt-get install"
-alias agr="sudo apt-get remove"
 alias v="nvim"
 alias ez="v ~/.zshrc"
 alias g="git"
