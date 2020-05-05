@@ -84,7 +84,3 @@
     insteadOf = github:
     insteadOf = gh:
 
-[url "git@oogit.oodrive.net:"]
-    insteadOf = oogit:
-    insteadOf = oo:
-
