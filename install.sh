@@ -116,5 +116,14 @@ curl -s "https://get.sdkman.io" | bash
 sdk install maven
 sdk install java "${java_id}"
 
+echo "[-] Installing node"
+nvm install 12
+
+echo "[-] Installing node stuffs"
+npm i -g neovim
+
+echo "[-] Installing python3 extension for nvim"
+python3 -m pip install --user --upgrade pynvim
+
 echo "[-] Installation SUCCESS!"
 exit 0
