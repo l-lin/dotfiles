@@ -137,7 +137,7 @@ vnoremap <silent> # :call VisualSelection('b')<CR>
 " Switch back and forth from buffer
 map ;; <C-^>
 " Show/Hide line number
-nmap <C-m> :set invnumber<CR>
+"nmap <C-m> :set invnumber<CR>
 " Build & test
 map <F9> :GoBuild<CR>
 map <F8> :GoTest<CR>
