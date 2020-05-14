@@ -4,6 +4,8 @@
     path = ~/perso/.gitconfig
 [includeIf "gitdir:/tmp/"]
     path = ~/perso/.gitconfig
+[includeIf "gitdir:~/tmp/"]
+    path = ~/perso/.gitconfig
 [user]
     name = Louis Lin
 [credential]
@@ -48,6 +50,8 @@
     # reminders: fix past errors
     # - remove sensitive files from git history
     #   git filter-branch --force --index-filter "git rm --cached --ignore-unmatch path/to/file" --prune-empty --tag-name-filter cat -- --all
+[commit]
+    template = ~/.git_commit_template
 [push]
     default = upstream
 # activate color for all commands
