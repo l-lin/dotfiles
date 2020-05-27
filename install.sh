@@ -11,6 +11,7 @@ ctop_version="0.7.3"
 bat_version="0.15.0"
 fd_version="8.0.0"
 java_id="11.0.7.hs-adpt"
+lsd_version="0.17.0"
 
 echo "[-] Creating folders..."
 mkdir -p $HOME/apps
@@ -43,7 +44,8 @@ mkdir -p $HOME/.nvm
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v${nvm_version}/install.sh | bash
 
 echo "[-] Installing LSD: https://github.com/Peltoche/lsd"
-sudo snap install lsd --classic
+curl -L -o /tmp/lsd.deb https://github.com/Peltoche/lsd/releases/download/${lsd_version}/lsd_${lsd_version}_amd64.deb
+sudo dpkg -i /tmp/lsd.deb
 
 echo "[-] Installing Docker"
 curl -fsSL https://get.docker.com/ | sh
