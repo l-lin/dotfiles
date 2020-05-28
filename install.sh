@@ -34,6 +34,7 @@ echo "[-] Installing TMUX plugin manager"
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 echo "[-] Installing pgcli"
+sudo apt install libpq-dev
 sudo pip install --upgrade pgcli
 
 echo "[-] Installing Neovim"
