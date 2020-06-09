@@ -23,19 +23,19 @@ mkdir -p $HOME/go
 mkdir -p $HOME/.undodir
 
 echo "[-] Installing stuffs..."
-sudo pip install --upgrade pip 
-sudo pip install --upgrade virtualenv 
+#sudo pip3 install --upgrade pip3
+sudo pip3 install --upgrade virtualenv
 
 echo "[-] Installing power-line for VIM airline"
 sudo apt-get install python-setuptools
-sudo pip install powerline-status
+sudo pip3 install powerline-status
 
 echo "[-] Installing TMUX plugin manager"
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 echo "[-] Installing pgcli"
 sudo apt install libpq-dev
-sudo pip install --upgrade pgcli
+sudo pip3 install --upgrade pgcli
 
 echo "[-] Installing Neovim"
 sudo snap install --beta nvim --classic
@@ -94,9 +94,6 @@ export GOROOT="$HOME/apps/go"
 export GOPATH="$HOME/go"
 export PATH="$GOROOT/bin:$GOPATH/bin:$PATH"
 
-echo "[-] Installing pet"
-go get -u github.com/knqyf263/pet
-
 echo "[-] Installing cht.sh: https://github.com/chubin/cheat.sh"
 sudo curl -o /usr/local/bin/cht.sh https://cht.sh/:cht.sh
 sudo chmod +x /usr/local/bin/cht.sh
@@ -114,11 +111,6 @@ sudo snap install hugo --channel=extended
 echo "[-] Installing IntelliJ CE"
 sudo snap install intellij-idea-community --classic
 
-echo "[-] Installing SDKMan"
-curl -s "https://get.sdkman.io" | bash
-sdk install maven
-sdk install java "${java_id}"
-
 echo "[-] Installing node"
 nvm install 12
 
@@ -127,6 +119,11 @@ npm i -g neovim
 
 echo "[-] Installing python3 extension for nvim"
 python3 -m pip install --user --upgrade pynvim
+
+echo "[-] Installing SDKMan"
+curl -s "https://get.sdkman.io" | bash
+sdk install maven
+sdk install java "${java_id}"
 
 echo "[-] Installation SUCCESS!"
 exit 0
