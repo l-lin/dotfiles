@@ -66,8 +66,9 @@ fi
 export APPS_HOME="$HOME/apps"
 export GOROOT="$APPS_HOME/go"
 export GOPATH="$HOME/go"
+export PYENV_ROOT="$APPS_HOME/pyenv"
 
-export PATH="$HOME/bin:$GOROOT/bin:$GOPATH/bin:$PATH"
+export PATH="$HOME/bin:$GOROOT/bin:$GOPATH/bin:$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"
 
 export GREP_COLOR=32
 

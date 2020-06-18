@@ -12,6 +12,7 @@ bat_version="0.15.0"
 fd_version="8.0.0"
 java_id="11.0.7.hs-adpt"
 lsd_version="0.17.0"
+python_version="3.5.4"
 
 echo "[-] Creating folders..."
 mkdir -p $HOME/apps
@@ -22,9 +23,11 @@ mkdir -p $HOME/.zsh/completion
 mkdir -p $HOME/go
 mkdir -p $HOME/.undodir
 
-echo "[-] Installing stuffs..."
-#sudo pip3 install --upgrade pip3
-sudo pip3 install --upgrade virtualenv
+echo "[-] Installing pyenv..."
+git clone https://github.com/pyenv/pyenv.git $HOME/apps/pyenv
+pyenv install $python_version
+pyenv global $python_version
+pyenv rehash
 
 echo "[-] Installing power-line for VIM airline"
 sudo apt-get install python-setuptools

@@ -7,7 +7,7 @@ sudo apt-get update
 
 echo "[-] Installing lots of stuffs"
 # Install additional commands
-sudo apt install build-essential cmake git zsh colordiff exuberant-ctags tmux python2-dev ruby-dev ruby htop xclip httpie silversearcher-ag nfs-common net-tools lm-sensors network-manager-openvpn openvpn network-manager-openvpn-gnome curl nnn jq ubuntu-restricted-extras software-properties-common python3-dev python3-pip python3-distutils gnome-tweak-tool preload chrome-gnome-shell
+sudo apt install build-essential cmake git zsh colordiff exuberant-ctags tmux ruby-dev ruby htop xclip httpie silversearcher-ag nfs-common net-tools lm-sensors network-manager-openvpn openvpn network-manager-openvpn-gnome curl nnn jq ubuntu-restricted-extras software-properties-common,gnome-tweak-tool preload chrome-gnome-shell libssl-dev
 
 echo "[-] Installing some ubuntu apps"
 sudo apt install gnome-shell-pomodoro alacarte peek
