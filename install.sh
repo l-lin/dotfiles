@@ -29,6 +29,9 @@ pyenv install $python_version
 pyenv global $python_version
 pyenv rehash
 
+echo "[-] Installing pyenv-virtualenv plugin"
+git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv
+
 echo "[-] Installing power-line for VIM airline"
 sudo apt-get install python-setuptools
 sudo pip3 install powerline-status
