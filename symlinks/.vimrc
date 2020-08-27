@@ -17,29 +17,29 @@ Plug 'kshenoy/vim-signature'          " Display marks
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Languages
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' } " Golang support
-Plug 'plasticboy/vim-markdown'                     " Markdown support
-Plug 'editorconfig/editorconfig-vim'               " .editorconfig support
-Plug 'rust-lang/rust.vim'                          " Rust support
+"Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' } " Golang support
+Plug 'plasticboy/vim-markdown'        " Markdown support
+Plug 'editorconfig/editorconfig-vim'  " .editorconfig support
+Plug 'rust-lang/rust.vim'             " Rust support
+Plug 'hashivim/vim-terraform'         " Terraform support
 
 " Snippets
-Plug 'SirVer/ultisnips'   " Snippets
-Plug 'honza/vim-snippets' " Snippets
+Plug 'SirVer/ultisnips'               " Snippets
+Plug 'honza/vim-snippets'             " Snippets
 
 " Others
-Plug 'ctrlpvim/ctrlp.vim'            " Open file directory directly with C-p + used for GoDecls
-Plug 'scrooloose/nerdtree'           " Tree explorer
-Plug 'Xuyuanp/nerdtree-git-plugin'   " Tree explorer with Git status
-Plug 'easymotion/vim-easymotion'     " Easily navigate through the file
-Plug 'mbbill/undotree'               " Undo history
-Plug 'terryma/vim-multiple-cursors'  " Sublime text's multiple selection
-Plug 'Chiel92/vim-autoformat'        " Format code
-Plug 'vim-scripts/dbext.vim'         " DB access (exec SQL directly from VIM)
-Plug 'vim-scripts/DrawIt'            " Help draw ascii schemas
-Plug 'wakatime/vim-wakatime'         " Time tracking
-Plug 'psliwka/vim-smoothie'          " Smooth scrolling
-Plug 'rhysd/vim-grammarous'          " Grammar checker
-Plug 'machakann/vim-highlightedyank' " Highlight yank
+Plug 'ctrlpvim/ctrlp.vim'             " Open file directory directly with C-p + used for GoDecls
+Plug 'scrooloose/nerdtree'            " Tree explorer
+Plug 'Xuyuanp/nerdtree-git-plugin'    " Tree explorer with Git status
+Plug 'easymotion/vim-easymotion'      " Easily navigate through the file
+Plug 'mbbill/undotree'                " Undo history
+Plug 'terryma/vim-multiple-cursors'   " Sublime text's multiple selection
+Plug 'Chiel92/vim-autoformat'         " Format code
+Plug 'vim-scripts/dbext.vim'          " DB access (exec SQL directly from VIM)
+Plug 'vim-scripts/DrawIt'             " Help draw ascii schemas
+Plug 'psliwka/vim-smoothie'           " Smooth scrolling
+Plug 'rhysd/vim-grammarous'           " Grammar checker
+Plug 'machakann/vim-highlightedyank'  " Highlight yank
 call plug#end()
 " }}}
 " Basic editing configuration {{{
