@@ -1,4 +1,14 @@
 [[snippets]]
   description = "Ansible diff"
-  command = "ansible-playbook -i environments/<env=stg-eu-fr> playbooks/update.yml -l tag_Application_<app> --diff --check --ask-vault --verbose"
+  command = "ansible-playbook -i environments/<env=stg-eu-fr> playbooks/update.yml --diff --ask-vault -vvv --check -l tag_Application_<app>"
+  output = ""
+
+[[snippets]]
+  description = "Terraform plan"
+  command = "terraform plan -out=tfplan -var-file=../../config/<env=stg-eu-fr>.tfvars --target=<target>"
+  output = ""
+
+[[snippets]]
+  description = "Ansible vault"
+  command = "ansible-vault edit ./environments/<env=stg-eu-fr>/group_vars/all/secrets.yml"
   output = ""
