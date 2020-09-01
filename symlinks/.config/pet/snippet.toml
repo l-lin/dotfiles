@@ -1,0 +1,4 @@
+[[snippets]]
+  description = "Ansible diff"
+  command = "ansible-playbook -i environments/<env=stg-eu-fr> playbooks/update.yml -l tag_Application_<app> --diff --check --ask-vault --verbose"
+  output = ""
