@@ -86,3 +86,20 @@ helm_delete() {
   local project_name=$(basename "$(pwd)")
   helm template . --name ${project_name}-llin -f values.loukoum.yaml | kubectl delete -f -
 }
+terraform_test() {
+  local files=($(echo ${1} | tr "," "\n"))
+  local env=${2:-stg-eu-fr}
+  local target_flags=""
+
+  for f in ${files[@]}; do
+    targets=($(cat ${f} | grep 'resource "' | grep -oEi '"[a-z0-9_-]+" "[a-z0-9_-]+"' | sed 's/"//g' | sed 's/ /./g'))
+    for target in ${targets[@]}; do
+      target_flags+="--target=${target} "
+    done
+  done
+
+  local cmd="terraform plan -out=tfplan -var-file=../../config/${env}.tfvars ${target_flags}"
+  echo "${cmd}"
+  echo "${cmd}" | clipcopy
+  echo "Copied to clipboard"
+}
