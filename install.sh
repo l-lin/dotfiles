@@ -4,7 +4,7 @@ set -e
 set -x
 
 docker_compose_version="1.25.5"
-go_version="1.14.2"
+go_version="1.15"
 nvm_version="0.35.3"
 pet_version="0.3.6"
 ctop_version="0.7.3"
@@ -92,13 +92,11 @@ echo "[-] Installing fd (> find): https://github.com/sharkdp/fd/"
 curl -o /tmp/fd.deb -L https://github.com/sharkdp/fd/releases/download/v${fd_version}/fd_${fd_version}_amd64.deb
 sudo dpkg -i /tmp/fd.deb
 
-echo "[-] Installing Golang"
-go_file_name=go${go_version}.linux-amd64
-curl -o /tmp/${go_file_name}.tar.gz https://dl.google.com/go/${go_file_name}.tar.gz
-tar xzvf /tmp/${go_file_name}.tar.gz -C $HOME/apps
-export GOROOT="$HOME/apps/go"
-export GOPATH="$HOME/go"
-export PATH="$GOROOT/bin:$GOPATH/bin:$PATH"
+echo "[-] Installing Golang Version Manager & Golang ${go_version}"
+bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
+source "${HOME}/.gvm/scripts/gvm"
+gvm install "${go_version}"
+gvm use "${go_version}" --default
 
 echo "[-] Installing cht.sh: https://github.com/chubin/cheat.sh"
 sudo curl -o /usr/local/bin/cht.sh https://cht.sh/:cht.sh
