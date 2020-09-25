@@ -124,6 +124,11 @@ if type pet >/dev/null 2>&1; then
     zle -N pet-select
     stty -ixon
     bindkey '^s' pet-select
+
+    function pet-register-prev() {
+      PREV=$(fc -lrn | head -n 1)
+      sh -c "pet new `printf %q "$PREV"`"
+    }
 fi
 
 if type fzf >/dev/null 2>&1; then
