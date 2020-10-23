@@ -23,6 +23,7 @@ Plug 'plasticboy/vim-markdown'        " Markdown support
 Plug 'editorconfig/editorconfig-vim'  " .editorconfig support
 Plug 'rust-lang/rust.vim'             " Rust support
 Plug 'hashivim/vim-terraform'         " Terraform support
+Plug 'chr4/nginx.vim'                 " Nginx support
 
 " Snippets
 Plug 'SirVer/ultisnips'               " Snippets
