@@ -3,6 +3,7 @@ alias v="nvim"
 alias ez="v ~/.zshrc"
 alias g="git"
 alias gbdr='git branch -r | awk "{print \$1}" | egrep -v -f /dev/fd/0 <(git branch -vv | grep origin) | awk "{print \$1}" | xargs git branch -D'
+alias gup='git fetch --all --prune && git checkout develop && git pull && gbdr'
 alias cb='git branch | fzf --header Checkout | xargs git checkout'
 alias grep="grep --color=auto"
 # Prevent recursive change on root directory
