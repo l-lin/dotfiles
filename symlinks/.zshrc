@@ -45,7 +45,7 @@ HIST_STAMPS="yyyy-mm-dd"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # plugins that took time to load: # nvm kubectl
 plugins=(z git-open copyfile copydir colored-man-pages extract web-search zsh-autosuggestions zsh-syntax-highlighting httpie wd
-    kubectl
+    #kubectl
     nvm
 )
 
@@ -66,6 +66,7 @@ fi
 export APPS_HOME="$HOME/apps"
 export GOPATH="$HOME/go"
 export PYENV_ROOT="$APPS_HOME/pyenv"
+export WOWZA_PATH="/usr/local/WowzaStreamingEngine"
 
 export PATH="$HOME/bin:$GOPATH/bin:$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"
 
