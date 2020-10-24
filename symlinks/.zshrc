@@ -107,12 +107,39 @@ znt_list_border=1
 znt_list_instant_select=1
 znt_history_active_text=reverse
 
+# fzf options
+export FZF_DEFAULT_OPTS="
+--ansi
+--height='80%'
+--bind='alt-k:preview-up,alt-p:preview-up'
+--bind='alt-j:preview-down,alt-n:preview-down'
+--bind='?:toggle-preview'
+--bind='alt-w:toggle-preview-wrap'
+--preview-window='right:60%'
+"
+
 # --------------------------------------------------------
 # Initialization
 # --------------------------------------------------------
 
 # fuzzyfinder
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+if type fzf >/dev/null 2>&1; then
+    function preview() {
+        local file
+        file=$(ls -t | fzf --preview 'bat --style numbers,changes --color "always" {} | head -500')
+        if [[ -f $file ]]; then
+            v $file
+        elif [[ -d $file ]]; then
+            cd $file
+            preview
+            zle reset-prompt
+        fi
+    }
+    zle -N preview
+    bindkey '^q' preview
+fi
+
 
 # pet: https://github.com/knqyf263/pet
 if type pet >/dev/null 2>&1; then
@@ -129,22 +156,6 @@ if type pet >/dev/null 2>&1; then
       PREV=$(fc -lrn | head -n 1)
       sh -c "pet new `printf %q "$PREV"`"
     }
-fi
-
-if type fzf >/dev/null 2>&1; then
-    function preview() {
-        local file
-        file=$(ls -t | fzf --preview 'bat --color "always" {}')
-        if [[ -f $file ]]; then
-            v $file
-        elif [[ -d $file ]]; then
-            cd $file
-            preview
-            zle reset-prompt
-        fi
-    }
-    zle -N preview
-    bindkey '^q' preview
 fi
 
 # Work specific environment variables

@@ -26,7 +26,7 @@ alias usedports="netstat -taupen"
 alias whousethatport="lsof -i" # losf -i :8000
 alias rmf="rm -rf"
 diffWithColor() {
-        diff -u $1 $2|colordiff|less -R
+  diff -u $1 $2|colordiff|less -R
 }
 alias diffc="diffWithColor"
 # tar
@@ -38,40 +38,14 @@ alias _="sudo "
 alias please="sudo "
 # lsd
 alias l="lsd -la --group-dirs first"
-# postgres with docker
-#alias psql="docker exec -it local_postgres psql"
-#alias pg_dump="docker exec -it local_postgres pg_dump"
 # weather
 alias weather="curl https://wttr.in/"
 # prettyping
 alias ping="prettyping --nolegend"
 # find configured local DNS servers
 alias find-dns-servers="nmcli dev show | grep 'IP4.DNS'"
-# Enable NVM
-alias enable_nvm="sed -i 's/# nvm/nvm/' $HOME/.zshrc"
-alias disable_nvm="sed -i 's/nvm/# nvm/' $HOME/.zshrc"
 # Enable Elasticsearch in local
 alias enable_elastic="sudo sysctl -w vm.max_map_count=262144"
-# notes
-note() {
-  local noteDir="$HOME/perso/notes/$(date +%Y)"
-  if [ $# -eq 0 ]; then
-    cd ${noteDir}
-  elif [[ "$1" == "new" ]]; then
-    mkdir -p ${noteDir}
-    local filePath="${noteDir}/$(date +%F)-$2.md"
-    cat > ${filePath} <<EOF
----
-title: $2
-tags: #
----
-
-EOF
-    v ${filePath}
-  else
-    v ${noteDir}/$1
-  fi
-}
 # test gitlab ci jobs
 ci() {
   [[ ! -f .gitlab-ci.yml ]] && echo "Missing .gitlab-ci.yml file" 1>&2 && return 1
@@ -79,15 +53,16 @@ ci() {
   gitlab-runner exec docker --docker-volumes /var/run/docker.sock:/var/run/docker.sock $1
 }
 # test helm chart in sandbox
-helm_apply() {
+helm-apply() {
   local project_name=$(basename "$(pwd)")
   helm template . --name ${project_name}-llin -f values.loukoum.yaml | kubectl apply -f -
 }
-helm_delete() {
+helm-delete() {
   local project_name=$(basename "$(pwd)")
   helm template . --name ${project_name}-llin -f values.loukoum.yaml | kubectl delete -f -
 }
-terraform_test() {
+# test terraform
+terraform-test() {
   local files=($(echo ${1} | tr "," "\n"))
   local env=${2:-stg-eu-fr}
   local target_flags=""
@@ -104,3 +79,18 @@ terraform_test() {
   echo "${cmd}" | clipcopy
   echo "Copied to clipboard"
 }
+# docker aliases
+docker-exec() {
+  local cmd=$1
+  local cid
+  cid=$(docker ps | sed 1d | fzf -1 -q "$2" | awk '{print $1}')
+
+  [ -n "$cid" ] && docker exec -it "$cid" "$cmd"
+}
+# like normal z when used with arguments but displays an fzf prompt when used without.
+unalias z 2> /dev/null
+z() {
+  [ $# -gt 0 ] && _z "$*" && return
+  cd "$(_z -l 2>&1 | fzf --height 40% --nth 2.. --reverse --inline-info +s --tac --query "${*##-* }" | sed 's/^[0-9,.]* *//')"
+}
+
