@@ -44,9 +44,21 @@ HIST_STAMPS="yyyy-mm-dd"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # plugins that took time to load: # nvm kubectl
-plugins=(z git-open copyfile copydir colored-man-pages extract web-search zsh-autosuggestions zsh-syntax-highlighting httpie wd forgit
-    #kubectl
-    nvm
+plugins=(
+  z
+  git-open
+  copyfile
+  copydir
+  colored-man-pages
+  extract
+  web-search
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+  httpie
+  wd
+  forgit
+  #kubectl
+  nvm
 )
 
 source $ZSH/oh-my-zsh.sh
