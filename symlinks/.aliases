@@ -1,10 +1,16 @@
-alias sz="source ~/.zshrc"
+# --------------------------------------------------------
+# Shortcuts
+# --------------------------------------------------------
 alias v="nvim"
 alias ez="v ~/.zshrc"
-alias g="git"
-alias gbdr='git branch -r | awk "{print \$1}" | egrep -v -f /dev/fd/0 <(git branch -vv | grep origin) | awk "{print \$1}" | xargs git branch -D'
-alias gup='git fetch --all --prune && git checkout develop && git pull && gbdr'
-alias cb='git branch | fzf --header Checkout | xargs git checkout'
+# sudo
+alias sudo="sudo "
+alias _="sudo "
+alias please="sudo "
+
+# --------------------------------------------------------
+# Default options
+# --------------------------------------------------------
 alias grep="grep --color=auto"
 # Prevent recursive change on root directory
 alias chmod="chmod --preserve-root"
@@ -17,35 +23,38 @@ alias df="df -Th"
 alias du="nnn -S"
 # Record a GIF
 alias gif="byzanz-record --duration=5 --x=250 --y=235 --width=1200 --height=800 ~/tmp/byzanz.gif"
-# Stellar - DB snaphost https://github.com/fastmonkeys/stellar
-alias stellars="stellar snapshot"
-alias stellarr="stellar restore"
-alias stellarl="stellar list"
 # Check used port
 alias usedports="netstat -taupen"
 alias whousethatport="lsof -i" # losf -i :8000
 alias rmf="rm -rf"
-diffWithColor() {
-  diff -u $1 $2|colordiff|less -R
-}
-alias diffc="diffWithColor"
 # tar
 alias tarx="tar xzvf"
 alias tarc="tar czvf"
-# sudo
-alias sudo="sudo "
-alias _="sudo "
-alias please="sudo "
 # lsd
 alias l="lsd -la --group-dirs first"
-# weather
-alias weather="curl https://wttr.in/"
 # prettyping
 alias ping="prettyping --nolegend"
 # find configured local DNS servers
 alias find-dns-servers="nmcli dev show | grep 'IP4.DNS'"
 # Enable Elasticsearch in local
 alias enable_elastic="sudo sysctl -w vm.max_map_count=262144"
+# weather
+alias weather="curl https://wttr.in/"
+
+# --------------------------------------------------------
+# GIT
+# --------------------------------------------------------
+alias g="git"
+alias gbdr='git branch -r | awk "{print \$1}" | egrep -v -f /dev/fd/0 <(git branch -vv | grep origin) | awk "{print \$1}" | xargs git branch -D'
+alias gup='git fetch --all --prune && git checkout develop && git pull && gbdr'
+alias cb='git branch | fzf --header Checkout | xargs git checkout'
+
+# --------------------------------------------------------
+# Custom functions
+# --------------------------------------------------------
+diffc() {
+  diff -u $1 $2|colordiff|less -R
+}
 # test gitlab ci jobs
 ci() {
   [[ ! -f .gitlab-ci.yml ]] && echo "Missing .gitlab-ci.yml file" 1>&2 && return 1
@@ -79,7 +88,7 @@ terraform-test() {
   echo "${cmd}" | clipcopy
   echo "Copied to clipboard"
 }
-# docker aliases
+# docker
 docker-exec() {
   local cmd=$1
   local cid
@@ -92,5 +101,10 @@ unalias z 2> /dev/null
 z() {
   [ $# -gt 0 ] && _z "$*" && return
   cd "$(_z -l 2>&1 | fzf --height 40% --nth 2.. --reverse --inline-info +s --tac --query "${*##-* }" | sed 's/^[0-9,.]* *//')"
+}
+# time shell load time
+timesh() {
+  shell=${1-$SHELL}
+  for i in $(seq 1 10); do /usr/bin/time $shell -i -c exit; done
 }
 

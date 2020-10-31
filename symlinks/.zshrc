@@ -43,7 +43,6 @@ HIST_STAMPS="yyyy-mm-dd"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-# plugins that took time to load: # nvm kubectl
 plugins=(
   z
   git-open
@@ -57,8 +56,7 @@ plugins=(
   httpie
   wd
   forgit
-  #kubectl
-  nvm
+  lazy-nvm
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -78,7 +76,6 @@ fi
 export APPS_HOME="$HOME/apps"
 export GOPATH="$HOME/go"
 export PYENV_ROOT="$APPS_HOME/pyenv"
-export WOWZA_PATH="/usr/local/WowzaStreamingEngine"
 
 export PATH="$HOME/bin:$GOPATH/bin:$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"
 
