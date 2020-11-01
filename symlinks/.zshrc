@@ -167,6 +167,13 @@ if type pet >/dev/null 2>&1; then
     }
 fi
 
+# Activate pyenv virtualenv
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
+# Activate goland version manager
+source "${HOME}/.gvm/scripts/gvm"
+
 # Work specific environment variables
 if [ -f ~/.work.zsh ]; then
     source ~/.work.zsh
@@ -175,13 +182,6 @@ fi
 # Add autocompletion
 fpath=(~/.zsh/completion $fpath)
 autoload -Uz compinit && compinit -i
-
-# Activate pyenv virtualenv
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-
-# Activate goland version manager
-source "${HOME}/.gvm/scripts/gvm"
 
 # THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="${HOME}/.sdkman"
