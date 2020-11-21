@@ -1,0 +1,18 @@
+global:
+  scrape_interval:     5s
+  evaluation_interval: 5s
+
+scrape_configs:
+  - job_name: 'spring-boot-app'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+    - targets: ['localhost:9121']
+      labels:
+        application: spring-boot-app
+  - job_name: 'cadvisor'
+    metrics_path: '/metrics'
+    static_configs:
+    - targets: ['localhost:8081']
+      labels:
+        application: cadvisor
+

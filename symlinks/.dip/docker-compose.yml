@@ -1,0 +1,90 @@
+version: '3'
+
+services:
+  # POSTGRES ------------------------------------------------------------------------------------
+  postgres:
+    image: postgres:13-alpine
+    volumes:
+      - postgres_history:/usr/local/hist
+      - $HOME/.dip/.psqlrc:/root/.psqlrc:ro
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: psql postgres --command "SELECT 1" -U postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGPASSWORD: postgres
+      POSTGRES_DB: dev
+    ports:
+      - 5432:5432
+  # REDIS ------------------------------------------------------------------------------------
+  redis:
+    image: redis:5-alpine
+    volumes:
+      - redis_data:/data
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: redis-cli ping
+      interval: 1s
+      timeout: 3s
+      retries: 30
+  # MONGO ------------------------------------------------------------------------------------
+  mongo:
+    image: mongo:3.6.18
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+    ports:
+      - 27017:27017
+  # PROMETHEUS ------------------------------------------------------------------------------------
+  prometheus:
+    image: prom/prometheus:v2.18.1
+    # https://github.com/prometheus/prometheus/wiki/Default-port-allocations
+    ports:
+      - 9090:9090
+      - 9091:9091
+      - 9093:9093
+      - 9094:9094
+    volumes:
+      - $HOME/.dip/prometheus.yml:/etc/prometheus/prometheus.yml
+    network_mode: host
+  # GRAFANA ------------------------------------------------------------------------------------
+  grafana:
+    image: grafana/grafana:6.5.2
+    ports:
+      - 3000:3000
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana_data:/var/lib/grafana
+    network_mode: host
+  # LOCALSTACK ------------------------------------------------------------------------------------
+  localstack:
+    image: localstack/localstack:0.12.2
+    network_mode: bridge
+    environment:
+      SERVICES: sqs,s3
+      DATA_DIR: /tmp/localstack/data
+      DEFAULT_REGION: eu-west-3
+      PORT_WEB_UI: 3000
+      DOCKER_HOST: unix:///var/run/docker.sock
+      HOST_TMP_FOLDER: /tmp/localstack
+    ports:
+      - 4566:4566
+      - 4571:4571
+    volumes:
+      - localstack_data:/tmp/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+
+# Volumes to avoid rebuilding dependencies every time you run your projects!
+volumes:
+  grafana_data:
+  localstack_data:
+  mongo_data:
+  postgres_data:
+  postgres_history:
+  redis_data:
+

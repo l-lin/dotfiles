@@ -1,0 +1,24 @@
+version: "5.0"
+
+compose:
+  files:
+    - $HOME/.dip/docker-compose.yml
+    - $HOME/work/.dip/docker-compose.yml
+  project_name: dip
+
+interaction:
+  # Postgresql
+  psql:
+    description: Run psql console
+    service: postgres
+    command: psql -h postgres -U postgres
+  createdb:
+    description: Run PostgreSQL createdb command
+    service: postgres
+    command: createdb -h postgres -U postgres
+  # Redis
+  "redis-cli":
+    description: Run Redis console
+    service: redis
+    command: redis-cli -h redis
+
