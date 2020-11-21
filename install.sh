@@ -13,6 +13,7 @@ fd_version="8.0.0"
 java_id="11.0.7.hs-adpt"
 lsd_version="0.17.0"
 python_version="3.5.4"
+dip_version="6.1.0"
 
 echo "[-] Creating folders..."
 mkdir -p $HOME/apps
@@ -102,6 +103,10 @@ echo "[-] Installing cht.sh: https://github.com/chubin/cheat.sh"
 sudo curl -o /usr/local/bin/cht.sh https://cht.sh/:cht.sh
 sudo chmod +x /usr/local/bin/cht.sh
 curl https://cheat.sh/:zsh > $HOME/.zsh/completion/_cht
+
+echo "[-] Installing dip: https://github.com/bibendi/dip"
+sudo curl -o /usr/local/bin/dip -L https://github.com/bibendi/dip/releases/download/v${dip_version}/dip-$(uname -s)-$(uname -m)
+sudo chmod +x /usr/local/bin/dip
 
 echo "[-] Installing fac: https://github.com/mkchoi212/fac"
 go get github.com/mkchoi212/fac

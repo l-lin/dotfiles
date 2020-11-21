@@ -57,6 +57,11 @@ plugins=(
   wd
   forgit
   lazy-nvm
+  pet
+  fzf
+  fzf-preview
+  dip
+  gvm
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -131,48 +136,9 @@ export FZF_DEFAULT_OPTS="
 # Initialization
 # --------------------------------------------------------
 
-# fuzzyfinder
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-if type fzf >/dev/null 2>&1; then
-    function preview() {
-        local file
-        file=$(ls -t | fzf --preview 'bat --style numbers,changes --color "always" {} | head -500')
-        if [[ -f $file ]]; then
-            v $file
-        elif [[ -d $file ]]; then
-            cd $file
-            preview
-            zle reset-prompt
-        fi
-    }
-    zle -N preview
-    bindkey '^q' preview
-fi
-
-
-# pet: https://github.com/knqyf263/pet
-if type pet >/dev/null 2>&1; then
-    function pet-select() {
-        BUFFER=$(pet search --query "$LBUFFER")
-        CURSOR=$#BUFFER
-        zle redisplay
-    }
-    zle -N pet-select
-    stty -ixon
-    bindkey '^s' pet-select
-
-    function pet-register-prev() {
-      PREV=$(fc -lrn | head -n 1)
-      sh -c "pet new `printf %q "$PREV"`"
-    }
-fi
-
 # Activate pyenv virtualenv
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
-
-# Activate goland version manager
-source "${HOME}/.gvm/scripts/gvm"
 
 # Work specific environment variables
 if [ -f ~/.work.zsh ]; then
