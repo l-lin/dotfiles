@@ -78,11 +78,23 @@ services:
     volumes:
       - localstack_data:/tmp/localstack
       - /var/run/docker.sock:/var/run/docker.sock
+  # MINIO ------------------------------------------------------------------------------------
+  minio:
+    image: minio/minio
+    ports:
+      - 9000:9000
+    volumes:
+      - minio_data:/data
+    environment:
+      MINIO_ACCESS_KEY: access_key
+      MINIO_SECRET_KEY: secret_key
+    command: ["server", "/data"]
 
 # Volumes to avoid rebuilding dependencies every time you run your projects!
 volumes:
   grafana_data:
   localstack_data:
+  minio_data:
   mongo_data:
   postgres_data:
   postgres_history:
