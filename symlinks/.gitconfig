@@ -34,6 +34,7 @@
     undo = reset --soft HEAD^
     unignore = update-index --no-assume-unchanged 
     wdiff = diff --word-diff --color-words=.
+    wip = for-each-ref --sort='authordate:iso8601' --format=' %(color:green)%(authordate:relative)%09%(color:white)%(refname:short)' refs/heads
     # reminders: read history
     # - grep logs
     #   git log -p -G'pattern' path/to/file
