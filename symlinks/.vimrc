@@ -42,6 +42,7 @@ Plug 'vim-scripts/DrawIt'             " Help draw ascii schemas
 Plug 'psliwka/vim-smoothie'           " Smooth scrolling
 Plug 'rhysd/vim-grammarous'           " Grammar checker
 Plug 'machakann/vim-highlightedyank'  " Highlight yank
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npm install'  }
 call plug#end()
 " }}}
 " Basic editing configuration {{{
