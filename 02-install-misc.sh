@@ -120,8 +120,11 @@ sudo snap install hugo --channel=extended
 echo "[-] Installing node"
 nvm install 12
 
-echo "[-] Installing node stuffs"
+echo "[-] Installing node client for neovim"
 npm i -g neovim
+
+echo "[-] Installing trelew"
+npm i -g trelew
 
 echo "[-] Installing python3 extension for nvim"
 python3 -m pip install --user --upgrade pynvim
