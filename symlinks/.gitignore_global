@@ -18,10 +18,11 @@
 *.rar
 *.tar
 *.zip
+*.tgz
 
 # Logs and databases #
 ######################
-*.log
+#*.log
 #*.sql
 #*.sqlite
 
