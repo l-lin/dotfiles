@@ -8,15 +8,15 @@ See [dotfiles](http://dotfiles.github.io).
 
 ```bash
 # Install ubuntu packages
-./install_ubuntu.sh
+./01-install-ubuntu.sh
 # Launch stuff installation
-./install.sh
+./02-install-misc.sh
 # Install zsh plugins: use zsh
-./install_zsh_plugins.sh
+./03-install-zsh_plugins.sh
 # Bootstrap dotfiles
 ./bootstrap.sh
 # Long installation
-./install_long.sh
+./04-install-nerd_fonts.sh
 ```
 
 # Install VIM plugins
@@ -55,6 +55,7 @@ See [dotfiles](http://dotfiles.github.io).
 ```bash
 sudo -v && wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sudo sh /dev/stdin
 ```
+
 ## Configuration
 
 - Go to "Fetch news > Add or edit a custom resource"
@@ -87,5 +88,4 @@ sudo -v && wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | 
 - Scala
 - SonarLint
 - Spring assistant
-- WakaTime
 

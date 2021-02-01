@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -euo
 set -x
 
 docker_compose_version="1.25.5"
@@ -130,6 +130,9 @@ echo "[-] Installing SDKMan"
 curl -s "https://get.sdkman.io" | bash
 sdk install maven
 sdk install java "${java_id}"
+
+echo "[-] Set default editor to NVIM"
+sudo update-alternatives --install /usr/bin/editor editor /snap/nvim/current/usr/bin/nvim 100
 
 echo "[-] Installation SUCCESS!"
 exit 0
