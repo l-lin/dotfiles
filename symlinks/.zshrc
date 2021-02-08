@@ -40,6 +40,18 @@ export SPACESHIP_PROMPT_ORDER=(
 # The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
 HIST_STAMPS="yyyy-mm-dd"
 
+# fzf options
+export FZF_BASE="$HOME/.asdf/installs/fzf/0.25.1"
+export FZF_DEFAULT_OPTS="
+--ansi
+--height='80%'
+--bind='alt-k:preview-up,alt-p:preview-up'
+--bind='alt-j:preview-down,alt-n:preview-down'
+--bind='?:toggle-preview'
+--bind='alt-w:toggle-preview-wrap'
+--preview-window='right:60%'
+"
+
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
@@ -56,12 +68,10 @@ plugins=(
   httpie
   wd
   forgit
-  #lazy-nvm
   pet
-  #fzf
+  fzf
   fzf-preview
   dip
-  #gvm
   asdf
 )
 
@@ -119,17 +129,6 @@ znt_list_bold=0
 znt_list_border=1
 znt_list_instant_select=1
 znt_history_active_text=reverse
-
-# fzf options
-export FZF_DEFAULT_OPTS="
---ansi
---height='80%'
---bind='alt-k:preview-up,alt-p:preview-up'
---bind='alt-j:preview-down,alt-n:preview-down'
---bind='?:toggle-preview'
---bind='alt-w:toggle-preview-wrap'
---preview-window='right:60%'
-"
 
 # --------------------------------------------------------
 # Initialization
