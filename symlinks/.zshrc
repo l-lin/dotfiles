@@ -56,12 +56,13 @@ plugins=(
   httpie
   wd
   forgit
-  lazy-nvm
+  #lazy-nvm
   pet
-  fzf
+  #fzf
   fzf-preview
   dip
-  gvm
+  #gvm
+  asdf
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -79,10 +80,8 @@ fi
 # --------------------------------------------------------
 
 export APPS_HOME="$HOME/apps"
-export GOPATH="$HOME/go"
-export PYENV_ROOT="$APPS_HOME/pyenv"
 
-export PATH="$HOME/bin:$GOPATH/bin:$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"
+export PATH="$HOME/bin:$PATH"
 
 export GREP_COLOR=32
 
@@ -136,10 +135,6 @@ export FZF_DEFAULT_OPTS="
 # Initialization
 # --------------------------------------------------------
 
-# Activate pyenv virtualenv
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-
 # Work specific environment variables
 if [ -f ~/.work.zsh ]; then
     source ~/.work.zsh
@@ -148,8 +143,4 @@ fi
 # Add autocompletion
 fpath=(~/.zsh/completion $fpath)
 autoload -Uz compinit && compinit -i
-
-# THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="${HOME}/.sdkman"
-[[ -s "${HOME}/.sdkman/bin/sdkman-init.sh" ]] && source "${HOME}/.sdkman/bin/sdkman-init.sh"
 

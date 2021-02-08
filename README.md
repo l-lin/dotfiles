@@ -7,16 +7,11 @@ See [dotfiles](http://dotfiles.github.io).
 # List of applications to install after reinstalling the OS
 
 ```bash
-# Install ubuntu packages
-./01-install-ubuntu.sh
-# Launch stuff installation
-./02-install-misc.sh
-# Install zsh plugins: use zsh
-./03-install-zsh_plugins.sh
-# Bootstrap dotfiles
+# create symlinks & install stuffs
+./install.sh
+
+# only creating symlinks
 ./bootstrap.sh
-# Long installation
-./04-install-nerd_fonts.sh
 ```
 
 # Install VIM plugins

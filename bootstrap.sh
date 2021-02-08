@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -eu
 
 read -p "Create symlinks? (y/n) " -n 1 -r
 echo 

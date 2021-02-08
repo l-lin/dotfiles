@@ -337,7 +337,7 @@ let g:dbext_default_profile_PG_localhost = 'type=PGSQL:user=postgres:dbname=oode
 let g:dbext_default_profile = 'PG_localhost'
 " }}}
 " NVIM {{{
-let g:coc_node_path = '$HOME/.nvm/versions/node/v12.18.0/bin/node'
+let g:coc_node_path = '$HOME/.asdf/installs/nodejs/15.8.0/bin/node'
 " }}}
 
 " vim:foldmethod=marker:foldlevel=0
