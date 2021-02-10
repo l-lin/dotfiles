@@ -3,7 +3,7 @@ if type fzf >/dev/null 2>&1; then
         local file
         file=$(ls -t | fzf --preview 'bat --style numbers,changes --color "always" {} | head -500')
         if [[ -f $file ]]; then
-            v $file
+            nvim $file
         elif [[ -d $file ]]; then
             cd $file
             preview
