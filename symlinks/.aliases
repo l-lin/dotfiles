@@ -49,6 +49,7 @@ alias gbdr='git branch -r | awk "{print \$1}" | egrep -v -f /dev/fd/0 <(git bran
 alias gup='git fetch --all --prune && git checkout develop && git pull && gbdr'
 alias cb='git branch | fzf --header Checkout | xargs git checkout'
 alias gchurn='git log --format=format: --name-only --since=12.month | egrep -v "^\$" | sort | uniq -c | sort -nr | head -50'
+alias batdiff='git diff --name-only --diff-filter=d | xargs bat --diff'
 
 # --------------------------------------------------------
 # Custom functions
