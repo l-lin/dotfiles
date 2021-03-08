@@ -12,6 +12,7 @@ interaction:
     description: Run psql console
     service: postgres
     command: psql -h postgres -U postgres
+    default_args: postgres
   createdb:
     description: Run PostgreSQL createdb command
     service: postgres
@@ -21,4 +22,17 @@ interaction:
     description: Run Redis console
     service: redis
     command: redis-cli -h redis
+  # Kafka
+  "kafka-consumer":
+    description: Run kafka-console-consumer
+    service: kafka
+    command: /usr/bin/kafka-console-consumer --bootstrap-server kafka:29092 --topic
+  "kafka-create-topic":
+    description: Create Kafka topic
+    service: kafka
+    command: /usr/bin/kafka-topics --bootstrap-server kafka:29092 --create --partitions 1 --replication-factor 1 --topic
+  "kafka-list-topics":
+    description: List all Kafka topics
+    service: kafka
+    command: /usr/bin/kafka-topics --bootstrap-server kafka:29092 --list
 

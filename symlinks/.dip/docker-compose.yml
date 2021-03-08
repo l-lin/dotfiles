@@ -89,6 +89,43 @@ services:
       MINIO_ACCESS_KEY: access_key
       MINIO_SECRET_KEY: secret_key
     command: ["server", "/data"]
+  # ZOOKEEPER ------------------------------------------------------------------------------------
+  zk:
+    image: confluentinc/cp-zookeeper:5.4.1
+    container_name: zk
+    ports:
+      - 2181:2181
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+  # KAFKA ----------------------------------------------------------------------------------------
+  kafka:
+    image: confluentinc/cp-kafka:5.4.1
+    container_name: kafka
+    depends_on:
+      - zk
+    ports:
+      - 9092:9092
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zk:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_CREATE_TOPICS: >-
+        some-topic:1:1
+  kowl:
+    image: quay.io/cloudhut/kowl:v1.2.1
+    restart: on-failure
+    volumes:
+      - $HOME/.dip/kowl/config.yml:/etc/kowl/config.yml
+    ports:
+      - 9080:8080
+    entrypoint: ./kowl --config.filepath=/etc/kowl/config.yml
+    depends_on:
+      - kafka
 
 # Volumes to avoid rebuilding dependencies every time you run your projects!
 volumes:
