@@ -139,6 +139,11 @@ if [ -f ~/.work.zsh ]; then
     source ~/.work.zsh
 fi
 
+# mass rename
+autoload zmv
+# calculator
+autoload zcalc
+
 # Add autocompletion
 fpath=(~/.zsh/completion $fpath)
 autoload -Uz compinit && compinit -i
