@@ -89,6 +89,14 @@ services:
       MINIO_ACCESS_KEY: access_key
       MINIO_SECRET_KEY: secret_key
     command: ["server", "/data"]
+    environment:
+      - MINIO_ACCESS_KEY=admin
+      - MINIO_SECRET_KEY=minioadmin
+      - VIRTUAL_HOST=minio.localhost
+      - VIRTUAL_PATH=/
+    networks:
+      - default
+      - frontend
   # ZOOKEEPER ------------------------------------------------------------------------------------
   zk:
     image: confluentinc/cp-zookeeper:5.4.1
@@ -126,6 +134,12 @@ services:
     entrypoint: ./kowl --config.filepath=/etc/kowl/config.yml
     depends_on:
       - kafka
+    environment:
+      - VIRTUAL_HOST=kowl.localhost
+      - VIRTUAL_PATH=/
+    networks:
+      - default
+      - frontend
 
 # Volumes to avoid rebuilding dependencies every time you run your projects!
 volumes:
@@ -137,3 +151,7 @@ volumes:
   postgres_history:
   redis_data:
 
+networks:
+  frontend:
+    external:
+      name: frontend
