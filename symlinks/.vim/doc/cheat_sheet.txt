@@ -59,6 +59,8 @@ CURSOR MOVEMENT                                               cs-cursor-movement
 `H`   - jump to TOP of screen
 `M`   - Jump to BOTTOM of screen
 `g;`  - jump to last edited position
+`gf`  - edit file located at the filepath under the cursor
+`gx`  - openl file located at the filepath under the cursor (also works on URL)
 
 ==================================================================================
 MARKS                                                                   cs-marks
@@ -90,12 +92,16 @@ COPY / PASTE                                                       cs-copy-paste
 ==================================================================================
 DELETE                                                                 cs-delete
 
-`dd` - remove line
-`dw` - delete until next word, excluding the first character
-`de` - delete until end of the current, excluding the last character
-`d$` - delete until end of line
-`D`  - same as d$
-`d^` - delete up unto the beginning of the line
+`dd`    - remove line
+`dw`    - delete until next word, excluding the first character
+`de`    - delete until end of the current, excluding the last character
+`d$`    - delete until end of line
+`D`     - same as d$
+`d^`    - delete up unto the beginning of the line
+`:1,4d` - delete line 1 to 40 included
+`:2,$d` - delete every lines from second one until the end of file
+`:.,$d` - delete every lines from the current one until the end of file
+`:%d`   - delete every lines
 
 ==================================================================================
 SEARCH / REPLACE                                               cs-search-replace
@@ -234,4 +240,13 @@ Ref: https://thoughtbot.com/blog/wrap-existing-text-at-80-characters-in-vim
 Insert # times "Foobar"
 -----------------------
 `3i Foobar <ESC>` in normal mode
+
+Sorting text
+------------
+`:sort `          - sort all lines
+`:sort!          `- sort all lines in reverse
+`:sort n         `- sort depending on the first decimal on the line
+`:sort f         `- sort depending on the first float on the line
+`:sort /pattern/ `- sort depending on what comes after the match
+`:sort /[^,]*,/`  - sort every line of a CSV file depending on the second column
 
