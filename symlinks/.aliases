@@ -3,6 +3,7 @@
 # --------------------------------------------------------
 alias v="nvim"
 alias ez="v ~/.zshrc"
+alias ddgr="BROWSER=w3m ddgr -n 5"
 # sudo
 alias sudo="sudo "
 alias _="sudo "
