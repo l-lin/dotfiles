@@ -24,7 +24,8 @@ CONTENTS                                                             cs-contents
  1.9.  Spell checking.............................cs-spell-checking
  1.10. Folding....................................cs-folding
  1.11. DBExt......................................cs-dbext
- 1.12. Custom shortcuts...........................cs-custom-shortcuts
+ 1.12. DrawIt.....................................cs-drawit
+ 1.13. Custom shortcuts...........................cs-custom-shortcuts
  2.    Commands...................................cs-commands
  2.1.  Buffers....................................cs-buffers
  2.2.  Splits.....................................cs-splits
@@ -173,6 +174,32 @@ DBEXT                                                                   cs-dbext
 `,sbp` - change profile
 `,sdt` - describe table
 `,slt` - list tables
+
+==================================================================================
+DRAWIT                                                                 cs-drawit
+
+`,di` - start drawing
+`,ds` - stop drawing
+
+features
+
+`<left>`    - move and draw left
+`<right>`   - move and draw right, inserting lines/space as needed
+`<up>`      - move and draw up, inserting lines/space as needed
+`<down>`    - move and draw down, inserting lines/space as needed
+`<s-left>`  - move left
+`<s-right>` - move right, inserting lines/space as needed
+`<s-up>`    - move up, inserting lines/space as needed
+`<s-down>`  - move down, inserting lines/space as needed
+`<space>`   - toggle into and out of erase mode
+`>`         - draw -> arrow
+`<`         - draw <- arrow
+`^`         - draw ^  arrow
+`v`         - draw v  arrow 
+`,>`        - draw fat -> arrow
+`,<`        - draw fat <- arrow
+`,^`        - draw fat ^  arrow
+`,v`        - draw fat v  arrow 
 
 ==================================================================================
 CUSTOM SHORTCUTS                                             cs-custom-shortcuts
