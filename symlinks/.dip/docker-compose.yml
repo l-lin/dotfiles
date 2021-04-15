@@ -63,7 +63,7 @@ services:
     network_mode: host
   # LOCALSTACK ------------------------------------------------------------------------------------
   localstack:
-    image: localstack/localstack:0.12.2
+    image: localstack/localstack:0.12.9
     network_mode: bridge
     environment:
       SERVICES: sqs,s3
@@ -88,12 +88,9 @@ services:
     environment:
       MINIO_ACCESS_KEY: access_key
       MINIO_SECRET_KEY: secret_key
+      VIRTUAL_HOST: minio.localhost
+      VIRTUAL_PATH: /
     command: ["server", "/data"]
-    environment:
-      - MINIO_ACCESS_KEY=admin
-      - MINIO_SECRET_KEY=minioadmin
-      - VIRTUAL_HOST=minio.localhost
-      - VIRTUAL_PATH=/
     networks:
       - default
       - frontend

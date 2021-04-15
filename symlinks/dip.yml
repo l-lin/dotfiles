@@ -35,4 +35,5 @@ interaction:
     description: List all Kafka topics
     service: kafka
     command: /usr/bin/kafka-topics --bootstrap-server kafka:29092 --list
+    #command: /usr/bin/kafka-topics --bootstrap-server ec2-35-180-142-166.eu-west-3.compute.amazonaws.com:9092,ec2-35-180-80-223.eu-west-3.compute.amazonaws.com:9092 --list
 
