@@ -119,8 +119,6 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      KAFKA_CREATE_TOPICS: >-
-        some-topic:1:1
   kowl:
     image: quay.io/cloudhut/kowl:v1.2.1
     restart: on-failure
@@ -137,6 +135,47 @@ services:
     networks:
       - default
       - frontend
+  # KAFKA SASL SSL ----------------------------------------------------------------------------------------
+  # example from https://github.com/confluentinc/cp-docker-images/blob/5.3.3-post/examples/kafka-cluster-sasl/docker-compose.yml
+  zk-sasl:
+    image: confluentinc/cp-zookeeper:5.4.1
+    container_name: zk-sasl
+    ports:
+      - 12181:12181
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 12181
+      ZOOKEEPER_TICK_TIME: 2000
+      KAFKA_OPTS: -Djava.security.auth.login.config=/etc/kafka/sasl/zk_jaas.conf
+        -Dzookeeper.authProvider.1=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
+    volumes:
+      - ${HOME}/.dip/kafka/sasl/zk_jaas.conf:/etc/kafka/sasl/zk_jaas.conf
+  kafka-sasl-ssl:
+    image: confluentinc/cp-kafka:5.4.1
+    container_name: kafka-sasl-ssl
+    depends_on:
+      - zk-sasl
+    ports:
+      - 19092:19092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zk-sasl:12181
+      KAFKA_ADVERTISED_LISTENERS: SASL_SSL://localhost:19092
+      # encryption
+      KAFKA_SSL_KEYSTORE_FILENAME: kafka.keystore.jks
+      KAFKA_SSL_KEYSTORE_CREDENTIALS: kafka_keystore_creds
+      KAFKA_SSL_KEY_CREDENTIALS: kafka_sslkey_creds
+      KAFKA_SSL_TRUSTSTORE_FILENAME: kafka.truststore.jks
+      KAFKA_SSL_TRUSTSTORE_CREDENTIALS: kafka_truststore_creds
+      KAFKA_SECURITY_INTER_BROKER_PROTOCOL: SASL_SSL
+      KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: " "
+      KAFKA_SSL_CLIENT_AUTH: required
+      # authentication
+      KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
+      KAFKA_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_OPTS: -Djava.security.auth.login.config=/etc/kafka/sasl/kafka_jaas.conf
+    volumes:
+      - ${HOME}/.dip/kafka/secrets:/etc/kafka/secrets
+      - ${HOME}/.dip/kafka/sasl/kafka_jaas.conf:/etc/kafka/sasl/kafka_jaas.conf
 
 # Volumes to avoid rebuilding dependencies every time you run your projects!
 volumes:
