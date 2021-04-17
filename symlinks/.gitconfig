@@ -1,96 +1,99 @@
 [includeIf "gitdir:~/work/"]
-    path = ~/work/.gitconfig
+  path = ~/work/.gitconfig
 [includeIf "gitdir:~/perso/"]
-    path = ~/perso/.gitconfig
+  path = ~/perso/.gitconfig
 [includeIf "gitdir:/tmp/"]
-    path = ~/perso/.gitconfig
+  path = ~/perso/.gitconfig
 [includeIf "gitdir:~/tmp/"]
-    path = ~/perso/.gitconfig
+  path = ~/perso/.gitconfig
 [user]
-    name = Louis Lin
+  name = Louis Lin
 [credential]
-    helper = cache
+  helper = cache
 [core]
-    editor = nvim
-    excludesfile = ~/.gitignore_global
-    autocrlf = input
+  editor = nvim
+  excludesfile = ~/.gitignore_global
+  autocrlf = input
 [alias]
-    adda = add -A
-    ba = branch -avv
-    bd = branch -D
-    cdiff = log --oneline --no-merges
-    ci = !git add -A && git commit
-    co = checkout
-    ignore = update-index --assume-unchanged
-    ignored = !git ls-files -v | grep "^[[:lower:]]"
-    lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)%an <%ae>%Creset' --abbrev-commit
-    logv = log --graph --all --decorate --stat --date=iso
-    me = merge --no-ff
-    oops = commit --amend
-    pushf = push --force-with-lease
-    rh = reset --hard
-    rl = reflog --pretty=reflog
-    st = status -sb
-    undo = reset --soft HEAD^
-    unignore = update-index --no-assume-unchanged 
-    wdiff = diff --word-diff --color-words=.
-    wip = for-each-ref --sort='authordate:iso8601' --format=' %(color:green)%(authordate:relative)%09%(color:white)%(refname:short)' refs/heads
-    # reminders: read history
-    # - grep logs
-    #   git log -p -G'pattern' path/to/file
-    # - find all files that were deleted
-    #   git log --diff-filter=D --summary | grep delete
-    # - display full history for a given file
-    #   git log --all --full-history -- path/to/file
-    # - find 10 most modified files
-    #   git log --format=format: --name-only | grep -v '^$' | sort | uniq -c | sort -rg | head -10
-    # - pattern to search on revisions
-    #   git show :/pattern
-    # - show revision changes
-    #   git show revision:path/to/file
-    # reminders: fix past errors
-    # - remove sensitive files from git history
-    #   git filter-branch --force --index-filter "git rm --cached --ignore-unmatch path/to/file" --prune-empty --tag-name-filter cat -- --all
+  adda = add -A
+  ba = branch -avv
+  bd = branch -D
+  cdiff = log --oneline --no-merges
+  ci = !git add -A && git commit
+  co = checkout
+  ignore = update-index --assume-unchanged
+  ignored = !git ls-files -v | grep "^[[:lower:]]"
+  lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)%an <%ae>%Creset' --abbrev-commit
+  logv = log --graph --all --decorate --stat --date=iso
+  me = merge --no-ff
+  oops = commit --amend
+  pushf = push --force-with-lease
+  rh = reset --hard
+  rl = reflog --pretty=reflog
+  st = status -sb
+  undo = reset --soft HEAD^
+  unignore = update-index --no-assume-unchanged
+  wdiff = diff --word-diff --color-words=.
+  wip = for-each-ref --sort='authordate:iso8601' --format=' %(color:green)%(authordate:relative)%09%(color:white)%(refname:short)' refs/heads
+  # reminders: read history
+  # - grep logs
+  #   git log -p -G'pattern' path/to/file
+  # - find all files that were deleted
+  #   git log --diff-filter=D --summary | grep delete
+  # - display full history for a given file
+  #   git log --all --full-history -- path/to/file
+  # - find 10 most modified files
+  #   git log --format=format: --name-only | grep -v '^$' | sort | uniq -c | sort -rg | head -10
+  # - pattern to search on revisions
+  #   git show :/pattern
+  # - show revision changes
+  #   git show revision:path/to/file
+  # reminders: fix past errors
+  # - remove sensitive files from git history
+  #   git filter-branch --force --index-filter "git rm --cached --ignore-unmatch path/to/file" --prune-empty --tag-name-filter cat -- --all
 [commit]
-    template = ~/.git_commit_template
+  template = ~/.git_commit_template
 [push]
-    default = upstream
+  default = upstream
 # activate color for all commands
 [color]
-    ui = auto
+  ui = auto
 # diff with meaningful prefix and word-diff will find a letter as a word
 [diff]
-    mnemonicprefix = true
-    wordRegex = .
+  mnemonicprefix = true
+  wordRegex = .
 # commands will be autocorrect (rset -> reset)
 [help]
-    autocorrect = -1
+  autocorrect = -1
 # remember previous conflict resolutions
 [rerere]
-    enabled = true
+  enabled = true
 [pager]
-    diff = diff-so-fancy | less --tabs=1,5 -RFX
-    show = diff-so-fancy | less --tabs=1,5 -RFX
+  diff = diff-so-fancy | less --tabs=1,5 -RFX
+  show = diff-so-fancy | less --tabs=1,5 -RFX
 # pull will do a rebase instead of a merge
 [pull]
-    rebase = true
+  rebase = true
 # merge is looking harder for renames
 [merge]
-    renamelimit = 3000
-    tool = meld
+  renamelimit = 3000
+  tool = meld
 # Automatically stash any local changes before rebasing
 [rebase]
-    autostash = true
+  autostash = true
 [pretty]
-    # reflog, with relative date (but for commits, not reflog entries!):
-    reflog = %Cred%h%Creset - %Cblue%gd%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)<%an>%Creset
+  # reflog, with relative date (but for commits, not reflog entries!):
+  reflog = %Cred%h%Creset - %Cblue%gd%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)<%an>%Creset
 # shortcuts
 [url "git@github.com:"]
-    insteadOf = github:
-    insteadOf = gh:
-
+  insteadOf = github:
+  insteadOf = gh:
+# LFS config
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
+# branch
+[branch]
+  sort = -committerdate
