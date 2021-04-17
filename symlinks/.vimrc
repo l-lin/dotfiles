@@ -41,7 +41,6 @@ Plug 'vim-scripts/dbext.vim'          " DB access (exec SQL directly from VIM)
 Plug 'vim-scripts/DrawIt'             " Help draw ascii schemas
 Plug 'psliwka/vim-smoothie'           " Smooth scrolling
 Plug 'rhysd/vim-grammarous'           " Grammar checker
-Plug 'machakann/vim-highlightedyank'  " Highlight yank
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npm install'  }
 call plug#end()
 " }}}
@@ -336,7 +335,8 @@ set nospell
 let g:dbext_default_profile_PG_localhost = 'type=PGSQL:user=postgres:dbname=oodev:host=localhost'
 let g:dbext_default_profile = 'PG_localhost'
 " }}}
-" NVIM {{{
+" coc-nvim {{{
+let g:coc_global_extensions = ['coc-json', 'coc-go', 'coc-tsserver', 'coc-rls', 'coc-yank', 'coc-python']
 let g:coc_node_path = '$HOME/.asdf/installs/nodejs/15.8.0/bin/node'
 " }}}
 

@@ -18,11 +18,6 @@ See [dotfiles](http://dotfiles.github.io).
 
 - Edit a file with VIM
 - Execute `:PlugInstall`
-- Install Coc extensions:
-  - `:CocInstall coc-json`
-  - `:CocInstall coc-go`
-  - `:CocInstall coc-tsserver`
-  - `:CocInstall coc-rls`
 
 # Install TMUX plugins
 
