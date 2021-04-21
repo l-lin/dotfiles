@@ -139,6 +139,10 @@ vnoremap <silent> * :call VisualSelection('f')<CR>
 vnoremap <silent> # :call VisualSelection('b')<CR>
 " Switch back and forth from buffer
 map ;; <C-^>
+" Buffers - next/previous/switch back and forth: F12, Shift-F12, Tab
+nnoremap <silent> <F12> :bn<CR>
+nnoremap <silent> <S-F12> :bp<CR>
+nnoremap <silent> <C-i> :b#<CR>
 " Show/Hide line number
 "nmap <C-m> :set invnumber<CR>
 " Build & test
