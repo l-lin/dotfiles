@@ -41,6 +41,9 @@ alias find-dns-servers="nmcli dev show | grep 'IP4.DNS'"
 alias enable_elastic="sudo sysctl -w vm.max_map_count=262144"
 # weather
 alias weather="curl https://wttr.in/"
+# docker
+alias d="docker"
+alias dc="docker-compose"
 
 # --------------------------------------------------------
 # GIT
