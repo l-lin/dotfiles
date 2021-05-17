@@ -93,6 +93,12 @@ export APPS_HOME="$HOME/apps"
 
 export PATH="$HOME/bin:$PATH"
 
+export ANSIBLE_VAULT_PASSWORD_FILE="$HOME/.vaultkey"
+export ANSIBLE_CALLBACK_PLUGINS="$HOME/apps/ansible_stdout_compact_logger"
+export ANSIBLE_STDOUT_CALLBACK="anstomlog"
+export ANSIBLE_STRATEGY_PLUGINS="$HOME/apps/mitogen/ansible_mitogen/plugins/strategy"
+export ANSIBLE_STRATEGY="mitogen_linear"
+
 export GREP_COLOR=32
 
 # --------------------------------------------------------
