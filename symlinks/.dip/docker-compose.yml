@@ -88,12 +88,7 @@ services:
     environment:
       MINIO_ACCESS_KEY: access_key
       MINIO_SECRET_KEY: secret_key
-      VIRTUAL_HOST: minio.localhost
-      VIRTUAL_PATH: /
     command: ["server", "/data"]
-    networks:
-      - default
-      - frontend
   # ZOOKEEPER ------------------------------------------------------------------------------------
   zk:
     image: confluentinc/cp-zookeeper:5.4.1
@@ -129,12 +124,6 @@ services:
     entrypoint: ./kowl --config.filepath=/etc/kowl/config.yml
     depends_on:
       - kafka
-    environment:
-      - VIRTUAL_HOST=kowl.localhost
-      - VIRTUAL_PATH=/
-    networks:
-      - default
-      - frontend
   # KAFKA SASL SSL ----------------------------------------------------------------------------------------
   # example from https://github.com/confluentinc/cp-docker-images/blob/5.3.3-post/examples/kafka-cluster-sasl/docker-compose.yml
   zk-sasl:
@@ -187,7 +176,3 @@ volumes:
   postgres_history:
   redis_data:
 
-networks:
-  frontend:
-    external:
-      name: frontend
