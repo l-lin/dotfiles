@@ -2,7 +2,7 @@
 
 set -eu
 
-docker_compose_version="1.25.5"
+docker_compose_version="1.29.2"
 
 if type docker-compose >/dev/null 2>&1; then
   echo "[-] docker-compose already exists => skipping"
