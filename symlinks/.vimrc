@@ -24,6 +24,7 @@ Plug 'editorconfig/editorconfig-vim'  " .editorconfig support
 Plug 'rust-lang/rust.vim'             " Rust support
 Plug 'hashivim/vim-terraform'         " Terraform support
 Plug 'chr4/nginx.vim'                 " Nginx support
+Plug 'pearofducks/ansible-vim'        " Ansible support
 
 " Snippets
 Plug 'SirVer/ultisnips'               " Snippets
