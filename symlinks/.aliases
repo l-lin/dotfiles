@@ -123,4 +123,24 @@ new-go-project() {
   curl -fsSL https://raw.githubusercontent.com/l-lin/go-boilerplate/master/install.sh -H 'Cache-Control: no-cache' | sh
   make setup
 }
-
+# check what trello-daily-logs wrote
+daily-check() {
+  pushd ${HOME}/perso/daily-logs
+  git diff
+  popd
+}
+# commit & push daily-logs generated from trello-daily-logs
+daily-push() {
+  pushd ${HOME}/perso/daily-logs
+  git add -A
+  git commit -m "$(date '+%m'): add $(date '+%d')"
+  git push
+  popd
+}
+# reset daily logs genereated by trello-daily-logs
+daily-reset() {
+  pushd ${HOME}/perso/daily-logs
+  git reset
+  git checkout .
+  popd
+}
