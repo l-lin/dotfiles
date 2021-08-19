@@ -33,6 +33,8 @@
 # Specific #
 ############
 .tool-versions
+application-local.yml
+application-dev.yml
 application-stg-eu-fr.yml
 application-stg-eu-fr.properties
 application-qal-eu-fr.yml
