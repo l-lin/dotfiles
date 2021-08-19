@@ -31,7 +31,7 @@ Plug 'SirVer/ultisnips'               " Snippets
 Plug 'honza/vim-snippets'             " Snippets
 
 " Others
-Plug 'ctrlpvim/ctrlp.vim'             " Open file directory directly with C-p + used for GoDecls
+"Plug 'ctrlpvim/ctrlp.vim'             " Open file directory directly with C-p + used for GoDecls
 Plug 'scrooloose/nerdtree'            " Tree explorer
 Plug 'Xuyuanp/nerdtree-git-plugin'    " Tree explorer with Git status
 Plug 'easymotion/vim-easymotion'      " Easily navigate through the file
@@ -43,6 +43,8 @@ Plug 'vim-scripts/DrawIt'             " Help draw ascii schemas
 Plug 'psliwka/vim-smoothie'           " Smooth scrolling
 Plug 'rhysd/vim-grammarous'           " Grammar checker
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npm install'  }
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
 call plug#end()
 " }}}
 " Basic editing configuration {{{
@@ -231,6 +233,10 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <A-7> <Plug>(coc-references)
 " Symbol renaming.
 nmap <S-F6> <Plug>(coc-rename)
+" Find files
+nmap <C-p> :Telescope find_files<cr>
+" Live grep
+nmap <C-g> :Telescope live_grep<cr>
 " }}}
 " Cursor shape {{{
 if has("autocmd")
@@ -337,7 +343,7 @@ set spelllang=en
 set nospell
 " }}}
 " Database access {{{
-let g:dbext_default_profile_PG_localhost = 'type=PGSQL:user=postgres:dbname=oodev:host=localhost'
+let g:dbext_default_profile_PG_localhost = 'type=PGSQL:user=postgres:dbname=dev:host=localhost'
 let g:dbext_default_profile = 'PG_localhost'
 " }}}
 " coc-nvim {{{

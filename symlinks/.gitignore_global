@@ -33,4 +33,7 @@
 # Specific #
 ############
 .tool-versions
-
+application-stg-eu-fr.yml
+application-stg-eu-fr.properties
+application-qal-eu-fr.yml
+application-qal-eu-fr.properties
