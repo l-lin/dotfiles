@@ -2,7 +2,7 @@
 
 set -eu
 
-java_id="adoptopenjdk-11.0.10+9"
+java_id="adoptopenjdk-17.0.0+35"
 
 if type java >/dev/null 2>&1; then
   echo "[-] java already installed => skipping"
