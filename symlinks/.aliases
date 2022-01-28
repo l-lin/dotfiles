@@ -145,3 +145,7 @@ daily-reset() {
   git checkout .
   popd
 }
+aws_sync_perso() {
+  local folder_name=$(pwd | awk -F'/' '{ print $NF }')
+  aws s3 sync . "s3://${folder_name}" --storage-class ONEZONE_IA --delete --profile perso
+}
