@@ -44,8 +44,13 @@ alias weather="curl https://wttr.in/"
 # docker
 alias d="docker"
 alias dc="docker-compose"
-# ansible with mitogen
-alias mitogen="ANSIBLE_STRATEGY_PLUGINS=$HOME/apps/mitogen/ansible_mitogen/plugins/strategy ANSIBLE_STRATEGY=mitogen_linear ansible-playbook"
+# ansible
+alias a="docker run -it --rm -e ANSIBLE_VAULT_PASSWORD_FILE=/home/python/.vaultkey -e ANSIBLE_CALLBACK_PLUGINS=/usr/local/lib/ansible_stdout_compact_logger -e ANSIBLE_STDOUT_CALLBACK=anstomlog -v ~/.aws:/home/python/.aws -v ~/.ssh/id_rsa:/home/python/.ssh/id_rsa -v ~/work/big-cloud:/home/python/big-cloud -v ~/.vaultkey:/home/python/.vaultkey -v ~/apps/ansible_stdout_compact_logger:/usr/local/lib/ansible_stdout_compact_logger -w /home/python/big-cloud registry.bioserenity.com/bioserenity/cd-builder ansible"
+alias ag="docker run -it --rm -e ANSIBLE_VAULT_PASSWORD_FILE=/home/python/.vaultkey -e ANSIBLE_CALLBACK_PLUGINS=/usr/local/lib/ansible_stdout_compact_logger -e ANSIBLE_STDOUT_CALLBACK=anstomlog -v ~/.aws:/home/python/.aws -v ~/.ssh/id_rsa:/home/python/.ssh/id_rsa -v ~/work/big-cloud:/home/python/big-cloud -v ~/.vaultkey:/home/python/.vaultkey -v ~/apps/ansible_stdout_compact_logger:/usr/local/lib/ansible_stdout_compact_logger -w /home/python/big-cloud registry.bioserenity.com/bioserenity/cd-builder ansible-galaxy"
+alias ap="docker run -it --rm -e ANSIBLE_VAULT_PASSWORD_FILE=/home/python/.vaultkey -e ANSIBLE_CALLBACK_PLUGINS=/usr/local/lib/ansible_stdout_compact_logger -e ANSIBLE_STDOUT_CALLBACK=anstomlog -v ~/.aws:/home/python/.aws -v ~/.ssh/id_rsa:/home/python/.ssh/id_rsa -v ~/work/big-cloud:/home/python/big-cloud -v ~/.vaultkey:/home/python/.vaultkey -v ~/apps/ansible_stdout_compact_logger:/usr/local/lib/ansible_stdout_compact_logger -w /home/python/big-cloud registry.bioserenity.com/bioserenity/cd-builder ansible-playbook"
+alias mitogen="ANSIBLE_STRATEGY_PLUGINS=$HOME/apps/mitogen/ansible_mitogen/plugins/strategy ANSIBLE_STRATEGY=mitogen_linear ap"
+# terraform
+alias tf="terraform"
 
 # --------------------------------------------------------
 # GIT
