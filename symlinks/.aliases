@@ -53,6 +53,8 @@ alias mitogen="ANSIBLE_STRATEGY_PLUGINS=$HOME/apps/mitogen/ansible_mitogen/plugi
 alias tf="terraform"
 # kubernetes
 alias k="kubectl"
+# minikube
+alias mk="minikube"
 
 # --------------------------------------------------------
 # GIT
