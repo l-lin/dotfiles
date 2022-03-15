@@ -59,7 +59,7 @@ plugins=(
   z
   git-open
   copyfile
-  copydir
+  copypath
   colored-man-pages
   extract
   web-search
