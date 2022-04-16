@@ -5,7 +5,7 @@ call plug#begin()
 Plug 'tpope/vim-sensible'             " VIM minimal config
 
 " GUI stuffs
-Plug 'morhetz/gruvbox'                " VIM theme
+"Plug 'morhetz/gruvbox'                " VIM theme
 Plug 'arcticicestudio/nord-vim'       " VIM theme
 Plug 'vim-airline/vim-airline'        " Display the bottom status bar
 Plug 'vim-airline/vim-airline-themes' " Themes for the airline
@@ -29,6 +29,7 @@ Plug 'pearofducks/ansible-vim'        " Ansible support
 " Snippets
 Plug 'SirVer/ultisnips'               " Snippets
 Plug 'honza/vim-snippets'             " Snippets
+Plug 'andrewstuart/vim-kubernetes'    " Kubernetes support
 
 " Others
 "Plug 'ctrlpvim/ctrlp.vim'             " Open file directory directly with C-p + used for GoDecls
@@ -237,6 +238,14 @@ nmap <S-F6> <Plug>(coc-rename)
 nmap <C-p> :Telescope find_files<cr>
 " Live grep
 nmap <C-g> :Telescope live_grep<cr>
+
+" vim-multiple-cursors
+let g:multi_cursor_use_default_mapping=0
+let g:multi_cursor_start_word_key      = '<A-j>'
+let g:multi_cursor_next_key            = '<A-j>'
+let g:multi_cursor_prev_key            = '<A-S-j>'
+let g:multi_cursor_skip_key            = '<C-x>'
+let g:multi_cursor_quit_key            = '<Esc>'
 " }}}
 " Cursor shape {{{
 if has("autocmd")

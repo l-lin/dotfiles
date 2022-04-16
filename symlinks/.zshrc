@@ -73,6 +73,7 @@ plugins=(
   fzf-preview
   dip
   asdf
+  git-extra-commands
 )
 
 source $ZSH/oh-my-zsh.sh
