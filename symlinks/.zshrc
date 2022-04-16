@@ -57,25 +57,25 @@ export FZF_DEFAULT_OPTS="
 # Example format: plugins=(rails git textmate ruby lighthouse)
 plugins=(
   asdf
-  z
-  git-open
+  colored-man-pages
   copyfile
   copypath
-  colored-man-pages
+  dip
   extract
-  web-search
-  zsh-autosuggestions
-  zsh-syntax-highlighting
-  httpie
-  wd
   forgit
-  pet
   fzf
   fzf-preview
-  dip
-  asdf
   git-extra-commands
+  git-open
+  httpie
+  pet
+  quarkus
   ripgrep
+  web-search
+  wd
+  z
+  zsh-autosuggestions
+  zsh-syntax-highlighting
 )
 
 source $ZSH/oh-my-zsh.sh
