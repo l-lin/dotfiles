@@ -1,0 +1,15 @@
+[General]
+  snippetfile = "/home/llin/.config/pet/snippet.toml"
+  editor = "nvim"
+  column = 40
+  selectcmd = "fzf --ansi"
+  backend = "gitlab"
+  sortby = ""
+
+[GitLab]
+  file_name = "pet-snippet.toml"
+  access_token = ""
+  url = "https://git.bioserenity.com"
+  id = "63"
+  visibility = "private"
+  auto_sync = true

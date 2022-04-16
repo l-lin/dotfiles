@@ -1,7 +1,7 @@
 # pet: https://github.com/knqyf263/pet
 if type pet >/dev/null 2>&1; then
     function pet-select() {
-        BUFFER=$(pet search --query "$LBUFFER")
+        BUFFER=$(pet search --color --query "$LBUFFER")
         CURSOR=$#BUFFER
         zle redisplay
     }
