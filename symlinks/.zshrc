@@ -75,6 +75,7 @@ plugins=(
   dip
   asdf
   git-extra-commands
+  ripgrep
 )
 
 source $ZSH/oh-my-zsh.sh
