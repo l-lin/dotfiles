@@ -16,6 +16,7 @@
   editor = nvim
   excludesfile = ~/.gitignore_global
   autocrlf = input
+  pager = delta
 [alias]
   adda = add -A
   ba = branch -avv
@@ -68,9 +69,6 @@
 # remember previous conflict resolutions
 [rerere]
   enabled = true
-[pager]
-  diff = diff-so-fancy | less --tabs=1,5 -RFX
-  show = diff-so-fancy | less --tabs=1,5 -RFX
 # pull will do a rebase instead of a merge
 [pull]
   rebase = true
@@ -97,3 +95,15 @@
 # branch
 [branch]
   sort = -committerdate
+
+# delta configuration: https://dandavison.github.io/delta/configuration.html
+[delta]
+  features = line-numbers decorations
+  syntax-theme = Nord
+  plus-style = syntax "#003800"
+  minus-style = syntax "#3f0001"
+[delta "decorations"]
+  commit-decoration-style = bold yellow box ul
+  file-style = bold yellow ul
+  file-decoration-style = none
+  hunk-header-decoration-style = cyan box ul
