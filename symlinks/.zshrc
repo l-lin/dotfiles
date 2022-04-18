@@ -57,6 +57,7 @@ export FZF_DEFAULT_OPTS="
 # Example format: plugins=(rails git textmate ruby lighthouse)
 plugins=(
   asdf
+  aws
   colored-man-pages
   copyfile
   copypath
