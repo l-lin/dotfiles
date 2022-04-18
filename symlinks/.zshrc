@@ -151,6 +151,9 @@ autoload zmv
 # calculator
 autoload zcalc
 
+# completion for aliases (see https://unix.stackexchange.com/a/583743)
+unsetopt completealiases
+
 # Add autocompletion
 fpath=(~/.zsh/completion $fpath)
 autoload -Uz compinit && compinit -i
