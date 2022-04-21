@@ -1,0 +1,14 @@
+#compdef httpx
+#autload
+
+local subcmds=()
+
+while read -r line ; do
+   if [[ ! $line == Available* ]] ;
+   then
+      subcmds+=(${line/[[:space:]]*\#/:})
+   fi
+done < <(httpx -s)
+
+_describe 'command' subcmds
+
