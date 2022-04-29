@@ -16,6 +16,10 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     libffi-dev \ # deals with "No module named '_ctypes'
     libbz2-dev   # deals with "No module named '_bz2'
 
+  # to resolve *.localhost automatically to 127.0.0.1
+  echo "[-] Installing nss-myhostname: https://man7.org/linux/man-pages/man8/nss-myhostname.8.html "
+  sudo apt install libnss-myhostname
+
   echo "[-] Installing jo: https://github.com/jpmens/jo"
   sudo apt install jo
 
