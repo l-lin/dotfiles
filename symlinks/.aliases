@@ -192,7 +192,13 @@ gci() {
     type=refactor
   fi
 
-  local jira_id=$(git rev-parse --abbrev-ref HEAD | awk -F'/' '{ print $2}')
+  local jira_id=$(git rev-parse --abbrev-ref HEAD | awk -F'/' '{ print $2 }')
 
   git add -A && git commit -m "${type}(${jira_id}): ${git_msg}"
+}
+# git push remote
+gpush() {
+  local branch_name=$(git rev-parse --abbrev-ref HEAD)
+
+  git push -u origin ${branch_name}
 }
