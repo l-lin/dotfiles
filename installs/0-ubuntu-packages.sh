@@ -23,6 +23,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "[-] Installing jo: https://github.com/jpmens/jo"
   sudo apt install jo
 
+  echo "[-] Installing pgcli: https://github.com/dbcli/pgcli"
+  sudo apt install pgcli
+
   echo "[-] Installing podman: https://github.com/containers/podman"
   sudo apt install podman
 
