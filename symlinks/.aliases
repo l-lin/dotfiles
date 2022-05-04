@@ -165,7 +165,7 @@ aws_sync_perso() {
 gco() {
   local jira_id=$1
   local branch_name=$2
-  local type=${3:-feature}
+  local type=${3:-f}
 
   if [[ "$type" == "f" ]]; then
     type=feature
@@ -180,7 +180,7 @@ gco() {
 # git commit shortcut
 gci() {
   local git_msg=$1
-  local type=$2
+  local type=${2:-f}
 
   if [[ "$type" == "f" ]]; then
     type=feat
