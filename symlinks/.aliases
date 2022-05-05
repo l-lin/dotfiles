@@ -12,7 +12,7 @@ alias please="sudo "
 # --------------------------------------------------------
 # Default options
 # --------------------------------------------------------
-alias grep="grep --color=auto"
+alias grep="rg"
 # Prevent recursive change on root directory
 alias chmod="chmod --preserve-root"
 alias chown="chown --preserve-root"
@@ -21,12 +21,12 @@ alias cpv="rsync -apoghb --backup-dir=/tmp -e /dev/null --inplace --info=progres
 # Compute space disk
 alias df="df -Th"
 # alias du="du -sh *"
-alias du="nnn -S"
+alias du="dust"
 # Record a GIF
 alias gif="byzanz-record --duration=5 --x=250 --y=235 --width=1200 --height=800 ~/tmp/byzanz.gif"
 # Check used port
 alias usedports="netstat -taupen"
-alias whousethatport="lsof -i" # losf -i :8000
+alias who-use-that-port="lsof -i" # losf -i :8000
 alias rmf="rm -rf"
 # tar
 alias tarx="tar xzvf"
@@ -37,8 +37,6 @@ alias l="lsd -la --group-dirs first"
 alias ping="prettyping --nolegend"
 # find configured local DNS servers
 alias find-dns-servers="nmcli dev show | grep 'IP4.DNS'"
-# Enable Elasticsearch in local
-alias enable_elastic="sudo sysctl -w vm.max_map_count=262144"
 # weather
 alias weather="curl https://wttr.in/"
 # docker
