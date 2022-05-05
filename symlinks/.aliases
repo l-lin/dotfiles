@@ -13,6 +13,7 @@ alias please="sudo "
 # Default options
 # --------------------------------------------------------
 alias grep="rg"
+alias top="procs --watch --sortd cpu"
 # Prevent recursive change on root directory
 alias chmod="chmod --preserve-root"
 alias chown="chown --preserve-root"
