@@ -2,6 +2,10 @@
 [[ $- != *i* ]] && return
 [[ -z "$TMUX" ]] && exec tmux
 
+# uncomment the following to benchmark your shell
+# start a new session, and call `zprof`
+#zmodload zsh/zprof
+
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
 export ZSH_CUSTOM=$ZSH/custom
