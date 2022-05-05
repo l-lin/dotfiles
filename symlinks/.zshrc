@@ -69,6 +69,7 @@ plugins=(
   git-extra-commands
   git-open
   httpie
+  navi
   pet
   quarkus
   ripgrep
