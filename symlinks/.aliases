@@ -81,15 +81,6 @@ ci() {
   [[ $# -eq 0 ]] && echo "Missing job name" 1>&2 && return 1
   gitlab-runner exec docker --docker-volumes /var/run/docker.sock:/var/run/docker.sock $1
 }
-# test helm chart in sandbox
-helm-apply() {
-  local project_name=$(basename "$(pwd)")
-  helm template . --name ${project_name}-llin -f values.loukoum.yaml | kubectl apply -f -
-}
-helm-delete() {
-  local project_name=$(basename "$(pwd)")
-  helm template . --name ${project_name}-llin -f values.loukoum.yaml | kubectl delete -f -
-}
 # test terraform
 terraform-test() {
   local files=($(echo ${1} | tr "," "\n"))
@@ -127,35 +118,7 @@ timesh() {
   shell=${1-$SHELL}
   for i in $(seq 1 10); do /usr/bin/time $shell -i -c exit; done
 }
-# create and initialze new golang project
-new-go-project() {
-  local project_name=$1
-  mkdir -p $project_name
-  cd $project_name
-  curl -fsSL https://raw.githubusercontent.com/l-lin/go-boilerplate/master/install.sh -H 'Cache-Control: no-cache' | sh
-  make setup
-}
-# check what trello-daily-logs wrote
-daily-check() {
-  pushd ${HOME}/perso/daily-logs
-  git diff
-  popd
-}
-# commit & push daily-logs generated from trello-daily-logs
-daily-push() {
-  pushd ${HOME}/perso/daily-logs
-  git add -A
-  git commit -m "$(date '+%m'): add $(date '+%d')"
-  git push
-  popd
-}
-# reset daily logs genereated by trello-daily-logs
-daily-reset() {
-  pushd ${HOME}/perso/daily-logs
-  git reset
-  git checkout .
-  popd
-}
+# synchronize AWS s3
 aws_sync_perso() {
   local folder_name=$(pwd | awk -F'/' '{ print $NF }')
   aws s3 sync . "s3://${folder_name}" --storage-class ONEZONE_IA --delete --profile perso

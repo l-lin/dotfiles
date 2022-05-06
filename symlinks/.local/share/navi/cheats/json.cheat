@@ -1,0 +1,9 @@
+% json
+
+# View json interatively
+jless <input_file>
+
+# Create json object
+jo -p name=JP object=$(jo fruit=Orange hungry@0 point=$(jo x=10 y=20 list=$(jo -a 1 2 3 4 5)) number=17) sunday@1
+
+$ input_file: find . -name "*.json"

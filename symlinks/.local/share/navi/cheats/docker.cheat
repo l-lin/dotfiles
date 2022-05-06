@@ -1,0 +1,9 @@
+% docker
+
+# Remove all images from the local image store
+docker images -q | xargs -I% docker rmi "%" --force
+
+# Create a new bash process inside the container and connect it to the terminal
+docker exec -it <container_id> bash
+
+$ container_id: docker ps --- --headers 1 --column 1 --delimiter '\s\s+'

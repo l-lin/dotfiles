@@ -1,0 +1,65 @@
+% bash, loop
+
+# Loop numerical
+for i in {<start>..<end>..<step>}; do
+  echo $i
+done
+
+# Loop from array
+inputs=('foo' 'bar')
+for i in ${inputs[@]}; do
+  echo $i
+done
+
+# Change file extensions
+for i in *.<source_extension>; do
+  mv $i ${i//<source_extension>/<target_extension>}
+done
+
+% bash, sd
+
+# Replace all occurrences
+sd <before> <after>
+
+# Replace newlines
+sd '\n' '<target_character>'
+
+# Search and replace with regex and indexed capture groups
+sd '<regex>' '$1'
+
+# Preview change
+sd -p '<before>' '<after>' <input_file>
+
+$ input_file: ls -p | grep -v /
+
+% bash, awk
+
+# Print Nth element
+awk '{ print $<index> }'
+
+# Print Nth element with custom field separator
+awk -F'<field_separator>' '{ print $<index> }'
+
+# Print elements and concat with spaces
+awk '{ print $<index_1>,$<index_2> }'
+
+# Print elements and concat with commas
+awk '{ print $<index_1> "," $<index_2> }'
+
+# Print number of row
+awk '{ print NR " " $<index> }'
+
+# AWK with regex
+awk '/<regex>/ { print $<index> }'
+
+# AWK with match field
+awk '$<index_1> == "<match_field>" { print $<index_2> }'
+
+# Matches within specific field
+awk '$<index_1>~/<regex>/ { print $<index_2> }'
+
+# Printf with substr (index starts from 1)
+awk '{ printf "%s\n", substr($<index>, <from>, <to>) }'
+
+# Set the desired column width
+awk '{ printf "%-<column_width>s \t %s \n", NR, $<index> }'

@@ -1,0 +1,66 @@
+% video, common
+
+$ input_file: ls -p | grep -v /
+$ scheme: echo -e 'rtmp\nrtmps\nrtsp\nrtsps'
+
+% video, ffprobe
+@ video, common
+
+# Get video stream information
+ffprobe -loglevel 16 -show_streams -show_private_data -print_format flat -i <input_file>
+
+# Show video frame timestamps
+ffprobe <input_file> -select_streams v -show_entries frame=coded_picture_number,pkt_pts_time -of csv=p=0:nk=1 -v 0 -pretty | less
+
+# Get video frame numbers
+ffprobe -v error -count_frames -select_streams v:0 -show_entries stream=nb_frames -of default=nokey=1:noprint_wrappers=1 -i <input_file>
+
+# Check video I/P/B frames
+ffprobe -loglevel 16 -show_frames <input_file> | grep pict_type | sort | uniq -c
+
+% video, ffmpeg
+@ video, common
+
+# Concat all MP4 videos
+tmp_file=tmp-$(uuidgen)
+touch "${tmp_file}"
+for f in *.mp4; do
+  echo "file '$f'" >> ${tmp_file}
+done
+ffmpeg -f concat -i "${tmp_file}" -vcodec copy -acodec copy <output_file>
+rm "${tmp_file}"
+
+# Add frame count in video
+ffmpeg -i <input_file> \
+  -vf "drawtext=text=%{n}:fontsize=72:r=60:x=(w-tw)/2: y=h-(2*lh):fontcolor=white:box=1:boxcolor=0x00000099" \
+  <output_file>
+
+# Stream video indefinitely to a source
+ffmpeg -re -stream_loop 1 -i <input_file> -f flv <scheme>://<url>
+
+# Stream clock to a source
+ffmpeg -stream_loop 1 -f lavfi -re \
+  -i color=size=1280x720:rate=25:color=black \
+  -c:v libx264 \
+  -vf "settb=AVTB,setpts='trunc(PTS/1K)*1K+st(1,trunc(RTCTIME/1K))-1K*trunc(ld(1)/1K)',drawtext=text='%{localtime}.%{eif\:1M*t-1K*trunc(t*1K)\:d}':x=(w-text_w)/2:y=(h-text_h)/2:fontsize=80:fontcolor=white" \
+  -c:v libx264 \
+  -profile:v high \
+  -level:v 4.1 \
+  -preset veryfast \
+  -b:v 3000k \
+  -maxrate 3000k \
+  -bufsize 6000k \
+  -pix_fmt yuv420p \
+  -g 50 \
+  -keyint_min 50 \
+  -sc_threshold 0 \
+  -f flv <scheme>://<url>
+
+% video, vlc
+@ video, common
+
+# Watch video
+vlc <input_file>
+
+# Watch stream
+vlc <scheme>://<url>

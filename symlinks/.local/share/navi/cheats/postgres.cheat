@@ -1,0 +1,8 @@
+% postgres
+
+# Open Postgres interactive shell
+pgcli -h <host> -p 5432 -U <user> <db>
+
+$ host: cat ${HOME}/.pgpass | awk -F':' '{ print $1 }'
+$ user: cat ${HOME}/.pgpass | awk -F':' '{ print $4 }'
+$ db: cat ${HOME}/.pgpass | awk -F':' '{ print $3 }'

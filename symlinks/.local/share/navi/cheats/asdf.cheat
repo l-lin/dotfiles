@@ -1,0 +1,19 @@
+% asdf
+
+# Browse asdf plugins
+asdf plugin list all
+
+# Add new asdf plugin
+asdf plugin add <plugin_name>
+
+# Remove asdf plugin
+asdf plugin remove <local_plugin_name>
+
+# Install new package version
+a
+# Uninstall new package version
+asdf uninstall <local_plsdf install <local_plugin_name> <version>
+
+$ plugin_name: asdf plugin list all | awk '{ print $1 }'
+$ local_plugin_name: ls -1 ${HOME}/.asdf/plugins
+$ version: asdf list all <local_plugin_name> | sort

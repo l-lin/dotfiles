@@ -1,0 +1,25 @@
+% aws
+
+# Local AWS
+aws --endpoint-url http://locastack.localhost 
+
+# List S3 objects
+aws --profile <profile> s3 ls s3://<bucket><env>/<key>
+
+# Copy S3 object
+aws --profile <profile> s3 cp s3://<bucket><env>/<key> .
+
+# List SQS queues
+aws --profile <profile> sqs list-queues
+
+# Get SQS queue URL
+aws --profile <profile> sqs get-queue-url --queue-name <queue_name>-<env>
+
+# Send SQS message
+aws --profile <profile> sqs send-message --queue-url <queue_url> --message-body <message_body>
+
+$ profile: cat ${HOME}/.aws/credentials ${HOME}/.aws/config | grep '\[' | sd '\[' '' | sd '\]' '' | sd 'profile ' '' | sort | uniq
+$ bucket: echo -e 'bioserenity-bcp-\nbcp-\nvideo-record-\nconversion-files-'
+$ env: echo -e 'swpdev\nswpqal\npreprodhds\nhads'
+$ key: echo -e "$(xclip -o -sel clip)\n"
+$ queue_name: echo -e 'converter-job-\n'
