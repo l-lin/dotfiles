@@ -29,6 +29,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "[-] Installing podman: https://github.com/containers/podman"
   sudo apt install podman
 
+  echo "[-] Installing ripgrep: https://github.com/BurntSushi/ripgrep"
+  sudo apt install ripgrep
+
   echo "[-] Installing some ubuntu apps"
   sudo apt install gnome-shell-pomodoro alacarte peek
 
