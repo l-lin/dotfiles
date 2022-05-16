@@ -2,14 +2,20 @@
 
 set -eu
 
-docker_compose_version="1.29.2"
+docker_compose_version="2.5.0"
 
-if type docker-compose >/dev/null 2>&1; then
-  echo "[-] docker-compose already exists => skipping"
+docker_config_folder=${HOME}/.docker
+docker_plugins_folder="${docker_config_folder}/cli-plugins"
+
+mkdir -p ${docker_plugins_folder}
+
+if [ -f ${docker_plugins_folder}/docker-compose ]; then
+  echo "[-] docker compose already exists => skipping"
 else
-  echo "[-] installing docker-compose: https://github.com/docker/compose"
-  sudo curl -o /usr/local/bin/docker-compose -L https://github.com/docker/compose/releases/download/${docker_compose_version}/docker-compose-`uname -s`-`uname -m`
-  sudo chmod +x /usr/local/bin/docker-compose
-  docker-compose -version
+  echo "[-] installing docker compose: https://github.com/docker/compose"
+  curl -o "${docker_plugins_folder}/docker-compose" \
+    -L "https://github.com/docker/compose/releases/download/v${docker_compose_version}/docker-compose-$(uname -s)-$(uname -m)"
+  chmod +x "${docker_plugins_folder}/docker-compose"
+  docker compose version
 fi
 
