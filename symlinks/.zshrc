@@ -58,7 +58,7 @@ export FZF_DEFAULT_OPTS="
 # preview content of the file under the cursor when searching for a file
 export FZF_CTRL_T_OPTS="--preview 'bat --style numbers,changes --color "always" {} 2 >/dev/null | head -200'"
 # preview full command
-export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:wrap"
+export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:5:wrap"
 # show the entries of the directory
 export FZF_ALT_C_OPTS="--sort --preview 'tree -C {} | head -200'"
 

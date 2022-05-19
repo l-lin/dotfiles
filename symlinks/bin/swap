@@ -1,24 +1,15 @@
 #!/bin/bash
 
-max_results=${1:-8}
 
-print_raw_used_swap() {
-  for i in /proc/*/status ; do
-    local vmswap=$(cat $i | grep "^VmSwap" 2>/dev/null)
-    if [ $? == 0 ] && [ "${vmswap}" != "" ] ; then
-      echo "${i} ${vmswap}"
-    fi
-  done
-}
-
-# returns "${pid} ${used_swap_in_kb}"
 get_all_used_swap() {
   for i in /proc/*/status ; do
     local vmswap=$(cat $i | grep "^VmSwap" 2>/dev/null)
     if [ $? == 0 ] && [ "${vmswap}" != "" ] ; then
       local pid=$(echo $i | awk -F'/' '{ print $3 }')
+      local process=$(get_process_command ${pid})
       local used_swap_in_kb=$(echo ${vmswap} | awk '{ print $2 }')
-      echo "${pid} ${used_swap_in_kb}"
+
+      printf '%10s %-30.30s %10s kB\n' ${pid} ${process} ${used_swap_in_kb}
     fi
   done
 }
@@ -28,13 +19,5 @@ get_process_command() {
   ps aux | grep "${pid}" | awk "\$2 == ${pid} { print \$11 }"
 }
 
-for pid_with_used_swap in $(get_all_used_swap | sort -k2 -n | tail -n "${max_results}" | awk '{ print $1 "-" $2 "kB" }'); do
-  pid=$(echo ${pid_with_used_swap} | awk -F'-' '{ print $1 }')
-  used_swap_in_kb=$(echo ${pid_with_used_swap} | awk -F'-' '{ print $2 }')
-  process=$(get_process_command ${pid})
-
-  printf '%10s %-50.50s %10s\n' ${pid} ${process} ${used_swap_in_kb}
-done
-
-#print_raw_used_swap | sort -k3 -n
+get_all_used_swap | sort -k3 -n | fzf --border --tac | awk '{ print $1 }' | xargs kill
 
