@@ -52,9 +52,15 @@ export FZF_DEFAULT_OPTS="
 --bind='alt-k:preview-up,alt-p:preview-up'
 --bind='alt-j:preview-down,alt-n:preview-down'
 --bind='?:toggle-preview'
---bind='alt-w:toggle-preview-wrap'
---preview-window='right:60%'
+--bind='alt-p:toggle-preview-wrap'
+--preview-window='right:60%:wrap'
 "
+# preview content of the file under the cursor when searching for a file
+export FZF_CTRL_T_OPTS="--preview 'bat --style numbers,changes --color "always" {} 2 >/dev/null | head -200'"
+# preview full command
+export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:wrap"
+# show the entries of the directory
+export FZF_ALT_C_OPTS="--sort --preview 'tree -C {} | head -200'"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
