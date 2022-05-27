@@ -2,7 +2,7 @@
 
 set -eu
 
-groovy_version="3.0.7"
+groovy_version="4.0.2"
 
 if type groovy >/dev/null 2>&1; then
   echo "[-] groovy already installed => skipping"
