@@ -19,6 +19,7 @@ install_zsh_plugin https://github.com/paulirish/git-open.git git-open
 install_zsh_plugin https://github.com/zsh-users/zsh-autosuggestions.git zsh-autosuggestions
 install_zsh_plugin https://github.com/lukechilds/zsh-nvm zsh-nvm
 install_zsh_plugin https://github.com/wfxr/forgit forgit
+install_zsh_plugin https://github.com/ianthehenry/zsh-autoquoter zsh-autoquoter
 
 
 if [ ! -d "${ZSH_CUSTOM}/themes/spaceship-prompt" ]; then

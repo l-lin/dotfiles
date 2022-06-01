@@ -86,6 +86,7 @@ plugins=(
   web-search
   wd
   z
+  zsh-autoquoter
   zsh-autosuggestions
   zsh-syntax-highlighting
 )
@@ -140,13 +141,20 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=1"
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=10
 
 # zsh-syntax-highlighting config
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor zaq)
 
 # zsh-navigation-tools config
 znt_list_bold=0
 znt_list_border=1
 znt_list_instant_select=1
 znt_history_active_text=reverse
+
+# zsh-autoquoter configuration
+ZAQ_PREFIXES=(
+  'g ci( [^ ]##)# -[^ -]#m'
+  'git commit( [^ ]##)# -[^ -]#m'
+  'ssh( [^ ]##)# [^ -][^ ]#'
+)
 
 # --------------------------------------------------------
 # Initialization
