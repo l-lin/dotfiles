@@ -35,15 +35,6 @@
 .tool-versions
 application-local.yml
 application-dev.yml
-application-swpdev.yml
-application-swpdev.properties
-application-swpqal.yml
-application-swpqal.properties
-application-stg-eu-fr.yml
-application-stg-eu-fr.properties
-application-qal-eu-fr.yml
-application-qal-eu-fr.properties
-application-lab-eu-fr.yml
-application-lab-eu-fr.properties
+application-swp*
 Sandbox.java
 .cache
