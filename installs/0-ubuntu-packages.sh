@@ -16,6 +16,12 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     libffi-dev \ # deals with "No module named '_ctypes'
     libbz2-dev   # deals with "No module named '_bz2'
 
+  #echo "[-] Installing OBS for live stream: https://obsproject.com"
+  #sudo add-apt-repository ppa:obsproject/obs-studio
+  #sudo apt update
+  #sudo apt install obs-studio
+  # for RTSP server: https://github.com/iamscottxu/obs-rtspserver
+
   # to resolve *.localhost automatically to 127.0.0.1
   echo "[-] Installing nss-myhostname: https://man7.org/linux/man-pages/man8/nss-myhostname.8.html "
   sudo apt install libnss-myhostname
