@@ -14,6 +14,7 @@ alias please="sudo "
 # --------------------------------------------------------
 alias grep="rg"
 alias top="procs --watch --sortd cpu"
+alias watch="viddy"
 # Prevent recursive change on root directory
 alias chmod="chmod --preserve-root"
 alias chown="chown --preserve-root"
