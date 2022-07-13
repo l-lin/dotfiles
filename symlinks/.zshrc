@@ -152,7 +152,7 @@ znt_history_active_text=reverse
 # zsh-autoquoter configuration
 ZAQ_PREFIXES=(
   'g ci( [^ ]##)# -[^ -]#m'
-  'git commit( [^ ]##)# -[^ -]#m'
+  'g commit( [^ ]##)# -[^ -]#m'
 )
 
 # --------------------------------------------------------
