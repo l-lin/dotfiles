@@ -126,38 +126,24 @@ aws_sync_perso() {
 }
 # git checkout shortcut to add the task type, the jira id and the branch name
 gco() {
-  local jira_id=$1
-  local branch_name=$2
-  local type=${3:-f}
+  local branch_type=$(echo "feature\nbugfix\nchore\ntask\nrefactor" | gum filter --placeholder "branch type")
+  local jira_task_id=$(gum input --placeholder "jira task ID")
 
-  if [[ "$type" == "f" ]]; then
-    type=feature
-  elif [[ "$type" == "b" ]]; then
-    type=bugfix
-  elif [[ "$type" == "t" ]]; then
-    type=task
-  fi
+  local branch_name=$(gum input --value "${branch_type}/CLOUD-$jira_task_id/" --placeholder "branch name")
 
-  git checkout -b ${type}/CLOUD-${jira_id}/${branch_name}
+  git checkout -b "${branch_name}"
 }
 # git commit shortcut
 gci() {
-  local git_msg=$1
-  local type=${2:-f}
+  local type=$(echo "feat\nfix\nchore\ntask\nrefactor\nci\ncd\nbuild" | gum filter --placeholder "type")
+  local scope=$(gum input --value "$(git rev-parse --abbrev-ref HEAD | awk -F'/' '{ print $2 }')" --placeholder "scope")
 
-  if [[ "$type" == "f" ]]; then
-    type=feat
-  elif [[ "$type" == "b" ]]; then
-    type=fix
-  elif [[ "$type" == "c" ]]; then
-    type=chore
-  elif [[ "$type" == "r" ]]; then
-    type=refactor
-  fi
+  test -n "${scope}" && scope="(${scope})"
 
-  local jira_id=$(git rev-parse --abbrev-ref HEAD | awk -F'/' '{ print $2 }')
+  local summary=$(gum input --value "${type}${scope}: " --placeholder "summary of the change" --width 50)
+  local description=$(gum write --placeholder "detail of the change" --width 80)
 
-  git add -A && git commit -m "${type}(${jira_id}): ${git_msg}"
+  git add -A && git commit -m "${summary}" -m "${description}"
 }
 # git push remote
 gpush() {
