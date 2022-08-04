@@ -56,6 +56,8 @@
   #   git filter-branch --force --index-filter "git rm --cached --ignore-unmatch path/to/file" --prune-empty --tag-name-filter cat -- --all
 [push]
   default = upstream
+  # automatically push new branch to remote withtout needing to set the upstream
+  autoSetupRemote = true
 # activate color for all commands
 [color]
   ui = auto
