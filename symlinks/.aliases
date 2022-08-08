@@ -126,7 +126,7 @@ aws_sync_perso() {
 }
 # git checkout shortcut to add the task type, the jira id and the branch name
 gco() {
-  local branch_type=$(echo "feature\nbugfix\nchore\ntask\nrefactor" | gum filter --placeholder "branch type")
+  local branch_type=$(echo "feature\nbugfix\ntask\nrefactor" | gum filter --placeholder "branch type")
   local jira_task_id=$(gum input --placeholder "jira task ID")
 
   local branch_name=$(gum input --value "${branch_type}/CLOUD-$jira_task_id/" --placeholder "branch name")
