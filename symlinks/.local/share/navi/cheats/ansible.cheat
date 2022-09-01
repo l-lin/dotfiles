@@ -1,0 +1,8 @@
+% ansible
+
+# Deploy
+ap -i ../config/<env> playbooks/files/applications/<app>/update.yml --diff
+
+$ env: find ~/work/big-cloud/config/ -maxdepth 1 -type d | awk -F'/' '{ print $7 }' | sort | uniq
+$ app: find ~/work/big-cloud/ansible/playbooks/files/applications/ -maxdepth 1 -type d | awk -F'/' '{ print $10 }' | sort | uniq
+
