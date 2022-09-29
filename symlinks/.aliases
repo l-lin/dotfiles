@@ -126,7 +126,7 @@ aws_sync_perso() {
   aws s3 sync . "s3://${folder_name}" --storage-class ONEZONE_IA --delete --profile perso
 }
 # git checkout shortcut to add the task type, the jira id and the branch name
-gco() {
+gcob() {
   local branch_type=$(echo "feature\nbugfix\ntask\nrefactor" | gum filter --placeholder "branch type")
   local jira_task_id=$(gum input --placeholder "jira task ID")
 
