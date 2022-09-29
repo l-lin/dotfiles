@@ -2,7 +2,7 @@
 
 set -eu
 
-rust_version="1.58.1"
+rust_version="1.64.0"
 
 if type cargo >/dev/null 2>&1; then
   echo "[-] rust already installed => skipping"
