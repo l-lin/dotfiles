@@ -11,10 +11,13 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   # install additional commands
   sudo apt install build-essential cmake git zsh colordiff exuberant-ctags tmux ruby-dev ruby htop xclip httpie silversearcher-ag nfs-common net-tools lm-sensors network-manager-openvpn openvpn network-manager-openvpn-gnome curl jq ubuntu-restricted-extras software-properties-common gnome-tweaks preload chrome-gnome-shell libssl-dev bison libpq-dev
   # packages for pythons
+  # zlib: deals with "No module named 'zlib'
+  # libffi: deals with "No module named '_ctypes'
+  # libbz2: deals with "No module named '_bz2'
   sudo apt install python-setuptools \
-    zlib1g zlib1g-dev \ # deals with "No module named 'zlib'
-    libffi-dev \ # deals with "No module named '_ctypes'
-    libbz2-dev   # deals with "No module named '_bz2'
+    zlib1g-dev \
+    libffi-dev \
+    libbz2-dev
 
   #echo "[-] Installing OBS for live stream: https://obsproject.com"
   #sudo add-apt-repository ppa:obsproject/obs-studio
