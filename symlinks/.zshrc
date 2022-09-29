@@ -33,7 +33,6 @@ export SPACESHIP_PROMPT_ORDER=(
   exec_time
   line_sep
   battery
-  vi_mode
   jobs
   exit_code
   char
