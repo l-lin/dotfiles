@@ -2,7 +2,7 @@
 
 set -eu
 
-go_version="1.15.8"
+go_version="1.19.1"
 
 if type go >/dev/null 2>&1; then
   echo "[-] go already installed => skipping"
