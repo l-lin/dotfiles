@@ -19,6 +19,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     libffi-dev \
     libbz2-dev
 
+  # for Ubuntu 22, we need this package to run AppImages
+  sudo apt install libfuse2
+
   #echo "[-] Installing OBS for live stream: https://obsproject.com"
   #sudo add-apt-repository ppa:obsproject/obs-studio
   #sudo apt update
