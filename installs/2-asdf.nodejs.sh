@@ -9,7 +9,7 @@ if type node >/dev/null 2>&1; then
 else
   echo "[-] installing NodeJS"
   asdf plugin add nodejs
-  bash -c '${ASDF_DATA_DIR:=$HOME/.asdf}/plugins/nodejs/bin/import-release-team-keyring'
+  #bash -c '${ASDF_DATA_DIR:=$HOME/.asdf}/plugins/nodejs/bin/import-release-team-keyring'
   asdf install nodejs "${nodejs_version}"
   asdf global nodejs "${nodejs_version}"
 fi

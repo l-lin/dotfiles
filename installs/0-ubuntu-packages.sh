@@ -12,7 +12,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   sudo apt install build-essential cmake git zsh colordiff exuberant-ctags tmux ruby-dev ruby htop xclip httpie silversearcher-ag nfs-common net-tools lm-sensors network-manager-openvpn openvpn network-manager-openvpn-gnome curl jq ubuntu-restricted-extras software-properties-common gnome-tweaks preload chrome-gnome-shell libssl-dev bison libpq-dev
   # packages for pythons
   sudo apt install python-setuptools \
-    zlib1g-dev \ # deals with "No module named 'zlib'
+    zlib1g zlib1g-dev \ # deals with "No module named 'zlib'
     libffi-dev \ # deals with "No module named '_ctypes'
     libbz2-dev   # deals with "No module named '_bz2'
 

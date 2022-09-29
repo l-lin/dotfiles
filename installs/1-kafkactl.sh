@@ -7,8 +7,5 @@ if type kafkactl >/dev/null 2>&1; then
 else
   echo "[-] installing kafkactl"
   sudo snap install kafkactl
-
-  echo "[-] include kafkactl in completion"
-  kafkactl completion zsh > "${fpath[1]}/_kafkactl"
 fi
 
