@@ -9,7 +9,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 
   echo "[-] Installing lots of stuffs"
   # install additional commands
-  sudo apt install build-essential cmake git zsh colordiff exuberant-ctags tmux ruby-dev ruby htop xclip httpie silversearcher-ag nfs-common net-tools lm-sensors network-manager-openvpn openvpn network-manager-openvpn-gnome curl jq ubuntu-restricted-extras software-properties-common gnome-tweaks preload chrome-gnome-shell libssl-dev bison libpq-dev
+  sudo apt install build-essential cmake git zsh colordiff exuberant-ctags tmux ruby-dev ruby htop xclip silversearcher-ag nfs-common net-tools lm-sensors network-manager-openvpn openvpn network-manager-openvpn-gnome curl jq ubuntu-restricted-extras software-properties-common gnome-tweaks preload chrome-gnome-shell libssl-dev bison libpq-dev
   # packages for pythons
   # zlib: deals with "No module named 'zlib'
   # libffi: deals with "No module named '_ctypes'
