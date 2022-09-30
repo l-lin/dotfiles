@@ -101,19 +101,6 @@ if [ -f ~/.aliases ]; then
 fi
 
 # --------------------------------------------------------
-# User configuration
-# --------------------------------------------------------
-
-export APPS_HOME="$HOME/apps"
-
-export PATH="$HOME/bin:$PATH"
-
-export ANSIBLE_CALLBACK_PLUGINS="$HOME/apps/ansible_stdout_compact_logger"
-export ANSIBLE_STDOUT_CALLBACK="anstomlog"
-
-export GREP_COLOR=32
-
-# --------------------------------------------------------
 # OPTIONS
 # --------------------------------------------------------
 
