@@ -2,7 +2,7 @@
 
 set -eu
 
-maven_version="3.6.3"
+maven_version="3.8.6"
 
 if type mvn >/dev/null 2>&1; then
   echo "[-] maven already installed => skipping"
