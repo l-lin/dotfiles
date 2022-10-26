@@ -2,7 +2,7 @@
 
 set -eu
 
-terraform="0.11.14"
+terraform="1.2.2"
 
 if type terraform >/dev/null 2>&1; then
   echo "[-] terraform already installed => skipping"
