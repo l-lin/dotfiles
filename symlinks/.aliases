@@ -81,24 +81,6 @@ ci() {
   [[ $# -eq 0 ]] && echo "Missing job name" 1>&2 && return 1
   gitlab-runner exec docker --docker-volumes /var/run/docker.sock:/var/run/docker.sock $1
 }
-# test terraform
-terraform-test() {
-  local files=($(echo ${1} | tr "," "\n"))
-  local env=${2:-stg-eu-fr}
-  local target_flags=""
-
-  for f in ${files[@]}; do
-    targets=($(cat ${f} | grep 'resource "' | grep -oEi '"[a-z0-9_-]+" "[a-z0-9_-]+"' | sed 's/"//g' | sed 's/ /./g'))
-    for target in ${targets[@]}; do
-      target_flags+="--target=${target} "
-    done
-  done
-
-  local cmd="terraform plan -out=tfplan -var-file=../../config/${env}.tfvars ${target_flags}"
-  echo "${cmd}"
-  echo "${cmd}" | clipcopy
-  echo "Copied to clipboard"
-}
 # docker
 docker-exec() {
   local cmd=$1
