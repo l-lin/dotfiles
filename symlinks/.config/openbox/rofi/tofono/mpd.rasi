@@ -1,0 +1,8 @@
+configuration {
+  show-icons:         true;
+  icon-theme:         "Zafiro";
+  cycle:              false;
+  hide-scrollbar:     true;
+  disable-history:    false;
+}
+@theme "/usr/share/rofi/themes/gruvbox-dark.rasi"
