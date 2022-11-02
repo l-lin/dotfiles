@@ -27,7 +27,7 @@ Plug 'chr4/nginx.vim'                 " Nginx support
 Plug 'pearofducks/ansible-vim'        " Ansible support
 
 " Snippets
-Plug 'SirVer/ultisnips'               " Snippets
+"Plug 'SirVer/ultisnips'               " Snippets
 Plug 'honza/vim-snippets'             " Snippets
 Plug 'andrewstuart/vim-kubernetes'    " Kubernetes support
 

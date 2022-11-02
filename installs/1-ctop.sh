@@ -2,7 +2,7 @@
 
 set -eu
 
-ctop_version="0.7.3"
+ctop_version="0.7.7"
 
 if type ctop >/dev/null 2>&1; then
   echo "[-] ctop already exists => skipping"

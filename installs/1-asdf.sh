@@ -2,7 +2,7 @@
 
 set -eu
 
-asdf_version="0.8.0"
+asdf_version="0.10.2"
 asdf_home="$HOME/.asdf"
 
 if [ ! -d "${asdf_home}" ]; then

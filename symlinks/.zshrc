@@ -70,7 +70,6 @@ plugins=(
   colored-man-pages
   copyfile
   copypath
-  dip
   extract
   forgit
   fzf

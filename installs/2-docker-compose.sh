@@ -2,7 +2,7 @@
 
 set -eu
 
-docker_compose_version="2.5.0"
+docker_compose_version="2.12.2"
 
 docker_config_folder=${HOME}/.docker
 docker_plugins_folder="${docker_config_folder}/cli-plugins"

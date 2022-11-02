@@ -10,4 +10,3 @@ if [ ! -d "${tpm_home}" ]; then
 else
   echo "[-] TMUX plugin manager already installed to ${tpm_home} => skipping"
 fi
-
