@@ -12,11 +12,9 @@ then
     for file in $(find . -type f); do
       echo "[-] processing ${file}"
       basename_file=$(basename "${file}")
-      home_file_dir=$(realpath $(dirname ${HOME}/${file}))
+      home_file_dir=$(dirname ${HOME}/${file})
+      mkdir -p ${home_file_dir}
       dotfiles_file_dir=$(realpath $(dirname ${symlinks_dir}/${file}))
-      if [ ! -d ${home_file_dir} ]; then
-          mkdir -p ${home_file_dir}
-      fi
       [ -r "${file}" ] && [ -f "${file}" ] && \
           rm -f ${home_file_dir}/${basename_file} && \
           ln -s ${dotfiles_file_dir}/${basename_file} ${home_file_dir}/${basename_file}
