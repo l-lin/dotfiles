@@ -44,7 +44,6 @@ export SPACESHIP_PROMPT_ORDER=(
 HIST_STAMPS="yyyy-mm-dd"
 
 # fzf options
-export FZF_BASE="$HOME/.asdf/installs/fzf/0.25.1"
 export FZF_DEFAULT_OPTS="
 --ansi
 --height='80%'

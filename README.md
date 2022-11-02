@@ -23,17 +23,6 @@ See [dotfiles](http://dotfiles.github.io).
 
 - Press "Prefix + I" (capital i)
 
-# Install Ubuntu gnome extensions
-
-- Install browser extension `GNOME shell`
-- Install the following:
-  - [Clipboard indicator](https://extensions.gnome.org/extension/779/clipboard-indicator/)
-  - [Dash to panel](https://extensions.gnome.org/extension/1160/dash-to-panel/)
-  - [Do not disturb](https://extensions.gnome.org/extension/964/do-not-disturb-button/)
-  - [Sensory perception](https://extensions.gnome.org/extension/1145/sensory-perception/)
-  - [System monitor](https://extensions.gnome.org/extension/120/system-monitor/)
-  - [User themes](https://extensions.gnome.org/extension/19/user-themes/)
-
 # Terminal configuration
 
 - Font: OverpassMono Nerd Font Regular
@@ -62,20 +51,43 @@ sudo -v && wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | 
 # IntellIJ plugins
 
 - AceJump
-- AsciiDoc
 - CodeGlance
-- Emoji support plugin
-- Error prone compiler
 - Grep console
-- Handlebars/Mustache
 - IdeaVim
-- IdeaVim-EasyMotion
 - Ideolog
-- IntelliJDeodorant
-- Lombok
-- MyGruvbox Theme
-- Property sorter
-- Scala
 - SonarLint
-- Spring assistant
 
+# Forticlient VPN with SAML
+
+If the official client does not work with your OS, there is a workaround available: https://gitlab.com/openconnect/openconnect/-/issues/356
+
+```bash
+# first install pre-requisites: https://github.com/gm-vm/openfortivpn#building-and-installing-from-source
+yay -S --noconfirm gcc automake autoconf make pkg-config
+
+# clone project
+git clone https://github.com/gm-vm/openfortivpn.git
+cd openfortivpn
+git checkout svpn_cookie
+
+# build project
+./autogen.sh
+./configure --prefix=/usr/local --sysconfdir=/etc
+make
+sudo make install
+
+# check openfortivpn is installed correctly
+openfortivpn --version
+
+# download openfortivpn-webview to get the cookie
+curl -L -o openfortivpn-webview.tar.xz https://github.com/gm-vm/openfortivpn-webview/releases/download/v1.0.1-electron/openfortivpn-webview-1.0.1.tar.xz
+extract openfortivpn-webview
+
+# create symlink in a bin folder so we can execute from everywhere
+sudo ln -s openfortivpn-webview/openfortivpn-webview /usr/local/bin/openfortivpn-webview
+
+# open VPN in one command line
+HOST=some_host && PORT=443 && \
+  openfortivpn-webview $HOST:$PORT 2>/dev/null \
+  | sudo openfortivpn $HOST:$PORT --svpn-cookie -
+```
