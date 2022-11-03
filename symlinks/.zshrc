@@ -121,7 +121,9 @@ setopt NO_BEEP
 setopt extended_glob
 
 # zsh-autosuggestions config
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=1"
+# must choose a value greater than 8, see https://github.com/zsh-users/zsh-autosuggestions/issues/698
+# for the complete list of 256 colors: https://upload.wikimedia.org/wikipedia/commons/1/15/Xterm_256color_chart.svg
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=244"
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=10
 
 # zsh-syntax-highlighting config
