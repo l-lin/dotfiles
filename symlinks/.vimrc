@@ -5,8 +5,8 @@ call plug#begin()
 Plug 'tpope/vim-sensible'             " VIM minimal config
 
 " GUI stuffs
-"Plug 'morhetz/gruvbox'                " VIM theme
-Plug 'arcticicestudio/nord-vim'       " VIM theme
+Plug 'morhetz/gruvbox'                " VIM theme
+"Plug 'arcticicestudio/nord-vim'       " VIM theme
 Plug 'vim-airline/vim-airline'        " Display the bottom status bar
 Plug 'vim-airline/vim-airline-themes' " Themes for the airline
 Plug 'ryanoasis/vim-devicons'         " Icons everywhere
@@ -101,7 +101,7 @@ set so=7
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 " Airline configuration
 let g:airline#extensions#tabline#enabled = 1
-let g:airline_theme='nord'
+let g:airline_theme='gruvbox'
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '>'
 
@@ -110,7 +110,7 @@ syntax enable
 " Highlight spell errors: https://github.com/morhetz/gruvbox/issues/175#issuecomment-390428621
 let g:gruvbox_guisp_fallback='bg'
 " Theme colorscheme
-colorscheme nord
+colorscheme gruvbox
 set background=dark
 if (has("termguicolors"))
   set termguicolors
