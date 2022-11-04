@@ -1,10 +1,17 @@
 # Dotfiles
 
-See [dotfiles](http://dotfiles.github.io).
+This [dotfiles](http://dotfiles.github.io) is made to be worked with [ArchCraft](https://archcraft.io/).
+It's using the following:
 
-![dotfiles](dotfiles.gif)
+- [openbox](http://openbox.org/wiki/Main_Page): next generation window manager
+- [alacritty](https://github.com/alacritty/alacritty): cross-platform, OpenGL terminal emulator
+- [rofi](https://github.com/davatorium/rofi): window switcher, application launcher and dmenu replacement
+- [thunar](https://docs.xfce.org/xfce/thunar/start): file manager
+- [polybar](https://polybar.github.io/): fast and easy to use tool for creating status bars
+- [dunst](https://dunst-project.org/): lightweigth replacement for the notification daemons
+- [plank](https://launchpad.net/plank): application dock
 
-# List of applications to install after reinstalling the OS
+## List of applications to install after reinstalling the OS
 
 ```bash
 # create symlinks & install stuffs
@@ -14,28 +21,28 @@ See [dotfiles](http://dotfiles.github.io).
 ./bootstrap.sh
 ```
 
-# Install VIM plugins
+## Install VIM plugins
 
 - Edit a file with VIM
 - Execute `:PlugInstall`
 
-# Install TMUX plugins
+## Install TMUX plugins
 
 - Press "Prefix + I" (capital i)
 
-# Terminal configuration
+## Terminal configuration
 
 - Font: OverpassMono Nerd Font Regular
 
-# Calibre
+## Calibre
 
-## Installation
+### Installation
 
 ```bash
 sudo -v && wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sudo sh /dev/stdin
 ```
 
-## Configuration
+### Configuration
 
 - Go to "Fetch news > Add or edit a custom resource"
 - Click on "New recipe"
@@ -48,7 +55,7 @@ sudo -v && wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | 
     - Port: 587
     - Encryption: TLS
 
-# IntellIJ plugins
+## IntellIJ plugins
 
 - AceJump
 - CodeGlance
@@ -57,7 +64,7 @@ sudo -v && wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | 
 - Ideolog
 - SonarLint
 
-# Forticlient VPN with SAML
+## Forticlient VPN with SAML
 
 If the official client does not work with your OS, there is a workaround available: https://gitlab.com/openconnect/openconnect/-/issues/356
 
@@ -91,3 +98,4 @@ HOST=some_host && PORT=443 && \
   openfortivpn-webview $HOST:$PORT 2>/dev/null \
   | sudo openfortivpn $HOST:$PORT --svpn-cookie -
 ```
+
