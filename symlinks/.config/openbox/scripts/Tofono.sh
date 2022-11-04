@@ -298,7 +298,7 @@ change_geany 'arc' 'JetBrains Mono 13'
 change_appearance 'Arc-Dark' 'Zafiro' 'Qogirr' 'Noto Sans 13'
 
 # funct THEME LAYOUT FONT SIZE (Change margin in funct)
-obconfig 'Arc-Dark' 'DLIMC' 'JetBrains Mono' '13' 'menu-icons.xml' && openbox --reconfigure
+#obconfig 'Arc-Dark' 'DLIMC' 'JetBrains Mono' '13' 'menu-icons.xml' && openbox --reconfigure
 
 # funct GEOMETRY FONT BORDER (Change colors in funct)
 change_dunst '280' '80' '10x48' 'top-right' 'JetBrains Mono 13' '6'

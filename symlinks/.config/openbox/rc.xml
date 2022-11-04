@@ -234,13 +234,6 @@
       </action>
     </keybind>
     <!-- Bottom right-->
-    <keybind key="W-l">
-      <action name="Unmaximize"/>
-      <action name="MoveResizeTo">
-        <x>-5</x>
-        <y>-5</y>
-      </action>
-    </keybind>
     <keybind key="A-z">
       <action name="Unmaximize"/>
       <action name="MoveResizeTo">
@@ -560,7 +553,7 @@
       </action>
     </keybind>
     <!-- Lockscreen -->
-    <keybind key="C-A-l">
+    <keybind key="W-l">
       <action name="Execute">
         <command>betterlockscreen --lock</command>
       </action>
