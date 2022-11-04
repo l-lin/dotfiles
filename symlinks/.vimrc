@@ -5,8 +5,8 @@ call plug#begin()
 Plug 'tpope/vim-sensible'             " VIM minimal config
 
 " GUI stuffs
-"Plug 'arcticicestudio/nord-vim'       " VIM theme
-Plug 'lifepillar/vim-gruvbox8'        " VIM theme
+Plug 'arcticicestudio/nord-vim'       " VIM theme
+"Plug 'lifepillar/vim-nordruvbox8'        " VIM theme
 Plug 'vim-airline/vim-airline'        " Display the bottom status bar
 Plug 'vim-airline/vim-airline-themes' " Themes for the airline
 Plug 'ryanoasis/vim-devicons'         " Icons everywhere
@@ -101,18 +101,15 @@ set so=7
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 " Airline configuration
 let g:airline#extensions#tabline#enabled = 1
-let g:airline_theme='gruvbox8'
+let g:airline_theme='nord'
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '>'
 
 syntax on
 syntax enable
 " Theme colorscheme
-colorscheme gruvbox8
-set background=dark
-if (has("termguicolors"))
-  set termguicolors
-endif
+colorscheme nord
+"set background=dark
 " File type detection
 filetype plugin on
 " Omnicomplete
