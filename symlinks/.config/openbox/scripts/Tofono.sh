@@ -292,10 +292,10 @@ change_nm 'tofono'
 #change_xfce_terminal 'JetBrainsMono Nerd Font 13'
 
 # funct SCHEME FONT
-change_geany 'steampunk' 'JetBrains Mono 13'
+change_geany 'arc' 'JetBrains Mono 13'
 
 # funct THEME ICON CURSOR FONT
-change_appearance 'Gruvbox' 'Zafiro' 'Qogirr' 'Noto Sans 13'
+change_appearance 'Arc-Dark' 'Zafiro' 'Qogirr' 'Noto Sans 13'
 
 # funct THEME LAYOUT FONT SIZE (Change margin in funct)
 obconfig 'Arc-Dark' 'DLIMC' 'JetBrains Mono' '13' 'menu-icons.xml' && openbox --reconfigure
