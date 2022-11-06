@@ -11,5 +11,6 @@ else
   asdf plugin add bat | true
   asdf install bat "${bat_version}"
   asdf global bat "${bat_version}"
+  sudo ln -s ${HOME}/.asdf/shims/bat /usr/local/bin/bat
 fi
 

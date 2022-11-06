@@ -12,7 +12,9 @@ import:
 
 ## Set environment variables
 env:
-  TERM: alacritty
+  # change TERM to have 256 color for tmux, especially for fzf-tmux
+  #TERM: alacritty
+  TERM: xterm-256color
   WINIT_X11_SCALE_FACTOR: '1.0'
 
 ## Terminal window settings
@@ -52,3 +54,9 @@ cursor:
 ## Live config reload
 live_config_reload: true
 
+shell:
+  program: zsh
+  #program: tmux
+  #  args:
+  #    - '-2'
+  #    - '-u'

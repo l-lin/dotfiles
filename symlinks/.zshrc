@@ -1,6 +1,6 @@
 # If not running interactively, do not do anything
 [[ $- != *i* ]] && return
-[[ -z "$TMUX" ]] && exec tmux
+[[ -z "$TMUX" ]] && exec tmux -2 -u
 
 # uncomment the following to benchmark your shell
 # start a new session, and call `zprof`
@@ -46,13 +46,13 @@ HIST_STAMPS="yyyy-mm-dd"
 # fzf options
 export FZF_DEFAULT_OPTS="
 --ansi
---height='80%'
---bind='alt-k:preview-up,alt-p:preview-up'
---bind='alt-j:preview-down,alt-n:preview-down'
+--color fg:#D8DEE9,bg:-1,hl:#A3BE8C,fg+:#D8DEE9,bg+:#434C5E,hl+:#A3BE8C
+--color pointer:#BF616A,info:#4C566A,spinner:#4C566A,header:#4C566A,prompt:#81A1C1,marker:#EBCB8B
 --bind='?:toggle-preview'
 --bind='alt-p:toggle-preview-wrap'
 --preview-window='right:60%:wrap'
 "
+export FZF_TMUX_OPTS="-p 80%,80%"
 # preview content of the file under the cursor when searching for a file
 export FZF_CTRL_T_OPTS="--preview 'bat --style numbers,changes --color "always" {} 2 >/dev/null | head -200'"
 # preview full command
