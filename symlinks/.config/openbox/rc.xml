@@ -252,15 +252,6 @@
         <width>32%</width>
       </action>
     </keybind>
-    <keybind key="A-c">
-      <action name="Unmaximize"/>
-      <action name="MoveResizeTo">
-        <x>-17</x>
-        <y>15</y>
-        <height>97%</height>
-        <width>32%</width>
-      </action>
-    </keybind>
     <!-- Windows Tiling -->
     <keybind key="W-KP_1">
       <action name="UnmaximizeFull"/>
@@ -535,16 +526,6 @@
     <keybind key="C-A-t">
       <action name="Execute">
         <command>xfce4-terminal</command>
-      </action>
-    </keybind>
-    <keybind key="C-A-v">
-      <action name="Execute">
-        <command>alacritty -e vim</command>
-      </action>
-    </keybind>
-    <keybind key="C-A-r">
-      <action name="Execute">
-        <command>alacritty -e ranger</command>
       </action>
     </keybind>
     <keybind key="C-A-h">
