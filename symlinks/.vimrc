@@ -6,7 +6,7 @@ Plug 'tpope/vim-sensible'             " VIM minimal config
 
 " GUI stuffs
 Plug 'arcticicestudio/nord-vim'       " VIM theme
-"Plug 'lifepillar/vim-nordruvbox8'        " VIM theme
+"Plug 'lifepillar/vim-nordruvbox8'     " VIM theme
 Plug 'vim-airline/vim-airline'        " Display the bottom status bar
 Plug 'vim-airline/vim-airline-themes' " Themes for the airline
 Plug 'ryanoasis/vim-devicons'         " Icons everywhere
@@ -27,9 +27,9 @@ Plug 'chr4/nginx.vim'                 " Nginx support
 Plug 'pearofducks/ansible-vim'        " Ansible support
 
 " Snippets
-"Plug 'SirVer/ultisnips'               " Snippets
 Plug 'honza/vim-snippets'             " Snippets
-Plug 'andrewstuart/vim-kubernetes'    " Kubernetes support
+"Plug 'SirVer/ultisnips'               " Snippets
+"Plug 'andrewstuart/vim-kubernetes'    " Kubernetes snipets (needs ultisnips)
 
 " Others
 "Plug 'ctrlpvim/ctrlp.vim'             " Open file directory directly with C-p + used for GoDecls
@@ -44,8 +44,8 @@ Plug 'vim-scripts/DrawIt'             " Help draw ascii schemas
 Plug 'psliwka/vim-smoothie'           " Smooth scrolling
 Plug 'rhysd/vim-grammarous'           " Grammar checker
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npm install'  }
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-lua/plenary.nvim'          " Lua functions for neovim
+Plug 'nvim-telescope/telescope.nvim'  " Fuzzy finder
 call plug#end()
 " }}}
 " Basic editing configuration {{{
@@ -100,10 +100,9 @@ set so=7
 " Close VIM if only window left is NERDTree
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 " Airline configuration
+let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_theme='nord'
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep = '>'
 
 syntax on
 syntax enable
