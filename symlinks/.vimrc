@@ -228,7 +228,7 @@ nmap <A-7> <Plug>(coc-references)
 " Symbol renaming.
 nmap <S-F6> <Plug>(coc-rename)
 " Find files
-nmap <C-p> :Telescope find_files<cr>
+nmap <C-n> :Telescope find_files<cr>
 " Live grep
 nmap <C-g> :Telescope live_grep<cr>
 
