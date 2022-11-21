@@ -18,6 +18,9 @@ ffprobe -v error -count_frames -select_streams v:0 -show_entries stream=nb_frame
 # Check video I/P/B frames
 ffprobe -loglevel 16 -show_frames <input_file> | grep pict_type | sort | uniq -c
 
+# Get video frame information
+ffprobe -v quiet -select_streams v -show_frames <input_file> 2>/dev/null
+
 % video, ffmpeg
 @ video, common
 
