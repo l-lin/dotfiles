@@ -1,0 +1,148 @@
+#!/usr/bin/env bash
+
+set -eu
+
+default_lines=1
+default_env=swpdev
+
+tail_remotes() {
+  local env=${1}
+  local app=${2}
+  local lines=${3}
+
+  local hosts=$(cat /etc/hosts | grep "${env}" | grep "${app}" | awk '{ print $2 }' | sort)
+
+  if [[ -z "${hosts}" ]]; then
+    >&2 echo "[ERROR] No host found for ${app} in ${env}"
+    exit 1
+  fi
+
+  local nb_hosts=$(count ${hosts})
+
+  if [[ ${nb_hosts} -eq 1 ]]; then
+    tail_remote_in_new_window ${hosts} ${lines}
+  else
+    local is_first=true
+    for host in ${hosts[@]}; do
+
+      if [[ "${is_first}" == "true" ]]; then
+        tail_remote_in_new_window ${host} ${lines}
+      else
+        tail_remote_in_new_pane ${host} ${lines}
+      fi
+
+      is_first=false
+    done
+  fi
+}
+
+tail_remote_in_new_window() {
+  local host=${1}
+  local lines=${2}
+
+  local container_name=$(find_container_name ${host})
+
+  tmux new-window -c "#{pane_current_path}" \
+    "echo '[INFO] Follow logs of ${container_name} in ${host}' && ssh ${host} 'docker logs -f --tail ${lines} ${container_name}' | jq --unbuffered -jr '.\"@timestamp\", \" [\", .level, \"] \", .message, \"\n\", .stack_trace | select(.!=null)' | sed --unbuffered -e 's~\(.*ERROR.*\)~\o033[0;41m\1\o033[0m~' -e 's~\(.*WARN.*\)~\o033[1;43;1;30m\1\o033[0m~' -e 's~\(.*DEBUG.*\)~\o033[1;30m\1\o033[0m~'"
+}
+
+tail_remote_in_new_pane() {
+  local host=${1}
+  local lines=${2}
+
+  local container_name=$(find_container_name ${host})
+
+  tmux split-window -h \
+    "echo '[INFO] Follow logs of ${container_name} in ${host}' && ssh ${host} 'docker logs -f --tail 1 ${container_name}' | jq --unbuffered -jr '.\"@timestamp\", \" [\", .level, \"] \", .message, \"\n\", .stack_trace | select(.!=null)' | sed --unbuffered -e 's~\(.*ERROR.*\)~\o033[0;41m\1\o033[0m~' -e 's~\(.*WARN.*\)~\o033[1;43;1;30m\1\o033[0m~' -e 's~\(.*DEBUG.*\)~\o033[1;30m\1\o033[0m~'"
+}
+
+find_container_name() {
+  local host=${1}
+
+  ssh ${host} 'docker ps -a --format "{{.Names}}"' | grep -v cadvisor | grep -v liquibase
+}
+
+count() {
+  local a=${@}
+  echo ${a} | sed 's/ /\n/g' | wc -l
+}
+
+# CLI config ----------------------------------------------------------------------
+
+show_help() {
+  cat << EOF
+Read remote docker container logs.
+
+Usage: ${0##*/} <flags>
+
+Examples:
+    # Download and zip video chunks from a given video session
+      ${0##*/} --env swpdev --app video-api --lines 10
+
+Flags:
+    -h, --help             Display help
+        --env              The environment to use (default: ${default_env})
+        --app              The application name (e.g. foobar)
+        --lines            Output the last NUM lines (default: ${default_lines})
+EOF
+}
+
+
+check_variable() {
+  local variable="${1}"
+  if [[ -z "${variable}" ]]; then
+    >&2 echo "[ERROR] Missing flags"
+    show_help
+    exit 1
+  fi
+}
+
+main() {
+  local env=${default_env}
+  local app=
+  local lines=${default_lines}
+
+  TEMP=$(getopt -o 'h' --long 'help,env:,app:,lines:' -n "${0##*/}" -- "$@")
+  eval set -- "$TEMP"
+  unset TEMP
+  while true; do
+    case "${1}" in
+      '-h'|'--help')
+        show_help
+        exit
+        ;;
+      '--env')
+        env="${2}"
+        shift 2
+        continue
+        ;;
+      '--app')
+        app="${2}"
+        shift 2
+        continue
+        ;;
+      '--lines')
+        lines="${2}"
+        shift 2
+        continue
+        ;;
+      '--')
+        shift
+        break
+        ;;
+      *)
+        break
+        ;;
+    esac
+
+    shift
+  done
+
+  check_variable "${env}"
+  check_variable "${app}"
+  check_variable "${lines}"
+
+  tail_remotes ${env} ${app} ${lines}
+}
+
+main "$@"
