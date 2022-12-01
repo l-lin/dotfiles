@@ -70,4 +70,4 @@ awk '{ printf "%-<column_width>s \t %s \n", NR, $<index> }'
 ssh <host> 'docker logs --tail <nb_last_logs> -f <service_name>' | jq --unbuffered -jr '."@timestamp", " [", .level, "] ", .message, "\n", .stack_trace | select(.!=null)' | sed --unbuffered -e 's~\(.*ERROR.*\)~\o033[0;41m\1\o033[0m~' -e 's~\(.*WARN.*\)~\o033[1;43;1;30m\1\o033[0m~' -e 's~\(.*DEBUG.*\)~\o033[1;30m\1\o033[0m~'
 
 $ host: cat /etc/hosts | awk '{ print $2 }' | sort | uniq
-$ service_name: echo -e 'acquisition\nannotations\nbcp-dump\nbcp-event-dump\nbcp-to-bff-converter\nconverter-service-api\nconverter-service-worker\nprocessing-service\nreferential\nsignal-display-settings\nsignals-view-processor\nviewer\nbridge-service\necg-live-service\necg-service\necg-processing-handler\nfota-service\nmedical-analysis\nrecord-service\nrecord-writer\nsmart-wearables-platform-api\nvideo-api\nvideo-reencoder\nweb2pdf\nwowza-streaming-engine-linux\n'
+$ service_name: ssh <host> 'docker ps -a --format "{{.Names}}"' | grep -v cadvisor | grep -v liquibase

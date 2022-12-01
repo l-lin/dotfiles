@@ -76,8 +76,8 @@ Read remote docker container logs.
 Usage: ${0##*/} <flags>
 
 Examples:
-    # Download and zip video chunks from a given video session
-      ${0##*/} --env swpdev --app video-api --lines 10
+    # Output last 10 logs of application foobar in environment swpdev
+      ${0##*/} --env swpdev --app foobar --lines 10
 
 Flags:
     -h, --help             Display help
