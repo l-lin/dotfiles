@@ -24,6 +24,7 @@
   cdiff = log --oneline --no-merges
   ci = !git add -A && git commit
   co = checkout
+  cp = cherry-pick
   ignore = update-index --assume-unchanged
   ignored = !git ls-files -v | grep "^[[:lower:]]"
   lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)%an <%ae>%Creset' --abbrev-commit
@@ -38,22 +39,6 @@
   unignore = update-index --no-assume-unchanged
   wdiff = diff --word-diff --color-words=.
   wip = for-each-ref --sort='authordate:iso8601' --format=' %(color:green)%(authordate:relative)%09%(color:white)%(refname:short)' refs/heads
-  # reminders: read history
-  # - grep logs
-  #   git log -p -G'pattern' path/to/file
-  # - find all files that were deleted
-  #   git log --diff-filter=D --summary | grep delete
-  # - display full history for a given file
-  #   git log --all --full-history -- path/to/file
-  # - find 10 most modified files
-  #   git log --format=format: --name-only | grep -v '^$' | sort | uniq -c | sort -rg | head -10
-  # - pattern to search on revisions
-  #   git show :/pattern
-  # - show revision changes
-  #   git show revision:path/to/file
-  # reminders: fix past errors
-  # - remove sensitive files from git history
-  #   git filter-branch --force --index-filter "git rm --cached --ignore-unmatch path/to/file" --prune-empty --tag-name-filter cat -- --all
 [push]
   default = upstream
   # automatically push new branch to remote withtout needing to set the upstream
