@@ -76,3 +76,12 @@ $ host: cat /etc/hosts | awk '{ print $2 }' | sort | uniq
 $ service_name: ssh <host> 'docker ps -a --format "{{.Names}}"' | grep -v cadvisor | grep -v liquibase
 $ env: find ~/work/big-cloud/config/ -maxdepth 1 -type d | awk -F'/' '{ print $7 }' | sort | uniq
 $ app: find ~/work/big-cloud/ansible/playbooks/files/applications/ -maxdepth 1 -type d | awk -F'/' '{ print $10 }' | sort | uniq
+
+% bash, date
+
+# Convert epoch timestamp to human readable
+date -d@<timestamp_in_second> '+%Y-%m-%dT%H:%M:%SZ'
+
+# Convert human readable to epoc timestamp in second
+date +%s -d '<timestamp_in_iso_8601'
+
