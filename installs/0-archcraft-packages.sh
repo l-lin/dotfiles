@@ -41,13 +41,16 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   yay -S --noconfirm ripgrep
 
   echo "[-] Installing obsidian: https://obsidian.md/"
-  yay -S --noconfirm obisian
+  yay -S --noconfirm obsidian
 
   echo "[-] Installing httpie: https://httpie.io/"
   yay -S --noconfirm httpie
 
   echo "[-] installing aws-cli"
-  yay -S --noconfirm --noconfirm aws-cli
+  yay -S --noconfirm aws-cli
+
+  echo "[-] installing redshift: http://jonls.dk/redshift/"
+  yay -S --noconfirm redshift
 
   echo "[-] Finished installing ubuntu stuffs"
 fi
