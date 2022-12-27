@@ -194,7 +194,7 @@
       <action name="UnmaximizeFull"/>
       <action name="MaximizeVert"/>
       <action name="MoveResizeTo">
-        <width>49%</width>
+        <width>50%</width>
       </action>
       <action name="MoveToEdgeEast"/>
     </keybind>
@@ -463,12 +463,12 @@
     <!-- Apps -->
     <keybind key="W-Return">
       <action name="Execute">
-        <command>alacritty</command>
+        <command>xfce4-terminal</command>
       </action>
     </keybind>
     <keybind key="W-t">
       <action name="Execute">
-        <command>furminal</command>
+        <command>xfce4-terminal --fullscreen</command>
       </action>
     </keybind>
     <keybind key="W-f">

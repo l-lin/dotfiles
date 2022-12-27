@@ -93,10 +93,12 @@ change_terminal() {
 # xfce terminal -----------------------------
 change_xfce_terminal() {
 	sed -i -e "s/FontName=.*/FontName=$1/g" 							${xfce_term_path}/terminalrc
-	sed -i -e 's/ColorForeground=.*/ColorForeground=#ababb2b2bfbf/g' 	${xfce_term_path}/terminalrc
-	sed -i -e 's/ColorBackground=.*/ColorBackground=#1e1e21212828/g' 	${xfce_term_path}/terminalrc
-	sed -i -e 's/ColorCursor=.*/ColorCursor=#ababb2b2bfbf/g' 			${xfce_term_path}/terminalrc
-	sed -i -e 's/ColorPalette=.*/ColorPalette=#323236363d3d;#e0e06b6b7474;#9898c3c37979;#e5e5c0c07a7a;#6262aeaeefef;#c7c77878dddd;#5555b6b6c2c2;#ababb2b2bfbf;#505054545b5b;#eaea75757e7e;#a2a2cdcd8383;#efefcaca8484;#6c6cb8b8f9f9;#d2d28282e7e7;#5f5fc0c0cccc;#b5b5bcbcc9c9/g' ${xfce_term_path}/terminalrc
+	sed -i -e 's/ColorForeground=.*/ColorForeground=#D8DEE9/g' 	${xfce_term_path}/terminalrc
+	sed -i -e 's/ColorBackground=.*/ColorBackground=#2E3440/g' 	${xfce_term_path}/terminalrc
+	sed -i -e 's/ColorCursor=.*/ColorCursor=#D8DEE9/g' 			${xfce_term_path}/terminalrc
+	sed -i -e 's/ColorPalette=.*/ColorPalette=#3B4252;#BF616A;#A3BE8C;#EBCB8B;#81A1C1;#B48EAD;#88C0D0;#E5E9F0;#4C566A;#BF616A;#A3BE8C;#EBCB8B;#81A1C1;#B48EAD;#8FBCBB;#ECEFF4/g' ${xfce_term_path}/terminalrc
+	sed -i -e 's/ColorBold=.*/ColorBold=#D8DEE9/g' ${xfce_term_path}/terminalrc
+	sed -i -e 's/TabActivity=.*/TabActivity=#88C0D0/g' ${xfce_term_path}/terminalrc
 }
 
 # geany -------------------------------------
@@ -289,7 +291,7 @@ change_nm 'tofono'
 #change_terminal 'JetBrainsMono Nerd Font' '13'
 
 # funct FONT (Change colors in funct)
-#change_xfce_terminal 'JetBrainsMono Nerd Font 13'
+change_xfce_terminal 'JetBrainsMono Nerd Font 16'
 
 # funct SCHEME FONT
 change_geany 'arc' 'JetBrains Mono 13'
