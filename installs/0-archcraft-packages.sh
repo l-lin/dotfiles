@@ -52,6 +52,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "[-] installing redshift: http://jonls.dk/redshift/"
   yay -S --noconfirm redshift
 
-  echo "[-] Finished installing ubuntu stuffs"
+  echo "[-] installing bitwarden-cli"
+  yay -S --noconfirm bitwarden-cli
+
+  echo "[-] Finished installing stuffs"
 fi
 
