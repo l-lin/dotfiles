@@ -8,7 +8,7 @@ if type hugo >/dev/null 2>&1; then
   echo "[-] gohugo already installed => skipping"
 else
   echo "[-] installing gohugo"
-  asdf plugin add gohugo
+  asdf plugin add gohugo | true
   asdf install gohugo "${gohugo_version}"
   asdf global gohugo "${gohugo_version}"
 fi
