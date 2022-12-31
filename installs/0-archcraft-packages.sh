@@ -55,6 +55,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "[-] installing bitwarden-cli"
   yay -S --noconfirm bitwarden-cli
 
+  echo "[-] installing pass"
+  yay -S --noconfirm pass
+
   echo "[-] Finished installing stuffs"
 fi
 
