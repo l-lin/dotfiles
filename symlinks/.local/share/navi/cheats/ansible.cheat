@@ -1,11 +1,11 @@
 % ansible
 
 # Deploy
-ap -i ../config/<env> playbooks/files/applications/<app>/update.yml --diff
+ap -i ../config/<env> playbooks/update.yml -l tag_Application_<app> --diff
 
 # Deploy and tail logs
 env=<env> && app=<app> && host=<host> && \
-  ap -i ../config/${env} playbooks/files/applications/${app}/update.yml --diff \
+  ap -i ../config/<env> playbooks/update.yml -l tag_Application_<app> --diff \
   && ssh ${host} "docker logs --tail 1 -f ${app}" \
     | jq --unbuffered -jr '."@timestamp", " [", .level, "] ", .message, "\n", .stack_trace | select(.!=null)' \
     | sed --unbuffered \
@@ -14,6 +14,6 @@ env=<env> && app=<app> && host=<host> && \
       -e 's~\(.*DEBUG.*\)~\o033[1;30m\1\o033[0m~'
 
 $ env: find ~/work/big-cloud/config/ -maxdepth 1 -type d | awk -F'/' '{ print $7 }' | sort | uniq
-$ app: find ~/work/big-cloud/ansible/playbooks/files/applications/ -maxdepth 1 -type d | awk -F'/' '{ print $10 }' | sort | uniq
+$ app: cat ~/work/big-cloud/ansible/playbooks/update.yml | grep -o "'tag_Application\(.*\)'" | sed "s~'tag_Application_\(.*\)'~\1~" | sort | uniq
 $ host: cat /etc/hosts | awk '{ print $2 }' | grep <app> | grep <env> | sort | uniq
 
