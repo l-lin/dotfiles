@@ -66,10 +66,10 @@ awk '{ printf "%-<column_width>s \t %s \n", NR, $<index> }'
 
 % bash, tail
 
-# Tail logs from remote
+# Tail logs from remote container
 ssh <host> 'docker logs --tail <nb_last_logs> -f <service_name>' | jq --unbuffered -jr '."@timestamp", " [", .level, "] ", .message, "\n", .stack_trace | select(.!=null)' | sed --unbuffered -e 's~\(.*ERROR.*\)~\o033[0;41m\1\o033[0m~' -e 's~\(.*WARN.*\)~\o033[1;43;1;30m\1\o033[0m~' -e 's~\(.*DEBUG.*\)~\o033[1;30m\1\o033[0m~'
 
-# Tail logs from remote of all servers
+# Tail logs from remote container of all servers
 env=<env> && app=<app> && tailr --lines 10 --env ${env} --app ${app}
 
 $ host: cat /etc/hosts | awk '{ print $2 }' | sort | uniq
@@ -84,4 +84,9 @@ date -d@<timestamp_in_second> '+%Y-%m-%dT%H:%M:%SZ'
 
 # Convert human readable to epoc timestamp in second
 date +%s -d '<timestamp_in_iso_8601'
+
+% bash, grep
+
+# Extract specific text
+grep -o '<prefix>\(.*\)<suffix>' <file> | sed 's/<prefix>\(.*\)<suffix>/\1/'
 
