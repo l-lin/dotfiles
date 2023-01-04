@@ -90,3 +90,9 @@ date +%s -d '<timestamp_in_iso_8601'
 # Extract specific text
 grep -o '<prefix>\(.*\)<suffix>' <file> | sed 's/<prefix>\(.*\)<suffix>/\1/'
 
+% bash, sort
+
+# Sort file by nth column
+sort -k <n> <input_file>
+
+$ input_file: ls -p | grep -v /
