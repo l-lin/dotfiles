@@ -139,6 +139,7 @@ znt_history_active_text=reverse
 ZAQ_PREFIXES=(
   'g ci( [^ ]##)# -[^ -]#m'
   'g commit( [^ ]##)# -[^ -]#m'
+  'g stash save( [^ ]##)#'
 )
 
 # --------------------------------------------------------
