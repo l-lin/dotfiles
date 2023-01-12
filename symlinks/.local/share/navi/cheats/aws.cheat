@@ -18,8 +18,51 @@ aws --profile <profile> sqs get-queue-url --queue-name <queue_name>-<env>
 # Send SQS message
 aws --profile <profile> sqs send-message --queue-url <queue_url> --message-body <message_body>
 
+# Get EC2 instance IPs in hosts format
+env=<env> \
+  && region=<region> \
+  && aws --profile <profile> \
+    ec2 describe-instances \
+    --region "${region}" \
+    --filters "Name=tag:Environment,Values=${env}" \
+    --output json \
+    --query 'Reservations[].Instances[]' \
+    | jq -r '.[]
+      | .PublicIpAddress as $PublicIpAddress
+      | .Tags[]
+      | select(.Key == "Name")
+      | .Value as $Name
+      | "\($PublicIpAddress) \($Name)"' \
+    | sed 's/_/-/g'
+
+# Synchronize hosts with EC2 instance IPs
+env=<env> \
+  && region=<region> \
+  && today=$(date '+%Y-%m-%dT%H%M%SZ') \
+  && hosts_tmp_path="/tmp/hosts_${today}" \
+  && cp /etc/hosts "${hosts_tmp_path}.bak" \
+  && cp /etc/hosts "${hosts_tmp_path}" \
+  && sed -i "/${env}/d" "${hosts_tmp_path}" \
+  && echo "# ${env}" >> "${hosts_tmp_path}" \
+  && aws --profile <profile> \
+    ec2 describe-instances \
+    --region "${region}" \
+    --filters "Name=tag:Environment,Values=${env}" \
+    --output json \
+    --query 'Reservations[].Instances[]' \
+    | jq -r '.[]
+      | .PublicIpAddress as $PublicIpAddress
+      | .Tags[]
+      | select(.Key == "Name")
+      | .Value as $Name
+      | "\($PublicIpAddress) \($Name)"' \
+    | sed 's/_/-/g' >> "${hosts_tmp_path}" \
+  && cat "${hosts_tmp_path}" | sudo tee /etc/hosts > /dev/null \
+  && rm "${hosts_tmp_path}"
+
 $ profile: cat ${HOME}/.aws/credentials ${HOME}/.aws/config | grep '\[' | sd '\[' '' | sd '\]' '' | sd 'profile ' '' | sort | uniq
 $ bucket: echo -e 'bioserenity-bcp-\nbcp-\nvideo-record-\nconversion-files-'
-$ env: echo -e 'swpdev\nswpqal\npreprodhds\nhads'
+$ env: echo -e 'swpdev\nswpqal\npreprod-fr\npreprod-us'
+$ region: echo -e 'eu-west-3\neu-west-1\nus-east-1'
 $ key: echo -e "$(xclip -o -sel clip)\n"
 $ queue_name: echo -e 'converter-job-\n'
