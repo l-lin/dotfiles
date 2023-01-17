@@ -59,6 +59,26 @@ ffmpeg -stream_loop 1 -f lavfi -re \
   -sc_threshold 0 \
   -f flv <scheme>://<url>
 
+# Cut video
+ffmpeg -ss <from_in_second> -to <to_in_second> -i <input_file> -c copy <output_file>
+
+# Extract only video
+ffmpeg -i <input_file> -an -c:v copy <output_file>
+
+# Extract audio only
+ffmpeg -i <input_file> -vn -c:a copy <output_file>
+
+# Change resolution to 720p
+ffmpeg -i <input_file> \
+  -vf scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:-1:-1,setsar=1 \
+  <output_file>
+
+# Download authenticated HLS stream
+ffmpeg -headers "Authorization: Bearer <token>" \
+  -i <url_to_playlist_m3u8> \
+  -protocol_whitelist file \
+  -c copy <output_file>
+
 % video, vlc
 @ video, common
 
