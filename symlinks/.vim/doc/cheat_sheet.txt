@@ -33,7 +33,13 @@ CONTENTS                                                             cs-contents
  3.    Tips & tricks..............................cs-tips-n-tricks
 
 ==================================================================================
-SHORTCUTS                                                          cs-shortcuts
+SHORTCUTS                                                           cs-shortcuts
+
+==================================================================================
+NORMAL MODE                                                       cs-normal-mode
+
+`ZZ` - save and exit
+`ZQ` exit without saving
 
 ==================================================================================
 CURSOR MOVEMENT                                               cs-cursor-movement
@@ -62,6 +68,12 @@ CURSOR MOVEMENT                                               cs-cursor-movement
 `g;`  - jump to last edited position
 `gf`  - edit file located at the filepath under the cursor
 `gx`  - openl file located at the filepath under the cursor (also works on URL)
+`zz`  - center screen on current line
+`zt`  - bring current line to top of the screen
+`zb`  - bring current line to the bottom of the screen
+`z.`  - center screen on current line + reposition cursor to the beginning of the line
+`z-Enter` - bring current line to top of the screen + reposition cursor to the beginning of the line
+`z-`  - bring current line to the bottom of the screen + reposition cursor to the beginning of the line
 
 ==================================================================================
 MARKS                                                                   cs-marks
