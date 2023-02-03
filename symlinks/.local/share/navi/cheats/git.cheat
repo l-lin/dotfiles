@@ -28,7 +28,7 @@ git log --format=format: --name-only | grep -v '^$' | sort | uniq -c | sort -rg 
 git show :/<pattern>
 
 # Remove sensitive files from git history
-git filter-branch --force --index-filter "git rm --cached --ignore-unmatch path/to/file" --prune-empty --tag-name-filter cat -- --all
+git filter-branch --force --index-filter "git rm --cached --ignore-unmatch <file_path>" --prune-empty --tag-name-filter cat -- --all
 
 $ target_branch: git for-each-ref --format='%(refname:short)' refs/heads/
 $ branch_type: echo -e 'feature\nbugfix\ntask\nrefactor'
