@@ -58,6 +58,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "[-] installing pass"
   yay -S --noconfirm pass
 
+  echo "[-] installing stow"
+  yay -S --noconfirm stow
+
   echo "[-] Finished installing stuffs"
 fi
 
