@@ -4,21 +4,17 @@ This [dotfiles](http://dotfiles.github.io) is made to be worked with [ArchCraft]
 It's using the following:
 
 - [openbox](http://openbox.org/wiki/Main_Page): next generation window manager
-- [alacritty](https://github.com/alacritty/alacritty): cross-platform, OpenGL terminal emulator
+- [xfce4-terminal](https://docs.xfce.org/apps/xfce4-terminal/start): terminal emulator
 - [rofi](https://github.com/davatorium/rofi): window switcher, application launcher and dmenu replacement
 - [thunar](https://docs.xfce.org/xfce/thunar/start): file manager
 - [polybar](https://polybar.github.io/): fast and easy to use tool for creating status bars
-- [dunst](https://dunst-project.org/): lightweigth replacement for the notification daemons
+- [dunst](https://dunst-project.org/): lightweight replacement for the notification daemons
 - [plank](https://launchpad.net/plank): application dock
 
 ## List of applications to install after reinstalling the OS
 
 ```bash
-# create symlinks & install stuffs
-./install.sh
-
-# only creating symlinks
-./bootstrap.sh
+make help
 ```
 
 ## Install VIM plugins
