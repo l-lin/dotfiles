@@ -9,6 +9,7 @@ setup:
 	@mkdir -p "${HOME}/bin"
 	@mkdir -p "${HOME}/work"
 	@mkdir -p "${HOME}/perso"
+	@mkdir -p "${HOME}/.zsh/completion"
 	@mkdir -p "${HOME}/.undodir"
 
 ## install-all: install all packages
@@ -19,28 +20,12 @@ install-all:
 
 ## bootstrap: add all symlinks
 bootstrap:
-	@for app in \
-		asdf \
-		bat \
-		bin \
-		fontconfig \
-		dip \
-		git \
-		intellij \
-		navi \
-		nodejs \
-		nvim \
-		openbox \
-		pet \
-		polybar \
-		psql \
-		redshift \
-		tmux \
-		warp \
-		zsh \
-	; do \
-		echo "[-] add config for $${app}" \
-		&& stow -t "$${HOME}" "$${app}"; \
+	@for folder in $$(find . -type d -maxdepth 1 2>/dev/null); do \
+		if [[ "$${folder}" != '.' ]] && [[ "$${folder}" != './.git' ]] && [[ "$${folder}" != './installs' ]]; then \
+			app=$$(echo "$${folder}" | sed 's~./~~') \
+			&& echo "[-] Add symlinks for $${app}" \
+			&& stow -t "$${HOME}" "$${app}"; \
+		fi; \
 	done
 
 # ---------------------------------------------------------------------------
