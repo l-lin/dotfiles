@@ -116,4 +116,5 @@ install_plugin --name rust --cmd cargo --source 'https://github.com/code-lever/a
 install_plugin --name shellcheck
 install_plugin --name sops
 install_plugin --name terraform
+install_plugin --name starship
 

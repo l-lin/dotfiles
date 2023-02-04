@@ -16,32 +16,7 @@ export ZSH_CUSTOM=$ZSH/custom
 # time that oh-my-zsh is loaded.
 #ZSH_THEME="robbyrussell"
 #ZSH_THEME="crunch"
-ZSH_THEME="spaceship"
-
-# Configure spaceship prompt
-export SPACESHIP_TIME_SHOW=true
-export SPACESHIP_DIR_LOCK_SYMBOL=" "
-export SPACESHIP_PROMPT_ORDER=(
-  time
-  user
-  dir
-  host
-  git
-  hg
-  package
-  node
-  exec_time
-  line_sep
-  battery
-  jobs
-  exit_code
-  char
-)
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-HIST_STAMPS="yyyy-mm-dd"
+ZSH_THEME="tofono"
 
 # fzf options
 export FZF_DEFAULT_OPTS="
@@ -91,11 +66,11 @@ plugins=(
 source $ZSH/oh-my-zsh.sh
 
 # --------------------------------------------------------
-# ALIASES 
+# ALIASES
 # --------------------------------------------------------
 
 if [ -f ~/.aliases ]; then
-    . ~/.aliases
+  . ~/.aliases
 fi
 
 # --------------------------------------------------------
@@ -148,7 +123,7 @@ ZAQ_PREFIXES=(
 
 # Work specific environment variables
 if [ -f ~/.work.zsh ]; then
-    source ~/.work.zsh
+  source ~/.work.zsh
 fi
 
 # mass rename
@@ -162,4 +137,9 @@ unsetopt completealiases
 # Add autocompletion
 fpath=(~/.zsh/completion $fpath)
 autoload -Uz compinit && compinit -i
+
+# Star Ship prompt
+if command -v starship &> /dev/null; then
+  eval "$(starship init zsh)"
+fi
 

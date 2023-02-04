@@ -1,0 +1,63 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# General format
+format = """
+$time\
+$hostname\
+$kubernetes\
+$directory\
+$git_branch\
+$git_commit\
+$git_state\
+$git_metrics\
+$git_status\
+$docker_context\
+$package\
+$golang\
+$helm\
+$java\
+$kotlin\
+$lua\
+$nodejs\
+$python\
+$rust\
+$terraform\
+$aws\
+$env_var\
+$custom\
+$sudo\
+$cmd_duration\
+$line_break\
+$jobs\
+$status\
+$container\
+$character"""
+
+# Settings
+[cmd_duration]
+min_time = 1_000
+show_milliseconds = true
+
+[directory]
+truncation_length = 0
+truncate_to_repo = true
+style = "bold cyan"
+
+[git_metrics]
+disabled = false
+
+[kubernetes]
+disabled = false
+
+[status]
+disabled = false
+symbol = '🔴 '
+
+[time]
+disabled = false
+format = '[$time]($style) '
+
+[sudo]
+disabled = false
+
