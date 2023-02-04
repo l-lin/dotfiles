@@ -1,0 +1,20 @@
+" see https://github.com/JetBrains/ideavim/wiki/set-commands
+
+let mapleader=","
+set so=7
+
+" -----------------------------------------------------------------------
+" plugins
+" -----------------------------------------------------------------------
+" jump in file
+set easymotion
+" press `shift+j` on a line or selected block to join the lines together
+set ideajoin
+" project tree
+set NERDTree
+" highlight yank
+set vim-highlightedyank
+" surround word
+set vim-surround
+" delete and yank in different register
+set ReplaceWithRegister
