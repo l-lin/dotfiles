@@ -16,7 +16,7 @@ bw list items --search <search> | jq -r '.[].login | select(.username == "<usern
 bw list items --search <search> | jq -r '.[].fields.value'
 
 # Get field value filtered by field name
-bw list items --search <search> | jq -r '.[].fields | select(.name == "<field_name>") | .value'
+bw list items --search <search> | jq -r '.[].fields[] | select(.name == "<field_name>") | .value'
 
 # Generate random password
 bw generate -lusn --length <password_length>
