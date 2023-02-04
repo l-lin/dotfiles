@@ -26,6 +26,7 @@ CONTENTS                                                             cs-contents
  1.11. DBExt......................................cs-dbext
  1.12. DrawIt.....................................cs-drawit
  1.13. Custom shortcuts...........................cs-custom-shortcuts
+ 1.14. Surround...................................cs-surround
  2.    Commands...................................cs-commands
  2.1.  Buffers....................................cs-buffers
  2.2.  Splits.....................................cs-splits
@@ -74,6 +75,8 @@ CURSOR MOVEMENT                                               cs-cursor-movement
 `z.`  - center screen on current line + reposition cursor to the beginning of the line
 `z-Enter` - bring current line to top of the screen + reposition cursor to the beginning of the line
 `z-`  - bring current line to the bottom of the screen + reposition cursor to the beginning of the line
+`{`   - previous paragraph
+`}`   - next paragraph
 
 ==================================================================================
 MARKS                                                                   cs-marks
@@ -229,6 +232,15 @@ CUSTOM SHORTCUTS                                             cs-custom-shortcuts
 `,u`    - open undo tree
 `C-y`   - cut line
 `,l`    - format code
+
+==================================================================================
+SURROUND PLUGIN SHORTCUTS                                            cs-surround
+
+Ref https://github.com/tpope/vim-surround/blob/master/doc/surround.txt
+
+`cs` - change surrounding
+`ds` - delete surrounding
+`ys` - takes a valid Vim motion or text object as the first object and wraps it
 
 ==================================================================================
 COMMANDS                                                             cs-commands

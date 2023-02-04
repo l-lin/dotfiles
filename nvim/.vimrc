@@ -46,6 +46,7 @@ Plug 'rhysd/vim-grammarous'           " Grammar checker
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npm install'  }
 Plug 'nvim-lua/plenary.nvim'          " Lua functions for neovim
 Plug 'nvim-telescope/telescope.nvim'  " Fuzzy finder
+Plug 'tpope/vim-surround'             " Surround
 call plug#end()
 " }}}
 " Basic editing configuration {{{
