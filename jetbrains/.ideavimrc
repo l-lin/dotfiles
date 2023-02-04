@@ -1,8 +1,5 @@
 " see https://github.com/JetBrains/ideavim/wiki/set-commands
 
-let mapleader=","
-set so=7
-
 " -----------------------------------------------------------------------
 " plugins
 " -----------------------------------------------------------------------
@@ -13,8 +10,29 @@ set ideajoin
 " project tree
 set NERDTree
 " highlight yank
-set vim-highlightedyank
+set highlightedyank
 " surround word
-set vim-surround
+set surround
 " delete and yank in different register
 set ReplaceWithRegister
+
+" -----------------------------------------------------------------------
+" config
+" -----------------------------------------------------------------------
+
+let mapleader=","
+" Set 7 lines to the cursor - when moving vertically using j/k
+set so=7
+" do incremental searching
+set incsearch
+" Open NERDTree
+nmap <A-1> :NERDTreeToggle<CR>
+" yank in clipboard
+set clipboard=unnamedplus
+" Makes pattern matching case-insensitive
+set ignorecase
+" Overrides ignorecase if your pattern contains mixed case
+set smartcase
+" add idea yank
+set clipboard+=ideaput
+

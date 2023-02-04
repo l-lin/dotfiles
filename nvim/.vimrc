@@ -31,22 +31,29 @@ Plug 'honza/vim-snippets'             " Snippets
 "Plug 'SirVer/ultisnips'               " Snippets
 "Plug 'andrewstuart/vim-kubernetes'    " Kubernetes snipets (needs ultisnips)
 
-" Others
-"Plug 'ctrlpvim/ctrlp.vim'             " Open file directory directly with C-p + used for GoDecls
-Plug 'scrooloose/nerdtree'            " Tree explorer
-Plug 'Xuyuanp/nerdtree-git-plugin'    " Tree explorer with Git status
-Plug 'easymotion/vim-easymotion'      " Easily navigate through the file
-Plug 'mbbill/undotree'                " Undo history
+" Editor
+"Plug 'jiangmiao/auto-pairs'           " autoclose parentheses
+Plug 'tpope/vim-surround'             " Surround
 Plug 'terryma/vim-multiple-cursors'   " Sublime text's multiple selection
 Plug 'Chiel92/vim-autoformat'         " Format code
+Plug 'rhysd/vim-grammarous'           " Grammar checker
+Plug 'psliwka/vim-smoothie'           " Smooth scrolling
+
+" Navigation
+Plug 'scrooloose/nerdtree'            " Tree explorer
+Plug 'Xuyuanp/nerdtree-git-plugin'    " Tree explorer with Git status
+Plug 'mbbill/undotree'                " Undo history
+
+" Others
+"Plug 'ctrlpvim/ctrlp.vim'             " Open file directory directly with C-p + used for GoDecls
+Plug 'easymotion/vim-easymotion'      " Easily navigate through the file
 Plug 'vim-scripts/dbext.vim'          " DB access (exec SQL directly from VIM)
 Plug 'vim-scripts/DrawIt'             " Help draw ascii schemas
-Plug 'psliwka/vim-smoothie'           " Smooth scrolling
-Plug 'rhysd/vim-grammarous'           " Grammar checker
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npm install'  }
 Plug 'nvim-lua/plenary.nvim'          " Lua functions for neovim
 Plug 'nvim-telescope/telescope.nvim'  " Fuzzy finder
-Plug 'tpope/vim-surround'             " Surround
+Plug 'junegunn/fzf'
+Plug 'tpope/vim-fugitive'             " Git integration
 call plug#end()
 " }}}
 " Basic editing configuration {{{
@@ -59,6 +66,10 @@ set number
 set smartindent
 set tabstop=2
 set shiftwidth=2
+" Makes pattern matching case-insensitive
+set ignorecase
+" Overrides ignorecase if your pattern contains mixed case
+set smartcase
 " Use the appropriate number of spaces to insert a <Tab> in insert mode
 set expandtab
 " Change how vim represents characters on the screen
@@ -162,6 +173,7 @@ imap <C-d> <C-o>diw
 " Pressing ,ss will toggle and untoggle spell checking
 map <leader>ss :setlocal spell!<CR>
 " Fast saving
+nmap <C-s> :w!<CR>
 nmap <leader>w :w!<CR>
 " Fast quitting
 nmap <leader>q :q<CR>
@@ -170,7 +182,7 @@ nmap <leader>x :x<CR>
 " Trigger snippet (also works with Ctrl+Enter)
 let g:UltiSnipsExpandTrigger="<C-m>"
 " Open NERDTree
-nmap <leader>o :NERDTreeToggle<CR>
+nmap <A-1> :NERDTreeToggle<CR>
 " move lines around
 nnoremap <leader>k :m-2<cr>==
 nnoremap <leader>j :m+<cr>==
@@ -240,6 +252,9 @@ let g:multi_cursor_next_key            = '<A-j>'
 let g:multi_cursor_prev_key            = '<A-S-j>'
 let g:multi_cursor_skip_key            = '<C-x>'
 let g:multi_cursor_quit_key            = '<Esc>'
+
+" auto-pairs: disable keymap
+let g:AutoPairsShortcutToggle = ''
 " }}}
 " Cursor shape {{{
 if has("autocmd")
