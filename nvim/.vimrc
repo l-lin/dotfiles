@@ -53,6 +53,7 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npm install'  }
 Plug 'nvim-lua/plenary.nvim'          " Lua functions for neovim
 Plug 'nvim-telescope/telescope.nvim'  " Fuzzy finder
 Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-fugitive'             " Git integration
 call plug#end()
 " }}}
