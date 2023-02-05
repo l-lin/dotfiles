@@ -5,6 +5,9 @@ set -eu
 read -p "Install arch packages? (y/n) " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
+  # update keyring
+  yay -Sy archlinux-keyring
+
   # update packages
   yay -Syyu
 
@@ -60,6 +63,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 
   echo "[-] installing stow"
   yay -S --noconfirm stow
+
+  echo "[-] installing zscroll"
+  yay -S --noconfirm zscroll-git
 
   echo "[-] Finished installing stuffs"
 fi

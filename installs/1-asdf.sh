@@ -56,7 +56,7 @@ install_plugin() {
   if type "${cmd}" >/dev/null 2>&1; then
     echo "[-] ${name} already installed => skipping"
   else
-    asdf plugin add "${name}" "${cmd}" | true
+    asdf plugin add "${name}" | true
 
     local version_to_install
     if [ 'latest' == "${version}" ]; then

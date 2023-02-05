@@ -15,7 +15,7 @@ setup:
 ## install-all: install all packages
 install-all:
 	@for f in installs/*.sh; do \
-	  ./$f \
+		./$$f; \
 	done
 
 ## bootstrap: add all symlinks
