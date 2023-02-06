@@ -4,13 +4,41 @@ skip_global_compinit=1
 # FZF options
 # --------------------------------------------------------
 #
+# Nord theme:
+#export FZF_DEFAULT_OPTS="
+#--ansi
+#--color fg:#D8DEE9,bg:-1,hl:#A3BE8C,fg+:#D8DEE9,bg+:#434C5E,hl+:#A3BE8C
+#--color pointer:#BF616A,info:#4C566A,spinner:#4C566A,header:#4C566A,prompt:#81A1C1,marker:#EBCB8B
+#--bind='?:toggle-preview'
+#--bind='alt-p:toggle-preview-wrap'
+#--preview-window='right:60%:wrap'
+#"
+# Gruvbox theme: https://github.com/luisiacc/gruvbox-baby/blob/main/extras/tmux/MEDIUM.tmux
+export FZF_THEME="
+--color=fg:#EBDBB2 \
+--color=bg:#282828 \
+--color=hl:#FABD2F \
+--color=fg+:bold:#EBDBB2 \
+--color=bg+:#665C54 \
+--color=hl+:#FABD2F \
+--color=gutter:#282828 \
+--color=info:#D65D0E \
+--color=separator:#282828 \
+--color=border:#E7D7AD \
+--color=label:#EEBD35 \
+--color=prompt:#7FA2AC \
+--color=spinner:#FABD2F \
+--color=pointer:bold:#FABD2F \
+--color=marker:#CC241D \
+--color=header:#D65D0E \
+--color=preview-fg:#EBDBB2 \
+--color=preview-bg:#282828 \
+"
 export FZF_DEFAULT_OPTS="
---ansi
---color fg:#D8DEE9,bg:-1,hl:#A3BE8C,fg+:#D8DEE9,bg+:#434C5E,hl+:#A3BE8C
---color pointer:#BF616A,info:#4C566A,spinner:#4C566A,header:#4C566A,prompt:#81A1C1,marker:#EBCB8B
 --bind='?:toggle-preview'
 --bind='alt-p:toggle-preview-wrap'
 --preview-window='right:60%:wrap'
+${FZF_THEME}
 "
 export FZF_TMUX_OPTS="-p 80%,80%"
 # preview content of the file under the cursor when searching for a file
