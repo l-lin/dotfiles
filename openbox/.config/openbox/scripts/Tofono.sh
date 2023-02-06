@@ -92,19 +92,29 @@ change_terminal() {
 
 # xfce terminal -----------------------------
 change_xfce_terminal() {
-	sed -i -e "s/FontName=.*/FontName=$1/g" 							${xfce_term_path}/terminalrc
-	sed -i -e 's/ColorForeground=.*/ColorForeground=#D8DEE9/g' 	${xfce_term_path}/terminalrc
-	sed -i -e 's/ColorBackground=.*/ColorBackground=#2E3440/g' 	${xfce_term_path}/terminalrc
-	sed -i -e 's/ColorCursor=.*/ColorCursor=#D8DEE9/g' 			${xfce_term_path}/terminalrc
-	sed -i -e 's/ColorPalette=.*/ColorPalette=#3B4252;#BF616A;#A3BE8C;#EBCB8B;#81A1C1;#B48EAD;#88C0D0;#E5E9F0;#4C566A;#BF616A;#A3BE8C;#EBCB8B;#81A1C1;#B48EAD;#8FBCBB;#ECEFF4/g' ${xfce_term_path}/terminalrc
-	sed -i -e 's/ColorBold=.*/ColorBold=#D8DEE9/g' ${xfce_term_path}/terminalrc
-	sed -i -e 's/TabActivity=.*/TabActivity=#88C0D0/g' ${xfce_term_path}/terminalrc
+  # Gruvbox: https://github.com/morhetz/gruvbox-contrib/blob/master/xfce4-terminal/gruvbox-dark.theme
+	sed -i -e "s/FontName=.*/FontName=$1/g" "${xfce_term_path}/terminalrc"
+	sed -i -e 's/ColorForeground=.*/ColorForeground=#ebdbb2/g' "${xfce_term_path}/terminalrc"
+	sed -i -e 's/ColorBackground=.*/ColorBackground=#282828/g' "${xfce_term_path}/terminalrc"
+	sed -i -e 's/ColorCursor=.*/ColorCursor=#ebdbb2/g' "${xfce_term_path}/terminalrc"
+	sed -i -e 's/ColorPalette=.*/ColorPalette=#282828;#cc241d;#98971a;#d79921;#458588;#b16286;#689d6a;#a89984;#928374;#fb4934;#b8bb26;#fabd2f;#83a598;#d3869b;#8ec07c;#ebdbb2/g' "${xfce_term_path}/terminalrc"
+	sed -i -e 's/ColorBold=.*/ColorBold=#fbf1c7/g' "${xfce_term_path}/terminalrc"
+	sed -i -e 's/TabActivity=.*/TabActivity=#bf4040/g' "${xfce_term_path}/terminalrc"
+
+  # Nord theme
+#	sed -i -e "s/FontName=.*/FontName=$1/g" "${xfce_term_path}/terminalrc"
+#	sed -i -e 's/ColorForeground=.*/ColorForeground=#D8DEE9/g' "${xfce_term_path}/terminalrc"
+#	sed -i -e 's/ColorBackground=.*/ColorBackground=#2E3440/g' "${xfce_term_path}/terminalrc"
+#	sed -i -e 's/ColorCursor=.*/ColorCursor=#D8DEE9/g' "${xfce_term_path}/terminalrc"
+#	sed -i -e 's/ColorPalette=.*/ColorPalette=#3B4252;#BF616A;#A3BE8C;#EBCB8B;#81A1C1;#B48EAD;#88C0D0;#E5E9F0;#4C566A;#BF616A;#A3BE8C;#EBCB8B;#81A1C1;#B48EAD;#8FBCBB;#ECEFF4/g' "${xfce_term_path}/terminalrc"
+#	sed -i -e 's/ColorBold=.*/ColorBold=#D8DEE9/g' "${xfce_term_path}/terminalrc"
+#	sed -i -e 's/TabActivity=.*/TabActivity=#88C0D0/g' "${xfce_term_path}/terminalrc"
 }
 
 # geany -------------------------------------
 change_geany() {
-	sed -i -e "s/color_scheme=.*/color_scheme=$1.conf/g" 	${geany_path}/geany.conf
-	sed -i -e "s/editor_font=.*/editor_font=$2/g" 			${geany_path}/geany.conf
+	sed -i -e "s/color_scheme=.*/color_scheme=$1.conf/g" "${geany_path}/geany.conf"
+	sed -i -e "s/editor_font=.*/editor_font=$2/g" "${geany_path}/geany.conf"
 }
 
 # gtk theme, icons and fonts ----------------
@@ -297,7 +307,8 @@ change_xfce_terminal 'JetBrainsMono Nerd Font 16'
 change_geany 'arc' 'JetBrains Mono 13'
 
 # funct THEME ICON CURSOR FONT
-change_appearance 'Arc-Dark' 'Zafiro' 'Qogirr' 'Noto Sans 13'
+#change_appearance 'Arc-Dark' 'Zafiro' 'Qogirr' 'Noto Sans 13'
+change_appearance 'Gruvbox' 'Zafiro' 'Qogirr' 'Noto Sans 13'
 
 # funct THEME LAYOUT FONT SIZE (Change margin in funct)
 #obconfig 'Arc-Dark' 'DLIMC' 'JetBrains Mono' '13' 'menu-icons.xml' && openbox --reconfigure
