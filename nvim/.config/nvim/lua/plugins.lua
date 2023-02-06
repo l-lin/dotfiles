@@ -50,9 +50,9 @@ return require('packer').startup(function(use)
   -- a pretty list for diagnostics
   use { 'folke/trouble.nvim', requires = 'nvim-tree/nvim-web-devicons', config = function() require('plugins.trouble') end }
   -- linting
-  use { 'dense-analysis/ale' }
-  -- grammar checker
-  use { 'rhysd/vim-grammarous' }
+  use { 'dense-analysis/ale', config = function() require('plugins.ale') end }
+  -- multiple cursors
+  use { 'mg979/vim-visual-multi', config = function() require('plugins.visual-multi') end }
   -- autoformat
   --use { 'Chiel92/vim-autoformat', config = function() require('plugins.autoformat') end }
 
@@ -60,13 +60,18 @@ return require('packer').startup(function(use)
   -- DEV
   -- -------------------------------------
   -- enhanced syntax by treesitter
-  use { 'nvim-treesitter/nvim-treesitter', config = function() require('plugins.treesitter') end } 
+  use { 'nvim-treesitter/nvim-treesitter', config = function() require('plugins.treesitter') end }
   -- show lightbulb for code hints
   use { 'kosayoda/nvim-lightbulb', requires = 'antoinemadec/FixCursorHold.nvim' }
   -- lsp progress eye candy
   use { 'j-hui/fidget.nvim', config = function() require('fidget').setup {} end }
   -- terraform support
   use { 'hashivim/vim-terraform' }
+  -- ansible support
+  use { 'pearofducks/ansible-vim' }
+  -- markdown support
+  use { 'plasticboy/vim-markdown' }
+
   -- init.lua syntax awareness and completion
   --use { 'folke/neodev.nvim', config = function() require('neodev').setup({ library = { plugins = { 'nvim-dap-ui" }, types = true }, }) end } 
 

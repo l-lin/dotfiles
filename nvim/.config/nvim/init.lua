@@ -4,7 +4,7 @@
 --
 -- inspirations:
 -- https://github.com/voltux/dotfiles
---https://github.com/voltux/dotfiles
+-- https://github.com/vipul-sharma20/nvim-config/
 require('settings')
 require('appearance')
 require('keymaps')
