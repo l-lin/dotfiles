@@ -65,6 +65,8 @@ return require('packer').startup(function(use)
   use { 'kosayoda/nvim-lightbulb', requires = 'antoinemadec/FixCursorHold.nvim' }
   -- lsp progress eye candy
   use { 'j-hui/fidget.nvim', config = function() require('fidget').setup {} end }
+  -- terraform support
+  use { 'hashivim/vim-terraform' }
   -- init.lua syntax awareness and completion
   --use { 'folke/neodev.nvim', config = function() require('neodev').setup({ library = { plugins = { 'nvim-dap-ui" }, types = true }, }) end } 
 
