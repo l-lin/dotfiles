@@ -20,18 +20,18 @@ set ReplaceWithRegister
 " config
 " -----------------------------------------------------------------------
 
-let mapleader=","
-" Set 7 lines to the cursor - when moving vertically using j/k
+let mapleader=" "
+" set 7 lines to the cursor - when moving vertically using j/k
 set so=7
 " do incremental searching
 set incsearch
-" Open NERDTree
+" open NERDTree
 nmap <A-1> :NERDTreeToggle<CR>
 " yank in clipboard
 set clipboard=unnamedplus
-" Makes pattern matching case-insensitive
+" makes pattern matching case-insensitive
 set ignorecase
-" Overrides ignorecase if your pattern contains mixed case
+" overrides ignorecase if your pattern contains mixed case
 set smartcase
 " add idea yank
 set clipboard+=ideaput
