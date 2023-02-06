@@ -2,7 +2,18 @@ default: help
 
 PROJECTNAME=$(shell basename "$(PWD)")
 
-## setup: init folders
+
+## install: install all packages
+install:
+	@for f in installs/*.sh; do \
+		./$$f; \
+	done
+
+## bootstrap: setup & add all symlinks
+bootstrap: setup create-symlinks
+
+# ---------------------------------------------------------------------------
+
 setup:
 	@echo "[-] Creating folders..."
 	@mkdir -p "${HOME}/apps"
@@ -10,18 +21,12 @@ setup:
 	@mkdir -p "${HOME}/perso"
 	@mkdir -p "${HOME}/work"
 	@mkdir -p "${HOME}/.config/openbox/polybar/tofono"
+	@mkdir -p "${HOME}/.config/pet"
 	@mkdir -p "${HOME}/.m2"
 	@mkdir -p "${HOME}/.undodir"
 	@mkdir -p "${HOME}/.zsh/completion"
 
-## install-all: install all packages
-install-all:
-	@for f in installs/*.sh; do \
-		./$$f; \
-	done
-
-## bootstrap: add all symlinks
-bootstrap:
+create-symlinks:
 	@for folder in $$(find . -type d -maxdepth 1 2>/dev/null); do \
 		if [[ "$${folder}" != '.' ]] && [[ "$${folder}" != './.git' ]] && [[ "$${folder}" != './installs' ]] && [[ "$${folder}" != './vim' ]]; then \
 			app=$$(echo "$${folder}" | sed 's~./~~') \
@@ -29,8 +34,6 @@ bootstrap:
 			&& stow -t "$${HOME}" "$${app}"; \
 		fi; \
 	done
-
-# ---------------------------------------------------------------------------
 
 .PHONY: help
 all: help
