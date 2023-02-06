@@ -20,7 +20,7 @@ make help
 ## Install VIM plugins
 
 - Edit a file with VIM
-- Execute `:PlugInstall`
+- Execute `:PackerSync` (should be executed automatically)
 
 ## Install TMUX plugins
 
