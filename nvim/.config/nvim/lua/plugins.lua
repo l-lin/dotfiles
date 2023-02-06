@@ -22,16 +22,20 @@ return require('packer').startup(function(use)
   -- colorscheme
   use { 'luisiacc/gruvbox-baby', config = function() require('plugins.gruvbox') end }
   -- filetype icons
-  use { 'kyazdani42/nvim-web-devicons', config = function() require('plugins.nvim-web-devicons') end }
+  use { 'kyazdani42/nvim-web-devicons', config = function() require('plugins.web-devicons') end }
   -- zen mode
   use { 'Pocco81/true-zen.nvim', config = function() require('plugins.true-zen') end }
   -- dim interactive portions of code you are editing
   use { 'folke/twilight.nvim', config = function() require('twilight').setup() end }
-  -- display bottom status bar
-  use { 'vim-airline/vim-airline', config = function() require('plugins.airline') end }
-  use { 'vim-airline/vim-airline-themes' }
   -- display marks
   use { 'kshenoy/vim-signature' }
+  -- status line (bottom)
+  use { 'nvim-lualine/lualine.nvim', requires = { 'kyazdani42/nvim-web-devicons', opt = true }, config = function() require('plugins.lualine') end }
+  -- buffer line (top)
+  use { 'akinsho/bufferline.nvim', tag = "v3.*", requires = 'kyazdani42/nvim-web-devicons', config = function() require('plugins.bufferline') end }
+  -- display bottom status bar
+  --use { 'vim-airline/vim-airline', config = function() require('plugins.airline') end }
+  --use { 'vim-airline/vim-airline-themes' }
 
   -- -------------------------------------
   -- EDITOR
@@ -63,8 +67,6 @@ return require('packer').startup(function(use)
   use { 'nvim-treesitter/nvim-treesitter', config = function() require('plugins.treesitter') end }
   -- show lightbulb for code hints
   use { 'kosayoda/nvim-lightbulb', requires = 'antoinemadec/FixCursorHold.nvim' }
-  -- lsp progress eye candy
-  use { 'j-hui/fidget.nvim', config = function() require('fidget').setup {} end }
   -- terraform support
   use { 'hashivim/vim-terraform' }
   -- ansible support
@@ -76,10 +78,34 @@ return require('packer').startup(function(use)
   --use { 'folke/neodev.nvim', config = function() require('neodev').setup({ library = { plugins = { 'nvim-dap-ui" }, types = true }, }) end } 
 
   -- -------------------------------------
+  -- AUTOCOMPLETION
+  -- -------------------------------------
+  -- autocompletion engine
+  use { 'hrsh7th/nvim-cmp', requires = { 'L3MON4D3/LuaSnip' }, config = function() require('plugins.cmp') end }
+  -- snippet engine
+  use { 'L3MON4D3/LuaSnip', config = function() require('plugins.luasnip') end }
+  -- lsp progress eye candy
+  use { 'j-hui/fidget.nvim', config = function() require('fidget').setup {} end }
+  -- lsp based
+  use { 'hrsh7th/cmp-nvim-lsp' }
+  -- buffer based
+  use { 'hrsh7th/cmp-buffer' }
+  -- filepath based
+  use { 'hrsh7th/cmp-path' }
+  -- command based
+  use { 'hrsh7th/cmp-cmdline' }
+  -- autocompletion on lsp function/class signature
+  use { 'hrsh7th/cmp-nvim-lsp-signature-help' }
+  -- lua support
+  use { 'hrsh7th/cmp-nvim-lua' }
+  -- luasnip snippets
+  use { 'saadparwaiz1/cmp_luasnip' }
+
+  -- -------------------------------------
   -- NAVIGATION
   -- -------------------------------------
   -- file explorer
-  use { 'kyazdani42/nvim-tree.lua', config = function() require('plugins.nvim-tree') end }
+  use { 'kyazdani42/nvim-tree.lua', config = function() require('plugins.tree') end }
   -- multilevel undo explorer
   use { 'mbbill/undotree', config = function() require('plugins.undotree') end }
   -- fuzzy finding anything anywhere
