@@ -67,6 +67,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "[-] installing zscroll"
   yay -S --noconfirm zscroll-git
 
+  echo "[-] installing spotify"
+  yay -S --noconfirm spotify
+
   echo "[-] Finished installing stuffs"
 fi
 
