@@ -20,7 +20,7 @@ return require('packer').startup(function(use)
   -- GUI
   -- -------------------------------------
   -- colorscheme
-  use { 'ellisonleao/gruvbox.nvim', config = function() require('plugins.gruvbox') end }
+  use { 'luisiacc/gruvbox-baby', config = function() require('plugins.gruvbox') end }
   -- filetype icons
   use { 'kyazdani42/nvim-web-devicons', config = function() require('plugins.nvim-web-devicons') end }
   -- zen mode
