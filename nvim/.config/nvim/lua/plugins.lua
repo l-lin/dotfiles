@@ -78,8 +78,9 @@ return require('packer').startup(function(use)
   -- multilevel undo explorer
   use { 'mbbill/undotree', config = function() require('plugins.undotree') end }
   -- fuzzy finding anything anywhere
-  -- TODO: set keymap
   use { 'nvim-telescope/telescope.nvim', requires = { 'nvim-lua/plenary.nvim' }, config = function() require('plugins.telescope') end }
+  -- general-purpose motion plugin
+  use { 'ggandor/leap.nvim', config = function() require('plugins.leap') end }
 
   -- -------------------------------------
   -- GIT
