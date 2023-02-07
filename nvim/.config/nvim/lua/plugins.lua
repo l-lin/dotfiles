@@ -57,6 +57,8 @@ return require('packer').startup(function(use)
   use { 'dense-analysis/ale', config = function() require('plugins.ale') end }
   -- multiple cursors
   use { 'mg979/vim-visual-multi', config = function() require('plugins.visual-multi') end }
+  -- handle trailing whitespace
+  use { 'ntpeters/vim-better-whitespace', config = function() require('plugins.better-whitespace') end }
   -- autoformat
   --use { 'Chiel92/vim-autoformat', config = function() require('plugins.autoformat') end }
 
@@ -67,15 +69,17 @@ return require('packer').startup(function(use)
   use { 'nvim-treesitter/nvim-treesitter', config = function() require('plugins.treesitter') end }
   -- show lightbulb for code hints
   use { 'kosayoda/nvim-lightbulb', requires = 'antoinemadec/FixCursorHold.nvim' }
+  -- easily install/update lsp servers directly from neovim
+  use { 'williamboman/mason.nvim', config = function() require('mason').setup {} end }
+  -- bridge between mason and nvim-lspconfig
+  use { 'williamboman/mason-lspconfig', config = function() require('mason-lspconfig').setup {} end }
+  use { 'folke/neodev.nvim' }
   -- terraform support
   use { 'hashivim/vim-terraform' }
   -- ansible support
   use { 'pearofducks/ansible-vim' }
   -- markdown support
   use { 'plasticboy/vim-markdown' }
-
-  -- init.lua syntax awareness and completion
-  --use { 'folke/neodev.nvim', config = function() require('neodev').setup({ library = { plugins = { 'nvim-dap-ui" }, types = true }, }) end } 
 
   -- -------------------------------------
   -- AUTOCOMPLETION
@@ -110,6 +114,12 @@ return require('packer').startup(function(use)
   use { 'mbbill/undotree', config = function() require('plugins.undotree') end }
   -- fuzzy finding anything anywhere
   use { 'nvim-telescope/telescope.nvim', requires = { 'nvim-lua/plenary.nvim' }, config = function() require('plugins.telescope') end }
+  -- telescope extension to use telescope as selection ui instead of vim command line
+  -- TODO: how to use it?
+  use { 'nvim-telescope/telescope-ui-select.nvim' }
+  -- telescope extension file browser
+  -- TODO: how to use it?
+  use { 'nvim-telescope/telescope-file-browser.nvim' }
   -- general-purpose motion plugin
   use { 'ggandor/leap.nvim', config = function() require('plugins.leap') end }
 
@@ -120,6 +130,9 @@ return require('packer').startup(function(use)
   use { 'tpope/vim-fugitive', config = function() require('plugins.fugitive') end }
   -- show git diff in the gutter
   use { 'airblade/vim-gitgutter' }
+  -- nice view for git diff
+  -- TODO: how to use it?
+  use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim', config = function() require('plugins.diffview') end }
 
   -- -------------------------------------
   -- MISC
