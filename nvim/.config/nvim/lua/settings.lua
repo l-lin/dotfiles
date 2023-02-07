@@ -51,5 +51,7 @@ o.splitright = true --default split right
 o.laststatus = 3 -- always show statusline in single statusline mode
 o.autoread = true -- refresh file if it changes on disc
 o.confirm = true -- ask me if I try to leave the editor with an unsaved modified file in a buffer
---o.pastetoggle='<F2>' -- auto-indent for code paste set to F2
+o.cursorline = true -- highlight line
 cmd [[ set shortmess+=c ]] -- don't pass messages to |ins-completion-menu|
+cmd [[ au TextYankPost * silent! lua vim.highlight.on_yank{higroup="IncSearch", timeout=300} ]] -- highlight yank
+
