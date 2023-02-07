@@ -52,3 +52,4 @@ map('v', 'p', '"_dP', { noremap = true })
 -- misc
 map('n', ',', ':set hlsearch! hlsearch?<CR>', { noremap = true, silent = true, desc = 'Toggle search highlight' })
 map('n', '<F2>', ':set invpaste paste?<CR>', { noremap = true, silent = true, desc = 'Toggle auto-indenting for code paste'})
+map('n', '<leader>pu', '<cmd>PackerSync<cr>', { noremap = true, desc = 'Packer synchronize plugins' })
