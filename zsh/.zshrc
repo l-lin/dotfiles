@@ -27,6 +27,8 @@ plugins=(
   fzf
   git-extra-commands
   git-open
+  gitstatus
+  gitstatus-prompt
   httpie
   navi
   pet

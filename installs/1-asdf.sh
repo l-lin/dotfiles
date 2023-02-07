@@ -56,7 +56,7 @@ install_plugin() {
   if type "${cmd}" >/dev/null 2>&1; then
     echo "[-] ${name} already installed => skipping"
   else
-    asdf plugin add "${name}" | true
+    asdf plugin add "${name}" "${src}" | true
 
     local version_to_install
     if [ 'latest' == "${version}" ]; then
@@ -106,9 +106,9 @@ install_plugin --name imagemagick --cmd convert --source 'https://github.com/man
 install_plugin --name java --version 'adoptopenjdk-17.0.0+35'
 install_plugin --name k3d
 install_plugin --name kubectl
-install_plugin --name maven --cmd mvn
+install_plugin --name maven --cmd mvn --version '3.9.0'
 install_plugin --name mongosh
-install_plugin --name mvnd --source 'https://github.com/joschi/asdf-mvnd'
+install_plugin --name mvnd --source 'https://github.com/joschi/asdf-mvnd' --version '0.9.0'
 install_plugin --name nodejs --cmd node
 install_plugin --name quarkus --source 'https://github.com/HonoluluHenk/asdf-quarkus.git'
 install_plugin --name rust --cmd cargo --source 'https://github.com/code-lever/asdf-rust.git'
