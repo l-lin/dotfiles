@@ -25,7 +25,6 @@ plugins=(
   extract
   forgit
   fzf
-  fzf-preview
   git-extra-commands
   git-open
   httpie
