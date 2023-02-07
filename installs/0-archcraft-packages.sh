@@ -70,6 +70,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "[-] installing spotify"
   yay -S --noconfirm spotify
 
+  echo "[-] installing gimp"
+  yay -S --noconfirm gimp
+
   echo "[-] Finished installing stuffs"
 fi
 
