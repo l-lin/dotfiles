@@ -70,9 +70,11 @@ return require('packer').startup(function(use)
   -- show lightbulb for code hints
   use { 'kosayoda/nvim-lightbulb', requires = 'antoinemadec/FixCursorHold.nvim' }
   -- easily install/update lsp servers directly from neovim
+  -- TODO: how to check documentation
   use { 'williamboman/mason.nvim', config = function() require('mason').setup {} end }
   -- bridge between mason and nvim-lspconfig
   use { 'williamboman/mason-lspconfig', config = function() require('mason-lspconfig').setup {} end }
+  -- lua support
   use { 'folke/neodev.nvim' }
   -- terraform support
   use { 'hashivim/vim-terraform' }
@@ -139,12 +141,12 @@ return require('packer').startup(function(use)
   -- -------------------------------------
   -- show available keymaps + description as you type them
   use { 'folke/which-key.nvim', config = function() require('plugins.which-key') end }
-  -- embed neovim on the browser
-  use { 'glacambre/firenvim', run = function() vim.fn['firenvim#install'](0) end, config = function() require('plugins.firenvim') end }
   -- open to last known cursor position
   use { 'ethanholz/nvim-lastplace', config = function() require('nvim-lastplace').setup() end }
   -- caching init to improve starting time
   use { 'lewis6991/impatient.nvim' }
+  -- embed neovim on the browser
+  --use { 'glacambre/firenvim', run = function() vim.fn['firenvim#install'](0) end, config = function() require('plugins.firenvim') end }
 
   -- -------------------------------------
   -- Automatically set up your configuration after cloning packer.nvim
