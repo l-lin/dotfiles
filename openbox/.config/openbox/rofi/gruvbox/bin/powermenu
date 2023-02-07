@@ -20,11 +20,11 @@ if [[ "$layout" == "TRUE" ]]; then
 	suspend=""
 	logout=""
 else
-	shutdown=" Shutdown"
-	reboot=" Restart"
-	lock=" Lock"
-	suspend=" Sleep"
-	logout=" Logout"
+	shutdown=" shutdown"
+	reboot=" restart"
+	lock=" lock"
+	suspend=" sleep"
+	logout=" logout"
 fi
 
 # Ask for confirmation
