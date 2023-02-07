@@ -14,7 +14,7 @@ dunst_path="$HOME/.config/dunst"
 
 # wallpaper ---------------------------------
 set_wallpaper() {
-	nitrogen --save --set-zoom-fill /usr/share/backgrounds/"$1"
+	nitrogen --save --set-centered "$1" --set-color="$2"
 }
 
 # polybar -----------------------------------
@@ -286,7 +286,7 @@ notify_user() {
 notify_user
 
 # funct WALLPAPER
-set_wallpaper 'default.jpg'
+set_wallpaper "${HOME}/Pictures/totoro.png" '#7B8D59'
 
 # funct STYLE FONT
 change_polybar 'gruvbox' 'JetBrains Mono:size=10;3' && "$polybar_path"/launch.sh
