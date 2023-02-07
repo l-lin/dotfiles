@@ -25,6 +25,10 @@ setup:
 	@mkdir -p "${HOME}/.m2"
 	@mkdir -p "${HOME}/.undodir"
 	@mkdir -p "${HOME}/.zsh/completion"
+	@echo "[-] Removing overrided files"
+	@rm "${HOME}/.config/openbox/polybar/tofono/config.ini"
+	@rm "${HOME}/.config/openbox/rofi/bin/launcher"
+	@rm "${HOME}/.config/openbox/rofi/bin/runner"
 
 create-symlinks:
 	@for folder in $$(find . -type d -maxdepth 1 2>/dev/null); do \
