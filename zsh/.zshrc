@@ -11,7 +11,7 @@ export ZSH=$HOME/.oh-my-zsh
 export ZSH_CUSTOM=$ZSH/custom
 
 # Set name of the theme to load (located in ~/.oh-my-zsh/themes/ and ~/.oh-my-zsh/custom/themes/)
-ZSH_THEME="tofono"
+ZSH_THEME="empty"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/

@@ -289,13 +289,13 @@ notify_user
 set_wallpaper 'default.jpg'
 
 # funct STYLE FONT
-change_polybar 'tofono' 'JetBrains Mono:size=10;3' && "$polybar_path"/launch.sh
+change_polybar 'gruvbox' 'JetBrains Mono:size=10;3' && "$polybar_path"/launch.sh
 
 # funct STYLE FONT BORDER BORDER-RADIUS ICON (Change colors in funct)
-change_rofi 'tofono' 'Iosevka 10' '0px 0px 2px 0px' '8px' 'Zafiro'
+change_rofi 'gruvbox' 'Iosevka 10' '0px 0px 2px 0px' '8px' 'Zafiro'
 
 # funct STYLE (network manager applet)
-change_nm 'tofono'
+change_nm 'gruvbox'
 
 # funct FONT SIZE (Change colors in funct)
 #change_terminal 'JetBrainsMono Nerd Font' '13'

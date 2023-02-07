@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # The name of polybar bar which houses the main spotify module and the control modules.
-PARENT_BAR="tofono"
+PARENT_BAR="gruvbox"
 PARENT_BAR_PID=$(pgrep -a "polybar" | grep "$PARENT_BAR" | cut -d" " -f1)
 
 # Set the source audio player here.
