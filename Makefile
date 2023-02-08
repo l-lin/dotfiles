@@ -20,15 +20,11 @@ setup:
 	@mkdir -p "${HOME}/bin"
 	@mkdir -p "${HOME}/perso"
 	@mkdir -p "${HOME}/work"
-	@mkdir -p "${HOME}/.config/openbox/polybar/gruvbox"
 	@mkdir -p "${HOME}/.config/pet"
+	@mkdir -p "${HOME}/.config/nvim/plugin"
 	@mkdir -p "${HOME}/.m2"
 	@mkdir -p "${HOME}/.undodir"
 	@mkdir -p "${HOME}/.zsh/completion"
-	@echo "[-] Removing overrided files"
-	@rm -f "${HOME}/.config/openbox/polybar/gruvbox/config.ini"
-	@rm -f "${HOME}/.config/openbox/rofi/bin/launcher"
-	@rm -f "${HOME}/.config/openbox/rofi/bin/runner"
 
 create-symlinks:
 	@for folder in $$(find . -type d -maxdepth 1 2>/dev/null); do \
