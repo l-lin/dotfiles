@@ -64,14 +64,14 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "[-] installing stow"
   yay -S --noconfirm stow
 
-  echo "[-] installing zscroll"
-  yay -S --noconfirm zscroll-git
-
   echo "[-] installing spotify"
   yay -S --noconfirm spotify
 
   echo "[-] installing gimp"
   yay -S --noconfirm gimp
+
+  echo "[-] installing libreoffice"
+  yay -S libreoffice-still
 
   echo "[-] Finished installing stuffs"
 fi
