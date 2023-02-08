@@ -22,7 +22,7 @@
     <primaryMonitor>Mouse</primaryMonitor>
   </placement>
   <theme>
-    <name>Nordic</name>
+    <name>gruvbox-material-dark-blocks</name>
     <titleLayout>DLIMC</titleLayout>
     <keepBorder>no</keepBorder>
     <animateIconify>yes</animateIconify>
