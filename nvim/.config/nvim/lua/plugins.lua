@@ -106,6 +106,8 @@ return require('packer').startup(function(use)
   use { 'hrsh7th/cmp-nvim-lua' }
   -- emoji support
   use { 'hrsh7th/cmp-emoji' }
+  -- autocompletion from tmux panes
+  use { 'andersevenrud/cmp-tmux' }
   -- luasnip snippets
   use { 'saadparwaiz1/cmp_luasnip' }
 

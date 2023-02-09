@@ -53,6 +53,7 @@ cmp.setup({
         { name = 'nvim_lsp_signature_help' },
         { name = 'nvim_lua' },
         { name = 'emoji', option = { insert = true } },
+        { name = 'tmux', option = { all_panes = true } },
     }, {
         { name = 'buffer' },
     })
