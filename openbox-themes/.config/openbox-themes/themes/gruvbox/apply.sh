@@ -334,10 +334,21 @@ notify_user() {
 }
 
 # Change default terminal in keymaps -------------------------------
-apply_change_terminal() {
-	config="$PATH_OBOX/rc.xml"
+change_terminal() {
+	local file_path="${1}"
 
-	sed -i "s/alacritty/xfce4-terminal/g" "${config}"
+	if [[ -f "${file_path}" ]]; then
+		sed -i "s/alacritty/xfce4-terminal/g" "${file_path}"
+	fi
+}
+apply_change_terminal() {
+	change_terminal "${PATH_OBOX}/rc.xml"
+	change_terminal "${PATH_OBOX}/menu-minimal.xml"
+	change_terminal "${PATH_OBOX}/menu-glyphs.xml"
+	change_terminal "${PATH_OBOX}/menu-icons.xml"
+	change_terminal "${PATH_OBOX}/menu-simple.xml"
+	change_terminal "${PATH_CONF}/networkmanager-dmenu/config.ini"
+	change_terminal "${PATH_CONF}/geany/geany.conf"
 }
 
 ## Execute Script ---------------------------
@@ -355,7 +366,7 @@ apply_dunst
 apply_plank
 apply_compositor
 
-#apply_change_terminal
+apply_change_terminal
 
 # fix cursor theme (run it in the end)
 xsetroot -cursor_name left_ptr
