@@ -52,7 +52,7 @@ cmp.setup({
         { name = 'luasnip' },
         { name = 'nvim_lsp_signature_help' },
         { name = 'nvim_lua' },
-        { name = 'neorg' }
+        { name = 'emoji', option = { insert = true } },
     }, {
         { name = 'buffer' },
     })
