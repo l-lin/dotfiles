@@ -14,7 +14,7 @@ o.autoindent = true -- copy indent from current line when starting a new line
 cmd [[ set clipboard=unnamedplus ]] -- yank in clipboard
 
 -- search
-o.hlsearch = false --do not highlight searched-for phrases
+o.hlsearch = true -- highlight searched-for phrases
 o.incsearch = true -- but do highlight-as-I-type the search string
 o.ignorecase = true -- makes pattern matching case-insensitive
 o.smartcase = true -- overrides ignorecase if your pattern contains mixed case
