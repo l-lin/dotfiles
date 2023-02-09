@@ -47,6 +47,10 @@ export FZF_CTRL_T_OPTS="--preview 'bat --style numbers,changes --color "always" 
 export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:5:wrap"
 # show the entries of the directory
 export FZF_ALT_C_OPTS="--sort --preview 'tree -C {} | head -200'"
+# display hidden files with CTRL-T command
+export FZF_CTRL_T_COMMAND="fd --type f --hidden --exclude .git"
+# display hidden folders with ATL-C command
+export FZF_ALT_C_COMMAND="fd --type d --hidden --exclude .git"
 
 # --------------------------------------------------------
 # zsh-autosuggestions config
