@@ -229,6 +229,8 @@ apply_obconfig () {
 	xmlstarlet ed -L -N a="$namespace" -u '/a:openbox_config/a:margins/a:left' -v ${ob_margin_l} "$config"
 	xmlstarlet ed -L -N a="$namespace" -u '/a:openbox_config/a:margins/a:right' -v ${ob_margin_r} "$config"
 
+  # TODO: remove shortcuts to C-A-m and C-S-R
+
 	# Reload Openbox Config
 	openbox --reconfigure
 }
