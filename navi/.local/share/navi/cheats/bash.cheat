@@ -72,6 +72,9 @@ ssh <host> 'docker logs --tail <nb_last_logs> -f <service_name>' | jq --unbuffer
 # Tail logs from remote container of all servers
 env=<env> && app=<app> && tailr --lines 10 --env ${env} --app ${app}
 
+# Get env variables from remote container
+ssh <host> 'docker exec <service_name> env' | sort
+
 $ host: cat /etc/hosts | awk '{ print $2 }' | sort | uniq
 $ service_name: ssh <host> 'docker ps -a --format "{{.Names}}"' | grep -v cadvisor | grep -v liquibase
 $ env: find ~/work/big-cloud/config/ -maxdepth 1 -type d | awk -F'/' '{ print $7 }' | sort | uniq

@@ -2,5 +2,6 @@ acquisition:~/work/acquisition
 big-cloud:~/work/big-cloud
 dotfiles:~/perso/dotfiles
 gruvbox:~/perso/dotfiles/openbox-themes/.config/openbox-themes/themes/gruvbox
+navi:~/perso/dotfiles/navi/.local/share/navi/cheats
 record-service:~/work/record-service
 video-service:~/work/video-service
