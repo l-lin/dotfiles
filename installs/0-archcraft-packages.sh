@@ -76,6 +76,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "[-] installing playerctl to control players"
   yay -S --noconfirm playerctl
 
+  echo "[-] installing peek: simple screen recorder with an easy to use interface"
+  yay -S --noconfirm peek
+
   echo "[-] Finished installing stuffs"
 fi
 
