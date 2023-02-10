@@ -71,7 +71,10 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   yay -S --noconfirm gimp
 
   echo "[-] installing libreoffice"
-  yay -S libreoffice-still
+  yay -S --noconfirm libreoffice-still
+
+  echo "[-] installing playerctl to control players"
+  yay -S --noconfirm playerctl
 
   echo "[-] Finished installing stuffs"
 fi
