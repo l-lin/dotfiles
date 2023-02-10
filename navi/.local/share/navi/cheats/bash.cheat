@@ -96,3 +96,17 @@ grep -o '<prefix>\(.*\)<suffix>' <file> | sed 's/<prefix>\(.*\)<suffix>/\1/'
 sort -k <n> <input_file>
 
 $ input_file: ls -p | grep -v /
+
+% systemd
+
+# Restart service
+systemctl restart <service>
+
+# View service's logs
+systemctl -l status <service>
+
+# View all service's logs
+journalctl -u <service>
+
+$ service: systemctl list-units | grep '.service' | awk '{ print $1 }'
+
