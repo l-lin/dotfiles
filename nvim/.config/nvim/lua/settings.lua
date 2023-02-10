@@ -12,6 +12,7 @@ o.smartindent = true -- do smart autoindenting when starting a new line
 -- copy yank
 o.autoindent = true -- copy indent from current line when starting a new line
 cmd [[ set clipboard=unnamedplus ]] -- yank in clipboard
+cmd [[ au TextYankPost * silent! lua vim.highlight.on_yank{higroup="IncSearch", timeout=300} ]] -- highlight yank
 
 -- search
 o.hlsearch = true -- highlight searched-for phrases
@@ -41,17 +42,24 @@ o.updatetime = 300 -- shorter updatetime for better user exp (default: 4000ms)
 o.timeout = true
 o.timeoutlen = 100 -- default 1000ms
 
+-- panes
+o.splitbelow = true --default split below
+o.splitright = true --default split right
+
+-- bottom status line
+o.laststatus = 3 -- always show statusline in single statusline mode
+
+-- editor
+o.so = 7 -- set 7 lines to the cursor when moving vertically
+o.cursorline = true -- highlight line
+
+-- file
+o.hidden = true -- TextEdit might fail if hidden is not set
+o.autoread = true -- refresh file if it changes on disc
+o.confirm = true -- ask me if I try to leave the editor with an unsaved modified file in a buffer
+
 -- misc
 o.showcmd = true -- display incomplete commands
 o.showmode = true -- show insert mode in command line
-o.so = 7 -- set 7 lines to the cursor when moving vertically
-o.hidden = true -- TextEdit might fail if hidden is not set
-o.splitbelow = true --default split below
-o.splitright = true --default split right
-o.laststatus = 3 -- always show statusline in single statusline mode
-o.autoread = true -- refresh file if it changes on disc
-o.confirm = true -- ask me if I try to leave the editor with an unsaved modified file in a buffer
-o.cursorline = true -- highlight line
 cmd [[ set shortmess+=c ]] -- don't pass messages to |ins-completion-menu|
-cmd [[ au TextYankPost * silent! lua vim.highlight.on_yank{higroup="IncSearch", timeout=300} ]] -- highlight yank
 
