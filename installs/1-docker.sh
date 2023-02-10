@@ -7,6 +7,7 @@ if type docker >/dev/null 2>&1; then
 else
   echo "[-] installing docker"
   yay -S --noconfirm docker
-  sudo usermod -aG docker $USER
+  sudo usermod -aG docker "$USER"
+  sudo systemctl enable docker
 fi
 

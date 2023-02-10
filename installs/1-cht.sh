@@ -8,6 +8,6 @@ else
   echo "[-] installing cht.sh: https://github.com/chubin/cheat.sh"
   sudo curl -o /usr/local/bin/cht.sh https://cht.sh/:cht.sh
   sudo chmod +x /usr/local/bin/cht.sh
-  curl https://cheat.sh/:zsh > $HOME/.zsh/completion/_cht
+  curl https://cheat.sh/:zsh > "$HOME/.zsh/completion/_cht"
 fi
 

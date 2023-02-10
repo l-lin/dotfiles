@@ -79,6 +79,18 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "[-] installing peek: simple screen recorder with an easy to use interface"
   yay -S --noconfirm peek
 
+  echo "[-] installing fd (> find): https://github.com/sharkdp/fd/"
+  yay -S --noconfirm fd
+
+  echo "[-] installing kafkactl"
+  yay -S --noconfirm kafkactl
+
+  echo "[-] installing lsd: https://github.com/Peltoche/lsd"
+  yay -S --noconfirm lsd
+
+  echo "[-] installing neovim"
+  yay -S --noconfirm neovim
+
   echo "[-] Finished installing stuffs"
 fi
 
