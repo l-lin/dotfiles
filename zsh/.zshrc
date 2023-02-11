@@ -25,6 +25,7 @@ plugins=(
   extract
   forgit
   fzf
+  fzf-custom
   git-extra-commands
   git-open
   gitstatus

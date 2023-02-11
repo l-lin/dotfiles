@@ -16,28 +16,31 @@ skip_global_compinit=1
 # Gruvbox theme: https://github.com/luisiacc/gruvbox-baby/blob/main/extras/tmux/MEDIUM.tmux
 export FZF_THEME="
 --color=fg:#EBDBB2 \
---color=bg:#282828 \
---color=hl:#FABD2F \
+--color=bg:#242424 \
+--color=hl:#7fa094 \
 --color=fg+:bold:#EBDBB2 \
---color=bg+:#665C54 \
---color=hl+:#FABD2F \
---color=gutter:#282828 \
---color=info:#D65D0E \
+--color=bg+:#273842 \
+--color=hl+:#7fa094 \
+--color=gutter:#242424 \
+--color=info:#EBDBB2 \
 --color=separator:#282828 \
 --color=border:#E7D7AD \
 --color=label:#EEBD35 \
---color=prompt:#7FA2AC \
+--color=prompt:#504945 \
 --color=spinner:#FABD2F \
 --color=pointer:bold:#FABD2F \
 --color=marker:#CC241D \
 --color=header:#D65D0E \
 --color=preview-fg:#EBDBB2 \
---color=preview-bg:#282828 \
+--color=preview-bg:#242424 \
+--border=none \
+--no-scrollbar \
+--prompt='🔎 '
 "
 export FZF_DEFAULT_OPTS="
---bind='?:toggle-preview'
---bind='alt-p:toggle-preview-wrap'
---preview-window='right:60%:wrap'
+--bind='?:toggle-preview' \
+--bind='alt-p:toggle-preview-wrap' \
+--preview-window='right:60%:border-none:wrap' \
 ${FZF_THEME}
 "
 export FZF_TMUX_OPTS="-p 80%,80%"
