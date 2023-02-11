@@ -42,6 +42,8 @@ local custom_attach = function(_, bufnr)
         { noremap = true, silent = true, buffer = bufnr, desc = "LSP references" })
     vim.keymap.set('n', '<leader>cs', vim.lsp.buf.signature_help,
         { noremap = true, silent = true, buffer = bufnr, desc = "LSP signature help" })
+    vim.keymap.set('n', '<S-k>', vim.lsp.buf.signature_help,
+        { noremap = true, silent = true, buffer = bufnr, desc = "LSP signature help" })
     vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename,
         { noremap = true, silent = true, buffer = bufnr, desc = "LSP rename" })
     vim.keymap.set('n', '<leader>cf', '<cmd>lua vim.lsp.buf.format { async = true }<CR>',
