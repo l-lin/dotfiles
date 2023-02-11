@@ -22,7 +22,7 @@ return require('packer').startup(function(use)
       -- colorscheme
       use { 'luisiacc/gruvbox-baby', config = function() require('plugins.gruvbox') end }
       -- filetype icons
-      use { 'kyazdani42/nvim-web-devicons', config = function() require('plugins.web-devicons') end }
+      use { 'nvim-tree/nvim-web-devicons', config = function() require('plugins.web-devicons') end }
       -- zen mode
       use { 'Pocco81/true-zen.nvim', config = function() require('plugins.true-zen') end }
       -- dim interactive portions of code you are editing
@@ -30,11 +30,18 @@ return require('packer').startup(function(use)
       -- display marks
       use { 'kshenoy/vim-signature' }
       -- status line (bottom)
-      use { 'nvim-lualine/lualine.nvim', requires = { 'kyazdani42/nvim-web-devicons', opt = true }, config = function()
-        require('plugins.lualine') end }
+      use {
+          'nvim-lualine/lualine.nvim',
+          requires = { 'nvim-tree/nvim-web-devicons', opt = true },
+          config = function() require('plugins.lualine') end
+      }
       -- buffer line (top)
-      use { 'akinsho/bufferline.nvim', tag = "v3.*", requires = 'kyazdani42/nvim-web-devicons', config = function()
-        require('plugins.bufferline') end }
+      use {
+          'akinsho/bufferline.nvim',
+          tag = "v3.*",
+          requires = 'nvim-tree/nvim-web-devicons',
+          config = function() require('plugins.bufferline') end
+      }
       -- display bottom status bar
       --use { 'vim-airline/vim-airline', config = function() require('plugins.airline') end }
       --use { 'vim-airline/vim-airline-themes' }
@@ -54,8 +61,11 @@ return require('packer').startup(function(use)
       -- TODO: set keymap
       use { 'JoosepAlviste/nvim-ts-context-commentstring' }
       -- a pretty list for diagnostics
-      use { 'folke/trouble.nvim', requires = 'nvim-tree/nvim-web-devicons', config = function() require(
-            'plugins.trouble') end }
+      use {
+          'folke/trouble.nvim',
+          requires = 'nvim-tree/nvim-web-devicons',
+          config = function() require('plugins.trouble') end
+      }
       -- linting
       use { 'dense-analysis/ale', config = function() require('plugins.ale') end }
       -- multiple cursors
@@ -89,15 +99,27 @@ return require('packer').startup(function(use)
       use { 'neovim/nvim-lspconfig', config = function() require('plugins.lspconfig') end }
       -- easily install/update lsp servers directly from neovim
       -- TODO: shortcut to check function documentation
-      use { 'williamboman/mason.nvim', requires = 'neovim/nvim-lspconfig', config = function() require('plugins.mason') end }
+      use {
+          'williamboman/mason.nvim',
+          requires = 'neovim/nvim-lspconfig',
+          config = function() require('plugins.mason') end
+      }
       -- bridge between mason and nvim-lspconfig
-      use { 'williamboman/mason-lspconfig', requires = 'williamboman/mason.nvim', config = function() require('plugins.mason-lspconfig') end }
+      use {
+          'williamboman/mason-lspconfig',
+          requires = 'williamboman/mason.nvim',
+          config = function() require('plugins.mason-lspconfig') end
+      }
 
       -- -------------------------------------
       -- AUTOCOMPLETION
       -- -------------------------------------
       -- autocompletion engine
-      use { 'hrsh7th/nvim-cmp', requires = { 'L3MON4D3/LuaSnip' }, config = function() require('plugins.cmp') end }
+      use {
+          'hrsh7th/nvim-cmp',
+          requires = { 'L3MON4D3/LuaSnip' },
+          config = function() require('plugins.cmp') end
+      }
       -- snippet engine
       use { 'L3MON4D3/LuaSnip', config = function() require('plugins.luasnip') end }
       -- lsp progress eye candy
@@ -127,18 +149,25 @@ return require('packer').startup(function(use)
       -- NAVIGATION
       -- -------------------------------------
       -- file explorer
-      use { 'kyazdani42/nvim-tree.lua', config = function() require('plugins.tree') end }
+      use { 'nvim-tree/nvim-tree.lua', config = function() require('plugins.tree') end }
       -- multilevel undo explorer
       use { 'mbbill/undotree', config = function() require('plugins.undotree') end }
       -- fuzzy finding anything anywhere
-      use { 'nvim-telescope/telescope.nvim', requires = { 'nvim-lua/plenary.nvim' }, config = function() require(
-            'plugins.telescope') end }
+      use {
+          'nvim-telescope/telescope.nvim',
+          requires = { 'nvim-lua/plenary.nvim' },
+          config = function() require('plugins.telescope') end
+      }
       -- telescope extension to use telescope as selection ui instead of vim command line
       -- TODO: how to use it?
       use { 'nvim-telescope/telescope-ui-select.nvim' }
-      -- telescope extension file browser
+      -- telescope extension for file browser
       -- TODO: how to use it?
       use { 'nvim-telescope/telescope-file-browser.nvim' }
+      -- telescope project finder
+      use { 'nvim-telescope/telescope-project.nvim' }
+      -- telescope extension for luasnip snippet
+      use { 'benfowler/telescope-luasnip.nvim', requires = { 'L3MON4D3/LuaSnip' } }
       -- general-purpose motion plugin
       use { 'ggandor/leap.nvim', config = function() require('plugins.leap') end }
 
@@ -151,7 +180,11 @@ return require('packer').startup(function(use)
       use { 'lewis6991/gitsigns.nvim', config = function() require('plugins.gitsigns') end }
       -- nice view for git diff
       -- TODO: how to use it?
-      use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim', config = function() require('plugins.diffview') end }
+      use {
+          'sindrets/diffview.nvim',
+          requires = 'nvim-lua/plenary.nvim',
+          config = function() require('plugins.diffview') end
+      }
 
       -- -------------------------------------
       -- MISC
@@ -163,7 +196,11 @@ return require('packer').startup(function(use)
       -- caching init to improve starting time
       use { 'lewis6991/impatient.nvim' }
       -- embed neovim on the browser
-      use { 'glacambre/firenvim', run = function() vim.fn['firenvim#install'](0) end, config = function() require('plugins.firenvim') end }
+      use {
+          'glacambre/firenvim',
+          run = function() vim.fn['firenvim#install'](0) end,
+          config = function() require('plugins.firenvim') end
+      }
 
       -- -------------------------------------
       -- Automatically set up your configuration after cloning packer.nvim
