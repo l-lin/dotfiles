@@ -1,4 +1,6 @@
 " see https://github.com/JetBrains/ideavim/wiki/set-commands
+" list of available actions can be fetched by executing `:actionlist` in
+" IntelliJ
 
 " -----------------------------------------------------------------------
 " plugins
@@ -43,4 +45,6 @@ nnoremap <leader>cf :action ReformatCode<CR>
 " comment
 nnoremap gcc :action CommentByLineComment<CR>
 vnoremap gc :action CommentByLineComment<CR>
+" Acejump
+nnoremap <leader>nl :action AceAction<CR>
 
