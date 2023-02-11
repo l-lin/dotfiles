@@ -1,4 +1,6 @@
-vim.api.nvim_set_keymap('n', '<leader>gd', '<cmd>DiffviewOpen<cr>', { noremap = true, desc = 'Open diffView' })
+local map = vim.api.nvim_set_keymap
+map('n', '<leader>gd', '<cmd>DiffviewFileHistory %<cr>', { noremap = true, desc = 'Check file git history' })
+map('n', '<A-0>', '<cmd>DiffviewOpen<cr>', { noremap = true, desc = 'Open diffView' })
 
 local actions = require("diffview.actions")
 

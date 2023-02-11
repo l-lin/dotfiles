@@ -17,8 +17,7 @@ require('gitsigns').setup {
       map('n', '<leader>gv', gs.preview_hunk_inline, { desc = 'Gitsigns preview hunk' })
       map('n', '<leader>gB', function() gs.blame_line { full = true } end, { desc = 'Gitsigns blame line' })
       map('n', '<leader>gT', gs.toggle_current_line_blame, { desc = 'Gitsigns toggle current line blame' })
-      map('n', '<leader>gd', gs.diffthis, { desc = 'Gitsigns diff this' })
-      map('n', '<leader>gD', function() gs.diffthis('~') end, { desc = 'Gitsigns diff this $HOME' })
+      map('n', '<leader>gD', gs.diffthis, { desc = 'Gitsigns diff this' })
       map('n', '<leader>gt', gs.toggle_deleted, { desc = 'Gitsigns toggle deleted' })
 
       -- Text object

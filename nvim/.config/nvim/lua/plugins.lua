@@ -82,7 +82,11 @@ return require('packer').startup(function(use)
       use { 'nvim-treesitter/nvim-treesitter', config = function() require('plugins.treesitter') end }
       -- show lightbulb for code hints
       -- TODO: how to make it work?
-      use { 'kosayoda/nvim-lightbulb', requires = 'antoinemadec/FixCursorHold.nvim' }
+      use {
+          'kosayoda/nvim-lightbulb',
+          requires = 'antoinemadec/FixCursorHold.nvim',
+          config = function() require('plugins.lightbulb') end
+      }
       -- lua support
       use { 'folke/neodev.nvim' }
       -- terraform support
@@ -159,10 +163,8 @@ return require('packer').startup(function(use)
           config = function() require('plugins.telescope') end
       }
       -- telescope extension to use telescope as selection ui instead of vim command line
-      -- TODO: how to use it?
       use { 'nvim-telescope/telescope-ui-select.nvim' }
       -- telescope extension for file browser
-      -- TODO: how to use it?
       use { 'nvim-telescope/telescope-file-browser.nvim' }
       -- telescope project finder
       use { 'nvim-telescope/telescope-project.nvim' }
@@ -179,7 +181,6 @@ return require('packer').startup(function(use)
       -- git modifications explorer/handler
       use { 'lewis6991/gitsigns.nvim', config = function() require('plugins.gitsigns') end }
       -- nice view for git diff
-      -- TODO: how to use it?
       use {
           'sindrets/diffview.nvim',
           requires = 'nvim-lua/plenary.nvim',
