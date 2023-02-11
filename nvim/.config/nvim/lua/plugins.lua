@@ -62,6 +62,8 @@ return require('packer').startup(function(use)
       use { 'mg979/vim-visual-multi', config = function() require('plugins.visual-multi') end }
       -- handle trailing whitespace
       use { 'ntpeters/vim-better-whitespace', config = function() require('plugins.better-whitespace') end }
+      -- automatically manage hlsearch
+      use { 'asiryk/auto-hlsearch.nvim', config = function() require('auto-hlsearch').setup() end }
 
       -- -------------------------------------
       -- DEV
