@@ -56,10 +56,7 @@ return require('packer').startup(function(use)
       -- autoclose pairs, (), []...
       use { 'windwp/nvim-autopairs', config = function() require('nvim-autopairs').setup {} end }
       -- syntax aware commenting
-      use { 'numToStr/Comment.nvim', config = function() require('Comment').setup() end }
-      -- set commentstring option based on the cursor location in the file.
-      -- TODO: set keymap
-      use { 'JoosepAlviste/nvim-ts-context-commentstring' }
+      use { 'numToStr/Comment.nvim', config = function() require('plugins.comment') end }
       -- a pretty list for diagnostics
       use {
           'folke/trouble.nvim',
