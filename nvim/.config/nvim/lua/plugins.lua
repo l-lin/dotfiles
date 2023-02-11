@@ -78,7 +78,6 @@ return require('packer').startup(function(use)
       -- enhanced syntax by treesitter
       use { 'nvim-treesitter/nvim-treesitter', config = function() require('plugins.treesitter') end }
       -- show lightbulb for code hints
-      -- TODO: how to make it work?
       use {
           'kosayoda/nvim-lightbulb',
           requires = 'antoinemadec/FixCursorHold.nvim',
@@ -99,7 +98,6 @@ return require('packer').startup(function(use)
       -- easily config neovim lsp
       use { 'neovim/nvim-lspconfig', config = function() require('plugins.lspconfig') end }
       -- easily install/update lsp servers directly from neovim
-      -- TODO: shortcut to check function documentation
       use {
           'williamboman/mason.nvim',
           requires = 'neovim/nvim-lspconfig',
