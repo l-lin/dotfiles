@@ -192,11 +192,11 @@ return require('packer').startup(function(use)
       -- caching init to improve starting time
       use { 'lewis6991/impatient.nvim' }
       -- embed neovim on the browser
-      use {
-          'glacambre/firenvim',
-          run = function() vim.fn['firenvim#install'](0) end,
-          config = function() require('plugins.firenvim') end
-      }
+      -- use {
+      --     'glacambre/firenvim',
+      --     run = function() vim.fn['firenvim#install'](0) end,
+      --     config = function() require('plugins.firenvim') end
+      -- }
 
       -- -------------------------------------
       -- Automatically set up your configuration after cloning packer.nvim
