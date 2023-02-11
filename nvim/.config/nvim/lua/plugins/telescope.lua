@@ -2,8 +2,6 @@ local homepath = os.getenv("HOME")
 local telescope_project_base_dirs = {}
 local possible_base_dirs = {
     homepath .. "/work",
-    homepath .. "/perso",
-    homepath .. "/bin",
 }
 
 for _, dirname in ipairs(possible_base_dirs) do

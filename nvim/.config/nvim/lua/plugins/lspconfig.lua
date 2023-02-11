@@ -50,6 +50,8 @@ local custom_attach = function(_, bufnr)
         { noremap = true, silent = true, buffer = bufnr, desc = "LSP show errors" })
     vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action,
         { noremap = true, silent = true, buffer = bufnr, desc = "LSP code action" })
+    vim.keymap.set('n', '<A-CR>', vim.lsp.buf.code_action,
+        { noremap = true, silent = true, buffer = bufnr, desc = "LSP code action" })
 end
 
 -- Setup lspconfig.
