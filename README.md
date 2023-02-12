@@ -13,7 +13,7 @@ It's using the following:
 
 Credit to [AlbertoV](https://www.deviantart.com/albertov) for his awesome [Totoro pixel art](./openbox-themes/.config/openbox-themes/themes/gruvbox/wallpaper).
 
-## List of applications to install after reinstalling the OS
+## Install & bootstraping dotfiles
 
 ```bash
 make help
@@ -28,12 +28,7 @@ make help
 
 - Press "Prefix + I" (capital i)
 
-## Terminal configuration
-
-- Font: OverpassMono Nerd Font Regular
-
 ## Calibre
-
 ### Installation
 
 ```bash
@@ -56,11 +51,61 @@ sudo -v && wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | 
 ## IntellIJ plugins
 
 - AceJump
+- Ansible
 - CodeGlance
 - Grep console
+- Maven Helper
+- MyGruvbox theme
 - IdeaVim
 - Ideolog
+- Settings repository
 - SonarLint
+- Terraform and HCL
+
+## Pair keyboard with bluetooth
+
+```bash
+$ # install bluez and bluez-utils if not already done
+$ yay -S bluez bluez-utils
+
+$ # start bluetooth service
+$ sudo systemctl start bluetooth
+$ # enable bluetooth service on startup
+$ sudo systemctl enable bluetooth
+
+$ # execute bluetoothctl
+$ bluetoothctl
+Agent registered
+[CHG] Controller XX:XX:XX:XX:XX:XX Pairable: yes
+[bluetooth]#
+[bluetooth]# power on
+[bluetooth]# agent on
+[bluetooth]# default-agent
+[bluetooth]# scan on
+<...>
+[NEW] Device YY:YY:YY:YY:YY:YY [ERGO K860]
+<...>
+[bluetooth]# connect YY:YY:YY:YY:YY:YY
+[bluetooth]# trust YY:YY:YY:YY:YY:YY
+[bluetooth]# quit
+```
+
+ℹ️ : some keyboards sends a pass code which has to be typed in on the
+bluetooth keyboard followed by the key "Enter" in order to pair
+successfully.
+
+```
+[bluetooth]# pair YY:YY:YY:YY:YY:YY
+[CHG] Device YY:YY:YY:YY:YY:YY Connected: no
+[CHG] Device YY:YY:YY:YY:YY:YY Connected: yes
+[agent] Passkey: 103760
+```
+
+Sources:
+
+- https://bbs.archlinux.org/viewtopic.php?id=258125
+- https://wiki.archlinux.org/title/Bluetooth_keyboard
+- https://medium.com/@n0tty/bluetooth-and-arch-linux-a1ae56599256
 
 ## Forticlient VPN with SAML
 
