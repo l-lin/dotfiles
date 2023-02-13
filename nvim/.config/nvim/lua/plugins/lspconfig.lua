@@ -64,7 +64,27 @@ end
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 -- setup servers for each programming language
-lsp.pylsp.setup {
+lsp.bashls.setup {
+    on_attach = custom_attach,
+    capabilities = capabilities,
+}
+lsp.yamlls.setup {
+    on_attach = custom_attach,
+    capabilities = capabilities,
+}
+lsp.gopls.setup {
+    on_attach = custom_attach,
+    capabilities = capabilities,
+}
+lsp.dockerls.setup {
+    on_attach = custom_attach,
+    capabilities = capabilities,
+}
+lsp.jsonls.setup {
+    on_attach = custom_attach,
+    capabilities = capabilities,
+}
+lsp.html.setup {
     on_attach = custom_attach,
     capabilities = capabilities,
 }
@@ -93,19 +113,15 @@ lsp.lua_ls.setup {
         },
     },
 }
-lsp.vimls.setup {
+lsp.marksman.setup {
     on_attach = custom_attach,
     capabilities = capabilities,
 }
-lsp.bashls.setup {
+lsp.pylsp.setup {
     on_attach = custom_attach,
     capabilities = capabilities,
 }
-lsp.yamlls.setup {
-    on_attach = custom_attach,
-    capabilities = capabilities,
-}
-lsp.gopls.setup {
+lsp.rust_analyzer.setup {
     on_attach = custom_attach,
     capabilities = capabilities,
 }
@@ -113,27 +129,23 @@ lsp.sqls.setup {
     on_attach = custom_attach,
     capabilities = capabilities,
 }
-lsp.dockerls.setup {
+lsp.terraform_lsp.setup {
     on_attach = custom_attach,
     capabilities = capabilities,
 }
-lsp.jsonls.setup {
+lsp.vimls.setup {
     on_attach = custom_attach,
     capabilities = capabilities,
 }
 lsp.yamlls.setup {
     on_attach = custom_attach,
     capabilities = capabilities,
-}
-lsp.html.setup {
-    on_attach = custom_attach,
-    capabilities = capabilities,
-}
-lsp.marksman.setup {
-    on_attach = custom_attach,
-    capabilities = capabilities,
-}
-lsp.rust_analyzer.setup {
-    on_attach = custom_attach,
-    capabilities = capabilities,
+    settings = {
+      yaml = {
+        schemas = {
+          ["https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master/v1.18.0-standalone-strict/all.json"] = "/*.k8s.yaml",
+          ["https://raw.githubusercontent.com/ansible/schemas/main/f/ansible.json"] = "/ansible/*.yml"
+        }
+      }
+    }
 }
