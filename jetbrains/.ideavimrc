@@ -48,10 +48,13 @@ nnoremap gcc :action CommentByLineComment<CR>
 vnoremap gc :action CommentByLineComment<CR>
 " Acejump
 nnoremap <leader>nl :action AceAction<CR>
+
 " view change under caret
 nnoremap <leader>gv :action VcsShowCurrentChangeMarker<CR>
 " rollback changed lines
 nnoremap <leader>gr :action Vcs.RollbackChangedLines<CR>
+
+nnoremap <leader>gd :action Vcs.ShowTabbedFileHistory<CR>
 
 " navigation
 nnoremap <C-k> <C-w>k<CR>
