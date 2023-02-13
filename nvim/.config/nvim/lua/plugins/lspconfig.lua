@@ -64,7 +64,7 @@ lsp.pylsp.setup {
     on_attach = custom_attach,
     capabilities = capabilities,
 }
-lsp.lsp_lua.setup {
+lsp.lua_ls.setup {
     on_attach = custom_attach,
     capabilities = capabilities,
     settings = {
