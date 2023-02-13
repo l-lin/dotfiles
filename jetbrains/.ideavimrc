@@ -1,6 +1,7 @@
 " see https://github.com/JetBrains/ideavim/wiki/set-commands
 " list of available actions can be fetched by executing `:actionlist` in
-" IntelliJ
+" IntelliJ. They are also available here:
+" https://gist.github.com/zchee/9c78f91cc5ad771c1f5d
 
 " -----------------------------------------------------------------------
 " plugins
@@ -47,4 +48,13 @@ nnoremap gcc :action CommentByLineComment<CR>
 vnoremap gc :action CommentByLineComment<CR>
 " Acejump
 nnoremap <leader>nl :action AceAction<CR>
+" view change under caret
+nnoremap <leader>gv :action VcsShowCurrentChangeMarker<CR>
+" rollback changed lines
+nnoremap <leader>gr :action Vcs.RollbackChangedLines<CR>
 
+" navigation
+nnoremap <C-k> <C-w>k<CR>
+nnoremap <C-j> <C-w>j<CR>
+nnoremap <C-h> <C-w>h<CR>
+nnoremap <C-l> <C-w>l<CR>
