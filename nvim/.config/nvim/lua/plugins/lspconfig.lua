@@ -50,6 +50,8 @@ local custom_attach = function(_, bufnr)
         { noremap = true, silent = true, buffer = bufnr, desc = "LSP rename" })
     vim.keymap.set('n', '<leader>cf', '<cmd>lua vim.lsp.buf.format { async = true }<CR>',
         { noremap = true, silent = true, buffer = bufnr, desc = "LSP format" })
+    vim.keymap.set('n', '<M-C-L>', '<cmd>lua vim.lsp.buf.format { async = true }<CR>',
+        { noremap = true, silent = true, buffer = bufnr, desc = "LSP format (Ctrl+Alt+l)" })
     vim.keymap.set('n', '<leader>ce', vim.diagnostic.setloclist,
         { noremap = true, silent = true, buffer = bufnr, desc = "LSP show errors" })
     vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action,
