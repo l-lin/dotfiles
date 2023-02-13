@@ -53,7 +53,7 @@ nnoremap <leader>nl :action AceAction<CR>
 nnoremap <leader>gv :action VcsShowCurrentChangeMarker<CR>
 " rollback changed lines
 nnoremap <leader>gr :action Vcs.RollbackChangedLines<CR>
-
+" show file history
 nnoremap <leader>gd :action Vcs.ShowTabbedFileHistory<CR>
 
 " navigation

@@ -1,3 +1,9 @@
+-- NVIM keymaps
+-- tips: for non-conventional keys, e.g. CTR+F1, you can use the the following:
+-- in Insert mode, press CTRL+K, then press the desired key combination to get
+-- the associated mapping.
+-- Source: https://www.reddit.com/r/vim/comments/9jy0pt/how_to_remap_cf1/
+
 -- n  Normal mode map. Defined using ':nmap' or ':nnoremap'.
 -- i  Insert mode map. Defined using ':imap' or ':inoremap'.
 -- v  Visual and select mode map. Defined using ':vmap' or ':vnoremap'.
@@ -30,7 +36,7 @@ map('n', '<leader>lf', ':setlocal spell spelllang=fr<CR>', { noremap = true, des
 
 -- save, quit
 map('n', '<C-s>', ':w!<CR>', { noremap = true, desc = 'Fast saving' })
-map('n', '<F4>', ':bd<CR>', { noremap = true, silent = true, desc = 'Close current buffer' })
+map('n', '<F28>', ':bd<CR>', { noremap = true, silent = true, desc = 'Close current buffer' })
 
 -- navigation
 map('n', '<C-k>', ':wincmd k<CR>', { noremap = true, desc = 'Move to upper window' })
@@ -39,6 +45,7 @@ map('n', '<C-h>', ':wincmd h<CR>', { noremap = true, desc = 'Move to left window
 map('n', '<C-l>', ':wincmd l<CR>', { noremap = true, desc = 'Move to right window' })
 map('n', ';;', '<C-^>', { noremap = true, silent = true, desc = 'Switch back and forth from buffer' })
 map('n', '<F12>', ':bn<CR>', { noremap = true, silent = true, desc = 'Next buffer' })
+map('n', '<F24>', ':bp<CR>', { noremap = true, silent = true, desc = 'Previous buffer (Shift+F12)' })
 
 -- editing
 map('n', '<C-y>', 'dd', { noremap = true, desc = 'Delete line' })

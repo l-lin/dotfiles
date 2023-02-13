@@ -38,6 +38,8 @@ local custom_attach = function(_, bufnr)
         { noremap = true, silent = true, buffer = bufnr, desc = "LSP implementation" })
     vim.keymap.set('n', '<leader>co', vim.lsp.buf.type_definition,
         { noremap = true, silent = true, buffer = bufnr, desc = "LSP type definition" })
+    vim.keymap.set('n', '<C-b>', vim.lsp.buf.type_definition,
+        { noremap = true, silent = true, buffer = bufnr, desc = "LSP type definition" })
     vim.keymap.set('n', '<leader>cu', vim.lsp.buf.references,
         { noremap = true, silent = true, buffer = bufnr, desc = "LSP references" })
     vim.keymap.set('n', '<leader>cs', vim.lsp.buf.signature_help,
@@ -54,6 +56,8 @@ local custom_attach = function(_, bufnr)
         { noremap = true, silent = true, buffer = bufnr, desc = "LSP code action" })
     vim.keymap.set('n', '<A-CR>', vim.lsp.buf.code_action,
         { noremap = true, silent = true, buffer = bufnr, desc = "LSP code action" })
+    vim.keymap.set('n', '<F25>', vim.diagnostic.open_float,
+        { noremap = true, buffer = bufnr, desc = "LSP open message in floating window (Ctrl+F1)" })
 end
 
 -- Setup lspconfig.
