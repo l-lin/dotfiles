@@ -64,7 +64,7 @@ lsp.pylsp.setup {
     on_attach = custom_attach,
     capabilities = capabilities,
 }
-lsp.sumneko_lua.setup {
+lsp.lsp_lua.setup {
     on_attach = custom_attach,
     capabilities = capabilities,
     settings = {
