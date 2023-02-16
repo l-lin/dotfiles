@@ -729,11 +729,11 @@
         <command>xfce4-terminal -e vim</command>
       </action>
     </keybind -->
-    <keybind key="C-A-r">
+    <!-- keybind key="C-A-r">
       <action name="Execute">
         <command>xfce4-terminal -e ranger</command>
       </action>
-    </keybind>
+    </keybind -->
     <keybind key="C-A-h">
       <action name="Execute">
         <command>xfce4-terminal -e htop</command>

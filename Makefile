@@ -25,6 +25,7 @@ setup:
 	@mkdir -p "${HOME}/.m2"
 	@mkdir -p "${HOME}/.undodir"
 	@mkdir -p "${HOME}/.zsh/completion"
+	@rm "${HOME}/.config/openbox/rc.xml"
 
 create-symlinks:
 	@for folder in $$(find . -type d -maxdepth 1 2>/dev/null); do \
