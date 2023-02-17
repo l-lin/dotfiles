@@ -90,7 +90,7 @@ return require('packer').startup(function(use)
       -- ansible support
       use { 'pearofducks/ansible-vim' }
       -- markdown support
-      use { 'plasticboy/vim-markdown', config = function() require('plugins.markdown') end }
+      use { 'tpope/vim-markdown', config = function() require('plugins.markdown') end }
 
       -- -------------------------------------
       -- LSP
