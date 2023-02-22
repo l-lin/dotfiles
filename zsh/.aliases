@@ -59,6 +59,9 @@ alias k="kubectl"
 alias mk="minikube"
 # helm
 alias h="helm"
+# pandoc
+alias pandoc="docker run --rm --volume "$(pwd):/data" --user $(id -u):$(id -g) pandoc/core:3.0.1-alpine"
+alias pandoc-latex="docker run --rm --volume "$(pwd):/data" --user $(id -u):$(id -g) pandoc/latex:3.0.1-alpine"
 
 # --------------------------------------------------------
 # GIT
@@ -95,8 +98,8 @@ docker-exec() {
 # like normal z when used with arguments but displays an fzf prompt when used without.
 unalias z 2> /dev/null
 z() {
-  [ $# -gt 0 ] && _z "$*" && return
-  cd "$(_z -l 2>&1 | fzf --height 40% --nth 2.. --reverse --inline-info +s --tac --query "${*##-* }" | sed 's/^[0-9,.]* *//')"
+  [ $# -gt 0 ] && zshz "$*" && return
+  cd "$(zshz -l 2>&1 | fzf --height 40% --nth 2.. --reverse --inline-info +s --tac --query "${*##-* }" | sed 's/^[0-9,.]* *//')"
 }
 # time shell load time
 timesh() {
