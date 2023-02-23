@@ -21,6 +21,12 @@ ffprobe -loglevel 16 -show_frames <input_file> | grep pict_type | sort | uniq -c
 # Get video frame information
 ffprobe -v quiet -select_streams v -show_frames <input_file> 2>/dev/null
 
+# Get video FPS
+ffprobe -show_streams <input_file> 2>&1 \
+  | rg fps \
+  | awk '{split($0,a,"fps")}END{print a[1]}' \
+  | awk '{print $NF}'
+
 % video, ffmpeg
 @ video, common
 
