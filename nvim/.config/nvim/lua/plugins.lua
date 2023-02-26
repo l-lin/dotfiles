@@ -129,6 +129,8 @@ return require('packer').startup(function(use)
       use { 'hrsh7th/cmp-nvim-lsp' }
       -- buffer based
       use { 'hrsh7th/cmp-buffer' }
+      -- buffer lines based
+      use { 'amarakon/nvim-cmp-buffer-lines' }
       -- filepath based
       use { 'hrsh7th/cmp-path' }
       -- command based
