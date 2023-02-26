@@ -116,11 +116,13 @@ return require('packer').startup(function(use)
       -- autocompletion engine
       use {
           'hrsh7th/nvim-cmp',
-          requires = { 'L3MON4D3/LuaSnip' },
+          requires = { 'L3MON4D3/LuaSnip', 'onsails/lspkind.nvim' },
           config = function() require('plugins.cmp') end
       }
       -- snippet engine
       use { 'L3MON4D3/LuaSnip', config = function() require('plugins.luasnip') end }
+      -- add pictograms to cmp
+      use { 'onsails/lspkind.nvim' }
       -- lsp progress eye candy
       use { 'j-hui/fidget.nvim', config = function() require('fidget').setup {} end }
       -- lsp based

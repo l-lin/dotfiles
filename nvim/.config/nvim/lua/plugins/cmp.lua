@@ -1,11 +1,20 @@
 local cmp = require('cmp')
 local luasnip = require('luasnip')
+local lspkind = require('lspkind')
 local has_words_before = function()
     local line, col = unpack(vim.api.nvim_win_get_cursor(0))
     return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
 cmp.setup({
+    formatting = {
+      format = lspkind.cmp_format({
+        -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
+        maxwidth = 50,
+        -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
+        ellipsis_char = '...',
+      })
+    },
     snippet = {
         -- REQUIRED - you must specify a snippet engine
         expand = function(args)
@@ -49,8 +58,9 @@ cmp.setup({
         { name = 'luasnip' },
         { name = 'nvim_lsp_signature_help' },
         { name = 'nvim_lua' },
+        { name = 'path', option = { trailing_slash = true } },
         { name = 'emoji', option = { insert = true } },
-        { name = 'tmux', option = { all_panes = true } },
+        { name = 'tmux' },
     }, {
         { name = 'buffer' },
     })
@@ -58,18 +68,16 @@ cmp.setup({
 
 -- cmp configuration for specific filetype.
 cmp.setup.filetype('gitcommit', {
-    sources = cmp.config.sources(
-        {
-            { name = 'buffer' },
-        }
-    )
+    sources = cmp.config.sources({
+        { name = 'buffer' },
+    })
 })
 
 -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline('/', {
+cmp.setup.cmdline({ '/', '?' }, {
     mapping = cmp.mapping.preset.cmdline(),
     sources = {
-        { name = 'buffer' }
+        { name = 'buffer' },
     }
 })
 
@@ -77,7 +85,7 @@ cmp.setup.cmdline('/', {
 cmp.setup.cmdline(':', {
     mapping = cmp.mapping.preset.cmdline(),
     sources = cmp.config.sources({
-        { name = 'path' }
+        { name = 'path', option = { trailing_slash = true } }
     }, {
         { name = 'cmdline' }
     })
