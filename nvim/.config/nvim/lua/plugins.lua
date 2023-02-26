@@ -71,6 +71,8 @@ return require('packer').startup(function(use)
       use { 'ntpeters/vim-better-whitespace', config = function() require('plugins.better-whitespace') end }
       -- automatically manage hlsearch
       use { 'asiryk/auto-hlsearch.nvim', config = function() require('auto-hlsearch').setup() end }
+      -- search and replace
+      use { 'windwp/nvim-spectre', config = function() require('plugins.spectre') end }
 
       -- -------------------------------------
       -- DEV
