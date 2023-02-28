@@ -83,10 +83,10 @@ $ app: find ~/work/big-cloud/ansible/playbooks/files/applications/ -maxdepth 1 -
 % bash, date
 
 # Convert epoch timestamp to human readable
-date -d@<timestamp_in_second> '+%Y-%m-%dT%H:%M:%SZ'
+date -u --date=@$((<timestamp_in_milli>/1000)).$((<timestamp_in_milli>%1000)) "+%Y-%m-%dT%H:%M:%S.%3NZ"
 
 # Convert human readable to epoch timestamp in second
-date +%s -d '<timestamp_in_iso_8601>'
+date -d '<timestamp_in_iso_8601>' +%s%3N
 
 % bash, grep
 
