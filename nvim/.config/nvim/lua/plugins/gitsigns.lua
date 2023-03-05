@@ -16,6 +16,7 @@ require('gitsigns').setup {
       map('n', '<leader>gu', gs.undo_stage_hunk, { desc = 'Gitsigns undo add/stage hunk' })
       map('n', '<leader>gR', gs.reset_buffer, { desc = 'Gitsigns reset buffer' })
       map('n', '<leader>gv', gs.preview_hunk_inline, { desc = 'Gitsigns preview hunk' })
+      map('n', '<M-C-G>', gs.preview_hunk_inline, { desc = 'Gitsigns preview hunk' })
       map('n', '<leader>gB', function() gs.blame_line { full = true } end, { desc = 'Gitsigns blame line' })
       map('n', '<leader>gT', gs.toggle_current_line_blame, { desc = 'Gitsigns toggle current line blame' })
       map('n', '<leader>gD', gs.diffthis, { desc = 'Gitsigns diff this' })
