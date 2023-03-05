@@ -23,8 +23,6 @@ return require('packer').startup(function(use)
   use { 'luisiacc/gruvbox-baby', config = function() require('plugins.gruvbox') end }
   -- filetype icons
   use { 'nvim-tree/nvim-web-devicons', config = function() require('plugins.web-devicons') end }
-  -- zen mode
-  use { 'Pocco81/true-zen.nvim', config = function() require('plugins.true-zen') end }
   -- dim interactive portions of code you are editing
   use { 'folke/twilight.nvim', config = function() require('twilight').setup() end }
   -- display marks
