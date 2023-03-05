@@ -50,8 +50,9 @@ o.splitright = true --default split right
 o.laststatus = 3 -- always show statusline in single statusline mode
 
 -- editor
-o.so = 7 -- set 7 lines to the cursor when moving vertically
+o.scrolloff = 7 -- set 7 lines to the cursor when moving vertically
 o.cursorline = true -- highlight line
+o.breakindent = true -- maintain  indentation when breaking long lines
 
 -- file
 o.hidden = true -- TextEdit might fail if hidden is not set
@@ -62,4 +63,6 @@ o.confirm = true -- ask me if I try to leave the editor with an unsaved modified
 o.showcmd = true -- display incomplete commands
 o.showmode = true -- show insert mode in command line
 cmd [[ set shortmess+=c ]] -- don't pass messages to |ins-completion-menu|
+o.backspace = "indent,eol,start" --sane backspace behaviour
+o.history = 1000 -- A history of ":" commands, and a history of previous search patterns is remembered
 

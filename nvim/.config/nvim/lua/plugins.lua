@@ -13,9 +13,6 @@ return require('packer').startup(function(use)
   -- package manager
   use { 'wbthomason/packer.nvim' }
 
-  -- min config
-  --use { 'tpope/vim-sensible' }
-
   -- -------------------------------------
   -- GUI
   -- -------------------------------------
