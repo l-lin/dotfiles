@@ -49,8 +49,6 @@ return require('packer').startup(function(use)
       -- -------------------------------------
       -- EDITOR
       -- -------------------------------------
-      -- smooth scrolling
-      use { 'psliwka/vim-smoothie' }
       -- surround parenthese
       use { 'tpope/vim-surround' }
       -- autoclose pairs, (), []...
@@ -75,6 +73,8 @@ return require('packer').startup(function(use)
       use { 'kevinhwang91/nvim-hlslens', config = function() require('plugins.hlslens') end }
       -- search and replace
       use { 'windwp/nvim-spectre', config = function() require('plugins.spectre') end }
+      -- markdown table
+      use { 'dhruvasagar/vim-table-mode' }
 
       -- -------------------------------------
       -- DEV
