@@ -64,6 +64,65 @@ awk '{ printf "%s\n", substr($<index>, <from>, <to>) }'
 # Set the desired column width
 awk '{ printf "%-<column_width>s \t %s \n", NR, $<index> }'
 
+# print the total number of input lines
+awk 'END { print NR }'
+
+# print the tenth input line
+awk 'NR == 10'
+
+# print the last field of every input line
+awk '{ print $NF }'
+
+# print the last field of the last input line
+awk '
+    { field = $NF }
+END { print field }'
+
+# print every input line with  more than n fields
+awk 'NF > <nb_fields>'
+
+# print every input line in which the last field is more than n
+awk '$NF > <number>'
+
+# print the total number of fields in all input lines
+awk '
+    { nf = nf + NF}
+END { print nf }'
+
+# print the total number of lines that contains a string
+awk '
+/<search>/ { nlines = nlines + 1 }
+END    { print nlines }'
+
+# print the largest first field and the line that contains it
+awk '
+$1 > max { max = $1; maxline = $0 }
+END      { print max, maxline }'
+
+# print every line longer than 80 characters
+awk 'length($0) > <nb_characters>'
+
+# print the number of fields in every line followed by the field itself
+awk '{ print NF, $0 }'
+
+# exchange the first two fields of every line
+awk '{ temp = $1; $1 = $2; $2 = temp; print }'
+
+# print every line after erasing the second field
+awk '{ $2 = ""; print }'
+
+# print every line with line number
+awk '{ print NR, $0 }'
+
+# print the sums of the fields of every line
+awk '
+{
+  sum = 0
+  for (i = 1; i <= NF; i = i + 1)
+    sum = sum + $i
+  print sum
+}'
+
 % bash, tail
 
 # Tail logs from remote container
