@@ -35,6 +35,10 @@ set ignorecase
 set smartcase
 " add idea yank
 set clipboard+=ideaput
+" show current line number
+set number
+" show relative line numbers
+set relativenumber
 
 " -----------------------------------------------------------------------
 " keymaps

@@ -58,6 +58,8 @@ o.breakindent = true -- maintain  indentation when breaking long lines
 o.hidden = true -- TextEdit might fail if hidden is not set
 o.autoread = true -- refresh file if it changes on disc
 o.confirm = true -- ask me if I try to leave the editor with an unsaved modified file in a buffer
+o.number = true -- show current line number
+o.relativenumber = true -- show relative line numbers
 
 -- misc
 o.showcmd = true -- display incomplete commands

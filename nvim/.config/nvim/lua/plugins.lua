@@ -109,8 +109,6 @@ return require('packer').startup(function(use)
   use { 'rcarriga/nvim-dap-ui', requires = 'mfussenegger/nvim-dap', config = function() require('plugins.dap-ui') end }
   -- autocompletion for DAP
   use { 'rcarriga/cmp-dap', requires = 'hrsh7th/nvim-cmp' }
-  -- dap for go
-  --use { 'leoluz/nvim-dap-go', requires = 'mfussenegger/nvim-dap', config = function() require('plugins.dap-go') end }
 
   -- -------------------------------------
   -- AUTOCOMPLETION
