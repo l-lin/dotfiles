@@ -91,6 +91,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "[-] installing neovim"
   yay -S --noconfirm neovim
 
+  echo "[-] installing delve (debugger for go): https://github.com/go-delve/delve"
+  yay -S --noconfirm delve
+
   echo "[-] Finished installing stuffs"
 fi
 
