@@ -79,12 +79,8 @@ return require('packer').startup(function(use)
   }
   -- lua support
   use { 'folke/neodev.nvim' }
-  -- terraform support
-  use { 'hashivim/vim-terraform' }
   -- ansible support
   use { 'pearofducks/ansible-vim' }
-  -- markdown support
-  use { 'tpope/vim-markdown', config = function() require('plugins.markdown') end }
 
   -- -------------------------------------
   -- LSP
@@ -139,8 +135,6 @@ return require('packer').startup(function(use)
   use { 'andersevenrud/cmp-tmux' }
   -- luasnip snippets
   use { 'saadparwaiz1/cmp_luasnip' }
-
-  -- TODO: add DAP (debuggers)
 
   -- -------------------------------------
   -- NAVIGATION
