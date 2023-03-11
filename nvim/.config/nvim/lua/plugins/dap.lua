@@ -1,6 +1,7 @@
 local map = vim.api.nvim_set_keymap
 
 map('n', '<F9>', '<Cmd>lua require("dap").continue()<CR>', { noremap = true })
+map('n', '<F21>', '<Cmd>lua require("dap").continue()<CR>', { noremap = true })
 map('n', '<F4>', '<Cmd>lua require("dap").close()<CR>', { noremap = true })
 map('n', '<F32>', '<Cmd>lua require("dap").toggle_breakpoint()<CR>', { noremap = true })
 --map('n', '<F5>', '<Cmd>lua require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))<CR>', { noremap = true })
@@ -10,6 +11,8 @@ map('n', '<F7>', '<Cmd>lua require("dap").step_into()<CR>', { noremap = true })
 map('n', '<F20>', '<Cmd>lua require("dap").step_out()<CR>', { noremap = true })
 
 local dap = require('dap')
+
+-- GOLANG
 dap.adapters.go = {
   type = 'executable';
   name = 'go';

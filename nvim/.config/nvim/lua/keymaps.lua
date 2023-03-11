@@ -43,8 +43,7 @@ map('n', '<C-k>', ':wincmd k<CR>', { noremap = true, desc = 'Move to upper windo
 map('n', '<C-j>', ':wincmd j<CR>', { noremap = true, desc = 'Move to below window' })
 map('n', '<C-h>', ':wincmd h<CR>', { noremap = true, desc = 'Move to left window' })
 map('n', '<C-l>', ':wincmd l<CR>', { noremap = true, desc = 'Move to right window' })
-map('n', ';;', '<C-^>', { noremap = true, silent = true, desc = 'Switch back and forth from buffer' })
-map('n', '<Tab>', ':bn<CR>', { noremap = true, silent = true, desc = 'Next buffer' })
+map('n', '<Tab>', '<C-^>', { noremap = true, silent = true, desc = 'Switch back and forth from buffer' })
 map('n', '<F12>', ':bn<CR>', { noremap = true, silent = true, desc = 'Next buffer' })
 map('n', '<F24>', ':bp<CR>', { noremap = true, silent = true, desc = 'Previous buffer (Shift+F12)' })
 
