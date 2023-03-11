@@ -5,4 +5,4 @@ require("nvim-tree").setup {
 }
 require('nvim-tree.view').View.winopts.signcolumn = 'no'
 
-vim.api.nvim_set_keymap('n', '<A-1>', ':NvimTreeToggle<CR>', { noremap = true, desc = 'NvimTree Toggle' })
+vim.api.nvim_set_keymap('n', '<A-1>', '<cmd>NvimTreeToggle<CR>', { noremap = true, desc = 'NvimTree Toggle' })

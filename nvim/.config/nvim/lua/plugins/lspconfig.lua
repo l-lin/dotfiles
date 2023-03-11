@@ -16,7 +16,7 @@ local custom_attach = function(_, bufnr)
     end
   end
 
-  vim.api.nvim_buf_set_keymap(0, 'n', '<Leader>ct', ':call v:lua.toggle_diagnostics()<CR>', {
+  vim.api.nvim_buf_set_keymap(0, 'n', '<Leader>ct', '<cmd>call v:lua.toggle_diagnostics()<CR>', {
     silent = true,
     noremap = true,
     desc = "Diagnostics Toggle"

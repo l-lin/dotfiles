@@ -9,9 +9,9 @@ require('gitsigns').setup {
       end
 
       -- Actions
-      map({ 'n', 'v' }, '<leader>ga', ':Gitsigns stage_hunk<CR>', { desc = 'Gitsigns add/stage hunk' })
-      map({ 'n', 'v' }, '<leader>gr', ':Gitsigns reset_hunk<CR>', { desc = 'Gitsigns reset hunk' })
-      map({ 'n', 'v' }, '<M-C-Z>', ':Gitsigns reset_hunk<CR>', { desc = 'Gitsigns reset hunk (Ctrl+Alt+z)' })
+      map({ 'n', 'v' }, '<leader>ga', '<cmd>Gitsigns stage_hunk<CR>', { desc = 'Gitsigns add/stage hunk' })
+      map({ 'n', 'v' }, '<leader>gr', '<cmd>Gitsigns reset_hunk<CR>', { desc = 'Gitsigns reset hunk' })
+      map({ 'n', 'v' }, '<M-C-Z>', '<cmd>Gitsigns reset_hunk<CR>', { desc = 'Gitsigns reset hunk (Ctrl+Alt+z)' })
       map('n', '<leader>gA', gs.stage_buffer, { desc = 'Gitsigns add/stage buffer' })
       map('n', '<leader>gu', gs.undo_stage_hunk, { desc = 'Gitsigns undo add/stage hunk' })
       map('n', '<leader>gR', gs.reset_buffer, { desc = 'Gitsigns reset buffer' })
@@ -23,7 +23,7 @@ require('gitsigns').setup {
       map('n', '<leader>gt', gs.toggle_deleted, { desc = 'Gitsigns toggle deleted' })
 
       -- Text object
-      map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+      map({ 'o', 'x' }, 'ih', '<cmd><C-U>Gitsigns select_hunk<CR>')
     end
 }
 

@@ -4,13 +4,13 @@
 -- the associated mapping.
 -- Source: https://www.reddit.com/r/vim/comments/9jy0pt/how_to_remap_cf1/
 
--- n  Normal mode map. Defined using ':nmap' or ':nnoremap'.
--- i  Insert mode map. Defined using ':imap' or ':inoremap'.
--- v  Visual and select mode map. Defined using ':vmap' or ':vnoremap'.
--- x  Visual mode map. Defined using ':xmap' or ':xnoremap'.
--- s  Select mode map. Defined using ':smap' or ':snoremap'.
--- c  Command-line mode map. Defined using ':cmap' or ':cnoremap'.
--- o  Operator pending mode map. Defined using ':omap' or ':onoremap'.
+-- n  Normal mode map. Defined using '<cmd>nmap' or '<cmd>nnoremap'.
+-- i  Insert mode map. Defined using '<cmd>imap' or '<cmd>inoremap'.
+-- v  Visual and select mode map. Defined using '<cmd>vmap' or '<cmd>vnoremap'.
+-- x  Visual mode map. Defined using '<cmd>xmap' or '<cmd>xnoremap'.
+-- s  Select mode map. Defined using '<cmd>smap' or '<cmd>snoremap'.
+-- c  Command-line mode map. Defined using '<cmd>cmap' or '<cmd>cnoremap'.
+-- o  Operator pending mode map. Defined using '<cmd>omap' or '<cmd>onoremap'.
 local map = vim.api.nvim_set_keymap
 
 -- mapleader
@@ -30,22 +30,22 @@ vim.cmd [[
 ]]
 
 -- spell checking
-map('n', '<leader>lc', ':setlocal spell!<CR>', { noremap = true, desc = 'Toggle spell checking' })
-map('n', '<leader>le', ':setlocal spell spelllang=en<CR>', { noremap = true, desc = 'Set spelling english' })
-map('n', '<leader>lf', ':setlocal spell spelllang=fr<CR>', { noremap = true, desc = 'Set spelling french' })
+map('n', '<leader>lc', '<cmd>setlocal spell!<CR>', { noremap = true, desc = 'Toggle spell checking' })
+map('n', '<leader>le', '<cmd>setlocal spell spelllang=en<CR>', { noremap = true, desc = 'Set spelling english' })
+map('n', '<leader>lf', '<cmd>setlocal spell spelllang=fr<CR>', { noremap = true, desc = 'Set spelling french' })
 
 -- save, quit
-map('n', '<C-s>', ':w!<CR>', { noremap = true, desc = 'Fast saving' })
-map('n', '<F28>', ':bd<CR>', { noremap = true, silent = true, desc = 'Close current buffer' })
+map('n', '<C-s>', '<cmd>w!<CR>', { noremap = true, desc = 'Fast saving' })
+map('n', '<F28>', '<cmd>bd<CR>', { noremap = true, silent = true, desc = 'Close current buffer' })
 
 -- navigation
-map('n', '<C-k>', ':wincmd k<CR>', { noremap = true, desc = 'Move to upper window' })
-map('n', '<C-j>', ':wincmd j<CR>', { noremap = true, desc = 'Move to below window' })
-map('n', '<C-h>', ':wincmd h<CR>', { noremap = true, desc = 'Move to left window' })
-map('n', '<C-l>', ':wincmd l<CR>', { noremap = true, desc = 'Move to right window' })
+map('n', '<C-k>', '<cmd>wincmd k<CR>', { noremap = true, desc = 'Move to upper window' })
+map('n', '<C-j>', '<cmd>wincmd j<CR>', { noremap = true, desc = 'Move to below window' })
+map('n', '<C-h>', '<cmd>wincmd h<CR>', { noremap = true, desc = 'Move to left window' })
+map('n', '<C-l>', '<cmd>wincmd l<CR>', { noremap = true, desc = 'Move to right window' })
 map('n', '<Tab>', '<C-^>', { noremap = true, silent = true, desc = 'Switch back and forth from buffer' })
-map('n', '<F12>', ':bn<CR>', { noremap = true, silent = true, desc = 'Next buffer' })
-map('n', '<F24>', ':bp<CR>', { noremap = true, silent = true, desc = 'Previous buffer (Shift+F12)' })
+map('n', '<F12>', '<cmd>bn<CR>', { noremap = true, silent = true, desc = 'Next buffer' })
+map('n', '<F24>', '<cmd>bp<CR>', { noremap = true, silent = true, desc = 'Previous buffer (Shift+F12)' })
 
 -- editing
 map('n', '<C-y>', 'dd', { noremap = true, desc = 'Delete line' })
@@ -53,10 +53,10 @@ map('n', '<C-y>', 'dd', { noremap = true, desc = 'Delete line' })
 map('n', 'd', '"_d', { noremap = true })
 map('v', 'd', '"_d', { noremap = true })
 map('v', 'p', '"_dP', { noremap = true })
---map('n', '<A-k>', ':m-2<CR>==', { noremap = true, desc = 'Move line up' })
---map('n', '<A-j>', ':m+<CR>==', { noremap = true, desc = 'Move line down' })
+--map('n', '<A-k>', '<cmd>m-2<CR>==', { noremap = true, desc = 'Move line up' })
+--map('n', '<A-j>', '<cmd>m+<CR>==', { noremap = true, desc = 'Move line down' })
 
 -- misc
-map('n', ',', ':set hlsearch! hlsearch?<CR>', { noremap = true, silent = true, desc = 'Toggle search highlight' })
-map('n', '<F2>', ':set invpaste paste?<CR>', { noremap = true, silent = true, desc = 'Toggle auto-indenting for code paste'})
+map('n', ',', '<cmd>set hlsearch! hlsearch?<CR>', { noremap = true, silent = true, desc = 'Toggle search highlight' })
+map('n', '<F2>', '<cmd>set invpaste paste?<CR>', { noremap = true, silent = true, desc = 'Toggle auto-indenting for code paste'})
 map('n', '<leader>pu', '<cmd>PackerSync<cr>', { noremap = true, desc = 'Packer synchronize plugins' })
