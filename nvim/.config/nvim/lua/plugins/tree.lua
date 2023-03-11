@@ -1,8 +1,10 @@
 require("nvim-tree").setup {
   view = {
     adaptive_size = true,
-  }
+  },
 }
 require('nvim-tree.view').View.winopts.signcolumn = 'no'
 
-vim.api.nvim_set_keymap('n', '<A-1>', '<cmd>NvimTreeToggle<CR>', { noremap = true, desc = 'NvimTree Toggle' })
+local map = vim.api.nvim_set_keymap
+map('n', '<A-1>', '<cmd>NvimTreeToggle<CR>', { noremap = true, desc = 'Toggle NvimTree' })
+map('n', '<A-3>', '<cmd>NvimTreeFindFileToggle<CR>', { noremap = true, desc = 'Open NvimTree and target for the current bufname' })
