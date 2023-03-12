@@ -1,11 +1,11 @@
 % ansible
 
 # Deploy
-ap -i ../config/<env> playbooks/update.yml -l tag_Application_<app> --diff
+ap -i ../config/<env> playbooks/update.yml --diff -l tag_Application_<app>
 
 # Deploy and tail logs
 env=<env> && app=<app> && host=<host> && \
-  ap -i ../config/<env> playbooks/update.yml -l tag_Application_<app> --diff \
+  ap -i ../config/<env> playbooks/update.yml --diff -l tag_Application_<app> \
   && ssh ${host} "docker logs --tail 1 -f ${app}" \
     | jq --unbuffered -jr '."@timestamp", " [", .level, "] ", .message, "\n", .stack_trace | select(.!=null)' \
     | sed --unbuffered \
