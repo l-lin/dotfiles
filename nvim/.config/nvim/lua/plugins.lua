@@ -99,6 +99,11 @@ return require('packer').startup(function(use)
     requires = 'williamboman/mason.nvim',
     config = function() require('plugins.mason-lspconfig') end
   }
+  use {
+    'jose-elias-alvarez/null-ls.nvim',
+    requires = 'nvim-lua/plenary.nvim',
+    config = function() require('plugins.null-ls') end
+  }
 
   -- -------------------------------------
   -- DAP
