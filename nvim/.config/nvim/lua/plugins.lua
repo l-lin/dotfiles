@@ -81,6 +81,12 @@ return require('packer').startup(function(use)
   use { 'folke/neodev.nvim' }
   -- ansible support
   use { 'pearofducks/ansible-vim' }
+  -- refactoring
+  use {
+    'ThePrimeagen/refactoring.nvim',
+    requires = { { 'nvim-lua/plenary.nvim' }, { 'nvim-treesitter/nvim-treesitter' } },
+    config = function() require('plugins.refactoring') end
+  }
 
   -- -------------------------------------
   -- LSP

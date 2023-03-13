@@ -3,8 +3,6 @@ local null_ls = require("null-ls")
 null_ls.setup({
   -- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
   sources = {
-    null_ls.builtins.formatting.stylua,
-
     -- ansible
     -- null_ls.builtins.diagnostics.ansiblelint,
     -- -- protobuf
@@ -27,8 +25,6 @@ null_ls.setup({
     -- js, ts
     --null_ls.builtins.diagnostics.xo,
 
-    -- git operations
-    null_ls.builtins.code_actions.gitsigns,
     -- golang tool to modify struct field tags
     -- null_ls.builtins.code_actions.gomodifytags,
     -- -- rust
@@ -36,7 +32,7 @@ null_ls.setup({
     -- -- english prose linter
     -- null_ls.builtins.code_actions.proselint,
     -- -- refactoring
-    -- null_ls.builtins.code_actions.refactoring,
+    null_ls.builtins.code_actions.refactoring,
     -- -- shellcheck
     -- null_ls.builtins.code_actions.shellcheck,
     -- -- js, ts
