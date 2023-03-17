@@ -4,4 +4,4 @@ local leap_fn = function()
 end
 
 vim.keymap.set('n', '<leader>nl', leap_fn , { noremap = true, silent = true, desc = 'Leap to' })
-vim.keymap.set('n', ';', leap_fn , { noremap = true, silent = true, desc = 'Leap to' })
+vim.keymap.set('n', '<C-\\>', leap_fn , { noremap = true, silent = true, desc = 'Leap to' })
