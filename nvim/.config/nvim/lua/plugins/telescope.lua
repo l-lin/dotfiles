@@ -48,6 +48,7 @@ map('n', '<leader>fG', '<cmd>Telescope git_status<CR>',
 map('n', '<leader>fa', '<cmd>Telescope live_grep<CR>',
     { noremap = true, desc = 'Telescope find pattern in all files' })
 map('n', '<leader>fb', '<cmd>Telescope buffers<CR>', { noremap = true, desc = 'Telescope find buffer' })
+map('n', '<C-e>', '<cmd>Telescope buffers<CR>', { noremap = true, desc = 'Telescope find buffer' })
 map('n', '<leader>f:', '<cmd>Telescope commands<CR>',
     { noremap = true, desc = 'Telescope find nvim command' })
 map('n', '<leader>fd', '<cmd>Telescope diagnostics<CR>',

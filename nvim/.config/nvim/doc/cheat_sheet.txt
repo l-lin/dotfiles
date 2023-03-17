@@ -5,21 +5,20 @@ cheatsheet
 ==================================================================================
  ██████╗██╗  ██╗███████╗ █████╗ ████████╗███████╗██╗  ██╗███████╗███████╗████████╗
 ██╔════╝██║  ██║██╔════╝██╔══██╗╚══██╔══╝██╔════╝██║  ██║██╔════╝██╔════╝╚══██╔══╝
-██║     ███████║█████╗  ███████║   ██║   ███████╗███████║█████╗  █████╗     ██║   
-██║     ██╔══██║██╔══╝  ██╔══██║   ██║   ╚════██║██╔══██║██╔══╝  ██╔══╝     ██║   
-╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████║██║  ██║███████╗███████╗   ██║   
- ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝   
+██║     ███████║█████╗  ███████║   ██║   ███████╗███████║█████╗  █████╗     ██║
+██║     ██╔══██║██╔══╝  ██╔══██║   ██║   ╚════██║██╔══██║██╔══╝  ██╔══╝     ██║
+╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████║██║  ██║███████╗███████╗   ██║
+ ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝
 ==================================================================================
 CONTENTS                                                             cs-contents
 
- 1.    Shortcuts..................................cs-shortcuts
+ 1.    Normal mode................................cs-normal-mode
  1.1.  Cursor movement............................cs-cursor-movement
  1.2.  Marks......................................cs-marks
  1.3.  Copy / paste...............................cs-copy-paste
  1.5.  Delete.....................................cs-delete
  1.5.  Search / Replace...........................cs-search-replace
  1.6.  Correct words..............................cs-correct-words
- 1.7.  Insert mode................................cs-insert-mode
  1.8.  Undo / Redo................................cs-undo-redo
  1.9.  Spell checking.............................cs-spell-checking
  1.10. Folding....................................cs-folding
@@ -27,20 +26,30 @@ CONTENTS                                                             cs-contents
  1.12. DrawIt.....................................cs-drawit
  1.13. Custom shortcuts...........................cs-custom-shortcuts
  1.14. Surround...................................cs-surround
- 2.    Commands...................................cs-commands
- 2.1.  Buffers....................................cs-buffers
- 2.2.  Splits.....................................cs-splits
- 2.3.  Explorer...................................cs-explorer
- 3.    Tips & tricks..............................cs-tips-n-tricks
-
-==================================================================================
-SHORTCUTS                                                           cs-shortcuts
+ 2.    Visual mode................................cs-visual-mode
+ 3.    Commands...................................cs-commands
+ 3.1.  Buffers....................................cs-buffers
+ 3.2.  Splits.....................................cs-splits
+ 3.3.  Explorer...................................cs-explorer
+ 4.    Tips & tricks..............................cs-tips-n-tricks
 
 ==================================================================================
 NORMAL MODE                                                       cs-normal-mode
 
-`ZZ` - save and exit
-`ZQ` exit without saving
+`ZZ`    - save and exit
+`ZQ`    - exit without saving
+`i`     - start insert mode at cursor
+`I`     - insert at the beginning of the line
+`a`     - append after the cursor
+`A`     - append at the end of the line
+`o`     - open (append) blank line below current line (no need to press return)
+`O`     - open blank line above current line
+`ea`    - append at end of word
+`Esc`   - exit insert mode
+`alt-,` - exit insert mode
+`C-w`   - delete word before cursor
+`C-d`   - delete word after cursor
+`R`     - switch to replace mode
 
 ==================================================================================
 CURSOR MOVEMENT                                               cs-cursor-movement
@@ -58,12 +67,6 @@ CURSOR MOVEMENT                                               cs-cursor-movement
 `gg`  - go to first line of file
 `G`   - go to last line of file
 `C-o` - jump to previous location
-`,,s` - navigate through the entire buffer screen (easymotion)
-`,,b` - navigate from the cursor to the beginning of the buffer screen (easymotion)
-`,,w` - navigate from the cursor to the end of the buffer screen and highlight start of words (easymotion)
-`,,e` - navigate from the cursor to the end of the buffer screen and highlight end of words (easymotion)
-`,,j` - navigate in lines from the current line to the beginning of the buffer screen (easymotion)
-`,,k` - navigate in lines from the current line to the end of the buffer screen (easymotion)
 `H`   - jump to TOP of screen
 `M`   - Jump to BOTTOM of screen
 `g;`  - jump to last edited position
@@ -118,6 +121,7 @@ DELETE                                                                 cs-delete
 `:2,$d` - delete every lines from second one until the end of file
 `:.,$d` - delete every lines from the current one until the end of file
 `:%d`   - delete every lines
+`daw`   - delete word under cursor
 
 ==================================================================================
 SEARCH / REPLACE                                               cs-search-replace
@@ -134,29 +138,15 @@ SEARCH / REPLACE                                               cs-search-replace
 ==================================================================================
 CORRECT WORDS                                                   cs-correct-words
 
-`x`  - delete char UNDER cursor
-`X`  - delete char BEFORE cursor
-`#x` - delete the next # chars, starting from char under cursor
-`ce` - correct the word from the cursor position (it will put in Insert mode)
-`cw` - same as previous 
-`c$` - correct from the cursor position to the end of line
-`cc` - correct the entire line
-`#J` - merge # number of lines together
-
-==================================================================================
-INSERT MODE                                                       cs-insert-mode
-
-`i`     - start insert mode at cursor
-`I`     - insert at the beginning of the line
-`a`     - append after the cursor
-`A`     - append at the end of the line
-`o`     - open (append) blank line below current line (no need to press return)
-`O`     - open blank line above current line
-`ea`    - append at end of word
-`Esc`   - exit insert mode
-`alt-,` - exit insert mode
-`C-w`   - delete word before cursor
-`C-d`   - delete word after cursor
+`x`   - delete char UNDER cursor
+`X`   - delete char BEFORE cursor
+`#x`  - delete the next # chars, starting from char under cursor
+`ce`  - correct the word from the cursor position (it will put in Insert mode)
+`cw`  - same as previous
+`caw` - correct the whole word under cursor
+`c$`  - correct from the cursor position to the end of line
+`cc`  - correct the entire line
+`#J`  - merge # number of lines together
 
 ==================================================================================
 UNDO - REDO                                                         cs-undo-redo
@@ -210,11 +200,18 @@ features
 `>`         - draw -> arrow
 `<`         - draw <- arrow
 `^`         - draw ^  arrow
-`v`         - draw v  arrow 
+`v`         - draw v  arrow
 `,>`        - draw fat -> arrow
 `,<`        - draw fat <- arrow
 `,^`        - draw fat ^  arrow
-`,v`        - draw fat v  arrow 
+`,v`        - draw fat v  arrow
+
+==================================================================================
+VISUAL MODE                                                       cs-visual-mode
+
+`u` - to lower case
+`U` - to upper case
+`~` - change case
 
 ==================================================================================
 CUSTOM SHORTCUTS                                             cs-custom-shortcuts
@@ -256,6 +253,7 @@ BUFFERS                                                               cs-buffers
 `:bp`     - open to previous buffer
 `<C-w>w`  - move to floating buffer
 `<C-w>p`  - move to floating buffer
+`<C-^>`   - switch back and forth from buffer
 
 ==================================================================================
 SPLITS                                                                 cs-splits
