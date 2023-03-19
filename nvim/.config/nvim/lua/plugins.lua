@@ -132,6 +132,9 @@ return require('packer').startup(function(use)
   }
   -- snippet engine
   use { 'L3MON4D3/LuaSnip', config = function() require('plugins.luasnip') end }
+  -- snippets collection
+  use { 'honza/vim-snippets' }
+  use { 'rafamadriz/friendly-snippets' }
   -- add pictograms to cmp
   use { 'onsails/lspkind.nvim' }
   -- lsp progress eye candy
