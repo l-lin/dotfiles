@@ -183,6 +183,8 @@ return require('packer').startup(function(use)
   use { 'benfowler/telescope-luasnip.nvim', requires = { 'L3MON4D3/LuaSnip' } }
   -- general-purpose motion plugin
   use { 'ggandor/leap.nvim', config = function() require('plugins.leap') end }
+  -- file explorer to edit filesystem like a normal buffer, vim-vinegar like
+  use { 'stevearc/oil.nvim', config = function() require('plugins.oil') end }
 
   -- -------------------------------------
   -- GIT
