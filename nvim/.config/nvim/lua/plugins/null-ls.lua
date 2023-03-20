@@ -21,7 +21,7 @@ null_ls.setup({
     -- null_ls.builtins.diagnostics.terraform_validate,
     -- null_ls.builtins.diagnostics.tfsec,
     -- english prose
-    null_ls.builtins.diagnostics.write_good,
+    --null_ls.builtins.diagnostics.write_good,
     -- js, ts
     --null_ls.builtins.diagnostics.xo,
 
