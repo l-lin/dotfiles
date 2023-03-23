@@ -17,30 +17,37 @@ ZSH_THEME="empty"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 plugins=(
+  # asdf completion
   asdf
+  # aws completion
   aws
   colored-man-pages
-  copyfile
-  copypath
+  # unzip / un-tar in a single command line
   extract
+  # interactive git
   forgit
-  fzf
+  # map ctrl+h to find file
   fzf-custom
   git-extra-commands
   git-open
+  # faster git status for spaceship prompt
   gitstatus
   gitstatus-prompt
+  # httpie completion
   httpie
-  navi
-  pet
+  # quarkus completion
   quarkus
+  # ripgrep completion
   ripgrep
   web-search
+  # easily navigate to saved folders
   wd
+  # access to most visited directories
   z
   zsh-autoquoter
   zsh-autosuggestions
   zsh-syntax-highlighting
+  zsh-vi-mode
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -81,6 +88,15 @@ HYPHEN_INSENSITIVE="true"
 # Initialization
 # --------------------------------------------------------
 
+# ensure other plugins keybinding are preserved when using zsh-vi-mode
+# see https://github.com/jeffreytse/zsh-vi-mode#initialization-mode
+function zvm_after_init() {
+  source "${ZSH}/plugins/fzf/fzf.plugin.zsh"
+  source "${ZSH}/custom/plugins/navi/navi.plugin.zsh"
+  source "${ZSH}/custom/plugins/pet/pet.plugin.zsh"
+  source "${ZSH}/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh"
+}
+
 # aliases
 if [ -f ~/.aliases ]; then
   . ~/.aliases
@@ -107,4 +123,3 @@ autoload -Uz compinit && compinit -i
 if command -v starship &> /dev/null; then
   eval "$(starship init zsh)"
 fi
-

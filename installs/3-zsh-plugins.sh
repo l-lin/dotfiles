@@ -22,4 +22,4 @@ install_zsh_plugin https://github.com/wfxr/forgit forgit
 install_zsh_plugin https://github.com/ianthehenry/zsh-autoquoter zsh-autoquoter
 install_zsh_plugin https://github.com/unixorn/git-extra-commands git-extra-commands
 install_zsh_plugin https://github.com/romkatv/gitstatus gitstatus
-
+install_zsh_plugin https://github.com/jeffreytse/zsh-vi-mode zsh-vi-mode
