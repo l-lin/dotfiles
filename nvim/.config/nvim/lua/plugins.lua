@@ -105,6 +105,7 @@ return require('packer').startup(function(use)
     requires = 'williamboman/mason.nvim',
     config = function() require('plugins.mason-lspconfig') end
   }
+  -- LSP server for general purpose language servers
   use {
     'jose-elias-alvarez/null-ls.nvim',
     requires = 'nvim-lua/plenary.nvim',
