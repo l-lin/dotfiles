@@ -11,7 +11,7 @@
 -- s  Select mode map. Defined using '<cmd>smap' or '<cmd>snoremap'.
 -- c  Command-line mode map. Defined using '<cmd>cmap' or '<cmd>cnoremap'.
 -- o  Operator pending mode map. Defined using '<cmd>omap' or '<cmd>onoremap'.
-local map = vim.api.nvim_set_keymap
+local map = vim.keymap.set
 
 -- mapleader
 vim.g.mapleader = ' '

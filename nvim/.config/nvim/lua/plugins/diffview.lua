@@ -1,4 +1,4 @@
-local map = vim.api.nvim_set_keymap
+local map = vim.keymap.set
 map('n', '<leader>gd', '<cmd>DiffviewFileHistory %<cr>', { noremap = true, desc = 'Check file git history' })
 map('n', '<A-0>', '<cmd>DiffviewOpen<cr>', { noremap = true, desc = 'Open diffView' })
 

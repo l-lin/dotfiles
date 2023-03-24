@@ -36,7 +36,7 @@ require('telescope').load_extension('ui-select')
 require('telescope').load_extension('luasnip')
 require('telescope').load_extension('project')
 
-local map = vim.api.nvim_set_keymap
+local map = vim.keymap.set
 map('n', '<C-h>',
   '<cmd>Telescope find_files find_command=rg,--no-ignore,--hidden,--glob=!.git/,--files prompt_prefix=🔍<CR>',
   { noremap = true, silent = true, desc = 'Find file' })

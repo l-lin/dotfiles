@@ -1,4 +1,4 @@
-local map = vim.api.nvim_set_keymap
+local map = vim.keymap.set
 map('n', '<leader>rr', '<cmd>lua require("spectre").open()<CR>',
   { noremap = true, desc = 'Spectre open search and replace' })
 map('v', '<leader>rw', '<cmd>lua require("spectre").open_visual({select_word=true})<CR>',

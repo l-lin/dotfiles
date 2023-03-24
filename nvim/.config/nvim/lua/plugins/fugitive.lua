@@ -1,4 +1,4 @@
-local map = vim.api.nvim_set_keymap
+local map = vim.keymap.set
 map('n', '<leader>gs', '<cmd>G<cr>', { noremap = true, desc = 'git status' })
 map('n', '<leader>gc', '<cmd>G commit<cr>', { noremap = true, desc = 'git commit' })
 map('n', '<leader>gp', '<cmd>G pull<cr>', { noremap = true, desc = 'git pull' })

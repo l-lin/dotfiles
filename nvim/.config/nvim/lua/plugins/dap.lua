@@ -1,4 +1,4 @@
-local map = vim.api.nvim_set_keymap
+local map = vim.keymap.set
 
 map('n', '<F9>', '<Cmd>lua require("dap").continue()<CR>', { noremap = true })
 map('n', '<F21>', '<Cmd>lua require("dap").continue()<CR>', { noremap = true })
