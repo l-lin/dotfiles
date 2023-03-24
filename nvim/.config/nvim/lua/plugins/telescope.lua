@@ -37,10 +37,9 @@ require('telescope').load_extension('luasnip')
 require('telescope').load_extension('project')
 
 local map = vim.keymap.set
-map('n', '<C-h>',
+map('n', '<C-g>',
   '<cmd>Telescope find_files find_command=rg,--no-ignore,--hidden,--glob=!.git/,--files prompt_prefix=🔍<CR>',
   { noremap = true, silent = true, desc = 'Find file' })
-map('n', '<C-g>', '<cmd>Telescope live_grep<CR>', { noremap = true, desc = 'Find pattern in all files' })
 map('n', '<leader>f%', '<cmd>Telescope oldfiles<CR>',
   { noremap = true, desc = 'Telescope find recently open files' })
 map('n', '<leader>f/', '<cmd>Telescope search_history<CR>',
