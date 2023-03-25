@@ -242,7 +242,19 @@ Ref https://github.com/tpope/vim-surround/blob/master/doc/surround.txt
 ==================================================================================
 COMMANDS                                                             cs-commands
 
+Ref: https://learnvim.irian.to/basics/the_global_command
+
 `:!<cmd>` - execute <cmd>
+`:g/<pattern>/<command>` - global command
+`:v/<pattern>/<command>` - reverse global command
+`:g!/<pattern>/<command>` - reverse global command
+`:g/foobar/d` - delete all lines containing "foobar"
+`:g/one\|two/d` - delete all lines containing either "one" or "two"
+`:g/foobar/p` - print all lines containing "foobar"
+`:g/foobar` - print all lines containing "foobar" (print is the default value)
+`:g/./normal A;` - add a ";" to the end of each non-empty lines
+`:g/foo/g/bar/d` - find lines containing "foo", then among them, delete all lines containing "bar"
+`:g/foo/d _` - delete all lines containing "foo" and do not save them in yank register
 
 ==================================================================================
 BUFFERS                                                               cs-buffers
@@ -267,6 +279,11 @@ EXPLORER                                                             cs-explorer
 
 `:e`       - open a file
 `:Explore` - open explorer
+
+==================================================================================
+INSERT MODE                                                       cs-insert-mode
+
+`<C-r>` - open yank register
 
 ==================================================================================
 TIPS & TRICKS                                                   cs-tips-n-tricks
