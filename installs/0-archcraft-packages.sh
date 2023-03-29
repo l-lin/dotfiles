@@ -94,6 +94,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "[-] installing delve (debugger for go): https://github.com/go-delve/delve"
   yay -S --noconfirm delve
 
+  echo "[-] installing duf: https://github.com/muesli/duf"
+  yay -S --noconfirm duf
+
   echo "[-] Finished installing stuffs"
 fi
 

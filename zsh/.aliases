@@ -21,7 +21,7 @@ alias chown="chown --preserve-root"
 # copy with a progress bar.
 alias cpv="rsync -apoghb --backup-dir=/tmp -e /dev/null --inplace --info=progress2 --"
 # Compute space disk
-alias df="df -Th"
+alias df="duf"
 # alias du="du -sh *"
 alias du="dust"
 # Record a GIF
