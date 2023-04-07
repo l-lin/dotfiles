@@ -41,13 +41,13 @@ apply_polybar() {
 	# rewrite colors file
 	cat > ${PATH_PBAR}/colors.ini <<- EOF
 		[color]
-		
+
 		BACKGROUND = ${background}
 		FOREGROUND = ${foreground}
 		ALTBACKGROUND = ${altbackground}
 		ALTFOREGROUND = ${altforeground}
 		ACCENT = ${accent}
-		
+
 		BLACK = ${color0}
 		RED = ${color1}
 		GREEN = ${color2}
@@ -80,7 +80,7 @@ apply_rofi() {
 		${PATH_OBTS}/scripts/powermenu \
 		${PATH_OBTS}/scripts/runner \
 		${PATH_OBTS}/scripts/screenshot
-	
+
 	# apply default theme fonts
 	sed -i -e "s/font:.*/font: \"$rofi_font\";/g" ${PATH_ROFI}/shared/fonts.rasi
 
@@ -171,11 +171,11 @@ apply_appearance() {
 	xfconf-query -c xsettings -p /Net/ThemeName -s "$gtk_theme"
 	xfconf-query -c xsettings -p /Net/IconThemeName -s "$icon_theme"
 	xfconf-query -c xsettings -p /Gtk/CursorThemeName -s "$cursor_theme"
-	
+
 	# inherit cursor theme
 	if [[ -f "$HOME"/.icons/default/index.theme ]]; then
 		sed -i -e "s/Inherits=.*/Inherits=$cursor_theme/g" "$HOME"/.icons/default/index.theme
-	fi	
+	fi
 }
 
 # Openbox -----------------------------------
@@ -378,5 +378,5 @@ xsetroot -cursor_name left_ptr
 ## Custom startup scripts
 ## ------------------------------------
 # change capslock to ctrl
-setxkbmap -layout us -option ctrl:nocaps &
+setxkbmap -layout us -option ctrl:nocaps -variant altgr-intl &
 
