@@ -33,8 +33,8 @@
 # Specific #
 ############
 .tool-versions
-application-local.yml
-application-dev.yml
+application-local*
+application-dev*
 application-swp*
 Sandbox.java
 .cache
