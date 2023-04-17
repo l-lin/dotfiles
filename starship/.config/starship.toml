@@ -11,8 +11,9 @@ $docker_context\
 $package\
 $helm\
 $terraform\
-$aws\
-$custom\
+$git_branch\
+$git_state\
+$git_status\
 $cmd_duration\
 $line_break\
 $jobs\
@@ -30,6 +31,17 @@ truncation_length = 0
 truncate_to_repo = true
 style = "bold cyan"
 
+[git_branch]
+symbol = '🌱 '
+style = "#cccccc bold"
+
+[git_status]
+ahead = '️🔺[${count}](red bold)'
+behind = '🔻[${count}](red bold)'
+diverged = '🗯️🔺[${ahead_count}](red bold)🔻[${behind_count}](red bold)'
+conflicted = '💥'
+style = "purple bold"
+
 [status]
 disabled = false
 symbol = '🔴 '
@@ -38,18 +50,18 @@ symbol = '🔴 '
 disabled = false
 format = '[$time]($style) '
 
-[env_var.1]
-variable="GSD_REMOTE"
-format="[$env_value ](#cccccc bold)"
-[env_var.2]
-variable="GSD_BRANCH_STATUS"
-format="[$env_value ](purple bold)"
-[env_var.3]
-variable="GSD_ON"
-format="[$env_value](purple bold)"
-[env_var.4]
-variable="GSD_STATUS"
-format="[$env_value ]()"
-[env_var.5]
-variable="GSD_NOT_REPO"
-format="[ ]()"
+#[env_var.1]
+#variable="GSD_REMOTE"
+#format="[$env_value ](#cccccc bold)"
+#[env_var.2]
+#variable="GSD_BRANCH_STATUS"
+#format="[$env_value ](purple bold)"
+#[env_var.3]
+#variable="GSD_ON"
+#format="[$env_value](purple bold)"
+#[env_var.4]
+#variable="GSD_STATUS"
+#format="[$env_value ]()"
+#[env_var.5]
+#variable="GSD_NOT_REPO"
+#format="[ ]()"

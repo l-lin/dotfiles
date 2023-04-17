@@ -31,8 +31,8 @@ plugins=(
   git-extra-commands
   git-open
   # faster git status for spaceship prompt
-  gitstatus
-  gitstatus-prompt
+  #gitstatus
+  #gitstatus-prompt
   # httpie completion
   httpie
   # quarkus completion
