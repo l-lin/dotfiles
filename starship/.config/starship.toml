@@ -38,8 +38,12 @@ style = "#cccccc bold"
 [git_status]
 ahead = '️🔺[${count}](red bold)'
 behind = '🔻[${count}](red bold)'
-diverged = '🗯️🔺[${ahead_count}](red bold)🔻[${behind_count}](red bold)'
+diverged = '🗯️ 🔺[${ahead_count}](red bold)🔻[${behind_count}](red bold)'
 conflicted = '💥'
+stashed = '📦'
+modified = '📝'
+renamed = '🚧'
+deleted = '🧹'
 style = "purple bold"
 
 [status]
