@@ -159,6 +159,11 @@ sort -k <n> <input_file>
 
 $ input_file: ls -p | grep -v /
 
+% bash, file
+
+# Get folder Names
+for f in */; do echo $f; done
+
 % systemd
 
 # Restart service
