@@ -16,6 +16,17 @@ for i in *.<source_extension>; do
   mv $i ${i//<source_extension>/<target_extension>}
 done
 
+% bash, map
+
+# Declare map
+declare -A map=([john]=75 [doe]=82 [ann]=83 [ava]=72)
+
+# Loop from map
+declare -A map=([john]=75 [doe]=82 [ann]=83 [ava]=72)
+for key in "${!map[@]}"; do
+    echo "${key}: ${map[${key}]}"
+done
+
 % bash, sd
 
 # Replace all occurrences
