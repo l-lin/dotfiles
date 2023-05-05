@@ -85,6 +85,17 @@ ffmpeg -headers "Authorization: Bearer <token>" \
   -protocol_whitelist file \
   -c copy <output_file>
 
+# Blur video
+ffmpeg -i <input_file> \
+  -c:v libx264 \
+  -video_track_timescale 90000 \
+  -bf 0 \
+  -pix_fmt "yuv420p" \
+  -filter_complex '[0:v]boxblur=20[vout]' \
+  -map '[vout]' \
+  -f mp4 \
+  <output_file>
+
 % video, vlc
 @ video, common
 
