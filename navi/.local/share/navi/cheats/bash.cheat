@@ -223,6 +223,9 @@ grep -v <filter> <input_file>
 # Sort file by nth column
 sort -k <n> <input_file>
 
+# Find duplicate lines
+sort <input_file> | uniq -c | awk '$1 > 1 { print $2 }'
+
 # -----------------------------------------------------------------
 
 % systemd
