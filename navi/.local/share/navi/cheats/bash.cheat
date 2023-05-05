@@ -61,6 +61,25 @@ sd -p '<before>' '<after>' <input_file>
 
 # -----------------------------------------------------------------
 
+% bash, tar
+
+# Extract archive.tar.xz file
+tar -xf <input_file>
+
+# Extract archive.tar.xz file in a directory
+tar -xf <input_file> -C <output_directory>
+
+# Extract specific file from archive.tar.xz
+tar -xf <input_file> <file1>
+
+# List archive.tar.xz content
+tar -tvf <input_file>
+
+$ input_file: ls -p *.tar.xz
+$ output_directory: echo */ | tr ' ' '\n'
+
+# -----------------------------------------------------------------
+
 % bash, awk
 
 # Print Nth element
