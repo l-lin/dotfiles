@@ -158,3 +158,7 @@ lsp.yamlls.setup {
     }
   }
 }
+lsp.tsserver.setup {
+  on_attach = custom_attach,
+  capabilities = capabilities,
+}
