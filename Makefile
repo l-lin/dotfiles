@@ -25,6 +25,7 @@ setup:
 	@mkdir -p "${HOME}/.m2"
 	@mkdir -p "${HOME}/.undodir"
 	@mkdir -p "${HOME}/.zsh/completion"
+	@mkdir -p "${HOME}/.local/share/navi/cheats"
 	@rm "${HOME}/.config/openbox/rc.xml"
 
 create-symlinks:
