@@ -272,6 +272,9 @@ err() {
   echo "\033[0;41m[ERR] $*\033[0m" >>/dev/stderr
 }
 
+# Generate random number
+echo $((1 + RANDOM % 10))
+
 # -----------------------------------------------------------------
 
 % bash, script, string manipulation
