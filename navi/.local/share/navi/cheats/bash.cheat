@@ -395,14 +395,14 @@ done
 i=0
 while [ $i -lt ${#arr[@]} ]; do
   echo "${arr[$i]}"
-  i=$(expr $i + i)
+  i="$((i + 1)"
 done
 
 # Loop from array using for while loop
 i=0
 while (( $i < ${#arr[@]} )); do
   echo "${arr[$i]}"
-  ((i++))
+  i="$((i + 1)"
 done
 
 # Change file extensions
@@ -434,6 +434,6 @@ done
 i=5
 until [[ i -eq 10 ]]; do
   echo "i=$i"
-  i=$((i+1))
+  i="$((i+1))"
 done
 
