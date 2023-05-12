@@ -162,3 +162,7 @@ lsp.tsserver.setup {
   on_attach = custom_attach,
   capabilities = capabilities,
 }
+lsp.angularls.setup {
+  on_attach = custom_attach,
+  capabilities = capabilities,
+}
