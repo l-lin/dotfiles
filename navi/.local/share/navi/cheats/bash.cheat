@@ -374,6 +374,14 @@ for key in "${!map[@]}"; do
     echo "${key}: ${map[${key}]}"
 done
 
+# Append elements to map
+declare -a map
+map+=(1 2 3)
+map+=(4 5 6)
+
+# Remove element from map
+unset "map[${i}]"
+
 # -----------------------------------------------------------------
 
 % bash, script, loop
