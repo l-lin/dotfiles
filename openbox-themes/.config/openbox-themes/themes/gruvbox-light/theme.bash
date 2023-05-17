@@ -5,25 +5,25 @@
 # ------------------------------------------------------------------------------
 
 # Colors
-# from: https://github.com/eendroroy/alacritty-theme/blob/master/themes/gruvbox_dark.yaml
-background='#282828'
-foreground='#ebdbb2'
-color0='#282828'
+# from: https://github.com/eendroroy/alacritty-theme/blob/master/themes/gruvbox_light.yaml
+background='#fbf1c7'
+foreground='#3c3836'
+color0='#fbf1c7'
 color1='#cc241d'
 color2='#98971a'
 color3='#d79921'
 color4='#458588'
 color5='#b16286'
 color6='#689d6a'
-color7='#a89984'
+color7='#7c6f64'
 color8='#928374'
-color9='#fb4934'
-color10='#b8bb26'
-color11='#fabd2f'
-color12='#83a598'
-color13='#d3869b'
-color14='#8ec07c'
-color15='#ebdbb2'
+color9='#9d0006'
+color10='#79740e'
+color11='#b57614'
+color12='#076678'
+color13='#8f3f71'
+color14='#427b58'
+color15='#3c3836'
 
 accent='#fe8019'
 light_value='0.05'
@@ -45,8 +45,7 @@ terminal_font_name='JetBrainsMono Nerd Font'
 terminal_font_size='16'
 
 # Geany
-# from ~/.config/geany/colorschemes
-geany_colors='arc.conf'
+geany_colors='slime.conf'
 geany_font='JetBrains Mono 10'
 
 # Appearance
@@ -56,8 +55,7 @@ icon_theme='Zafiro'
 cursor_theme='Qogirr'
 
 # Openbox
-# from https://github.com/nathanielevan/gruvbox-material-openbox
-ob_theme='gruvbox-material-dark-blocks'
+ob_theme='Slime'
 ob_layout='DLIMC'
 ob_font='JetBrains Mono'
 ob_font_size='13'

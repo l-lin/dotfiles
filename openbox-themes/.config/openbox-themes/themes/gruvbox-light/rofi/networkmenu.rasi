@@ -1,0 +1,4 @@
+configuration {
+    show-icons:                 false;
+}
+@theme "/usr/share/rofi/themes/gruvbox-dark.rasi"

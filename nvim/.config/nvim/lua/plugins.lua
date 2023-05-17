@@ -17,7 +17,9 @@ return require('packer').startup(function(use)
   -- GUI
   -- -------------------------------------
   -- colorscheme
-  use { 'luisiacc/gruvbox-baby', config = function() require('plugins.gruvbox') end }
+  use { 'luisiacc/gruvbox-baby', config = function() require('plugins.gruvbox-baby') end }
+  use { "ellisonleao/gruvbox.nvim" }
+
   -- filetype icons
   use { 'nvim-tree/nvim-web-devicons', config = function() require('plugins.web-devicons') end }
   -- display marks
