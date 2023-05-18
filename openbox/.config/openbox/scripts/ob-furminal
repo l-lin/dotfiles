@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
-xfce4-terminal --fullscreen
+alacritty --class 'Fullscreen,Fullscreen' \
+  -o window.startup_mode=fullscreen window.padding.x=45 \
+  window.padding.y=45 window.opacity=1.0

@@ -669,7 +669,7 @@
     <!-- Apps -->
     <keybind key="W-Return">
       <action name="Execute">
-        <command>xfce4-terminal</command>
+        <command>alacritty</command>
       </action>
     </keybind>
     <keybind key="W-f">
@@ -721,7 +721,7 @@
     <!-- CLI Apps -->
     <keybind key="C-A-t">
       <action name="Execute">
-        <command>xfce4-terminal</command>
+        <command>alacritty</command>
       </action>
     </keybind>
     <!-- keybind key="C-A-v">
@@ -736,7 +736,7 @@
     </keybind -->
     <keybind key="C-A-h">
       <action name="Execute">
-        <command>xfce4-terminal -e htop</command>
+        <command>alacritty -e htop</command>
       </action>
     </keybind>
     <!-- Misc -->

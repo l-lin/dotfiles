@@ -341,7 +341,8 @@ change_terminal() {
 	local file_path="${1}"
 
 	if [[ -f "${file_path}" ]]; then
-		sed -i "s/alacritty/xfce4-terminal/g" "${file_path}"
+		# sed -i "s/alacritty/xfce4-terminal/g" "${file_path}"
+		sed -i "s/xfce4-terminal/alacritty/g" "${file_path}"
 	fi
 }
 apply_change_terminal() {
