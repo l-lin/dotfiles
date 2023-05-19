@@ -17,7 +17,6 @@ return require('packer').startup(function(use)
   -- GUI
   -- -------------------------------------
   -- colorscheme
-  use { 'luisiacc/gruvbox-baby', config = function() require('plugins.gruvbox-baby') end }
   use { "ellisonleao/gruvbox.nvim" }
 
   -- filetype icons

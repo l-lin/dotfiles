@@ -1,6 +1,5 @@
 -- theme
--- vim.cmd [[ colorscheme gruvbox ]]
--- vim.o.bg = "light"
+vim.cmd [[ colorscheme gruvbox ]]
 vim.o.bg = "dark"
 
 vim.o.syntax = "on"

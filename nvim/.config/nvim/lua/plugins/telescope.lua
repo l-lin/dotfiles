@@ -14,7 +14,7 @@ require("telescope").setup {
   defaults = {
     file_ignore_patterns = { "venv/.*" },
     layout_config = {
-      prompt_position = 'top'
+      prompt_position = 'bottom'
     },
     sorting_strategy = "ascending",
   },
