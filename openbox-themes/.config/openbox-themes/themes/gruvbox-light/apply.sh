@@ -7,6 +7,7 @@
 ## Theme ------------------------------------
 TDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 THEME="${TDIR##*/}"
+THEME_BACKGROUND="light"
 
 source "$HOME"/.config/openbox-themes/themes/"$THEME"/theme.bash
 altbackground="`pastel color $background | pastel lighten $light_value | pastel format hex`"
@@ -341,7 +342,8 @@ change_terminal() {
 	local file_path="${1}"
 
 	if [[ -f "${file_path}" ]]; then
-		sed -i "s/alacritty/xfce4-terminal/g" "${file_path}"
+		# sed -i "s/alacritty/xfce4-terminal/g" "${file_path}"
+		sed -i "s/xfce4-terminal/alacritty/g" "${file_path}"
 	fi
 }
 apply_change_terminal() {
@@ -352,6 +354,29 @@ apply_change_terminal() {
 	change_terminal "${PATH_OBOX}/menu-simple.xml"
 	change_terminal "${PATH_CONF}/networkmanager-dmenu/config.ini"
 	change_terminal "${PATH_CONF}/geany/geany.conf"
+}
+
+## Change background in tmux + vim
+change_tmux_background() {
+	local file_path="${HOME}/.tmux.conf"
+
+	if [[ -f "${file_path}" ]]; then
+		sed -i "s/^set -g @tmux-gruvbox-background '\(dark\|light\)'$/set -g @tmux-gruvbox-background '${THEME_BACKGROUND}'/"	"${file_path}"
+		tmux source "${file_path}"
+	fi
+}
+
+change_nvim_background() {
+	local file_path="${HOME}/.config/nvim/lua/appearance.lua"
+
+	if [[ -f "${file_path}" ]]; then
+		sed -i "s/^vim.o.bg = \"\(dark\|light\)\"$/vim.o.bg = \"${THEME_BACKGROUND}\"/" "${file_path}"
+	fi
+}
+
+apply_change_background() {
+	change_tmux_background
+	change_nvim_background
 }
 
 ## Execute Script ---------------------------
@@ -370,6 +395,7 @@ apply_plank
 apply_compositor
 
 apply_change_terminal
+apply_change_background
 
 # fix cursor theme (run it in the end)
 xsetroot -cursor_name left_ptr
