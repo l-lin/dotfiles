@@ -44,7 +44,7 @@ return require('packer').startup(function(use)
   -- EDITOR
   -- -------------------------------------
   -- surround parenthese
-  use { 'tpope/vim-surround' }
+  use { 'machakann/vim-sandwich' }
   -- autoclose pairs, (), []...
   use { 'windwp/nvim-autopairs', config = function() require('nvim-autopairs').setup {} end }
   -- syntax aware commenting
@@ -208,15 +208,7 @@ return require('packer').startup(function(use)
   -- MISC
   -- -------------------------------------
   -- show available keymaps + description as you type them
-  use {
-    'folke/which-key.nvim',
-    event = 'VimEnter',
-    config = function()
-      vim.defer_fn(function()
-        require('plugins.which-key')
-      end, 1000)
-    end
-  }
+  use { 'folke/which-key.nvim', event = 'VimEnter', config = function() require('plugins.which-key') end }
   -- open to last known cursor position
   use { 'ethanholz/nvim-lastplace', config = function() require('nvim-lastplace').setup() end }
 
