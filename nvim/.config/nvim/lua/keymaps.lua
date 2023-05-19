@@ -54,6 +54,14 @@ map('v', 'd', '"_d', { noremap = true })
 map('v', 'p', '"_dP', { noremap = true })
 --map('n', '<A-k>', '<cmd>m-2<CR>==', { noremap = true, desc = 'Move line up' })
 --map('n', '<A-j>', '<cmd>m+<CR>==', { noremap = true, desc = 'Move line down' })
+-- do not include white space characters when using $ in visual mode, see https://vi.stackexchange.com/q/12607/15292
+map('x', '$', 'g_')
+-- continuous visual shifting (does not exit Visual mode), `gv` means
+-- to reselect previous visual area, see https://superuser.com/q/310417/736190
+map('x', '<', '<gv')
+map('x', '>', '>gv')
+-- always use very magic mode for searching (type `:help magic` for more information)
+map('n', '/', [[/\v]])
 
 -- misc
 map('n', ',', '<cmd>set hlsearch! hlsearch?<CR>', { noremap = true, silent = true, desc = 'Toggle search highlight' })

@@ -68,3 +68,15 @@ cmd [[ set shortmess+=c ]] -- don't pass messages to |ins-completion-menu|
 o.backspace = "indent,eol,start" --sane backspace behaviour
 o.history = 1000 -- A history of ":" commands, and a history of previous search patterns is remembered
 
+-- disable default plugins
+vim.g.loaded_2html_plugin = 1
+-- do not load zipPlugin.vim, gzip.vim and tarPlugin.vim (all these plugins are related to checking files inside compressed files)
+vim.g.loaded_zipPlugin = 1
+vim.g.loaded_gzip = 1
+vim.g.loaded_tarPlugin = 1
+vim.g.loaded_tutor_mode_plugin = 1
+-- do not use builtin matchit.vim and matchparen.vim since we use vim-matchup
+vim.g.loaded_matchit = 1
+vim.g.loaded_matchparen = 1
+vim.g.loaded_sql_completion = 1 -- disable sql omni completion, it is broken.
+
