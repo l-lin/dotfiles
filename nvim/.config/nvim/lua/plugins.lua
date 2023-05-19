@@ -223,6 +223,9 @@ return require('packer').startup(function(use)
   -- the missing auto-completion for cmdline!
   use { 'gelguy/wilder.nvim', opt = true, setup = [[vim.cmd('packadd wilder.nvim')]] }
 
+  -- Autosave files on certain events
+  use { '907th/vim-auto-save', event = 'InsertEnter' }
+
   -- -------------------------------------
   -- Automatically set up your configuration after cloning packer.nvim
   if packer_bootstrap then
