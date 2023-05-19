@@ -124,41 +124,43 @@ return require('packer').startup(function(use)
   -- -------------------------------------
   -- AUTOCOMPLETION
   -- -------------------------------------
+  -- add pictograms to cmp
+  use { 'onsails/lspkind.nvim', event = 'VimEnter' }
   -- autocompletion engine
   use {
     'hrsh7th/nvim-cmp',
     requires = { 'L3MON4D3/LuaSnip', 'onsails/lspkind.nvim' },
     config = function() require('plugins.cmp') end
   }
+  -- lsp based
+  use { 'hrsh7th/cmp-nvim-lsp', after = 'nvim-cmp' }
+  -- buffer based
+  use { 'hrsh7th/cmp-buffer', after = 'nvim-cmp' }
+  -- filepath based
+  use { 'hrsh7th/cmp-path', after = 'nvim-cmp' }
+  -- command based
+  use { 'hrsh7th/cmp-cmdline', after = 'nvim-cmp' }
+  -- autocompletion on lsp function/class signature
+  use { 'hrsh7th/cmp-nvim-lsp-signature-help', after = 'nvim-cmp' }
+  -- lua support
+  use { 'hrsh7th/cmp-nvim-lua', after = 'nvim-cmp' }
+  -- emoji support
+  use { 'hrsh7th/cmp-emoji', after = 'nvim-cmp' }
+  -- omni
+  use { 'hrsh7th/cmp-omni', after = 'nvim-cmp' }
   -- snippet engine
   use { 'L3MON4D3/LuaSnip', config = function() require('plugins.luasnip') end }
   -- snippets collection
-  use { 'honza/vim-snippets' }
-  use { 'rafamadriz/friendly-snippets' }
-  -- add pictograms to cmp
-  use { 'onsails/lspkind.nvim' }
+  use { 'honza/vim-snippets', after = 'nvim-cmp' }
+  use { 'rafamadriz/friendly-snippets', after = 'nvim-cmp' }
+  -- buffer lines based
+  use { 'amarakon/nvim-cmp-buffer-lines', after = 'nvim-cmp' }
+  -- autocompletion from tmux panes
+  use { 'andersevenrud/cmp-tmux', after = 'nvim-cmp' }
+  -- luasnip snippets
+  use { 'saadparwaiz1/cmp_luasnip', after = 'nvim-cmp' }
   -- lsp progress eye candy
   use { 'j-hui/fidget.nvim', config = function() require('fidget').setup {} end }
-  -- lsp based
-  use { 'hrsh7th/cmp-nvim-lsp' }
-  -- buffer based
-  use { 'hrsh7th/cmp-buffer' }
-  -- buffer lines based
-  use { 'amarakon/nvim-cmp-buffer-lines' }
-  -- filepath based
-  use { 'hrsh7th/cmp-path' }
-  -- command based
-  use { 'hrsh7th/cmp-cmdline' }
-  -- autocompletion on lsp function/class signature
-  use { 'hrsh7th/cmp-nvim-lsp-signature-help' }
-  -- lua support
-  use { 'hrsh7th/cmp-nvim-lua' }
-  -- emoji support
-  use { 'hrsh7th/cmp-emoji' }
-  -- autocompletion from tmux panes
-  use { 'andersevenrud/cmp-tmux' }
-  -- luasnip snippets
-  use { 'saadparwaiz1/cmp_luasnip' }
 
   -- -------------------------------------
   -- NAVIGATION
