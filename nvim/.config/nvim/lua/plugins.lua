@@ -204,8 +204,6 @@ return require('packer').startup(function(use)
   use { 'folke/which-key.nvim', config = function() require('plugins.which-key') end }
   -- open to last known cursor position
   use { 'ethanholz/nvim-lastplace', config = function() require('nvim-lastplace').setup() end }
-  -- caching init to improve starting time
-  use { 'lewis6991/impatient.nvim' }
   -- embed neovim on the browser
   -- use {
   --     'glacambre/firenvim',
