@@ -204,9 +204,20 @@ return require('packer').startup(function(use)
   -- MISC
   -- -------------------------------------
   -- show available keymaps + description as you type them
-  use { 'folke/which-key.nvim', config = function() require('plugins.which-key') end }
+  use {
+    'folke/which-key.nvim',
+    event = 'VimEnter',
+    config = function()
+      vim.defer_fn(function()
+        require('plugins.which-key')
+      end, 2000)
+    end
+  }
   -- open to last known cursor position
   use { 'ethanholz/nvim-lastplace', config = function() require('nvim-lastplace').setup() end }
+
+  -- the missing auto-completion for cmdline!
+  use { 'gelguy/wilder.nvim', opt = true, setup = [[vim.cmd('packadd wilder.nvim')]] }
 
   -- -------------------------------------
   -- Automatically set up your configuration after cloning packer.nvim
