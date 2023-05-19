@@ -3,49 +3,63 @@ skip_global_compinit=1
 # --------------------------------------------------------
 # FZF options
 # --------------------------------------------------------
-#
-# Nord theme:
-#export FZF_DEFAULT_OPTS="
-#--ansi
-#--color fg:#D8DEE9,bg:-1,hl:#A3BE8C,fg+:#D8DEE9,bg+:#434C5E,hl+:#A3BE8C
-#--color pointer:#BF616A,info:#4C566A,spinner:#4C566A,header:#4C566A,prompt:#81A1C1,marker:#EBCB8B
-#--bind='?:toggle-preview'
-#--bind='alt-p:toggle-preview-wrap'
-#--preview-window='right:60%:wrap'
-#"
-# Gruvbox theme: https://github.com/luisiacc/gruvbox-baby/blob/main/extras/tmux/MEDIUM.tmux
+export FZF_THEME_BACKGROUND='dark'
+if [ "${FZF_THEME_BACKGROUND}" = 'light' ]; then
+  ZSH_THEME_BG='#fbf1c7'
+  ZSH_THEME_FG='#3c3836'
+  ZSH_THEME_BLACK='#fbf1c7'
+  ZSH_THEME_RED='#cc241d'
+  ZSH_THEME_GREEN='#98971a'
+  ZSH_THEME_YELLOW='#d79921'
+  ZSH_THEME_BLUE='#458588'
+  ZSH_THEME_MAGENTA='#b16286'
+  ZSH_THEME_CYAN='#689d6a'
+  ZSH_THEME_WHITE='#7c6f64'
+  ZSH_THEME_GRAY='#928374'
+else
+  ZSH_THEME_BG='#282828'
+  ZSH_THEME_FG='#ebdbb2'
+  ZSH_THEME_BLACK='#282828'
+  ZSH_THEME_RED='#cc241d'
+  ZSH_THEME_GREEN='#98971a'
+  ZSH_THEME_YELLOW='#d79921'
+  ZSH_THEME_BLUE='#458588'
+  ZSH_THEME_MAGENTA='#b16286'
+  ZSH_THEME_CYAN='#689d6a'
+  ZSH_THEME_WHITE='#a89984'
+  ZSH_THEME_GRAY='#928374'
+fi
 export FZF_THEME="
---color=fg:#EBDBB2 \
---color=bg:#242424 \
---color=hl:#7fa094 \
---color=fg+:bold:#EBDBB2 \
---color=bg+:#273842 \
---color=hl+:#7fa094 \
---color=gutter:#242424 \
---color=info:#EBDBB2 \
---color=separator:#282828 \
---color=border:#E7D7AD \
---color=label:#EEBD35 \
---color=prompt:#504945 \
---color=spinner:#FABD2F \
---color=pointer:bold:#FABD2F \
---color=marker:#CC241D \
---color=header:#D65D0E \
---color=preview-fg:#EBDBB2 \
---color=preview-bg:#242424 \
---border=none \
---no-scrollbar \
---prompt='🔎 '
+--color=bg:${ZSH_THEME_BG}
+--color=hl:${ZSH_THEME_YELLOW}
+--color=fg:${ZSH_THEME_FG}
+--color=fg+:bold:${ZSH_THEME_FG}
+--color=bg+:${ZSH_THEME_BG}
+--color=hl+:${ZSH_THEME_YELLOW}
+--color=gutter:${ZSH_THEME_BLACK}
+--color=info:${ZSH_THEME_GRAY}
+--color=separator:${ZSH_THEME_YELLOW}
+--color=border:${ZSH_THEME_GRAY}
+--color=label:${ZSH_THEME_RED}
+--color=prompt:${ZSH_THEME_RED}
+--color=spinner:${ZSH_THEME_GRAY}
+--color=pointer:bold:${ZSH_THEME_RED}
+--color=marker:${ZSH_THEME_RED}
+--color=header:${ZSH_THEME_RED}
+--color=preview-fg:${ZSH_THEME_FG}
+--color=preview-bg:${ZSH_THEME_BG}
+--no-scrollbar
+--prompt='󰍉 '
 "
 export FZF_DEFAULT_OPTS="
 --bind='?:toggle-preview' \
 --bind='alt-p:toggle-preview-wrap' \
---preview-window='right:60%:border-none:wrap' \
+--preview-window='right:40%:border-none' \
 ${FZF_THEME}
 "
-export FZF_TMUX_OPTS="-p 80%,80%"
+export FZF_TMUX_OPTS="-p 90%,90%"
 # preview content of the file under the cursor when searching for a file
-export FZF_CTRL_T_OPTS="--preview 'bat --style numbers,changes --color "always" {} | head -200'"
+export FZF_CTRL_T_OPTS="--no-reverse --preview 'bat --style changes --color "always" {} | head -200'"
 # preview full command
 export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:5:wrap"
 # show the entries of the directory
