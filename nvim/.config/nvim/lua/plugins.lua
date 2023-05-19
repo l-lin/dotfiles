@@ -125,7 +125,7 @@ return require('packer').startup(function(use)
   -- AUTOCOMPLETION
   -- -------------------------------------
   -- add pictograms to cmp
-  use { 'onsails/lspkind.nvim', event = 'VimEnter' }
+  use { 'onsails/lspkind.nvim' }
   -- autocompletion engine
   use {
     'hrsh7th/nvim-cmp',
@@ -133,32 +133,34 @@ return require('packer').startup(function(use)
     config = function() require('plugins.cmp') end
   }
   -- lsp based
-  use { 'hrsh7th/cmp-nvim-lsp', after = 'nvim-cmp' }
+  use { 'hrsh7th/cmp-nvim-lsp' }
   -- buffer based
-  use { 'hrsh7th/cmp-buffer', after = 'nvim-cmp' }
+  use { 'hrsh7th/cmp-buffer' }
   -- filepath based
-  use { 'hrsh7th/cmp-path', after = 'nvim-cmp' }
+  use { 'hrsh7th/cmp-path' }
   -- command based
-  use { 'hrsh7th/cmp-cmdline', after = 'nvim-cmp' }
+  use { 'hrsh7th/cmp-cmdline' }
   -- autocompletion on lsp function/class signature
-  use { 'hrsh7th/cmp-nvim-lsp-signature-help', after = 'nvim-cmp' }
+  use { 'hrsh7th/cmp-nvim-lsp-signature-help' }
   -- lua support
-  use { 'hrsh7th/cmp-nvim-lua', after = 'nvim-cmp' }
+  use { 'hrsh7th/cmp-nvim-lua' }
   -- emoji support
-  use { 'hrsh7th/cmp-emoji', after = 'nvim-cmp' }
+  use { 'hrsh7th/cmp-emoji' }
   -- omni
-  use { 'hrsh7th/cmp-omni', after = 'nvim-cmp' }
+  use { 'hrsh7th/cmp-omni' }
+  -- autocompletion from tmux panes
+  use { 'andersevenrud/cmp-tmux' }
+
   -- snippet engine
   use { 'L3MON4D3/LuaSnip', config = function() require('plugins.luasnip') end }
-  -- snippets collection
-  use { 'honza/vim-snippets', after = 'nvim-cmp' }
-  use { 'rafamadriz/friendly-snippets', after = 'nvim-cmp' }
   -- buffer lines based
-  use { 'amarakon/nvim-cmp-buffer-lines', after = 'nvim-cmp' }
-  -- autocompletion from tmux panes
-  use { 'andersevenrud/cmp-tmux', after = 'nvim-cmp' }
+  use { 'amarakon/nvim-cmp-buffer-lines' }
+  -- snippets collection
+  use { 'honza/vim-snippets' }
+  use { 'rafamadriz/friendly-snippets' }
   -- luasnip snippets
-  use { 'saadparwaiz1/cmp_luasnip', after = 'nvim-cmp' }
+  use { 'saadparwaiz1/cmp_luasnip' }
+
   -- lsp progress eye candy
   use { 'j-hui/fidget.nvim', config = function() require('fidget').setup {} end }
 
@@ -212,7 +214,7 @@ return require('packer').startup(function(use)
     config = function()
       vim.defer_fn(function()
         require('plugins.which-key')
-      end, 2000)
+      end, 1000)
     end
   }
   -- open to last known cursor position
