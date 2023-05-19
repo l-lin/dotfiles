@@ -28,6 +28,7 @@ return require('packer').startup(function(use)
   use {
     'nvim-lualine/lualine.nvim',
     requires = { 'nvim-tree/nvim-web-devicons', opt = true },
+    event = 'VimEnter',
     config = function() require('plugins.lualine') end
   }
   -- buffer line (top)
@@ -35,6 +36,7 @@ return require('packer').startup(function(use)
     'akinsho/bufferline.nvim',
     tag = "v3.*",
     requires = 'nvim-tree/nvim-web-devicons',
+    event = 'VimEnter',
     config = function() require('plugins.bufferline') end
   }
 
@@ -51,6 +53,7 @@ return require('packer').startup(function(use)
   use {
     'folke/trouble.nvim',
     requires = 'nvim-tree/nvim-web-devicons',
+    event = 'VimEnter',
     config = function() require('plugins.trouble') end
   }
   -- linting
@@ -179,7 +182,7 @@ return require('packer').startup(function(use)
   -- telescope extension for luasnip snippet
   use { 'benfowler/telescope-luasnip.nvim', requires = { 'L3MON4D3/LuaSnip' } }
   -- general-purpose motion plugin
-  use { 'ggandor/leap.nvim', config = function() require('plugins.leap') end }
+  use { 'ggandor/leap.nvim', event = 'VimEnter', config = function() require('plugins.leap') end }
   -- file explorer to edit filesystem like a normal buffer, vim-vinegar like
   use { 'stevearc/oil.nvim', config = function() require('plugins.oil') end }
 
@@ -204,12 +207,6 @@ return require('packer').startup(function(use)
   use { 'folke/which-key.nvim', config = function() require('plugins.which-key') end }
   -- open to last known cursor position
   use { 'ethanholz/nvim-lastplace', config = function() require('nvim-lastplace').setup() end }
-  -- embed neovim on the browser
-  -- use {
-  --     'glacambre/firenvim',
-  --     run = function() vim.fn['firenvim#install'](0) end,
-  --     config = function() require('plugins.firenvim') end
-  -- }
 
   -- -------------------------------------
   -- Automatically set up your configuration after cloning packer.nvim
