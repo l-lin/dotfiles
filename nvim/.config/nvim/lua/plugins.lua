@@ -126,7 +126,7 @@ return require('packer').startup(function(use)
   -- autocompletion engine
   use {
     'hrsh7th/nvim-cmp',
-    requires = { 'L3MON4D3/LuaSnip', 'onsails/lspkind.nvim' },
+    requires = { 'onsails/lspkind.nvim' },
     config = function() require('plugins.cmp') end
   }
   -- lsp based
@@ -149,7 +149,11 @@ return require('packer').startup(function(use)
   use { 'andersevenrud/cmp-tmux' }
 
   -- snippet engine
-  use { 'L3MON4D3/LuaSnip', config = function() require('plugins.luasnip') end }
+  use {
+    'L3MON4D3/LuaSnip',
+    config = function() require('plugins.luasnip') end,
+    requires = { 'hrsh7th/nvim-cmp', 'rafamadriz/friendly-snippets', 'honza/vim-snippets' },
+  }
   -- buffer lines based
   use { 'amarakon/nvim-cmp-buffer-lines' }
   -- snippets collection
