@@ -1,0 +1,40 @@
+# ANSI colors can be found at https://github.com/morhetz/gruvbox
+[style.description]
+underline = false
+bold = false
+italic = false
+
+[style.command_name]
+foreground = { ansi = 106 }
+underline = false
+bold = false
+italic = false
+
+[style.example_text]
+background = { ansi = 172 }
+foreground = { ansi = 235 }
+underline = false
+bold = true
+italic = false
+
+[style.example_code]
+foreground = { ansi = 106 }
+underline = false
+bold = false
+italic = false
+
+[style.example_variable]
+foreground = { ansi = 223 }
+underline = false
+bold = false
+italic = false
+
+[display]
+compact = false
+use_pager = false
+
+[updates]
+auto_update = true
+auto_update_interval_hours = 720
+
+[directories]

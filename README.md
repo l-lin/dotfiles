@@ -4,7 +4,7 @@ This [dotfiles](http://dotfiles.github.io) is made to be worked with [ArchCraft]
 It's using the following:
 
 - [openbox](http://openbox.org/wiki/Main_Page): next generation window manager
-- [xfce4-terminal](https://docs.xfce.org/apps/xfce4-terminal/start): terminal emulator
+- [alacritty](https://github.com/alacritty/alacritty): A cross-platform, OpenGL terminal emulator.
 - [rofi](https://github.com/davatorium/rofi): window switcher, application launcher and dmenu replacement
 - [thunar](https://docs.xfce.org/xfce/thunar/start): file manager
 - [polybar](https://polybar.github.io/): fast and easy to use tool for creating status bars
