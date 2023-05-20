@@ -55,8 +55,6 @@ return require('packer').startup(function(use)
     event = 'VimEnter',
     config = function() require('plugins.trouble') end
   }
-  -- linting
-  use { 'dense-analysis/ale', config = function() require('plugins.ale') end }
   -- multiple cursors
   use { 'mg979/vim-visual-multi', config = function() require('plugins.visual-multi') end }
   -- handle trailing whitespace
