@@ -30,7 +30,7 @@ setup:
 
 create-symlinks:
 	@for folder in $$(find . -type d -maxdepth 1 2>/dev/null); do \
-		if [[ "$${folder}" != '.' ]] && [[ "$${folder}" != './.git' ]] && [[ "$${folder}" != './installs' ]]; then \
+		if [[ "$${folder}" != '.' ]] && [[ "$${folder}" != './.git' ]] && [[ "$${folder}" != './installs' ]] && [[ "$${folder}" != './dip' ]]; then \
 			app=$$(echo "$${folder}" | sed 's~./~~') \
 			&& echo "[-] Add symlinks for $${app}" \
 			&& stow -t "$${HOME}" "$${app}"; \
