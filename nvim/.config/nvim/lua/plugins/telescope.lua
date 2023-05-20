@@ -13,8 +13,10 @@ end
 require("telescope").setup {
   defaults = {
     file_ignore_patterns = { "venv/.*" },
+    layout_strategy = 'flex',
     layout_config = {
-      prompt_position = 'bottom'
+      prompt_position = 'bottom',
+      width = 0.9
     },
     sorting_strategy = "ascending",
   },

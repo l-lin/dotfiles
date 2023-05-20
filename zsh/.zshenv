@@ -63,7 +63,7 @@ export FZF_CTRL_T_OPTS="--no-reverse --preview 'bat --style changes --color "alw
 # preview full command
 export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:5:wrap"
 # show the entries of the directory
-export FZF_ALT_C_OPTS="--sort --preview 'tree -C {} | head -200'"
+export FZF_ALT_C_OPTS="--no-reverse --sort --preview 'tree -C {} | head -200'"
 # display hidden files with CTRL-T command
 export FZF_CTRL_T_COMMAND="fd --type f --hidden --exclude .git"
 # display hidden folders with ATL-C command
