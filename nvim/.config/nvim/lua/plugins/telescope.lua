@@ -18,7 +18,7 @@ require("telescope").setup {
       prompt_position = 'bottom',
       width = 0.9
     },
-    sorting_strategy = "ascending",
+    sorting_strategy = "descending",
   },
   extensions = {
     ["ui-select"] = {
