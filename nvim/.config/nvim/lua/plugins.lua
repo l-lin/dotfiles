@@ -210,7 +210,7 @@ return require('packer').startup(function(use)
   use { 'ethanholz/nvim-lastplace', config = function() require('nvim-lastplace').setup() end }
 
   -- the missing auto-completion for cmdline!
-  use { 'gelguy/wilder.nvim', opt = true, setup = [[vim.cmd('packadd wilder.nvim')]] }
+  use { 'gelguy/wilder.nvim', config = function() require('plugins.wilder') end }
 
   -- -------------------------------------
   -- Automatically set up your configuration after cloning packer.nvim
