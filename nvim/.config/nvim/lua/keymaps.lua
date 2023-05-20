@@ -61,9 +61,10 @@ map('x', '$', 'g_')
 map('x', '<', '<gv')
 map('x', '>', '>gv')
 -- always use very magic mode for searching (type `:help magic` for more information)
-map('n', '/', [[/\v]])
+-- map('n', '/', [[/\v]])
 
 -- misc
 map('n', ',', '<cmd>set hlsearch! hlsearch?<CR>', { noremap = true, silent = true, desc = 'Toggle search highlight' })
 map('n', '<F2>', '<cmd>set invpaste paste?<CR>', { noremap = true, silent = true, desc = 'Toggle auto-indenting for code paste'})
-map('n', '<leader>pu', '<cmd>PackerSync<cr>', { noremap = true, desc = 'Packer synchronize plugins' })
+map('n', '<leader>vu', '<cmd>PackerSync<cr>', { noremap = true, desc = 'Packer synchronize plugins' })
+
