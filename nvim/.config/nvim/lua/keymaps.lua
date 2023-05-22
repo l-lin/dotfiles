@@ -56,6 +56,9 @@ map('v', 'p', '"_dP', { noremap = true })
 --map('n', '<A-j>', '<cmd>m+<CR>==', { noremap = true, desc = 'Move line down' })
 -- do not include white space characters when using $ in visual mode, see https://vi.stackexchange.com/q/12607/15292
 map('x', '$', 'g_')
+-- go to first character in line (need to stretch my left hand to type ^)
+map('x', '0', '^')
+map('n', '0', '^')
 -- continuous visual shifting (does not exit Visual mode), `gv` means
 -- to reselect previous visual area, see https://superuser.com/q/310417/736190
 map('x', '<', '<gv')

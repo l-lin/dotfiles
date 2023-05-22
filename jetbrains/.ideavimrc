@@ -68,3 +68,6 @@ nnoremap <C-l> <C-w>l<CR>
 
 " do not include white space characters when using $ in visual mode, see https://vi.stackexchange.com/q/12607/15292
 vnoremap $ g_
+" go to first character in line (need to stretch my left hand to type ^)
+vnoremap 0 ^
+nnoremap 0 ^
