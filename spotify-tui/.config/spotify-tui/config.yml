@@ -1,0 +1,32 @@
+# https://github.com/Rigellute/spotify-tui#configuration
+theme:
+  # The theme colours can be an rgb string of the form "255, 255, 255" or a string that references the colours from your terminal theme: Reset, Black, Red, Green, Yellow, Blue, Magenta, Cyan, Gray, DarkGray, LightRed, LightGreen, LightYellow, LightBlue, LightMagenta, LightCyan, White.
+  # current playing song in list
+  active: LightYellow
+  # the "spotify-tui" banner on launch
+  banner: LightYellow
+  # error dialog border
+  error_border: Red
+  # error message text (e.g. "Spotify API reported error 404")
+  error_text: LightRed
+  # hint text in errors
+  hint: Yellow
+  # hovered pane border
+  hovered: LightGreen
+  # borders of inactive panes
+  inactive: Gray
+  # background of progress bar
+  playbar_background: Black
+  # filled-in part of the progress bar
+  playbar_progress: LightYellow
+  # song length and time played/left indicator in the progress bar
+  playbar_progress_text: Yellow
+  # artist name in player pane
+  playbar_text: Cyan
+  # a) selected pane border, b) hovered item in list, & c) track title in player
+  selected: Yellow
+  # text in panes
+  text: White
+  # header text in panes (e.g. 'Title', 'Artist', etc.)
+  header: White
+
