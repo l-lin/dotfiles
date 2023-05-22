@@ -374,9 +374,18 @@ change_nvim_background() {
 	fi
 }
 
+change_fzf_background() {
+	local file_path="${HOME}/.zshenv"
+
+	if [[ -f "${file_path}" ]]; then
+		sed -i --follow-symlinks "s/^export FZF_THEME_BACKGROUND='\(dark\|light\)'$/export FZF_THEME_BACKGROUND='${THEME_BACKGROUND}'/" "${file_path}"
+	fi
+}
+
 apply_change_background() {
 	change_tmux_background
 	change_nvim_background
+	change_fzf_background
 }
 
 ## Execute Script ---------------------------
