@@ -25,7 +25,7 @@
   </placement>
   <!-- Theme -->
   <theme>
-    <name>gruvbox-material-dark-blocks</name>
+    <name>Slime</name>
     <titleLayout>DLIMC</titleLayout>
     <keepBorder>no</keepBorder>
     <animateIconify>yes</animateIconify>
@@ -742,7 +742,7 @@
     <!-- Misc -->
     <keybind key="W-l">
       <action name="Execute">
-        <command>betterlockscreen --lock</command>
+        <command>betterlockscreen --lock --blur</command>
       </action>
     </keybind>
     <keybind key="W-t">
