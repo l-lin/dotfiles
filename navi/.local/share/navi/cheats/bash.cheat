@@ -228,7 +228,7 @@ sort <input_file> | uniq -c | awk '$1 > 1 { print $2 }'
 
 # -----------------------------------------------------------------
 
-% systemd
+% bash, systemd
 
 # Restart service
 systemctl restart <service>
@@ -243,7 +243,7 @@ $ service: systemctl list-units | grep '.service' | awk '{ print $1 }'
 
 # -----------------------------------------------------------------
 
-% job
+% bash, job
 
 # List current jobs
 jobs
@@ -259,6 +259,13 @@ bg %1
 
 # Disowning background job (allow process to continue once the shell session is closed)
 disown %1
+
+# -----------------------------------------------------------------
+
+% bash, misc
+
+# Change capslock to ctrl
+setxkbmap -layout us -option ctrl:nocaps -variant altgr-intl
 
 # -----------------------------------------------------------------
 
@@ -314,7 +321,7 @@ echo "${<variable>##*<pattern>}"
 
 # -----------------------------------------------------------------
 
-% bash, array
+% bash, script, array
 
 # Create an array
 array=('first element' 'second element')
@@ -363,7 +370,7 @@ unset array
 
 # -----------------------------------------------------------------
 
-% bash, map
+% bash, script, map
 
 # Declare map
 declare -A map=([john]=75 [doe]=82 [ann]=83 [ava]=72)
