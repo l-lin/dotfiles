@@ -50,7 +50,7 @@ geany_font='JetBrains Mono 10'
 
 # Appearance
 gtk_font='Noto Sans 13'
-gtk_theme='Gruvbox'
+gtk_theme='Slime'
 icon_theme='Zafiro'
 cursor_theme='Qogirr'
 
