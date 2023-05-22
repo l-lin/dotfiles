@@ -65,3 +65,6 @@ nnoremap <C-k> <C-w>k<CR>
 nnoremap <C-j> <C-w>j<CR>
 nnoremap <C-h> <C-w>h<CR>
 nnoremap <C-l> <C-w>l<CR>
+
+" do not include white space characters when using $ in visual mode, see https://vi.stackexchange.com/q/12607/15292
+vnoremap $ g_
