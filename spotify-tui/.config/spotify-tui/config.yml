@@ -30,3 +30,13 @@ theme:
   # header text in panes (e.g. 'Title', 'Artist', etc.)
   header: White
 
+behavior:
+  # Determines the text icon to display next to "liked" Spotify items, such as
+  # liked songs and albums, or followed artists. Can be any length string.
+  # These icons require a patched nerd font.
+  liked_icon: ♥
+  shuffle_icon: 󰒟
+  repeat_track_icon: 󰑘
+  repeat_context_icon: 󰕇
+  playing_icon: ▶
+  paused_icon: ⏸
