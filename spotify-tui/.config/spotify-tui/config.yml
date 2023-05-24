@@ -28,7 +28,7 @@ theme:
   # text in panes
   text: White
   # header text in panes (e.g. 'Title', 'Artist', etc.)
-  header: White
+  header: Cyan
 
 behavior:
   # Determines the text icon to display next to "liked" Spotify items, such as
