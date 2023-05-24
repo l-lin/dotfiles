@@ -117,6 +117,16 @@ return require('packer').startup(function(use)
   use { 'rcarriga/nvim-dap-ui', requires = 'mfussenegger/nvim-dap', config = function() require('plugins.dap-ui') end }
   -- autocompletion for DAP
   use { 'rcarriga/cmp-dap', requires = 'hrsh7th/nvim-cmp' }
+  -- framework for interacting with tests
+  use {
+    'nvim-neotest/neotest',
+    requires = {
+      'nvim-lua/plenary.nvim',
+      'nvim-treesitter/nvim-treesitter',
+      'nvim-neotest/neotest-go'
+    },
+    config = function() require('plugins.neotest') end
+  }
 
   -- -------------------------------------
   -- AUTOCOMPLETION
