@@ -49,9 +49,6 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "[-] Installing httpie: https://httpie.io/"
   yay -S --noconfirm httpie
 
-  echo "[-] installing aws-cli"
-  yay -S --noconfirm aws-cli
-
   echo "[-] installing redshift: http://jonls.dk/redshift/"
   yay -S --noconfirm redshift
 

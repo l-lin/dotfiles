@@ -119,4 +119,5 @@ install_plugin --name terraform
 install_plugin --name starship
 install_plugin --name exercism --source 'https://github.com/gorosz/asdf-exercism.git' --version '3.1.0'
 install_plugin --name richgo
+install_plugin --name awscli --cmd aws --source 'https://github.com/MetricMike/asdf-awscli' --version 'latest'
 
