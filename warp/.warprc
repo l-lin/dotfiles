@@ -1,4 +1,5 @@
 acquisition:~/work/acquisition
+aqtp:~/work/cloud-aqtp
 big-cloud:~/work/big-cloud
 dotfiles:~/perso/dotfiles
 gruvbox:~/perso/dotfiles/openbox-themes/.config/openbox-themes/themes/gruvbox
