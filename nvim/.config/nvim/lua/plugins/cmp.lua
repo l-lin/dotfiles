@@ -8,13 +8,6 @@ end
 
 cmp.setup({
   event = "InsertEnter",
-  view = {
-    entries = {
-      name = 'custom',
-      -- display highest scoring entry near the cursor instead of top
-      selection_order = 'near_cursor'
-    }
-  },
   formatting = {
     fields = { 'kind', 'abbr', 'menu' },
     format = function(entry, vim_item)
