@@ -1,7 +1,10 @@
 % aws
 
+# AWS CLI in interactive prompt
+aws --cli-auto-prompt
+
 # Local AWS
-aws --endpoint-url http://locastack.localhost 
+aws --endpoint-url http://locastack.localhost
 
 # List S3 objects
 aws --profile <profile> s3 ls s3://<bucket><env>/<key>
