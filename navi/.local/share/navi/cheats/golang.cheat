@@ -1,0 +1,12 @@
+% golang
+
+# List all of the modules that are dependencies of your current module, along with the latest version available for each
+go list -m -u all
+
+# Display the latest version available for a specific module
+go list -m -u <go_mod_package_name>
+
+# Install binary globally
+go install <package_name>
+
+$ go_mod_package_name: grep -P '\t' go.mod | awk '{ print $1 }'
