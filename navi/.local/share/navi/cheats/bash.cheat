@@ -26,6 +26,9 @@ tree -L <display_depth>
 # Get folder Names
 for f in */; do echo $f; done
 
+# Rename files to lower case
+for i in *; do mv $i $(echo $i | tr '[:upper:]' '[:lower:]'); done
+
 # -----------------------------------------------------------------
 
 % bash, cat
