@@ -6,6 +6,9 @@ $ input_file: ls -p | grep -v /
 
 % bash, ls, file
 
+# File system structure explanation
+man hier
+
 # List files sorted by modification date
 ls -lt
 
@@ -28,6 +31,9 @@ for f in */; do echo $f; done
 
 # Rename files to lower case
 for i in *; do mv $i $(echo $i | tr '[:upper:]' '[:lower:]'); done
+
+# Find duplicate file based on MD5 hash
+find -type f -exec  md5sum '{}' ';' |  sort |  uniq --all-repeated=separate -w 33 |  cut -c 35-
 
 # -----------------------------------------------------------------
 
@@ -173,6 +179,14 @@ awk '
     sum = sum + $i
   print sum
 }'
+
+# -----------------------------------------------------------------
+
+% bash, sed
+@ bash, common
+
+# Convert to camel case
+sed -e 's/\(.*\)/\L\1/' <input_file>
 
 # -----------------------------------------------------------------
 
@@ -457,4 +471,29 @@ until [[ i -eq 10 ]]; do
   echo "i=$i"
   i="$((i+1))"
 done
+
+# -----------------------------------------------------------------
+
+% bash, misc
+
+# Information about CPU
+lscpu
+
+# Display calendar
+cal
+
+# Bandwidth usage
+iftop
+
+# Network interfaces
+lspci | egrep -i 'network|ethernet'
+
+# Info about kernel release
+uname -a
+
+# System hardware information
+sudo lshw
+
+# System hardware information in HTML format
+sudo lshw -html
 
