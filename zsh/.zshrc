@@ -28,6 +28,8 @@ plugins=(
   forgit
   # map ctrl+h to find file
   fzf-custom
+  # completion selection menu with fzf
+  fzf-tab
   git-extra-commands
   git-open
   # faster git status for spaceship prompt
