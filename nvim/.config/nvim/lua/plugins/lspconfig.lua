@@ -1,4 +1,5 @@
 local lsp = require('lspconfig')
+local map = vim.keymap.set
 
 -- configure setup on attach to a lsp server
 local custom_attach = function(_, bufnr)
@@ -26,45 +27,41 @@ local custom_attach = function(_, bufnr)
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
   -- keymaps
-  vim.keymap.set('n', ']w', vim.diagnostic.goto_next,
+  map('n', ']w', vim.diagnostic.goto_next,
     { noremap = true, silent = true, buffer = bufnr, desc = "Diagnostic go to next" })
-  vim.keymap.set('n', '[w', vim.diagnostic.goto_prev,
+  map('n', '[w', vim.diagnostic.goto_prev,
     { noremap = true, silent = true, buffer = bufnr, desc = "Diagnostic go to previous" })
-  vim.keymap.set('n', '<leader>ch', '<cmd>lua vim.lsp.buf.hover() vim.lsp.buf.hover()<cr>',
+  map('n', '<leader>ch', '<cmd>lua vim.lsp.buf.hover() vim.lsp.buf.hover()<cr>',
     { noremap = true, silent = true, buffer = bufnr, desc = "LSP show hovering help" })
-  vim.keymap.set('n', '<S-k>', '<cmd>lua vim.lsp.buf.hover() vim.lsp.buf.hover()<cr>',
+  map('n', '<S-k>', '<cmd>lua vim.lsp.buf.hover() vim.lsp.buf.hover()<cr>',
     { noremap = true, silent = true, buffer = bufnr, desc = "LSP show hovering help (Shift+k)" })
-  vim.keymap.set('n', '<C-b>', vim.lsp.buf.definition,
-    { noremap = true, silent = true, buffer = bufnr, desc = "LSP definition (Ctrl+b)" })
-  vim.keymap.set('n', '<leader>cd', vim.lsp.buf.definition,
-    { noremap = true, silent = true, buffer = bufnr, desc = "LSP definition" })
-  vim.keymap.set('n', '<leader>cD', vim.lsp.buf.declaration,
-    { noremap = true, silent = true, buffer = bufnr, desc = "LSP declaration" })
-  vim.keymap.set('n', '<leader>ci', vim.lsp.buf.implementation,
-    { noremap = true, silent = true, buffer = bufnr, desc = "LSP implementation" })
-  vim.keymap.set('n', '<leader>co', vim.lsp.buf.type_definition,
-    { noremap = true, silent = true, buffer = bufnr, desc = "LSP type definition" })
-  vim.keymap.set('n', '<leader>cu', vim.lsp.buf.references,
-    { noremap = true, silent = true, buffer = bufnr, desc = "LSP references" })
-  vim.keymap.set('n', '<leader>cs', vim.lsp.buf.signature_help,
+  -- map('n', '<leader>cd', vim.lsp.buf.definition,
+  --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP definition" })
+  -- map('n', '<leader>cD', vim.lsp.buf.declaration,
+  --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP declaration" })
+  -- map('n', '<leader>ci', vim.lsp.buf.implementation,
+  --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP implementation" })
+  -- map('n', '<leader>co', vim.lsp.buf.type_definition,
+  --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP type definition" })
+  -- map('n', '<leader>cu', vim.lsp.buf.references,
+  --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP references" })
+  map('n', '<leader>cs', vim.lsp.buf.signature_help,
     { noremap = true, silent = true, buffer = bufnr, desc = "LSP signature help" })
-  vim.keymap.set('n', '<leader>cr', vim.lsp.buf.rename,
+  map('n', '<leader>cr', vim.lsp.buf.rename,
     { noremap = true, silent = true, buffer = bufnr, desc = "LSP rename" })
-  vim.keymap.set('n', '<F18>', vim.lsp.buf.rename,
+  map('n', '<F18>', vim.lsp.buf.rename,
     { noremap = true, silent = true, buffer = bufnr, desc = "LSP rename (Shift+F6)" })
-  vim.keymap.set('n', '<leader>cf', '<cmd>lua vim.lsp.buf.format { async = true }<CR>',
+  map('n', '<leader>cf', '<cmd>lua vim.lsp.buf.format { async = true }<CR>',
     { noremap = true, silent = true, buffer = bufnr, desc = "LSP format" })
-  vim.keymap.set('n', '<M-C-L>', '<cmd>lua vim.lsp.buf.format { async = true }<CR>',
+  map('n', '<M-C-L>', '<cmd>lua vim.lsp.buf.format { async = true }<CR>',
     { noremap = true, silent = true, buffer = bufnr, desc = "LSP format (Ctrl+Alt+l)" })
-  vim.keymap.set('n', '<leader>ce', vim.diagnostic.setloclist,
-    { noremap = true, silent = true, buffer = bufnr, desc = "LSP show errors" })
-  vim.keymap.set('n', '<M-6>', vim.diagnostic.setloclist,
-    { noremap = true, silent = true, buffer = bufnr, desc = "LSP show errors (Alt+6)" })
-  vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action,
+  -- map('n', '<leader>ce', vim.diagnostic.setloclist,
+  --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP show errors" })
+  map('n', '<leader>ca', vim.lsp.buf.code_action,
     { noremap = true, silent = true, buffer = bufnr, desc = "LSP code action" })
-  vim.keymap.set('n', '<A-CR>', vim.lsp.buf.code_action,
+  map('n', '<A-CR>', vim.lsp.buf.code_action,
     { noremap = true, silent = true, buffer = bufnr, desc = "LSP code action (Alt+Enter)" })
-  vim.keymap.set('n', '<F25>', vim.diagnostic.open_float,
+  map('n', '<F25>', vim.diagnostic.open_float,
     { noremap = true, buffer = bufnr, desc = "LSP open message in floating window (Ctrl+F1)" })
 end
 
