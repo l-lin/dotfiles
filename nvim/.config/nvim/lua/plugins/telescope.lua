@@ -60,7 +60,7 @@ map('n', '<leader>fp', "<cmd>lua require'telescope'.extensions.project.project{ 
 -- text
 map('n', '<leader>fti', '<cmd>Telescope current_buffer_fuzzy_find<CR>', { noremap = true, desc = 'Find string in current buffer' })
 map('n', '<leader>ftg', '<cmd>Telescope grep_string<CR>', { noremap = true, desc = 'Find string in path' })
-map('n', '<M-&>', '<cmd>Telescope grep_string<CR>', { noremap = true, desc = 'Find string in path (Ctrl+Alt+7)' })
+map('n', '<M-f>', '<cmd>Telescope grep_string<CR>', { noremap = true, desc = 'Find string in path (Alt+f)' })
 map('n', '<leader>fts', '<cmd>Telescope spell_suggest<CR>', { noremap = true, desc = 'Spelling suggestions for current word under cursor' })
 
 -- code
@@ -69,9 +69,11 @@ map('n', '<C-b>', '<cmd>Telescope lsp_definitions<CR>', { noremap = true, desc =
 map('n', '<leader>cD', '<cmd>Telescope diagnostics<CR>', { noremap = true, desc = 'Diagnostic' })
 map('n', '<M-6>', '<cmd>Telescope diagnostics<CR>', { noremap = true, desc = 'Diagnostic (Alt+6)' })
 map('n', '<leader>ci', '<cmd>Telescope lsp_implementations<CR>', { noremap = true, desc = 'Goto implementation' })
+map('n', '<C-i>', '<cmd>Telescope lsp_implementations<CR>', { noremap = true, desc = 'Goto implementation (Ctrl+i)' })
 map('n', '<leader>ct', '<cmd>Telescope lsp_type_definitions<CR>', { noremap = true, desc = 'Goto type definition' })
 map('n', '<leader>cR', "<cmd>lua require'telescope'.extensions.refactoring.refactors()<CR>", { noremap = true, silent = true, desc = 'refactor' })
 map('n', '<leader>cu', '<cmd>Telescope lsp_references<CR>', { noremap = true, desc = 'Goto LSP reference' })
+map('n', '<M-&>', '<cmd>Telescope lsp_references<CR>', { noremap = true, desc = 'Goto LSP reference (Ctrl+Alt+7)' })
 -- map('n', '<leader>cT', '<cmd>Telescope tags<CR>', { noremap = true, desc = 'Find tag' })
 -- map('n', '<leader>fj', '<cmd>Telescope jumplist<CR>', { noremap = true, desc = 'Telescope in jumplist' })
 -- map('n', '<leader>fq', '<cmd>Telescope quickfix<CR>', { noremap = true, desc = 'Telescope in quickfix list' })
