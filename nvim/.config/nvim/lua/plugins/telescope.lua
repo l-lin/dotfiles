@@ -69,7 +69,7 @@ map('n', '<C-b>', '<cmd>Telescope lsp_definitions<CR>', { noremap = true, desc =
 map('n', '<leader>cD', '<cmd>Telescope diagnostics<CR>', { noremap = true, desc = 'Diagnostic' })
 map('n', '<M-6>', '<cmd>Telescope diagnostics<CR>', { noremap = true, desc = 'Diagnostic (Alt+6)' })
 map('n', '<leader>ci', '<cmd>Telescope lsp_implementations<CR>', { noremap = true, desc = 'Goto implementation' })
-map('n', '<C-i>', '<cmd>Telescope lsp_implementations<CR>', { noremap = true, desc = 'Goto implementation (Ctrl+i)' })
+map('n', '<M-C-B>', '<cmd>Telescope lsp_implementations<CR>', { noremap = true, desc = 'Goto implementation (Ctrl+Alt+b)' })
 map('n', '<leader>ct', '<cmd>Telescope lsp_type_definitions<CR>', { noremap = true, desc = 'Goto type definition' })
 map('n', '<leader>cR', "<cmd>lua require'telescope'.extensions.refactoring.refactors()<CR>", { noremap = true, silent = true, desc = 'Refactor' })
 map('n', '<leader>cu', '<cmd>Telescope lsp_references<CR>', { noremap = true, desc = 'Goto LSP reference' })
