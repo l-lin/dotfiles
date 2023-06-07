@@ -71,9 +71,11 @@ map('n', '<M-6>', '<cmd>Telescope diagnostics<CR>', { noremap = true, desc = 'Di
 map('n', '<leader>ci', '<cmd>Telescope lsp_implementations<CR>', { noremap = true, desc = 'Goto implementation' })
 map('n', '<C-i>', '<cmd>Telescope lsp_implementations<CR>', { noremap = true, desc = 'Goto implementation (Ctrl+i)' })
 map('n', '<leader>ct', '<cmd>Telescope lsp_type_definitions<CR>', { noremap = true, desc = 'Goto type definition' })
-map('n', '<leader>cR', "<cmd>lua require'telescope'.extensions.refactoring.refactors()<CR>", { noremap = true, silent = true, desc = 'refactor' })
+map('n', '<leader>cR', "<cmd>lua require'telescope'.extensions.refactoring.refactors()<CR>", { noremap = true, silent = true, desc = 'Refactor' })
 map('n', '<leader>cu', '<cmd>Telescope lsp_references<CR>', { noremap = true, desc = 'Goto LSP reference' })
 map('n', '<M-&>', '<cmd>Telescope lsp_references<CR>', { noremap = true, desc = 'Goto LSP reference (Ctrl+Alt+7)' })
+map('n', '<leader>cv', '<cmd>Telescope treesitter<CR>', { noremap = true, desc = 'Treesitter symbol' })
+map('n', '<F36>', '<cmd>Telescope treesitter default_text=function<CR>', { noremap = true, desc = 'Find function (Ctrl+F12)' })
 -- map('n', '<leader>cT', '<cmd>Telescope tags<CR>', { noremap = true, desc = 'Find tag' })
 -- map('n', '<leader>fj', '<cmd>Telescope jumplist<CR>', { noremap = true, desc = 'Telescope in jumplist' })
 -- map('n', '<leader>fq', '<cmd>Telescope quickfix<CR>', { noremap = true, desc = 'Telescope in quickfix list' })
@@ -82,7 +84,6 @@ map('n', '<M-&>', '<cmd>Telescope lsp_references<CR>', { noremap = true, desc = 
 -- map('n', '<leader>f>', '<cmd>Telescope lsp_outgoing_calls<CR>', { noremap = true, desc = 'Telescope lsp who is calling me' })
 -- map('n', '<leader>f$', '<cmd>Telescope lsp_document_symbols<CR>', { noremap = true, desc = 'Telescope in document functions, variables, expressions...' })
 -- map('n', '<leader>f^', '<cmd>Telescope lsp_workspace_symbols<CR>', { noremap = true, desc = 'Telescope in workspace functions, variables, expressions...' })
--- map('n', '<leader>fv', '<cmd>Telescope treesitter<CR>', { noremap = true, desc = 'Telescope treesitter symbol' })
 
 -- git
 map('n', '<leader>fgb', '<cmd>Telescope git_branches<CR>', { noremap = true, desc = 'Telescope in branches' })
