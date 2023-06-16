@@ -18,4 +18,5 @@ install_navi_repository() {
 }
 
 install_navi_repository "git@github.com" l-lin cheats
+install_navi_repository "git@git.bioserenity.com" louis.lin cheats
 
