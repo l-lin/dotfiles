@@ -1,4 +1,0 @@
-% cargo
-
-# Force update crate
-cargo install --force <crate>

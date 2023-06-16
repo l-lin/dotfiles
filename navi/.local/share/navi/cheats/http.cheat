@@ -1,5 +1,0 @@
-% websocket
-
-# Open websocket connection
-websocat "wss://<url>" --header "Authorization: Bearer <token>" -vv
-

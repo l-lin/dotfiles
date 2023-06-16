@@ -3,7 +3,7 @@ aqtp:~/work/cloud-aqtp
 big-cloud:~/work/big-cloud
 dotfiles:~/perso/dotfiles
 gruvbox:~/perso/dotfiles/openbox-themes/.config/openbox-themes/themes/gruvbox
-navi:~/perso/dotfiles/navi/.local/share/navi/cheats
+navi:~/perso/cheats
 nvim:~/perso/dotfiles/nvim/.config/nvim/lua
 playbook:~/work/sandbox/playbook
 record-service:~/work/record-service
