@@ -77,5 +77,10 @@ vim.g.loaded_tarPlugin = 1
 vim.g.loaded_tutor_mode_plugin = 1
 vim.g.loaded_sql_completion = 1 -- disable sql omni completion, it is broken.
 
-vim.g.auto_save = 1 -- enable AutoSave
+-- disable language provider support (lua and vimscript plugins only)
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_node_provider = 0
+vim.g.loaded_python_provider = 0
+vim.g.loaded_python3_provider = 0
 

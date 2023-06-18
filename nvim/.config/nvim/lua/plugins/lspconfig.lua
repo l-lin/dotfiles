@@ -68,31 +68,32 @@ end
 -- Setup lspconfig.
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
+-- Workaround for jdtls nil issue, see https://github.com/neovim/nvim-lspconfig/issues/2386
+local function on_language_status(_, result)
+  -- Ignore nil messages.
+  if result.message == nil then
+      return
+  end
+  local command = vim.api.nvim_command
+  command 'echohl ModeMsg'
+  command(string.format('echo "%s"', result.message))
+  command 'echohl None'
+end
+
 -- setup servers for each programming language
-lsp.bashls.setup {
+lsp.angularls.setup { on_attach = custom_attach, capabilities = capabilities }
+lsp.bashls.setup { on_attach = custom_attach, capabilities = capabilities }
+lsp.dockerls.setup { on_attach = custom_attach, capabilities = capabilities }
+lsp.gopls.setup { on_attach = custom_attach, capabilities = capabilities }
+lsp.html.setup { on_attach = custom_attach, capabilities = capabilities }
+lsp.jdtls.setup {
   on_attach = custom_attach,
   capabilities = capabilities,
+  handlers = {
+    ["$/progress"] = vim.schedule_wrap(on_language_status),
+  },
 }
-lsp.yamlls.setup {
-  on_attach = custom_attach,
-  capabilities = capabilities,
-}
-lsp.gopls.setup {
-  on_attach = custom_attach,
-  capabilities = capabilities,
-}
-lsp.dockerls.setup {
-  on_attach = custom_attach,
-  capabilities = capabilities,
-}
-lsp.jsonls.setup {
-  on_attach = custom_attach,
-  capabilities = capabilities,
-}
-lsp.html.setup {
-  on_attach = custom_attach,
-  capabilities = capabilities,
-}
+lsp.jsonls.setup { on_attach = custom_attach, capabilities = capabilities }
 lsp.lua_ls.setup {
   on_attach = custom_attach,
   capabilities = capabilities,
@@ -118,31 +119,13 @@ lsp.lua_ls.setup {
     },
   },
 }
-lsp.marksman.setup {
-  on_attach = custom_attach,
-  capabilities = capabilities,
-}
-lsp.pylsp.setup {
-  on_attach = custom_attach,
-  capabilities = capabilities,
-}
-lsp.rust_analyzer.setup {
-  on_attach = custom_attach,
-  capabilities = capabilities,
-}
-lsp.sqlls.setup {
-  on_attach = custom_attach,
-  capabilities = capabilities,
-}
-lsp.terraform_lsp.setup {
-  cmd = { 'terraform-ls', 'serve' },
-  on_attach = custom_attach,
-  capabilities = capabilities,
-}
-lsp.vimls.setup {
-  on_attach = custom_attach,
-  capabilities = capabilities,
-}
+lsp.marksman.setup { on_attach = custom_attach, capabilities = capabilities }
+lsp.pylsp.setup { on_attach = custom_attach, capabilities = capabilities }
+lsp.rust_analyzer.setup { on_attach = custom_attach, capabilities = capabilities }
+lsp.sqlls.setup { on_attach = custom_attach, capabilities = capabilities }
+lsp.terraform_lsp.setup { cmd = { 'terraform-ls', 'serve' }, on_attach = custom_attach, capabilities = capabilities }
+lsp.tsserver.setup { on_attach = custom_attach, capabilities = capabilities }
+lsp.vimls.setup { on_attach = custom_attach, capabilities = capabilities }
 lsp.yamlls.setup {
   on_attach = custom_attach,
   capabilities = capabilities,
@@ -154,12 +137,4 @@ lsp.yamlls.setup {
       }
     }
   }
-}
-lsp.tsserver.setup {
-  on_attach = custom_attach,
-  capabilities = capabilities,
-}
-lsp.angularls.setup {
-  on_attach = custom_attach,
-  capabilities = capabilities,
 }
