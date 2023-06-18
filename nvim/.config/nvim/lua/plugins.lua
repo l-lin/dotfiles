@@ -173,7 +173,7 @@ return require('packer').startup(function(use)
   use { 'saadparwaiz1/cmp_luasnip' }
 
   -- lsp progress eye candy
-  use { 'j-hui/fidget.nvim', config = function() require('fidget').setup {} end }
+  use { 'j-hui/fidget.nvim', tag = 'legacy', config = function() require('fidget').setup {} end }
 
   -- -------------------------------------
   -- NAVIGATION
