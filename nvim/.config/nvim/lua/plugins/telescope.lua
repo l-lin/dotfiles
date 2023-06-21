@@ -43,6 +43,7 @@ local map = vim.keymap.set
 map('n', '<C-g>', '<cmd>Telescope find_files find_command=rg,--no-ignore,--hidden,--glob=!.git/,--glob=!target/,--glob=!node_modules/,--files prompt_prefix=🔍<CR>',
   { noremap = true, silent = true, desc = 'Find file' })
 map('n', '<leader>fa', '<cmd>Telescope live_grep<CR>', { noremap = true, desc = 'Find pattern in all files' })
+map('n', '<M-f>', '<cmd>Telescope live_grep<CR>', { noremap = true, desc = 'Find pattern in all files (Alt+f)' })
 map('n', '<leader>fb', '<cmd>Telescope buffers<CR>', { noremap = true, desc = 'Find file in buffer' })
 map('n', '<C-e>', '<cmd>Telescope buffers<CR>', { noremap = true, desc = 'Find file in buffer (Ctrl+e)' })
 
@@ -60,7 +61,6 @@ map('n', '<leader>fp', "<cmd>lua require'telescope'.extensions.project.project{ 
 -- text
 map('n', '<leader>fti', '<cmd>Telescope current_buffer_fuzzy_find<CR>', { noremap = true, desc = 'Find string in current buffer' })
 map('n', '<leader>ftg', '<cmd>Telescope grep_string<CR>', { noremap = true, desc = 'Find string in path' })
-map('n', '<M-f>', '<cmd>Telescope grep_string<CR>', { noremap = true, desc = 'Find string in path (Alt+f)' })
 map('n', '<leader>fts', '<cmd>Telescope spell_suggest<CR>', { noremap = true, desc = 'Spelling suggestions for current word under cursor' })
 
 -- code
