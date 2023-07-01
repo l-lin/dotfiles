@@ -91,6 +91,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "[-] installing duf: https://github.com/muesli/duf"
   yay -S --noconfirm duf
 
+  echo "[-] installing bashmount: https://github.com/jamielinux/bashmount"
+  yay -S --noconfirm bashmount
+
   echo "[-] Finished installing stuffs"
 fi
 
