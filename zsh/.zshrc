@@ -26,7 +26,7 @@ plugins=(
   extract
   # interactive git
   forgit
-  # map ctrl+h to find file
+  # map ctrl+g to find file
   fzf-custom
   # completion selection menu with fzf
   fzf-tab
@@ -37,6 +37,7 @@ plugins=(
   #gitstatus-prompt
   # httpie completion
   httpie
+  jira
   # quarkus completion
   quarkus
   # ripgrep completion
