@@ -40,7 +40,7 @@ require('telescope').load_extension('project')
 
 local map = vim.keymap.set
 -- find files
-map('n', '<C-g>', '<cmd>Telescope find_files find_command=rg,--no-ignore,--hidden,--glob=!.git/,--glob=!target/,--glob=!node_modules/,--files prompt_prefix=🔍<CR>',
+map('n', '<C-g>', '<cmd>Telescope find_files find_command=rg,--no-ignore,--hidden,--glob=!.git/,--glob=!target/,--glob=!node_modules/,--glob=!.terraform/,--files prompt_prefix=🔍<CR>',
   { noremap = true, silent = true, desc = 'Find file' })
 map('n', '<leader>fa', '<cmd>Telescope live_grep<CR>', { noremap = true, desc = 'Find pattern in all files' })
 map('n', '<M-f>', '<cmd>Telescope live_grep<CR>', { noremap = true, desc = 'Find pattern in all files (Alt+f)' })
