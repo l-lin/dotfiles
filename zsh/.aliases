@@ -63,6 +63,10 @@ alias h="helm"
 # pandoc
 alias pandoc="docker run --rm --volume "$(pwd):/data" --user $(id -u):$(id -g) pandoc/core:3.0.1-alpine"
 alias pandoc-latex="docker run --rm --volume "$(pwd):/data" --user $(id -u):$(id -g) pandoc/latex:3.0.1-alpine"
+# awslocal
+alias awslocal='aws --endpoint-url=http://localhost:4566'
+# termgraph
+alias termgraph="docker run -it --rm --volume $(pwd):/data --user $(id -u):$(id -g) ghcr.io/l-lin/termgraph:main"
 
 # --------------------------------------------------------
 # GIT
