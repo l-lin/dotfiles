@@ -55,6 +55,8 @@ export FZF_DEFAULT_OPTS="
 --bind='?:toggle-preview' \
 --bind='alt-p:toggle-preview-wrap' \
 --preview-window='right:40%:border-none' \
+--tiebreak=chunk \
+--cycle \
 ${FZF_THEME}
 "
 export FZF_TMUX_OPTS="-p 90%,90%"
@@ -68,6 +70,11 @@ export FZF_ALT_C_OPTS="--no-reverse --sort --preview 'tree -C {} | head -200'"
 export FZF_CTRL_T_COMMAND="fd --type f --hidden --exclude .git"
 # display hidden folders with ATL-C command
 export FZF_ALT_C_COMMAND="fd --type d --hidden --exclude .git"
+
+# --------------------------------------------------------
+# navi config
+# --------------------------------------------------------
+export NAVI_FZF_OVERRIDES_VAR="--preview-window top:75%:wrap:border"
 
 # --------------------------------------------------------
 # zsh-autosuggestions config
