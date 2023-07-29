@@ -4,7 +4,6 @@ require('nvim-treesitter.configs').setup({
     "c",
     "css",
     "dockerfile",
-    "help",
     "go",
     "gomod",
     "lua",
@@ -16,6 +15,7 @@ require('nvim-treesitter.configs').setup({
     "terraform",
     "toml",
     "vim",
+    "vimdoc",
   },
   -- Install parsers synchronously (only applied to `ensure_installed`)
   sync_install = false,

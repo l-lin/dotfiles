@@ -1,235 +1,432 @@
-local ensure_packer = function()
-  local install_path = vim.fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
-  if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-    vim.fn.system({ 'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path })
-    vim.cmd [[packadd packer.nvim]]
-    return true
-  end
-  return false
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
 end
+vim.opt.rtp:prepend(lazypath)
 
-local packer_bootstrap = ensure_packer()
-return require('packer').startup(function(use)
-  -- package manager
-  use { 'wbthomason/packer.nvim' }
+local plugins = {
+  -- -------------------------------------
+  -- NVIM
+  -- -------------------------------------
+  {
+    'dstein64/vim-startuptime',
+    -- lazy-load on a command
+    cmd = 'StartupTime',
+    -- init is called during startup. Configuration for vim plugins typically should be set in an init function
+    init = function() vim.g.startuptime_tries = 10 end,
+    enabled = false,
+  },
+  {
+    -- lua module for asynchronous programming (dependancy lib)
+    'nvim-lua/plenary.nvim',
+    lazy = true,
+  },
 
   -- -------------------------------------
   -- GUI
   -- -------------------------------------
   -- colorscheme
-  use { "ellisonleao/gruvbox.nvim" }
-
+  {
+    'ellisonleao/gruvbox.nvim',
+  },
   -- filetype icons
-  use { 'nvim-tree/nvim-web-devicons', config = function() require('plugins.web-devicons') end }
+  {
+    'nvim-tree/nvim-web-devicons',
+    config = function() require('plugins.web-devicons') end,
+    lazy = true,
+  },
   -- display marks
-  use { 'kshenoy/vim-signature' }
+  {
+    'kshenoy/vim-signature',
+    event = 'VeryLazy',
+  },
   -- status line (bottom)
-  use {
+  {
     'nvim-lualine/lualine.nvim',
-    requires = { 'nvim-tree/nvim-web-devicons', opt = true },
+    config = function() require('plugins.lualine') end,
+    dependencies = { 'ellisonleao/gruvbox.nvim', 'nvim-tree/nvim-web-devicons', opt = true, },
     event = 'VimEnter',
-    config = function() require('plugins.lualine') end
-  }
+  },
   -- buffer line (top)
-  use {
+  {
     'akinsho/bufferline.nvim',
-    tag = "v3.*",
-    requires = 'nvim-tree/nvim-web-devicons',
+    config = function() require('plugins.bufferline') end,
+    dependencies = { 'ellisonleao/gruvbox.nvim', 'nvim-tree/nvim-web-devicons', opt = true, },
     event = 'VimEnter',
-    config = function() require('plugins.bufferline') end
-  }
+  },
 
   -- -------------------------------------
   -- EDITOR
   -- -------------------------------------
   -- surround parenthese
-  use { 'machakann/vim-sandwich' }
+  {
+    'machakann/vim-sandwich',
+    event = 'VeryLazy',
+  },
   -- autoclose pairs, (), []...
-  use { 'windwp/nvim-autopairs', config = function() require('nvim-autopairs').setup {} end }
+  {
+    'windwp/nvim-autopairs',
+    config = function() require('nvim-autopairs').setup {} end,
+    event = 'VeryLazy',
+  },
   -- syntax aware commenting
-  use { 'numToStr/Comment.nvim', config = function() require('plugins.comment') end }
+  {
+    'numToStr/Comment.nvim',
+    config = function() require('plugins.comment') end,
+    event = 'VeryLazy',
+  },
   -- a pretty list for diagnostics
-  use {
+  {
     'folke/trouble.nvim',
-    requires = 'nvim-tree/nvim-web-devicons',
-    event = 'VimEnter',
-    config = function() require('plugins.trouble') end
-  }
+    config = function() require('plugins.trouble') end,
+    dependencies = { 'neovim/nvim-lspconfig' },
+    event = 'VeryLazy',
+  },
   -- multiple cursors
-  use { 'mg979/vim-visual-multi', config = function() require('plugins.visual-multi') end }
+  {
+    'mg979/vim-visual-multi',
+    event = 'VeryLazy',
+    init = function() require('plugins.visual-multi') end,
+  },
   -- handle trailing whitespace
-  use { 'ntpeters/vim-better-whitespace', config = function() require('plugins.better-whitespace') end }
+  {
+    'ntpeters/vim-better-whitespace',
+    config = function() require('plugins.better-whitespace') end,
+    event = 'VeryLazy'
+  },
   -- automatically manage hlsearch
-  use { 'asiryk/auto-hlsearch.nvim', config = function() require('auto-hlsearch').setup() end }
+  {
+    'asiryk/auto-hlsearch.nvim',
+    config = function() require('auto-hlsearch').setup() end,
+    event = 'VeryLazy',
+  },
   -- better glance at matched information
-  use { 'kevinhwang91/nvim-hlslens', config = function() require('plugins.hlslens') end }
+  {
+    'kevinhwang91/nvim-hlslens',
+    config = function() require('plugins.hlslens') end,
+    event = 'VeryLazy',
+  },
   -- search and replace
-  use { 'windwp/nvim-spectre', config = function() require('plugins.spectre') end }
+  {
+    'windwp/nvim-spectre',
+    config = function() require('plugins.spectre') end,
+  },
   -- markdown table
-  use { 'dhruvasagar/vim-table-mode' }
+  {
+    'dhruvasagar/vim-table-mode',
+    event = 'VeryLazy',
+  },
 
   -- -------------------------------------
   -- DEV
   -- -------------------------------------
   -- enhanced syntax by treesitter
-  use { 'nvim-treesitter/nvim-treesitter', config = function() require('plugins.treesitter') end }
-  -- show lightbulb for code hints
+  {
+    'nvim-treesitter/nvim-treesitter',
+    config = function() require('plugins.treesitter') end,
+    lazy = true,
+  },
+  {
+    'RRethy/vim-illuminate',
+    event = 'VeryLazy',
+  },
   -- lua support
-  use { 'folke/neodev.nvim' }
+  {
+    'folke/neodev.nvim',
+    ft = 'lua',
+  },
   -- ansible support
-  use { 'pearofducks/ansible-vim' }
+  {
+    'pearofducks/ansible-vim',
+  },
   -- refactoring
-  use {
+  {
     'ThePrimeagen/refactoring.nvim',
-    requires = { { 'nvim-lua/plenary.nvim' }, { 'nvim-treesitter/nvim-treesitter' } },
-    config = function() require('plugins.refactoring') end
-  }
+    config = function() require('plugins.refactoring') end,
+    dependencies = { 'nvim-lua/plenary.nvim', 'nvim-treesitter/nvim-treesitter' },
+    event = 'VeryLazy'
+  },
 
   -- -------------------------------------
   -- LSP
   -- -------------------------------------
   -- easily config neovim lsp
-  use { 'neovim/nvim-lspconfig', config = function() require('plugins.lspconfig') end }
+  {
+    'neovim/nvim-lspconfig',
+    config = function() require('plugins.lspconfig') end,
+    dependencies = { 'williamboman/mason-lspconfig.nvim', 'glepnir/lspsaga.nvim' },
+  },
   -- easily install/update lsp servers directly from neovim
-  use {
+  {
     'williamboman/mason.nvim',
-    requires = 'neovim/nvim-lspconfig',
-    config = function() require('plugins.mason') end
-  }
+    config = function() require('plugins.mason') end,
+    lazy = true,
+  },
   -- bridge between mason and nvim-lspconfig
-  use {
+  {
     'williamboman/mason-lspconfig',
-    requires = 'williamboman/mason.nvim',
-    config = function() require('plugins.mason-lspconfig') end
-  }
+    config = function() require('plugins.mason-lspconfig') end,
+    dependencies = 'williamboman/mason.nvim',
+  },
   -- ui for lsp features
-  use {
+  {
     'glepnir/lspsaga.nvim',
     config = function() require('plugins.lspsaga') end,
-    after = 'nvim-lspconfig'
-  }
+    dependencies = { "nvim-tree/nvim-web-devicons", "nvim-treesitter/nvim-treesitter" },
+    lazy = true
+  },
 
   -- -------------------------------------
   -- DAP
   -- -------------------------------------
   -- debugger engine
-  use { 'mfussenegger/nvim-dap', config = function() require('plugins.dap') end }
+  {
+    'mfussenegger/nvim-dap',
+    config = function() require('plugins.dap') end,
+    event = 'VeryLazy',
+  },
   -- dap ui
-  use { 'rcarriga/nvim-dap-ui', requires = 'mfussenegger/nvim-dap', config = function() require('plugins.dap-ui') end }
+  {
+    'rcarriga/nvim-dap-ui',
+    config = function() require('plugins.dap-ui') end,
+    dependencies = { 'mfussenegger/nvim-dap' },
+    event = 'VeryLazy',
+  },
   -- autocompletion for DAP
-  use { 'rcarriga/cmp-dap', requires = 'hrsh7th/nvim-cmp' }
+  {
+    'rcarriga/cmp-dap',
+    dependencies = { 'hrsh7th/nvim-cmp' },
+    event = 'VeryLazy',
+  },
   -- framework for interacting with tests
-  use {
+  {
     'nvim-neotest/neotest',
-    requires = {
+    config = function() require('plugins.neotest') end,
+    dependencies = {
       'nvim-lua/plenary.nvim',
       'nvim-treesitter/nvim-treesitter',
       'nvim-neotest/neotest-go'
     },
-    config = function() require('plugins.neotest') end
-  }
+    event = 'VeryLazy',
+  },
 
   -- -------------------------------------
   -- AUTOCOMPLETION
   -- -------------------------------------
   -- add pictograms to cmp
-  use { 'onsails/lspkind.nvim' }
+  {
+    'onsails/lspkind.nvim',
+    lazy = true,
+  },
   -- autocompletion engine
-  use {
+  {
     'hrsh7th/nvim-cmp',
-    requires = { 'onsails/lspkind.nvim' },
-    config = function() require('plugins.cmp') end
-  }
+    config = function() require('plugins.cmp') end,
+    dependencies = { 'onsails/lspkind.nvim' },
+    lazy = true,
+  },
   -- lsp based
-  use { 'hrsh7th/cmp-nvim-lsp' }
+  {
+    'hrsh7th/cmp-nvim-lsp',
+    dependencies = { 'hrsh7th/nvim-cmp' },
+  },
   -- buffer based
-  use { 'hrsh7th/cmp-buffer' }
+  {
+    'hrsh7th/cmp-buffer',
+    dependencies = { 'hrsh7th/nvim-cmp' },
+  },
   -- filepath based
-  use { 'hrsh7th/cmp-path' }
+  {
+    'hrsh7th/cmp-path',
+    dependencies = { 'hrsh7th/nvim-cmp' },
+  },
   -- command based
-  use { 'hrsh7th/cmp-cmdline' }
+  {
+    'hrsh7th/cmp-cmdline',
+    dependencies = { 'hrsh7th/nvim-cmp' },
+  },
   -- autocompletion on lsp function/class signature
-  use { 'hrsh7th/cmp-nvim-lsp-signature-help' }
+  {
+    'hrsh7th/cmp-nvim-lsp-signature-help',
+    dependencies = { 'hrsh7th/nvim-cmp' },
+  },
   -- lua support
-  use { 'hrsh7th/cmp-nvim-lua' }
+  {
+    'hrsh7th/cmp-nvim-lua',
+    dependencies = { 'hrsh7th/nvim-cmp' },
+  },
   -- emoji support
-  use { 'hrsh7th/cmp-emoji' }
+  {
+    'hrsh7th/cmp-emoji',
+    dependencies = { 'hrsh7th/nvim-cmp' },
+  },
   -- omni
-  use { 'hrsh7th/cmp-omni' }
+  {
+    'hrsh7th/cmp-omni',
+    dependencies = { 'hrsh7th/nvim-cmp' },
+  },
   -- autocompletion from tmux panes
-  use { 'andersevenrud/cmp-tmux' }
+  {
+    'andersevenrud/cmp-tmux',
+    dependencies = { 'hrsh7th/nvim-cmp' },
+  },
+
+  -- the missing auto-completion for cmdline!
+  {
+    'gelguy/wilder.nvim',
+    config = function() require('plugins.wilder') end,
+  },
 
   -- snippet engine
-  use {
+  {
     'L3MON4D3/LuaSnip',
     config = function() require('plugins.luasnip') end,
-    requires = { 'hrsh7th/nvim-cmp', 'rafamadriz/friendly-snippets', 'honza/vim-snippets' },
-  }
+    dependencies = { 'hrsh7th/nvim-cmp', 'rafamadriz/friendly-snippets', 'honza/vim-snippets' },
+    lazy = true,
+  },
   -- buffer lines based
-  use { 'amarakon/nvim-cmp-buffer-lines' }
+  {
+    'amarakon/nvim-cmp-buffer-lines',
+    dependencies = { 'hrsh7th/nvim-cmp' },
+  },
   -- snippets collection
-  use { 'honza/vim-snippets' }
-  use { 'rafamadriz/friendly-snippets' }
+  {
+    'honza/vim-snippets',
+    dependencies = { 'hrsh7th/nvim-cmp' },
+  },
+  {
+    'rafamadriz/friendly-snippets',
+    dependencies = { 'hrsh7th/nvim-cmp' },
+  },
   -- luasnip snippets
-  use { 'saadparwaiz1/cmp_luasnip' }
+  {
+    'saadparwaiz1/cmp_luasnip',
+    dependencies = { 'hrsh7th/nvim-cmp' },
+  },
 
   -- lsp progress eye candy
-  use { 'j-hui/fidget.nvim', tag = 'legacy', config = function() require('fidget').setup {} end }
+  {
+    'j-hui/fidget.nvim',
+    tag = 'legacy',
+    config = function() require('fidget').setup {} end,
+    event = 'VeryLazy',
+  },
 
   -- -------------------------------------
   -- NAVIGATION
   -- -------------------------------------
   -- file explorer
-  use { 'nvim-tree/nvim-tree.lua', config = function() require('plugins.tree') end }
+  {
+    'nvim-tree/nvim-tree.lua',
+    config = function() require('plugins.tree') end,
+    event = 'VeryLazy',
+  },
   -- multilevel undo explorer
-  use { 'mbbill/undotree', config = function() require('plugins.undotree') end }
+  {
+    'mbbill/undotree',
+    config = function() require('plugins.undotree') end,
+    event = 'VeryLazy',
+  },
   -- fuzzy finding anything anywhere
-  use {
+  {
     'nvim-telescope/telescope.nvim',
-    requires = { 'nvim-lua/plenary.nvim' },
-    config = function() require('plugins.telescope') end
-  }
-  -- telescope extension to use telescope as selection ui instead of vim command line
-  use { 'nvim-telescope/telescope-ui-select.nvim' }
+    config = function() require('plugins.telescope') end,
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    lazy = true,
+  },
+  -- telescope extension to telescope as selection ui instead of vim command line
+  {
+    'nvim-telescope/telescope-ui-select.nvim',
+    dependencies = { 'nvim-telescope/telescope.nvim' },
+  },
   -- telescope extension for file browser
-  use { 'nvim-telescope/telescope-file-browser.nvim' }
+  {
+    'nvim-telescope/telescope-file-browser.nvim',
+    dependencies = { 'nvim-telescope/telescope.nvim' },
+  },
   -- telescope project finder
-  use { 'nvim-telescope/telescope-project.nvim' }
+  {
+    'nvim-telescope/telescope-project.nvim',
+    dependencies = { 'nvim-telescope/telescope.nvim' },
+  },
   -- telescope extension for luasnip snippet
-  use { 'benfowler/telescope-luasnip.nvim', requires = { 'L3MON4D3/LuaSnip' } }
+  {
+    'benfowler/telescope-luasnip.nvim',
+    dependencies = { 'nvim-telescope/telescope.nvim', 'L3MON4D3/LuaSnip' },
+  },
+
   -- general-purpose motion plugin
-  use { 'ggandor/leap.nvim', event = 'VimEnter', config = function() require('plugins.leap') end }
+  {
+    'ggandor/leap.nvim',
+    config = function() require('plugins.leap') end,
+    event = 'VeryLazy',
+  },
+  -- improved f/F/t/T that uses leap.nvim
+  {
+    'ggandor/flit.nvim',
+    dependencies = { 'ggandor/leap.nvim' },
+    opts = { labeled_modes = "nx" },
+  },
   -- file explorer to edit filesystem like a normal buffer, vim-vinegar like
-  use { 'stevearc/oil.nvim', config = function() require('plugins.oil') end }
+  {
+    'stevearc/oil.nvim',
+    config = function() require('plugins.oil') end,
+    event = 'VeryLazy',
+  },
 
   -- -------------------------------------
   -- GIT
   -- -------------------------------------
   -- git integration
-  use { 'tpope/vim-fugitive', config = function() require('plugins.fugitive') end }
+  {
+    'tpope/vim-fugitive',
+    config = function() require('plugins.fugitive') end,
+    event = 'VeryLazy',
+  },
   -- git modifications explorer/handler
-  use { 'lewis6991/gitsigns.nvim', config = function() require('plugins.gitsigns') end }
+  {
+    'lewis6991/gitsigns.nvim',
+    config = function() require('plugins.gitsigns') end,
+  },
   -- nice view for git diff
-  use {
+  {
     'sindrets/diffview.nvim',
-    requires = 'nvim-lua/plenary.nvim',
-    config = function() require('plugins.diffview') end
-  }
+    config = function() require('plugins.diffview') end,
+    dependencies = { 'nvim-lua/plenary.nvim' },
+  },
 
   -- -------------------------------------
   -- MISC
   -- -------------------------------------
   -- show available keymaps + description as you type them
-  use { 'folke/which-key.nvim', event = 'VimEnter', config = function() require('plugins.which-key') end }
+  {
+    'folke/which-key.nvim',
+    config = function() require('plugins.which-key') end,
+    event = 'VeryLazy',
+  },
   -- open to last known cursor position
-  use { 'ethanholz/nvim-lastplace', config = function() require('nvim-lastplace').setup() end }
+  {
+    'ethanholz/nvim-lastplace',
+    config = function() require('nvim-lastplace').setup() end,
+  },
 
-  -- the missing auto-completion for cmdline!
-  use { 'gelguy/wilder.nvim', config = function() require('plugins.wilder') end }
+}
 
-  -- -------------------------------------
-  -- Automatically set up your configuration after cloning packer.nvim
-  if packer_bootstrap then
-    require('packer').sync()
-  end
-end)
+local opts = {
+  ui = {
+    border = "rounded",
+    icons = {
+      loaded = "",
+      not_loaded = "",
+    },
+  },
+}
+
+require("lazy").setup(plugins, opts)
