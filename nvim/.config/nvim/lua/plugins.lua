@@ -90,12 +90,6 @@ return require('packer').startup(function(use)
   -- -------------------------------------
   -- easily config neovim lsp
   use { 'neovim/nvim-lspconfig', config = function() require('plugins.lspconfig') end }
-  -- ui for lsp features
-  use {
-    'glepnir/lspsaga.nvim',
-    config = function() require('plugins.lspsaga') end,
-    after = 'nvim-lspconfig'
-  }
   -- easily install/update lsp servers directly from neovim
   use {
     'williamboman/mason.nvim',
@@ -107,6 +101,12 @@ return require('packer').startup(function(use)
     'williamboman/mason-lspconfig',
     requires = 'williamboman/mason.nvim',
     config = function() require('plugins.mason-lspconfig') end
+  }
+  -- ui for lsp features
+  use {
+    'glepnir/lspsaga.nvim',
+    config = function() require('plugins.lspsaga') end,
+    after = 'nvim-lspconfig'
   }
 
   -- -------------------------------------
