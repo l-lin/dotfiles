@@ -27,10 +27,10 @@ local custom_attach = function(_, bufnr)
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
   -- keymaps
-  map('n', ']w', vim.diagnostic.goto_next,
-    { noremap = true, silent = true, buffer = bufnr, desc = "Diagnostic go to next" })
-  map('n', '[w', vim.diagnostic.goto_prev,
-    { noremap = true, silent = true, buffer = bufnr, desc = "Diagnostic go to previous" })
+  -- map('n', ']w', vim.diagnostic.goto_next,
+  --   { noremap = true, silent = true, buffer = bufnr, desc = "Diagnostic go to next" })
+  -- map('n', '[w', vim.diagnostic.goto_prev,
+  --   { noremap = true, silent = true, buffer = bufnr, desc = "Diagnostic go to previous" })
   map('n', '<leader>ch', '<cmd>lua vim.lsp.buf.hover() vim.lsp.buf.hover()<cr>',
     { noremap = true, silent = true, buffer = bufnr, desc = "LSP show hovering help" })
   map('n', '<S-k>', '<cmd>lua vim.lsp.buf.hover() vim.lsp.buf.hover()<cr>',
@@ -45,12 +45,12 @@ local custom_attach = function(_, bufnr)
   --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP type definition" })
   -- map('n', '<leader>cu', vim.lsp.buf.references,
   --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP references" })
-  map('n', '<leader>cs', vim.lsp.buf.signature_help,
-    { noremap = true, silent = true, buffer = bufnr, desc = "LSP signature help" })
-  map('n', '<leader>cr', vim.lsp.buf.rename,
-    { noremap = true, silent = true, buffer = bufnr, desc = "LSP rename" })
-  map('n', '<F18>', vim.lsp.buf.rename,
-    { noremap = true, silent = true, buffer = bufnr, desc = "LSP rename (Shift+F6)" })
+  -- map('n', '<leader>cs', vim.lsp.buf.signature_help,
+  --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP signature help" })
+  -- map('n', '<leader>cr', vim.lsp.buf.rename,
+  --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP rename" })
+  -- map('n', '<F18>', vim.lsp.buf.rename,
+  --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP rename (Shift+F6)" })
   map('n', '<leader>cf', '<cmd>lua vim.lsp.buf.format { async = true }<CR>',
     { noremap = true, silent = true, buffer = bufnr, desc = "LSP format" })
   map('n', '<M-C-L>', '<cmd>lua vim.lsp.buf.format { async = true }<CR>',

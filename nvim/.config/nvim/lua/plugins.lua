@@ -74,11 +74,6 @@ return require('packer').startup(function(use)
   -- enhanced syntax by treesitter
   use { 'nvim-treesitter/nvim-treesitter', config = function() require('plugins.treesitter') end }
   -- show lightbulb for code hints
-  use {
-    'kosayoda/nvim-lightbulb',
-    requires = 'antoinemadec/FixCursorHold.nvim',
-    config = function() require('plugins.lightbulb') end
-  }
   -- lua support
   use { 'folke/neodev.nvim' }
   -- ansible support
@@ -95,6 +90,12 @@ return require('packer').startup(function(use)
   -- -------------------------------------
   -- easily config neovim lsp
   use { 'neovim/nvim-lspconfig', config = function() require('plugins.lspconfig') end }
+  -- ui for lsp features
+  use {
+    'glepnir/lspsaga.nvim',
+    config = function() require('plugins.lspsaga') end,
+    after = 'nvim-lspconfig'
+  }
   -- easily install/update lsp servers directly from neovim
   use {
     'williamboman/mason.nvim',
