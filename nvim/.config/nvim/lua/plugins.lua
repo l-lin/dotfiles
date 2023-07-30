@@ -73,7 +73,7 @@ local plugins = {
   -- autoclose pairs, (), []...
   {
     'windwp/nvim-autopairs',
-    config = function() require('nvim-autopairs').setup {} end,
+    config = function() require('nvim-autopairs').setup({}) end,
     event = 'VeryLazy',
   },
   -- syntax aware commenting
@@ -152,6 +152,13 @@ local plugins = {
     config = function() require('plugins.refactoring') end,
     dependencies = { 'nvim-lua/plenary.nvim', 'nvim-treesitter/nvim-treesitter' },
     event = 'VeryLazy'
+  },
+  -- highlight TODO comments
+  {
+    'folke/todo-comments.nvim',
+    config = function() require('plugins.todo-comments') end,
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    event = 'VeryLazy',
   },
 
   -- -------------------------------------
@@ -315,8 +322,7 @@ local plugins = {
   {
     'j-hui/fidget.nvim',
     tag = 'legacy',
-    config = function() require('fidget').setup {} end,
-    event = 'VeryLazy',
+    event = 'LspAttach',
   },
 
   -- -------------------------------------
@@ -367,12 +373,6 @@ local plugins = {
     'ggandor/leap.nvim',
     config = function() require('plugins.leap') end,
     event = 'VeryLazy',
-  },
-  -- improved f/F/t/T that uses leap.nvim
-  {
-    'ggandor/flit.nvim',
-    dependencies = { 'ggandor/leap.nvim' },
-    opts = { labeled_modes = "nx" },
   },
   -- file explorer to edit filesystem like a normal buffer, vim-vinegar like
   {
