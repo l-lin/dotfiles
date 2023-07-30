@@ -6,8 +6,8 @@
 -- https://github.com/voltux/dotfiles
 -- https://github.com/vipul-sharma20/nvim-config/
 -- https://github.com/jdhao/nvim-config
+vim.loader.enable()
 require('settings')
 require('keymaps')
-pcall(require, 'impatient')
 require('plugins')
 require('appearance')
