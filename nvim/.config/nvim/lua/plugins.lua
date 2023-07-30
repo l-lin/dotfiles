@@ -133,8 +133,10 @@ local plugins = {
     config = function() require('plugins.treesitter') end,
     lazy = true,
   },
+  -- highlight words under cursor
   {
     'RRethy/vim-illuminate',
+    config = function() require('plugins.illuminate') end,
     event = 'VeryLazy',
   },
   -- lua support
@@ -188,6 +190,13 @@ local plugins = {
     config = function() require('plugins.lspsaga') end,
     dependencies = { "nvim-tree/nvim-web-devicons", "nvim-treesitter/nvim-treesitter" },
     lazy = true
+  },
+  -- lsp progress eye candy
+  {
+    'j-hui/fidget.nvim',
+    event = 'LspAttach',
+    config = function() require('plugins.fidget') end,
+    tag = 'legacy',
   },
 
   -- -------------------------------------
@@ -316,14 +325,6 @@ local plugins = {
   {
     'saadparwaiz1/cmp_luasnip',
     dependencies = { 'hrsh7th/nvim-cmp' },
-  },
-
-  -- lsp progress eye candy
-  {
-    'j-hui/fidget.nvim',
-    event = 'LspAttach',
-    config = function() require('plugins.fidget') end,
-    tag = 'legacy',
   },
 
   -- -------------------------------------
