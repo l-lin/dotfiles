@@ -19,6 +19,7 @@ require("telescope").setup {
       width = 0.9
     },
     sorting_strategy = "descending",
+    dynamic_preview_title = true,
   },
   extensions = {
     ["ui-select"] = {
@@ -37,6 +38,7 @@ require("telescope").setup {
 require('telescope').load_extension('ui-select')
 require('telescope').load_extension('luasnip')
 require('telescope').load_extension('project')
+require('telescope').load_extension('yank_history')
 
 local map = vim.keymap.set
 -- find files
@@ -57,6 +59,7 @@ map('n', '<leader>fk', '<cmd>Telescope keymaps<CR>', { noremap = true, desc = 'F
 map('n', '<leader>fo', '<cmd>Telescope vim_options<CR>', { noremap = true, desc = 'Find vim option' })
 map('n', '<leader>fs', '<cmd>Telescope luasnip<CR>', { noremap = true, desc = 'Find snippet' })
 map('n', '<leader>fp', "<cmd>lua require'telescope'.extensions.project.project{ display_type = 'full' }<CR>", { noremap = true, silent = true, desc = 'Find project' })
+map('n', '<leader>fy', '<cmd>Telescope yank_history<CR>', { noremap = true, silent = true, desc = 'Find in yank history' })
 
 -- text
 map('n', '<leader>fti', '<cmd>Telescope current_buffer_fuzzy_find<CR>', { noremap = true, desc = 'Find string in current buffer' })

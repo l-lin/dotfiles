@@ -11,8 +11,11 @@ o.smartindent = true -- do smart autoindenting when starting a new line
 
 -- copy yank
 o.autoindent = true -- copy indent from current line when starting a new line
-cmd [[ set clipboard=unnamedplus ]] -- yank in clipboard
-cmd [[ au TextYankPost * silent! lua vim.highlight.on_yank{higroup="IncSearch", timeout=300} ]] -- highlight yank
+--cmd [[ set clipboard=unnamedplus ]] -- yank in clipboard
+-- highlight yank added by yanky plugin
+--cmd [[ au TextYankPost * silent! lua vim.highlight.on_yank{higroup="IncSearch", timeout=300} ]] -- highlight yank
+-- fix for yankring and neovim
+--vim.g.yankring_clipboard_monitor=0
 
 -- search
 o.hlsearch = true -- highlight searched-for phrases

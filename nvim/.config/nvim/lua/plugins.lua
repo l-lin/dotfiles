@@ -123,6 +123,18 @@ local plugins = {
     'dhruvasagar/vim-table-mode',
     event = 'VeryLazy',
   },
+  -- improved Yank with Yank ring to access to circle on yank history
+  {
+    'gbprod/yanky.nvim',
+    config = function() require('plugins.yanky') end,
+    event = 'VeryLazy',
+  },
+  -- keep clipboard in sync with Neovim without the performance hit
+  {
+    'EtiamNullam/deferred-clipboard.nvim',
+    config = function() require('plugins.deferred-clipboard') end,
+    event = 'VeryLazy',
+  },
 
   -- -------------------------------------
   -- DEV
