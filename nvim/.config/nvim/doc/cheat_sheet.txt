@@ -212,6 +212,7 @@ VISUAL MODE                                                       cs-visual-mode
 `u` - to lower case
 `U` - to upper case
 `~` - change case
+`o` - swap between moving the top and bottom boundary
 
 ==================================================================================
 CUSTOM SHORTCUTS                                             cs-custom-shortcuts
