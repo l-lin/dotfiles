@@ -1,5 +1,5 @@
 require('illuminate').configure({
-  delay = 0,
+  delay = 100,
 })
 -- if you want to display in highlight instead of underline
 -- /!\ you will not be able to see the difference with visual selection
