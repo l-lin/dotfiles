@@ -26,7 +26,8 @@ setup:
 	@mkdir -p "${HOME}/.undodir"
 	@mkdir -p "${HOME}/.zsh/completion"
 	@mkdir -p "${HOME}/.local/share/navi/cheats"
-	@rm "${HOME}/.config/openbox/rc.xml"
+	@rm -rf "${HOME}/.config/openbox/rc.xml"
+	@rm -rf "${HOME}/.config/openbox/scripts/ob-furminal"
 
 create-symlinks:
 	@for folder in $$(find . -type d -maxdepth 1 2>/dev/null); do \
