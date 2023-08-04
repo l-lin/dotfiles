@@ -129,12 +129,6 @@ local plugins = {
     config = function() require('plugins.yanky') end,
     event = 'VeryLazy',
   },
-  -- keep clipboard in sync with Neovim without the performance hit
-  {
-    'EtiamNullam/deferred-clipboard.nvim',
-    config = function() require('plugins.deferred-clipboard') end,
-    event = 'VeryLazy',
-  },
 
   -- -------------------------------------
   -- DEV
