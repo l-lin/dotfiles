@@ -1,0 +1,2 @@
+" open nvim instead of default 'auto', which opens gvim (shortcut: Ctrl+i)
+set editorcmd alacritty -e nvim %f '+normal!%lGzv%c|'
