@@ -97,6 +97,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "[-] installing miller: https://github.com/johnkerl/miller"
   yay -S --noconfirm miller
 
+  echo "[-] installing xsel"
+  yay -S --noconfirm xsel
+
   echo "[-] Finished installing stuffs"
 fi
 

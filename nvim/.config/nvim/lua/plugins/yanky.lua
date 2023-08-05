@@ -18,6 +18,21 @@ require('yanky').setup({
   }
 })
 
+-- override yank using xsel instead of xclip
+-- see https://github.com/gbprod/yanky.nvim/issues/46
+vim.g.clipboard = {
+  name = "xsel_override",
+  copy = {
+    ["+"] = "xsel --input --clipboard",
+    ["*"] = "xsel --input --primary",
+  },
+  paste = {
+    ["+"] = "xsel --output --clipboard",
+    ["*"] = "xsel --output --primary",
+  },
+  cache_enabled = 1,
+}
+
 map({ "n", "x" }, "p", "<Plug>(YankyPutAfter)")
 map({ "n", "x" }, "p", "<Plug>(YankyPutAfter)")
 map({ "n", "x" }, "P", "<Plug>(YankyPutBefore)")
