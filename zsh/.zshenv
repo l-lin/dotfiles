@@ -74,7 +74,7 @@ export FZF_ALT_C_COMMAND="fd --type d --hidden --exclude .git"
 # --------------------------------------------------------
 # navi config
 # --------------------------------------------------------
-export NAVI_FZF_OVERRIDES_VAR="--preview-window top:75%:wrap:border"
+export NAVI_FZF_OVERRIDES_VAR="--preview-window top:50%:wrap:border"
 
 # --------------------------------------------------------
 # zsh-autosuggestions config
