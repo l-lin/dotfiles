@@ -68,6 +68,6 @@ map('x', '>', '>gv')
 
 -- misc
 map('n', ',', '<cmd>set hlsearch! hlsearch?<CR>', { noremap = true, silent = true, desc = 'Toggle search highlight' })
-map('n', '<F2>', '<cmd>set invpaste paste?<CR>', { noremap = true, silent = true, desc = 'Toggle auto-indenting for code paste'})
+map('n', '<leader>vp', '<cmd>set invpaste paste?<CR>', { noremap = true, silent = true, desc = 'Toggle auto-indenting for code paste'})
 map('n', '<leader>vl', '<cmd>Lazy<cr>', { noremap = true, desc = 'Open Lazy' })
 

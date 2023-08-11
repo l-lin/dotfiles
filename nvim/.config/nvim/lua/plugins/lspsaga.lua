@@ -3,12 +3,15 @@ require('lspsaga').setup({})
 -- keymaps
 vim.keymap.set('n', ']e', '<cmd>Lspsaga diagnostic_jump_next<CR>',
   { noremap = true, silent = true, desc = 'Lspsaga diagnostic go to next' })
+vim.keymap.set('n', '<F2>', '<cmd>Lspsaga diagnostic_jump_next<CR>',
+  { noremap = true, silent = true, desc = 'Lspsaga diagnostic go to next (F2)' })
 vim.keymap.set('n', '[e', '<cmd>Lspsaga diagnostic_jump_prev<CR>',
   { noremap = true, silent = true, desc = 'Lspsaga diagnostic go to previous' })
-vim.keymap.set('n', '[E',
-  function()
-    require('lspsaga.diagnostic'):goto_prev({ severity = vim.diagnostic.severity.ERROR })
-  end, { noremap = true, silent = true, desc = 'Lspsaga diagnostic go to previoue ERROR' })
+vim.keymap.set('n', '<F14>', '<cmd>Lspsaga diagnostic_jump_prev<CR>',
+  { noremap = true, silent = true, desc = 'Lspsaga diagnostic go to previous (Shift+F2)' })
+vim.keymap.set('n', '[E', function()
+  require('lspsaga.diagnostic'):goto_prev({ severity = vim.diagnostic.severity.ERROR })
+end, { noremap = true, silent = true, desc = 'Lspsaga diagnostic go to previous ERROR' })
 vim.keymap.set('n', ']E', function()
   require('lspsaga.diagnostic'):goto_next({ severity = vim.diagnostic.severity.ERROR })
 end, { noremap = true, silent = true, desc = 'Lspsaga diagnostic go to next ERROR' })
