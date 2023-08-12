@@ -43,7 +43,7 @@ o.spell = false -- by default, do not spell check
 -- responsiveness
 o.updatetime = 300 -- shorter updatetime for better user exp (default: 4000ms)
 o.timeout = true
-o.timeoutlen = 100 -- default 1000ms
+o.timeoutlen = 500 -- default 1000ms
 
 -- panes
 o.splitbelow = true --default split below
