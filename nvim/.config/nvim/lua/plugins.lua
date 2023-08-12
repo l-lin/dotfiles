@@ -161,6 +161,11 @@ local plugins = {
     dependencies = { 'nvim-lua/plenary.nvim', 'nvim-treesitter/nvim-treesitter' },
     event = 'VeryLazy'
   },
+  {
+    'aznhe21/actions-preview.nvim',
+    config = function() require('plugins.actions-preview') end,
+    event = 'VeryLazy'
+  },
   -- highlight TODO comments
   {
     'folke/todo-comments.nvim',

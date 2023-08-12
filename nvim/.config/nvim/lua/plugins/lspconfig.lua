@@ -59,8 +59,8 @@ local custom_attach = function(_, bufnr)
   --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP show errors" })
   map('n', '<leader>ca', vim.lsp.buf.code_action,
     { noremap = true, silent = true, buffer = bufnr, desc = "LSP code action" })
-  map('n', '<A-CR>', vim.lsp.buf.code_action,
-    { noremap = true, silent = true, buffer = bufnr, desc = "LSP code action (Alt+Enter)" })
+  -- map('n', '<A-CR>', vim.lsp.buf.code_action,
+  --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP code action (Alt+Enter)" })
   map('n', '<F25>', vim.diagnostic.open_float,
     { noremap = true, buffer = bufnr, desc = "LSP open message in floating window (Ctrl+F1)" })
 end
