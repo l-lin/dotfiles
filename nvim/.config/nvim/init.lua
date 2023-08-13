@@ -7,7 +7,7 @@
 -- https://github.com/vipul-sharma20/nvim-config/
 -- https://github.com/jdhao/nvim-config
 vim.loader.enable()
-require('settings')
-require('keymaps')
-require('plugins')
-require('appearance')
+require("settings")
+require("keymaps")
+require("plugins")
+require("appearance")
