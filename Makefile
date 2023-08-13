@@ -12,6 +12,10 @@ install:
 ## bootstrap: setup & add all symlinks
 bootstrap: setup create-symlinks
 
+## unbootstrap: remote folder symlinks
+unbootstrap:
+	@stow --delete -t $${HOME} ${folder}
+
 # ---------------------------------------------------------------------------
 
 setup:
