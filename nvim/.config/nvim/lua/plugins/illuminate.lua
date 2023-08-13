@@ -2,6 +2,15 @@ require('illuminate').configure({
   delay = 100,
 })
 
+-- if you want to display in highlight instead of underline
+-- /!\ you will not be able to see the difference with visual selection
+-- vim.api.nvim_set_hl(0, "IlluminatedWordText", { link = "Visual" })
+-- vim.api.nvim_set_hl(0, "IlluminatedWordRead", { link = "Visual" })
+-- vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { link = "Visual" })
+
+-- -------------------------------
+-- KEYMAPS
+-- -------------------------------
 local function map(key, dir, buffer)
   vim.keymap.set("n", key, function()
     require("illuminate")["goto_" .. dir .. "_reference"](false)
@@ -19,9 +28,3 @@ vim.api.nvim_create_autocmd("FileType", {
     map("[[", "prev", buffer)
   end,
 })
-
--- if you want to display in highlight instead of underline
--- /!\ you will not be able to see the difference with visual selection
--- vim.api.nvim_set_hl(0, "IlluminatedWordText", { link = "Visual" })
--- vim.api.nvim_set_hl(0, "IlluminatedWordRead", { link = "Visual" })
--- vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { link = "Visual" })

@@ -1,4 +1,5 @@
 local o = vim.o
+local g = vim.g
 local cmd = vim.cmd
 
 -- tab and space
@@ -15,7 +16,7 @@ cmd [[ set clipboard=unnamedplus ]] -- yank in clipboard
 -- highlight yank added by yanky plugin
 --cmd [[ au TextYankPost * silent! lua vim.highlight.on_yank{higroup="IncSearch", timeout=300} ]] -- highlight yank
 -- fix for yankring and neovim
---vim.g.yankring_clipboard_monitor=0
+--g.yankring_clipboard_monitor=0
 
 -- search
 o.hlsearch = true -- highlight searched-for phrases
@@ -72,18 +73,18 @@ o.backspace = "indent,eol,start" --sane backspace behaviour
 o.history = 1000 -- A history of ":" commands, and a history of previous search patterns is remembered
 
 -- disable default plugins
-vim.g.loaded_2html_plugin = 1
+g.loaded_2html_plugin = 1
 -- do not load zipPlugin.vim, gzip.vim and tarPlugin.vim (all these plugins are related to checking files inside compressed files)
-vim.g.loaded_zipPlugin = 1
-vim.g.loaded_gzip = 1
-vim.g.loaded_tarPlugin = 1
-vim.g.loaded_tutor_mode_plugin = 1
-vim.g.loaded_sql_completion = 1 -- disable sql omni completion, it is broken.
+g.loaded_zipPlugin = 1
+g.loaded_gzip = 1
+g.loaded_tarPlugin = 1
+g.loaded_tutor_mode_plugin = 1
+g.loaded_sql_completion = 1 -- disable sql omni completion, it is broken.
 
 -- disable language provider support (lua and vimscript plugins only)
-vim.g.loaded_perl_provider = 0
-vim.g.loaded_ruby_provider = 0
-vim.g.loaded_node_provider = 0
-vim.g.loaded_python_provider = 0
-vim.g.loaded_python3_provider = 0
+g.loaded_perl_provider = 0
+g.loaded_ruby_provider = 0
+g.loaded_node_provider = 0
+g.loaded_python_provider = 0
+g.loaded_python3_provider = 0
 

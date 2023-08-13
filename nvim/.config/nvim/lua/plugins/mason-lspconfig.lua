@@ -1,4 +1,4 @@
-require('mason-lspconfig').setup({
+require("mason-lspconfig").setup({
   automatic_installation = true,
   ensure_installed = {
     "angularls",

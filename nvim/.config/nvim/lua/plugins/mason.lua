@@ -1,6 +1,10 @@
--- Mason install packages to `stdpath('data')/mason`, i.e. `$HOME/.local/share/nvim/mason/`.
-require('mason').setup {}
-vim.keymap.set('n', '<leader>vm', '<cmd>Mason<CR>', { noremap = true, desc = 'Open Mason' })
+-- Mason install packages to `stdpath("data")/mason`, i.e. `$HOME/.local/share/nvim/mason/`.
+require("mason").setup {}
+
+-- -------------------------------
+-- KEYMAPS
+-- -------------------------------
+vim.keymap.set("n", "<leader>vm", "<cmd>Mason<CR>", { noremap = true, desc = "Open Mason" })
 
 -- package to install:
 --

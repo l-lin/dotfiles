@@ -1,4 +1,4 @@
-require('nvim-lightbulb').setup({
+require("nvim-lightbulb").setup({
     autocmd = {
         enabled = true
     }

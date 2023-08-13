@@ -14,7 +14,7 @@
 local map = vim.keymap.set
 
 -- mapleader
-vim.g.mapleader = ' '
+vim.g.mapleader = " "
 
 -- documentation
 vim.cmd [[ command CheatSheet split $HOME/.config/nvim/doc/cheat_sheet.txt]]
@@ -30,28 +30,28 @@ vim.cmd [[
 ]]
 
 -- spell checking
-map('n', '<leader>lc', '<cmd>setlocal spell!<CR>', { noremap = true, desc = 'Toggle spell checking' })
-map('n', '<leader>le', '<cmd>setlocal spell spelllang=en<CR>', { noremap = true, desc = 'Set spelling english' })
-map('n', '<leader>lf', '<cmd>setlocal spell spelllang=fr<CR>', { noremap = true, desc = 'Set spelling french' })
+map("n", "<leader>lc", "<cmd>setlocal spell!<CR>", { noremap = true, desc = "Toggle spell checking" })
+map("n", "<leader>le", "<cmd>setlocal spell spelllang=en<CR>", { noremap = true, desc = "Set spelling english" })
+map("n", "<leader>lf", "<cmd>setlocal spell spelllang=fr<CR>", { noremap = true, desc = "Set spelling french" })
 
 -- save, quit
-map('n', '<C-s>', '<cmd>w!<CR>', { noremap = true, desc = 'Fast saving' })
-map('n', '<F28>', '<cmd>bd<CR>', { noremap = true, silent = true, desc = 'Close current buffer' })
+map("n", "<C-s>", "<cmd>w!<CR>", { noremap = true, desc = "Fast saving" })
+map("n", "<F28>", "<cmd>bd<CR>", { noremap = true, silent = true, desc = "Close current buffer" })
 
 -- navigation
-map('n', '<C-k>', '<cmd>wincmd k<CR>', { noremap = true, desc = 'Move to upper window' })
-map('n', '<C-j>', '<cmd>wincmd j<CR>', { noremap = true, desc = 'Move to below window' })
-map('n', '<C-h>', '<cmd>wincmd h<CR>', { noremap = true, desc = 'Move to left window' })
-map('n', '<C-l>', '<cmd>wincmd l<CR>', { noremap = true, desc = 'Move to right window' })
-map('n', '<F12>', '<cmd>bn<CR>', { noremap = true, silent = true, desc = 'Next buffer' })
-map('n', '<F24>', '<cmd>bp<CR>', { noremap = true, silent = true, desc = 'Previous buffer (Shift+F12)' })
+map("n", "<C-k>", "<cmd>wincmd k<CR>", { noremap = true, desc = "Move to upper window" })
+map("n", "<C-j>", "<cmd>wincmd j<CR>", { noremap = true, desc = "Move to below window" })
+map("n", "<C-h>", "<cmd>wincmd h<CR>", { noremap = true, desc = "Move to left window" })
+map("n", "<C-l>", "<cmd>wincmd l<CR>", { noremap = true, desc = "Move to right window" })
+map("n", "<F12>", "<cmd>bn<CR>", { noremap = true, silent = true, desc = "Next buffer" })
+map("n", "<F24>", "<cmd>bp<CR>", { noremap = true, silent = true, desc = "Previous buffer (Shift+F12)" })
 
 -- editing
-map('n', '<C-y>', 'dd', { noremap = true, desc = 'Delete line' })
+map("n", "<C-y>", "dd", { noremap = true, desc = "Delete line" })
 -- use different buffer for delete and paste
-map('n', 'd', '"_d', { noremap = true })
-map('v', 'd', '"_d', { noremap = true })
-map('v', 'p', '"_dP', { noremap = true })
+map("n", "d", '"_d', { noremap = true })
+map("v", "d", '"_d', { noremap = true })
+map("v", "p", '"_dP', { noremap = true })
 -- Move Lines
 map("n", "<A-j>", "<cmd>m .+1<cr>==", { desc = "Move down" })
 map("n", "<A-k>", "<cmd>m .-2<cr>==", { desc = "Move up" })
@@ -60,19 +60,20 @@ map("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move up" })
 map("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move down" })
 map("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move up" })
 -- do not include white space characters when using $ in visual mode, see https://vi.stackexchange.com/q/12607/15292
-map('x', '$', 'g_')
+map("x", "$", "g_")
 -- go to first character in line (need to stretch my left hand to type ^)
-map('x', '0', '^')
-map('n', '0', '^')
+map("x", "0", "^")
+map("n", "0", "^")
 -- continuous visual shifting (does not exit Visual mode), `gv` means
 -- to reselect previous visual area, see https://superuser.com/q/310417/736190
-map('x', '<', '<gv')
-map('x', '>', '>gv')
+map("x", "<", "<gv")
+map("x", ">", ">gv")
 -- always use very magic mode for searching (type `:help magic` for more information)
 -- map('n', '/', [[/\v]])
 
 -- misc
-map('n', '<leader>vh', '<cmd>set hlsearch! hlsearch?<CR>', { noremap = true, silent = true, desc = 'Toggle search highlight' })
-map('n', '<leader>vp', '<cmd>set invpaste paste?<CR>', { noremap = true, silent = true, desc = 'Toggle auto-indenting for code paste'})
-map('n', '<leader>vl', '<cmd>Lazy<cr>', { noremap = true, desc = 'Open Lazy' })
-
+map("n", "<leader>vh", "<cmd>set hlsearch! hlsearch?<CR>",
+  { noremap = true, silent = true, desc = "Toggle search highlight" })
+map("n", "<leader>vp", "<cmd>set invpaste paste?<CR>",
+  { noremap = true, silent = true, desc = "Toggle auto-indenting for code paste" })
+map("n", "<leader>vl", "<cmd>Lazy<cr>", { noremap = true, desc = "Open Lazy" })

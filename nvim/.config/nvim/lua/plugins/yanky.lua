@@ -1,7 +1,6 @@
 local mapping = require("yanky.telescope.mapping")
-local map = vim.keymap.set
 
-require('yanky').setup({
+require("yanky").setup({
   ring = {
     history_length = 10
   },
@@ -12,7 +11,7 @@ require('yanky').setup({
     telescope = {
       use_default_mappings = false,
       mappings = {
-        default = mapping.put('p')
+        default = mapping.put("p")
       }
     }
   }
@@ -33,6 +32,10 @@ vim.g.clipboard = {
   cache_enabled = 1,
 }
 
+-- -------------------------------
+-- KEYMAPS
+-- -------------------------------
+local map = vim.keymap.set
 map({ "n", "x" }, "p", "<Plug>(YankyPutAfter)")
 map({ "n", "x" }, "p", "<Plug>(YankyPutAfter)")
 map({ "n", "x" }, "P", "<Plug>(YankyPutBefore)")
