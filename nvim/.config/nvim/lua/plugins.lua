@@ -35,6 +35,9 @@ local plugins = {
   -- colorscheme
   {
     'ellisonleao/gruvbox.nvim',
+    lazy = false,
+    priority = 1000,
+    config = function() require('plugins.gruvbox') end,
   },
   -- filetype icons
   {
