@@ -1,4 +1,5 @@
 local cmp = require('cmp')
+local compare = require('cmp.config.compare')
 local luasnip = require('luasnip')
 local lspkind = require('lspkind')
 local has_words_before = function()
@@ -67,16 +68,26 @@ cmp.setup({
     end, { "i", "s" }),
   }),
   sources = cmp.config.sources({
-    { name = 'nvim_lsp' },
-    { name = 'luasnip' },
-    { name = 'nvim_lsp_signature_help' },
-    { name = 'nvim_lua' },
-    { name = 'path',                   option = { trailing_slash = true } },
-    { name = 'emoji',                  option = { insert = true } },
-    { name = 'tmux' },
+    { name = 'nvim_lsp_signature_help', priority = 7 },
+    { name = 'nvim_lsp',                priority = 6 },
+    { name = 'nvim_lua',                priority = 5 },
+    { name = 'luasnip',                 priority = 4 },
+    { name = 'path',                    priority = 3 },
+    { name = 'emoji',                   priority = 2, option = { insert = true } },
+    { name = 'tmux',                    priority = 1 },
   }, {
     { name = 'buffer' },
-  })
+  }),
+  sorting = {
+    priority_weight = 1.0,
+    comparators = {
+      compare.locality,
+      compare.recently_used,
+      compare.score,
+      compare.offset,
+      compare.order,
+    }
+  }
 })
 
 -- cmp configuration for specific filetype.
