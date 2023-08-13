@@ -69,16 +69,16 @@ end
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 -- Workaround for jdtls nil issue, see https://github.com/neovim/nvim-lspconfig/issues/2386
-local function on_language_status(_, result)
-  -- Ignore nil messages.
-  if result.message == nil then
-      return
-  end
-  local command = vim.api.nvim_command
-  command 'echohl ModeMsg'
-  command(string.format('echo "%s"', result.message))
-  command 'echohl None'
-end
+-- local function on_language_status(_, result)
+--   -- Ignore nil messages.
+--   if result.message == nil then
+--       return
+--   end
+--   local command = vim.api.nvim_command
+--   command 'echohl ModeMsg'
+--   command(string.format('echo "%s"', result.message))
+--   command 'echohl None'
+-- end
 
 -- setup servers for each programming language
 lsp.angularls.setup { on_attach = custom_attach, capabilities = capabilities }
@@ -86,13 +86,13 @@ lsp.bashls.setup { on_attach = custom_attach, capabilities = capabilities }
 lsp.dockerls.setup { on_attach = custom_attach, capabilities = capabilities }
 lsp.gopls.setup { on_attach = custom_attach, capabilities = capabilities }
 lsp.html.setup { on_attach = custom_attach, capabilities = capabilities }
-lsp.jdtls.setup {
-  on_attach = custom_attach,
-  capabilities = capabilities,
-  handlers = {
-    ["$/progress"] = vim.schedule_wrap(on_language_status),
-  },
-}
+-- lsp.jdtls.setup {
+--   on_attach = custom_attach,
+--   capabilities = capabilities,
+--   handlers = {
+--     ["$/progress"] = vim.schedule_wrap(on_language_status),
+--   },
+-- }
 lsp.jsonls.setup { on_attach = custom_attach, capabilities = capabilities }
 lsp.lua_ls.setup {
   on_attach = custom_attach,

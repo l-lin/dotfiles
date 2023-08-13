@@ -164,6 +164,7 @@ local plugins = {
     dependencies = { 'nvim-lua/plenary.nvim', 'nvim-treesitter/nvim-treesitter' },
     event = 'VeryLazy'
   },
+  -- preview code actions
   {
     'aznhe21/actions-preview.nvim',
     config = function() require('plugins.actions-preview') end,
@@ -211,6 +212,10 @@ local plugins = {
     event = 'LspAttach',
     config = function() require('plugins.fidget') end,
     tag = 'legacy',
+  },
+  {
+    'mfussenegger/nvim-jdtls',
+    ft = 'java',
   },
 
   -- -------------------------------------
