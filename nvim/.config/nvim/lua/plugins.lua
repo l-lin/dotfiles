@@ -385,6 +385,12 @@ local plugins = {
   {
     'ggandor/leap.nvim',
     config = function() require('plugins.leap') end,
+    enabled = false,
+    event = 'VeryLazy',
+  },
+  {
+    'folke/flash.nvim',
+    config = function() require('plugins.flash') end,
     event = 'VeryLazy',
   },
   -- file explorer to edit filesystem like a normal buffer, vim-vinegar like
