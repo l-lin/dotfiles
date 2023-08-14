@@ -131,13 +131,9 @@ config.settings = {
     references = {
       includeDecompiledSources = true,
     },
-    -- format = {
-    --   enabled = true,
-    --   settings = {
-    --     url = vim.fn.stdpath "config" .. "/lang-servers/intellij-java-google-style.xml",
-    --     profile = "GoogleStyle",
-    --   },
-    -- },
+    format = {
+      enabled = true,
+    },
   },
   signatureHelp = { enabled = true },
   completion = {

@@ -447,7 +447,19 @@ local plugins = {
     "ethanholz/nvim-lastplace",
     config = function() require("nvim-lastplace").setup() end,
   },
-
+  -- session management
+  {
+    "folke/persistence.nvim",
+    config = function() require("plugins.persistence") end,
+    event = "BufReadPre",
+  },
+  -- dashboard
+  {
+    "glepnir/dashboard-nvim",
+    config = function() require("plugins.dashboard") end,
+    event = "VimEnter",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+  }
 }
 
 local opts = {

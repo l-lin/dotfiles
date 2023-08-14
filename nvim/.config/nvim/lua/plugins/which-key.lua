@@ -12,6 +12,7 @@ wk.register({
     l = { name = "Language" },
     n = { name = "Navigation" },
     r = { name = "Search and replace" },
+    s = { name = "Session persistence" },
     t = { name = "Markdown table mode" },
     v = { name = "Nvim" },
     w = { name = "Whitespace" },
