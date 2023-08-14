@@ -31,6 +31,7 @@ vim.keymap.set("n", "<leader>vm", "<cmd>Mason<CR>", { noremap = true, desc = "Op
 -- sql-formatter
 -- terraform-ls terraformls
 -- typescript-language-server tsserver
+-- vscode-java-decompiler
 -- xmlformatter
 -- yaml-language-server yamlls
 -- yamlfmt

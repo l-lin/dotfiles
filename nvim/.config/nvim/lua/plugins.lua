@@ -388,6 +388,10 @@ local plugins = {
     "benfowler/telescope-luasnip.nvim",
     dependencies = { "nvim-telescope/telescope.nvim", "L3MON4D3/LuaSnip" },
   },
+  {
+    "nvim-telescope/telescope-dap.nvim",
+    dependencies = { "nvim-telescope/telescope.nvim" },
+  },
 
   -- general-purpose motion plugin
   {
@@ -448,7 +452,6 @@ local plugins = {
 
 local opts = {
   ui = {
-    border = "rounded",
     icons = {
       loaded = "",
       not_loaded = "",
