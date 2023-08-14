@@ -34,7 +34,7 @@ local plugins = {
   -- -------------------------------------
   -- colorscheme
   {
-    "ellisonleao/gruvbox.nvim",
+    "sainnhe/gruvbox-material",
     lazy = false,
     priority = 1000,
     config = function() require("plugins.gruvbox") end,

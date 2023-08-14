@@ -1,5 +1,6 @@
 -- theme
 vim.o.bg = "dark"
+vim.o.termguicolors = true
 
 vim.o.syntax = "on"
 
