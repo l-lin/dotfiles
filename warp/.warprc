@@ -5,7 +5,7 @@ dotfiles:~/perso/dotfiles
 gruvbox:~/perso/dotfiles/openbox-themes/.config/openbox-themes/themes/gruvbox
 navi:~/.local/share/navi/cheats/l-lin__cheats
 navi-work:~/.local/share/navi/cheats/louis.lin__cheats
-nvim:~/perso/dotfiles/nvim/.config/nvim/lua
+nvim:~/perso/dotfiles/nvim/.config/nvim
 playbook:~/work/sandbox/playbook
 record-service:~/work/record-service
 video-service:~/work/video-service
