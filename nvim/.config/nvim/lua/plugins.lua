@@ -429,7 +429,7 @@ local plugins = {
   -- show available keymaps + description as you type them
   {
     "folke/which-key.nvim",
-    config = function() require("plugins.which-key") end,
+    config = function() require("plugins.which-key").setup() end,
     event = "VeryLazy",
   },
   -- open to last known cursor position
