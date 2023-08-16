@@ -42,7 +42,7 @@ local plugins = {
   -- filetype icons
   {
     "nvim-tree/nvim-web-devicons",
-    config = function() require("plugins.web-devicons") end,
+    config = function() require("plugins.web-devicons").setup() end,
     lazy = true,
   },
   -- display marks
