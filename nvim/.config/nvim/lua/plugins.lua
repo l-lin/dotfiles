@@ -440,7 +440,7 @@ local plugins = {
   -- session management
   {
     "folke/persistence.nvim",
-    config = function() require("plugins.persistence") end,
+    config = function() require("plugins.persistence").setup() end,
     event = "BufReadPre",
   },
   -- dashboard
