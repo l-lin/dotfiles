@@ -408,13 +408,13 @@ local plugins = {
   -- git integration
   {
     "tpope/vim-fugitive",
-    config = function() require("plugins.fugitive") end,
+    config = function() require("plugins.fugitive").setup() end,
     event = "VeryLazy",
   },
   -- git modifications explorer/handler
   {
     "lewis6991/gitsigns.nvim",
-    config = function() require("plugins.gitsigns") end,
+    config = function() require("plugins.gitsigns").setup() end,
   },
   -- nice view for git diff
   {
