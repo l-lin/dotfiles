@@ -392,7 +392,7 @@ local plugins = {
   -- navigate your code with search labels, enhanced character motions and Treesitter integration
   {
     "folke/flash.nvim",
-    config = function() require("plugins.flash") end,
+    config = function() require("plugins.flash").setup() end,
     event = "VeryLazy",
   },
   -- file explorer to edit filesystem like a normal buffer, vim-vinegar like
