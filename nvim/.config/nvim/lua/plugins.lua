@@ -181,7 +181,7 @@ local plugins = {
   -- easily install/update lsp servers directly from neovim
   {
     "williamboman/mason.nvim",
-    config = function() require("plugins.mason") end,
+    config = function() require("plugins.mason").setup() end,
     lazy = true,
   },
   -- bridge between mason and nvim-lspconfig
