@@ -348,7 +348,7 @@ local plugins = {
   -- file explorer
   {
     "nvim-tree/nvim-tree.lua",
-    config = function() require("plugins.tree") end,
+    config = function() require("plugins.tree").setup() end,
     event = "VeryLazy",
   },
   -- multilevel undo explorer
