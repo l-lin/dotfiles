@@ -318,7 +318,7 @@ local plugins = {
   -- snippet engine
   {
     "L3MON4D3/LuaSnip",
-    config = function() require("plugins.luasnip") end,
+    config = function() require("plugins.luasnip").setup() end,
     dependencies = { "hrsh7th/nvim-cmp", "rafamadriz/friendly-snippets", "honza/vim-snippets" },
     lazy = true,
   },
