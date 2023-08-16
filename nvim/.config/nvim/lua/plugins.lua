@@ -313,7 +313,7 @@ local plugins = {
   -- the missing auto-completion for cmdline!
   {
     "gelguy/wilder.nvim",
-    config = function() require("plugins.wilder") end,
+    config = function() require("plugins.wilder").setup() end,
   },
   -- snippet engine
   {
