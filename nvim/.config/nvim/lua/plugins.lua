@@ -137,7 +137,7 @@ local plugins = {
   -- highlight words under cursor
   {
     "RRethy/vim-illuminate",
-    config = function() require("plugins.illuminate") end,
+    config = function() require("plugins.illuminate").setup() end,
     event = "VeryLazy",
   },
 
