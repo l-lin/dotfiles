@@ -83,7 +83,7 @@ local plugins = {
   -- highlight TODO comments
   {
     "folke/todo-comments.nvim",
-    config = function() require("plugins.todo-comments") end,
+    config = function() require("plugins.todo-comments").setup() end,
     dependencies = { "nvim-lua/plenary.nvim" },
     event = "VeryLazy",
   },
