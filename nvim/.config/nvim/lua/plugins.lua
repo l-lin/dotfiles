@@ -103,7 +103,7 @@ local plugins = {
   -- handle trailing whitespace
   {
     "ntpeters/vim-better-whitespace",
-    config = function() require("plugins.better-whitespace") end,
+    config = function() require("plugins.better-whitespace").setup() end,
     event = "VeryLazy"
   },
   -- automatically manage hlsearch
@@ -165,7 +165,7 @@ local plugins = {
   -- preview code actions
   {
     "aznhe21/actions-preview.nvim",
-    config = function() require("plugins.actions-preview") end,
+    config = function() require("plugins.actions-preview").setup() end,
     event = "VeryLazy"
   },
 
