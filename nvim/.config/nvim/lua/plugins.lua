@@ -222,7 +222,7 @@ local plugins = {
   -- debugger engine
   {
     "mfussenegger/nvim-dap",
-    config = function() require("plugins.dap") end,
+    config = function() require("plugins.dap").setup() end,
     event = "VeryLazy",
   },
   -- dap ui
