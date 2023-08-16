@@ -398,7 +398,7 @@ local plugins = {
   -- file explorer to edit filesystem like a normal buffer, vim-vinegar like
   {
     "stevearc/oil.nvim",
-    config = function() require("plugins.oil") end,
+    config = function() require("plugins.oil").setup() end,
     event = "VeryLazy",
   },
 
