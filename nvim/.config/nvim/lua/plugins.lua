@@ -53,7 +53,7 @@ local plugins = {
   -- status line (bottom)
   {
     "nvim-lualine/lualine.nvim",
-    config = function() require("plugins.lualine") end,
+    config = function() require("plugins.lualine").setup() end,
     dependencies = { "sainnhe/gruvbox-material", "nvim-tree/nvim-web-devicons", opt = true, },
     event = "VimEnter",
   },
