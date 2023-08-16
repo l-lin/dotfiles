@@ -131,7 +131,7 @@ local plugins = {
   -- improved Yank with Yank ring to access to circle on yank history
   {
     "gbprod/yanky.nvim",
-    config = function() require("plugins.yanky") end,
+    config = function() require("plugins.yanky").setup() end,
     event = "VeryLazy",
   },
   -- highlight words under cursor
