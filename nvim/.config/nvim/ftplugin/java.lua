@@ -98,29 +98,23 @@ local function create_flags()
 end
 
 local function attach_keymaps(_, bufnr)
-  vim.keymap.set("n", "<M-C-V>", jdtls.extract_variable,
-    { noremap = true, silent = true, buffer = bufnr, desc = "Extract variable" })
-  vim.keymap.set("v", "<M-C-V>", [[<ESC><CMD>lua require("jdtls").extract_variable(true)<CR>]],
-    { noremap = true, silent = true, buffer = bufnr, desc = "Extract variable" })
+  local map = require("mapper").map
+  local bufopts = { noremap = true, silent = true, buffer = bufnr }
 
-  vim.keymap.set("n", "<M-C-C>", jdtls.extract_constant,
-    { noremap = true, silent = true, buffer = bufnr, desc = "Extract constant" })
-  vim.keymap.set("v", "<M-C-C>", [[<ESC><CMD>lua require("jdtls").extract_constant(true)<CR>]],
-    { noremap = true, silent = true, buffer = bufnr, desc = "Extract constant" })
+  map("n", "<M-C-V>", jdtls.extract_variable, bufopts, "Extract variable" )
+  map("v", "<M-C-V>", [[<ESC><CMD>lua require("jdtls").extract_variable(true)<CR>]], bufopts, "Extract variable" )
 
-  vim.keymap.set("v", "<M-C-N>", [[<ESC><CMD>lua require("jdtls").extract_method(true)<CR>]],
-    { noremap = true, silent = true, buffer = bufnr, desc = "Extract method" })
+  map("n", "<M-C-C>", jdtls.extract_constant, bufopts, "Extract constant" )
+  map("v", "<M-C-C>", [[<ESC><CMD>lua require("jdtls").extract_constant(true)<CR>]], bufopts, "Extract constant" )
 
-  vim.keymap.set("n", "<F33>", jdtls.compile,
-    { noremap = true, silent = true, buffer = bufnr, desc = "Compile (Ctrl+F9)" })
-  vim.keymap.set("n", "<M-C-O>", jdtls.organize_imports,
-    { noremap = true, silent = true, buffer = bufnr, desc = "Organize imports (Ctrl+Alt+o)" })
+  map("v", "<M-C-N>", [[<ESC><CMD>lua require("jdtls").extract_method(true)<CR>]], bufopts, "Extract method" )
+
+  map("n", "<F33>", jdtls.compile, bufopts, "Compile (Ctrl+F9)" )
+  map("n", "<M-C-O>", jdtls.organize_imports, bufopts, "Organize imports (Ctrl+Alt+o)" )
 
   -- custom keymaps for Java test runner (not yet compatible with neotest)
-  vim.keymap.set("n", "<M-S-F9>", jdtls.pick_test,
-    { noremap = true, silent = true, buffer = bufnr, desc = "Run specific test (Alt+Shift+F9)" })
-  vim.keymap.set("n", "<F21>", jdtls.test_nearest_method,
-    { noremap = true, silent = true, buffer = bufnr, desc = "Test method (Shift+F9)" })
+  map("n", "<M-S-F9>", jdtls.pick_test, bufopts, "Run specific test (Alt+Shift+F9)" )
+  map("n", "<F21>", jdtls.test_nearest_method, bufopts, "Test method (Shift+F9)" )
 end
 
 local function on_attach(client, bufnr)
