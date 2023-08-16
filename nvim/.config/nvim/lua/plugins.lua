@@ -158,7 +158,7 @@ local plugins = {
   -- refactoring
   {
     "ThePrimeagen/refactoring.nvim",
-    config = function() require("plugins.refactoring") end,
+    config = function() require("plugins.refactoring").setup() end,
     dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" },
     event = "VeryLazy"
   },
