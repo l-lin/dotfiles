@@ -187,7 +187,7 @@ local plugins = {
   -- bridge between mason and nvim-lspconfig
   {
     "williamboman/mason-lspconfig",
-    config = function() require("plugins.mason-lspconfig") end,
+    config = function() require("plugins.mason-lspconfig").setup() end,
     dependencies = "williamboman/mason.nvim",
   },
   -- ui for lsp features
