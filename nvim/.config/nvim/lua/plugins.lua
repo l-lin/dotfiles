@@ -77,7 +77,7 @@ local plugins = {
   -- syntax aware commenting
   {
     "numToStr/Comment.nvim",
-    config = function() require("plugins.comment") end,
+    config = function() require("Comment").setup() end,
     event = "VeryLazy",
   },
   -- highlight TODO comments
