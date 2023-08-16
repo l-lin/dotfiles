@@ -60,7 +60,7 @@ local plugins = {
   -- buffer line (top)
   {
     "akinsho/bufferline.nvim",
-    config = function() require("plugins.bufferline") end,
+    config = function() require("plugins.bufferline").setup() end,
     dependencies = { "sainnhe/gruvbox-material", "nvim-tree/nvim-web-devicons", opt = true, },
     event = "VimEnter",
   },
