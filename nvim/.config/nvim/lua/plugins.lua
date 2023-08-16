@@ -354,7 +354,7 @@ local plugins = {
   -- multilevel undo explorer
   {
     "mbbill/undotree",
-    config = function() require("plugins.undotree") end,
+    config = function() require("plugins.undotree").setup() end,
     event = "VeryLazy",
   },
   -- fuzzy finding anything anywhere
