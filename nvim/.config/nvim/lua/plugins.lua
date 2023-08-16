@@ -115,7 +115,7 @@ local plugins = {
   -- better glance at matched information
   {
     "kevinhwang91/nvim-hlslens",
-    config = function() require("plugins.hlslens") end,
+    config = function() require("plugins.hlslens").setup() end,
     event = "VeryLazy",
   },
   -- search and replace
