@@ -101,20 +101,20 @@ local function attach_keymaps(_, bufnr)
   local map = require("mapper").map
   local bufopts = { noremap = true, silent = true, buffer = bufnr }
 
-  map("n", "<M-C-V>", jdtls.extract_variable, bufopts, "Extract variable" )
-  map("v", "<M-C-V>", [[<ESC><CMD>lua require("jdtls").extract_variable(true)<CR>]], bufopts, "Extract variable" )
+  map("n", "<M-C-V>", jdtls.extract_variable, bufopts, "Extract variable")
+  map("v", "<M-C-V>", [[<ESC><CMD>lua require("jdtls").extract_variable(true)<CR>]], bufopts, "Extract variable")
 
-  map("n", "<M-C-C>", jdtls.extract_constant, bufopts, "Extract constant" )
-  map("v", "<M-C-C>", [[<ESC><CMD>lua require("jdtls").extract_constant(true)<CR>]], bufopts, "Extract constant" )
+  map("n", "<M-C-C>", jdtls.extract_constant, bufopts, "Extract constant")
+  map("v", "<M-C-C>", [[<ESC><CMD>lua require("jdtls").extract_constant(true)<CR>]], bufopts, "Extract constant")
 
-  map("v", "<M-C-N>", [[<ESC><CMD>lua require("jdtls").extract_method(true)<CR>]], bufopts, "Extract method" )
+  map("v", "<M-C-N>", [[<ESC><CMD>lua require("jdtls").extract_method(true)<CR>]], bufopts, "Extract method")
 
-  map("n", "<F33>", jdtls.compile, bufopts, "Compile (Ctrl+F9)" )
-  map("n", "<M-C-O>", jdtls.organize_imports, bufopts, "Organize imports (Ctrl+Alt+o)" )
+  map("n", "<F33>", jdtls.compile, bufopts, "Compile (Ctrl+F9)")
+  map("n", "<M-C-O>", jdtls.organize_imports, bufopts, "Organize imports (Ctrl+Alt+o)")
 
   -- custom keymaps for Java test runner (not yet compatible with neotest)
-  map("n", "<M-S-F9>", jdtls.pick_test, bufopts, "Run specific test (Alt+Shift+F9)" )
-  map("n", "<F21>", jdtls.test_nearest_method, bufopts, "Test method (Shift+F9)" )
+  map("n", "<M-S-F9>", jdtls.pick_test, bufopts, "Run specific test (Alt+Shift+F9)")
+  map("n", "<F21>", jdtls.test_nearest_method, bufopts, "Test method (Shift+F9)")
 end
 
 local function on_attach(client, bufnr)
@@ -157,6 +157,10 @@ local function create_settings()
       },
       format = {
         enabled = true,
+        settings = {
+          url = home .. "/.local/share/eclipse/java-code-style.xml",
+          profile = "l-lin",
+        }
       },
     },
     signatureHelp = { enabled = true },
