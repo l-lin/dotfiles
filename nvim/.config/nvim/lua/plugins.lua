@@ -201,7 +201,7 @@ local plugins = {
   {
     "j-hui/fidget.nvim",
     event = "LspAttach",
-    config = function() require("plugins.fidget") end,
+    config = function() require("plugins.fidget").setup() end,
     tag = "legacy",
   },
   -- java support
