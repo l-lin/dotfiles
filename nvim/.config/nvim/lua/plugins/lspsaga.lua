@@ -41,7 +41,7 @@ M.attach_keymaps = function(_, bufnr)
 end
 
 M.change_highlight = function()
-  local bg = require("plugins.gruvbox").get_background_color()
+  local bg = require("appearance").get_background_color()
   vim.api.nvim_set_hl(0, "HoverNormal", { bg = bg })
   vim.api.nvim_set_hl(0, "HoverBorder", { bg = bg })
   vim.api.nvim_set_hl(0, "SagaNormal", { bg = bg })

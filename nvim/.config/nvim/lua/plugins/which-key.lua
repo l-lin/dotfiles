@@ -1,7 +1,7 @@
 local M = {}
 
 M.change_highlight = function()
-  local bg = require("plugins.gruvbox").get_background_color()
+  local bg = require("appearance").get_background_color()
   vim.api.nvim_set_hl(0, "WhichKeyFloat", { bg = bg })
   vim.api.nvim_set_hl(0, "WhichKeyBorder", { bg = bg })
 end
