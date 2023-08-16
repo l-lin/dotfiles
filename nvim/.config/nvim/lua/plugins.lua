@@ -419,7 +419,7 @@ local plugins = {
   -- nice view for git diff
   {
     "sindrets/diffview.nvim",
-    config = function() require("plugins.diffview") end,
+    config = function() require("plugins.diffview").setup() end,
     dependencies = { "nvim-lua/plenary.nvim" },
   },
 
