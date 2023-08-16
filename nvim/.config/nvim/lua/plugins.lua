@@ -241,7 +241,7 @@ local plugins = {
   -- framework for interacting with tests
   {
     "nvim-neotest/neotest",
-    config = function() require("plugins.neotest") end,
+    config = function() require("plugins.neotest").setup() end,
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
