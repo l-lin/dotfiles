@@ -90,7 +90,7 @@ local plugins = {
   -- a pretty list for diagnostics
   {
     "folke/trouble.nvim",
-    config = function() require("plugins.trouble") end,
+    config = function() require("plugins.trouble").setup() end,
     dependencies = { "neovim/nvim-lspconfig" },
     event = "VeryLazy",
   },
