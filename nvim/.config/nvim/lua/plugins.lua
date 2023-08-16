@@ -68,11 +68,6 @@ local plugins = {
   -- -------------------------------------
   -- EDITOR
   -- -------------------------------------
-  -- surround parenthese
-  {
-    "machakann/vim-sandwich",
-    event = "VeryLazy",
-  },
   -- autoclose pairs, (), []...
   {
     "windwp/nvim-autopairs",
@@ -83,6 +78,13 @@ local plugins = {
   {
     "numToStr/Comment.nvim",
     config = function() require("plugins.comment") end,
+    event = "VeryLazy",
+  },
+  -- highlight TODO comments
+  {
+    "folke/todo-comments.nvim",
+    config = function() require("plugins.todo-comments") end,
+    dependencies = { "nvim-lua/plenary.nvim" },
     event = "VeryLazy",
   },
   -- a pretty list for diagnostics
@@ -132,6 +134,12 @@ local plugins = {
     config = function() require("plugins.yanky") end,
     event = "VeryLazy",
   },
+  -- highlight words under cursor
+  {
+    "RRethy/vim-illuminate",
+    config = function() require("plugins.illuminate") end,
+    event = "VeryLazy",
+  },
 
   -- -------------------------------------
   -- DEV
@@ -142,18 +150,8 @@ local plugins = {
     config = function() require("plugins.treesitter") end,
     lazy = true,
   },
-  -- highlight words under cursor
-  {
-    "RRethy/vim-illuminate",
-    config = function() require("plugins.illuminate") end,
-    event = "VeryLazy",
-  },
-  -- lua support
-  {
-    "folke/neodev.nvim",
-    ft = "lua",
-  },
   -- ansible support
+  -- FIX: not working with default config
   {
     "pearofducks/ansible-vim",
   },
@@ -170,13 +168,6 @@ local plugins = {
     config = function() require("plugins.actions-preview") end,
     event = "VeryLazy"
   },
-  -- highlight TODO comments
-  {
-    "folke/todo-comments.nvim",
-    config = function() require("plugins.todo-comments") end,
-    dependencies = { "nvim-lua/plenary.nvim" },
-    event = "VeryLazy",
-  },
 
   -- -------------------------------------
   -- LSP
@@ -184,7 +175,7 @@ local plugins = {
   -- easily config neovim lsp
   {
     "neovim/nvim-lspconfig",
-    config = function() require("plugins.lspconfig") end,
+    config = function() require("plugins.lspconfig").setup() end,
     dependencies = { "williamboman/mason-lspconfig.nvim", "glepnir/lspsaga.nvim" },
   },
   -- easily install/update lsp servers directly from neovim
@@ -202,7 +193,7 @@ local plugins = {
   -- ui for lsp features
   {
     "glepnir/lspsaga.nvim",
-    config = function() require("plugins.lspsaga") end,
+    config = function() require("plugins.lspsaga").setup() end,
     dependencies = { "nvim-tree/nvim-web-devicons", "nvim-treesitter/nvim-treesitter" },
     lazy = true
   },
@@ -213,9 +204,15 @@ local plugins = {
     config = function() require("plugins.fidget") end,
     tag = "legacy",
   },
+  -- java support
   {
     "mfussenegger/nvim-jdtls",
     ft = "java",
+  },
+  -- lua support
+  {
+    "folke/neodev.nvim",
+    ft = "lua",
   },
 
   -- -------------------------------------
@@ -228,6 +225,7 @@ local plugins = {
     event = "VeryLazy",
   },
   -- dap ui
+  -- TODO: keymap to toggle the console window in full screen / default
   {
     "rcarriga/nvim-dap-ui",
     config = function() require("plugins.dap-ui") end,
@@ -312,13 +310,11 @@ local plugins = {
     "andersevenrud/cmp-tmux",
     dependencies = { "hrsh7th/nvim-cmp" },
   },
-
   -- the missing auto-completion for cmdline!
   {
     "gelguy/wilder.nvim",
     config = function() require("plugins.wilder") end,
   },
-
   -- snippet engine
   {
     "L3MON4D3/LuaSnip",
@@ -388,18 +384,12 @@ local plugins = {
     "benfowler/telescope-luasnip.nvim",
     dependencies = { "nvim-telescope/telescope.nvim", "L3MON4D3/LuaSnip" },
   },
+  -- telescope dap
   {
     "nvim-telescope/telescope-dap.nvim",
     dependencies = { "nvim-telescope/telescope.nvim" },
   },
-
-  -- general-purpose motion plugin
-  {
-    "ggandor/leap.nvim",
-    config = function() require("plugins.leap") end,
-    enabled = false,
-    event = "VeryLazy",
-  },
+  -- navigate your code with search labels, enhanced character motions and Treesitter integration
   {
     "folke/flash.nvim",
     config = function() require("plugins.flash") end,
