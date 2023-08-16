@@ -59,7 +59,14 @@ M.attach = function()
 end
 
 M.setup = function()
-  require("lspsaga").setup({})
+  local config = {
+    lightbulb = {
+      sign = false,
+    }
+  }
+
+  require("lspsaga").setup(config)
+
   M.attach()
 end
 

@@ -226,7 +226,6 @@ local plugins = {
     event = "VeryLazy",
   },
   -- dap ui
-  -- TODO: keymap to toggle the console window in full screen / default
   {
     "rcarriga/nvim-dap-ui",
     config = function() require("plugins.dap-ui").setup() end,
