@@ -212,6 +212,7 @@ local plugins = {
   -- lua support
   {
     "folke/neodev.nvim",
+    config = function() require("plugins.neodev").setup() end,
     ft = "lua",
   },
 
@@ -228,7 +229,7 @@ local plugins = {
   -- TODO: keymap to toggle the console window in full screen / default
   {
     "rcarriga/nvim-dap-ui",
-    config = function() require("plugins.dap-ui") end,
+    config = function() require("plugins.dap-ui").setup() end,
     dependencies = { "mfussenegger/nvim-dap" },
     event = "VeryLazy",
   },
