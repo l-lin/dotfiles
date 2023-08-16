@@ -1,44 +1,30 @@
 local M = {}
 
 M.attach_keymaps = function(_, bufnr)
-  vim.keymap.set("n", "<Leader>ct", "<cmd>call v:lua.toggle_diagnostics()<CR>",
-    { silent = true, noremap = true, buffer = bufnr, desc = "Diagnostics Toggle" })
-  -- vim.keymap.set("n", "]w", vim.diagnostic.goto_next,
-  --   { noremap = true, silent = true, buffer = bufnr, desc = "Diagnostic go to next" })
-  -- vim.keymap.set("n", "[w", vim.diagnostic.goto_prev,
-  --   { noremap = true, silent = true, buffer = bufnr, desc = "Diagnostic go to previous" })
-  vim.keymap.set("n", "<leader>ch", "<cmd>lua vim.lsp.buf.hover()<cr>",
-    { noremap = true, silent = true, buffer = bufnr, desc = "LSP show hovering help" })
-  vim.keymap.set("n", "<S-k>", "<cmd>lua vim.lsp.buf.hover()<cr>",
-    { noremap = true, silent = true, buffer = bufnr, desc = "LSP show hovering help (Shift+k)" })
-  -- vim.keymap.set("n", "<leader>cd", vim.lsp.buf.definition,
-  --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP definition" })
-  -- vim.keymap.set("n", "<leader>cD", vim.lsp.buf.declaration,
-  --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP declaration" })
-  -- vim.keymap.set("n", "<leader>ci", vim.lsp.buf.implementation,
-  --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP implementation" })
-  -- vim.keymap.set("n", "<leader>co", vim.lsp.buf.type_definition,
-  --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP type definition" })
-  -- vim.keymap.set("n", "<leader>cu", vim.lsp.buf.references,
-  --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP references" })
-  -- vim.keymap.set("n", "<leader>cs", vim.lsp.buf.signature_help,
-  --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP signature help" })
-  -- vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename,
-  --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP rename" })
-  -- vim.keymap.set("n", "<F18>", vim.lsp.buf.rename,
-  --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP rename (Shift+F6)" })
-  vim.keymap.set("n", "<leader>cf", "<cmd>lua vim.lsp.buf.format { async = true }<CR>",
-    { noremap = true, silent = true, buffer = bufnr, desc = "LSP format" })
-  vim.keymap.set("n", "<M-C-L>", "<cmd>lua vim.lsp.buf.format { async = true }<CR>",
-    { noremap = true, silent = true, buffer = bufnr, desc = "LSP format (Ctrl+Alt+l)" })
-  -- vim.keymap.set("n", "<leader>ce", vim.diagnostic.setloclist,
-  --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP show errors" })
-  vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action,
-    { noremap = true, silent = true, buffer = bufnr, desc = "LSP code action" })
-  -- vim.keymap.set("n", "<A-CR>", vim.lsp.buf.code_action,
-  --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP code action (Alt+Enter)" })
-  vim.keymap.set("n", "<F25>", vim.diagnostic.open_float,
-    { noremap = true, buffer = bufnr, desc = "LSP open message in floating window (Ctrl+F1)" })
+  local map = require("mapper").map
+  local bufopts = { silent = true, noremap = true, buffer = bufnr }
+
+  map("n", "<Leader>ct", "<cmd>call v:lua.toggle_diagnostics()<CR>", bufopts, "Diagnostics Toggle")
+  -- map("n", "]w", vim.diagnostic.goto_next, bufopts, "Diagnostic go to next" )
+  -- map("n", "[w", vim.diagnostic.goto_prev, bufopts, "Diagnostic go to previous" )
+  -- map("n", "<leader>ch", "<cmd>lua vim.lsp.buf.hover()<cr>", bufopts, "LSP show hovering help" )
+  -- map("n", "<S-k>", "<cmd>lua vim.lsp.buf.hover()<cr>", bufopts, "LSP show hovering help (Shift+k)" )
+  -- map("n", "<leader>cd", vim.lsp.buf.definition, bufopts, "LSP definition" )
+  -- map("n", "<leader>cD", vim.lsp.buf.declaration, bufopts, "LSP declaration" )
+  -- map("n", "<leader>ci", vim.lsp.buf.implementation, bufopts, "LSP implementation" )
+  -- map("n", "<leader>co", vim.lsp.buf.type_definition, bufopts, "LSP type definition" )
+  -- map("n", "<leader>cu", vim.lsp.buf.references, bufopts, "LSP references" )
+  -- map("n", "<leader>cs", vim.lsp.buf.signature_help, bufopts, "LSP signature help" )
+  -- map("n", "<leader>cr", vim.lsp.buf.rename, bufopts, "LSP rename" )
+  -- map("n", "<F18>", vim.lsp.buf.rename, bufopts, "LSP rename (Shift+F6)" )
+  map("n", "<leader>cf", "<cmd>lua vim.lsp.buf.format { async = true }<CR>", bufopts, "LSP format")
+  map("n", "<M-C-L>", "<cmd>lua vim.lsp.buf.format { async = true }<CR>", bufopts, "LSP format (Ctrl+Alt+l)")
+
+  map("n", "<leader>cs", vim.lsp.buf.signature_help, bufopts, "LSP signature help")
+  -- map("n", "<leader>ce", vim.diagnostic.setloclist, bufopts, "LSP show errors" )
+  -- map("n", "<leader>ca", vim.lsp.buf.code_action, bufopts, "LSP code action" )
+  -- map("n", "<A-CR>", vim.lsp.buf.code_action, bufopts, "LSP code action (Alt+Enter)" )
+  -- map("n", "<F25>", vim.diagnostic.open_float, bufopts, "LSP open message in floating window (Ctrl+F1)" )
 end
 
 -- configure setup on attach to a lsp server

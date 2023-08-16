@@ -37,7 +37,7 @@ local plugins = {
     "sainnhe/gruvbox-material",
     lazy = false,
     priority = 1000,
-    config = function() require("plugins.gruvbox") end,
+    config = function() require("plugins.gruvbox").setup() end,
   },
   -- filetype icons
   {
@@ -54,14 +54,14 @@ local plugins = {
   {
     "nvim-lualine/lualine.nvim",
     config = function() require("plugins.lualine") end,
-    dependencies = { "ellisonleao/gruvbox.nvim", "nvim-tree/nvim-web-devicons", opt = true, },
+    dependencies = { "sainnhe/gruvbox-material", "nvim-tree/nvim-web-devicons", opt = true, },
     event = "VimEnter",
   },
   -- buffer line (top)
   {
     "akinsho/bufferline.nvim",
     config = function() require("plugins.bufferline") end,
-    dependencies = { "ellisonleao/gruvbox.nvim", "nvim-tree/nvim-web-devicons", opt = true, },
+    dependencies = { "sainnhe/gruvbox-material", "nvim-tree/nvim-web-devicons", opt = true, },
     event = "VimEnter",
   },
 
@@ -360,7 +360,7 @@ local plugins = {
   -- fuzzy finding anything anywhere
   {
     "nvim-telescope/telescope.nvim",
-    config = function() require("plugins.telescope") end,
+    config = function() require("plugins.telescope").setup() end,
     dependencies = { "nvim-lua/plenary.nvim" },
     lazy = true,
   },
@@ -454,6 +454,7 @@ local plugins = {
 
 local opts = {
   ui = {
+    border = "rounded",
     icons = {
       loaded = "",
       not_loaded = "",

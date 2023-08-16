@@ -1,51 +1,51 @@
 local M = {}
 
-M.attach_keymaps = function(_, bufnr)
-  vim.keymap.set("n", "]e", "<cmd>Lspsaga diagnostic_jump_next<CR>",
-    { noremap = true, silent = true, buffer = bufnr, desc = "Lspsaga diagnostic go to next" })
-  vim.keymap.set("n", "<F2>", "<cmd>Lspsaga diagnostic_jump_next<CR>",
-    { noremap = true, silent = true, buffer = bufnr, desc = "Lspsaga diagnostic go to next (F2)" })
-  vim.keymap.set("n", "[e", "<cmd>Lspsaga diagnostic_jump_prev<CR>",
-    { noremap = true, silent = true, buffer = bufnr, desc = "Lspsaga diagnostic go to previous" })
-  vim.keymap.set("n", "<F14>", "<cmd>Lspsaga diagnostic_jump_prev<CR>",
-    { noremap = true, silent = true, buffer = bufnr, desc = "Lspsaga diagnostic go to previous (Shift+F2)" })
-  vim.keymap.set("n", "[E", function()
-    require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.ERROR })
-  end, { noremap = true, silent = true, buffer = bufnr, desc = "Lspsaga diagnostic go to previous ERROR" })
-  vim.keymap.set("n", "]E", function()
-    require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.ERROR })
-  end, { noremap = true, silent = true, buffer = bufnr, desc = "Lspsaga diagnostic go to next ERROR" })
+local function goto_prev_error()
+  require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.ERROR })
+end
 
-  vim.keymap.set("n", "<leader>cc", "<cmd>Lspsaga finder<CR>",
-    { noremap = true, silent = true, buffer = bufnr, desc = "Lspsaga definition and usage finder" })
-  vim.keymap.set("n", "<leader>ce", "<cmd>Lspsaga show_line_diagnostics<CR>",
-    { noremap = true, silent = true, buffer = bufnr, desc = "Lspsaga diagnostic show message" })
-  -- vim.keymap.set("n", "<leader>cd", "<cmd>Lspsaga goto_definition<CR>",
-  --     { noremap = true, silent = true, buffer = bufnr, desc = "Lspsaga go to definition" })
-  vim.keymap.set("n", "<leader>cD", "<cmd>Lspsaga peek_definition<CR>",
-    { noremap = true, silent = true, buffer = bufnr, desc = "Lspsaga peek definition" })
-  -- vim.keymap.set("n", "<leader>ct", "<cmd>Lspsaga goto_type_definition<CR>",
-  --     { noremap = true, silent = true, buffer = bufnr, desc = "Lspsaga goto type definition" })
-  vim.keymap.set("n", "<leader>cT", "<cmd>Lspsaga peek_type_definition<CR>",
-    { noremap = true, silent = true, buffer = bufnr, desc = "Lspsaga peek type definition" })
-  vim.keymap.set("n", "<leader>ci", "<cmd>Lspsaga incoming_calls<CR>",
-    { noremap = true, silent = true, buffer = bufnr, desc = "Lspsaga incoming calls" })
-  vim.keymap.set("n", "<leader>co", "<cmd>Lspsaga outgoing_calls<CR>",
-    { noremap = true, silent = true, buffer = bufnr, desc = "Lspsaga outgoing calls" })
-  vim.keymap.set("n", "<leader>cm", "<cmd>Lspsaga outline<CR>",
-    { noremap = true, silent = true, buffer = bufnr, desc = "Lspsaga outline minimap" })
-  vim.keymap.set("n", "<leader>cs", vim.lsp.buf.signature_help,
-    { noremap = true, silent = true, buffer = bufnr, desc = "LSP signature help" })
-  vim.keymap.set("n", "<leader>cr", "<cmd>Lspsaga rename ++project<CR>",
-    { noremap = true, silent = true, buffer = bufnr, desc = "Lspsaga rename" })
-  vim.keymap.set("n", "<F18>", "<cmd>Lspsaga rename ++project<CR>",
-    { noremap = true, silent = true, buffer = bufnr, desc = "Lspsaga rename (Shift+F6)" })
-  vim.keymap.set("n", "<leader>cE", "<cmd>Lspsaga show_buf_diagnostics<CR>",
-    { noremap = true, silent = true, buffer = bufnr, desc = "LSP show errors" })
-  -- vim.keymap.set("n", "<leader>ca", "<cmd>Lspsaga code_action<CR>",
-  --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP code action" })
-  -- vim.keymap.set("n", "<M-CR>", "<cmd>Lspsaga code_action<CR>",
-  --   { noremap = true, silent = true, buffer = bufnr, desc = "LSP code action (Ctrl+Enter)" })
+local function goto_next_error()
+  require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.ERROR })
+end
+
+M.attach_keymaps = function(_, bufnr)
+  local map = require("mapper").map
+  local bufopts = { noremap = true, silent = true, buffer = bufnr }
+
+  -- diagnostic
+  map("n", "]e", "<cmd>Lspsaga diagnostic_jump_next<cr>", bufopts, "Lspsaga diagnostic go to next (F2)")
+  map("n", "<F2>", "<cmd>Lspsaga diagnostic_jump_next<cr>", bufopts, "Lspsaga diagnostic go to next (F2)")
+  map("n", "[e", "<cmd>Lspsaga diagnostic_jump_prev<cr>", bufopts, "Lspsaga diagnostic go to previous (Shift+F2)")
+  map("n", "<F14>", "<cmd>Lspsaga diagnostic_jump_prev<cr>", bufopts, "Lspsaga diagnostic go to previous (Shift+F2)")
+  map("n", "[E", goto_prev_error, bufopts, "Lspsaga diagnostic go to previous ERROR")
+  map("n", "]E", goto_next_error, bufopts, "Lspsaga diagnostic go to next ERROR")
+  map("n", "<leader>ce", "<cmd>Lspsaga show_line_diagnostics<cr>", bufopts, "Lspsaga diagnostic show message (Ctrl+F1)")
+  map("n", "<F25>", "<cmd>Lspsaga show_line_diagnostics<cr>", bufopts, "Lspsaga diagnostic show message (Ctrl+F1)")
+
+  map("n", "<leader>ch", "<cmd>Lspsaga hover_doc<cr>", bufopts, "LSP show hovering help (Shift+k)")
+  map("n", "<S-k>", "<cmd>Lspsaga hover_doc<cr>", bufopts, "LSP show hovering help (Shift+k)")
+  map("n", "<leader>cc", "<cmd>Lspsaga finder<cr>", bufopts, "Lspsaga definition and usage finder")
+  -- map("n", "<leader>cd", "<cmd>Lspsaga goto_definition<cr>", bufopts, "Lspsaga go to definition (Ctrl+b)")
+  -- map("n", "<C-b>", "<cmd>Lspsaga goto_definition<cr>", bufopts, "Lspsaga go to definition (Ctrl+b)")
+  map("n", "<leader>cD", "<cmd>Lspsaga peek_definition<cr>", bufopts, "Lspsaga peek definition")
+  map("n", "<leader>ct", "<cmd>Lspsaga goto_type_definition<cr>", bufopts, "Lspsaga goto type definition")
+  map("n", "<leader>cT", "<cmd>Lspsaga peek_type_definition<cr>", bufopts, "Lspsaga peek type definition")
+  map("n", "<leader>ci", "<cmd>Lspsaga incoming_calls<cr>", bufopts, "Lspsaga incoming calls")
+  map("n", "<leader>co", "<cmd>Lspsaga outgoing_calls<cr>", bufopts, "Lspsaga outgoing calls")
+  map("n", "<leader>cm", "<cmd>Lspsaga outline<cr>", bufopts, "Lspsaga outline minimap")
+  map("n", "<leader>cr", "<cmd>Lspsaga rename ++project<cr>", bufopts, "Lspsaga rename")
+  map("n", "<F18>", "<cmd>Lspsaga rename ++project<cr>", bufopts, "Lspsaga rename (Shift+F6)")
+  map("n", "<leader>cE", "<cmd>Lspsaga show_buf_diagnostics<cr>", bufopts, "LSP show errors")
+  -- map("n", "<leader>ca", "<cmd>Lspsaga code_action<cr>", bufopts, "LSP code action" )
+  -- map("n", "<M-cr>", "<cmd>Lspsaga code_action<cr>", bufopts, "LSP code action (Ctrl+Enter)" )
+end
+
+M.change_highlight = function()
+  local bg = require("plugins.gruvbox").get_background_color()
+  vim.api.nvim_set_hl(0, "HoverNormal", { bg = bg })
+  vim.api.nvim_set_hl(0, "HoverBorder", { bg = bg })
+  vim.api.nvim_set_hl(0, "SagaNormal", { bg = bg })
+  vim.api.nvim_set_hl(0, "SagaBorder", { bg = bg })
 end
 
 M.attach = function()
@@ -54,19 +54,24 @@ M.attach = function()
       local bufnr = args.buf
       local client = vim.lsp.get_client_by_id(args.data.client_id)
       M.attach_keymaps(client, bufnr)
+      M.change_highlight()
     end,
   })
 end
 
-M.setup = function()
-  local config = {
+M.config = function()
+  return {
     lightbulb = {
       sign = false,
-    }
+    },
+    ui = {
+      border = "rounded",
+    },
   }
+end
 
-  require("lspsaga").setup(config)
-
+M.setup = function()
+  require("lspsaga").setup(M.config())
   M.attach()
 end
 
