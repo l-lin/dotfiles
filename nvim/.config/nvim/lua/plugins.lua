@@ -147,7 +147,7 @@ local plugins = {
   -- enhanced syntax by treesitter
   {
     "nvim-treesitter/nvim-treesitter",
-    config = function() require("plugins.treesitter") end,
+    config = function() require("plugins.treesitter").setup() end,
     lazy = true,
   },
   -- ansible support
