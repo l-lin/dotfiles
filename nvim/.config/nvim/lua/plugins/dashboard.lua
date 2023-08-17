@@ -1,10 +1,19 @@
 local M = {}
 
-M.setup = function()
+local function get_package_stats()
   local stats = require("lazy").stats()
+  return {
+    '⚡ Neovim loaded ' .. stats.loaded .. ' / ' .. stats.count .. ' plugins',
+  }
+end
+
+M.setup = function()
   local config = {
     theme = "doom",
     config = {
+      week_header = {
+        enable = true,
+      },
       center = {
         {
           icon = "   ",
@@ -63,9 +72,7 @@ M.setup = function()
           action = "qa",
         },
       },
-      footer = {
-        "⚡ Neovim loaded " .. stats.count .. " plugins",
-      },
+      footer = get_package_stats()
     },
   }
   require("dashboard").setup(config)
