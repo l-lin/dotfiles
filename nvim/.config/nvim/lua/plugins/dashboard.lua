@@ -28,7 +28,7 @@ M.setup = function()
           desc = "Find Project",
           key = "p",
           key_hl = "DashboardProject",
-          action = "Telescope project",
+          action = "Telescope projects",
         },
         {
           icon = "   ",

@@ -83,11 +83,11 @@ M.project_base_directories = function()
 end
 
 M.load_extensions = function()
-  require("telescope").load_extension("ui-select")
-  require("telescope").load_extension("luasnip")
-  require("telescope").load_extension("project")
-  require("telescope").load_extension("yank_history")
   require("telescope").load_extension("dap")
+  require("telescope").load_extension("luasnip")
+  require("telescope").load_extension("projects")
+  require("telescope").load_extension("ui-select")
+  require("telescope").load_extension("yank_history")
 end
 
 M.setup = function()

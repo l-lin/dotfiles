@@ -387,11 +387,6 @@ M.setup = function()
       "nvim-telescope/telescope-file-browser.nvim",
       dependencies = { "nvim-telescope/telescope.nvim" },
     },
-    -- telescope project finder
-    {
-      "nvim-telescope/telescope-project.nvim",
-      dependencies = { "nvim-telescope/telescope.nvim" },
-    },
     -- telescope extension for luasnip snippet
     {
       "benfowler/telescope-luasnip.nvim",
@@ -462,7 +457,13 @@ M.setup = function()
       config = function() require("plugins.dashboard").setup() end,
       event = "VimEnter",
       dependencies = { "nvim-tree/nvim-web-devicons" },
-    }
+    },
+    -- project
+    {
+      "ahmedkhalf/project.nvim",
+      config = function() require("project_nvim").setup() end,
+      event = "VeryLazy",
+    },
   }
 
   local opts = {
