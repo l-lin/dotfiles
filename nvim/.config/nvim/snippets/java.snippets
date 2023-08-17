@@ -57,3 +57,45 @@ snippet ath
 
 snippet prsf
 	private static final
+
+snippet testpojo
+	@Test
+	@DisplayName("""
+		Given correct arguments,
+		 when creating new ${1:`vim_snippets#Filename("$1", "untitled)"`},
+		 then do not throw exception
+		""")
+	void correctArguments() {
+		assertDoesNotThrow(() -> new ${1}(${2}));
+	}
+
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("invalidArgumentsProvider")
+	@DisplayName("""
+		Given incorrect arguments,
+		 when creating new ${1},
+		 then throw exception
+		""")
+	void incorrectArguments(
+		String desc,
+		String arg,
+		String expectedErrorMessage
+	) {
+		IllegalArgumentException actual = assertThrows(
+			IllegalArgumentException.class,
+			() -> new ${1}(arg),
+			desc
+		);
+
+		assertEquals(expectedErrorMessage, actual.getMessage());
+	}
+
+	private static Stream<Arguments> invalidArgumentsProvider() {
+		return Stream.of(
+			Arguments.of(
+				"null ",
+				null,
+				" is mandatory."
+			)
+		);
+	}

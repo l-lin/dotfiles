@@ -97,6 +97,11 @@ local function create_flags()
   }
 end
 
+local function find_associated_test_file()
+  local test_filename = vim.fn.expand('%:t'):match('(.+)%..+') .. "Test"
+  require("telescope.builtin").find_files({default_text = test_filename})
+end
+
 local function attach_keymaps(_, bufnr)
   local map = require("mapper").map
   local bufopts = { noremap = true, silent = true, buffer = bufnr }
@@ -115,6 +120,8 @@ local function attach_keymaps(_, bufnr)
   -- custom keymaps for Java test runner (not yet compatible with neotest)
   map("n", "<M-S-F9>", jdtls.pick_test, bufopts, "Run specific test (Alt+Shift+F9)")
   map("n", "<F21>", jdtls.test_nearest_method, bufopts, "Test method (Shift+F9)")
+
+  map("n", "<C-T>", find_associated_test_file, bufopts, "Find associated test file (Ctrl+Shift+t)")
 end
 
 local function on_attach(client, bufnr)
