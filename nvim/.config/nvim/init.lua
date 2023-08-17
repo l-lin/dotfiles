@@ -9,5 +9,5 @@
 vim.loader.enable()
 require("settings")
 require("keymaps")
-require("plugins")
+require("plugins").setup()
 require("appearance").setup()

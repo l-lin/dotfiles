@@ -5,12 +5,11 @@ M.attach_keymaps = function()
 end
 
 M.change_background_color = function()
-  local bg = require("appearance").get_background_color()
   vim.api.nvim_create_autocmd("FileType", {
     pattern = "mason",
     callback = function()
-      vim.api.nvim_set_hl(0, "MasonNormal", { bg = bg })
-      vim.api.nvim_set_hl(0, "FloatBorder", { bg = bg })
+      vim.api.nvim_set_hl(0, "MasonNormal", { bg = "none" })
+      vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
     end
   })
 end

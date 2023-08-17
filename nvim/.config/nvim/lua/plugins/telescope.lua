@@ -82,7 +82,7 @@ M.project_base_directories = function()
   end
 end
 
-M.load_extension = function()
+M.load_extensions = function()
   require("telescope").load_extension("ui-select")
   require("telescope").load_extension("luasnip")
   require("telescope").load_extension("project")
@@ -124,7 +124,7 @@ M.setup = function()
 
   require("telescope").setup(config)
 
-  M.load_extension()
+  M.load_extensions()
   M.attach_keymaps()
 end
 

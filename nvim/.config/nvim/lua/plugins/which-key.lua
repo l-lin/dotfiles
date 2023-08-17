@@ -1,9 +1,8 @@
 local M = {}
 
 M.change_highlight = function()
-  local bg = require("appearance").get_background_color()
-  vim.api.nvim_set_hl(0, "WhichKeyFloat", { bg = bg })
-  vim.api.nvim_set_hl(0, "WhichKeyBorder", { bg = bg })
+  vim.api.nvim_set_hl(0, "WhichKeyFloat", { bg = "none" })
+  vim.api.nvim_set_hl(0, "WhichKeyBorder", { bg = "none" })
 end
 
 M.setup = function()

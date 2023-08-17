@@ -42,11 +42,10 @@ M.attach_keymaps = function(_, bufnr)
 end
 
 M.change_highlight = function()
-  local bg = require("appearance").get_background_color()
-  vim.api.nvim_set_hl(0, "HoverNormal", { bg = bg })
-  vim.api.nvim_set_hl(0, "HoverBorder", { bg = bg })
-  vim.api.nvim_set_hl(0, "SagaNormal", { bg = bg })
-  vim.api.nvim_set_hl(0, "SagaBorder", { bg = bg })
+  vim.api.nvim_set_hl(0, "HoverNormal", { bg = "none" })
+  vim.api.nvim_set_hl(0, "HoverBorder", { bg = "none" })
+  vim.api.nvim_set_hl(0, "SagaNormal", { bg = "none" })
+  vim.api.nvim_set_hl(0, "SagaBorder", { bg = "none" })
 end
 
 M.attach = function()
