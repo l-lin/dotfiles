@@ -24,7 +24,8 @@ M.attach_keymaps = function(_, bufnr)
 
   map("n", "<leader>ch", "<cmd>Lspsaga hover_doc<cr>", bufopts, "LSP show hovering help (Shift+k)")
   map("n", "<S-k>", "<cmd>Lspsaga hover_doc<cr>", bufopts, "LSP show hovering help (Shift+k)")
-  map("n", "<leader>cc", "<cmd>Lspsaga finder<cr>", bufopts, "Lspsaga definition and usage finder")
+  map("n", "<leader>cc", "<cmd>Lspsaga finder<cr>", bufopts, "Lspsaga definition and usage finder (Cltr+Alt+7)")
+  map("n", "<M-&>", "<cmd>Lspsaga finder<cr>", bufopts, "Lspsaga definition and usage finder (Ctrl+Alt+7)")
   -- map("n", "<leader>cd", "<cmd>Lspsaga goto_definition<cr>", bufopts, "Lspsaga go to definition (Ctrl+b)")
   -- map("n", "<C-b>", "<cmd>Lspsaga goto_definition<cr>", bufopts, "Lspsaga go to definition (Ctrl+b)")
   map("n", "<leader>cD", "<cmd>Lspsaga peek_definition<cr>", bufopts, "Lspsaga peek definition")
@@ -61,6 +62,9 @@ end
 
 M.config = function()
   return {
+    finder = {
+      layout = "normal"
+    },
     lightbulb = {
       sign = false,
     },
