@@ -104,7 +104,7 @@ M.setup = function()
     {
       "folke/trouble.nvim",
       config = function() require("plugins.trouble").setup() end,
-      dependencies = { "neovim/nvim-lspconfig" },
+      dependencies = { "nvim-tree/nvim-web-devicons", "neovim/nvim-lspconfig" },
       event = "VeryLazy",
     },
     -- multiple cursors
