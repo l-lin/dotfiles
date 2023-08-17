@@ -1,0 +1,56 @@
+# JUnit tests
+
+snippet beforeeach
+	@BeforeEach
+	void beforeEach() {
+		${1}
+	}
+
+snippet aftereach
+	@AfterEach
+	void afterEach() {
+		${1}
+	}
+
+snippet given
+	given(${1}).willReturn(${2});
+
+snippet then
+	then(${1}).should().${2}
+
+snippet mock
+	${1} ${2} = mock(${1}.class);
+
+snippet nested
+	@Nested
+	class ${1}Test {
+		${2}
+	}
+
+snippet test
+	@Test
+	@DisplayName("""
+			Given ${1},
+			 when ${2},
+			 then ${3}
+			""")
+	void ${4}() {
+		// GIVEN
+		${5}
+
+		// WHEN
+
+		// THEN
+	}
+
+snippet testmethodsource
+	private static Stream<Arguments> ${0}Provider() {
+		return Stream.of(
+			Arguments.of(
+				"${1}",
+				)
+		);
+	}
+
+snippet ath
+	${1} actual = assertThrows(${1}.class, () -> ${2});
