@@ -98,7 +98,7 @@ local function create_flags()
 end
 
 local function find_associated_test_file()
-  local test_filename = vim.fn.expand('%:t'):match('(.+)%..+') .. "Test"
+  local test_filename = vim.fn.expand('%:t'):match('(.+)%..+') .. "Test.java"
   require("telescope.builtin").find_files({default_text = test_filename})
 end
 
