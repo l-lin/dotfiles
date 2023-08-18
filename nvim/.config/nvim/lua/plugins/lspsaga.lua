@@ -86,6 +86,10 @@ M.config = function()
     lightbulb = {
       sign = false,
     },
+    rename = {
+      in_select = false,
+      auto_save = true,
+    },
     ui = {
       border = "rounded",
     },
