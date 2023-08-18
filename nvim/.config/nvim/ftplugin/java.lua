@@ -108,9 +108,11 @@ local function attach_keymaps(_, bufnr)
 
   map("n", "<M-C-V>", jdtls.extract_variable, bufopts, "Extract variable")
   map("v", "<M-C-V>", [[<ESC><CMD>lua require("jdtls").extract_variable(true)<CR>]], bufopts, "Extract variable")
+  map("i", "<M-C-V>", [[<ESC><CMD>lua require("jdtls").extract_variable()<CR>]], bufopts, "Extract variable")
 
   map("n", "<M-C-C>", jdtls.extract_constant, bufopts, "Extract constant")
   map("v", "<M-C-C>", [[<ESC><CMD>lua require("jdtls").extract_constant(true)<CR>]], bufopts, "Extract constant")
+  map("i", "<M-C-C>", [[<ESC><CMD>lua require("jdtls").extract_constant()<CR>]], bufopts, "Extract constant")
 
   map("v", "<M-C-N>", [[<ESC><CMD>lua require("jdtls").extract_method(true)<CR>]], bufopts, "Extract method")
 
