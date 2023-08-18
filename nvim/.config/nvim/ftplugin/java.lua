@@ -115,7 +115,10 @@ local function attach_keymaps(_, bufnr)
   map("v", "<M-C-N>", [[<ESC><CMD>lua require("jdtls").extract_method(true)<CR>]], bufopts, "Extract method")
 
   map("n", "<F33>", jdtls.compile, bufopts, "Compile (Ctrl+F9)")
+
   map("n", "<M-C-O>", jdtls.organize_imports, bufopts, "Organize imports (Ctrl+Alt+o)")
+
+  map("n", "<leader>ca", "<cmd>JdtRestart<cr>", bufopts, "Restart jdtls server")
 
   -- custom keymaps for Java test runner (not yet compatible with neotest)
   map("n", "<M-S-F9>", jdtls.pick_test, bufopts, "Run specific test (Alt+Shift+F9)")
