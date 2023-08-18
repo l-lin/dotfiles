@@ -67,18 +67,21 @@ M.config = function()
     callhierarchy = {
       layout = "normal",
       keys = {
-        shuttle = {"<C-l>", "<C-h>"},
-        toggle_or_req = {"o", "<cr>"},
+        shuttle = { "<C-l>", "<C-h>" },
+        toggle_or_req = { "o", "<cr>" },
         vsplit = "<C-v>",
         split = "<C-x>",
       },
     },
+    -- diagnostic = {
+    --   extend_relatedInformation = true,
+    -- },
     finder = {
       layout = "normal",
       left_width = 0.4,
       keys = {
-        shuttle = {"<C-l>", "<C-h>"},
-        toggle_or_open = {"o", "<cr>"},
+        shuttle = { "<C-l>", "<C-h>" },
+        toggle_or_open = { "o", "<cr>" },
         vsplit = "<C-v>",
         split = "<C-x>",
       },
@@ -89,6 +92,8 @@ M.config = function()
     rename = {
       in_select = false,
       auto_save = true,
+      project_max_width = 0.8,
+      project_max_height = 0.5,
     },
     ui = {
       border = "rounded",
