@@ -37,8 +37,8 @@ M.attach_keymaps = function()
   map("n", "<C-b>", "<cmd>Telescope lsp_definitions<cr>", bufopts, "Goto definition (Ctrl+b)")
   -- map("n", "<leader>cD", "<cmd>Telescope diagnostics<cr>", bufopts, "Diagnostic" )
   map("n", "<M-6>", "<cmd>Telescope diagnostics<cr>", bufopts, "Diagnostic (Alt+6)")
-  map("n", "<leader>ci", "<cmd>Telescope lsp_implementations<cr>", bufopts, "Goto implementation")
-  map("n", "<M-C-B>", "<cmd>Telescope lsp_implementations<cr>", bufopts, "Goto implementation (Ctrl+Alt+b)")
+  -- map("n", "<leader>ci", "<cmd>Telescope lsp_implementations<cr>", bufopts, "Goto implementation")
+  -- map("n", "<M-C-B>", "<cmd>Telescope lsp_implementations<cr>", bufopts, "Goto implementation (Ctrl+Alt+b)")
   -- map("n", "<leader>ct", "<cmd>Telescope lsp_type_definitions<cr>", bufopts, "Goto type definition")
   map("n", "<leader>cR", "<cmd>lua require'telescope'.extensions.refactoring.refactors()<cr>", bufopts, "Refactor")
   map("n", "<leader>cu", "<cmd>Telescope lsp_references<cr>", bufopts, "Goto LSP reference (Ctrl+Alt+7)")
@@ -64,22 +64,6 @@ M.attach_keymaps = function()
 
   -- DAP
   map("n", "<leader>dc", "<cmd>Telescope dap configurations<cr>", bufopts, "Telescope DAP configurations")
-end
-
-M.project_base_directories = function()
-  local homepath = os.getenv("HOME")
-  local telescope_project_base_dirs = {}
-  local possible_base_dirs = {
-    homepath .. "/work",
-    homepath .. "/perso",
-    homepath .. "/perso/dotfiles/nvim/.config/nvim"
-  }
-
-  for _, dirname in ipairs(possible_base_dirs) do
-    if vim.fn.isdirectory(dirname) ~= 0 then
-      table.insert(telescope_project_base_dirs, dirname)
-    end
-  end
 end
 
 M.load_extensions = function()
@@ -109,16 +93,9 @@ M.setup = function()
     },
     extensions = {
       ["ui-select"] = {
-        require("telescope.themes").get_cursor {}
+        require("telescope.themes").get_cursor({}),
       },
       file_browser = {},
-      project = {
-        base_dirs = {
-          M.project_base_directories()
-        },
-        order_by = "asc",
-        sync_with_nvim_tree = true
-      }
     }
   }
 

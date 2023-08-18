@@ -40,6 +40,8 @@ M.attach_keymaps = function(_, bufnr)
   map("n", "<leader>cE", "<cmd>Lspsaga show_buf_diagnostics<cr>", bufopts, "LSP show errors")
   -- map("n", "<leader>ca", "<cmd>Lspsaga code_action<cr>", bufopts, "LSP code action" )
   -- map("n", "<M-cr>", "<cmd>Lspsaga code_action<cr>", bufopts, "LSP code action (Ctrl+Enter)" )
+  map("n", "<leader>ci", "<cmd>Lspsaga finder imp<cr>", bufopts, "Goto implementation")
+  map("n", "<M-C-B>", "<cmd>Lspsaga finder imp<cr>", bufopts, "Goto implementation (Ctrl+Alt+b)")
 end
 
 M.change_highlight = function()
@@ -62,14 +64,33 @@ end
 
 M.config = function()
   return {
+    callhierarchy = {
+      layout = "normal",
+      keys = {
+        shuttle = {"<C-l>", "<C-h>"},
+        toggle_or_req = {"o", "<cr>"},
+        vsplit = "<C-v>",
+        split = "<C-x>",
+      },
+    },
     finder = {
-      layout = "normal"
+      layout = "normal",
+      left_width = 0.4,
+      keys = {
+        shuttle = {"<C-l>", "<C-h>"},
+        toggle_or_open = {"o", "<cr>"},
+        vsplit = "<C-v>",
+        split = "<C-x>",
+      },
     },
     lightbulb = {
       sign = false,
     },
     ui = {
       border = "rounded",
+    },
+    symbol_in_winbar = {
+      enable = false,
     },
   }
 end
