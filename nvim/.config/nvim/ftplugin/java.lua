@@ -185,6 +185,7 @@ local function create_settings()
         "java.util.Objects.requireNonNull",
         "java.util.Objects.requireNonNullElse",
         "org.mockito.Mockito.*",
+        "org.mockito.BDDMockito.*",
       },
       filteredTypes = {
         "com.sun.*",
