@@ -3,8 +3,8 @@ skip_global_compinit=1
 # --------------------------------------------------------
 # FZF options
 # --------------------------------------------------------
-export FZF_THEME_BACKGROUND='dark'
-if [ "${FZF_THEME_BACKGROUND}" = 'light' ]; then
+export FZF_COLORSCHEME='kanagawa'
+if [ "${FZF_COLORSCHEME}" = 'gruvbox-light' ]; then
   ZSH_THEME_BG='#fbf1c7'
   ZSH_THEME_FG='#3c3836'
   ZSH_THEME_BLACK='#fbf1c7'
@@ -16,7 +16,8 @@ if [ "${FZF_THEME_BACKGROUND}" = 'light' ]; then
   ZSH_THEME_CYAN='#689d6a'
   ZSH_THEME_WHITE='#7c6f64'
   ZSH_THEME_GRAY='#928374'
-else
+  ZSH_THEME_ACCENT="${ZSH_THEME_YELLOW}"
+elif [ "${FZF_COLORSCHEME}" = "gruvbox-dark" ]; then
   ZSH_THEME_BG='#282828'
   ZSH_THEME_FG='#ebdbb2'
   ZSH_THEME_BLACK='#282828'
@@ -28,17 +29,31 @@ else
   ZSH_THEME_CYAN='#689d6a'
   ZSH_THEME_WHITE='#a89984'
   ZSH_THEME_GRAY='#928374'
+  ZSH_THEME_ACCENT="${ZSH_THEME_YELLOW}"
+elif [ "${FZF_COLORSCHEME}" = "kanagawa" ]; then
+  ZSH_THEME_BG='#1f1f28'
+  ZSH_THEME_FG='#dcd7ba'
+  ZSH_THEME_BLACK='#090618'
+  ZSH_THEME_RED='#c34043'
+  ZSH_THEME_GREEN='#76946a'
+  ZSH_THEME_YELLOW='#c0a36e'
+  ZSH_THEME_BLUE='#7e9cd8'
+  ZSH_THEME_MAGENTA='#957fb8'
+  ZSH_THEME_CYAN='#6a9589'
+  ZSH_THEME_WHITE='#c8c093'
+  ZSH_THEME_GRAY='#727169'
+  ZSH_THEME_ACCENT="${ZSH_THEME_BLUE}"
 fi
 export FZF_THEME="
 --color=bg:${ZSH_THEME_BG}
---color=hl:${ZSH_THEME_YELLOW}
+--color=hl:${ZSH_THEME_ACCENT}
 --color=fg:${ZSH_THEME_FG}
 --color=fg+:bold:${ZSH_THEME_FG}
 --color=bg+:${ZSH_THEME_BG}
---color=hl+:${ZSH_THEME_YELLOW}
---color=gutter:${ZSH_THEME_BLACK}
+--color=hl+:${ZSH_THEME_ACCENT}
+--color=gutter:${ZSH_THEME_BG}
 --color=info:${ZSH_THEME_GRAY}
---color=separator:${ZSH_THEME_YELLOW}
+--color=separator:${ZSH_THEME_ACCENT}
 --color=border:${ZSH_THEME_GRAY}
 --color=label:${ZSH_THEME_RED}
 --color=prompt:${ZSH_THEME_RED}

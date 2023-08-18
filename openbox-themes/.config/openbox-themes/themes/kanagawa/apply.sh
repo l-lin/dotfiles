@@ -7,11 +7,9 @@
 ## Theme ------------------------------------
 TDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 THEME="${TDIR##*/}"
-THEME_BACKGROUND="light"
+THEME_BACKGROUND="dark"
 
 source "$HOME"/.config/openbox-themes/themes/"$THEME"/theme.bash
-altbackground="`pastel color $background | pastel lighten $light_value | pastel format hex`"
-altforeground="`pastel color $foreground | pastel darken $dark_value | pastel format hex`"
 
 ## Directories ------------------------------
 PATH_CONF="$HOME/.config"
@@ -147,6 +145,13 @@ apply_terminal() {
 		    magenta: '${color13}'
 		    cyan:    '${color14}'
 		    white:   '${color15}'
+		  selection:
+		    background: '#2d4f67'
+		    foreground: '${color7}'
+
+		  indexed_colors:
+		    - { index: 16, color: '#ffa066' }
+		    - { index: 17, color: '#ff5d62' }
 	_EOF_
 
 	# xfce terminal : fonts & colors

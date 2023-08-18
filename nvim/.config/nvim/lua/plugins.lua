@@ -48,9 +48,16 @@ M.setup = function()
     -- colorscheme
     {
       "sainnhe/gruvbox-material",
+      enabled = false,
       lazy = false,
       priority = 1000,
       config = function() require("plugins.gruvbox").setup() end,
+    },
+    {
+      "rebelot/kanagawa.nvim",
+      lazy = false,
+      priority = 1000,
+      config = function() require("plugins.kanagawa").setup() end,
     },
     -- filetype icons
     {
@@ -67,14 +74,22 @@ M.setup = function()
     {
       "nvim-lualine/lualine.nvim",
       config = function() require("plugins.lualine").setup() end,
-      dependencies = { "sainnhe/gruvbox-material", "nvim-tree/nvim-web-devicons", opt = true, },
+      dependencies = {
+        { "sainnhe/gruvbox-material" },
+        { "rebelot/kanagawa.nvim" },
+        { "nvim-tree/nvim-web-devicons", opt = true, }
+      },
       event = "VimEnter",
     },
     -- buffer line (top)
     {
       "akinsho/bufferline.nvim",
       config = function() require("plugins.bufferline").setup() end,
-      dependencies = { "sainnhe/gruvbox-material", "nvim-tree/nvim-web-devicons", opt = true, },
+      dependencies = {
+        { "sainnhe/gruvbox-material" },
+        { "rebelot/kanagawa.nvim" },
+        { "nvim-tree/nvim-web-devicons", opt = true, }
+      },
       event = "VimEnter",
     },
 

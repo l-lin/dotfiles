@@ -361,7 +361,7 @@ change_tmux_background() {
 	local file_path="${HOME}/.tmux.conf"
 
 	if [[ -f "${file_path}" ]]; then
-		sed -i --follow-symlinks "s/^set -g @tmux-gruvbox-background '\(dark\|light\)'$/set -g @tmux-gruvbox-background '${THEME_BACKGROUND}'/"	"${file_path}"
+		sed -i --follow-symlinks "s/^set -g @tmux-colorscheme '.*'/set -g @tmux-colorscheme '${THEME}'/"	"${file_path}"
 		tmux source "${file_path}"
 	fi
 }
@@ -378,7 +378,7 @@ change_fzf_background() {
 	local file_path="${HOME}/.zshenv"
 
 	if [[ -f "${file_path}" ]]; then
-		sed -i --follow-symlinks "s/^export FZF_THEME_BACKGROUND='\(dark\|light\)'$/export FZF_THEME_BACKGROUND='${THEME_BACKGROUND}'/" "${file_path}"
+		sed -i --follow-symlinks "s/^export FZF_COLORSCHEME='.*'/export FZF_COLORSCHEME='${THEME}'/" "${file_path}"
 	fi
 }
 

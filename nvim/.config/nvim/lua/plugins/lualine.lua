@@ -3,7 +3,7 @@ local M = {}
 M.setup = function()
   local config = {
     options = {
-      theme = "gruvbox-material",
+      theme = "kanagawa",
       section_separators = "",
       component_separators = ""
     }

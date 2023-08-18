@@ -1,0 +1,4 @@
+configuration {
+    show-icons:                 false;
+}
+@theme "kanagawa.rasi"
