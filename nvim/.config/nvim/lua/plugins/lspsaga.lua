@@ -40,7 +40,7 @@ M.attach_keymaps = function(_, bufnr)
   map("n", "<leader>cE", "<cmd>Lspsaga show_buf_diagnostics<cr>", bufopts, "LSP show errors")
   -- map("n", "<leader>ca", "<cmd>Lspsaga code_action<cr>", bufopts, "LSP code action" )
   -- map("n", "<M-cr>", "<cmd>Lspsaga code_action<cr>", bufopts, "LSP code action (Ctrl+Enter)" )
-  map("n", "<leader>ci", "<cmd>Lspsaga finder imp<cr>", bufopts, "Goto implementation")
+  map("n", "<leader>cb", "<cmd>Lspsaga finder imp<cr>", bufopts, "Goto implementation")
   map("n", "<M-C-B>", "<cmd>Lspsaga finder imp<cr>", bufopts, "Goto implementation (Ctrl+Alt+b)")
 end
 
