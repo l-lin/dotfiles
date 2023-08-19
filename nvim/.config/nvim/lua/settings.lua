@@ -88,3 +88,10 @@ g.loaded_node_provider = 0
 g.loaded_python_provider = 0
 g.loaded_python3_provider = 0
 
+-- dont list quickfix buffers
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "qf",
+  callback = function()
+    vim.opt_local.buflisted = false
+  end,
+})
