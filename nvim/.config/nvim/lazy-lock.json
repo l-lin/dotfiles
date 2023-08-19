@@ -1,6 +1,7 @@
 {
   "Comment.nvim": { "branch": "master", "commit": "0236521ea582747b58869cb72f70ccfa967d2e89" },
   "LuaSnip": { "branch": "master", "commit": "409535b8fc54c650eb845b0c35e0cc7f08810284" },
+  "Navigator.nvim": { "branch": "master", "commit": "91d86506ac2a039504d5205d32a1d4bc7aa57072" },
   "actions-preview.nvim": { "branch": "master", "commit": "7b4925d51dd89a97723be076013b550899e499fa" },
   "ansible-vim": { "branch": "master", "commit": "93798e8c89c441d29d4678da0c0d5e1429eb43b0" },
   "auto-hlsearch.nvim": { "branch": "main", "commit": "8f28246d53e9478717ca3b51c8112083fbebd7e3" },
@@ -22,7 +23,6 @@
   "flash.nvim": { "branch": "main", "commit": "967117690bd677cb7b6a87f0bc0077d2c0be3a27" },
   "friendly-snippets": { "branch": "main", "commit": "377d45475b49e37460a902d6d569d2093d4037d0" },
   "gitsigns.nvim": { "branch": "main", "commit": "bae45ef449d8811061cc940459e70e883a3aa83a" },
-  "gruvbox-material": { "branch": "master", "commit": "b5f8c6a6c1cda630c53b061b765068a0898d47a3" },
   "kanagawa.nvim": { "branch": "master", "commit": "1749cea392acb7d1548a946fcee1e6f1304cd3cb" },
   "lazy.nvim": { "branch": "main", "commit": "dac844ed617dda4f9ec85eb88e9629ad2add5e05" },
   "lspkind.nvim": { "branch": "master", "commit": "57610d5ab560c073c465d6faf0c19f200cb67e6e" },
@@ -34,7 +34,6 @@
   "neodev.nvim": { "branch": "main", "commit": "9a5c0f0de5c15fba52d4fb83d425d3f4fa7abfa1" },
   "neotest": { "branch": "master", "commit": "bec7be0f13ee19c85561943fc5f7b8daa4f4d465" },
   "neotest-go": { "branch": "main", "commit": "f2580cad67ef0181403cf65858ab638ffd3ede9f" },
-  "nord.nvim": { "branch": "master", "commit": "fab04b2dd4b64f4b1763b9250a8824d0b5194b8f" },
   "nvim-autopairs": { "branch": "master", "commit": "ae5b41ce880a6d850055e262d6dfebd362bb276e" },
   "nvim-cmp": { "branch": "main", "commit": "51f1e11a89ec701221877532ee1a23557d291dd5" },
   "nvim-cmp-buffer-lines": { "branch": "master", "commit": "2036e6fbb40c770eb82f1940a0ce0b2988f8ef32" },

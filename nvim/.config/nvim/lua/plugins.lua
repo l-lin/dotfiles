@@ -424,7 +424,12 @@ M.setup = function()
       config = function() require("plugins.oil").setup() end,
       event = "VeryLazy",
     },
-
+    -- navigate between neovim and multiplexers
+    {
+      "numToStr/Navigator.nvim",
+      config = function() require("plugins.navigator").setup() end,
+      event = "VeryLazy",
+    },
     -- -------------------------------------
     -- GIT
     -- -------------------------------------

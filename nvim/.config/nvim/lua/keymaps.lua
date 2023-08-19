@@ -39,10 +39,11 @@ map("n", "<C-s>", "<cmd>w!<CR>", { noremap = true, desc = "Fast saving" })
 map("n", "<F28>", "<cmd>bd<CR>", { noremap = true, silent = true, desc = "Close current buffer" })
 
 -- navigation
-map("n", "<C-k>", "<cmd>wincmd k<CR>", { noremap = true, desc = "Move to upper window" })
-map("n", "<C-j>", "<cmd>wincmd j<CR>", { noremap = true, desc = "Move to below window" })
-map("n", "<C-h>", "<cmd>wincmd h<CR>", { noremap = true, desc = "Move to left window" })
-map("n", "<C-l>", "<cmd>wincmd l<CR>", { noremap = true, desc = "Move to right window" })
+-- using navigator plugin instead
+-- map("n", "<C-k>", "<cmd>wincmd k<CR>", { noremap = true, desc = "Move to upper window" })
+-- map("n", "<C-j>", "<cmd>wincmd j<CR>", { noremap = true, desc = "Move to below window" })
+-- map("n", "<C-h>", "<cmd>wincmd h<CR>", { noremap = true, desc = "Move to left window" })
+-- map("n", "<C-l>", "<cmd>wincmd l<CR>", { noremap = true, desc = "Move to right window" })
 map("n", "<F12>", "<cmd>bn<CR>", { noremap = true, silent = true, desc = "Next buffer" })
 map("n", "<F24>", "<cmd>bp<CR>", { noremap = true, silent = true, desc = "Previous buffer (Shift+F12)" })
 
