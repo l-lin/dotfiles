@@ -1,7 +1,7 @@
 local M = {}
 
 M.setup = function()
-  local config = {
+  require("refactoring").setup({
     prompt_func_return_type = {
       go = true,
       js = true,
@@ -12,8 +12,7 @@ M.setup = function()
       js = true,
       ts = true,
     },
-  }
-  require("refactoring").setup(config)
+  })
 end
 
 return M

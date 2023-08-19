@@ -28,18 +28,9 @@ M.attach_keymaps = function(_, bufnr)
 end
 
 -- configure setup on attach to a lsp server
-M.attach = function(client, bufnr)
-  -- setup diagnostics toggle on and off
-  vim.g.diagnostics_visible = true
-  function _G.toggle_diagnostics()
-    if vim.g.diagnostics_visible then
-      vim.g.diagnostics_visible = false
-      vim.diagnostic.disable()
-    else
-      vim.g.diagnostics_visible = true
-      vim.diagnostic.enable()
-    end
-  end
+local function attach(client, bufnr)
+  client.server_capabilities.documentFormattingProvider = false
+  client.server_capabilities.documentRangeFormattingProvider = false
 
   -- setup global autocompletion
   vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
@@ -48,21 +39,45 @@ M.attach = function(client, bufnr)
   M.attach_keymaps(client, bufnr)
 end
 
+local function create_capabilities()
+  -- return require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+
+  capabilities.textDocument.completion.completionItem = {
+    documentationFormat = { "markdown", "plaintext" },
+    snippetSupport = true,
+    preselectSupport = true,
+    insertReplaceSupport = true,
+    labelDetailsSupport = true,
+    deprecatedSupport = true,
+    commitCharactersSupport = true,
+    tagSupport = { valueSet = { 1 } },
+    resolveSupport = {
+      properties = {
+        "documentation",
+        "detail",
+        "additionalTextEdits",
+      },
+    },
+  }
+  return capabilities
+end
+
 M.setup = function()
   local lsp = require("lspconfig")
 
-  -- Setup lspconfig
-  local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
+  -- setup lspconfig
+  local capabilities = create_capabilities()
 
   -- setup servers for each programming language
-  lsp.angularls.setup({ on_attach = M.attach, capabilities = capabilities })
-  lsp.bashls.setup({ on_attach = M.attach, capabilities = capabilities })
-  lsp.dockerls.setup({ on_attach = M.attach, capabilities = capabilities })
-  lsp.gopls.setup({ on_attach = M.attach, capabilities = capabilities })
-  lsp.html.setup({ on_attach = M.attach, capabilities = capabilities })
-  lsp.jsonls.setup({ on_attach = M.attach, capabilities = capabilities })
+  lsp.angularls.setup({ on_attach = attach, capabilities = capabilities })
+  lsp.bashls.setup({ on_attach = attach, capabilities = capabilities })
+  lsp.dockerls.setup({ on_attach = attach, capabilities = capabilities })
+  lsp.gopls.setup({ on_attach = attach, capabilities = capabilities })
+  lsp.html.setup({ on_attach = attach, capabilities = capabilities })
+  lsp.jsonls.setup({ on_attach = attach, capabilities = capabilities })
   lsp.lua_ls.setup({
-    on_attach = M.attach,
+    on_attach = attach,
     capabilities = capabilities,
     settings = {
       Lua = {
@@ -76,8 +91,14 @@ M.setup = function()
         },
         workspace = {
           -- Make the server aware of Neovim runtime files
-          library = vim.api.nvim_get_runtime_file("", true),
-          checkThirdParty = false,
+          -- library = vim.api.nvim_get_runtime_file("", true),
+          -- checkThirdParty = false,
+          library = {
+            [vim.fn.expand("$VIMRUNTIME/lua")] = true,
+            [vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true,
+          },
+          maxPreload = 100000,
+          preloadFileSize = 10000,
         },
         -- Do not send telemetry data containing a randomized but unique identifier
         telemetry = {
@@ -86,15 +107,15 @@ M.setup = function()
       },
     },
   })
-  lsp.marksman.setup({ on_attach = M.attach, capabilities = capabilities })
-  lsp.pylsp.setup({ on_attach = M.attach, capabilities = capabilities })
-  lsp.rust_analyzer.setup({ on_attach = M.attach, capabilities = capabilities })
-  lsp.sqlls.setup({ on_attach = M.attach, capabilities = capabilities })
-  lsp.terraform_lsp.setup({ cmd = { "terraform-ls", "serve" }, on_attach = M.attach, capabilities = capabilities })
-  lsp.tsserver.setup({ on_attach = M.attach, capabilities = capabilities })
-  lsp.vimls.setup({ on_attach = M.attach, capabilities = capabilities })
+  lsp.marksman.setup({ on_attach = attach, capabilities = capabilities })
+  lsp.pylsp.setup({ on_attach = attach, capabilities = capabilities })
+  lsp.rust_analyzer.setup({ on_attach = attach, capabilities = capabilities })
+  lsp.sqlls.setup({ on_attach = attach, capabilities = capabilities })
+  lsp.terraform_lsp.setup({ cmd = { "terraform-ls", "serve" }, on_attach = attach, capabilities = capabilities })
+  lsp.tsserver.setup({ on_attach = attach, capabilities = capabilities })
+  lsp.vimls.setup({ on_attach = attach, capabilities = capabilities })
   lsp.yamlls.setup({
-    on_attach = M.attach,
+    on_attach = attach,
     capabilities = capabilities,
     settings = {
       yaml = {

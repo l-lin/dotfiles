@@ -1,6 +1,6 @@
 local M = {}
 
-M.change_highlight = function()
+local function change_highlight()
   vim.api.nvim_set_hl(0, "WhichKeyFloat", { bg = "none" })
   vim.api.nvim_set_hl(0, "WhichKeyBorder", { bg = "none" })
 end
@@ -39,7 +39,7 @@ M.setup = function()
   wk.register(registry)
   wk.setup(config)
 
-  M.change_highlight()
+  change_highlight()
 end
 
 return M

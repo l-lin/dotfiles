@@ -53,7 +53,7 @@ geany_font='JetBrains Mono 10'
 
 # Appearance
 gtk_font='Noto Sans 13'
-gtk_theme='Wave'
+gtk_theme='Windows-10-Dark'
 icon_theme='Zafiro'
 cursor_theme='Qogirr'
 

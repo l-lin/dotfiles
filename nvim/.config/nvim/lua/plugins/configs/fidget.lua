@@ -1,10 +1,11 @@
 local M = {}
+
 M.setup = function()
-  local config = {
+  require("fidget").setup({
     text = {
       spinner = "dots",
     }
-  }
-  require("fidget").setup(config)
+  })
 end
+
 return M

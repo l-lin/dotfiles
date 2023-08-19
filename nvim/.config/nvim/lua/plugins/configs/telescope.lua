@@ -71,11 +71,11 @@ M.load_extensions = function()
   require("telescope").load_extension("luasnip")
   require("telescope").load_extension("projects")
   require("telescope").load_extension("ui-select")
-  require("telescope").load_extension("yank_history")
+  -- require("telescope").load_extension("yank_history")
 end
 
 M.setup = function()
-  local config = {
+  require("telescope").setup({
     defaults = {
       file_ignore_patterns = {
         "venv/.*",
@@ -97,12 +97,9 @@ M.setup = function()
       },
       file_browser = {},
     }
-  }
-
-  require("telescope").setup(config)
+  })
 
   M.load_extensions()
-  M.attach_keymaps()
 end
 
 return M

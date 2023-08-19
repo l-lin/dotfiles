@@ -21,10 +21,9 @@ M.attach_keymaps = function()
 end
 
 M.setup = function()
-  local config = {
+  require('illuminate').configure({
     delay = 100,
-  }
-  require('illuminate').configure(config)
+  })
 
   -- if you want to display in highlight instead of underline
   -- /!\ you will not be able to see the difference with visual selection

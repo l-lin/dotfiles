@@ -10,9 +10,9 @@ local function change_highlights()
   })
 end
 
-local function create_config()
-  return {
-    -- defaults = { lazy = true },
+M.setup = function(plugins)
+  local opts = {
+    defaults = { lazy = true },
     install = { colorscheme = { "kanagawa" } },
 
     ui = {
@@ -26,6 +26,9 @@ local function create_config()
     },
 
     performance = {
+      -- cache = {
+      --   enabled = true,
+      -- },
       rtp = {
         disabled_plugins = {
           "2html_plugin",
@@ -59,10 +62,7 @@ local function create_config()
       },
     },
   }
-end
-
-M.setup = function(plugins)
-  require("lazy").setup(plugins, create_config())
+  require("lazy").setup(plugins, opts)
   change_highlights()
 end
 

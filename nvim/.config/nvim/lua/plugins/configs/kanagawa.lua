@@ -1,7 +1,7 @@
 local M = {}
 
 M.setup = function()
-  local config = {
+  require("kanagawa").setup({
     colors = {
       theme = {
         all = {
@@ -11,9 +11,7 @@ M.setup = function()
         }
       }
     },
-  }
-
-  require("kanagawa").setup(config)
+  })
 
   vim.cmd [[ colorscheme kanagawa ]]
 end

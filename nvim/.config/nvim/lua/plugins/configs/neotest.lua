@@ -1,6 +1,6 @@
 local M = {}
 
-M.attach_diagnostic = function()
+local function attach_diagnostic()
   -- get neotest namespace (api call creates or returns namespace)
   local neotest_ns = vim.api.nvim_create_namespace("neotest")
 
@@ -16,13 +16,12 @@ M.attach_diagnostic = function()
 end
 
 M.setup = function()
-  local config = {
+  require("neotest").setup({
     adapters = {
       require("neotest-go"),
     },
-  }
-  require("neotest").setup(config)
-  M.attach_diagnostic()
+  })
+  attach_diagnostic()
 end
 
 return M

@@ -38,16 +38,14 @@ end
 local function create_init_options()
   local java_debug_adapter_path = require("mason-registry").get_package("java-debug-adapter"):get_install_path()
   local vscode_java_decompiler_path = require("mason-registry").get_package("vscode-java-decompiler"):get_install_path()
-  local vscode_java_test_path = home .. "/.local/share/vscode-java-test"
+  local vscode_java_test_path = require("mason-registry").get_package("java-test"):get_install_path()
 
   local jar_patterns = {
     java_debug_adapter_path .. "/extension/server/com.microsoft.java.debug.plugin-*.jar",
     vscode_java_decompiler_path .. "/server/*.jar",
-    vscode_java_test_path .. "/java-extension/com.microsoft.java.test.plugin/target/*.jar",
-    vscode_java_test_path .. "/java-extension/com.microsoft.java.test.runner/target/*.jar",
+    vscode_java_test_path .. "/extension/server/*.jar",
   }
-  local plugin_path =
-      vscode_java_test_path .. "/java-extension/com.microsoft.java.test.plugin.site/target/repository/plugins/"
+  local plugin_path = vscode_java_test_path .. "/extension/server/"
 
   local bundle_list = vim.tbl_map(function(x)
     return require("jdtls.path").join(plugin_path, x)
@@ -66,12 +64,7 @@ local function create_init_options()
   local bundles = {}
   for _, jar_pattern in ipairs(jar_patterns) do
     for _, bundle in ipairs(vim.split(vim.fn.glob(jar_pattern), "\n")) do
-      if
-          not vim.endswith(bundle, "com.microsoft.java.test.runner-jar-with-dependencies.jar")
-          and not vim.endswith(bundle, "com.microsoft.java.test.runner.jar")
-      then
-        table.insert(bundles, bundle)
-      end
+      table.insert(bundles, bundle)
     end
   end
 
@@ -99,7 +92,7 @@ end
 
 local function find_associated_test_file()
   local test_filename = vim.fn.expand('%:t'):match('(.+)%..+') .. "Test.java"
-  require("telescope.builtin").find_files({default_text = test_filename})
+  require("telescope.builtin").find_files({ default_text = test_filename })
 end
 
 local function attach_keymaps(_, bufnr)

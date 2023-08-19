@@ -1,16 +1,8 @@
 local M = {}
 
-M.attach_keymaps = function()
-  local map = require("mapper").map
-  local bufopts = { noremap = true, silent = true }
-  map("n", "<leader>gd", "<cmd>DiffviewFileHistory %<cr>", bufopts, "Check file git history")
-  -- FIX: calling DiffviewOpen will make file saving behaving weirdly, i.e. always opening the file diffview
-  map("n", "<A-0>", "<cmd>DiffviewOpen<cr>", bufopts, "Open diffView (Alt+0)")
-end
-
 M.setup = function()
   local actions = require("diffview.actions")
-  local config = {
+  require("diffview").setup({
     diff_binaries = false,    -- Show diffs for binaries
     enhanced_diff_hl = false, -- See "<cmd>h diffview-config-enhanced_diff_hl"
     git_cmd = { "git" },      -- The git executable followed by default args.
@@ -235,11 +227,7 @@ M.setup = function()
         { "n", "<esc>", actions.close, { desc = "Close help menu" } },
       },
     },
-  }
-
-  require("diffview").setup(config)
-
-  M.attach_keymaps()
+  })
 end
 
 return M

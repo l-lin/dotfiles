@@ -1,10 +1,12 @@
 local M = {}
 
-M.attach_keymaps = function()
-  vim.keymap.set("n", "<leader>vm", "<cmd>Mason<CR>", { noremap = true, desc = "Open Mason" })
+local function attach_keymaps(ensure_installed)
+  vim.api.nvim_create_user_command("MasonInstallAll", function()
+    vim.cmd("MasonInstall " .. table.concat(ensure_installed, " "))
+  end, {})
 end
 
-M.change_background_color = function()
+local function change_background_color()
   vim.api.nvim_create_autocmd("FileType", {
     pattern = "mason",
     callback = function()
@@ -15,48 +17,55 @@ M.change_background_color = function()
 end
 
 M.setup = function()
-  local config = {
-    ui = {
-      border = "rounded",
-    }
-  }
   -- Mason install packages to `stdpath("data")/mason`, i.e. `$HOME/.local/share/nvim/mason/`.
   -- You can get the path to the installed Mason packages using `require("mason-registry").get_package("jdtls"):get_install_path()`
-  require("mason").setup(config)
+  require("mason").setup({
+    ui = {
+      border = "rounded",
+      icons = {
+        package_pending = " ",
+        package_installed = "󰄳 ",
+        package_uninstalled = " 󰚌",
+      },
+    }
+  })
+  local ensure_installed = {   -- not an option from mason.nvim
+    "gopls",
+    "angular-language-server",
+    "ansible-language-server",
+    "ansible-lint",
+    "bash-language-server",
+    "codelldb",
+    "go-debug-adapter",
+    "goimports",
+    "golangci-lint",
+    "google-java-format",
+    "html-lsp",
+    "java-debug-adapter",
+    "java-test",
+    "jdtls",
+    "js-debug-adapter",
+    "json-lsp",
+    "lua-language-server",
+    "marksman",
+    "rust-analyzer",
+    "semgrep",
+    "shellcheck",
+    "shfmt",
+    "sql-formatter",
+    "terraform-ls",
+    "typescript-language-server",
+    "vscode-java-decompiler",
+    "xmlformatter",
+    "yaml-language-server",
+    "yamlfmt",
+    "yamllint",
+  }
+  -- set to global variable, so it can be used for bootstrap.post_install
+  vim.g.mason_binaries_list = ensure_installed
 
-  M.attach_keymaps()
-  M.change_background_color()
-
-  -- package to install:
-  --
-  -- google-java-format
-  -- angular-language-server angularls
-  -- ansible-language-server ansiblels
-  -- ansible-lint
-  -- bash-language-server bashls
-  -- go-debug-adapter
-  -- goimports
-  -- golangci-lint
-  -- gopls
-  -- java-debug-adapter
-  -- jdtls
-  -- js-debug-adapter
-  -- json-lsp jsonls
-  -- lua-language-server lua_ls
-  -- marksman
-  -- rust-analyzer rust_analyzer
-  -- rustfmt
-  -- semgrep
-  -- shellcheck
-  -- shfmt
-  -- sql-formatter
-  -- terraform-ls terraformls
-  -- typescript-language-server tsserver
-  -- vscode-java-decompiler
-  -- xmlformatter
-  -- yaml-language-server yamlls
-  -- yamlfmt
-  -- yamllint
+  attach_keymaps(ensure_installed)
+  change_background_color()
 end
 
 return M
