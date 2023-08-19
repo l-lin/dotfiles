@@ -468,6 +468,8 @@ local plugins = {
         config = function() require("plugins.configs.fidget").setup() end,
         tag = "legacy",
       },
+      "mason.nvim",
+      "williamboman/mason-lspconfig.nvim",
     },
   },
   -- java support
@@ -493,7 +495,6 @@ local plugins = {
   -- bridge between LSP servers & nvim-lspconfig
   {
     "williamboman/mason-lspconfig.nvim",
-    event = "VeryLazy",
     config = function() require("mason-lspconfig").setup() end,
   },
 

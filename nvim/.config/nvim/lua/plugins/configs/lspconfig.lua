@@ -29,9 +29,6 @@ end
 
 -- configure setup on attach to a lsp server
 local function attach(client, bufnr)
-  client.server_capabilities.documentFormattingProvider = false
-  client.server_capabilities.documentRangeFormattingProvider = false
-
   -- setup global autocompletion
   vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
 
@@ -88,17 +85,6 @@ M.setup = function()
         diagnostics = {
           -- Get the language server to recognize the `vim` global
           globals = { "vim" },
-        },
-        workspace = {
-          -- Make the server aware of Neovim runtime files
-          -- library = vim.api.nvim_get_runtime_file("", true),
-          -- checkThirdParty = false,
-          library = {
-            [vim.fn.expand("$VIMRUNTIME/lua")] = true,
-            [vim.fn.expand("$VIMRUNTIME/lua/vim/lsp")] = true,
-          },
-          maxPreload = 100000,
-          preloadFileSize = 10000,
         },
         -- Do not send telemetry data containing a randomized but unique identifier
         telemetry = {
