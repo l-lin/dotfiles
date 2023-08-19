@@ -490,6 +490,12 @@ local plugins = {
     cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
     config = function() require("plugins.configs.mason").setup() end,
   },
+  -- bridge between LSP servers & nvim-lspconfig
+  {
+    "williamboman/mason-lspconfig.nvim",
+    event = "VeryLazy",
+    config = function() require("mason-lspconfig").setup() end,
+  },
 
   -- -------------------------------------
   -- DAP
