@@ -150,6 +150,7 @@ local plugins = {
       { "*", [[*<Cmd>lua require("hlslens").start()<cr>]], },
       { "#", [[#<Cmd>lua require("hlslens").start()<cr>]], },
     },
+    config = function() require("hlslens").setup() end,
   },
   -- search and replace
   {
@@ -818,7 +819,6 @@ local plugins = {
       { "<leader>gb", "<cmd>G blame<cr>",                   desc = "git blame" },
       { "<leader>gl", "<cmd>0GcLog<cr>",                    desc = "git log" },
     },
-    config = function() require("plugins.configs.fugitive").setup() end,
   },
   -- git modifications explorer/handler
   {
