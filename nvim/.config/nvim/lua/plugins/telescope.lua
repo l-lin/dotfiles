@@ -2,6 +2,9 @@ return {
   {
     "nvim-telescope/telescope.nvim",
     keys = {
+      -- disable
+      { "<leader>gc", false },
+      { "<leader>gs", false },
       -- finder
       {
         "<C-g>",
