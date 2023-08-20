@@ -1,3 +1,13 @@
+local function change_highlights()
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = "lazy",
+    callback = function()
+      vim.api.nvim_set_hl(0, "LazyNormal", { bg = "none" })
+      vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
+    end,
+  })
+end
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   -- bootstrap lazy.nvim
@@ -22,6 +32,7 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.lang.typescript" },
     { import = "lazyvim.plugins.extras.lang.yaml" },
     { import = "lazyvim.plugins.extras.test.core" },
+    { import = "lazyvim.plugins.extras.util.project" },
     -- import/override with your plugins
     { import = "plugins" },
   },
@@ -51,4 +62,14 @@ require("lazy").setup({
       },
     },
   },
+  ui = {
+    border = "rounded",
+    icons = {
+      ft = "",
+      lazy = "󰂠 ",
+      loaded = "",
+      not_loaded = "",
+    },
+  },
 })
+change_highlights()
