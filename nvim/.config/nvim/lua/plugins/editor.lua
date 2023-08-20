@@ -35,31 +35,6 @@ return {
         silent = true,
         desc = "Find nvim keymaps",
       },
-
-      -- code
-      {
-        "<C-b>",
-        "<cmd>Telescope lsp_definitions<cr>",
-        noremap = true,
-        silent = true,
-        desc = "Goto definition (Ctrl+b)",
-      },
-      {
-        "<M-6>",
-        "<cmd>Telescope diagnostics<cr>",
-        noremap = true,
-        silent = true,
-        desc = "Diagnostic (Alt+6)",
-      },
-
-      -- dap
-      {
-        "<leader>dc",
-        "<cmd>Telescope dap configurations<cr>",
-        noremap = true,
-        silent = true,
-        desc = "Telescope DAP configuration",
-      },
     },
   },
   -- file explorer

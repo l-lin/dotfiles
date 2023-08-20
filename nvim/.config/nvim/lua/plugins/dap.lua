@@ -105,4 +105,16 @@ return {
       },
     },
   },
+  {
+    "nvim-telescope/telescope.nvim",
+    keys = {
+      {
+        "<leader>dc",
+        "<cmd>Telescope dap configurations<cr>",
+        noremap = true,
+        silent = true,
+        desc = "Telescope DAP configuration",
+      },
+    },
+  },
 }
