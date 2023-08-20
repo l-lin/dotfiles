@@ -1,4 +1,5 @@
 return {
+  -- fuzzy finding anything anywhere
   {
     "nvim-telescope/telescope.nvim",
     keys = {
@@ -61,10 +62,34 @@ return {
       },
     },
   },
+  -- file explorer
   {
     "nvim-neo-tree/neo-tree.nvim",
     keys = {
       { "<A-1>", "<leader>fe", desc = "Explorer NeoTree (root dir) (Alt+1)", remap = true },
     },
+  },
+  -- multilevel undo explorer
+  {
+    "mbbill/undotree",
+    keys = {
+      { "<leader>u", "<cmd>UndotreeToggle<cr>", noremap = true, desc = "Undotree Toggle" },
+    },
+  },
+  -- file explorer to edit filesystem like a normal buffer, vim-vinegar like
+  {
+    "stevearc/oil.nvim",
+    keys = {
+      {
+        "<leader>no",
+        function()
+          require("oil").open()
+        end,
+        desc = "Oil open current directory",
+      },
+    },
+    config = function()
+      require("oil").setup()
+    end,
   },
 }
