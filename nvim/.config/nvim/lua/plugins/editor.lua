@@ -92,4 +92,23 @@ return {
       require("oil").setup()
     end,
   },
+  -- highlight TODO comments
+  {
+    "folke/todo-comments.nvim",
+    keys = {
+      { "<M-2>", "<cmd>TodoTelescope<cr>", noremap = true, desc = "Telescope find TODO (Alt+2)" },
+    },
+  },
+  {
+    "mg979/vim-visual-multi",
+    event = "ModeChanged",
+    init = function()
+      vim.cmd([[
+        let g:VM_theme = "spacegray"
+        let g:VM_maps = {}
+        let g:VM_maps["Find Under"] = "<A-h>"
+        let g:VM_maps["Find Subword Under"] = "<A-h>"
+      ]])
+    end,
+  },
 }
