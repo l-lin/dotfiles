@@ -6,6 +6,13 @@ return {
       local keys = require("lazyvim.plugins.lsp.keymaps").get()
       -- format
       keys[#keys + 1] = { "<M-C-L>", "<cmd>lua vim.lsp.buf.format { async = true }<CR>" }
+      -- disable diagnostic (performed by Lspaga)
+      keys[#keys + 1] = { "]d", false }
+      keys[#keys + 1] = { "[d", false }
+      keys[#keys + 1] = { "]e", false }
+      keys[#keys + 1] = { "[e", false }
+      keys[#keys + 1] = { "]w", false }
+      keys[#keys + 1] = { "[w", false }
     end,
     opts = {
       autoformat = false,
@@ -57,9 +64,8 @@ return {
     "glepnir/lspsaga.nvim",
     keys = {
       {
-        "]e",
+        "]d",
         "<cmd>Lspsaga diagnostic_jump_next<cr>",
-        noremap = true,
         silent = true,
         desc = "Lspsaga diagnostic go to next (F2)",
       },
@@ -71,9 +77,8 @@ return {
         desc = "Lspsaga diagnostic go to next (F2)",
       },
       {
-        "[e",
+        "[d",
         "<cmd>Lspsaga diagnostic_jump_prev<cr>",
-        noremap = true,
         silent = true,
         desc = "Lspsaga diagnostic go to previous (Shift+F2)",
       },
@@ -85,22 +90,36 @@ return {
         desc = "Lspsaga diagnostic go to previous (Shift+F2)",
       },
       {
-        "[E",
+        "]e",
+        function()
+          require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.ERROR })
+        end,
+        silent = true,
+        desc = "Lspsaga diagnostic go to next ERROR",
+      },
+      {
+        "[e",
         function()
           require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.ERROR })
         end,
-        noremap = true,
         silent = true,
         desc = "Lspsaga diagnostic go to previous ERROR",
       },
       {
-        "]E",
+        "]w",
         function()
-          require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.ERROR })
+          require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.WARN })
         end,
-        noremap = true,
         silent = true,
         desc = "Lspsaga diagnostic go to next ERROR",
+      },
+      {
+        "[w",
+        function()
+          require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.WARN })
+        end,
+        silent = true,
+        desc = "Lspsaga diagnostic go to previous ERROR",
       },
       {
         "<leader>ce",
