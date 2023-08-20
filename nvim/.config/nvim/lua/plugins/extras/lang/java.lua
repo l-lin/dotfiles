@@ -218,10 +218,11 @@ return {
           --  only after the jdtls client is attached
           local client = vim.lsp.get_client_by_id(args.data.client_id)
           if client.name == "jdtls" then
+            local jdtls = require("jdtls")
             vim.keymap.set(
               "n",
               "<M-C-V>",
-              "<cmd>require('jdtls').extract_variable()<cr>",
+              jdtls.extract_variable,
               { noremap = true, silent = true, desc = "Extract variable" }
             )
             vim.keymap.set(
@@ -240,7 +241,7 @@ return {
             vim.keymap.set(
               "n",
               "<M-C-C>",
-              "<cmd>require('jdtls').extract_constant()<cr>",
+              jdtls.extract_constant,
               { noremap = true, silent = true, desc = "Extract constant" }
             )
             vim.keymap.set(
@@ -263,17 +264,12 @@ return {
               { noremap = true, silent = true, desc = "Extract method" }
             )
 
-            vim.keymap.set(
-              "n",
-              "<F33>",
-              "<cmd>require('jdtls').compile()",
-              { noremap = true, silent = true, desc = "Compile (Ctrl+F9)" }
-            )
+            vim.keymap.set("n", "<F33>", jdtls.compile, { noremap = true, silent = true, desc = "Compile (Ctrl+F9)" })
 
             vim.keymap.set(
               "n",
               "<M-C-O>",
-              "<cmd>require('jdtls').organize_imports()",
+              jdtls.organize_imports,
               { noremap = true, silent = true, desc = "Organize imports (Ctrl+Alt+o)" }
             )
 
@@ -294,7 +290,7 @@ return {
             local mason_registry = require("mason-registry")
             if mason_registry.has_package("java-debug-adapter") then
               -- custom init for Java debugger
-              require("jdtls").setup_dap({ hotcodereplace = "auto", config_overrides = {} })
+              jdtls.setup_dap({ hotcodereplace = "auto", config_overrides = {} })
               require("jdtls.dap").setup_dap_main_class_configs()
 
               -- Java Test require Java debugger to work
@@ -303,13 +299,13 @@ return {
                 vim.keymap.set(
                   "n",
                   "<M-S-F9>",
-                  "<cmd>require('jdtls').pick_test()<cr>",
+                  jdtls.pick_test,
                   { noremap = true, silent = true, desc = "Run specific test (Alt+Shift+F9)" }
                 )
                 vim.keymap.set(
                   "n",
                   "<F21>",
-                  "<cmd>require('jdtls').test_nearest_method()<cr>",
+                  jdtls.test_nearest_method,
                   { noremap = true, silent = true, desc = "Test method (Shift+F9)" }
                 )
               end
