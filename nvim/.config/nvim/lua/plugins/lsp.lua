@@ -18,14 +18,6 @@ return {
       { "<leader>vm", "<cmd>Mason<cr>", noremap = true, desc = "Open Mason" },
     },
     opts = {
-      ui = {
-        border = "rounded",
-        icons = {
-          package_pending = " ",
-          package_installed = "󰄳 ",
-          package_uninstalled = " 󰚌",
-        },
-      },
       ensure_installed = {
         "gopls",
         "angular-language-server",
@@ -59,17 +51,6 @@ return {
         "yamllint",
       },
     },
-    config = function(_, opts)
-      require("mason").setup(opts)
-
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = "mason",
-        callback = function()
-          vim.api.nvim_set_hl(0, "MasonNormal", { bg = "none" })
-          vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
-        end,
-      })
-    end,
   },
   -- ui for LSP features
   {
@@ -277,57 +258,41 @@ return {
         desc = "Goto implementation (Ctrl+Alt+b)",
       },
     },
-    config = function()
-      require("lspsaga").setup({
-        callhierarchy = {
-          layout = "normal",
-          keys = {
-            shuttle = { "<C-l>", "<C-h>" },
-            toggle_or_req = { "o", "<cr>" },
-            vsplit = "<C-v>",
-            split = "<C-x>",
-          },
+    opts = {
+      callhierarchy = {
+        layout = "normal",
+        keys = {
+          shuttle = { "<C-l>", "<C-h>" },
+          toggle_or_req = { "o", "<cr>" },
+          vsplit = "<C-v>",
+          split = "<C-x>",
         },
-        finder = {
-          layout = "normal",
-          left_width = 0.4,
-          keys = {
-            shuttle = { "<C-l>", "<C-h>" },
-            toggle_or_open = { "o", "<cr>" },
-            vsplit = "<C-v>",
-            split = "<C-x>",
-          },
+      },
+      finder = {
+        layout = "normal",
+        left_width = 0.4,
+        keys = {
+          shuttle = { "<C-l>", "<C-h>" },
+          toggle_or_open = { "o", "<cr>" },
+          vsplit = "<C-v>",
+          split = "<C-x>",
         },
-        lightbulb = {
-          sign = false,
-        },
-        rename = {
-          in_select = false,
-          auto_save = true,
-          project_max_width = 0.8,
-          project_max_height = 0.5,
-        },
-        ui = {
-          border = "rounded",
-        },
-        symbol_in_winbar = {
-          enable = false,
-        },
-      })
-
-      -- change LSP saga highlight
-      vim.api.nvim_set_hl(0, "HoverNormal", { bg = "none" })
-      vim.api.nvim_set_hl(0, "HoverBorder", { bg = "none" })
-      vim.api.nvim_set_hl(0, "SagaNormal", { bg = "none" })
-      vim.api.nvim_set_hl(0, "SagaBorder", { bg = "none" })
-    end,
+      },
+      lightbulb = {
+        sign = false,
+      },
+      rename = {
+        in_select = false,
+        auto_save = true,
+        project_max_width = 0.8,
+        project_max_height = 0.5,
+      },
+      symbol_in_winbar = {
+        enable = false,
+      },
+    },
     dependencies = {
       "neovim/nvim-lspconfig",
     },
-  },
-  -- java support
-  {
-    "mfussenegger/nvim-jdtls",
-    ft = "java",
   },
 }

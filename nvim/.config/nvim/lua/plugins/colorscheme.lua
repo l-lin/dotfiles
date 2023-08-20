@@ -7,10 +7,25 @@ return {
           all = {
             ui = {
               bg_gutter = "none",
+              float = {
+                bg = "none",
+              },
             },
           },
         },
       },
+      overrides = function()
+        return {
+          NormalFloat = { bg = "none" },
+          FloatBorder = { bg = "none" },
+          LazyNormal = { bg = "none" },
+          MasonNormal = { bg = "none" },
+          HoverNormal = { bg = "none" },
+          HoverBorder = { bg = "none" },
+          SagaNormal = { bg = "none" },
+          SagaBorder = { bg = "none" },
+        }
+      end,
     },
   },
   {

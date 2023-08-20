@@ -182,6 +182,7 @@ return {
   -- Set up nvim-jdtls
   {
     "mfussenegger/nvim-jdtls",
+    ft = { "java" },
     config = function()
       -- The configuration for jdtls contains two useful items:
       -- 1. The list of filetypes on which to match.

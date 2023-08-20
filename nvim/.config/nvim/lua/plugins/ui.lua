@@ -8,7 +8,12 @@ return {
       { "<C-k>", "<cmd>NavigatorUp<cr>", mode = { "n", "t" }, silent = true, desc = "Navigate up" },
       { "<C-j>", "<cmd>NavigatorDown<cr>", mode = { "n", "t" }, silent = true, desc = "Navigate down" },
     },
-    cmd = { "NavigatorUp", "NavigatorDown", "NavigatorRight", "NavigatorLeft" },
+    cmd = {
+      "NavigatorUp",
+      "NavigatorDown",
+      "NavigatorRight",
+      "NavigatorLeft",
+    },
     config = function()
       require("Navigator").setup({})
     end,
