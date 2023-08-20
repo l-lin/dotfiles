@@ -66,7 +66,7 @@ return {
   {
     "nvim-neo-tree/neo-tree.nvim",
     keys = {
-      { "<A-1>", "<leader>fe", desc = "Explorer NeoTree (root dir) (Alt+1)", remap = true },
+      { "<A-1>", "<leader>fE", desc = "Explorer NeoTree (root dir) (Alt+1)", remap = true },
     },
   },
   -- multilevel undo explorer
