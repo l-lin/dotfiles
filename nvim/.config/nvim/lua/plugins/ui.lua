@@ -30,4 +30,12 @@ return {
       },
     },
   },
+  {
+    "folke/noice.nvim",
+    opts = {
+      popupmenu = {
+        enabled = false,
+      },
+    },
+  },
 }
