@@ -172,3 +172,7 @@ map("v", "p", '"_dP', { noremap = true })
 -- go to first character in line (need to stretch my left hand to type ^)
 map("x", "0", "^")
 map("n", "0", "^")
+
+-- documentation
+vim.cmd [[ command CheatSheet split $HOME/.config/nvim/doc/cheat_sheet.txt]]
+
