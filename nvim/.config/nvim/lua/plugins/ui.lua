@@ -30,4 +30,30 @@ return {
       },
     },
   },
+
+  -- status line
+  {
+    "nvim-lualine/lualine.nvim",
+    opts = {
+      options = {
+        section_separators = "",
+        component_separators = "",
+      },
+      sections = {
+        lualine_c = {
+          {
+            "diagnostics",
+            symbols = {
+              error = require("lazyvim.config").icons.diagnostics.Error,
+              warn = require("lazyvim.config").icons.diagnostics.Warn,
+              info = require("lazyvim.config").icons.diagnostics.Info,
+              hint = require("lazyvim.config").icons.diagnostics.Hint,
+            },
+          },
+          { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
+          { "filename", path = 1, symbols = { modified = "  ", readonly = "", unnamed = "" } },
+        },
+      },
+    },
+  },
 }
