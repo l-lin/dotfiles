@@ -60,12 +60,11 @@ return {
         ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
         ["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
         ["<C-Space>"] = cmp.mapping.complete(),
-        ["<C-e>"] = cmp.mapping.abort(),
-        ["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-        ["<S-CR>"] = cmp.mapping.confirm({
-          behavior = cmp.ConfirmBehavior.Replace,
-          select = true,
-        }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+        -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+        ["<C-e>"] = cmp.mapping.confirm({ select = true }),
+        ["<CR>"] = cmp.mapping.confirm({ select = true }),
+        -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+        ["<S-CR>"] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
         ["<Tab>"] = cmp.mapping(function(fallback)
           if luasnip.expand_or_jumpable() then
             luasnip.expand_or_jump()
@@ -90,12 +89,12 @@ return {
       })
       opts.sources = cmp.config.sources(vim.list_extend(opts.sources, {
         { name = "nvim_lsp_signature_help", priority = 7 },
-        { name = "nvim_lsp", priority = 6 },
-        { name = "nvim_lua", priority = 5 },
-        { name = "luasnip", priority = 4 },
-        { name = "path", priority = 3 },
-        { name = "emoji", priority = 2, option = { insert = true } },
-        { name = "tmux", priority = 1 },
+        { name = "nvim_lsp",                priority = 6 },
+        { name = "nvim_lua",                priority = 5 },
+        { name = "luasnip",                 priority = 4 },
+        { name = "path",                    priority = 3 },
+        { name = "emoji",                   priority = 2, option = { insert = true } },
+        { name = "tmux",                    priority = 1 },
       }))
     end,
   },
