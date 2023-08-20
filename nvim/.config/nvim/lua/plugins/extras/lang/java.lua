@@ -1,3 +1,4 @@
+-- code from https://github.com/LazyVim/LazyVim/pull/1300 adapted for my needs
 local home = os.getenv("HOME")
 
 local function create_cmd()

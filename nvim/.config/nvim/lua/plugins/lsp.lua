@@ -2,10 +2,14 @@ return {
   {
     "neovim/nvim-lspconfig",
     init = function()
+      -- keymaps for lspconfig must be set in init function: https://www.lazyvim.org/plugins/lsp#%EF%B8%8F-customizing-lsp-keymaps
       local keys = require("lazyvim.plugins.lsp.keymaps").get()
       -- format
       keys[#keys + 1] = { "<M-C-L>", "<cmd>lua vim.lsp.buf.format { async = true }<CR>" }
     end,
+    opts = {
+      autoformat = false,
+    },
   },
   {
     "williamboman/mason.nvim",
