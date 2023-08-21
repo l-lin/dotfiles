@@ -8,14 +8,13 @@ return {
   {
     "nvim-telescope/telescope.nvim",
     keys = {
-      -- NOTE: not working when putting here for some obscure reason... Put in keymaps.lua instead.
-      -- {
-      --   "<C-b>",
-      --   "<cmd>Telescope lsp_definitions<cr>",
-      --   remap = true,
-      --   silent = true,
-      --   desc = "Goto definition (Ctrl+b)",
-      -- },
+      {
+        "<C-b>",
+        "<cmd>Telescope lsp_definitions<cr>",
+        remap = true,
+        silent = true,
+        desc = "Goto definition (Ctrl+b)",
+      },
       {
         "<M-6>",
         "<cmd>Telescope diagnostics<cr>",
@@ -55,11 +54,15 @@ return {
     },
     opts = function(_, opts)
       local cmp = require("cmp")
+      local compare = require("cmp.config.compare")
       local luasnip = require("luasnip")
       local has_words_before = function()
         local line, col = unpack(vim.api.nvim_win_get_cursor(0))
         return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
       end
+
+      -- more LOC in one file so that cmp will consider local
+      compare.locality.lines_count = 300
 
       opts.mapping = cmp.mapping.preset.insert({
         ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),

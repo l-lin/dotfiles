@@ -119,8 +119,8 @@ local function create_init_options()
     for _, jar_pattern in ipairs(jar_patterns) do
       for _, bundle in ipairs(vim.split(vim.fn.glob(jar_pattern), "\n")) do
         if
-          not vim.endswith(bundle, "com.microsoft.java.test.runner-jar-with-dependencies.jar")
-          and not vim.endswith(bundle, "com.microsoft.java.test.runner.jar")
+            not vim.endswith(bundle, "com.microsoft.java.test.runner-jar-with-dependencies.jar")
+            and not vim.endswith(bundle, "com.microsoft.java.test.runner.jar")
         then
           table.insert(bundles, bundle)
         end
