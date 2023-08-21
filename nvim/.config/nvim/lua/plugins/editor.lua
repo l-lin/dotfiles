@@ -43,6 +43,17 @@ return {
     keys = {
       { "<A-1>", "<leader>fE", desc = "Explorer NeoTree (root dir) (Alt+1)", remap = true },
     },
+    opts = {
+      window = {
+        mappings = {
+          ["o"] = "open",
+          ["S"] = "none",
+          ["s"] = "none",
+          ["<C-v>"] = "open_vsplit",
+          ["<C-x>"] = "open_split",
+        },
+      },
+    },
   },
   -- multilevel undo explorer
   {
