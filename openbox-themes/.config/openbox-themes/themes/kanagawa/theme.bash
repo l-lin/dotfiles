@@ -44,7 +44,7 @@ rofi_icon='Zafiro'
 
 # Terminal
 terminal_font_name='JetBrainsMono Nerd Font'
-terminal_font_size='13'
+terminal_font_size='14'
 
 # Geany
 # from ~/.config/geany/colorschemes
