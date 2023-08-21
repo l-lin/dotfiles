@@ -11,6 +11,7 @@ return {
       {
         "<C-b>",
         "<cmd>Telescope lsp_definitions<cr>",
+        remap = true,
         silent = true,
         desc = "Goto definition (Ctrl+b)",
       },
