@@ -183,3 +183,5 @@ vim.cmd [[ command CheatSheet split $HOME/.config/nvim/doc/cheat_sheet.txt]]
 -- lazy
 map("n", "<leader>vl", "<cmd>Lazy<cr>", { desc = "Lazy" })
 
+-- NOTE: goto definition put here and not in coding.lua because for some reason, it does not work...
+map("n", "<C-b>", "<cmd>Telescope lsp_definitions<cr>", { desc = "Go to definition (Ctrl+b)" })

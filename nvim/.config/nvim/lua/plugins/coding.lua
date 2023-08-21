@@ -8,13 +8,14 @@ return {
   {
     "nvim-telescope/telescope.nvim",
     keys = {
-      {
-        "<C-b>",
-        "<cmd>Telescope lsp_definitions<cr>",
-        remap = true,
-        silent = true,
-        desc = "Goto definition (Ctrl+b)",
-      },
+      -- NOTE: not working when putting here for some obscure reason... Put in keymaps.lua instead.
+      -- {
+      --   "<C-b>",
+      --   "<cmd>Telescope lsp_definitions<cr>",
+      --   remap = true,
+      --   silent = true,
+      --   desc = "Goto definition (Ctrl+b)",
+      -- },
       {
         "<M-6>",
         "<cmd>Telescope diagnostics<cr>",
