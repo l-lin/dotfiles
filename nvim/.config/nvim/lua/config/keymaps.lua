@@ -80,7 +80,7 @@ map("v", "<", "<gv")
 map("v", ">", ">gv")
 
 -- lazy
-map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy" })
+-- map("n", "<leader>vl", "<cmd>Lazy<cr>", { desc = "Lazy" })
 
 -- new file
 map("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New File" })
@@ -120,7 +120,7 @@ if vim.fn.has("nvim-0.9.0") == 1 then
 end
 
 -- LazyVim Changelog
-map("n", "<leader>L", Util.changelog, {desc = "LazyVim Changelog"})
+-- map("n", "<leader>L", Util.changelog, {desc = "LazyVim Changelog"})
 
 -- floating terminal
 local lazyterm = function() Util.float_term(nil, { cwd = Util.get_root() }) end
@@ -175,4 +175,7 @@ map("n", "0", "^")
 
 -- documentation
 vim.cmd [[ command CheatSheet split $HOME/.config/nvim/doc/cheat_sheet.txt]]
+
+-- lazy
+map("n", "<leader>vl", "<cmd>Lazy<cr>", { desc = "Lazy" })
 
