@@ -1,8 +1,10 @@
 return {
+  -- markdown table
   {
     "dhruvasagar/vim-table-mode",
     ft = "md",
   },
+  -- fuzzy finding anything anywhere
   {
     "nvim-telescope/telescope.nvim",
     keys = {
@@ -21,6 +23,7 @@ return {
       },
     },
   },
+  -- autocompletion engine
   {
     "hrsh7th/nvim-cmp",
     dependencies = {
@@ -97,5 +100,17 @@ return {
         { name = "tmux",                    priority = 1 },
       }))
     end,
+  },
+  -- snippet engine
+  {
+    "L3MON4D3/LuaSnip",
+    dependencies = {
+      "rafamadriz/friendly-snippets",
+      config = function()
+        require("luasnip.loaders.from_vscode").lazy_load()
+        require("luasnip.loaders.from_snipmate").lazy_load()
+        require("luasnip.loaders.from_lua").lazy_load()
+      end,
+    },
   },
 }
