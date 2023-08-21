@@ -104,6 +104,22 @@ return {
         desc = "Open DAP UI (Alt+5)",
       },
     },
+
+    config = function(_, opts)
+      local dap = require("dap")
+      local dapui = require("dapui")
+      dapui.setup(opts)
+      dap.listeners.after.event_initialized["dapui_config"] = function()
+        dapui.open({})
+      end
+      -- NOTE: no need to close DAP config when finished
+      -- dap.listeners.before.event_terminated["dapui_config"] = function()
+      --   dapui.close({})
+      -- end
+      -- dap.listeners.before.event_exited["dapui_config"] = function()
+      --   dapui.close({})
+      -- end
+    end,
   },
   {
     "nvim-telescope/telescope.nvim",
