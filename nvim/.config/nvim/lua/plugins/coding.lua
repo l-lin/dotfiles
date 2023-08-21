@@ -91,13 +91,8 @@ return {
         end, { "i", "s" }),
       })
       opts.sources = cmp.config.sources(vim.list_extend(opts.sources, {
-        { name = "nvim_lsp_signature_help", priority = 7 },
-        { name = "nvim_lsp",                priority = 6 },
-        { name = "nvim_lua",                priority = 5 },
-        { name = "luasnip",                 priority = 4 },
-        { name = "path",                    priority = 3 },
-        { name = "emoji",                   priority = 2, option = { insert = true } },
-        { name = "tmux",                    priority = 1 },
+        { name = "emoji", option = { insert = true } },
+        { name = "tmux" },
       }))
     end,
   },
