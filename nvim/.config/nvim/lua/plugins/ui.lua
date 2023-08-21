@@ -3,10 +3,10 @@ return {
   {
     "numToStr/Navigator.nvim",
     keys = {
-      { "<C-h>", "<cmd>NavigatorLeft<cr>", mode = { "n", "t" }, silent = true, desc = "Navigate left" },
+      { "<C-h>", "<cmd>NavigatorLeft<cr>",  mode = { "n", "t" }, silent = true, desc = "Navigate left" },
       { "<C-l>", "<cmd>NavigatorRight<cr>", mode = { "n", "t" }, silent = true, desc = "Navigate right" },
-      { "<C-k>", "<cmd>NavigatorUp<cr>", mode = { "n", "t" }, silent = true, desc = "Navigate up" },
-      { "<C-j>", "<cmd>NavigatorDown<cr>", mode = { "n", "t" }, silent = true, desc = "Navigate down" },
+      { "<C-k>", "<cmd>NavigatorUp<cr>",    mode = { "n", "t" }, silent = true, desc = "Navigate up" },
+      { "<C-j>", "<cmd>NavigatorDown<cr>",  mode = { "n", "t" }, silent = true, desc = "Navigate down" },
     },
     cmd = {
       "NavigatorUp",
@@ -38,7 +38,7 @@ return {
       options = {
         show_close_icon = false,
         show_buffer_close_icons = false,
-      }
+      },
     },
   },
   -- status line
@@ -71,8 +71,8 @@ return {
     "folke/which-key.nvim",
     opts = {
       defaults = {
-        ["<leader>v"] = { name = "+nvim"}
-      }
-    }
+        ["<leader>v"] = { name = "+nvim" },
+      },
+    },
   },
 }

@@ -87,24 +87,6 @@ return {
     end,
   },
 
-  -- git modifications explorer/handler
-  {
-    "lewis6991/gitsigns.nvim",
-    keys = {
-      {
-        "<M-C-G>",
-        "<cmd>Gitsigns preview_hunk_inline<cr>",
-        desc = "Preview Hunk inline (Ctrl+Alt+g)",
-      },
-      {
-        "<M-C-Z>",
-        "<cmd>Gitsigns reset_hunk<cr>",
-        mode = { "n", "v" },
-        desc = "Reset hunk (Ctrl+Alt+z)",
-      },
-    },
-  },
-
   -- fuzzy finder
   {
     "nvim-telescope/telescope.nvim",

@@ -276,7 +276,7 @@ return {
 
             vim.keymap.set(
               "n",
-              "<leader>ca",
+              "<leader>cR",
               "<cmd>JdtRestart<cr>",
               { noremap = true, silent = true, desc = "Restart jdtls server" }
             )
