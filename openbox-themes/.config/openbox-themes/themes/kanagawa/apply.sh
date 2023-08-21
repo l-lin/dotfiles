@@ -25,7 +25,7 @@ PATH_XFCE="$PATH_CONF/xfce4/terminal"
 ## Wallpaper ---------------------------------
 apply_wallpaper() {
 	for head in {0..10}; do
-		nitrogen --head=$head --save --set-centered "$wallpaper" --set-color='#7B8D59' &>/dev/null
+		nitrogen --head=$head --save --set-centered "$wallpaper" --set-color='#000000' &>/dev/null
 	done
 }
 

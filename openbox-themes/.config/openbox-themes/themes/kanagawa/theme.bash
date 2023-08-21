@@ -58,7 +58,7 @@ icon_theme='Zafiro'
 cursor_theme='Qogirr'
 
 # Openbox
-ob_theme='Adapta-Nokto'
+ob_theme='Windows-10-Dark'
 ob_layout='DLIMC'
 ob_font='JetBrains Mono'
 ob_font_size='13'
