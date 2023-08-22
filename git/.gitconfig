@@ -90,6 +90,7 @@
   syntax-theme = Nord
   plus-style = syntax "#003800"
   minus-style = syntax "#3f0001"
+  navigate = true
 [delta "decorations"]
   commit-decoration-style = bold yellow box ul
   file-style = bold yellow ul
@@ -98,3 +99,5 @@
 [init]
   ; defaultBranch = main
   defaultBranch = master
+[interactive]
+  diffFilter = delta --color-only

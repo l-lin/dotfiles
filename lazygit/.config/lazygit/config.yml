@@ -1,0 +1,15 @@
+---
+# default options: https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md
+gui:
+  border: "rounded"
+  showBottomLine: false
+  showRandomTip: false
+  nerdFontsVersion: "3"
+git:
+  mainBranches: [master, main, develop]
+keybinding:
+  universal:
+    prevPage: "<c-u>"
+    nextPage: "<c-d>"
+    gotoTop: "g"
+    gotoBottom: "G"
