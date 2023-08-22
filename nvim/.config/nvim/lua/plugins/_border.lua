@@ -53,22 +53,22 @@ return {
     },
   },
   -- lazyvim.plugins.coding
-  -- {
-  --   "nvim-cmp",
-  --   opts = function(_, opts)
-  --     local bordered = require("cmp.config.window").bordered
-  --     local window_opts = {
-  --       border = vim.g.border_style,
-  --       scrollbar = false,
-  --     }
-  --     return vim.tbl_deep_extend("force", opts, {
-  --       window = {
-  --         completion = bordered(window_opts),
-  --         documentation = bordered(window_opts),
-  --       },
-  --     })
-  --   end,
-  -- },
+  {
+    "nvim-cmp",
+    opts = function(_, opts)
+      local bordered = require("cmp.config.window").bordered
+      local window_opts = {
+        border = vim.g.border_style,
+        scrollbar = false,
+      }
+      return vim.tbl_deep_extend("force", opts, {
+        window = {
+          completion = bordered(window_opts),
+          documentation = bordered(window_opts),
+        },
+      })
+    end,
+  },
   -- lazyvim.plugins.editor
   {
     "which-key.nvim",
