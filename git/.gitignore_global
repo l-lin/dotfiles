@@ -45,3 +45,7 @@ application-dev*
 application-swp*
 Sandbox.java
 .cache
+
+# Nvim plugin #
+###############
+.gitlab.nvim

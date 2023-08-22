@@ -2,26 +2,14 @@ return {
   {
     "tpope/vim-fugitive",
     keys = {
-      { "<leader>gs", "<cmd>G<cr>",                         desc = "git status" },
-      { "<leader>gc", "<cmd>G commit<cr>",                  desc = "git commit" },
-      { "<leader>gp", "<cmd>G pull<cr>",                    desc = "git pull" },
-      { "<leader>gP", "<cmd>G push<cr>",                    desc = "git push" },
+      { "<leader>gs", "<cmd>G<cr>", desc = "git status" },
+      { "<leader>gc", "<cmd>G commit<cr>", desc = "git commit" },
+      { "<leader>gp", "<cmd>G pull<cr>", desc = "git pull" },
+      { "<leader>gP", "<cmd>G push<cr>", desc = "git push" },
       { "<leader>gF", "<cmd>G push --force-with-lease<cr>", desc = "git push --force-with-lease" },
-      { "<leader>gb", "<cmd>G blame<cr>",                   desc = "git blame" },
-      { "<leader>gl", "<cmd>0GcLog<cr>",                    desc = "git log" },
+      { "<leader>gb", "<cmd>G blame<cr>", desc = "git blame" },
+      { "<leader>gl", "<cmd>0GcLog<cr>", desc = "git log" },
     },
-    config = function()
-      vim.api.nvim_create_autocmd("FileType", {
-        group = vim.api.nvim_create_augroup("fugitive_close_with_q", { clear = true }),
-        pattern = {
-          "fugitive",
-        },
-        callback = function(event)
-          vim.bo[event.buf].buflisted = false
-          vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
-        end,
-      })
-    end,
   },
 
   -- git modifications explorer/handler
@@ -48,14 +36,14 @@ return {
     cmd = { "DiffviewOpen", "DiffviewFileHistory", "DiffviewToggleFiles", "DiffviewFocusFiles" },
     keys = {
       {
-        "<leader>gdh",
+        "<leader>mh",
         "<cmd>DiffviewFileHistory<cr>",
         noremap = true,
         silent = true,
         desc = "Check full project git history",
       },
       {
-        "<leader>gdf",
+        "<leader>mf",
         "<cmd>DiffviewFileHistory %<cr>",
         noremap = true,
         silent = true,
@@ -69,18 +57,32 @@ return {
         desc = "Check current file git history (Alt+0)",
       },
       {
-        "<leader>gdm",
+        "<A-9>",
+        "<cmd>DiffviewToggleFiles<cr>",
+        noremap = true,
+        silent = true,
+        desc = "Toggle diffview files (Alt+9)",
+      },
+      {
+        "<leader>mm",
         "<cmd>DiffviewOpen origin/HEAD...HEAD --imply-local<cr>",
         noremap = true,
         silent = true,
         desc = "Review MR/PR",
       },
       {
-        "<leader>gdc",
+        "<leader>mC",
         "<cmd>DiffviewFileHistory --range=origin/HEAD...HEAD --right-only --no-merges<cr>",
         noremap = true,
         silent = true,
         desc = "Review MR/PR commit by commit",
+      },
+      {
+        "<leader>mx",
+        "<cmd>DiffviewClose<cr>",
+        noremap = true,
+        silent = true,
+        desc = "Close review",
       },
     },
     config = function()
@@ -92,10 +94,63 @@ return {
         "folke/which-key.nvim",
         opts = {
           defaults = {
-            ["<leader>gd"] = { name = "+diffview" },
+            ["<leader>m"] = { name = "+merge request" },
           },
         },
       },
     },
+  },
+  -- gitlab integration
+  {
+    "harrisoncramer/gitlab.nvim",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "nvim-lua/plenary.nvim",
+      "stevearc/dressing.nvim",
+    },
+    keys = {
+      { "<leader>mS", "<cmd>lua require('gitlab').start_server()<cr>", desc = "Gitlab start review" },
+      { "<leader>ms", "<cmd>lua require('gitlab').summary()<cr>", desc = "Gitlab MR summary" },
+      { "<leader>mA", "<cmd>lua require('gitlab').approve()<cr>", desc = "Gitlab MR approve" },
+      { "<leader>mR", "<cmd>lua require('gitlab').revoke()<cr>", desc = "Gitlab MR revoke" },
+      { "<leader>mc", "<cmd>lua require('gitlab').create_comment()<cr>", desc = "Gitlab MR create comment" },
+      { "<leader>md", "<cmd>lua require('gitlab').list_discussions()<cr>", desc = "Gitlab MR list discussions" },
+    },
+    build = function()
+      require("gitlab").build()
+    end,
+    config = function()
+      require("gitlab").setup({
+        port = 20136, -- The port of the Go server, which runs in the background
+        log_path = vim.fn.stdpath("cache") .. "gitlab.nvim.log", -- Log path for the Go server
+        keymaps = {
+          popup = { -- The popup for comment creation, editing, and replying
+            exit = "<Esc>",
+            perform_action = "<C-s>", -- Once in normal mode, does action (like saving comment or editing description, etc)
+          },
+          discussion_tree = { -- The discussion tree that holds all comments
+            jump_to_location = "o", -- Jump to comment location in file
+            edit_comment = "e", -- Edit coment
+            delete_comment = "d", -- Delete comment
+            reply_to_comment = "r", -- Reply to comment
+            toggle_resolved = "p", -- Toggles the resolved status of the discussion
+            toggle_node = "=", -- Opens or closes the discussion
+            position = "bottom", -- "top", "right", "bottom" or "left"
+            relative = "editor", -- Position of tree split relative to "editor" or "window"
+            size = "20%", -- Size of split
+          },
+          dialogue = { -- The confirmation dialogue for deleting comments
+            focus_next = { "j", "<Down>", "<Tab>" },
+            focus_prev = { "k", "<Up>", "<S-Tab>" },
+            close = { "<Esc>", "<C-c>" },
+            submit = { "<CR>", "<Space>" },
+          },
+        },
+        symbols = {
+          resolved = "",
+          unresolved = "",
+        },
+      })
+    end,
   },
 }
