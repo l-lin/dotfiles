@@ -7,6 +7,9 @@ gui:
   nerdFontsVersion: "3"
 git:
   mainBranches: [master, main, develop]
+  paging:
+    colorArg: always
+    pager: delta --dark --paging=never
 keybinding:
   universal:
     prevPage: "<c-u>"
