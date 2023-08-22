@@ -60,6 +60,8 @@ return {
       local window_opts = {
         border = vim.g.border_style,
         scrollbar = false,
+        col_offset = -4,
+        side_padding = 0,
       }
       return vim.tbl_deep_extend("force", opts, {
         window = {
