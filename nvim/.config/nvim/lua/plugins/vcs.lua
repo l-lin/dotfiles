@@ -48,14 +48,21 @@ return {
         "<cmd>DiffviewFileHistory %<cr>",
         noremap = true,
         silent = true,
-        desc = "Check current file git history",
+        desc = "Check current file git history (Alt+9)",
       },
       {
         "<A-9>",
+        "<cmd>DiffviewFileHistory %<cr>",
+        noremap = true,
+        silent = true,
+        desc = "Check current file git history (Alt+9)",
+      },
+      {
+        "<A-8>",
         "<cmd>DiffviewToggleFiles<cr>",
         noremap = true,
         silent = true,
-        desc = "Toggle diffview files (Alt+9)",
+        desc = "Toggle diffview files (Alt+8)",
       },
       {
         "<leader>mm",
