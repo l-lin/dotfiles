@@ -2,7 +2,8 @@ return {
   {
     "tpope/vim-fugitive",
     keys = {
-      { "<leader>gs", "<cmd>G<cr>", desc = "git status" },
+      { "<leader>gs", "<cmd>G<cr>", desc = "git status (Alt+0)" },
+      { "<A-0>", "<cmd>G<cr>", desc = "git status (Alt+0)" },
       { "<leader>gc", "<cmd>G commit<cr>", desc = "git commit" },
       { "<leader>gp", "<cmd>G pull<cr>", desc = "git pull" },
       { "<leader>gP", "<cmd>G push<cr>", desc = "git push" },
@@ -47,14 +48,7 @@ return {
         "<cmd>DiffviewFileHistory %<cr>",
         noremap = true,
         silent = true,
-        desc = "Check current file git history (Alt+0)",
-      },
-      {
-        "<A-0>",
-        "<cmd>DiffviewFileHistory %<cr>",
-        noremap = true,
-        silent = true,
-        desc = "Check current file git history (Alt+0)",
+        desc = "Check current file git history",
       },
       {
         "<A-9>",
