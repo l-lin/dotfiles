@@ -71,7 +71,7 @@ return {
         desc = "Review MR/PR",
       },
       {
-        "<leader>mC",
+        "<leader>mc",
         "<cmd>DiffviewFileHistory --range=origin/HEAD...HEAD --right-only --no-merges<cr>",
         noremap = true,
         silent = true,
@@ -108,12 +108,12 @@ return {
       "nvim-lua/plenary.nvim",
       "stevearc/dressing.nvim",
     },
+    enabled = false,
     keys = {
-      { "<leader>mS", "<cmd>lua require('gitlab').start_server()<cr>", desc = "Gitlab start review" },
       { "<leader>ms", "<cmd>lua require('gitlab').summary()<cr>", desc = "Gitlab MR summary" },
       { "<leader>mA", "<cmd>lua require('gitlab').approve()<cr>", desc = "Gitlab MR approve" },
       { "<leader>mR", "<cmd>lua require('gitlab').revoke()<cr>", desc = "Gitlab MR revoke" },
-      { "<leader>mc", "<cmd>lua require('gitlab').create_comment()<cr>", desc = "Gitlab MR create comment" },
+      { "<leader>mC", "<cmd>lua require('gitlab').create_comment()<cr>", desc = "Gitlab MR create comment" },
       { "<leader>md", "<cmd>lua require('gitlab').list_discussions()<cr>", desc = "Gitlab MR list discussions" },
     },
     build = function()
