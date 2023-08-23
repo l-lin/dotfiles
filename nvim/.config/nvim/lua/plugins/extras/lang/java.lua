@@ -133,9 +133,15 @@ local function create_init_options()
   }
 end
 
-local function find_associated_test_file()
-  local test_filename = vim.fn.expand("%:t"):match("(.+)%..+") .. "Test.java"
-  require("telescope.builtin").find_files({ default_text = test_filename })
+local function find_associate_test_or_class_file()
+  local default_text = ""
+  local filename = vim.fn.expand("%:t"):match("(.+)%..+")
+  if filename:sub(-#"Test") == "Test" then
+    default_text = filename:gsub("Test", "") .. ".java"
+  else
+    default_text = filename .. "Test.java"
+  end
+  require("telescope.builtin").find_files({ default_text = default_text })
 end
 
 return {
@@ -285,8 +291,8 @@ return {
             vim.keymap.set(
               "n",
               "<C-T>",
-              find_associated_test_file,
-              { noremap = true, silent = true, desc = "Find associated test file (Ctrl+Shift+t)" }
+              find_associate_test_or_class_file,
+              { noremap = true, silent = true, desc = "Find associated test or class file (Ctrl+Shift+t)" }
             )
 
             local mason_registry = require("mason-registry")
