@@ -83,6 +83,7 @@ local function create_settings()
         "java.awt.*",
         "jdk.*",
         "sun.*",
+        "org.junit.*",
       },
     },
     contentProvider = { preferred = "fernflower" },

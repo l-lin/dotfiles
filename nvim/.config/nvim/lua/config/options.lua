@@ -9,4 +9,4 @@ vim.opt.pumblend = 0
 vim.opt.scrolloff = 7
 
 -- enable word wrap
-vim.opt.wrap = true
+-- vim.opt.wrap = true
