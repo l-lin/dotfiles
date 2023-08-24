@@ -45,6 +45,13 @@ return {
       },
     },
   },
+  {
+    "L3MON4D3/LuaSnip",
+    -- enable supertab, see https://www.lazyvim.org/configuration/recipes#supertab
+    keys = function()
+      return {}
+    end
+  },
   -- autocompletion engine
   {
     "hrsh7th/nvim-cmp",
@@ -118,11 +125,12 @@ return {
       })
       opts.sources = cmp.config.sources({
         { name = "nvim_lsp", priority = 50 },
-        { name = "luasnip",  priority = 40 },
-        { name = "path",     priority = 30 },
-        { name = "emoji",    priority = 20, option = { insert = true } },
-        { name = "tmux",     priority = 10 },
-      }, { name = "buffer" })
+        { name = "luasnip", priority = 40 },
+        { name = "path", priority = 30 },
+        { name = "emoji", priority = 20, option = { insert = true } },
+        { name = "tmux", priority = 10 },
+        { name = "buffer", priority = 0 },
+      })
       opts.formatting = {
         fields = { "kind", "abbr", "menu" },
         format = function(entry, vim_item)
