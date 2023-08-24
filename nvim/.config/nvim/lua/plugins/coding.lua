@@ -24,6 +24,19 @@ return {
   {
     "dhruvasagar/vim-table-mode",
     ft = "markdown",
+    keys = {
+      {
+        "<leader>tm",
+        false,
+      },
+      {
+        "<leader>cM",
+        "<cmd>TableModeToggle<cr>",
+        noremap = true,
+        silent = true,
+        desc = "Toggle Markdown table"
+      },
+    },
   },
   -- fuzzy finding anything anywhere
   {
@@ -50,7 +63,7 @@ return {
     -- enable supertab, see https://www.lazyvim.org/configuration/recipes#supertab
     keys = function()
       return {}
-    end
+    end,
   },
   -- autocompletion engine
   {
