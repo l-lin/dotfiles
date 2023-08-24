@@ -23,7 +23,7 @@ return {
   -- markdown table
   {
     "dhruvasagar/vim-table-mode",
-    ft = "md",
+    ft = "markdown",
   },
   -- fuzzy finding anything anywhere
   {
