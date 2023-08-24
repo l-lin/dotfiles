@@ -1,4 +1,12 @@
 return {
+  {
+    "folke/noice.nvim",
+    opts = {
+      popupmenu = {
+        backend = "cmp"
+      },
+    },
+  },
   -- navigate between neovim and multiplexers
   {
     "numToStr/Navigator.nvim",

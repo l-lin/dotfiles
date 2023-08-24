@@ -22,6 +22,23 @@ if vim.g.border_style == "none" then
   }
 end
 
+-- add border the "classic way", i.e. without using Noice
+-- local function set_border_on_lsp()
+--   vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+--     border = vim.g.border_style,
+--   })
+--
+--   vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+--     border = vim.g.border_style,
+--   })
+--
+--   vim.diagnostic.config({
+--     float = { border = vim.g.border_style },
+--   })
+-- end
+--
+-- set_border_on_lsp()
+
 return {
   {
     "rebelot/kanagawa.nvim",
