@@ -3,7 +3,7 @@ return {
     "folke/noice.nvim",
     opts = {
       popupmenu = {
-        backend = "cmp"
+        backend = "cmp",
       },
     },
   },
@@ -69,7 +69,8 @@ return {
             },
           },
           { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
-          { "filename", path = 1, symbols = { modified = "  ", readonly = "", unnamed = "" } },
+          -- NOTE: filename for java third party dependencies with jdtls have path like jdt://contents/..., so generating lots of errors => disable it
+          -- { "filename", path = 1, symbols = { modified = "  ", readonly = "", unnamed = "" } },
         },
       },
     },
