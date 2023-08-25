@@ -218,14 +218,14 @@ return {
         "<cmd>Lspsaga outline<cr>",
         noremap = true,
         silent = true,
-        desc = "Lspsaga outline minimap (Ctrl+F12)",
+        desc = "Lspsaga outline minimap (Alt+7)",
       },
       {
-        "<F36>",
+        "<M-7>",
         "<cmd>Lspsaga outline<cr>",
         noremap = true,
         silent = true,
-        desc = "Lspsaga outline minimap (Ctrl+F12)",
+        desc = "Lspsaga outline minimap (Alt+7)",
       },
       {
         "<leader>cr",
