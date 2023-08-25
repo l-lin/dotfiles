@@ -141,5 +141,19 @@ return {
         },
       },
     },
+
+    -- search/replace in multiple files
+    {
+      "nvim-pack/nvim-spectre",
+      keys = {
+        {
+          "<M-3>",
+          function()
+            require("spectre").open()
+          end,
+          desc = "Replace in files (Spectre) (Alt+3)",
+        },
+      },
+    },
   },
 }

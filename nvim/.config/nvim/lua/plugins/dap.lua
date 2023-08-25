@@ -45,9 +45,9 @@ return {
     "rcarriga/nvim-dap-ui",
     keys = {
       {
-        "<M-3>",
+        "<M-5>",
         "<cmd>lua require('dapui').toggle({ reset = true })<cr>",
-        desc = "Open DAP UI (Alt+3)",
+        desc = "Open DAP UI (Alt+5)",
       },
       {
         "<leader>du",
@@ -55,14 +55,15 @@ return {
         desc = "Open DAP UI (Alt+3)",
       },
     },
-
     config = function(_, opts)
-      local dap = require("dap")
       local dapui = require("dapui")
       dapui.setup(opts)
-      dap.listeners.after.event_initialized["dapui_config"] = function()
-        dapui.open({})
-      end
+
+      -- local dap = require("dap")
+      -- NOTE: no need to open DAP UI when launching DAP
+      -- dap.listeners.after.event_initialized["dapui_config"] = function()
+      --   dapui.open({})
+      -- end
       -- NOTE: no need to close DAP config when finished
       -- dap.listeners.before.event_terminated["dapui_config"] = function()
       --   dapui.close({})
