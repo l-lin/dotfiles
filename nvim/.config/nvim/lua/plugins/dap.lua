@@ -45,6 +45,11 @@ return {
     "rcarriga/nvim-dap-ui",
     keys = {
       {
+        "<M-4>",
+        "<cmd>lua require('dapui').toggle({ layout = 2, reset = true })<cr>",
+        desc = "Open DAP UI Console (Alt+4)",
+      },
+      {
         "<M-5>",
         "<cmd>lua require('dapui').toggle({ reset = true })<cr>",
         desc = "Open DAP UI (Alt+5)",
@@ -53,6 +58,30 @@ return {
         "<leader>du",
         "<cmd>lua require('dapui').toggle({ reset = true })<cr>",
         desc = "Open DAP UI (Alt+3)",
+      },
+    },
+    opts = {
+      layouts = {
+        {
+          elements = {
+            {
+              id = "scopes",
+              size = 0.25,
+            },
+            { id = "repl",    size = 0.25 },
+            { id = "stacks",  size = 0.25 },
+            { id = "watches", size = 0.25 },
+          },
+          size = 40,
+          position = "left",
+        },
+        {
+          elements = {
+            "console",
+          },
+          size = 10,
+          position = "bottom",
+        },
       },
     },
     config = function(_, opts)
@@ -77,11 +106,18 @@ return {
     "nvim-telescope/telescope.nvim",
     keys = {
       {
-        "<leader>dc",
+        "<leader>dd",
         "<cmd>Telescope dap configurations<cr>",
         noremap = true,
         silent = true,
-        desc = "Telescope DAP configuration",
+        desc = "Telescope DAP configuration (Alt+Shift+F10)",
+      },
+      {
+        "<M-S-F10>",
+        "<cmd>Telescope dap configurations<cr>",
+        noremap = true,
+        silent = true,
+        desc = "Telescope DAP configuration (Alt+Shift+F10)",
       },
     },
     dependencies = {
