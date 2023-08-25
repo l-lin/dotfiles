@@ -1,3 +1,14 @@
+local function get_selected_text()
+  vim.cmd('noau normal! "vy"')
+  local text = vim.fn.getreg("v")
+  vim.fn.setreg("v", {})
+  text = string.gsub(text, "\n", "")
+  if string.len(text) == 0 then
+    text = ""
+  end
+  return text
+end
+
 return {
   -- fuzzy finding anything anywhere
   {
@@ -10,6 +21,17 @@ return {
       {
         "<C-g>",
         "<cmd>Telescope find_files<cr>",
+        mode = "n",
+        noremap = true,
+        silent = true,
+        desc = "Find file (Ctrl+g)",
+      },
+      {
+        "<C-g>",
+        function()
+          require("telescope.builtin").find_files({ default_text = get_selected_text() })
+        end,
+        mode = "v",
         noremap = true,
         silent = true,
         desc = "Find file (Ctrl+g)",
@@ -17,6 +39,17 @@ return {
       {
         "<M-f>",
         "<cmd>Telescope live_grep<cr>",
+        mode = "n",
+        noremap = true,
+        silent = true,
+        desc = "Find pattern in all files (Alt+f)",
+      },
+      {
+        "<M-f>",
+        function()
+          require("telescope.builtin").live_grep({ default_text = get_selected_text() })
+        end,
+        mode = "v",
         noremap = true,
         silent = true,
         desc = "Find pattern in all files (Alt+f)",
