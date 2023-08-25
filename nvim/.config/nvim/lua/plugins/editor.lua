@@ -154,6 +154,11 @@ return {
           desc = "Replace in files (Spectre) (Alt+3)",
         },
       },
+      opts = {
+        highlight = {
+          search = "DiffAdd",
+        },
+      },
     },
   },
 }
