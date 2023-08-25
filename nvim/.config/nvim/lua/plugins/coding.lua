@@ -34,7 +34,7 @@ return {
         "<cmd>TableModeToggle<cr>",
         noremap = true,
         silent = true,
-        desc = "Toggle Markdown table"
+        desc = "Toggle Markdown table",
       },
     },
   },
@@ -90,6 +90,8 @@ return {
       "andersevenrud/cmp-tmux",
       -- buffer lines based
       "amarakon/nvim-cmp-buffer-lines",
+      -- textDocument / documentSymbol search
+      "hrsh7th/cmp-nvim-lsp-document-symbol",
     },
     opts = function(_, opts)
       local cmp = require("cmp")
@@ -138,11 +140,11 @@ return {
       })
       opts.sources = cmp.config.sources({
         { name = "nvim_lsp", priority = 50 },
-        { name = "luasnip", priority = 40 },
-        { name = "path", priority = 30 },
-        { name = "emoji", priority = 20, option = { insert = true } },
-        { name = "tmux", priority = 10 },
-        { name = "buffer", priority = 0 },
+        { name = "luasnip",  priority = 40 },
+        { name = "path",     priority = 30 },
+        { name = "emoji",    priority = 20, option = { insert = true } },
+        { name = "tmux",     priority = 10 },
+        { name = "buffer",   priority = 0 },
       })
       opts.formatting = {
         fields = { "kind", "abbr", "menu" },
@@ -168,6 +170,9 @@ return {
       cmp.setup.cmdline({ "/", "?" }, {
         mapping = cmp.mapping.preset.cmdline(),
         sources = {
+          { name = "nvim_lsp_document_symbol" },
+        },
+        {
           { name = "buffer" },
         },
       })
