@@ -5,6 +5,11 @@ return {
       popupmenu = {
         backend = "cmp",
       },
+      lsp = {
+        progress = {
+          enabled = false,
+        }
+      }
     },
   },
   -- navigate between neovim and multiplexers

@@ -144,7 +144,8 @@ return {
         { name = "path",     priority = 30 },
         { name = "emoji",    priority = 20, option = { insert = true } },
         { name = "tmux",     priority = 10 },
-        { name = "buffer",   priority = 0 },
+      }, {
+        { name = "buffer" },
       })
       opts.formatting = {
         fields = { "kind", "abbr", "menu" },
