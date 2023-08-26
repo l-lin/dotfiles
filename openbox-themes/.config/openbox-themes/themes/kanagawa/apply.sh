@@ -8,6 +8,7 @@
 TDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 THEME="${TDIR##*/}"
 THEME_BACKGROUND="dark"
+THEME_BAT="Catppuccin-mocha"
 
 source "$HOME"/.config/openbox-themes/themes/"$THEME"/theme.bash
 
@@ -387,10 +388,19 @@ change_fzf_background() {
 	fi
 }
 
+change_bat_background() {
+  local file_path="${HOME}/.config/bat/config"
+
+	if [[ -f "${file_path}" ]]; then
+		sed -i --follow-symlinks "s/^--theme=\".*\"/--theme=\"${THEME_BAT}\"/" "${file_path}"
+	fi
+}
+
 apply_change_background() {
 	change_tmux_background
 	change_nvim_background
 	change_fzf_background
+  change_bat_background
 }
 
 ## Execute Script ---------------------------

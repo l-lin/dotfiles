@@ -2,19 +2,33 @@
 
 set -eu
 
-themes_path="${HOME}/.themes"
-theme_name="gruvbox-material-dark-blocks"
+install_theme() {
+	local theme_path="${1}"
+	local theme_name="${2}"
+	local git_project="${3}"
+  local git_project_name="${4}"
 
-mkdir -p "${themes_path}"
+	if [[ ! -d "${theme_path}/${theme_name}" ]]; then
+		mkdir -p "${theme_path}"
 
-if [[ ! -d "${themes_path}/tmp" ]]; then
-  echo "[-] Installing ${theme_name} theme"
-  git clone https://github.com/nathanielevan/gruvbox-material-openbox "${themes_path}/tmp"
-  mv "${themes_path}/tmp/${theme_name}" "${themes_path}/${theme_name}"
+		echo "[-] Installing ${theme_name} theme"
+		git clone "${git_project}" "/tmp/${git_project_name}"
+		mv "/tmp/${git_project_name}/${theme_name}" "${theme_path}/${theme_name}"
 
-  rm -rf "${themes_path}/tmp"
-else
-  echo "[-] Theme ${theme_name} already installed"
-fi
+		rm -rf "/tmp/${git_project_name}"
+	else
+		echo "[-] Theme ${theme_name} already installed"
+	fi
+}
 
+install_theme \
+  "${HOME}/.themes" \
+	"gruvbox-material-dark-blocks" \
+	"https://github.com/nathanielevan/gruvbox-material-openbox" \
+  "gruvbox-material-openbox"
 
+install_theme \
+  "$(bat --config-dir)/themes" \
+  "Catppuccin-mocha.tmTheme" \
+  "https://github.com/catppuccin/bat" \
+  "catppuccin"
