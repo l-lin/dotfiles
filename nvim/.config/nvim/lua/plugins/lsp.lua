@@ -42,12 +42,14 @@ return {
         "jdtls",
         "js-debug-adapter",
         "json-lsp",
+        "lemminx",
         "lua-language-server",
         "marksman",
         "rust-analyzer",
         "semgrep",
         "shellcheck",
         "shfmt",
+        "sonarlint-language-server",
         "sql-formatter",
         "terraform-ls",
         "typescript-language-server",
@@ -313,5 +315,33 @@ return {
     dependencies = {
       "neovim/nvim-lspconfig",
     },
+  },
+  {
+    "sonarlint",
+    url = "https://gitlab.com/schrieveslaach/sonarlint.nvim",
+    ft = { "go", "js", "java", "xml" },
+    opts = function()
+      local sonarlint_path = require("mason-registry").get_package("sonarlint-language-server"):get_install_path()
+      return {
+        server = {
+          cmd = {
+            "sonarlint-language-server",
+            -- Ensure that sonarlint-language-server uses stdio channel
+            "-stdio",
+            "-analyzers",
+            sonarlint_path .. "/extension/analyzers/sonargo.jar",
+            sonarlint_path .. "/extension/analyzers/sonarjava.jar",
+            sonarlint_path .. "/extension/analyzers/sonarjs.jar",
+            sonarlint_path .. "/extension/analyzers/sonarxml.jar",
+          },
+        },
+        filetypes = {
+          "go",
+          "java",
+          "js",
+          "xml",
+        },
+      }
+    end,
   },
 }

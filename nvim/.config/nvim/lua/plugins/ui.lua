@@ -7,7 +7,7 @@ return {
       },
       lsp = {
         progress = {
-          enabled = false,
+          throttle = 300
         }
       }
     },
