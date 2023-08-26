@@ -64,40 +64,40 @@ local function create_settings()
           profile = "l-lin",
         },
       },
-    },
-    signatureHelp = { enabled = true },
-    completion = {
-      favoriteStaticMembers = {
-        "org.hamcrest.MatcherAssert.assertThat",
-        "org.hamcrest.Matchers.*",
-        "org.hamcrest.CoreMatchers.*",
-        "org.junit.jupiter.api.Assertions.*",
-        "java.util.Objects.requireNonNull",
-        "java.util.Objects.requireNonNullElse",
-        "org.mockito.Mockito.*",
-        "org.mockito.BDDMockito.*",
+      completion = {
+        favoriteStaticMembers = {
+          "org.hamcrest.MatcherAssert.assertThat",
+          "org.hamcrest.Matchers.*",
+          "org.hamcrest.CoreMatchers.*",
+          "org.junit.jupiter.api.Assertions.*",
+          "java.util.Objects.requireNonNull",
+          "java.util.Objects.requireNonNullElse",
+          "org.mockito.Mockito.*",
+          "org.mockito.BDDMockito.*",
+        },
+        filteredTypes = {
+          "com.sun.*",
+          "io.micrometer.shaded.*",
+          "java.awt.*",
+          "jdk.*",
+          "sun.*",
+          "org.junit.*",
+        },
       },
-      filteredTypes = {
-        "com.sun.*",
-        "io.micrometer.shaded.*",
-        "java.awt.*",
-        "jdk.*",
-        "sun.*",
-        "org.junit.*",
+      signatureHelp = { enabled = true },
+      contentProvider = { preferred = "fernflower" },
+      sources = {
+        organizeImports = {
+          starThreshold = 9999,
+          staticStarThreshold = 9999,
+        },
       },
-    },
-    contentProvider = { preferred = "fernflower" },
-    sources = {
-      organizeImports = {
-        starThreshold = 9999,
-        staticStarThreshold = 9999,
+      codeGeneration = {
+        toString = {
+          template = "${object.className}{${member.name()}=${member.value}, ${otherMembers}}",
+        },
+        useBlocks = true,
       },
-    },
-    codeGeneration = {
-      toString = {
-        template = "${object.className}{${member.name()}=${member.value}, ${otherMembers}}",
-      },
-      useBlocks = true,
     },
   }
 end
@@ -136,7 +136,7 @@ end
 local function find_associate_test_or_class_file()
   local default_text = ""
   local filename = vim.fn.expand("%:t"):match("(.+)%..+")
-  if filename:sub(-#"Test") == "Test" then
+  if filename:sub(- #"Test") == "Test" then
     default_text = filename:gsub("Test", "") .. ".java"
   else
     default_text = filename .. "Test.java"

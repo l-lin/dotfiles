@@ -1,25 +1,25 @@
 # JUnit tests
 
-snippet beforeeach
+snippet beach
 	@BeforeEach
 	void beforeEach() {
 		${1}
 	}
 
-snippet aftereach
+snippet aeach
 	@AfterEach
 	void afterEach() {
 		${1}
 	}
 
 snippet given
-	BDDMockito.given(${1}).willReturn(${2});
+	given(${1}).willReturn(${2});
 
 snippet then
-	BDDMockito.then(${1}).should().${2}
+	then(${1}).should().${2}
 
 snippet mock
-	${1} ${2} = Mockito.mock(${1}.class);
+	${1} ${2} = mock(${1}.class);
 
 snippet nested
 	@Nested
