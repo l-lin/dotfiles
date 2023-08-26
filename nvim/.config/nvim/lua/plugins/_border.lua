@@ -1,4 +1,4 @@
-if vim.g.border_style == "none" then
+local function without_border()
   return {
     {
       "rebelot/kanagawa.nvim",
@@ -22,127 +22,115 @@ if vim.g.border_style == "none" then
   }
 end
 
--- add border the "classic way", i.e. without using Noice
--- local function set_border_on_lsp()
---   vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
---     border = vim.g.border_style,
---   })
---
---   vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
---     border = vim.g.border_style,
---   })
---
---   vim.diagnostic.config({
---     float = { border = vim.g.border_style },
---   })
--- end
---
--- set_border_on_lsp()
-
-return {
-  {
-    "rebelot/kanagawa.nvim",
-    opts = {
-      colors = {
-        theme = {
-          all = {
-            ui = {
-              bg_gutter = "none",
-              float = {
-                bg = "none",
+local function with_border(border_style)
+  return {
+    {
+      "rebelot/kanagawa.nvim",
+      opts = {
+        colors = {
+          theme = {
+            all = {
+              ui = {
+                bg_gutter = "none",
+                float = {
+                  bg = "none",
+                },
               },
             },
           },
         },
+        overrides = function()
+          return {
+            NormalFloat = { bg = "none" },
+            FloatBorder = { bg = "none" },
+            LazyNormal = { bg = "none" },
+            MasonNormal = { bg = "none" },
+            HoverNormal = { bg = "none" },
+            HoverBorder = { bg = "none" },
+            SagaNormal = { bg = "none" },
+            SagaBorder = { bg = "none" },
+          }
+        end,
       },
-      overrides = function()
-        return {
-          NormalFloat = { bg = "none" },
-          FloatBorder = { bg = "none" },
-          LazyNormal = { bg = "none" },
-          MasonNormal = { bg = "none" },
-          HoverNormal = { bg = "none" },
-          HoverBorder = { bg = "none" },
-          SagaNormal = { bg = "none" },
-          SagaBorder = { bg = "none" },
+    },
+    {
+      "nvim-cmp",
+      opts = function(_, opts)
+        local bordered = require("cmp.config.window").bordered
+        local window_opts = {
+          border = border_style,
+          scrollbar = false,
+          col_offset = -4,
+          side_padding = 0,
         }
+        return vim.tbl_deep_extend("force", opts, {
+          window = {
+            completion = bordered(window_opts),
+            documentation = bordered(window_opts),
+          },
+        })
       end,
     },
-  },
-  -- lazyvim.plugins.coding
-  {
-    "nvim-cmp",
-    opts = function(_, opts)
-      local bordered = require("cmp.config.window").bordered
-      local window_opts = {
-        border = vim.g.border_style,
-        scrollbar = false,
-        col_offset = -4,
-        side_padding = 0,
-      }
-      return vim.tbl_deep_extend("force", opts, {
+    {
+      "which-key.nvim",
+      opts = {
         window = {
-          completion = bordered(window_opts),
-          documentation = bordered(window_opts),
+          border = border_style,
         },
-      })
-    end,
-  },
-  -- lazyvim.plugins.editor
-  {
-    "which-key.nvim",
-    opts = {
-      window = {
-        border = vim.g.border_style,
       },
     },
-  },
-  {
-    "gitsigns.nvim",
-    opts = {
-      preview_config = {
-        border = vim.g.border_style,
+    {
+      "gitsigns.nvim",
+      opts = {
+        preview_config = {
+          border = border_style,
+        },
       },
     },
-  },
-  -- lazyvim.plugins.lsp
-  {
-    "nvim-lspconfig",
-    opts = function(_, opts)
-      -- Set LspInfo border
-      require("lspconfig.ui.windows").default_options.border = vim.g.border_style
-      return opts
-    end,
-  },
-  {
-    "glepnir/lspsaga.nvim",
-    opts = {
-      ui = {
-        border = vim.g.border_style,
+    {
+      "nvim-lspconfig",
+      opts = function(_, opts)
+        -- Set LspInfo border
+        require("lspconfig.ui.windows").default_options.border = border_style
+        return opts
+      end,
+    },
+    {
+      "glepnir/lspsaga.nvim",
+      opts = {
+        ui = {
+          border = border_style,
+        },
       },
     },
-  },
-  {
-    "null-ls.nvim",
-    opts = {
-      border = vim.g.border_style,
-    },
-  },
-  {
-    "mason.nvim",
-    opts = {
-      ui = {
-        border = vim.g.border_style,
+    {
+      "null-ls.nvim",
+      opts = {
+        border = border_style,
       },
     },
-  },
-  -- lazyvim.plugins.ui
-  {
-    "noice.nvim",
-    opts = {
-      presets = {
-        lsp_doc_border = true,
+    {
+      "mason.nvim",
+      opts = {
+        ui = {
+          border = border_style,
+        },
       },
     },
-  },
-}
+    {
+      "noice.nvim",
+      opts = {
+        presets = {
+          lsp_doc_border = true,
+        },
+      },
+    },
+  }
+end
+
+if vim.g.border_style == "none" then
+  return without_border()
+end
+
+return with_border(vim.g.border_style)
+

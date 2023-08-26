@@ -14,6 +14,8 @@ return {
       vim.cmd([[ colorscheme gruvbox-material ]])
     end,
   },
+
+  -- setup colorscheme
   {
     "LazyVim/LazyVim",
     opts = {

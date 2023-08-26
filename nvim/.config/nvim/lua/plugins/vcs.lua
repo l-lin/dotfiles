@@ -1,4 +1,5 @@
 return {
+  -- git integration
   {
     "tpope/vim-fugitive",
     keys = {
@@ -101,7 +102,8 @@ return {
       },
     },
   },
-  -- gitlab integration
+
+  -- gitlab MR integration
   {
     "harrisoncramer/gitlab.nvim",
     dependencies = {

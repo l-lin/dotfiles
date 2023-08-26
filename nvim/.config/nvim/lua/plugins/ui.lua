@@ -1,4 +1,5 @@
 return {
+  -- nice UI for messages, cmdline and popupmenu
   {
     "folke/noice.nvim",
     opts = {
@@ -12,6 +13,7 @@ return {
       }
     },
   },
+
   -- navigate between neovim and multiplexers
   {
     "numToStr/Navigator.nvim",
@@ -44,7 +46,7 @@ return {
     },
   },
 
-  -- buffer line
+  -- buffer line (top bar)
   {
     "akinsho/bufferline.nvim",
     opts = {
@@ -54,7 +56,8 @@ return {
       },
     },
   },
-  -- status line
+
+  -- status line (bottom bar)
   {
     "nvim-lualine/lualine.nvim",
     opts = {
@@ -81,6 +84,7 @@ return {
     },
   },
 
+	-- show available keymaps + description as you type them
   {
     "folke/which-key.nvim",
     opts = {

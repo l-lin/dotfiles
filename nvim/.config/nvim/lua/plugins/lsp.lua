@@ -1,4 +1,5 @@
 return {
+	-- easily config neovim lsp
   {
     "neovim/nvim-lspconfig",
     init = function()
@@ -18,6 +19,8 @@ return {
       autoformat = false,
     },
   },
+
+	-- easily install/update lsp servers directly from neovim
   {
     "williamboman/mason.nvim",
     keys = {
@@ -61,6 +64,7 @@ return {
       },
     },
   },
+
   -- ui for LSP features
   {
     "glepnir/lspsaga.nvim",
@@ -316,6 +320,8 @@ return {
       "neovim/nvim-lspconfig",
     },
   },
+
+  -- linter
   {
     "sonarlint",
     url = "https://gitlab.com/schrieveslaach/sonarlint.nvim",

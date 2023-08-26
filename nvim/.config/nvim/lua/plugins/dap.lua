@@ -40,6 +40,7 @@ return {
       },
     },
   },
+
   -- dap UI
   {
     "rcarriga/nvim-dap-ui",
@@ -100,6 +101,8 @@ return {
       -- end
     end,
   },
+
+	-- fuzzy finding anything anywhere
   {
     "nvim-telescope/telescope.nvim",
     keys = {

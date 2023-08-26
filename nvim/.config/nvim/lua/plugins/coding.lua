@@ -38,6 +38,7 @@ return {
       },
     },
   },
+
   -- fuzzy finding anything anywhere
   {
     "nvim-telescope/telescope.nvim",
@@ -58,13 +59,7 @@ return {
       },
     },
   },
-  {
-    "L3MON4D3/LuaSnip",
-    -- enable supertab, see https://www.lazyvim.org/configuration/recipes#supertab
-    keys = function()
-      return {}
-    end,
-  },
+
   -- autocompletion engine
   {
     "hrsh7th/nvim-cmp",
@@ -140,10 +135,10 @@ return {
       })
       opts.sources = cmp.config.sources({
         { name = "nvim_lsp", priority = 50 },
-        { name = "luasnip",  priority = 40 },
-        { name = "path",     priority = 30 },
-        { name = "emoji",    priority = 20, option = { insert = true } },
-        { name = "tmux",     priority = 10 },
+        { name = "luasnip", priority = 40 },
+        { name = "path", priority = 30 },
+        { name = "emoji", priority = 20, option = { insert = true } },
+        { name = "tmux", priority = 10 },
       }, {
         { name = "buffer" },
       })
@@ -167,7 +162,6 @@ return {
           { name = "buffer" },
         }),
       })
-      -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
       cmp.setup.cmdline({ "/", "?" }, {
         mapping = cmp.mapping.preset.cmdline(),
         sources = {
@@ -177,8 +171,6 @@ return {
           { name = "buffer" },
         },
       })
-
-      -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
       cmp.setup.cmdline(":", {
         mapping = cmp.mapping.preset.cmdline(),
         sources = cmp.config.sources({
@@ -189,6 +181,7 @@ return {
       })
     end,
   },
+
   -- snippet engine
   {
     "L3MON4D3/LuaSnip",
@@ -200,5 +193,9 @@ return {
         require("luasnip.loaders.from_lua").lazy_load()
       end,
     },
+    -- enable supertab, see https://www.lazyvim.org/configuration/recipes#supertab
+    keys = function()
+      return {}
+    end,
   },
 }

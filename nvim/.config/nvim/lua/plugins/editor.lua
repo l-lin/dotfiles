@@ -70,6 +70,7 @@ return {
       },
     },
   },
+
   -- file explorer
   {
     "nvim-neo-tree/neo-tree.nvim",
@@ -88,6 +89,7 @@ return {
       },
     },
   },
+
   -- multilevel undo explorer
   {
     "mbbill/undotree",
@@ -95,6 +97,7 @@ return {
       { "<leader>u", "<cmd>UndotreeToggle<cr>", noremap = true, desc = "Undotree Toggle" },
     },
   },
+
   -- file explorer to edit filesystem like a normal buffer, vim-vinegar like
   {
     "stevearc/oil.nvim",
@@ -111,6 +114,7 @@ return {
       require("oil").setup()
     end,
   },
+
   -- highlight TODO comments
   {
     "folke/todo-comments.nvim",
@@ -118,6 +122,8 @@ return {
       { "<M-2>", "<cmd>TodoTelescope<cr>", noremap = true, desc = "Telescope find TODO (Alt+2)" },
     },
   },
+
+  -- multiple cursors
   {
     "mg979/vim-visual-multi",
     event = "ModeChanged",
@@ -141,23 +147,23 @@ return {
         },
       },
     },
+  },
 
-    -- search/replace in multiple files
-    {
-      "nvim-pack/nvim-spectre",
-      keys = {
-        {
-          "<M-3>",
-          function()
-            require("spectre").open()
-          end,
-          desc = "Replace in files (Spectre) (Alt+3)",
-        },
+  -- search/replace in multiple files
+  {
+    "nvim-pack/nvim-spectre",
+    keys = {
+      {
+        "<M-3>",
+        function()
+          require("spectre").open()
+        end,
+        desc = "Replace in files (Spectre) (Alt+3)",
       },
-      opts = {
-        highlight = {
-          search = "DiffAdd",
-        },
+    },
+    opts = {
+      highlight = {
+        search = "DiffAdd",
       },
     },
   },
