@@ -25,7 +25,7 @@
   </placement>
   <!-- Theme -->
   <theme>
-    <name>gruvbox-material-dark-blocks</name>
+    <name>Windows-10-Dark</name>
     <titleLayout>DLIMC</titleLayout>
     <keepBorder>no</keepBorder>
     <animateIconify>yes</animateIconify>

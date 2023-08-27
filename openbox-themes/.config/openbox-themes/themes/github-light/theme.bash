@@ -87,7 +87,7 @@ picom_blur_method='none'
 picom_blur_strength='0'
 
 # theme
-wallpaper_color="#7B8D59"
+wallpaper_color="#ffffff"
 nvim_colorscheme="github_light_high_contrast"
 nvim_background="light"
 # theme from cmd `bat --list-themes`
