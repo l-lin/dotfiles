@@ -1,20 +1,18 @@
 /* adapted from https://github.com/jrolfs/gruvbox-material-tridactyl */
 :root {
-  --background-cmdline: #111116;
-  --background-title: #1f1f28;
-  --background-choice: #1f1f28;
-  --background-selection: #363646;
+  --background-cmdline: #eaeef2;
+  --background-title: #f6f8fa;
+  --background-choice: #ffffff;
+  --background-selection: #e7ecf0;
   --foreground-choice-prefix: #665c54;
-  --foreground-colon-cmdline: #bdae93;
-  --foreground-text: #d5c4a1;
-  --foreground-focused-text: #ebdbb2;
-  --red: #c34043;
-  --orange: #e78a4e;
-  --yellow: #c0a36e;
-  --green: #76946a;
-  --aqua: #6a9589;
-  --blue: #7e9cd8;
-  --purple: #957fb8;
+  --foreground-colon-cmdline: #665c54;
+  --foreground-text: #010409;
+  --foreground-focused-text: #0349b4;
+  --yellow: #86061d;
+  --green: #024c1a;
+  --aqua: #1b7c83;
+  --blue: #0349b4;
+  --purple: #622cbc;
 }
 
 :root {
@@ -139,7 +137,7 @@ span.TridactylHint:nth-child(7n) {
   border: unset !important;
   background: var(--tridactyl-bg) !important;
   box-shadow: var(--shadow-1) !important;
-  color: var(--yellow) !important;
+  color: var(--foreground-focused-text) !important;
   font-size: 0.75rem !important;
   font-weight: 500 !important;
 }
@@ -248,11 +246,11 @@ span.TridactylHint:nth-child(7n) {
   color: var(--foreground-focused-text);
 }
 #completions .focused .excmd {
-  color: var(--aqua);
+  color: var(--foreground-focused-text);
 }
 #completions .focused .url {
   background: var(--background-selection);
-  color: var(--aqua);
+  color: var(--foreground-focused-text);
 }
 #completions .BmarkCompletionSource {
   min-height: unset;

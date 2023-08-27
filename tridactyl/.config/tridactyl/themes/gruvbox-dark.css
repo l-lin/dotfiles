@@ -1,17 +1,13 @@
 /* adapted from https://github.com/jrolfs/gruvbox-material-tridactyl */
 :root {
-  --background-0: #1d2021;
-  --background-1: #282828;
-  --background-2: #32302f;
-  --background-3: #3c3836;
-  --background-4: #504945;
-  --background-5: #665c54;
-  --foreground-0: #665c54;
-  --foreground-1: #bdae93;
-  --foreground-2: #d5c4a1;
-  --foreground-3: #ebdbb2;
-  --foreground-4: #fbf1c7;
-  --red: #cc241d;
+  --background-cmdline: #1d2021;
+  --background-title: #282828;
+  --background-choice: #32302f;
+  --background-selection: #504945;
+  --foreground-choice-prefix: #665c54;
+  --foreground-colon-cmdline: #bdae93;
+  --foreground-text: #d5c4a1;
+  --foreground-focused-text: #ebdbb2;
   --orange: #e78a4e;
   --yellow: #d8a657;
   --green: #a9b665;
@@ -84,14 +80,14 @@
   --tridactyl-cmdl-font-family: var(--font-family-mono);
   --tridactyl-cmplt-font-family: var(--font-family-mono);
   --tridactyl-header-font-weight: var(--font-weight-mono-semibold);
-  --tridactyl-fg: var(--foreground-2);
-  --tridactyl-bg: var(--background-2);
+  --tridactyl-fg: var(--foreground-text);
+  --tridactyl-bg: var(--background-choice);
   --tridactyl-url-fg: var(--blue);
-  --tridactyl-url-bg: var(--background-2);
+  --tridactyl-url-bg: var(--background-choice);
   --tridactyl-highlight-box-bg: var(--green);
-  --tridactyl-highlight-box-fg: var(--background-2);
+  --tridactyl-highlight-box-fg: var(--background-choice);
   --tridactyl-photon-colours-accent-1: var(--blue);
-  --tridactyl-hintspan-fg: var(--background-2) !important;
+  --tridactyl-hintspan-fg: var(--background-choice) !important;
   --tridactyl-hintspan-bg: var(--aqua) !important;
   --tridactyl-hint-active-fg: none;
   --tridactyl-hint-active-bg: none;
@@ -171,13 +167,13 @@ span.TridactylHint:nth-child(7n) {
   flex-direction: row;
   align-items: center;
   order: 1;
-  background: var(--background-0);
+  background: var(--background-cmdline);
   box-shadow: var(--shadow-2);
   color: var(--tridactyl-bg);
 }
 #command-line-holder #tridactyl-colon {
   padding-left: 0.75rem;
-  color: var(--foreground-1);
+  color: var(--foreground-colon-cmdline);
   font-size: 1.25rem;
 }
 
@@ -213,7 +209,7 @@ span.TridactylHint:nth-child(7n) {
   padding-bottom: 0.2rem;
   padding-left: unset;
   border-bottom: unset;
-  background: var(--background-1);
+  background: var(--background-title);
   font-weight: var(--font-weight-mono-semibold);
 }
 #completions table.optionContainer {
@@ -237,7 +233,7 @@ span.TridactylHint:nth-child(7n) {
   display: none;
 }
 #completions table.optionContainer td.prefix {
-  color: var(--foreground-0);
+  color: var(--foreground-choice-prefix);
   font-weight: var(--font-weight-mono-bold);
 }
 #completions table.optionContainer td.icon {
@@ -247,14 +243,14 @@ span.TridactylHint:nth-child(7n) {
   filter: sepia(100%);
 }
 #completions .focused {
-  background: var(--background-4);
-  color: var(--foreground-3);
+  background: var(--background-4selection;
+  color: var(--foreground-focused-text);
 }
 #completions .focused .excmd {
   color: var(--orange);
 }
 #completions .focused .url {
-  background: var(--background-4);
+  background: var(--background-4selection;
   color: var(--orange);
 }
 #completions .BmarkCompletionSource {

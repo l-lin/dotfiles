@@ -45,7 +45,7 @@ apply_polybar() {
 		ACCENT = ${accent}
 
 		BLACK = ${color_black}
-    RED = ${color_red}
+		    RED = ${color_red}
 		GREEN = ${color_green}
 		YELLOW = ${color_yellow}
 		BLUE = ${color_blue}
@@ -367,7 +367,7 @@ change_nvim_background() {
 		sed -i --follow-symlinks "s/^vim.o.bg = \"\(dark\|light\)\"$/vim.o.bg = \"${nvim_background}\"/" "${options_file_path}"
 	fi
 
-  local colorscheme_file_path="${HOME}/.config/nvim/lua/plugins/colorscheme.lua"
+	local colorscheme_file_path="${HOME}/.config/nvim/lua/plugins/colorscheme.lua"
 
 	if [[ -f "${colorscheme_file_path}" ]]; then
 		sed -i --follow-symlinks "s/    colorscheme = \".*\"/    colorscheme = \"${nvim_colorscheme}\"/" "${colorscheme_file_path}"
@@ -409,12 +409,21 @@ change_delta_background() {
 	fi
 }
 
+change_tridactyl_background() {
+	local file_path="${HOME}/.config/tridactyl/tridactylrc"
+
+	if [[ -f "${file_path}" ]]; then
+		sed -i --follow-symlinks "s/^colors .*/colors ${THEME}/" "${file_path}"
+	fi
+}
+
 apply_change_background() {
 	change_tmux_background
 	change_nvim_background
 	change_zsh_background
 	change_bat_background
 	change_delta_background
+	change_tridactyl_background
 }
 
 ## Execute Script ---------------------------
