@@ -21,7 +21,7 @@ color_altmagenta='#938aa9'
 color_altcyan='#7aa89f'
 color_altwhite='#dcd7ba'
 
-accent='#7e9cd8'
+accent="${color_blue}"
 light_value='0.05'
 dark_value='0.30'
 

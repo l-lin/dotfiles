@@ -19,7 +19,7 @@ color_altmagenta='#d3869b'
 color_altcyan='#8ec07c'
 color_altwhite='#ebdbb2'
 
-accent='#fe8019'
+accent="${color_yellow}"
 light_value='0.05'
 dark_value='0.30'
 

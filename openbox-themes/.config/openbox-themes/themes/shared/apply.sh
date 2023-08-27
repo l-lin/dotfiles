@@ -374,11 +374,22 @@ change_nvim_background() {
 	fi
 }
 
-change_fzf_background() {
+change_zsh_background() {
 	local file_path="${HOME}/.zshenv"
 
 	if [[ -f "${file_path}" ]]; then
-		sed -i --follow-symlinks "s/^export FZF_COLORSCHEME='.*'/export FZF_COLORSCHEME='${THEME}'/" "${file_path}"
+		sed -i --follow-symlinks "s/^export ZSH_THEME_BG='.*'/export ZSH_THEME_BG='${background}'/" "${file_path}"
+		sed -i --follow-symlinks "s/^export ZSH_THEME_FG='.*'/export ZSH_THEME_FG='${foreground}'/" "${file_path}"
+		sed -i --follow-symlinks "s/^export ZSH_THEME_BLACK='.*'/export ZSH_THEME_BLACK='${color_black}'/" "${file_path}"
+		sed -i --follow-symlinks "s/^export ZSH_THEME_RED='.*'/export ZSH_THEME_RED='${color_red}'/" "${file_path}"
+		sed -i --follow-symlinks "s/^export ZSH_THEME_GREEN='.*'/export ZSH_THEME_GREEN='${color_green}'/" "${file_path}"
+		sed -i --follow-symlinks "s/^export ZSH_THEME_YELLOW='.*'/export ZSH_THEME_YELLOW='${color_yellow}'/" "${file_path}"
+		sed -i --follow-symlinks "s/^export ZSH_THEME_BLUE='.*'/export ZSH_THEME_BLUE='${color_blue}'/" "${file_path}"
+		sed -i --follow-symlinks "s/^export ZSH_THEME_MAGENTA='.*'/export ZSH_THEME_MAGENTA='${color_magenta}'/" "${file_path}"
+		sed -i --follow-symlinks "s/^export ZSH_THEME_CYAN='.*'/export ZSH_THEME_CYAN='${color_cyan}'/" "${file_path}"
+		sed -i --follow-symlinks "s/^export ZSH_THEME_WHITE='.*'/export ZSH_THEME_WHITE='${color_white}'/" "${file_path}"
+		sed -i --follow-symlinks "s/^export ZSH_THEME_GRAY='.*'/export ZSH_THEME_GRAY='${color_altblack}'/" "${file_path}"
+		sed -i --follow-symlinks "s/^export ZSH_THEME_ACCENT='.*'/export ZSH_THEME_ACCENT='${accent}'/" "${file_path}"
 	fi
 }
 
@@ -401,7 +412,7 @@ change_delta_background() {
 apply_change_background() {
 	change_tmux_background
 	change_nvim_background
-	change_fzf_background
+	change_zsh_background
 	change_bat_background
 	change_delta_background
 }
