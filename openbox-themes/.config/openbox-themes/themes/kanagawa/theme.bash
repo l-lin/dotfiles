@@ -1,31 +1,25 @@
-# ------------------------------------------------------------------------------
-# Copyright (C) 2020-2022 Aditya Shakya <adi1090x@gmail.com>
-#
-# Default Theme
-# ------------------------------------------------------------------------------
-
 # Colors
 # from: https://github.com/rebelot/kanagawa.nvim/blob/master/extras/alacritty_kanagawa.yml
 background='#1f1f28'
 foreground='#dcd7ba'
 altbackground='#363646'
 altforeground='#c8c093'
-color0='#090618'
-color1='#c34043'
-color2='#76946a'
-color3='#c0a36e'
-color4='#7e9cd8'
-color5='#957fb8'
-color6='#6a9589'
-color7='#c8c093'
-color8='#727169'
-color9='#e82424'
-color10='#98bb6c'
-color11='#e6c384'
-color12='#7fb4ca'
-color13='#938aa9'
-color14='#7aa89f'
-color15='#dcd7ba'
+color_black='#090618'
+color_red='#c34043'
+color_green='#76946a'
+color_yellow='#c0a36e'
+color_blue='#7e9cd8'
+color_magenta='#957fb8'
+color_cyan='#6a9589'
+color_white='#c8c093'
+color_altblack='#727169'
+color_altred='#e82424'
+color_altgreen='#98bb6c'
+color_altyellow='#e6c384'
+color_altblue='#7fb4ca'
+color_altmagenta='#938aa9'
+color_altcyan='#7aa89f'
+color_altwhite='#dcd7ba'
 
 accent='#7e9cd8'
 light_value='0.05'
@@ -94,3 +88,13 @@ picom_shadow_x='-12'
 picom_shadow_y='-12'
 picom_blur_method='none'
 picom_blur_strength='0'
+
+# theme
+wallpaper_color="#000000"
+nvim_colorscheme="kanagawa"
+nvim_background="dark"
+# theme from cmd `bat --list-themes`
+bat_theme="Catppuccin-mocha"
+# theme from cmd `delta --list-syntax-themes`
+delta_theme="${bat_theme}"
+

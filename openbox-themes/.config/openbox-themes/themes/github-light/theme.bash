@@ -1,23 +1,23 @@
 # Colors
-# from: https://github.com/eendroroy/alacritty-theme/blob/master/themes/gruvbox_light.yaml
-background='#fbf1c7'
-foreground='#3c3836'
-color_black='#fbf1c7'
-color_red='#cc241d'
-color_green='#98971a'
-color_yellow='#d79921'
-color_blue='#458588'
-color_magenta='#b16286'
-color_cyan='#689d6a'
-color_white='#7c6f64'
-color_altblack='#928374'
-color_altred='#9d0006'
-color_altgreen='#79740e'
-color_altyellow='#b57614'
-color_altblue='#076678'
-color_altmagenta='#8f3f71'
-color_altcyan='#427b58'
-color_altwhite='#3c3836'
+# from: https://github.com/projekt0n/github-theme-contrib/blob/main/themes/alacritty/github_light_high_contrast.yml
+background='#ffffff'
+foreground='#010409'
+color_black='#0e1116'
+color_red='#a0111f'
+color_green='#024c1a'
+color_yellow='#3f2200'
+color_blue='#0349b4'
+color_magenta='#622cbc'
+color_cyan='#1b7c83'
+color_white='#66707b'
+color_altblack='#4b535d'
+color_altred='#86061d'
+color_altgreen='#055d20'
+color_altyellow='#4e2c00'
+color_altblue='#1168e3'
+color_altmagenta='#622cbc'
+color_altcyan='#1b7c83'
+color_altwhite='#66707b'
 
 accent='#fe8019'
 light_value='0.05'
@@ -28,7 +28,7 @@ wdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 wallpaper="$wdir/wallpaper"
 
 # Polybar
-polybar_font='JetBrains Mono:size=10;3'
+polybar_font='JetBrains Mono:size=11;3'
 
 # Rofi
 rofi_font='Iosevka 10'
@@ -36,7 +36,7 @@ rofi_icon='Zafiro'
 
 # Terminal
 terminal_font_name='JetBrainsMono Nerd Font'
-terminal_font_size='16'
+terminal_font_size='14'
 
 # Geany
 geany_colors='slime.conf'
@@ -88,10 +88,10 @@ picom_blur_strength='0'
 
 # theme
 wallpaper_color="#7B8D59"
-nvim_colorscheme="gruvbox"
+nvim_colorscheme="github_light_high_contrast"
 nvim_background="light"
 # theme from cmd `bat --list-themes`
-bat_theme="gruvbox-light"
+bat_theme="GitHub"
 # theme from cmd `delta --list-syntax-themes`
 delta_theme="${bat_theme}"
 

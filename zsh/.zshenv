@@ -3,7 +3,7 @@ skip_global_compinit=1
 # --------------------------------------------------------
 # FZF options
 # --------------------------------------------------------
-export FZF_COLORSCHEME='kanagawa'
+export FZF_COLORSCHEME='github-light'
 if [ "${FZF_COLORSCHEME}" = 'gruvbox-light' ]; then
   ZSH_THEME_BG='#fbf1c7'
   ZSH_THEME_FG='#3c3836'
@@ -42,6 +42,19 @@ elif [ "${FZF_COLORSCHEME}" = "kanagawa" ]; then
   ZSH_THEME_CYAN='#6a9589'
   ZSH_THEME_WHITE='#c8c093'
   ZSH_THEME_GRAY='#727169'
+  ZSH_THEME_ACCENT="${ZSH_THEME_BLUE}"
+elif [ "${FZF_COLORSCHEME}" = "github-light" ]; then
+  ZSH_THEME_BG='#ffffff'
+  ZSH_THEME_FG='#010409'
+  ZSH_THEME_BLACK='#0e1116'
+  ZSH_THEME_RED='#a0111f'
+  ZSH_THEME_GREEN='#024c1a'
+  ZSH_THEME_YELLOW='#3f2200'
+  ZSH_THEME_BLUE='#0349b4'
+  ZSH_THEME_MAGENTA='#622cbc'
+  ZSH_THEME_CYAN='#1b7c83'
+  ZSH_THEME_WHITE='#66707b'
+  ZSH_THEME_GRAY='#4b535d'
   ZSH_THEME_ACCENT="${ZSH_THEME_BLUE}"
 fi
 export FZF_THEME="

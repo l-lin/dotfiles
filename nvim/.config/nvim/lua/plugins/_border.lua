@@ -54,6 +54,38 @@ local function with_border(border_style)
       },
     },
     {
+      "ellisonleao/gruvbox.nvim",
+      opts = {
+        overrides = {
+          NormalFloat = { bg = "none" },
+          FloatBorder = { bg = "none" },
+          LazyNormal = { bg = "none" },
+          MasonNormal = { bg = "none" },
+          HoverNormal = { bg = "none" },
+          HoverBorder = { bg = "none" },
+          SagaNormal = { bg = "none" },
+          SagaBorder = { bg = "none" },
+        },
+      },
+    },
+    -- {
+    --   "projekt0n/github-nvim-theme",
+    --   opts = {
+    --     groups = {
+    --       all = {
+    --         NormalFloat = { bg = "none" },
+    --         FloatBorder = { bg = "none" },
+    --         LazyNormal = { bg = "none" },
+    --         MasonNormal = { bg = "none" },
+    --         HoverNormal = { bg = "none" },
+    --         HoverBorder = { bg = "none" },
+    --         SagaNormal = { bg = "none" },
+    --         SagaBorder = { bg = "none" },
+    --       },
+    --     },
+    --   },
+    -- },
+    {
       "nvim-cmp",
       opts = function(_, opts)
         local bordered = require("cmp.config.window").bordered
@@ -133,4 +165,3 @@ if vim.g.border_style == "none" then
 end
 
 return with_border(vim.g.border_style)
-

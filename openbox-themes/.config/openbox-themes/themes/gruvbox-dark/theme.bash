@@ -1,29 +1,23 @@
-# ------------------------------------------------------------------------------
-# Copyright (C) 2020-2022 Aditya Shakya <adi1090x@gmail.com>
-#
-# Default Theme
-# ------------------------------------------------------------------------------
-
 # Colors
 # from: https://github.com/eendroroy/alacritty-theme/blob/master/themes/gruvbox_dark.yaml
 background='#282828'
 foreground='#ebdbb2'
-color0='#282828'
-color1='#cc241d'
-color2='#98971a'
-color3='#d79921'
-color4='#458588'
-color5='#b16286'
-color6='#689d6a'
-color7='#a89984'
-color8='#928374'
-color9='#fb4934'
-color10='#b8bb26'
-color11='#fabd2f'
-color12='#83a598'
-color13='#d3869b'
-color14='#8ec07c'
-color15='#ebdbb2'
+color_black='#282828'
+color_red='#cc241d'
+color_green='#98971a'
+color_yellow='#d79921'
+color_blue='#458588'
+color_magenta='#b16286'
+color_cyan='#689d6a'
+color_white='#a89984'
+color_altblack='#928374'
+color_altred='#fb4934'
+color_altgreen='#b8bb26'
+color_altyellow='#fabd2f'
+color_altblue='#83a598'
+color_altmagenta='#d3869b'
+color_altcyan='#8ec07c'
+color_altwhite='#ebdbb2'
 
 accent='#fe8019'
 light_value='0.05'
@@ -93,3 +87,13 @@ picom_shadow_x='-12'
 picom_shadow_y='-12'
 picom_blur_method='none'
 picom_blur_strength='0'
+
+# theme
+wallpaper_color="#7B8D59"
+nvim_colorscheme="gruvbox"
+nvim_background="dark"
+# theme from cmd `bat --list-themes`
+bat_theme="gruvbox-dark"
+# theme from cmd `delta --list-syntax-themes`
+delta_theme="${bat_theme}"
+

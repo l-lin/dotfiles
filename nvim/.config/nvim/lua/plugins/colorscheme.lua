@@ -3,23 +3,17 @@ return {
     "rebelot/kanagawa.nvim",
   },
   {
-    "sainnhe/gruvbox-material",
-    enabled = false,
-    config = function()
-      vim.g.gruvbox_material_background = "medium" -- hard, soft, medium
-      vim.g.gruvbox_material_foreground = "material" -- original, mix, material
-      vim.g.gruvbox_material_enable_italic = 1
-      vim.g.gruvbox_material_sign_column_background = "none"
-
-      vim.cmd([[ colorscheme gruvbox-material ]])
-    end,
+    "projekt0n/github-nvim-theme",
+  },
+  {
+    "ellisonleao/gruvbox.nvim",
   },
 
   -- setup colorscheme
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "kanagawa",
+      colorscheme = "github_light_high_contrast",
       defaults = {
         -- disable default keymaps as the window navigation overrides Navigator plugin's one
         keymaps = false,

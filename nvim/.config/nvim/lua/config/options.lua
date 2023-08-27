@@ -10,3 +10,6 @@ vim.opt.scrolloff = 7
 
 -- enable word wrap
 -- vim.opt.wrap = true
+
+-- set background
+vim.o.bg = "light"
