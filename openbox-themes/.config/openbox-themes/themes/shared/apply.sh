@@ -45,7 +45,7 @@ apply_polybar() {
 		ACCENT = ${accent}
 
 		BLACK = ${color_black}
-		    RED = ${color_red}
+		RED = ${color_red}
 		GREEN = ${color_green}
 		YELLOW = ${color_yellow}
 		BLUE = ${color_blue}
