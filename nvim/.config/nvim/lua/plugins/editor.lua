@@ -167,4 +167,13 @@ return {
       },
     },
   },
+
+  -- better diagnostics list and others
+  {
+    "folke/trouble.nvim",
+    keys = {
+      { "<leader>xQ", false },
+      { "<leader>xq", "<cmd>TroubleToggle quickfix<cr>", desc = "Quickfix List (Trouble)" },
+    },
+  },
 }
