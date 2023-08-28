@@ -152,6 +152,9 @@ return {
           return item
         end,
       }
+      opts.completion = {
+        completeopt = "menu,menuone,noselect"
+      }
     end,
     config = function(_, opts)
       local cmp = require("cmp")
