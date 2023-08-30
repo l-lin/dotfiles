@@ -311,6 +311,7 @@ return {
         auto_save = true,
         project_max_width = 0.8,
         project_max_height = 0.5,
+        mode = "n",
       },
       symbol_in_winbar = {
         enable = false,
