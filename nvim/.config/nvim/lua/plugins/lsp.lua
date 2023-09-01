@@ -235,7 +235,7 @@ return {
       },
       {
         "<leader>cr",
-        "<cmd>Lspsaga rename ++project<cr>",
+        "<cmd>Lspsaga rename<cr>",
         noremap = true,
         silent = true,
         desc = "Lspsaga rename (Shift+F6)",
@@ -245,7 +245,7 @@ return {
         "<cmd>Lspsaga rename ++project<cr>",
         noremap = true,
         silent = true,
-        desc = "Lspsaga rename (Shift+F6)",
+        desc = "Lspsaga rename in the whole project (Shift+F6)",
       },
       {
         "<leader>cE",
