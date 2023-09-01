@@ -84,7 +84,7 @@ return {
     },
   },
 
-	-- show available keymaps + description as you type them
+  -- show available keymaps + description as you type them
   {
     "folke/which-key.nvim",
     opts = {
