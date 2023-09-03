@@ -12,4 +12,4 @@ vim.opt.scrolloff = 7
 -- vim.opt.wrap = true
 
 -- set background
-vim.o.bg = "light"
+vim.o.bg = "dark"

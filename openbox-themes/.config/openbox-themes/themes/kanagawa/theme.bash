@@ -30,7 +30,7 @@ wdir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 wallpaper="$wdir/wallpaper"
 
 # Polybar
-polybar_font='JetBrains Mono:size=10;3'
+polybar_font='JetBrains Mono:size=11;3'
 
 # Rofi
 rofi_font='Iosevka 10'
