@@ -405,7 +405,7 @@ change_delta_background() {
 	local file_path="${HOME}/.gitconfig"
 
 	if [[ -f "${file_path}" ]]; then
-		sed -i --follow-symlinks "s/^  syntax-theme = \".*\"/  syntax-theme = \"${delta_theme}\"/" "${file_path}"
+		sed -i --follow-symlinks "s/^  syntax-theme = .*/  syntax-theme = ${delta_theme}/" "${file_path}"
 	fi
 }
 

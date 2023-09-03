@@ -86,7 +86,7 @@
 
 # delta configuration: https://dandavison.github.io/delta/configuration.html
 [delta]
-  syntax-theme = GitHub
+  syntax-theme = Catppuccin-mocha
   navigate = true
   features = line-numbers
 ;   features = line-numbers decorations
