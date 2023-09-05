@@ -97,6 +97,7 @@ return {
         opts = {
           defaults = {
             ["<leader>m"] = { name = "+merge request" },
+            ["<leader>mg"] = { name = "+gitlab" },
           },
         },
       },
