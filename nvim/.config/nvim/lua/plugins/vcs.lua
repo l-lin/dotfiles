@@ -138,6 +138,7 @@ return {
         popup = { -- The popup for comment creation, editing, and replying
           exit = "<Esc>",
           perform_action = "<C-s>", -- Once in normal mode, does action (like saving comment or editing description, etc)
+          perform_linewise_action = "<leader>l", -- Once in normal mode, does the linewise action (see logs for this job, etc)
         },
         discussion_tree = { -- The discussion tree that holds all comments
           blacklist = {}, -- List of usernames to remove from tree (bots, CI, etc)
@@ -166,6 +167,17 @@ return {
           focus_prev = { "k", "<Up>", "<S-Tab>" },
           close = { "<Esc>", "<C-c>" },
           submit = { "<CR>", "<Space>" },
+        },
+        pipeline = {
+          created = "",
+          pending = "",
+          preparing = "",
+          scheduled = "",
+          running = "ﰌ",
+          canceled = "ﰸ",
+          skipped = "ﰸ",
+          success = "✓",
+          failed = "",
         },
       })
     end,
