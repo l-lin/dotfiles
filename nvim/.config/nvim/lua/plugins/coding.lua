@@ -91,11 +91,11 @@ return {
     opts = function(_, opts)
       local cmp = require("cmp")
       local compare = require("cmp.config.compare")
-      -- local luasnip = require("luasnip")
-      -- local has_words_before = function()
-      --   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-      --   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-      -- end
+      local luasnip = require("luasnip")
+      local has_words_before = function()
+        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+      end
 
       -- more LOC in one file so that cmp will consider local
       compare.locality.lines_count = 300
@@ -111,27 +111,27 @@ return {
         ["<CR>"] = cmp.mapping.confirm({ select = true }),
         -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
         ["<S-CR>"] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
-        -- ["<Tab>"] = cmp.mapping(function(fallback)
-        --   if luasnip.expand_or_jumpable() then
-        --     luasnip.expand_or_jump()
-        --   elseif cmp.visible() then
-        --     cmp.select_next_item()
-        --   elseif has_words_before() then
-        --     cmp.complete()
-        --   else
-        --     fallback()
-        --   end
-        -- end, { "i", "s" }),
-        --
-        -- ["<S-Tab>"] = cmp.mapping(function(fallback)
-        --   if cmp.visible() then
-        --     cmp.select_prev_item()
-        --   elseif luasnip.jumpable(-1) then
-        --     luasnip.jump(-1)
-        --   else
-        --     fallback()
-        --   end
-        -- end, { "i", "s" }),
+        ["<Tab>"] = cmp.mapping(function(fallback)
+          if luasnip.expand_or_jumpable() then
+            luasnip.expand_or_jump()
+          elseif cmp.visible() then
+            cmp.select_next_item()
+          elseif has_words_before() then
+            cmp.complete()
+          else
+            fallback()
+          end
+        end, { "i", "s" }),
+
+        ["<S-Tab>"] = cmp.mapping(function(fallback)
+          if cmp.visible() then
+            cmp.select_prev_item()
+          elseif luasnip.jumpable(-1) then
+            luasnip.jump(-1)
+          else
+            fallback()
+          end
+        end, { "i", "s" }),
       })
       opts.sources = cmp.config.sources({
         { name = "nvim_lsp", priority = 50 },
@@ -169,8 +169,6 @@ return {
         mapping = cmp.mapping.preset.cmdline(),
         sources = {
           { name = "nvim_lsp_document_symbol" },
-        },
-        {
           { name = "buffer" },
         },
       })
