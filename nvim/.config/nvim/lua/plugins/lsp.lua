@@ -14,6 +14,8 @@ return {
       keys[#keys + 1] = { "[e", false }
       keys[#keys + 1] = { "]w", false }
       keys[#keys + 1] = { "[w", false }
+      -- disable rename (performed by Lspaga)
+      keys[#keys + 1] = { "<leader>cr", false }
     end,
     opts = {
       autoformat = false,
