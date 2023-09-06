@@ -133,16 +133,16 @@ local function create_init_options()
   }
 end
 
-local function find_associate_test_or_class_file()
-  local default_text = ""
-  local filename = vim.fn.expand("%:t"):match("(.+)%..+")
-  if filename:sub(- #"Test") == "Test" then
-    default_text = filename:gsub("Test", "") .. ".java"
-  else
-    default_text = filename .. "Test.java"
-  end
-  require("telescope.builtin").find_files({ default_text = default_text })
-end
+-- local function find_associate_test_or_class_file()
+--   local default_text = ""
+--   local filename = vim.fn.expand("%:t"):match("(.+)%..+")
+--   if filename:sub(- #"Test") == "Test" then
+--     default_text = filename:gsub("Test", "") .. ".java"
+--   else
+--     default_text = filename .. "Test.java"
+--   end
+--   require("telescope.builtin").find_files({ default_text = default_text })
+-- end
 
 return {
   -- Add java to treesitter.
@@ -227,23 +227,24 @@ return {
           local client = vim.lsp.get_client_by_id(args.data.client_id)
           if client.name == "jdtls" then
             local jdtls = require("jdtls")
+            local jdtls_test = require("jdtls.tests")
             vim.keymap.set(
               "n",
               "<M-C-V>",
-              jdtls.extract_variable,
+              jdtls.extract_variable_all,
               { noremap = true, silent = true, desc = "Extract variable" }
             )
             vim.keymap.set(
               "v",
               "<M-C-V>",
-              [[<ESC><CMD>lua require("jdtls").extract_variable(true)<CR>]],
+              [[<ESC><CMD>lua require("jdtls").extract_variable_all(true)<CR>]],
               { noremap = true, silent = true, desc = "Extract variable" }
             )
 
             vim.keymap.set(
               "i",
               "<M-C-V>",
-              [[<ESC><CMD>lua require("jdtls").extract_variable()<CR>]],
+              [[<ESC><CMD>lua require("jdtls").extract_variable_all()<CR>]],
               { noremap = true, silent = true, desc = "Extract variable" }
             )
             vim.keymap.set(
@@ -291,7 +292,8 @@ return {
             vim.keymap.set(
               "n",
               "<C-T>",
-              find_associate_test_or_class_file,
+              jdtls_test.goto_subjects,
+              -- find_associate_test_or_class_file,
               { noremap = true, silent = true, desc = "Find associated test or class file (Ctrl+Shift+t)" }
             )
 
