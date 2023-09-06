@@ -65,15 +65,15 @@ return {
         silent = true,
         desc = "Toggle diffview files (Alt+8)",
       },
+      -- {
+      --   "<leader>mm",
+      --   "<cmd>DiffviewOpen origin/HEAD...HEAD --imply-local<cr>",
+      --   noremap = true,
+      --   silent = true,
+      --   desc = "Review MR/PR",
+      -- },
       {
-        "<leader>mm",
-        "<cmd>DiffviewOpen origin/HEAD...HEAD --imply-local<cr>",
-        noremap = true,
-        silent = true,
-        desc = "Review MR/PR",
-      },
-      {
-        "<leader>mc",
+        "<leader>mC",
         "<cmd>DiffviewFileHistory --range=origin/HEAD...HEAD --right-only --no-merges<cr>",
         noremap = true,
         silent = true,
@@ -97,7 +97,6 @@ return {
         opts = {
           defaults = {
             ["<leader>m"] = { name = "+merge request" },
-            ["<leader>mg"] = { name = "+gitlab" },
           },
         },
       },
@@ -115,15 +114,13 @@ return {
     keys = function()
       local gitlab = require("gitlab")
       return {
-        { "<leader>mgA", gitlab.approve,            desc = "Gitlab MR approve" },
-        { "<leader>mgc", gitlab.create_comment,     desc = "Gitlab MR create comment" },
-        { "<leader>mgd", gitlab.toggle_discussions, desc = "Gitlab MR toggle discussions" },
-        { "<leader>mgD", gitlab.delete_comment,     desc = "Gitlab MR delete comment" },
-        { "<leader>mge", gitlab.edit_comment,       desc = "Gitlab MR edit comment" },
-        { "<leader>mgn", gitlab.create_note,        desc = "Gitlab MR create note" },
-        { "<leader>mgr", gitlab.review,             desc = "Gitlab MR open review" },
-        { "<leader>mgR", gitlab.revoke,             desc = "Gitlab MR revoke" },
-        { "<leader>mgS", gitlab.summary,            desc = "Gitlab MR summary" },
+        { "<leader>mA", gitlab.approve,            desc = "Gitlab MR approve" },
+        { "<leader>mc", gitlab.create_comment,     desc = "Gitlab MR create comment" },
+        { "<leader>md", gitlab.toggle_discussions, desc = "Gitlab MR toggle discussions" },
+        { "<leader>mn", gitlab.create_note,        desc = "Gitlab MR create note" },
+        { "<leader>mr", gitlab.review,             desc = "Gitlab MR open review" },
+        { "<leader>mR", gitlab.revoke,             desc = "Gitlab MR revoke" },
+        { "<leader>ms", gitlab.summary,            desc = "Gitlab MR summary" },
       }
     end,
     build = function()
