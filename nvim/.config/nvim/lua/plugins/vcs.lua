@@ -115,7 +115,7 @@ return {
     keys = function()
       local gitlab = require("gitlab")
       return {
-        { "<leader>mga", gitlab.approve,            desc = "Gitlab MR approve" },
+        { "<leader>mgA", gitlab.approve,            desc = "Gitlab MR approve" },
         { "<leader>mgc", gitlab.create_comment,     desc = "Gitlab MR create comment" },
         { "<leader>mgd", gitlab.toggle_discussions, desc = "Gitlab MR toggle discussions" },
         { "<leader>mgD", gitlab.delete_comment,     desc = "Gitlab MR delete comment" },
@@ -124,8 +124,6 @@ return {
         { "<leader>mgr", gitlab.review,             desc = "Gitlab MR open review" },
         { "<leader>mgR", gitlab.revoke,             desc = "Gitlab MR revoke" },
         { "<leader>mgS", gitlab.summary,            desc = "Gitlab MR summary" },
-        { "<leader>mgt", gitlab.toggle_resolved,    desc = "Gitlab MR toggle resolved" },
-        { "<leader>mgy", gitlab.reply,              desc = "Gitlab MR reply comment" },
       }
     end,
     build = function()
@@ -135,7 +133,7 @@ return {
       require("gitlab").setup({
         port = 21036, -- The port of the Go server, which runs in the background
         log_path = vim.fn.stdpath("cache") .. "/gitlab.nvim.log", -- Log path for the Go server
-        reviewer = "delta", -- The reviewer type (only delta is currently supported)
+        reviewer = "diffview", -- The reviewer type ("delta" or "diffview")
         popup = { -- The popup for comment creation, editing, and replying
           exit = "<Esc>",
           perform_action = "<C-s>", -- Once in normal mode, does action (like saving comment or editing description, etc)
