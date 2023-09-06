@@ -78,6 +78,7 @@ return {
       { "<A-1>", "<leader>fE", desc = "Explorer NeoTree (root dir) (Alt+1)", remap = true },
     },
     opts = {
+      close_if_last_window = true,
       window = {
         mappings = {
           ["o"] = "open",
@@ -85,6 +86,17 @@ return {
           ["s"] = "none",
           ["<C-v>"] = "open_vsplit",
           ["<C-x>"] = "open_split",
+        },
+      },
+      default_component_configs = {
+        file_size = {
+          enabled = false,
+        },
+        last_modified = {
+          enabled = false,
+        },
+        created = {
+          enabled = false,
         },
       },
     },
