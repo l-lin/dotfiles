@@ -1,6 +1,6 @@
 # Colors
 # from: https://github.com/projekt0n/github-theme-contrib/blob/main/themes/alacritty/github_light_high_contrast.yml
-background='#ffffff'
+background='#f2eede'
 foreground='#010409'
 color_black='#0e1116'
 color_red='#a0111f'
