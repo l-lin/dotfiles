@@ -2,7 +2,7 @@
 set editorcmd alacritty -e nvim %f '+normal!%lGzv%c|'
 
 " theme
-colors kanagawa
+colors github-light
 
 " binds
 bind H tabprev
