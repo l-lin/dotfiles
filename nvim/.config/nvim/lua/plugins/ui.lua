@@ -6,11 +6,11 @@ return {
       popupmenu = {
         backend = "cmp",
       },
-      lsp = {
-        progress = {
-          throttle = 300
-        }
-      }
+      -- lsp = {
+      --   progress = {
+      --     throttle = 300,
+      --   },
+      -- },
     },
   },
 

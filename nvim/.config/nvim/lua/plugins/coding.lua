@@ -19,6 +19,38 @@ local function cmp_format(opts, _, vim_item)
   return vim_item
 end
 
+-- deprioritize kinds, e.g. snippets at the bottom
+-- from: https://www.reddit.com/r/neovim/comments/14k7pbc/what_is_the_nvimcmp_comparatorsorting_you_are/
+local function deprio(kind)
+  return function(e1, e2)
+    if e1:get_kind() == kind then
+      return false
+    end
+    if e2:get_kind() == kind then
+      return true
+    end
+  end
+end
+
+local java_unwanted_method_names = { "wait", "hashCode", "notify", "notifyAll" }
+local function has_value (tab, val)
+    for _, value in ipairs(tab) do
+        if value == val then
+            return true
+        end
+    end
+    return false
+end
+local function move_java_unwanted_methods_to_bottom(e1, e2)
+  if has_value(java_unwanted_method_names, e1.completion_item.label) then
+    return false
+  end
+  if has_value(java_unwanted_method_names, e2.completion_item.label) then
+    return true
+  end
+  return nil
+end
+
 return {
   -- markdown table
   {
@@ -91,6 +123,7 @@ return {
     opts = function(_, opts)
       local cmp = require("cmp")
       local compare = require("cmp.config.compare")
+      local types = require("cmp.types")
       local luasnip = require("luasnip")
       local has_words_before = function()
         local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -111,22 +144,16 @@ return {
         ["<CR>"] = cmp.mapping.confirm({ select = true }),
         -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
         ["<S-CR>"] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
-        ["<Tab>"] = cmp.mapping(function(fallback)
-          if luasnip.expand_or_jumpable() then
-            luasnip.expand_or_jump()
-          elseif cmp.visible() then
-            cmp.select_next_item()
-          elseif has_words_before() then
-            cmp.complete()
+        -- navigate through snippet jumpables
+        ["<C-l>"] = cmp.mapping(function(fallback)
+          if luasnip.in_snippet() and luasnip.jumpable() then
+            luasnip.jump(1)
           else
             fallback()
           end
         end, { "i", "s" }),
-
-        ["<S-Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            cmp.select_prev_item()
-          elseif luasnip.jumpable(-1) then
+        ["<C-h>"] = cmp.mapping(function(fallback)
+          if luasnip.in_snippet() and luasnip.jumpable(-1) then
             luasnip.jump(-1)
           else
             fallback()
@@ -134,14 +161,30 @@ return {
         end, { "i", "s" }),
       })
       opts.sources = cmp.config.sources({
-        { name = "nvim_lsp", priority = 50 },
-        { name = "luasnip", priority = 40 },
-        { name = "path", priority = 30 },
-        { name = "emoji", priority = 20, option = { insert = true } },
-        { name = "tmux", priority = 10 },
-      }, {
+        { name = "nvim_lsp" },
+        { name = "luasnip" },
         { name = "buffer" },
+        { name = "tmux" },
+      }, {
+        { name = "path" },
+        { name = "emoji", option = { insert = true } },
       })
+      opts.sorting = {
+        priority_weight = 2,
+        comparators = {
+          -- put snippets at the bottom, for better method exploration
+          deprio(types.lsp.CompletionItemKind.Snippet),
+          deprio(types.lsp.CompletionItemKind.Text),
+          deprio(types.lsp.CompletionItemKind.Keyword),
+          move_java_unwanted_methods_to_bottom,
+          compare.offset,
+          compare.exact,
+          compare.locality,
+          compare.recently_used,
+          compare.score,
+          compare.order,
+        },
+      }
       opts.formatting = {
         fields = { "kind", "abbr", "menu" },
         format = function(entry, vim_item)
@@ -153,7 +196,7 @@ return {
         end,
       }
       opts.completion = {
-        completeopt = "menu,menuone,noselect"
+        completeopt = "menu,menuone,noselect",
       }
     end,
     config = function(_, opts)
@@ -163,6 +206,8 @@ return {
       cmp.setup.filetype("gitcommit", {
         sources = cmp.config.sources({
           { name = "buffer" },
+          { name = "tmux" },
+          { name = "emoji", option = { insert = true } },
         }),
       })
       cmp.setup.cmdline({ "/", "?" }, {
