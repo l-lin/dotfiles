@@ -98,6 +98,9 @@ return {
         created = {
           enabled = false,
         },
+        type = {
+          enabled = false,
+        },
       },
     },
   },
