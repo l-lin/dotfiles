@@ -29,7 +29,7 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "github_light_high_contrast",
+      colorscheme = "kanagawa",
       defaults = {
         -- disable default keymaps as the window navigation overrides Navigator plugin's one
         keymaps = false,

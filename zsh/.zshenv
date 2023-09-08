@@ -3,18 +3,18 @@ skip_global_compinit=1
 # --------------------------------------------------------
 # FZF options
 # --------------------------------------------------------
-export ZSH_THEME_BG='#f2eede'
-export ZSH_THEME_FG='#010409'
-export ZSH_THEME_BLACK='#0e1116'
-export ZSH_THEME_RED='#a0111f'
-export ZSH_THEME_GREEN='#024c1a'
-export ZSH_THEME_YELLOW='#d79921'
-export ZSH_THEME_BLUE='#0349b4'
-export ZSH_THEME_MAGENTA='#622cbc'
-export ZSH_THEME_CYAN='#1b7c83'
-export ZSH_THEME_WHITE='#66707b'
-export ZSH_THEME_GRAY='#4b535d'
-export ZSH_THEME_ACCENT='#0349b4'
+export ZSH_THEME_BG='#1f1f28'
+export ZSH_THEME_FG='#dcd7ba'
+export ZSH_THEME_BLACK='#090618'
+export ZSH_THEME_RED='#c34043'
+export ZSH_THEME_GREEN='#76946a'
+export ZSH_THEME_YELLOW='#c0a36e'
+export ZSH_THEME_BLUE='#7e9cd8'
+export ZSH_THEME_MAGENTA='#957fb8'
+export ZSH_THEME_CYAN='#6a9589'
+export ZSH_THEME_WHITE='#c8c093'
+export ZSH_THEME_GRAY='#727169'
+export ZSH_THEME_ACCENT='#7e9cd8'
 
 export FZF_THEME="
 --color=bg:${ZSH_THEME_BG}
