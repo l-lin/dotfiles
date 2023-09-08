@@ -16,6 +16,9 @@ return {
       keys[#keys + 1] = { "[w", false }
       -- disable rename (performed by Lspaga)
       keys[#keys + 1] = { "<leader>cr", false }
+      -- disable code action keymaps (conflict with Diffview merge tool)
+      keys[#keys + 1] = { "<leader>ca", false }
+      keys[#keys + 1] = { "<leader>cA", false }
     end,
     opts = {
       autoformat = false,
@@ -256,13 +259,13 @@ return {
         silent = true,
         desc = "LSP show errors",
       },
-      {
-        "<leader>ca",
-        "<cmd>Lspsaga code_action<cr>",
-        noremap = true,
-        silent = true,
-        desc = "LSP code action (Alt+Enter)",
-      },
+      -- {
+      --   "<leader>ca",
+      --   "<cmd>Lspsaga code_action<cr>",
+      --   noremap = true,
+      --   silent = true,
+      --   desc = "LSP code action (Alt+Enter)",
+      -- },
       {
         "<M-CR>",
         "<cmd>Lspsaga code_action<cr>",
