@@ -131,8 +131,9 @@ return {
         fields = { "kind", "abbr", "menu" },
         format = custom_formatters.kind_to_the_left,
       }
+      -- do not select first item until I say so!
+      opts.preselect = cmp.PreselectMode.None
       opts.completion = {
-        -- do not select first item until I say so!
         completeopt = "menu,menuone,noselect",
       }
     end,
