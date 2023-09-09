@@ -118,6 +118,7 @@ return {
         { "<leader>mc", gitlab.create_comment,     desc = "Gitlab MR create comment" },
         { "<leader>md", gitlab.toggle_discussions, desc = "Gitlab MR toggle discussions" },
         { "<leader>mn", gitlab.create_note,        desc = "Gitlab MR create note" },
+        { "<leader>mo", gitlab.open_in_browser,    desc = "Gitlab MR open in browser" },
         { "<leader>mr", gitlab.review,             desc = "Gitlab MR open review" },
         { "<leader>mR", gitlab.revoke,             desc = "Gitlab MR revoke" },
         { "<leader>ms", gitlab.summary,            desc = "Gitlab MR summary" },
