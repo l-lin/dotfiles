@@ -22,6 +22,9 @@ return {
     end,
     opts = {
       autoformat = false,
+      inlay_hints = {
+        enabled = true,
+      },
     },
   },
 
