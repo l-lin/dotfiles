@@ -1,0 +1,17 @@
+# Launch configuration for DAP execution.
+# List of options: https://github.com/microsoft/vscode-java-debug#options
+snippet launch
+	{
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"type": "${1:java}",
+				"request": "launch",
+				"name": "Launch ${2}",
+				"env": {
+					${3}
+				}
+			}
+		]
+	}
+
