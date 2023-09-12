@@ -169,15 +169,15 @@ return {
     "nvim-pack/nvim-spectre",
     keys = {
       {
-        "<M-3>",
+        "<M-r>",
         "<cmd>lua require('spectre').open_file_search()<cr>",
-        desc = "Replace in file (Spectre) (Alt+3)",
+        desc = "Replace in file (Spectre) (Alt+r)",
       },
       {
-        "<M-3>",
+        "<M-r>",
         "<cmd>lua require('spectre').open_file_search({select_word = true})<cr>",
         mode = "v",
-        desc = "Replace in file (Spectre) (Alt+3)",
+        desc = "Replace in file (Spectre) (Alt+r)",
       },
     },
     opts = {
