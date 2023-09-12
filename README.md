@@ -118,7 +118,6 @@ yay -S --noconfirm gcc automake autoconf make pkg-config
 # clone project
 git clone https://github.com/gm-vm/openfortivpn.git
 cd openfortivpn
-git checkout svpn_cookie
 
 # build project
 ./autogen.sh
@@ -130,15 +129,14 @@ sudo make install
 openfortivpn --version
 
 # download openfortivpn-webview to get the cookie
-curl -L -o openfortivpn-webview.tar.xz https://github.com/gm-vm/openfortivpn-webview/releases/download/v1.0.1-electron/openfortivpn-webview-1.0.1.tar.xz
-extract openfortivpn-webview
-
-# create symlink in a bin folder so we can execute from everywhere
-sudo ln -s openfortivpn-webview/openfortivpn-webview /usr/local/bin/openfortivpn-webview
+wget -qO- https://github.com/gm-vm/openfortivpn-webview/releases/download/v1.1.0-electron/openfortivpn-webview-1.1.0.tar.xz \
+    | sudo tar -xvJ --transform='s/openfortivpn-webview-1.1.0/openfortivpn-webview/g' \
+    -C /usr/local  && sudo ln -s /usr/local/openfortivpn-webview/openfortivpn-webview \
+    /usr/local/bin/openfortivpn-webview 
 
 # open VPN in one command line
 HOST=some_host && PORT=443 && \
   openfortivpn-webview $HOST:$PORT 2>/dev/null \
-  | sudo openfortivpn $HOST:$PORT --svpn-cookie -
+  | sudo openfortivpn $HOST:$PORT --cookie-on-stdin
 ```
 
