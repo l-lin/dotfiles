@@ -70,6 +70,7 @@ return {
     opts = function(_, opts)
       local cmp = require("cmp")
       local compare = require("cmp.config.compare")
+      local types = require("cmp.types")
       local luasnip = require("luasnip")
       local custom_comparators = require("plugins.extras.cmp.comparators")
       local custom_formatters = require("plugins.extras.cmp.formatters")
@@ -118,6 +119,7 @@ return {
         comparators = {
           -- Java methods that we never use should be at the bottom.
           custom_comparators.deprioritize_labels({ "wait", "hashCode", "notify", "notifyAll", "clone", "finalize" }),
+          custom_comparators.deprioritize_kind(types.lsp.CompletionItemKind.Text),
           compare.offset,
           compare.exact,
           compare.recently_used,
