@@ -325,4 +325,15 @@ return {
       })
     end,
   },
+  {
+    "folke/noice.nvim",
+    opts = {
+      lsp = {
+        progress = {
+          -- too much noise in Java, especially when editing Strings
+          throttle = 300,
+        },
+      },
+    },
+  },
 }
