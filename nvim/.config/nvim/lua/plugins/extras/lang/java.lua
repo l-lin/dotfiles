@@ -294,7 +294,14 @@ return {
               "<C-T>",
               jdtls_test.goto_subjects,
               -- find_associate_test_or_class_file,
-              { noremap = true, silent = true, desc = "Find associated test or class file (Ctrl+Shift+t)" }
+              { noremap = true, silent = true, desc = "Find associated test or class file (Ctrl+t)" }
+            )
+
+            vim.keymap.set(
+              "n",
+              "<leader>cj",
+              jdtls_test.rename_file,
+              { noremap = true, silent = true, desc = "Rename file" }
             )
 
             local mason_registry = require("mason-registry")
