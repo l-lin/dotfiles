@@ -248,17 +248,17 @@ return {
       },
       {
         "<leader>cr",
+        "<cmd>Lspsaga rename ++project<cr>",
+        noremap = true,
+        silent = true,
+        desc = "Lspsaga rename in the whole project",
+      },
+      {
+        "<F18>",
         "<cmd>Lspsaga rename<cr>",
         noremap = true,
         silent = true,
         desc = "Lspsaga rename (Shift+F6)",
-      },
-      {
-        "<F18>",
-        "<cmd>Lspsaga rename ++project<cr>",
-        noremap = true,
-        silent = true,
-        desc = "Lspsaga rename in the whole project (Shift+F6)",
       },
       {
         "<leader>cE",
