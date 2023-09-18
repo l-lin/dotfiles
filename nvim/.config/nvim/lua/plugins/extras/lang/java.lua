@@ -297,13 +297,6 @@ return {
               { noremap = true, silent = true, desc = "Find associated test or class file (Ctrl+t)" }
             )
 
-            vim.keymap.set(
-              "n",
-              "<leader>cj",
-              jdtls_test.rename_file,
-              { noremap = true, silent = true, desc = "Rename file" }
-            )
-
             local mason_registry = require("mason-registry")
             if mason_registry.has_package("java-debug-adapter") then
               -- custom init for Java debugger
