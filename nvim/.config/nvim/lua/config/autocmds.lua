@@ -10,6 +10,8 @@ vim.api.nvim_create_autocmd("FileType", {
     "DiffviewFiles",
     "DiffviewFileHistory",
     "dap-float",
+    "dap-repl",
+    "dapui_console",
   },
   callback = function(event)
     vim.bo[event.buf].buflisted = false
