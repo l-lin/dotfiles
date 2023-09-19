@@ -47,12 +47,12 @@ return {
     keys = {
       {
         "<M-3>",
-        "<cmd>lua require('dapui').toggle({ layout = 2 })<cr>",
-        desc = "Open DAP UI Console (Alt+4)",
+        "<cmd>lua require('dapui').toggle({ layout = 2, reset = true })<cr>",
+        desc = "Open DAP UI REPL (Alt+3)",
       },
       {
         "<M-4>",
-        "<cmd>lua require('dapui').toggle({ layout = 2, reset = true })<cr>",
+        "<cmd>lua require('dapui').toggle({ layout = 3, reset = true })<cr>",
         desc = "Open DAP UI Console (Alt+4)",
       },
       {
@@ -63,7 +63,7 @@ return {
       {
         "<leader>du",
         "<cmd>lua require('dapui').toggle({ reset = true })<cr>",
-        desc = "Open DAP UI (Alt+3)",
+        desc = "Open DAP UI (Alt+5)",
       },
     },
     opts = {
@@ -80,8 +80,14 @@ return {
         },
         {
           elements = {
-            { id = "repl",    size = 0.25 },
-            { id = "console", size = 0.75 },
+            { id = "repl", size = 1 },
+          },
+          size = 15,
+          position = "bottom",
+        },
+        {
+          elements = {
+            { id = "console", size = 1 },
           },
           size = 15,
           position = "bottom",
