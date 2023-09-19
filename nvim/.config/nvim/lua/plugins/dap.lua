@@ -113,7 +113,7 @@ return {
     end,
   },
 
-	-- fuzzy finding anything anywhere
+  -- fuzzy finding anything anywhere
   {
     "nvim-telescope/telescope.nvim",
     keys = {
