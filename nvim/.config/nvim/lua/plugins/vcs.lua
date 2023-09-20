@@ -131,7 +131,7 @@ return {
       require("gitlab").setup({
         port = 21036, -- The port of the Go server, which runs in the background
         log_path = vim.fn.stdpath("cache") .. "/gitlab.nvim.log", -- Log path for the Go server
-        reviewer = "delta", -- The reviewer type ("delta" or "diffview")
+        reviewer = "diffview", -- The reviewer type ("delta" or "diffview")
         popup = { -- The popup for comment creation, editing, and replying
           exit = "<Esc>",
           perform_action = "<C-s>", -- Once in normal mode, does action (like saving comment or editing description, etc)
