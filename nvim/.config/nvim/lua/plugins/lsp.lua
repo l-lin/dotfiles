@@ -310,7 +310,6 @@ return {
         layout = "normal",
         left_width = 0.4,
         keys = {
-          shuttle = { "<C-l>", "<C-h>" },
           toggle_or_open = { "o", "<cr>" },
           vsplit = "<C-v>",
           split = "<C-x>",
