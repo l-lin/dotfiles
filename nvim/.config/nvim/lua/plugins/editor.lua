@@ -79,6 +79,7 @@ return {
     },
     opts = {
       close_if_last_window = true,
+      enable_normal_mode_for_inputs = true,
       window = {
         mappings = {
           ["o"] = "open",
