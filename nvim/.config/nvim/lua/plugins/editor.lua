@@ -1,3 +1,5 @@
+local neotree_commands = require("plugins.extras.neotree.commands")
+
 local function get_selected_text()
   vim.cmd('noau normal! "vy"')
   local text = vim.fn.getreg("v")
@@ -87,6 +89,14 @@ return {
           ["s"] = "none",
           ["<C-v>"] = "open_vsplit",
           ["<C-x>"] = "open_split",
+          ["h"] = neotree_commands.focus_parent,
+          ["l"] = neotree_commands.focus_child,
+        },
+      },
+      filesystem = {
+        follow_current_file = {
+          enabled = true,
+          leave_dir_open = true,
         },
       },
       default_component_configs = {
