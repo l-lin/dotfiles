@@ -300,11 +300,14 @@ return {
       callhierarchy = {
         layout = "normal",
         keys = {
-          shuttle = { "<C-l>", "<C-h>" },
           toggle_or_req = { "o", "<cr>" },
           vsplit = "<C-v>",
           split = "<C-x>",
         },
+      },
+      code_action = {
+        show_server_name = true,
+        extend_gitsigns = true,
       },
       finder = {
         layout = "normal",
