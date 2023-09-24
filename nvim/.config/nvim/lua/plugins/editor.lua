@@ -202,6 +202,10 @@ return {
   {
     "folke/trouble.nvim",
     keys = {
+      { "<leader>xL", false },
+      { "<leader>xl", "<cmd>TroubleToggle loclist<cr>", desc = "Location List (Trouble)" },
+      { "<leader>xo", "<cmd>TroubleToggle<cr>", desc = "Toggle Trouble (Alt+3)" },
+      { "<M-3>", "<cmd>TroubleToggle<cr>", desc = "Toggle Trouble (Alt+3)" },
       { "<leader>xQ", false },
       { "<leader>xq", "<cmd>TroubleToggle quickfix<cr>", desc = "Quickfix List (Trouble)" },
     },

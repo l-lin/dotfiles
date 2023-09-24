@@ -46,9 +46,9 @@ return {
     "rcarriga/nvim-dap-ui",
     keys = {
       {
-        "<M-3>",
+        "<M-C-\\>",
         "<cmd>lua require('dapui').toggle({ layout = 2, reset = true })<cr>",
-        desc = "Open DAP UI REPL (Alt+3)",
+        desc = "Open DAP UI REPL (Ctrl+Alt+4)",
       },
       {
         "<M-4>",
