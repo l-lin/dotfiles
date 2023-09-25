@@ -5,38 +5,55 @@ return {
     keys = {
       {
         "<F9>",
-        "<Cmd>lua require('dap').continue()<cr>",
+        function()
+          require("dap").continue()
+        end,
         noremap = true,
         silent = true,
         desc = "Begin debug session (F9)",
       },
       {
         "<F32>",
-        "<Cmd>lua require('dap').toggle_breakpoint()<cr>",
+        function()
+          require("dap").toggle_breakpoint()
+        end,
         noremap = true,
         silent = true,
         desc = "Toggle breakpoint (Ctrl+F8)",
       },
       {
         "<F8>",
-        "<Cmd>lua require('dap').step_over()<cr>",
+        function()
+          require("dap").step_over()
+        end,
         noremap = true,
         silent = true,
         desc = "Step over (F8)",
       },
       {
         "<F7>",
-        "<Cmd>lua require('dap').step_into()<cr>",
+        function()
+          require("dap").step_into()
+        end,
         noremap = true,
         silent = true,
         desc = "Step into (F7)",
       },
       {
         "<F20>",
-        "<Cmd>lua require('dap').step_out()<cr>",
+        function()
+          require("dap").step_out()
+        end,
         noremap = true,
         silent = true,
         desc = "Step out (Shift+F8)",
+      },
+      {
+        "<F26>",
+        function()
+          require("dap").terminate()
+        end,
+        desc = "Terminate DAP (Ctrl+F2)",
       },
     },
   },
@@ -47,22 +64,30 @@ return {
     keys = {
       {
         "<M-C-\\>",
-        "<cmd>lua require('dapui').toggle({ layout = 2, reset = true })<cr>",
+        function()
+          require("dapui").toggle({ layout = 2, reset = true })
+        end,
         desc = "Open DAP UI REPL (Ctrl+Alt+4)",
       },
       {
         "<M-4>",
-        "<cmd>lua require('dapui').toggle({ layout = 3, reset = true })<cr>",
+        function()
+          require("dapui").toggle({ layout = 3, reset = true })
+        end,
         desc = "Open DAP UI Console (Alt+4)",
       },
       {
         "<M-5>",
-        "<cmd>lua require('dapui').toggle({ reset = true })<cr>",
+        function()
+          require("dapui").toggle({ reset = true })
+        end,
         desc = "Open DAP UI (Alt+5)",
       },
       {
         "<leader>du",
-        "<cmd>lua require('dapui').toggle({ reset = true })<cr>",
+        function()
+          require("dapui").toggle({ reset = true })
+        end,
         desc = "Open DAP UI (Alt+5)",
       },
     },
@@ -70,10 +95,10 @@ return {
       layouts = {
         {
           elements = {
-            { id = "scopes",      size = 0.25 },
+            { id = "scopes", size = 0.25 },
             { id = "breakpoints", size = 0.25 },
-            { id = "stacks",      size = 0.25 },
-            { id = "watches",     size = 0.25 },
+            { id = "stacks", size = 0.25 },
+            { id = "watches", size = 0.25 },
           },
           size = 40,
           position = "left",
