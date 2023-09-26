@@ -17,6 +17,9 @@ local function focus_child(state)
     if node.type ~= "directory" then
       -- open file directly
       cc.open(state, fs.toggle_directory)
+      vim.schedule(function()
+        vim.cmd([[Neotree focus]])
+      end)
       return
     end
 
