@@ -43,6 +43,31 @@ snippet test
 		// THEN
 	}
 
+snippet tabletest
+	@ParameterizedTest(name = """
+			Given {0},
+			 when ${1},
+			 then ${2}.
+			""")
+	@MethodSource("${3}Provider")
+	void ${4}() {
+		// GIVEN
+		${6}
+
+		// WHEN
+
+		// THEN
+	}
+
+	private static Stream<Arguments> ${3}Provider() {
+		return Stream.of(
+			Arguments.of(
+				"${5}",
+				)
+		);
+	}
+
+
 snippet testmethodsource
 	private static Stream<Arguments> ${1}Provider() {
 		return Stream.of(
