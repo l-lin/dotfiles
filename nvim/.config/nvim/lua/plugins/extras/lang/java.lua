@@ -302,6 +302,8 @@ return {
               -- custom init for Java debugger
               jdtls.setup_dap({ hotcodereplace = "auto", config_overrides = {} })
               require("jdtls.dap").setup_dap_main_class_configs()
+              -- setup dap config by VsCode launch.json file
+              require("dap.ext.vscode").load_launchjs()
 
               -- Java Test require Java debugger to work
               if mason_registry.has_package("java-test") then
