@@ -90,6 +90,14 @@ return {
         end,
         desc = "Open DAP UI (Alt+5)",
       },
+      {
+        "<M-BS>",
+        function()
+          require("dapui").eval()
+        end,
+        desc = "Eval (Ctrl+Alt+8)",
+        mode = { "n", "v" },
+      },
     },
     opts = {
       layouts = {
@@ -117,6 +125,14 @@ return {
           size = 15,
           position = "bottom",
         },
+      },
+      mappings = {
+        edit = "e",
+        expand = { "<CR>", "l", "h" },
+        open = "o",
+        remove = "d",
+        repl = "r",
+        toggle = "t",
       },
     },
     config = function(_, opts)
