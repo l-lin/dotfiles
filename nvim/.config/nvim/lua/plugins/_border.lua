@@ -136,7 +136,7 @@ local function with_border(border_style)
       },
     },
     {
-      "null-ls.nvim",
+      "nvimtools/none-ls.nvim",
       opts = {
         border = border_style,
       },
