@@ -108,9 +108,9 @@ return {
       opts.sources = cmp.config.sources({
         { name = "nvim_lsp" },
         { name = "luasnip" },
+      }, {
         { name = "buffer" },
         { name = "tmux" },
-      }, {
         { name = "path" },
         { name = "emoji", option = { insert = true } },
       })
