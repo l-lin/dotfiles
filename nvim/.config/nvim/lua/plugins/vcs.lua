@@ -65,13 +65,13 @@ return {
         silent = true,
         desc = "Toggle diffview files (Alt+8)",
       },
-      -- {
-      --   "<leader>mm",
-      --   "<cmd>DiffviewOpen origin/HEAD...HEAD --imply-local<cr>",
-      --   noremap = true,
-      --   silent = true,
-      --   desc = "Review MR/PR",
-      -- },
+      {
+        "<leader>mm",
+        "<cmd>DiffviewOpen origin/HEAD...HEAD --imply-local<cr>",
+        noremap = true,
+        silent = true,
+        desc = "Review MR/PR",
+      },
       {
         "<leader>mC",
         "<cmd>DiffviewFileHistory --range=origin/HEAD...HEAD --right-only --no-merges<cr>",
@@ -85,6 +85,13 @@ return {
         noremap = true,
         silent = true,
         desc = "Close review",
+      },
+      {
+        "<leader>go",
+        "<cmd>DiffviewOpen<cr>",
+        noremap = true,
+        silent = true,
+        desc = "Git status with Diffview",
       },
     },
     config = function()
