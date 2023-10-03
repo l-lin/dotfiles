@@ -4,14 +4,19 @@
 vim.api.nvim_create_autocmd("FileType", {
   group = vim.api.nvim_create_augroup("close_with_q", { clear = true }),
   pattern = {
+    -- git
     "fugitive",
     "fugitiveblame",
     "git",
+    -- diffview
     "DiffviewFiles",
     "DiffviewFileHistory",
+    -- dap-ui
     "dap-float",
     "dap-repl",
     "dapui_console",
+    -- dbui
+    "dbout",
   },
   callback = function(event)
     vim.bo[event.buf].buflisted = false
