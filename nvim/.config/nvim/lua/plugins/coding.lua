@@ -66,6 +66,8 @@ return {
       "amarakon/nvim-cmp-buffer-lines",
       -- textDocument / documentSymbol search
       "hrsh7th/cmp-nvim-lsp-document-symbol",
+      -- sql autocompletion
+      { "kristijanhusak/vim-dadbod-completion", ft = { "sql", "mysql", "psql" } },
     },
     opts = function(_, opts)
       local cmp = require("cmp")
@@ -164,6 +166,11 @@ return {
         }, {
           { name = "cmdline" },
         }),
+      })
+      cmp.setup.filetype({"sql", "psql"}, {
+        sources = cmp.config.sources({
+          { name = "vim-dadbod-completion" },
+        })
       })
     end,
   },
