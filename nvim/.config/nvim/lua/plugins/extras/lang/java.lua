@@ -145,6 +145,14 @@ end
 -- end
 
 return {
+  -- Disable neotree (Java not supported)
+  {
+    "nvim-neotest/neotest",
+    keys = {
+      { "<M-S-F9>", false },
+      { "<F21>",    false },
+    },
+  },
   -- Add java to treesitter.
   {
     "nvim-treesitter/nvim-treesitter",
