@@ -119,16 +119,15 @@ return {
       "stevearc/dressing.nvim",
     },
     keys = function()
-      local gitlab = require("gitlab")
       return {
-        { "<leader>mA", gitlab.approve,            desc = "Gitlab MR approve" },
-        { "<leader>mc", gitlab.create_comment,     desc = "Gitlab MR create comment" },
-        { "<leader>md", gitlab.toggle_discussions, desc = "Gitlab MR toggle discussions" },
-        { "<leader>mn", gitlab.create_note,        desc = "Gitlab MR create note" },
-        { "<leader>mo", gitlab.open_in_browser,    desc = "Gitlab MR open in browser" },
-        { "<leader>mr", gitlab.review,             desc = "Gitlab MR open review" },
-        { "<leader>mR", gitlab.revoke,             desc = "Gitlab MR revoke" },
-        { "<leader>ms", gitlab.summary,            desc = "Gitlab MR summary" },
+        { "<leader>mA", "<cmd>lua require('gitlab').approve()<cr>",            desc = "Gitlab MR approve" },
+        { "<leader>mc", "<cmd>lua require('gitlab').create_comment()<cr>",     desc = "Gitlab MR create comment" },
+        { "<leader>md", "<cmd>lua require('gitlab').toggle_discussions()<cr>", desc = "Gitlab MR toggle discussions" },
+        { "<leader>mn", "<cmd>lua require('gitlab').create_note()<cr>",        desc = "Gitlab MR create note" },
+        { "<leader>mo", "<cmd>lua require('gitlab').open_in_browser()<cr>",    desc = "Gitlab MR open in browser" },
+        { "<leader>mr", "<cmd>lua require('gitlab').review()<cr>",             desc = "Gitlab MR open review" },
+        { "<leader>mR", "<cmd>lua require('gitlab').revoke()<cr>",             desc = "Gitlab MR revoke" },
+        { "<leader>ms", "<cmd>lua require('gitlab').summary()<cr>",            desc = "Gitlab MR summary" },
       }
     end,
     build = function()
