@@ -31,6 +31,7 @@ return {
 	-- easily install/update lsp servers directly from neovim
   {
     "williamboman/mason.nvim",
+    cmd = { "MasonInstall" },
     keys = {
       { "<leader>cm", false },
       { "<leader>vm", "<cmd>Mason<cr>", noremap = true, desc = "Open Mason" },
