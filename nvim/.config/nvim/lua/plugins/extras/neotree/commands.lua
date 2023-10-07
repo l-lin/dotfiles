@@ -1,17 +1,19 @@
-local cc = require("neo-tree.sources.common.commands")
-local fs = require("neo-tree.sources.filesystem")
-local renderer = require("neo-tree.ui.renderer")
-local async = require("plenary.async")
-
 ---Open parent folder from the file/folder under cursor.
 local function focus_parent(state)
+  local cc = require("neo-tree.sources.common.commands")
+  local renderer = require("neo-tree.ui.renderer")
   local node = state.tree:get_node()
+
   renderer.focus_node(state, node:get_parent_id())
   cc.close_all_subnodes(state)
 end
 
 local function focus_child(state)
+  local renderer = require("neo-tree.ui.renderer")
+  local async = require("plenary.async")
   local task = function()
+    local fs = require("neo-tree.sources.filesystem")
+    local cc = require("neo-tree.sources.common.commands")
     local node = state.tree:get_node()
 
     if node.type ~= "directory" then
