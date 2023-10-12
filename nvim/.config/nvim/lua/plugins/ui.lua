@@ -6,11 +6,6 @@ return {
       popupmenu = {
         backend = "cmp",
       },
-      -- lsp = {
-      --   progress = {
-      --     throttle = 300,
-      --   },
-      -- },
     },
     keys = {
       { "<c-f>", false },
@@ -42,9 +37,9 @@ return {
 
   -- dashboard
   {
-    "goolord/alpha-nvim",
+    "glepnir/dashboard-nvim",
     opts = {
-      section = {
+      config = {
         header = {
           val = "",
         },

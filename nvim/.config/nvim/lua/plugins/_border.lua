@@ -136,12 +136,6 @@ local function with_border(border_style)
       },
     },
     {
-      "nvimtools/none-ls.nvim",
-      opts = {
-        border = border_style,
-      },
-    },
-    {
       "mason.nvim",
       opts = {
         ui = {
