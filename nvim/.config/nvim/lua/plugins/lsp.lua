@@ -65,7 +65,6 @@ return {
       keys[#keys + 1] = { "<leader>cA", false }
     end,
     opts = {
-      autoformat = false,
       inlay_hints = {
         enabled = true,
       },
@@ -318,7 +317,6 @@ return {
       },
       finder = {
         layout = "normal",
-        left_width = 0.4,
         keys = {
           toggle_or_open = { "o", "<cr>" },
           vsplit = "<C-v>",
