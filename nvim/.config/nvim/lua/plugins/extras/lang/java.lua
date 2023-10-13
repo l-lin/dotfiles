@@ -39,30 +39,11 @@ end
 local function create_settings()
   return {
     java = {
-      eclipse = {
-        downloadSources = true,
-      },
-      configuration = {
-        updateBuildConfiguration = "interactive",
-      },
-      maven = {
-        downloadSources = true,
-      },
-      implementationsCodeLens = {
-        enabled = true,
-      },
-      referencesCodeLens = {
-        enabled = true,
-      },
-      references = {
-        includeDecompiledSources = true,
-      },
-      format = {
-        enabled = true,
-        settings = {
-          url = home .. "/.local/share/eclipse/java-code-style.xml",
-          profile = "l-lin",
+      codeGeneration = {
+        toString = {
+          template = "${object.className}{${member.name()}=${member.value}, ${otherMembers}}",
         },
+        useBlocks = true,
       },
       completion = {
         favoriteStaticMembers = {
@@ -84,19 +65,43 @@ local function create_settings()
           "org.junit.*",
         },
       },
-      signatureHelp = { enabled = true },
-      contentProvider = { preferred = "fernflower" },
+      configuration = {
+        updateBuildConfiguration = "interactive",
+      },
+      contentProvider = {
+        preferred = "fernflower",
+      },
+      eclipse = {
+        downloadSources = true,
+      },
+      format = {
+        enabled = true,
+        settings = {
+          url = home .. "/.local/share/eclipse/java-code-style.xml",
+          profile = "l-lin",
+        },
+      },
+      implementationsCodeLens = {
+        enabled = true,
+      },
+      maven = {
+        downloadSources = true,
+      },
+      maxConcurrentBuilds = 3,
+      references = {
+        includeDecompiledSources = true,
+      },
+      referencesCodeLens = {
+        enabled = true,
+      },
+      signatureHelp = {
+        enabled = true,
+      },
       sources = {
         organizeImports = {
           starThreshold = 9999,
           staticStarThreshold = 9999,
         },
-      },
-      codeGeneration = {
-        toString = {
-          template = "${object.className}{${member.name()}=${member.value}, ${otherMembers}}",
-        },
-        useBlocks = true,
       },
     },
   }
