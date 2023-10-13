@@ -30,10 +30,6 @@ return {
     "LazyVim/LazyVim",
     opts = {
       colorscheme = "kanagawa",
-      defaults = {
-        -- disable default keymaps as the window navigation overrides Navigator plugin's one
-        keymaps = false,
-      },
     },
   },
 }

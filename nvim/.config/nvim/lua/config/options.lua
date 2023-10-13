@@ -13,3 +13,6 @@ vim.opt.scrolloff = 7
 
 -- set background
 vim.o.bg = "dark"
+
+-- disable auto-formatting
+vim.g.autoformat = false
