@@ -40,9 +40,7 @@ return {
     "nvimdev/dashboard-nvim",
     opts = {
       config = {
-        header = {
-          val = "",
-        },
+        header = {},
       },
     },
   },
