@@ -37,7 +37,7 @@ return {
 
   -- dashboard
   {
-    "glepnir/dashboard-nvim",
+    "nvimdev/dashboard-nvim",
     opts = {
       config = {
         header = {
