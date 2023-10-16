@@ -111,6 +111,9 @@ Sources:
 
 If the official client does not work with your OS, there is a workaround available: https://gitlab.com/openconnect/openconnect/-/issues/356
 
+### Install Openfortivpn
+#### From sources
+
 ```bash
 # first install pre-requisites: https://github.com/gm-vm/openfortivpn#building-and-installing-from-source
 yay -S --noconfirm gcc automake autoconf make pkg-config
@@ -127,16 +130,31 @@ sudo make install
 
 # check openfortivpn is installed correctly
 openfortivpn --version
-
-# download openfortivpn-webview to get the cookie
-wget -qO- https://github.com/gm-vm/openfortivpn-webview/releases/download/v1.1.0-electron/openfortivpn-webview-1.1.0.tar.xz \
-    | sudo tar -xvJ --transform='s/openfortivpn-webview-1.1.0/openfortivpn-webview/g' \
-    -C /usr/local  && sudo ln -s /usr/local/openfortivpn-webview/openfortivpn-webview \
-    /usr/local/bin/openfortivpn-webview 
-
-# open VPN in one command line
-HOST=some_host && PORT=443 && \
-  openfortivpn-webview $HOST:$PORT 2>/dev/null \
-  | sudo openfortivpn $HOST:$PORT --cookie-on-stdin
 ```
 
+#### From AUR
+
+```bash
+yay -S openfortivpn
+```
+
+### Install Openfortivpn webview
+
+```bash
+# download openfortivpn-webview to get the cookie
+wget -qO- https://github.com/gm-vm/openfortivpn-webview/releases/download/v1.1.0-electron/openfortivpn-webview-1.1.0.tar.xz \
+  | sudo tar -xvJ --transform='s/openfortivpn-webview-1.1.0/openfortivpn-webview/g' -C /usr/local \
+  && sudo ln -s /usr/local/openfortivpn-webview/openfortivpn-webview /usr/local/bin/openfortivpn-webview
+```
+
+### Usage
+
+```bash
+# open VPN in one command line
+VPN_HOST=some_host && VPN_PORT=443 \
+  && openfortivpn-webview "${VPN_HOST}:${VPN_PORT}" 2>/dev/null \
+  | sudo openfortivpn "${VPN_HOST}:${VPN_PORT}" --cookie-on-stdin --pppd-accept-remote
+```
+
+Note: we need to add the `--pppd-accept-remote` since `ppp` v2.5.0.
+See https://github.com/adrienverge/openfortivpn/issues/1076 for more information.
