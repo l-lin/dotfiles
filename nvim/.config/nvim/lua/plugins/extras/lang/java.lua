@@ -55,6 +55,10 @@ local function create_settings()
           "java.util.Objects.requireNonNullElse",
           "org.mockito.Mockito.*",
           "org.mockito.BDDMockito.*",
+          "io.gatling.javaapi.core.*",
+          "io.gatling.javaapi.core.CoreDsl.*",
+          "io.gatling.javaapi.http.*",
+          "io.gatling.javaapi.http.HttpDsl.*",
         },
         filteredTypes = {
           "com.sun.*",
@@ -63,6 +67,7 @@ local function create_settings()
           "jdk.*",
           "sun.*",
           "org.junit.*",
+          "io.gatling.core.*",
         },
       },
       configuration = {
