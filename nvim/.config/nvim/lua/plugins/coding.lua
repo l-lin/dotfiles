@@ -111,9 +111,9 @@ return {
         { name = "nvim_lsp" },
         { name = "luasnip" },
       }, {
+        { name = "path" },
         { name = "buffer" },
         { name = "tmux" },
-        { name = "path" },
         { name = "emoji", option = { insert = true } },
       })
       opts.sorting = {
@@ -121,13 +121,13 @@ return {
         comparators = {
           -- Java methods that we never use should be at the bottom.
           custom_comparators.deprioritize_labels({ "wait", "hashCode", "notify", "notifyAll", "clone", "finalize" }),
-          custom_comparators.deprioritize_kind(types.lsp.CompletionItemKind.Text),
+          -- custom_comparators.deprioritize_kind(types.lsp.CompletionItemKind.Text),
           compare.offset,
           compare.exact,
+          compare.score,
           compare.recently_used,
           custom_comparators.kind,
           compare.locality,
-          compare.score,
           compare.order,
         },
       }
