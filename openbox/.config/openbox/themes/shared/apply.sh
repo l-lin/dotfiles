@@ -4,7 +4,7 @@
 TDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 THEME="${TDIR##*/}"
 
-source "$HOME"/.config/openbox-themes/themes/"$THEME"/theme.bash
+source "$HOME"/.config/openbox/themes/"$THEME"/theme.bash
 altbackground="$(pastel color $background | pastel lighten $light_value | pastel format hex)"
 altforeground="$(pastel color $foreground | pastel darken $dark_value | pastel format hex)"
 
@@ -14,9 +14,8 @@ PATH_TERM="$PATH_CONF/alacritty"
 PATH_DUNST="$PATH_CONF/dunst"
 PATH_GEANY="$PATH_CONF/geany"
 PATH_OBOX="$PATH_CONF/openbox"
-PATH_OBTS="$PATH_CONF/openbox-themes"
-PATH_PBAR="$PATH_OBTS/themes/$THEME/polybar"
-PATH_ROFI="$PATH_OBTS/themes/$THEME/rofi"
+PATH_PBAR="$PATH_OBOX/themes/$THEME/polybar"
+PATH_ROFI="$PATH_OBOX/themes/$THEME/rofi"
 PATH_XFCE="$PATH_CONF/xfce4/terminal"
 
 ## Wallpaper ---------------------------------
@@ -29,13 +28,13 @@ apply_wallpaper() {
 ## Polybar -----------------------------------
 apply_polybar() {
 	# modify polybar launch script
-	sed -i -e "s/STYLE=.*/STYLE=\"$THEME\"/g" ${PATH_OBTS}/themes/polybar.sh
+	sed -i -e "s/STYLE=.*/STYLE=\"$THEME\"/g" ${PATH_OBOX}/themes/polybar.sh
 
 	# apply default theme fonts
 	sed -i -e "s/font-0 = .*/font-0 = \"$polybar_font\"/g" ${PATH_PBAR}/config.ini
 
 	# rewrite colors file
-	cat >${PATH_PBAR}/colors.ini <<-EOF
+	cat > ${PATH_PBAR}/colors.ini <<- EOF
 		[color]
 
 		BACKGROUND = ${background}
@@ -61,27 +60,31 @@ apply_polybar() {
 		ALTCYAN = ${color_altcyan}
 		ALTWHITE = ${color_altwhite}
 	EOF
+}
 
-	# launch polybar
-	bash ${PATH_OBTS}/themes/polybar.sh
+## Tint2 -----------------------------------
+apply_tint2() {
+	# modify tint2 launch script
+	sed -i -e "s/STYLE=.*/STYLE=\"$THEME\"/g" ${PATH_OBOX}/themes/tint2.sh
 }
 
 # Rofi --------------------------------------
 apply_rofi() {
 	# modify rofi scripts
 	sed -i -e "s/STYLE=.*/STYLE=\"$THEME\"/g" \
-		${PATH_OBTS}/scripts/askpass \
-		${PATH_OBTS}/scripts/launcher \
-		${PATH_OBTS}/scripts/music \
-		${PATH_OBTS}/scripts/powermenu \
-		${PATH_OBTS}/scripts/runner \
-		${PATH_OBTS}/scripts/screenshot
+		${PATH_OBOX}/scripts/rofi-askpass \
+    ${PATH_OBOX}/scripts/rofi-bluetooth \
+		${PATH_OBOX}/scripts/rofi-launcher \
+		${PATH_OBOX}/scripts/rofi-music \
+		${PATH_OBOX}/scripts/rofi-powermenu \
+		${PATH_OBOX}/scripts/rofi-runner \
+		${PATH_OBOX}/scripts/rofi-screenshot
 
 	# apply default theme fonts
 	sed -i -e "s/font:.*/font: \"$rofi_font\";/g" ${PATH_ROFI}/shared/fonts.rasi
 
 	# rewrite colors file
-	cat >${PATH_ROFI}/shared/colors.rasi <<-EOF
+	cat > ${PATH_ROFI}/shared/colors.rasi <<- EOF
 		* {
 		    background:     ${background};
 		    background-alt: ${altbackground};
@@ -113,7 +116,7 @@ apply_terminal() {
 		-e "s/size: .*/size: $terminal_font_size/g"
 
 	# alacritty : colors
-	cat >${PATH_TERM}/colors.yml <<-_EOF_
+	cat > ${PATH_TERM}/colors.yml <<- _EOF_
 		## Colors configuration
 		colors:
 		  # Default colors
@@ -247,7 +250,7 @@ apply_dunst() {
 
 	# modify colors
 	sed -i '/urgency_low/Q' ${PATH_DUNST}/dunstrc
-	cat >>${PATH_DUNST}/dunstrc <<-_EOF_
+	cat >> ${PATH_DUNST}/dunstrc <<- _EOF_
 		[urgency_low]
 		timeout = 2
 		background = "${background}"
@@ -274,7 +277,7 @@ apply_dunst() {
 # Plank -------------------------------------
 apply_plank() {
 	# create temporary config file
-	cat >"$HOME"/.cache/plank.conf <<-_EOF_
+	cat > "$HOME"/.cache/plank.conf <<- _EOF_
 		[dock1]
 		alignment='center'
 		auto-pinning=true
@@ -320,11 +323,11 @@ apply_compositor() {
 
 # Create Theme File -------------------------
 create_file() {
-	theme_file="$PATH_OBTS/themes/.current"
+	theme_file="$PATH_OBOX/themes/.current"
 	if [[ ! -f "$theme_file" ]]; then
 		touch ${theme_file}
 	fi
-	echo "$THEME" >${theme_file}
+	echo "$THEME" > ${theme_file}
 }
 
 # Notify User -------------------------------
@@ -431,6 +434,7 @@ notify_user
 create_file
 apply_wallpaper
 apply_polybar
+apply_tint2
 apply_rofi
 apply_netmenu
 apply_terminal
@@ -443,6 +447,9 @@ apply_compositor
 
 apply_change_terminal
 apply_change_background
+
+# launch polybar
+bash ${PATH_OBOX}/themes/polybar.sh
 
 # fix cursor theme (run it in the end)
 xsetroot -cursor_name left_ptr

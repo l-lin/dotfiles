@@ -25,7 +25,7 @@
   </placement>
   <!-- Theme -->
   <theme>
-    <name>Slime</name>
+    <name>Windows-10-Dark</name>
     <titleLayout>DLIMC</titleLayout>
     <keepBorder>no</keepBorder>
     <animateIconify>yes</animateIconify>
@@ -690,7 +690,7 @@
     <!-- Rofi -->
     <keybind key="A-F1">
       <action name="Execute">
-        <command>launcher</command>
+        <command>rofi-launcher</command>
       </action>
     </keybind>
     <keybind key="W-n">
@@ -698,24 +698,29 @@
         <command>networkmanager_dmenu</command>
       </action>
     </keybind>
+    <keybind key="W-b">
+      <action name="Execute">
+        <command>rofi-bluetooth</command>
+      </action>
+    </keybind>
     <keybind key="W-m">
       <action name="Execute">
-        <command>music</command>
+        <command>rofi-music</command>
       </action>
     </keybind>
     <keybind key="W-x">
       <action name="Execute">
-        <command>powermenu</command>
+        <command>rofi-powermenu</command>
       </action>
     </keybind>
     <keybind key="W-s">
       <action name="Execute">
-        <command>screenshot</command>
+        <command>rofi-screenshot</command>
       </action>
     </keybind>
     <keybind key="W-r">
       <action name="Execute">
-        <command>runner</command>
+        <command>rofi-runner</command>
       </action>
     </keybind>
     <!-- CLI Apps -->

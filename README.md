@@ -11,7 +11,7 @@ It's using the following:
 - [dunst](https://dunst-project.org/): lightweight replacement for the notification daemons
 - [plank](https://launchpad.net/plank): application dock
 
-Credit to [AlbertoV](https://www.deviantart.com/albertov) for his awesome [Totoro pixel art](./openbox-themes/.config/openbox-themes/themes/gruvbox/wallpaper).
+Credit to [AlbertoV](https://www.deviantart.com/albertov) for his awesome [Totoro pixel art](./openbox/.config/openbox/themes/gruvbox/wallpaper).
 
 ## Install & bootstraping dotfiles
 
