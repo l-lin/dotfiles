@@ -17,6 +17,8 @@ vim.api.nvim_create_autocmd("FileType", {
     "dapui_console",
     -- dbui
     "dbout",
+    -- leetcode
+    "leetcode.nvim",
   },
   callback = function(event)
     vim.bo[event.buf].buflisted = false
