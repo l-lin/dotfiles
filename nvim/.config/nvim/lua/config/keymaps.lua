@@ -25,7 +25,12 @@ vim.cmd([[ command CheatSheet split $HOME/.config/nvim/doc/cheat_sheet.txt]])
 map("n", "<leader>vl", "<cmd>Lazy<cr>", { desc = "Lazy" })
 
 -- NOTE: goto definition put here because for some reason, it's remapped to native <C-b>...
-map("n", "<C-b>", "<cmd>Telescope lsp_definitions<cr>", { desc = "Go to definition (Ctrl+b)" })
+-- map("n", "<C-b>", "<cmd>Telescope lsp_definitions<cr>", { desc = "Go to definition (Ctrl+b)" })
 
 -- do not include white space characters when using $ in visual mode, see https://vi.stackexchange.com/q/12607/15292
 map("x", "$", "g_")
+
+-- format
+map({ "n", "v" }, "<M-C-L>", function()
+  require("lazyvim.util").format({ force = true })
+end, { desc = "Format" })

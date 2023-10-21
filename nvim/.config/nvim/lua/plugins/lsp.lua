@@ -38,19 +38,17 @@ local mason_servers = {
   "yamllint",
 }
 
-vim.api.nvim_create_user_command("MasonInstallAll", function ()
+vim.api.nvim_create_user_command("MasonInstallAll", function()
   vim.cmd("MasonInstall " .. table.concat(mason_servers, " "))
 end, {})
 
 return {
-	-- easily config neovim lsp
+  -- easily config neovim lsp
   {
     "neovim/nvim-lspconfig",
     init = function()
       -- keymaps for lspconfig must be set in init function: https://www.lazyvim.org/plugins/lsp#%EF%B8%8F-customizing-lsp-keymaps
       local keys = require("lazyvim.plugins.lsp.keymaps").get()
-      -- format
-      keys[#keys + 1] = { "<M-C-L>", "<cmd>lua vim.lsp.buf.format { async = true }<CR>" }
       -- disable diagnostic (performed by Lspaga)
       keys[#keys + 1] = { "]d", false }
       keys[#keys + 1] = { "[d", false }
@@ -71,7 +69,7 @@ return {
     },
   },
 
-	-- easily install/update lsp servers directly from neovim
+  -- easily install/update lsp servers directly from neovim
   {
     "williamboman/mason.nvim",
     cmd = { "MasonInstall", "MasonInstallAll" },

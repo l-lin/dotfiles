@@ -16,7 +16,7 @@ return {
         function()
           require("neotest").run.run()
         end,
-        desc = "Run Nearest (F9)",
+        desc = "Run Nearest (Shift+F9)",
         noremap = true,
         silent = true,
       },
