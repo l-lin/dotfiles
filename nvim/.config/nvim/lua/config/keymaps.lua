@@ -22,6 +22,7 @@ map("n", "0", "^")
 vim.cmd([[ command CheatSheet split $HOME/.config/nvim/doc/cheat_sheet.txt]])
 
 -- lazy
+vim.keymap.del("n", "<leader>l")
 map("n", "<leader>vl", "<cmd>Lazy<cr>", { desc = "Lazy" })
 
 -- NOTE: goto definition put here because for some reason, it's remapped to native <C-b>...
@@ -34,3 +35,4 @@ map("x", "$", "g_")
 map({ "n", "v" }, "<M-C-L>", function()
   require("lazyvim.util").format({ force = true })
 end, { desc = "Format" })
+
