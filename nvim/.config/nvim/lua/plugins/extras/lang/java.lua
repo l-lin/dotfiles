@@ -92,7 +92,7 @@ local function create_settings()
       maven = {
         downloadSources = true,
       },
-      maxConcurrentBuilds = 3,
+      maxConcurrentBuilds = 5,
       references = {
         includeDecompiledSources = true,
       },
@@ -143,19 +143,8 @@ local function create_init_options()
   }
 end
 
--- local function find_associate_test_or_class_file()
---   local default_text = ""
---   local filename = vim.fn.expand("%:t"):match("(.+)%..+")
---   if filename:sub(- #"Test") == "Test" then
---     default_text = filename:gsub("Test", "") .. ".java"
---   else
---     default_text = filename .. "Test.java"
---   end
---   require("telescope.builtin").find_files({ default_text = default_text })
--- end
-
 return {
-  -- Disable neotree (Java not supported)
+  -- Disable neotree (supported by https://github.com/rcasia/neotest-java but less developer friendly)
   {
     "nvim-neotest/neotest",
     keys = {
@@ -326,16 +315,22 @@ return {
               -- Java Test require Java debugger to work
               if mason_registry.has_package("java-test") then
                 -- custom keymaps for Java test runner (not yet compatible with neotest)
+              -- enable junit extension detection to activate https://github.com/laech/java-stacksrc
+                local jdtls_test_opts = {
+                  config_overrides = {
+                    vmArgs = "-Djunit.jupiter.extensions.autodetection.enabled=true",
+                  },
+                }
                 vim.keymap.set(
                   "n",
                   "<M-S-F9>",
-                  jdtls.pick_test,
+                  function() jdtls.pick_test(jdtls_test_opts) end,
                   { noremap = true, silent = true, desc = "Run specific test (Alt+Shift+F9)" }
                 )
                 vim.keymap.set(
                   "n",
                   "<F21>",
-                  jdtls.test_nearest_method,
+                  function() jdtls.test_nearest_method(jdtls_test_opts) end,
                   { noremap = true, silent = true, desc = "Test method (Shift+F9)" }
                 )
               end
