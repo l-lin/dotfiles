@@ -36,3 +36,5 @@ map({ "n", "v" }, "<M-C-L>", function()
   require("lazyvim.util").format({ force = true })
 end, { desc = "Format" })
 
+-- select all
+map("n", "<C-a>", "gg<S-v>G", { noremap = true, desc = "Select all" })
