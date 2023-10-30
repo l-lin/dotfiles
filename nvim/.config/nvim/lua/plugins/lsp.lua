@@ -50,17 +50,29 @@ return {
       -- keymaps for lspconfig must be set in init function: https://www.lazyvim.org/plugins/lsp#%EF%B8%8F-customizing-lsp-keymaps
       local keys = require("lazyvim.plugins.lsp.keymaps").get()
       -- disable diagnostic (performed by Lspaga)
-      keys[#keys + 1] = { "]d", false }
-      keys[#keys + 1] = { "[d", false }
-      keys[#keys + 1] = { "]e", false }
-      keys[#keys + 1] = { "[e", false }
-      keys[#keys + 1] = { "]w", false }
-      keys[#keys + 1] = { "[w", false }
+      -- keys[#keys + 1] = { "]d", false }
+      -- keys[#keys + 1] = { "[d", false }
+      -- keys[#keys + 1] = { "]e", false }
+      -- keys[#keys + 1] = { "[e", false }
+      -- keys[#keys + 1] = { "]w", false }
+      -- keys[#keys + 1] = { "[w", false }
       -- disable rename (performed by Lspaga)
-      keys[#keys + 1] = { "<leader>cr", false }
+      -- keys[#keys + 1] = { "<leader>cr", false }
+
       -- disable code action keymaps (conflict with Diffview merge tool)
       keys[#keys + 1] = { "<leader>ca", false }
       keys[#keys + 1] = { "<leader>cA", false }
+
+      keys[#keys + 1] = { "<M-&>", "<cmd>Telescope lsp_references<cr>", noremap = true, desc = "LSP references (Ctrl+Shift+7)" }
+      keys[#keys + 1] = { "<F18>", vim.lsp.buf.rename, noremap = true, desc = "Rename" }
+      keys[#keys + 1] = { "<M-CR>", vim.lsp.buf.code_action, noremap = true, desc = "Code action" }
+      keys[#keys + 1] = {
+        "<M-C-B>",
+        function()
+          require("telescope.builtin").lsp_implementations({ reuse_win = true })
+        end,
+        "Goto implementation (Ctrl+Alt+b)",
+      }
     end,
     opts = {
       inlay_hints = {
@@ -85,6 +97,7 @@ return {
   -- ui for LSP features
   {
     "glepnir/lspsaga.nvim",
+    enabled = false,
     keys = {
       {
         "]d",
