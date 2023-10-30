@@ -124,6 +124,11 @@ local function with_border(border_style)
       opts = function(_, opts)
         -- Set LspInfo border
         require("lspconfig.ui.windows").default_options.border = border_style
+        vim.diagnostic.config({
+          float = {
+            border = border_style,
+          },
+        })
         return opts
       end,
     },

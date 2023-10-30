@@ -71,6 +71,15 @@ return {
         desc = "Find nvim keymaps",
       },
     },
+    opts = {
+      defaults = {
+        mappings = {
+          i = {
+            ["<C-f>"] = require("telescope.actions").preview_scrolling_left,
+          },
+        },
+      },
+    },
   },
 
   -- file explorer
@@ -82,6 +91,7 @@ return {
     opts = {
       close_if_last_window = true,
       enable_normal_mode_for_inputs = true,
+      enable_modified_markers = false,
       window = {
         mappings = {
           ["o"] = "open",

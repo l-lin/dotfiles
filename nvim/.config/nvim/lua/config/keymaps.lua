@@ -25,8 +25,9 @@ vim.cmd([[ command CheatSheet split $HOME/.config/nvim/doc/cheat_sheet.txt]])
 vim.keymap.del("n", "<leader>l")
 map("n", "<leader>vl", "<cmd>Lazy<cr>", { desc = "Lazy" })
 
--- NOTE: goto definition put here because for some reason, it's remapped to native <C-b>...
--- map("n", "<C-b>", "<cmd>Telescope lsp_definitions<cr>", { desc = "Go to definition (Ctrl+b)" })
+-- Diagnostics
+map("n", "<F25>", vim.diagnostic.open_float, { desc = "Line Diagnostics (Ctrl+F1)" })
+map("n", "<F2>", vim.diagnostic.goto_next, { desc = "Next diagnostic (F2)" })
 
 -- do not include white space characters when using $ in visual mode, see https://vi.stackexchange.com/q/12607/15292
 map("x", "$", "g_")
