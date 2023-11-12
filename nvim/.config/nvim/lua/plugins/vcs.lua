@@ -1,16 +1,36 @@
+local function lazy_load_gitlab_server(callback)
+  local state = require("gitlab.state")
+  if not state.go_server_running then
+    require("gitlab").setup({
+      debug = { go_request = false, go_response = false }, -- Which values to log
+      popup = { -- The popup for comment creation, editing, and replying
+        perform_action = "<C-s>", -- Once in normal mode, does action (like saving comment or editing description, etc)
+      },
+      discussion_tree = { -- The discussion tree that holds all comments
+        toggle_node = "<cr>", -- Opens or closes the discussion
+        position = "bottom", -- "top", "right", "bottom" or "left"
+        size = "40%", -- Size of split
+        resolved = "", -- Symbol to show next to resolved discussions
+        unresolved = "", -- Symbol to show next to unresolved discussions
+      },
+    })
+    callback()
+  end
+end
+
 return {
   -- git integration
   {
     "tpope/vim-fugitive",
     keys = {
-      { "<leader>gs", "<cmd>G<cr>",                         desc = "git status (Alt+0)" },
-      { "<A-0>",      "<cmd>G<cr>",                         desc = "git status (Alt+0)" },
-      { "<leader>gc", "<cmd>G commit<cr>",                  desc = "git commit" },
-      { "<leader>gp", "<cmd>G pull<cr>",                    desc = "git pull" },
-      { "<leader>gP", "<cmd>G push<cr>",                    desc = "git push" },
+      { "<leader>gs", "<cmd>G<cr>", desc = "git status (Alt+0)" },
+      { "<A-0>", "<cmd>G<cr>", desc = "git status (Alt+0)" },
+      { "<leader>gc", "<cmd>G commit<cr>", desc = "git commit" },
+      { "<leader>gp", "<cmd>G pull<cr>", desc = "git pull" },
+      { "<leader>gP", "<cmd>G push<cr>", desc = "git push" },
       { "<leader>gF", "<cmd>G push --force-with-lease<cr>", desc = "git push --force-with-lease" },
-      { "<leader>gb", "<cmd>G blame<cr>",                   desc = "git blame" },
-      { "<leader>gl", "<cmd>0GcLog<cr>",                    desc = "git log" },
+      { "<leader>gb", "<cmd>G blame<cr>", desc = "git blame" },
+      { "<leader>gl", "<cmd>0GcLog<cr>", desc = "git log" },
     },
   },
 
@@ -113,76 +133,57 @@ return {
   -- gitlab MR integration
   {
     "harrisoncramer/gitlab.nvim",
+    url = "https://github.com/l-lin/gitlab.nvim",
+    branch = "feature/support-nested-folders-in-namespace",
     dependencies = {
       "MunifTanjim/nui.nvim",
       "nvim-lua/plenary.nvim",
+      "sindrets/diffview.nvim",
       "stevearc/dressing.nvim",
     },
     keys = function()
       return {
-        { "<leader>mA", "<cmd>lua require('gitlab').approve()<cr>",            desc = "Gitlab MR approve" },
-        { "<leader>mc", "<cmd>lua require('gitlab').create_comment()<cr>",     desc = "Gitlab MR create comment" },
-        { "<leader>md", "<cmd>lua require('gitlab').toggle_discussions()<cr>", desc = "Gitlab MR toggle discussions" },
-        { "<leader>mn", "<cmd>lua require('gitlab').create_note()<cr>",        desc = "Gitlab MR create note" },
-        { "<leader>mo", "<cmd>lua require('gitlab').open_in_browser()<cr>",    desc = "Gitlab MR open in browser" },
-        { "<leader>mr", "<cmd>lua require('gitlab').review()<cr>",             desc = "Gitlab MR open review" },
-        { "<leader>mR", "<cmd>lua require('gitlab').revoke()<cr>",             desc = "Gitlab MR revoke" },
-        { "<leader>ms", "<cmd>lua require('gitlab').summary()<cr>",            desc = "Gitlab MR summary" },
+        { "<leader>mA", "<cmd>lua require('plugins.extras.vcs.gitlab').approve()<cr>", desc = "Gitlab MR approve" },
+        {
+          "<leader>mc",
+          "<cmd>lua require('plugins.extras.vcs.gitlab').create_comment()<cr>",
+          desc = "Gitlab MR create comment",
+        },
+        {
+          "<leader>mc",
+          "<cmd>lua require('plugins.extras.vcs.gitlab').create_multiline_comment()<cr>",
+          desc = "Gitlab MR create multiline comment",
+          mode = "v",
+        },
+        {
+          "<leader>ms",
+          "<cmd>lua require('plugins.extras.vcs.gitlab').create_comment_suggestion()<cr>",
+          desc = "Gitlab MR create comment suggestion",
+          mode = "v",
+        },
+        {
+          "<leader>md",
+          "<cmd>lua require('plugins.extras.vcs.gitlab').toggle_discussions()<cr>",
+          desc = "Gitlab MR toggle discussions",
+        },
+        {
+          "<leader>mn",
+          "<cmd>lua require('plugins.extras.vcs.gitlab').create_note()<cr>",
+          desc = "Gitlab MR create note",
+        },
+        {
+          "<leader>mo",
+          "<cmd>lua require('plugins.extras.vcs.gitlab').open_in_browser()<cr>",
+          desc = "Gitlab MR open in browser",
+        },
+        { "<leader>mp", "<cmd>lua require('plugins.extras.vcs.gitlab').pipeline()<cr>", desc = "Gitlab MR pipeline" },
+        { "<leader>mr", "<cmd>lua require('plugins.extras.vcs.gitlab').review()<cr>", desc = "Gitlab MR open review" },
+        { "<leader>mR", "<cmd>lua require('plugins.extras.vcs.gitlab').revoke()<cr>", desc = "Gitlab MR revoke" },
+        { "<leader>ms", "<cmd>lua require('plugins.extras.vcs.gitlab').summary()<cr>", desc = "Gitlab MR summary" },
       }
     end,
     build = function()
-      require("gitlab.server").build()
-    end,
-    config = function()
-      require("gitlab").setup({
-        port = 21036, -- The port of the Go server, which runs in the background
-        log_path = vim.fn.stdpath("cache") .. "/gitlab.nvim.log", -- Log path for the Go server
-        reviewer = "diffview", -- The reviewer type ("delta" or "diffview")
-        popup = { -- The popup for comment creation, editing, and replying
-          exit = "<Esc>",
-          perform_action = "<C-s>", -- Once in normal mode, does action (like saving comment or editing description, etc)
-          perform_linewise_action = "<leader>l", -- Once in normal mode, does the linewise action (see logs for this job, etc)
-        },
-        discussion_tree = { -- The discussion tree that holds all comments
-          blacklist = {}, -- List of usernames to remove from tree (bots, CI, etc)
-          jump_to_file = "o", -- Jump to comment location in file
-          jump_to_reviewer = "m", -- Jump to the location in the reviewer window
-          edit_comment = "e", -- Edit coment
-          delete_comment = "dd", -- Delete comment
-          reply = "r", -- Reply to comment
-          toggle_node = "<cr>", -- Opens or closes the discussion
-          toggle_resolved = "p", -- Toggles the resolved status of the discussion
-          position = "bottom", -- "top", "right", "bottom" or "left"
-          size = "40%", -- Size of split
-          relative = "editor", -- Position of tree split relative to "editor" or "window"
-          resolved = "", -- Symbol to show next to resolved discussions
-          unresolved = "", -- Symbol to show next to unresolved discussions
-        },
-        review_pane = { -- Specific settings for different reviewers
-          delta = {
-            added_file = "", -- The symbol to show next to added files
-            modified_file = "", -- The symbol to show next to modified files
-            removed_file = "", -- The symbol to show next to removed files
-          },
-        },
-        dialogue = { -- The confirmation dialogue for deleting comments
-          focus_next = { "j", "<Down>", "<Tab>" },
-          focus_prev = { "k", "<Up>", "<S-Tab>" },
-          close = { "<Esc>", "<C-c>" },
-          submit = { "<CR>", "<Space>" },
-        },
-        pipeline = {
-          created = "",
-          pending = "",
-          preparing = "",
-          scheduled = "",
-          running = "ﰌ",
-          canceled = "ﰸ",
-          skipped = "ﰸ",
-          success = "✓",
-          failed = "",
-        },
-      })
+      require("gitlab.server").build(true)
     end,
   },
 }
