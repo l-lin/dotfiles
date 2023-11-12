@@ -72,7 +72,6 @@ return {
     opts = function(_, opts)
       local cmp = require("cmp")
       local compare = require("cmp.config.compare")
-      local types = require("cmp.types")
       local luasnip = require("luasnip")
       local custom_comparators = require("plugins.extras.cmp.comparators")
       local custom_formatters = require("plugins.extras.cmp.formatters")

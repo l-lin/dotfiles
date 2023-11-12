@@ -128,8 +128,8 @@ local function create_init_options()
     for _, jar_pattern in ipairs(jar_patterns) do
       for _, bundle in ipairs(vim.split(vim.fn.glob(jar_pattern), "\n")) do
         if
-            not vim.endswith(bundle, "com.microsoft.java.test.runner-jar-with-dependencies.jar")
-            and not vim.endswith(bundle, "com.microsoft.java.test.runner.jar")
+          not vim.endswith(bundle, "com.microsoft.java.test.runner-jar-with-dependencies.jar")
+          and not vim.endswith(bundle, "com.microsoft.java.test.runner.jar")
         then
           table.insert(bundles, bundle)
         end
@@ -147,7 +147,7 @@ return {
     "nvim-neotest/neotest",
     keys = {
       { "<M-S-F9>", false },
-      { "<F21>",    false },
+      { "<F21>", false },
     },
   },
   -- Add java to treesitter.
@@ -313,24 +313,18 @@ return {
               -- Java Test require Java debugger to work
               if mason_registry.has_package("java-test") then
                 -- custom keymaps for Java test runner (not yet compatible with neotest)
-              -- enable junit extension detection to activate https://github.com/laech/java-stacksrc
+                -- enable junit extension detection to activate https://github.com/laech/java-stacksrc
                 local jdtls_test_opts = {
                   config_overrides = {
                     vmArgs = "-Djunit.jupiter.extensions.autodetection.enabled=true",
                   },
                 }
-                vim.keymap.set(
-                  "n",
-                  "<M-S-F9>",
-                  function() jdtls.pick_test(jdtls_test_opts) end,
-                  { noremap = true, silent = true, desc = "Run specific test (Alt+Shift+F9)" }
-                )
-                vim.keymap.set(
-                  "n",
-                  "<F21>",
-                  function() jdtls.test_nearest_method(jdtls_test_opts) end,
-                  { noremap = true, silent = true, desc = "Test method (Shift+F9)" }
-                )
+                vim.keymap.set("n", "<M-S-F9>", function()
+                  jdtls.pick_test(jdtls_test_opts)
+                end, { noremap = true, silent = true, desc = "Run specific test (Alt+Shift+F9)" })
+                vim.keymap.set("n", "<F21>", function()
+                  jdtls.test_nearest_method(jdtls_test_opts)
+                end, { noremap = true, silent = true, desc = "Test method (Shift+F9)" })
               end
             end
           end
