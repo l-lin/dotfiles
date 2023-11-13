@@ -133,8 +133,6 @@ return {
   -- gitlab MR integration
   {
     "harrisoncramer/gitlab.nvim",
-    url = "https://github.com/l-lin/gitlab.nvim",
-    branch = "feature/support-nested-folders-in-namespace",
     dependencies = {
       "MunifTanjim/nui.nvim",
       "nvim-lua/plenary.nvim",
