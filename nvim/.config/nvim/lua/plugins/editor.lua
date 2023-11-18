@@ -90,6 +90,7 @@ return {
     },
     opts = {
       close_if_last_window = true,
+      enable_git_status = false,
       enable_normal_mode_for_inputs = true,
       enable_modified_markers = false,
       window = {
