@@ -57,6 +57,7 @@ local function create_settings()
           "io.gatling.javaapi.core.CoreDsl.*",
           "io.gatling.javaapi.http.*",
           "io.gatling.javaapi.http.HttpDsl.*",
+          "org.awaitility.Awaitility",
         },
         filteredTypes = {
           "com.sun.*",
