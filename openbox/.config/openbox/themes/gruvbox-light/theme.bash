@@ -36,7 +36,7 @@ rofi_icon='Zafiro'
 
 # Terminal
 terminal_font_name='JetBrainsMono Nerd Font'
-terminal_font_size='16'
+terminal_font_size='14'
 
 # Geany
 geany_colors='slime.conf'
