@@ -182,6 +182,10 @@ return {
         path_display = {
           "truncate",
         },
+        layout_config = {
+          height = 0.99,
+          width = 0.99,
+        },
       },
     },
   },

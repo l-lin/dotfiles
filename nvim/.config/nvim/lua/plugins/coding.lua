@@ -23,13 +23,6 @@ return {
     "nvim-telescope/telescope.nvim",
     keys = {
       {
-        "<C-b>",
-        "<cmd>Telescope lsp_definitions<cr>",
-        remap = true,
-        silent = true,
-        desc = "Goto definition (Ctrl+b)",
-      },
-      {
         "<M-6>",
         "<cmd>Telescope diagnostics<cr>",
         noremap = true,
@@ -75,9 +68,6 @@ return {
       local luasnip = require("luasnip")
       local custom_comparators = require("plugins.extras.cmp.comparators")
       local custom_formatters = require("plugins.extras.cmp.formatters")
-
-      -- more LOC in one file so that cmp will consider local
-      compare.locality.lines_count = 300
 
       opts.mapping = cmp.mapping.preset.insert({
         ["<C-u>"] = cmp.mapping.scroll_docs(-4),
