@@ -76,7 +76,7 @@ return {
       keys[#keys + 1] = {
         "<M-C-B>",
         function()
-          require("telescope.builtin").lsp_implementations({ reuse_win = true })
+          require("telescope.builtin").lsp_implementations({ reuse_win = true, show_line = false })
         end,
         "Goto implementation (Ctrl+Alt+b)",
       }
