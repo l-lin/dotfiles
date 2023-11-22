@@ -8,7 +8,6 @@ map("n", "<F28>", "<cmd>bd<CR>", { noremap = true, silent = true, desc = "Close 
 
 -- tab
 map("n", "]<tab>", "<cmd>tabnext<cr>", { noremap = true, desc = "Next Tab" })
-map("n", "<tab>d", "<cmd>tabclose<cr>", { noremap = true, desc = "Close Tab" })
 map("n", "[<tab>", "<cmd>tabprevious<cr>", { noremap = true, desc = "Previous Tab" })
 
 -- editing
