@@ -97,9 +97,9 @@ return {
         end, { "i", "s" }),
       })
       opts.sources = cmp.config.sources({
+        { name = "codeium" },
         { name = "nvim_lsp" },
         { name = "luasnip" },
-        { name = "codeium" }
       }, {
         { name = "path" },
         { name = "buffer" },
@@ -157,10 +157,10 @@ return {
           { name = "cmdline" },
         }),
       })
-      cmp.setup.filetype({"sql", "psql"}, {
+      cmp.setup.filetype({ "sql", "psql" }, {
         sources = cmp.config.sources({
           { name = "vim-dadbod-completion" },
-        })
+        }),
       })
     end,
   },

@@ -67,6 +67,7 @@ local function create_settings()
           "sun.*",
           "org.junit.*",
           "io.gatling.core.*",
+          "net.sourceforge.*"
         },
       },
       configuration = {
