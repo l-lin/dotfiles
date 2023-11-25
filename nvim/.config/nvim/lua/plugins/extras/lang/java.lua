@@ -144,7 +144,7 @@ local function create_init_options()
 end
 
 return {
-  -- Disable neotree (supported by https://github.com/rcasia/neotest-java but less developer friendly)
+  -- Disable neotest (supported by https://github.com/rcasia/neotest-java but less developer friendly)
   {
     "nvim-neotest/neotest",
     keys = {
