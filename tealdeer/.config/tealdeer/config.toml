@@ -5,8 +5,8 @@ bold = false
 italic = false
 
 [style.command_name]
-# foreground = { ansi = 106 }
-foreground = { rgb = { r = 1, g = 4, b = 9 } }
+foreground = { ansi = 106 }
+# foreground = { rgb = { r = 1, g = 4, b = 9 } }
 underline = false
 bold = false
 italic = false
@@ -21,15 +21,15 @@ bold = true
 italic = false
 
 [style.example_code]
-# foreground = { ansi = 106 }
-foreground = { rgb = { r = 3, g = 73, b = 180 } }
+foreground = { ansi = 106 }
+# foreground = { rgb = { r = 3, g = 73, b = 180 } }
 underline = false
 bold = false
 italic = false
 
 [style.example_variable]
-# foreground = { ansi = 223 }
-foreground = { rgb = { r = 98, g = 44, b = 188 } }
+foreground = { ansi = 223 }
+# foreground = { rgb = { r = 98, g = 44, b = 188 } }
 underline = false
 bold = false
 italic = false
