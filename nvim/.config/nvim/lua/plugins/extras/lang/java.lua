@@ -92,7 +92,7 @@ local function create_settings()
       maven = {
         downloadSources = true,
       },
-      maxConcurrentBuilds = 5,
+      maxConcurrentBuilds = 3,
       references = {
         includeDecompiledSources = true,
       },
@@ -333,16 +333,5 @@ return {
         end,
       })
     end,
-  },
-  {
-    "folke/noice.nvim",
-    opts = {
-      lsp = {
-        progress = {
-          -- too much noise in Java, especially when editing Strings
-          throttle = 300,
-        },
-      },
-    },
   },
 }
