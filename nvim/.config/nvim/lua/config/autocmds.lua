@@ -28,5 +28,11 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- Consider Jenkinsfile as groovy files
 vim.api.nvim_exec([[
-  autocmd BufNewFile,BufRead Jenkinsfile set filetype=groovy
+  autocmd BufNewFile,BufRead Jenkinsfile setfiletype groovy
 ]], false)
+
+-- Consider bats test files as shell files
+vim.api.nvim_exec([[
+  autocmd BufNewFile,BufRead *.bats setfiletype sh
+]], false)
+
