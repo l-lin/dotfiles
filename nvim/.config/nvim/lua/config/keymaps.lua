@@ -4,7 +4,7 @@
 local map = vim.keymap.set
 
 -- buffer
-map("n", "<F28>", "<cmd>bd<CR>", { noremap = true, silent = true, desc = "Close current buffer" })
+map("n", "<F28>", "<cmd>bd<CR>", { noremap = true, silent = true, desc = "Close current buffer (Ctrl+F4)" })
 
 -- tab
 map("n", "]<tab>", "<cmd>tabnext<cr>", { noremap = true, desc = "Next Tab" })
@@ -18,9 +18,11 @@ map("n", "d", '"_d', { noremap = true })
 map("v", "d", '"_d', { noremap = true })
 map("v", "p", '"_dP', { noremap = true })
 
--- go to first character in line (need to stretch my left hand to type ^)
+-- switch 0 and ^, I used 0 more and I need to stretch my left hand to type ^
 map("x", "0", "^")
 map("n", "0", "^")
+map("x", "^", "0")
+map("n", "^", "0")
 
 -- documentation
 vim.cmd([[ command CheatSheet split $HOME/.config/nvim/doc/cheat_sheet.txt]])
