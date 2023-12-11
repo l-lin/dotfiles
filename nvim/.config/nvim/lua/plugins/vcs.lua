@@ -1,23 +1,3 @@
-local function lazy_load_gitlab_server(callback)
-  local state = require("gitlab.state")
-  if not state.go_server_running then
-    require("gitlab").setup({
-      debug = { go_request = false, go_response = false }, -- Which values to log
-      popup = { -- The popup for comment creation, editing, and replying
-        perform_action = "<C-s>", -- Once in normal mode, does action (like saving comment or editing description, etc)
-      },
-      discussion_tree = { -- The discussion tree that holds all comments
-        toggle_node = "<cr>", -- Opens or closes the discussion
-        position = "bottom", -- "top", "right", "bottom" or "left"
-        size = "40%", -- Size of split
-        resolved = "", -- Symbol to show next to resolved discussions
-        unresolved = "", -- Symbol to show next to unresolved discussions
-      },
-    })
-    callback()
-  end
-end
-
 return {
   -- git integration
   {
