@@ -454,8 +454,3 @@ bash ${PATH_OBOX}/themes/polybar.sh
 # fix cursor theme (run it in the end)
 xsetroot -cursor_name left_ptr
 
-## ------------------------------------
-## Custom startup scripts
-## ------------------------------------
-# change capslock to ctrl
-setxkbmap -layout us -option ctrl:nocaps -variant altgr-intl &
