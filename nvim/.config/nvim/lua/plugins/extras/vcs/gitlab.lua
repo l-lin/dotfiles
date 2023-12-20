@@ -16,6 +16,9 @@ local function start_gitlab_server_if_not_running(callback)
         resolved = "", -- Symbol to show next to resolved discussions
         unresolved = "", -- Symbol to show next to unresolved discussions
       },
+      create_mr = {
+        target = "develop",
+      },
     })
   end
   callback()
@@ -27,8 +30,9 @@ M.approve = function() start_gitlab_server_if_not_running(gitlab.approve) end
 M.create_comment = function() start_gitlab_server_if_not_running(gitlab.create_comment) end
 M.create_comment_suggestion = function() start_gitlab_server_if_not_running(gitlab.create_comment_suggestion) end
 M.create_multiline_comment = function() start_gitlab_server_if_not_running(gitlab.create_multiline_comment) end
-M.toggle_discussions = function() start_gitlab_server_if_not_running(gitlab.toggle_discussions) end
 M.create_note = function() start_gitlab_server_if_not_running(gitlab.create_note) end
+M.create_mr = function() start_gitlab_server_if_not_running(gitlab.create_mr) end
+M.toggle_discussions = function() start_gitlab_server_if_not_running(gitlab.toggle_discussions) end
 M.open_in_browser = function() start_gitlab_server_if_not_running(gitlab.open_in_browser) end
 M.pipeline = function() start_gitlab_server_if_not_running(gitlab.pipeline) end
 M.review = function() start_gitlab_server_if_not_running(gitlab.review) end
