@@ -3,6 +3,7 @@
 # Manually install some Neovim's Mason packages:
 # - JDTLS: release train is a bit slow... (Java 21 still not supported at the time of coding this script).
 # - vscode-java-test: no longer provides an archive, so Mason cannot install it, hence the need to manually install it.
+# NOTE: May not be needed anymore as there's a custom registry that provides both packages: https://github.com/nvim-java/mason-registry.
 # ----------------------------------------------------
 
 set -euo pipefail
@@ -173,4 +174,4 @@ main() {
   esac
 }
 
-main "$@"
+#main "$@"
