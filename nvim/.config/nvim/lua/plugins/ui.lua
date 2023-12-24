@@ -87,27 +87,6 @@ return {
         section_separators = "",
         component_separators = "",
       },
-      sections = {
-        lualine_c = {
-          {
-            "diagnostics",
-            symbols = {
-              error = require("lazyvim.config").icons.diagnostics.Error,
-              warn = require("lazyvim.config").icons.diagnostics.Warn,
-              info = require("lazyvim.config").icons.diagnostics.Info,
-              hint = require("lazyvim.config").icons.diagnostics.Hint,
-            },
-          },
-          {
-            "filetype",
-            icon_only = true,
-            separator = "",
-            padding = { left = 1, right = 0 },
-          },
-          -- NOTE: filename for java third party dependencies with jdtls have path like jdt://contents/..., so generating lots of errors => disable it
-          -- { "filename", path = 1, symbols = { modified = "  ", readonly = "", unnamed = "" } },
-        },
-      },
     },
   },
 
