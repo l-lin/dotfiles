@@ -98,7 +98,12 @@ return {
               hint = require("lazyvim.config").icons.diagnostics.Hint,
             },
           },
-          { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
+          {
+            "filetype",
+            icon_only = true,
+            separator = "",
+            padding = { left = 1, right = 0 },
+          },
           -- NOTE: filename for java third party dependencies with jdtls have path like jdt://contents/..., so generating lots of errors => disable it
           -- { "filename", path = 1, symbols = { modified = "  ", readonly = "", unnamed = "" } },
         },

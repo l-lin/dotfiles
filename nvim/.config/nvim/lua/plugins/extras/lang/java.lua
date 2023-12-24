@@ -67,7 +67,7 @@ local function create_settings()
           "sun.*",
           "org.junit.*",
           "io.gatling.core.*",
-          "net.sourceforge.*"
+          "net.sourceforge.*",
         },
       },
       configuration = {
@@ -189,6 +189,17 @@ return {
         jdtls = function()
           return true -- avoid duplicate servers
         end,
+      },
+    },
+  },
+
+  -- Fetch Java related libraries from another registry (main mason registry does not have the latests JDTLS + java-test).
+  {
+    "williamboman/mason.nvim",
+    opts = {
+      registries = {
+        "github:nvim-java/mason-registry",
+        "github:mason-org/mason-registry",
       },
     },
   },
