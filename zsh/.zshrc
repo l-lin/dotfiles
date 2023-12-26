@@ -42,7 +42,6 @@ plugins=(
   quarkus
   # ripgrep completion
   ripgrep
-  web-search
   # easily navigate to saved folders
   wd
   # access to most visited directories
