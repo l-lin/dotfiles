@@ -110,6 +110,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   info "installing sdcv (word definition)"
   yay -S --noconfirm sdcv
 
+  info "installing w3m (terminal web browser)"
+  yay -S --noconfirm w3m
+
   info "installing ddgr (DuckDuckGo from the terminal): https://github.com/jarun/ddgr"
   yay -S --noconfirm ddgr
 
