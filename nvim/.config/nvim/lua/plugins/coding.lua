@@ -66,8 +66,8 @@ return {
       local cmp = require("cmp")
       local compare = require("cmp.config.compare")
       local luasnip = require("luasnip")
-      local custom_comparators = require("plugins.extras.cmp.comparators")
-      local custom_formatters = require("plugins.extras.cmp.formatters")
+      local custom_comparators = require("plugins.custom.cmp.comparators")
+      local custom_formatters = require("plugins.custom.cmp.formatters")
 
       opts.mapping = cmp.mapping.preset.insert({
         ["<C-u>"] = cmp.mapping.scroll_docs(-4),
