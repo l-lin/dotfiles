@@ -1,4 +1,4 @@
-local neotree_commands = require("plugins.extras.editor.neotree")
+local neotree_commands = require("plugins.custom.editor.neotree")
 
 local function get_selected_text()
   vim.cmd('noau normal! "vy"')
