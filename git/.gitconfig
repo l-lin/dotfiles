@@ -86,17 +86,8 @@
 
 # delta configuration: https://dandavison.github.io/delta/configuration.html
 [delta]
-  syntax-theme = Catppuccin-mocha
-  navigate = true
-  features = line-numbers
-;   features = line-numbers decorations
-;   plus-style = syntax "#003800"
-;   minus-style = syntax "#3f0001"
-; [delta "decorations"]
-;   commit-decoration-style = bold yellow box ul
-;   file-style = bold yellow ul
-;   file-decoration-style = none
-;   hunk-header-decoration-style = cyan box ul
+  line-numbers = true
+  side-by-side = true
 [init]
   ; defaultBranch = main
   defaultBranch = master
