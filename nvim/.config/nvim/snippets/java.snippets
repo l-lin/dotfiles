@@ -91,7 +91,7 @@ snippet testpojo
 	@DisplayName("""
 		Given correct arguments,
 		 when creating new ${1:`vim_snippets#Filename("$1", "untitled)"`},
-		 then do not throw exception
+		 then do not throw exception.
 		""")
 	void correctArguments() {
 		assertDoesNotThrow(() -> new ${1}(${2}));
@@ -102,7 +102,7 @@ snippet testpojo
 	@DisplayName("""
 		Given incorrect arguments,
 		 when creating new ${1},
-		 then throw exception
+		 then throw exception.
 		""")
 	void incorrectArguments(
 		String desc,
