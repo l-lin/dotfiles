@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
 
 alacritty --class 'Fullscreen,Fullscreen' \
-  -o window.startup_mode=fullscreen window.padding.x=45 \
-  window.padding.y=45 window.opacity=1.0
+  -o 'window.startup_mode="fullscreen"' 'window.padding.x=45' 'window.padding.y=45' 'window.opacity=1.0'
