@@ -87,7 +87,7 @@
 # delta configuration: https://dandavison.github.io/delta/configuration.html
 [delta]
   line-numbers = true
-  side-by-side = true
+  ; side-by-side = true
 [init]
   ; defaultBranch = main
   defaultBranch = master
