@@ -1,10 +1,23 @@
+-- From: https://github.com/tpope/vim-fugitive/issues/1274#issuecomment-1748183602
+local toggle_fugitive = function()
+  local winids = vim.api.nvim_list_wins()
+  for _, id in pairs(winids) do
+    local status = pcall(vim.api.nvim_win_get_var, id, "fugitive_status")
+    if status then
+      vim.api.nvim_win_close(id, false)
+      return
+    end
+  end
+  vim.cmd("Git")
+end
+
 return {
   -- git integration
   {
     "tpope/vim-fugitive",
     keys = {
-      { "<leader>gs", "<cmd>G<cr>", desc = "git status (Alt+0)" },
-      { "<A-0>", "<cmd>G<cr>", desc = "git status (Alt+0)" },
+      { "<leader>gs", toggle_fugitive, desc = "git status (Alt+0)" },
+      { "<A-0>", toggle_fugitive, desc = "git status (Alt+0)" },
       { "<leader>gc", "<cmd>G commit<cr>", desc = "git commit" },
       { "<leader>gd", "<cmd>G difftool<cr>", desc = "git commit" },
       { "<leader>gp", "<cmd>G pull<cr>", desc = "git pull" },
