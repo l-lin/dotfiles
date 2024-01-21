@@ -116,6 +116,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   info "installing ddgr (DuckDuckGo from the terminal): https://github.com/jarun/ddgr"
   yay -S --noconfirm ddgr
 
+  info "installing spotube: https://github.com/KRTirtho/spotube"
+  yay -S --noconfirm spotube-bin
+
   info "finished installing stuffs"
 fi
 
