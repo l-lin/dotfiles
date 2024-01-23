@@ -28,8 +28,10 @@ plugins=(
   forgit
   # map ctrl+g to find file
   fzf-custom
-  # completion selection menu with fzf
+  # completion selection menu with fzf: https://github.com/Aloxaf/fzf-tab
   fzf-tab
+  # collection of fzf-tab's source: https://github.com/Freed-Wu/fzf-tab-source
+  fzf-tab-source
   git-extra-commands
   git-open
   # faster git status for spaceship prompt
@@ -39,16 +41,20 @@ plugins=(
   httpie
   jira
   # quarkus completion
-  quarkus
+  #quarkus
   # ripgrep completion
-  ripgrep
+  #ripgrep
   # easily navigate to saved folders
   wd
   # access to most visited directories
   z
+  # add quotes automatically to commands: https://github.com/ianthehenry/zsh-autoquoter
   zsh-autoquoter
+  # suggestion commands based on command history: https://github.com/zsh-users/zsh-autosuggestions
   zsh-autosuggestions
+  # add syntax highlighting: https://github.com/zsh-users/zsh-syntax-highlighting
   zsh-syntax-highlighting
+  # better vi mode: https://github.com/jeffreytse/zsh-vi-mode
   zsh-vi-mode
 )
 

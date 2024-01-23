@@ -24,3 +24,4 @@ install_zsh_plugin https://github.com/unixorn/git-extra-commands git-extra-comma
 install_zsh_plugin https://github.com/romkatv/gitstatus gitstatus
 install_zsh_plugin https://github.com/jeffreytse/zsh-vi-mode zsh-vi-mode
 install_zsh_plugin https://github.com/Aloxaf/fzf-tab fzf-tab
+install_zsh_plugin https://github.com/Freed-Wu/fzf-tab-source fzf-tab-source
