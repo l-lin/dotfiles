@@ -16,3 +16,7 @@ vim.o.bg = "dark"
 
 -- disable auto-formatting
 vim.g.autoformat = false
+
+-- set to 2 spaces
+vim.o.tabstop = 2
+vim.o.shiftwidth = vim.o.tabstop
