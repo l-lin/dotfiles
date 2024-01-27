@@ -5,6 +5,7 @@ jless
 jwt-cli
 git-delta
 grex
+hyperfine
 navi
 procs
 ren-find
