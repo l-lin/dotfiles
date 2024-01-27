@@ -107,7 +107,7 @@ function gci
   test -n "$scope" && set scope "($scope)"
 
   set summary=$(gum input --value "$type$scope: " --placeholder "summary of the change" --width 50)
-  local description=$(gum write --placeholder "detail of the change" --width 80)
+  set description $(gum write --placeholder "detail of the change" --width 80)
 
   git add -A && git commit -m "$summary" -m "$description"
 end
