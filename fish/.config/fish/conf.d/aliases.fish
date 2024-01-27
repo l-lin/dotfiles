@@ -43,9 +43,9 @@ function chown
 end
 # ssh support with alacritty
 # see https://github.com/alacritty/alacritty/issues/3932 for more info
-# function ssh
-#     set TERM xterm-256color ssh
-# end
+function ssh
+    set TERM xterm-256color && command ssh $argv
+end
 
 # --------------------------------------------------------
 # GIT
