@@ -18,21 +18,14 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   info "updating packages"
   yay -Syyu
 
+  info "installing fish: https://fishshell.com/"
+  yay -S --noconfirm fish
+
   info "installing colordiff to produce output with pretty syntax highlighting"
   yay -S --noconfirm colordiff
 
-  # xcb lib to compile jless
-  # see https://github.com/PaulJuliusMartinez/jless/issues/87
-  #yay -S librust-xcb+debug-all-dev
-
-  # packages for pythons
-  # zlib: deals with "No module named 'zlib'
-  # libffi: deals with "No module named '_ctypes'
-  # libbz2: deals with "No module named '_bz2'
-  #yay -S python-setuptools \
-  #  zlib1g-dev \
-  #  libffi-dev \
-  #  libbz2-dev
+  info "installing lsof"
+  yay -S --noconfirm lsof
 
   # to resolve *.localhost automatically to 127.0.0.1
   info "installing nss-myhostname: https://man7.org/linux/man-pages/man8/nss-myhostname.8.html"

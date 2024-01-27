@@ -1,0 +1,33 @@
+import = ["/home/l-lin/.config/alacritty/colors.toml", "/home/l-lin/.config/alacritty/fonts.toml"]
+live_config_reload = true
+
+[cursor]
+unfocused_hollow = false
+
+[cursor.style]
+blinking = "On"
+shape = "Block"
+
+[env]
+TERM = "alacritty"
+WINIT_X11_SCALE_FACTOR = "1.0"
+
+[window]
+decorations = "full"
+dynamic_title = true
+# history = 10000
+# multiplier = 3
+opacity = 1.0
+startup_mode = "Windowed"
+
+[window.dimensions]
+columns = 82
+lines = 24
+
+[window.padding]
+x = 12
+y = 12
+
+[shell]
+program = "/bin/fish"
+

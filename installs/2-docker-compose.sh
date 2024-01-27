@@ -7,9 +7,9 @@ docker_compose_version="2.23.3"
 docker_config_folder=${HOME}/.docker
 docker_plugins_folder="${docker_config_folder}/cli-plugins"
 
-mkdir -p ${docker_plugins_folder}
+mkdir -p "${docker_plugins_folder}"
 
-if [ -f ${docker_plugins_folder}/docker-compose ]; then
+if [ -f "${docker_plugins_folder}/docker-compose" ]; then
   echo "[-] docker compose already exists => skipping"
 else
   echo "[-] installing docker compose: https://github.com/docker/compose"
