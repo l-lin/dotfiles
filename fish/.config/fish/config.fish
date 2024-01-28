@@ -5,8 +5,8 @@ if status is-interactive
     set_vi_mode
     add_abbreviations
 
+    configure_prompt
     configure_fzf
-    configure_hydro
     configure_pet
     configure_navi
 end

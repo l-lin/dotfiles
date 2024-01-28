@@ -30,4 +30,5 @@ y = 12
 
 [shell]
 program = "/bin/fish"
+args = ["-l", "-c", "tmux -2 -u"]
 
