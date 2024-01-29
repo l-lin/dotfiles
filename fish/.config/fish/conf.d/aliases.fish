@@ -53,7 +53,7 @@ end
 function gbdr
     git branch -r \
         | awk "{print \$1}" \
-        | egrep -v -f /dev/fd/0 <(git branch -vv | grep origin) \
+        | grep -E -v -f /dev/fd/0 (git branch -vv | grep origin | psub) \
         | awk "{print \$1}" \
         | xargs git branch -D $argv
 end
@@ -81,7 +81,7 @@ function gbd
 end
 function gchurn
     git log --format=format: --name-only --since=12.month \
-        | egrep -v "^\$" \
+        | grep -E -v "^\$" \
         | sort \
         | uniq -c \
         | sort -nr \
