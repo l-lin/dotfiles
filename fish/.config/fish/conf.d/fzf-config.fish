@@ -3,20 +3,20 @@ function configure_fzf
     # --------------------------------------------------------
     # FZF options
     # --------------------------------------------------------
-    set --global FZF_THEME_BG '#1f1f28'
-    set --global FZF_THEME_FG '#dcd7ba'
-    set --global FZF_THEME_BLACK '#090618'
-    set --global FZF_THEME_RED '#c34043'
-    set --global FZF_THEME_GREEN '#76946a'
-    set --global FZF_THEME_YELLOW '#c0a36e'
-    set --global FZF_THEME_BLUE '#7e9cd8'
-    set --global FZF_THEME_MAGENTA '#957fb8'
-    set --global FZF_THEME_CYAN '#6a9589'
-    set --global FZF_THEME_WHITE '#c8c093'
-    set --global FZF_THEME_GRAY '#727169'
-    set --global FZF_THEME_ACCENT '#7e9cd8'
+    set --export FZF_THEME_BG '#1f1f28'
+    set --export FZF_THEME_FG '#dcd7ba'
+    set --export FZF_THEME_BLACK '#090618'
+    set --export FZF_THEME_RED '#c34043'
+    set --export FZF_THEME_GREEN '#76946a'
+    set --export FZF_THEME_YELLOW '#c0a36e'
+    set --export FZF_THEME_BLUE '#7e9cd8'
+    set --export FZF_THEME_MAGENTA '#957fb8'
+    set --export FZF_THEME_CYAN '#6a9589'
+    set --export FZF_THEME_WHITE '#c8c093'
+    set --export FZF_THEME_GRAY '#727169'
+    set --export FZF_THEME_ACCENT '#7e9cd8'
 
-    set --global FZF_THEME "\
+    set --export FZF_THEME "\
         --color=bg:$FZF_THEME_BG \
         --color=hl:$FZF_THEME_ACCENT \
         --color=fg:$FZF_THEME_FG \
@@ -38,7 +38,7 @@ function configure_fzf
         --no-scrollbar \
         --prompt='󰍉 ' \
         "
-    set --global FZF_DEFAULT_OPTS "\
+    set --export FZF_DEFAULT_OPTS "\
         --bind='?:toggle-preview' \
         --bind='alt-p:toggle-preview-wrap' \
         --preview-window='right:40%:border-none' \
@@ -46,7 +46,7 @@ function configure_fzf
         --cycle \
         $FZF_THEME \
         "
-    set --global FZF_TMUX_OPTS "-p 90%,90%"
+    set --export FZF_TMUX_OPTS "-p 90%,90%"
     # preview content of the file under the cursor when searching for a file
     set --global FZF_CTRL_G_OPTS "--no-reverse --preview 'bat --style changes --color=always {} | head -50'"
     # preview full command
