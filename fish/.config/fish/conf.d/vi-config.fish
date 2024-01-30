@@ -15,4 +15,5 @@ function set_vi_mode
     bind -s -M insert \ce end-of-line
     bind -s -M insert \cp history-search-backward
     bind -s -M insert \cn history-search-forward
+    bind -s -M insert \cw backward-kill-word
 end

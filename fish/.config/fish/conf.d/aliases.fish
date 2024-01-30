@@ -101,7 +101,7 @@ function batdiff
 end
 # git commit shortcut
 function gci
-  set type $(echo "feat\nfix\nchore\ntask\nrefactor\nci\ncd\nbuild" | gum filter --placeholder "type")
+  set type $(echo -e "feat\nfix\nchore\ntask\nrefactor\nci\ncd\nbuild" | gum filter --placeholder "type")
   set scope $(gum input --value "$(git rev-parse --abbrev-ref HEAD | awk -F'/' '{ print $2 }')" --placeholder "scope")
 
   test -n "$scope" && set scope "($scope)"
