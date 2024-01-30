@@ -23,7 +23,7 @@ function configure_pure_prompt
 end
 
 # blazing fast prompt: https://github.com/jorgebucaran/hydro
-function configure_hydro
+function configure_hydro_prompt
     # symbols
     set --global hydro_symbol_git_dirty ' 🚧'
     set --global hydro_symbol_git_ahead 🔺

@@ -138,6 +138,12 @@ end
 # --------------------------------------------------------
 # Custom functions
 # --------------------------------------------------------
+function timesh -d "Profile shell spawning"
+  for i in $(seq 1 10)
+    time $SHELL -i -c exit
+  end
+end
+
 function diffc
     diff -u $argv[1] $argv[2] \
         | colordiff \
