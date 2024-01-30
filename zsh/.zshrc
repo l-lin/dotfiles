@@ -1,7 +1,3 @@
-# If not running interactively, do not do anything
-[[ $- != *i* ]] && return
-[[ -z "$TMUX" ]] && exec tmux -2 -u
-
 # uncomment the following to benchmark your shell
 # start a new session, and call `zprof`
 #zmodload zsh/zprof
