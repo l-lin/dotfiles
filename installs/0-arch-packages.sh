@@ -18,9 +18,6 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   info "updating packages"
   yay -Syyu
 
-  info "installing fish: https://fishshell.com/"
-  yay -S --noconfirm fish
-
   info "installing colordiff to produce output with pretty syntax highlighting"
   yay -S --noconfirm colordiff
 
