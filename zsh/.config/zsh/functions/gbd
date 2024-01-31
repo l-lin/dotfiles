@@ -1,0 +1,6 @@
+#!/usr/bin/env zsh
+#
+# interactive git branch delete
+#
+
+git branch | fzf --header "Branch to delete" | xargs git branch -D

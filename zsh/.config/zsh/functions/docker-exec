@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+#
+# execute command in container
+#
+
+local cmd=$1
+local cid
+cid=$(docker ps | sed 1d | fzf -1 -q "$2" | awk '{print $1}')
+
+[ -n "$cid" ] && docker exec -it "$cid" "$cmd"

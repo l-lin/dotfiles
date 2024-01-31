@@ -1,0 +1,54 @@
+#
+# .zsh_plugins.txt - antidote plugins file
+# src: https://getantidote.github.io/
+#
+
+# prompt theme
+romkatv/powerlevel10k
+
+# add more completions with plugins
+zsh-users/zsh-completions
+# enhance zsh
+mattmc3/zephyr path:plugins/completion
+mattmc3/zephyr path:plugins/environment
+mattmc3/zephyr path:plugins/color
+mattmc3/zephyr path:plugins/confd
+mattmc3/zephyr path:plugins/directory
+mattmc3/zephyr path:plugins/history
+
+# interactive git
+wfxr/forgit kind:defer
+
+# custom shortcut for fzf
+Aloxaf/fzf-tab kind:defer
+# collection of fzf-tab's source
+Freed-Wu/fzf-tab-source kind:defer
+
+# easily navigate to saved folders
+mfaerevaag/wd kind:defer
+
+# access to most visited directories
+skywind3000/z.lua kind:defer
+
+# add quotes automatically to commands
+ianthehenry/zsh-autoquoter kind:defer
+
+# suggestion commands based on command history
+# must not defer, otherwise it will throw the "increase FUNCNEST" error
+zsh-users/zsh-autosuggestions
+
+# add syntax highlighting
+# must not defer, otherwise it will throw the "increase FUNCNEST" error
+zsh-users/zsh-syntax-highlighting
+
+# better vi mode
+jeffreytse/zsh-vi-mode
+
+#custom plugins
+"${ZSH_CUSTOM}" path:plugins/abbr kind:defer
+"${ZSH_CUSTOM}" path:plugins/fzf kind:defer
+"${ZSH_CUSTOM}" path:plugins/navi kind:defer
+"${ZSH_CUSTOM}" path:plugins/pet kind:defer
+"${ZSH_CUSTOM}" path:plugins/zfunctions
+
+# vim: ft=config

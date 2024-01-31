@@ -1,0 +1,8 @@
+#!/usr/bin/env zsh
+#
+# easy push to remote
+#
+
+local branch_name=$(git rev-parse --abbrev-ref HEAD)
+
+git push -u origin ${branch_name}

@@ -1,0 +1,11 @@
+#!/usr/bin/env zsh
+#
+# interactive git branch creation
+#
+
+local branch_type=$(echo "feature\nbugfix\ntask\nrefactor" | gum filter --placeholder "branch type")
+local jira_task_id=$(gum input --placeholder "jira task ID")
+
+local branch_name=$(gum input --value "${branch_type}/CLOUD-$jira_task_id/" --placeholder "branch name")
+
+git checkout -b "${branch_name}"

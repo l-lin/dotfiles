@@ -1,2 +1,0 @@
-eval "$(dip console)"
-

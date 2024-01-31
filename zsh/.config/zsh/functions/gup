@@ -1,0 +1,8 @@
+#!/usr/bin/env zsh
+#
+# synchronize and delete merged branches
+#
+
+local target_branch=${1:-develop}
+git fetch --all --prune && git checkout "${target_branch}" && git pull && gbdr
+
