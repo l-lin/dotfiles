@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+#
+# synchronize folder to AWS S3
+#
+
+local folder_name=$(pwd | awk -F'/' '{ print $NF }')
+local aws_profile=${1:-perso}
+
+aws s3 sync . "s3://${folder_name}" --storage-class ONEZONE_IA --delete --profile "${aws_profile}"
+

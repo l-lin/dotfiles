@@ -1,0 +1,6 @@
+#!/usr/bin/env zsh
+#
+# interfactive git checkout
+#
+
+git branch | fzf --header Checkout | xargs git checkout

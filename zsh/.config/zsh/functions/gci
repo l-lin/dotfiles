@@ -1,0 +1,14 @@
+#!/usr/bin/env zsh
+#
+# interactive git commit
+#
+
+local type=$(echo "feat\nfix\nchore\ntask\nrefactor\nci\ncd\nbuild" | gum filter --placeholder "type")
+local scope=$(gum input --value "$(git rev-parse --abbrev-ref HEAD | awk -F'/' '{ print $2 }')" --placeholder "scope")
+
+test -n "${scope}" && scope="(${scope})"
+
+local summary=$(gum input --value "${type}${scope}: " --placeholder "summary of the change" --width 50)
+local description=$(gum write --placeholder "detail of the change" --width 80)
+
+git add -A && git commit -m "${summary}" -m "${description}"

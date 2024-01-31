@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+#
+# create a GIF
+#
+
+local target_file=${1:-$HOME/tmp/byzanz.gif}
+byzanz-record --duration=5 --x=250 --y=235 --width=1200 --height=800 "${target_file}"

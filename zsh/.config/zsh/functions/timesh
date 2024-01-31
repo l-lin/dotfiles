@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+#
+# benchmark shell startup time
+#
+
+local shell=${1-$SHELL}
+for i in $(seq 10); do
+  time ${shell} -i -c exit
+done
+
