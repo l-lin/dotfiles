@@ -10,4 +10,5 @@ navi-work:~/.local/share/navi/cheats/louis.lin__cheats
 nvim:~/perso/dotfiles/nvim/.config/nvim
 playbook:~/work/sandbox/playbook
 record-service:~/work/record-service
+swapi:~/work/smart-wearables-platform-api
 video:~/work/video-service
