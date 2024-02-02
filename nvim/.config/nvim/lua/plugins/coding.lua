@@ -49,8 +49,6 @@ return {
       -- lua support
       "hrsh7th/cmp-nvim-lua",
       "saadparwaiz1/cmp_luasnip",
-      -- emoji support
-      "hrsh7th/cmp-emoji",
       -- omni
       "hrsh7th/cmp-omni",
       -- autocompletion from tmux panes
@@ -104,7 +102,6 @@ return {
         { name = "path" },
         { name = "buffer" },
         { name = "tmux" },
-        { name = "emoji", option = { insert = true } },
       })
       opts.sorting = {
         priority_weight = 2,
@@ -139,7 +136,6 @@ return {
         sources = cmp.config.sources({
           { name = "buffer" },
           { name = "tmux" },
-          { name = "emoji", option = { insert = true } },
         }),
       })
       cmp.setup.cmdline({ "/", "?" }, {

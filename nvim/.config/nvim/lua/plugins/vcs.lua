@@ -19,12 +19,11 @@ return {
       { "<leader>gs", toggle_fugitive, desc = "git status (Alt+0)" },
       { "<A-0>", toggle_fugitive, desc = "git status (Alt+0)" },
       { "<leader>gc", "<cmd>G commit<cr>", desc = "git commit" },
-      { "<leader>gd", "<cmd>G difftool<cr>", desc = "git commit" },
+      { "<leader>gd", "<cmd>G difftool<cr>", desc = "git difftool" },
       { "<leader>gp", "<cmd>G pull<cr>", desc = "git pull" },
       { "<leader>gP", "<cmd>G -p push<cr>", desc = "git push" },
       { "<leader>gF", "<cmd>G -p push --force-with-lease<cr>", desc = "git push --force-with-lease" },
       { "<leader>gb", "<cmd>G blame<cr>", desc = "git blame" },
-      { "<leader>gl", "<cmd>0GcLog<cr>", desc = "git log" },
     },
   },
 
@@ -52,14 +51,14 @@ return {
     cmd = { "DiffviewOpen", "DiffviewFileHistory", "DiffviewToggleFiles", "DiffviewFocusFiles" },
     keys = {
       {
-        "<leader>mh",
+        "<leader>gL",
         "<cmd>DiffviewFileHistory<cr>",
         noremap = true,
         silent = true,
         desc = "Check full project git history",
       },
       {
-        "<leader>mf",
+        "<leader>gl",
         "<cmd>DiffviewFileHistory %<cr>",
         noremap = true,
         silent = true,
