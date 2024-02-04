@@ -1,15 +1,5 @@
 local neotree_commands = require("plugins.custom.editor.neotree")
-
-local function get_selected_text()
-  vim.cmd('noau normal! "vy"')
-  local text = vim.fn.getreg("v")
-  vim.fn.setreg("v", {})
-  text = string.gsub(text, "\n", "")
-  if string.len(text) == 0 then
-    text = ""
-  end
-  return text
-end
+local telescope_commands = require("plugins.custom.editor.telescope")
 
 return {
   -- fuzzy finding anything anywhere
@@ -22,7 +12,9 @@ return {
       -- finder
       {
         "<C-g>",
-        "<cmd>Telescope find_files<cr>",
+        function()
+          telescope_commands.resume_search_if_same_picker(require("telescope.builtin").find_files, {})
+        end,
         mode = "n",
         noremap = true,
         silent = true,
@@ -31,7 +23,7 @@ return {
       {
         "<C-g>",
         function()
-          require("telescope.builtin").find_files({ default_text = get_selected_text() })
+          require("telescope.builtin").find_files({ default_text = telescope_commands.get_selected_text() })
         end,
         mode = "v",
         noremap = true,
@@ -40,7 +32,9 @@ return {
       },
       {
         "<M-f>",
-        "<cmd>Telescope live_grep<cr>",
+        function()
+          telescope_commands.resume_search_if_same_picker(require("telescope.builtin").live_grep, {})
+        end,
         mode = "n",
         noremap = true,
         silent = true,
@@ -49,7 +43,7 @@ return {
       {
         "<M-f>",
         function()
-          require("telescope.builtin").live_grep({ default_text = get_selected_text() })
+          require("telescope.builtin").live_grep({ default_text = telescope_commands.get_selected_text() })
         end,
         mode = "v",
         noremap = true,
@@ -58,7 +52,9 @@ return {
       },
       {
         "<C-e>",
-        "<cmd>Telescope buffers sort_mru=true sort_lastused=true ignore_current_buffer=true<cr>",
+        function()
+            require("telescope.builtin").buffers({ sort_mru = true, ignore_current_buffer = true })
+        end,
         noremap = true,
         silent = true,
         desc = "Find file in buffer (Ctrl+e)",
