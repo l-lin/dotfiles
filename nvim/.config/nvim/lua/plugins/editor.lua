@@ -63,13 +63,7 @@ return {
         silent = true,
         desc = "Find file in buffer (Ctrl+e)",
       },
-      {
-        "<leader>fk",
-        "<cmd>Telescope keymaps<cr>",
-        noremap = true,
-        silent = true,
-        desc = "Find nvim keymaps",
-      },
+      { "<C-x>", "<cmd>Telescope resume<cr>", noremap = true, silent = true, desc = "Resume search" },
     },
     opts = {
       defaults = {
@@ -77,6 +71,20 @@ return {
           i = {
             ["<C-f>"] = require("telescope.actions").preview_scrolling_left,
           },
+        },
+        prompt_prefix = " ",
+        path_display = {
+          "truncate",
+        },
+        layout_config = {
+          height = 0.99,
+          width = 0.99,
+        },
+      },
+      pickers = {
+        buffers = {
+          sort_mru = true,
+          sort_lastused = true,
         },
       },
     },
@@ -172,22 +180,6 @@ return {
         let g:VM_maps["Find Subword Under"] = "<A-h>"
       ]])
     end,
-  },
-
-  -- fuzzy finder
-  {
-    "nvim-telescope/telescope.nvim",
-    opts = {
-      defaults = {
-        path_display = {
-          "truncate",
-        },
-        layout_config = {
-          height = 0.99,
-          width = 0.99,
-        },
-      },
-    },
   },
 
   -- search/replace in multiple files
