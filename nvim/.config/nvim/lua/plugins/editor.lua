@@ -13,7 +13,7 @@ return {
       {
         "<C-g>",
         function()
-          telescope_commands.resume_search_if_same_picker(require("telescope.builtin").find_files, {})
+          require("telescope.builtin").find_files()
         end,
         mode = "n",
         noremap = true,
@@ -33,7 +33,7 @@ return {
       {
         "<M-f>",
         function()
-          telescope_commands.resume_search_if_same_picker(require("telescope.builtin").live_grep, {})
+          require("telescope.builtin").live_grep()
         end,
         mode = "n",
         noremap = true,
