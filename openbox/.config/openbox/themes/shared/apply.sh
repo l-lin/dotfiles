@@ -115,7 +115,7 @@ apply_terminal() {
 	local alacritty_config_file_path="${PATH_TERM}/alacritty.toml"
 
 	if [[ -f "${alacritty_config_file_path}" ]]; then
-    sed -i --follow-symlinks "s~colorschemes/\(.*\)\.toml~colorschemes/${THEME}.toml~" ${alacritty_config_file_path}
+    sed -i --follow-symlinks "s~color-schemes/\(.*\)\.toml~color-schemes/${THEME}.toml~" ${alacritty_config_file_path}
 	fi
 
 	# xfce terminal : fonts & colors
@@ -348,10 +348,10 @@ change_nvim_background() {
 }
 
 change_zsh_background() {
-	local file_path="${ZDOTDIR}/.ztheme"
+	local file_path="${ZDOTDIR}/.zsh_color_scheme"
 
 	if [[ -f "${file_path}" ]]; then
-		sed -i --follow-symlinks "s/^export ZSH_THEME='.*'/export ZSH_THEME='${THEME}'/" "${file_path}"
+		sed -i --follow-symlinks "s/^export ZSH_COLOR_SCHEME='.*'/export ZSH_COLOR_SCHEME='${THEME}'/" "${file_path}"
 	fi
 }
 

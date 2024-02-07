@@ -1,5 +1,5 @@
 import = [
-  "~/.config/alacritty/colorschemes/kanagawa.toml",
+  "~/.config/alacritty/color-schemes/kanagawa.toml",
   "~/.config/alacritty/fonts.toml",
 ]
 live_config_reload = true

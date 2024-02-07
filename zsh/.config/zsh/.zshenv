@@ -8,7 +8,7 @@ export ZDOTDIR=$HOME/.config/zsh
 export ZSH_CUSTOM=${ZDOTDIR}
 
 # import theme
-[[ -f "${ZDOTDIR}/.ztheme" ]] && . "${ZDOTDIR}/.ztheme"
+[[ -f "${ZDOTDIR}/.zsh_color_scheme" ]] && . "${ZDOTDIR}/.zsh_color_scheme"
 
 # import zprofiles
 for f in "${ZDOTDIR}"/zprofile.d/.zprofile*; do
