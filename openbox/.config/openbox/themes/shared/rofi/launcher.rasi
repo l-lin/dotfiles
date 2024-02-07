@@ -8,5 +8,5 @@ configuration {
     drun-display-format:        "{name}";
     window-format:              "{w} · {c} · {t}";
 }
-@theme "/usr/share/rofi/themes/gruvbox-dark.rasi"
+@theme "~/.config/rofi/color-schemes/github-light.rasi"
 

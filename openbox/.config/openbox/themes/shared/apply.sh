@@ -60,16 +60,9 @@ apply_rofi() {
 	sed -i -e "s/font:.*/font: \"$rofi_font\";/g" ${PATH_ROFI}/shared/fonts.rasi
 
 	# rewrite colors file
-	cat > ${PATH_ROFI}/shared/colors.rasi <<- EOF
-		* {
-		    background:     ${background};
-		    background-alt: ${altbackground};
-		    foreground:     ${foreground};
-		    selected:       ${accent};
-		    active:         ${color_green};
-		    urgent:         ${color_red};
-		}
-	EOF
+  for f in "${PATH_OBOX}/themes/shared/rofi/"*.rasi; do
+    sed -i --follow-symlinks -e "s~color-schemes/\(.*\)\.rasi~color-schemes/${THEME}\.rasi~" ${f}
+  done
 
 	# modify icon theme
 	if [[ -f "$XDG_CONFIG_HOME"/rofi/config.rasi ]]; then
@@ -92,13 +85,6 @@ apply_terminal() {
 	if [[ -f "${alacritty_config_file_path}" ]]; then
     sed -i --follow-symlinks "s~color-schemes/\(.*\)\.toml~color-schemes/${THEME}.toml~" ${alacritty_config_file_path}
 	fi
-
-	# xfce terminal : fonts & colors
-	sed -i ${PATH_XFCE}/terminalrc \
-		-e "s/ColorBackground=.*/ColorBackground=${background}/g" \
-		-e "s/ColorForeground=.*/ColorForeground=${foreground}/g" \
-		-e "s/ColorCursor=.*/ColorCursor=${foreground}/g" \
-		-e "s/ColorPalette=.*/ColorPalette=${color_black};${color_red};${color_green};${color_yellow};${color_blue};${color_magenta};${color_cyan};${color_white};${color_altblack};${color_altred};${color_altgreen};${color_altyellow};${color_altblue};${color_altmagenta};${color_altcyan};${color_altwhite}/g"
 }
 
 # Geany -------------------------------------
@@ -172,9 +158,6 @@ apply_obconfig() {
 	xmlstarlet ed -L -N a="$namespace" -u '/a:openbox_config/a:margins/a:bottom' -v ${ob_margin_b} "$config"
 	xmlstarlet ed -L -N a="$namespace" -u '/a:openbox_config/a:margins/a:left' -v ${ob_margin_l} "$config"
 	xmlstarlet ed -L -N a="$namespace" -u '/a:openbox_config/a:margins/a:right' -v ${ob_margin_r} "$config"
-
-	# TODO: remove shortcuts to `C-A-m` and `C-S-R` and `W-l`
-	# TODO: replace betterlockscreen --lock shortcut from `C-A-l` to `W-l`
 
 	# Reload Openbox Config
 	openbox --reconfigure

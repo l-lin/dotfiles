@@ -4,4 +4,4 @@ configuration {
 /*
 USE_ICON=YES
 */
-@theme "/usr/share/rofi/themes/gruvbox-dark.rasi"
+@theme "~/.config/rofi/color-schemes/github-light.rasi"
