@@ -8,4 +8,4 @@ configuration {
     drun-display-format:        "{name}";
     window-format:              "{w} · {c} · {t}";
 }
-@theme "~/.config/rofi/color-schemes/github-light.rasi"
+@theme "~/.config/rofi/colorschemes/kanagawa.rasi"

@@ -1,0 +1,9 @@
+#
+# .zsh_color_schemes - Zsh color schemes related env variables
+#
+
+export ZSH_COLORSCHEME='kanagawa'
+
+[[ -f "${ZDOTDIR}/colorschemes/${ZSH_COLORSCHEME}.zsh" ]] && . "${ZDOTDIR}/colorschemes/${ZSH_COLORSCHEME}.zsh"
+
+# vim: ft=zsh
