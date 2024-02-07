@@ -55,33 +55,6 @@ ob_margin_b='0'
 ob_margin_l='0'
 ob_margin_r='0'
 
-# Dunst
-dunst_width='300'
-dunst_height='80'
-dunst_offset='10x48'
-dunst_origin='top-right'
-dunst_font='JetBrains Mono 10'
-dunst_border='4'
-dunst_separator='2'
-
-# Plank
-plank_hmode='intelligent'
-plank_offset='0'
-plank_position='bottom'
-plank_theme='Transparent'
-plank_icon_size='32'
-plank_zoom_percent='120'
-
-# Picom
-picom_backend='glx'
-picom_corner='6'
-picom_shadow_r='14'
-picom_shadow_o='0.30'
-picom_shadow_x='-12'
-picom_shadow_y='-12'
-picom_blur_method='none'
-picom_blur_strength='0'
-
 # theme
 wallpaper_color="#7B8D59"
 nvim_colorscheme="gruvbox"
