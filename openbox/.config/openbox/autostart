@@ -49,14 +49,14 @@ if [[ $(pgrep -nc "firefox") -eq 0 ]]; then
   exec firefox &
 fi
 
-## Open furminal
-if [[ $(pgrep -nc "ob-furminal") -eq 0 ]]; then
-  exec ob-furminal &
-fi
-
 ## Open Obsidian
 if [[ $(pgrep -nc "obsidian") -eq 0 ]]; then
   exec obsidian &
+fi
+
+## Open furminal
+if [[ $(pgrep -nc "ob-furminal") -eq 0 ]]; then
+  exec ob-furminal &
 fi
 
 ## Set caps lock to ctrl
