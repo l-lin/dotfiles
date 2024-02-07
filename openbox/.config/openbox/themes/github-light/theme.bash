@@ -34,10 +34,6 @@ polybar_font='JetBrains Mono:size=11;3'
 rofi_font='Iosevka 10'
 rofi_icon='Zafiro'
 
-# Terminal
-terminal_font_name='JetBrainsMono Nerd Font'
-terminal_font_size='14'
-
 # Geany
 geany_colors='slime.conf'
 geany_font='JetBrains Mono 10'

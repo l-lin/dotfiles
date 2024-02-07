@@ -1,0 +1,9 @@
+#
+# .ztheme - Zsh theme related env variables
+#
+
+export ZSH_THEME='kanagawa'
+
+[[ -f "${ZDOTDIR}/themes/${ZSH_THEME}.zsh" ]] && . "${ZDOTDIR}/themes/${ZSH_THEME}.zsh"
+
+# vim: ft=zsh
