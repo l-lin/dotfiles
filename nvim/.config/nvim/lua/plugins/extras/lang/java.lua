@@ -329,7 +329,7 @@ return {
                 -- enable junit extension detection to activate https://github.com/laech/java-stacksrc
                 local jdtls_test_opts = {
                   config_overrides = {
-                    vmArgs = "-Djunit.jupiter.extensions.autodetection.enabled=true",
+                    vmArgs = "-Djunit.jupiter.extensions.autodetection.enabled=true --enable-preview",
                   },
                 }
                 vim.keymap.set("n", "<M-S-F9>", function()
