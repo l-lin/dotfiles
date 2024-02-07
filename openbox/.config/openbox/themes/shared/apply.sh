@@ -9,15 +9,15 @@ altbackground="$(pastel color $background | pastel lighten $light_value | pastel
 altforeground="$(pastel color $foreground | pastel darken $dark_value | pastel format hex)"
 
 ## Directories ------------------------------
-PATH_CONF="$HOME/.config"
-PATH_TERM="$PATH_CONF/alacritty"
-PATH_DUNST="$PATH_CONF/dunst"
-PATH_GEANY="$PATH_CONF/geany"
-PATH_OBOX="$PATH_CONF/openbox"
-PATH_PBAR="$PATH_OBOX/themes/$THEME/polybar"
-PATH_ROFI="$PATH_OBOX/themes/$THEME/rofi"
-PATH_XFCE="$PATH_CONF/xfce4/terminal"
-ZDOTDIR="${PATH_CONF}/zsh"
+XDG_CONFIG_HOME="${HOME}/.config"
+PATH_TERM="${XDG_CONFIG_HOME}/alacritty"
+PATH_DUNST="${XDG_CONFIG_HOME}/dunst"
+PATH_GEANY="${XDG_CONFIG_HOME}/geany"
+PATH_OBOX="${XDG_CONFIG_HOME}/openbox"
+PATH_PBAR="${PATH_OBOX}/themes/shared/polybar"
+PATH_ROFI="${PATH_OBOX}/themes/shared/rofi"
+PATH_XFCE="${XDG_CONFIG_HOME}/xfce4/terminal"
+ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
 
 ## Wallpaper ---------------------------------
 apply_wallpaper() {
@@ -35,32 +35,7 @@ apply_polybar() {
 	sed -i -e "s/font-0 = .*/font-0 = \"$polybar_font\"/g" ${PATH_PBAR}/config.ini
 
 	# rewrite colors file
-	cat > ${PATH_PBAR}/colors.ini <<- EOF
-		[color]
-
-		BACKGROUND = ${background}
-		FOREGROUND = ${foreground}
-		ALTBACKGROUND = ${altbackground}
-		ALTFOREGROUND = ${altforeground}
-		ACCENT = ${accent}
-
-		BLACK = ${color_black}
-		RED = ${color_red}
-		GREEN = ${color_green}
-		YELLOW = ${color_yellow}
-		BLUE = ${color_blue}
-		MAGENTA = ${color_magenta}
-		CYAN = ${color_cyan}
-		WHITE = ${color_white}
-		ALTBLACK = ${color_altblack}
-		ALTRED = ${color_altred}
-		ALTGREEN = ${color_altgreen}
-		ALTYELLOW = ${color_altyellow}
-		ALTBLUE = ${color_altblue}
-		ALTMAGENTA = ${color_altmagenta}
-		ALTCYAN = ${color_altcyan}
-		ALTWHITE = ${color_altwhite}
-	EOF
+  sed -i --follow-symlinks "s~color-schemes/\(.*\)\.ini~color-schemes/${THEME}.ini~" ${PATH_PBAR}/config.ini
 }
 
 ## Tint2 -----------------------------------
@@ -97,15 +72,15 @@ apply_rofi() {
 	EOF
 
 	# modify icon theme
-	if [[ -f "$PATH_CONF"/rofi/config.rasi ]]; then
-		sed -i -e "s/icon-theme:.*/icon-theme: \"$rofi_icon\";/g" ${PATH_CONF}/rofi/config.rasi
+	if [[ -f "$XDG_CONFIG_HOME"/rofi/config.rasi ]]; then
+		sed -i -e "s/icon-theme:.*/icon-theme: \"$rofi_icon\";/g" ${XDG_CONFIG_HOME}/rofi/config.rasi
 	fi
 }
 
 # Network Menu ------------------------------
 apply_netmenu() {
-	if [[ -f "$PATH_CONF"/networkmanager-dmenu/config.ini ]]; then
-		sed -i -e "s#dmenu_command = .*#dmenu_command = rofi -dmenu -theme $PATH_ROFI/networkmenu.rasi#g" ${PATH_CONF}/networkmanager-dmenu/config.ini
+	if [[ -f "$XDG_CONFIG_HOME"/networkmanager-dmenu/config.ini ]]; then
+		sed -i -e "s#dmenu_command = .*#dmenu_command = rofi -dmenu -theme $PATH_ROFI/networkmenu.rasi#g" ${XDG_CONFIG_HOME}/networkmanager-dmenu/config.ini
 	fi
 }
 
@@ -277,7 +252,7 @@ apply_plank() {
 
 # Compositor --------------------------------
 apply_compositor() {
-	picom_cfg="$PATH_CONF/picom.conf"
+	picom_cfg="$XDG_CONFIG_HOME/picom.conf"
 
 	# modify picom config
 	sed -i "$picom_cfg" \
@@ -320,8 +295,8 @@ apply_change_terminal() {
 	change_terminal "${PATH_OBOX}/menu-glyphs.xml"
 	change_terminal "${PATH_OBOX}/menu-icons.xml"
 	change_terminal "${PATH_OBOX}/menu-simple.xml"
-	change_terminal "${PATH_CONF}/networkmanager-dmenu/config.ini"
-	change_terminal "${PATH_CONF}/geany/geany.conf"
+	change_terminal "${XDG_CONFIG_HOME}/networkmanager-dmenu/config.ini"
+	change_terminal "${XDG_CONFIG_HOME}/geany/geany.conf"
 }
 
 change_tmux_background() {
