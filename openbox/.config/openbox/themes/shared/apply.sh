@@ -17,6 +17,7 @@ PATH_OBOX="$PATH_CONF/openbox"
 PATH_PBAR="$PATH_OBOX/themes/$THEME/polybar"
 PATH_ROFI="$PATH_OBOX/themes/$THEME/rofi"
 PATH_XFCE="$PATH_CONF/xfce4/terminal"
+ZDOTDIR="${PATH_CONF}/zsh"
 
 ## Wallpaper ---------------------------------
 apply_wallpaper() {
@@ -110,46 +111,15 @@ apply_netmenu() {
 
 # Terminal ----------------------------------
 apply_terminal() {
-	# alacritty : fonts
-	sed -i ${PATH_TERM}/fonts.yml \
-		-e "s/family: .*/family: \"$terminal_font_name\"/g" \
-		-e "s/size: .*/size: $terminal_font_size/g"
+  # alacritty : colors
+	local alacritty_config_file_path="${PATH_TERM}/alacritty.toml"
 
-	# alacritty : colors
-	cat > ${PATH_TERM}/colors.yml <<- _EOF_
-		## Colors configuration
-		colors:
-		  # Default colors
-		  primary:
-		    background: '${background}'
-		    foreground: '${foreground}'
-
-		  # Normal colors
-		  normal:
-		    black:   '${color_black}'
-		    red:     '${color_red}'
-		    green:   '${color_green}'
-		    yellow:  '${color_yellow}'
-		    blue:    '${color_blue}'
-		    magenta: '${color_magenta}'
-		    cyan:    '${color_cyan}'
-		    white:   '${color_white}'
-
-		  # Bright colors
-		  bright:
-		    black:   '${color_altblack}'
-		    red:     '${color_altred}'
-		    green:   '${color_altgreen}'
-		    yellow:  '${color_altyellow}'
-		    blue:    '${color_altblue}'
-		    magenta: '${color_altmagenta}'
-		    cyan:    '${color_altcyan}'
-		    white:   '${color_altwhite}'
-	_EOF_
+	if [[ -f "${alacritty_config_file_path}" ]]; then
+    sed -i --follow-symlinks "s~colorschemes/\(.*\)\.toml~colorschemes/${THEME}.toml~" ${alacritty_config_file_path}
+	fi
 
 	# xfce terminal : fonts & colors
 	sed -i ${PATH_XFCE}/terminalrc \
-		-e "s/FontName=.*/FontName=$terminal_font_name $terminal_font_size/g" \
 		-e "s/ColorBackground=.*/ColorBackground=${background}/g" \
 		-e "s/ColorForeground=.*/ColorForeground=${foreground}/g" \
 		-e "s/ColorCursor=.*/ColorCursor=${foreground}/g" \
@@ -378,21 +348,10 @@ change_nvim_background() {
 }
 
 change_zsh_background() {
-	local file_path="${HOME}/.zshenv"
+	local file_path="${ZDOTDIR}/.ztheme"
 
 	if [[ -f "${file_path}" ]]; then
-		sed -i --follow-symlinks "s/^export ZSH_THEME_BG='.*'/export ZSH_THEME_BG='${background}'/" "${file_path}"
-		sed -i --follow-symlinks "s/^export ZSH_THEME_FG='.*'/export ZSH_THEME_FG='${foreground}'/" "${file_path}"
-		sed -i --follow-symlinks "s/^export ZSH_THEME_BLACK='.*'/export ZSH_THEME_BLACK='${color_black}'/" "${file_path}"
-		sed -i --follow-symlinks "s/^export ZSH_THEME_RED='.*'/export ZSH_THEME_RED='${color_red}'/" "${file_path}"
-		sed -i --follow-symlinks "s/^export ZSH_THEME_GREEN='.*'/export ZSH_THEME_GREEN='${color_green}'/" "${file_path}"
-		sed -i --follow-symlinks "s/^export ZSH_THEME_YELLOW='.*'/export ZSH_THEME_YELLOW='${color_yellow}'/" "${file_path}"
-		sed -i --follow-symlinks "s/^export ZSH_THEME_BLUE='.*'/export ZSH_THEME_BLUE='${color_blue}'/" "${file_path}"
-		sed -i --follow-symlinks "s/^export ZSH_THEME_MAGENTA='.*'/export ZSH_THEME_MAGENTA='${color_magenta}'/" "${file_path}"
-		sed -i --follow-symlinks "s/^export ZSH_THEME_CYAN='.*'/export ZSH_THEME_CYAN='${color_cyan}'/" "${file_path}"
-		sed -i --follow-symlinks "s/^export ZSH_THEME_WHITE='.*'/export ZSH_THEME_WHITE='${color_white}'/" "${file_path}"
-		sed -i --follow-symlinks "s/^export ZSH_THEME_GRAY='.*'/export ZSH_THEME_GRAY='${color_altblack}'/" "${file_path}"
-		sed -i --follow-symlinks "s/^export ZSH_THEME_ACCENT='.*'/export ZSH_THEME_ACCENT='${accent}'/" "${file_path}"
+		sed -i --follow-symlinks "s/^export ZSH_THEME='.*'/export ZSH_THEME='${THEME}'/" "${file_path}"
 	fi
 }
 

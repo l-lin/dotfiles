@@ -1,4 +1,7 @@
-import = ["/home/l-lin/.config/alacritty/colors.toml", "/home/l-lin/.config/alacritty/fonts.toml"]
+import = [
+  "~/.config/alacritty/colorschemes/kanagawa.toml",
+  "~/.config/alacritty/fonts.toml",
+]
 live_config_reload = true
 
 [cursor]
@@ -15,8 +18,6 @@ WINIT_X11_SCALE_FACTOR = "1.0"
 [window]
 decorations = "full"
 dynamic_title = true
-# history = 10000
-# multiplier = 3
 opacity = 1.0
 startup_mode = "Windowed"
 
@@ -31,4 +32,3 @@ y = 12
 [shell]
 program = "/usr/bin/tmux"
 args = ["-2", "-u"]
-
