@@ -86,6 +86,7 @@
 
 # delta configuration: https://dandavison.github.io/delta/configuration.html
 [delta]
+  syntax-theme = Catppuccin-mocha
   line-numbers = true
   ; side-by-side = true
 [init]
