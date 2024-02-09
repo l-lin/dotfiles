@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 #
 # Github Light theme
-# src: 
+# src: https://github.com/projekt0n/github-theme-contrib/blob/main/themes/fzf/github_light_high_contrast
 #
 
 export ZSH_THEME_BG='#f2eede'

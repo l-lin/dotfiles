@@ -34,8 +34,7 @@ export FZF_DEFAULT_OPTS="
 --preview-window='right:40%:border-none' \
 --tiebreak=chunk \
 --cycle \
-${FZF_THEME}
-"
+${FZF_THEME}"
 export FZF_TMUX_OPTS="-p 90%,90%"
 # preview content of the file under the cursor when searching for a file
 export FZF_CTRL_T_OPTS="--no-reverse --preview 'bat --style changes --color "always" {} | head -200'"

@@ -14,6 +14,13 @@ shape = "Block"
 [env]
 TERM = "alacritty"
 WINIT_X11_SCALE_FACTOR = "1.0"
+# In a special situation (alacritty -> tmux -> zsh), for some reason, this
+# FZF_DEFAULT_OPTS env variable is not updated for some tools, like
+# https://github.com/wfxr/tmux-fzf-url, and overriding it with alacritty
+# will "trigger" the update...
+# In other situations, e.g. alacritty -> zsh or even alacritty -> zsh -> tmux,
+# this env variable is correctly updated...
+FZF_DEFAULT_OPTS = ""
 
 [window]
 decorations = "full"
@@ -30,5 +37,5 @@ x = 12
 y = 12
 
 [shell]
-program = "/usr/bin/tmux"
+program = "/bin/tmux"
 args = ["-2", "-u"]
