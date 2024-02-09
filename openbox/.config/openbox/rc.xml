@@ -731,12 +731,12 @@
     </keybind>
     <!-- keybind key="C-A-v">
       <action name="Execute">
-        <command>xfce4-terminal -e vim</command>
+        <command>alacritty -e vim</command>
       </action>
     </keybind -->
     <!-- keybind key="C-A-r">
       <action name="Execute">
-        <command>xfce4-terminal -e ranger</command>
+        <command>alacritty -e ranger</command>
       </action>
     </keybind -->
     <keybind key="C-A-h">

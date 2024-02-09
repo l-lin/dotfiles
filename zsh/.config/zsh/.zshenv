@@ -1,18 +1,29 @@
 #
+# Heavily inspired from https://github.com/mattmc3/zdotdir
+#
+# ZSH file descriptions:
+# - zshenv: always sourced
+# - zprofile: for login shells
+# - zshrc: for interactive shells
+# - zlogin: sourced on the start of the login
+# - zlogout: used to clear and reset the terminal, called when exiting
+#
+# order of operations: .zshenv -> .zprofile -> .zshrc -> .zlogin -> .zlogout
+# src: https://apple.stackexchange.com/a/388623
+#
+
+#
 # .zshenv - Zsh environment file, loaded always.
 #
 
-export ZDOTDIR=$HOME/.config/zsh
+# skip system wide compinit, let ourself do it
+skip_global_compinit=1
 
-# zsh custom folder
-export ZSH_CUSTOM=${ZDOTDIR}
+export ZDOTDIR="${HOME}/.config/zsh"
 
-# import theme
-[[ -f "${ZDOTDIR}/.zsh_colorscheme" ]] && . "${ZDOTDIR}/.zsh_colorscheme"
-
-# import zprofiles
-for f in "${ZDOTDIR}"/zprofile.d/.zprofile*; do
-  source "$f"
-done
+# Ensure that a non-login, non-interactive shell has a defined environment.
+if [[ ! -o LOGIN && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zprofile"
+fi
 
 # vim: ft=zsh

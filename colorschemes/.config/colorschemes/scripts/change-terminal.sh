@@ -8,7 +8,7 @@ change_terminal() {
 	local file_path="${1}"
 
 	if [[ -f "${file_path}" ]]; then
-		sed -i "s/xfce4-terminal/alacritty/g" "${file_path}"
+		sed -i --follow-symlinks "s/xfce4-terminal/alacritty/g" "${file_path}"
 	fi
 }
 
