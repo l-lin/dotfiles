@@ -62,6 +62,9 @@ fi
 ## Set caps lock to ctrl
 setxkbmap -layout us -option ctrl:nocaps -variant altgr-intl
 
+## Disable annoying beeper (src: https://wiki.archlinux.org/title/PC_speaker#Xorg)
+xset -b
+
 ## These applets are specifically for tint2 panel.
 ## If you're using tint2 as panel, Uncomment these applets.
 
