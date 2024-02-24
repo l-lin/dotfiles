@@ -8,15 +8,7 @@
   path = ~/perso/.gitconfig
 [includeIf "gitdir:~/snap/"]
   path = ~/perso/.gitconfig
-[user]
-  name = Louis Lin
-[credential]
-  helper = cache
-[core]
-  editor = nvim
-  excludesfile = ~/.gitignore_global
-  autocrlf = input
-  pager = delta
+
 [alias]
   adda = add -A
   ba = branch -avv
@@ -36,61 +28,85 @@
   rh = reset --hard
   rl = reflog --pretty=reflog
   st = status -sb
+  sw = switch
   undo = reset --soft HEAD^
   unignore = update-index --no-assume-unchanged
   wdiff = diff --word-diff --color-words=.
   wip = for-each-ref --sort='authordate:iso8601' --format=' %(color:green)%(authordate:relative)%09%(color:white)%(refname:short)' refs/heads
-[push]
-  default = upstream
-  # automatically push new branch to remote withtout needing to set the upstream
-  autoSetupRemote = true
-# activate color for all commands
+[branch]
+  # sort by most recently used
+  sort = -committerdate
 [color]
+  # activate color for all commands
   ui = auto
+[commit]
+  verbose = true
+[core]
+  editor = nvim
+  excludesfile = ~/.gitignore_global
+  autocrlf = input
+  pager = delta
+[credential]
+  helper = cache
+# delta configuration: https://dandavison.github.io/delta/configuration.html
+[delta]
+  syntax-theme = Catppuccin-mocha
+  line-numbers = true
+  # side-by-side = true
 # diff with meaningful prefix and word-diff will find a letter as a word
 [diff]
+  algorithm = histogram
   mnemonicprefix = true
   wordRegex = .
-# commands will be autocorrect (rset -> reset)
-[help]
-  autocorrect = -1
-# remember previous conflict resolutions
-[rerere]
-  enabled = true
-# pull will do a rebase instead of a merge
-[pull]
-  rebase = true
-# merge is looking harder for renames
-[merge]
-  renamelimit = 3000
-  tool = meld
-# Automatically stash any local changes before rebasing
-[rebase]
-  autostash = true
-[pretty]
-  # reflog, with relative date (but for commits, not reflog entries!):
-  reflog = %Cred%h%Creset - %Cblue%gd%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)<%an>%Creset
-# shortcuts
-[url "git@github.com:"]
-  insteadOf = github:
-  insteadOf = gh:
+[fetch]
+  # automatically delete remote tracking branches that are deleted
+  prune = true
+  pruneTags = true
 # LFS config
 [filter "lfs"]
   clean = git-lfs clean -- %f
   smudge = git-lfs smudge -- %f
   process = git-lfs filter-process
   required = true
-# branch
-[branch]
-  sort = -committerdate
-
-# delta configuration: https://dandavison.github.io/delta/configuration.html
-[delta]
-  syntax-theme = Catppuccin-mocha
-  line-numbers = true
-  ; side-by-side = true
+[merge]
+  renamelimit = 3000
+  tool = meld
+  conflictstyle = zdiff3
+[help]
+  # commands will be autocorrect (rset -> reset)
+  autocorrect = prompt
 [init]
-  ; defaultBranch = main
   defaultBranch = master
 [interactive]
   diffFilter = delta --color-only
+[log]
+  date = iso
+[pretty]
+  # reflog, with relative date (but for commits, not reflog entries!):
+  reflog = %Cred%h%Creset - %Cblue%gd%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)<%an>%Creset
+[pull]
+  # pull will do a rebase instead of a merge
+  rebase = true
+[push]
+  default = upstream
+  # automatically push new branch to remote withtout needing to set the upstream
+  autoSetupRemote = true
+[rebase]
+  # automatically stash any local changes before rebasing
+  autostash = true
+  # makes multiple stacked branches rebase at a time easier
+  # see https://andrewlock.net/working-with-stacked-branches-in-git-is-easier-with-update-refs/
+  updateRefs = true
+[rerere]
+  # remember previous conflict resolutions
+  enabled = true
+[tag]
+  # sort by most recently used
+  sort = taggerdate
+# shortcuts
+[url "git@github.com:"]
+  insteadOf = github:
+  insteadOf = gh:
+[user]
+  name = Louis Lin
+
