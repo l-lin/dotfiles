@@ -44,6 +44,9 @@ zsh-users/zsh-syntax-highlighting
 # better vi mode
 jeffreytse/zsh-vi-mode
 
+# magical shell history
+atuinsh/atuin kind:defer
+
 #custom plugins
 "${ZSH_CUSTOM}" path:plugins/abbr kind:defer
 "${ZSH_CUSTOM}" path:plugins/fzf kind:defer
