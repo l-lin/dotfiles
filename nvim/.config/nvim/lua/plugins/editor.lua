@@ -95,7 +95,6 @@ return {
     opts = {
       close_if_last_window = true,
       enable_git_status = false,
-      enable_normal_mode_for_inputs = true,
       enable_modified_markers = false,
       window = {
         mappings = {
@@ -127,6 +126,16 @@ return {
         type = {
           enabled = false,
         },
+      },
+      event_handlers = {
+        {
+          event = "neo_tree_popup_input_ready",
+          ---@param input NuiInput
+          handler = function(input)
+            -- enter input popup with normal mode by default.
+            vim.cmd("stopinsert")
+          end,
+        }
       },
     },
   },
