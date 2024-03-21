@@ -30,6 +30,7 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.util.project" },
     -- import/override with your plugins
     { import = "plugins" },
+    { import = "plugins.extras.lang.adoc" },
     { import = "plugins.extras.lang.java" },
     { import = "plugins.extras.lang.go" },
     { import = "plugins.extras.test.neotest" },
