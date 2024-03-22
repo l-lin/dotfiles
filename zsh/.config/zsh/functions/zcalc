@@ -1,0 +1,7 @@
+#!/bin/zsh
+#
+# Interactive calculator
+#
+
+zsh -c 'autoload zcalc && zcalc "$@"' zcalc "$@"
+
