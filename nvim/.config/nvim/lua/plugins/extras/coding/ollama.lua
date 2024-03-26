@@ -47,6 +47,7 @@ return {
       model = "deepseek-coder",
       url = "http://127.0.0.1:11434",
       serve = {
+        on_start = true,
         command = "docker",
         args = { "run", "-d", "--rm", "-v", "ollama:/root/.ollama", "-p", "11434:11434", "--name", "ollama", "ollama/ollama" },
         stop_command = "docker",
@@ -57,7 +58,6 @@ return {
   {
     "nvim-lualine/lualine.nvim",
     optional = true,
-
     opts = function(_, opts)
       table.insert(opts.sections.lualine_x, {
         function()
