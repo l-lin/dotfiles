@@ -6,11 +6,6 @@ return {
       popupmenu = {
         backend = "cmp",
       },
-      lsp = {
-        progress = {
-          view = "virtualtext",
-        },
-      },
     },
     keys = {
       { "<c-f>", false },
