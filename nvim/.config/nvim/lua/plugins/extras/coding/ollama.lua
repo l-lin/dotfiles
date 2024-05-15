@@ -3,6 +3,14 @@ return {
     "nomnivore/ollama.nvim",
     dependencies = {
       "nvim-lua/plenary.nvim",
+      {
+        "folke/which-key.nvim",
+        opts = {
+          defaults = {
+            ["<leader>o"] = { name = "+ollama" },
+          },
+        },
+      },
     },
     cmd = { "Ollama", "OllamaModel", "OllamaServe", "OllamaServeStop" },
 
