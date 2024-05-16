@@ -53,7 +53,7 @@ return {
       {
         "<C-e>",
         function()
-            require("telescope.builtin").buffers({ sort_mru = true, ignore_current_buffer = true })
+          require("telescope.builtin").buffers({ sort_mru = true, ignore_current_buffer = true })
         end,
         noremap = true,
         silent = true,
@@ -135,7 +135,7 @@ return {
             -- enter input popup with normal mode by default.
             vim.cmd("stopinsert")
           end,
-        }
+        },
       },
     },
   },
