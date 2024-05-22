@@ -19,16 +19,12 @@ Credit to [AlbertoV](https://www.deviantart.com/albertov) for his awesome [Totor
 make help
 ```
 
-## Install VIM plugins
-
-- Edit a file with VIM
-- Execute `:PackerSync` (should be executed automatically)
-
 ## Install TMUX plugins
 
 - Press "Prefix + I" (capital i)
 
 ## Calibre
+
 ### Installation
 
 ```bash
@@ -55,7 +51,6 @@ sudo -v && wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | 
 - CodeGlance
 - Grep console
 - Maven Helper
-- MyGruvbox theme
 - IdeaVim
 - Ideolog
 - Settings repository
@@ -94,7 +89,7 @@ Agent registered
 bluetooth keyboard followed by the key "Enter" in order to pair
 successfully.
 
-```
+```bash
 [bluetooth]# pair YY:YY:YY:YY:YY:YY
 [CHG] Device YY:YY:YY:YY:YY:YY Connected: no
 [CHG] Device YY:YY:YY:YY:YY:YY Connected: yes
