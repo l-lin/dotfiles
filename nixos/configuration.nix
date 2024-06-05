@@ -16,16 +16,20 @@
     # nixos-generate-config --show-hardware-config
     ./hardware-configuration.nix
 
+    # System stuff
+    ./modules/audio.nix
     ./modules/bootloader.nix
     ./modules/dbus.nix
+    ./modules/i18n-l10n.nix
     ./modules/network.nix
     ./modules/pipewire.nix
     ./modules/printing.nix
     ./modules/users.nix
 
-    ./modules/tui/zsh.nix
+    # TUI
+    (./. + "/modules/tui/shell"+("/"+userSettings.shell)+".nix")
 
-    # Window manager selected from flake
+    # GUI
     (./. + "/modules/gui"+("/"+userSettings.wmType+"/"+userSettings.wm)+".nix")
   ];
 
@@ -50,6 +54,8 @@
     };
   };
 
+  # NOTE: I have no idea what the following does.
+  # Copied from https://github.com/Misterio77/nix-starter-configs/blob/main/minimal/nixos/configuration.nix#L43-L60.
   nix = let
     flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
   in {
@@ -68,13 +74,6 @@
     registry = lib.mapAttrs (_: flake: {inherit flake;}) flakeInputs;
     nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
   };
-
-  # System packages
-  environment.systemPackages = with pkgs; [
-    zsh
-    git
-    home-manager
-  ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

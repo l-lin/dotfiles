@@ -29,7 +29,6 @@
     ...
   } @ inputs: # <- this `@inputs` will expose the block of code below, to the inputs that you set above.
 
-  
   # This `let` statement allows you to set variables that you can use in the following block of code (hence the word `in`).
   # Setting variables here will allow you to pass them into your configuration.nix and home.nix files
   # you can use the variables here to create settings in multiple places within those files, but change them only one time here
@@ -37,6 +36,7 @@
 
   let
     inherit (self) outputs;
+
     # ---- SYSTEM SETTINGS ---- #
     systemSettings = {
       system = "x86_64-linux"; # system arch
@@ -51,10 +51,11 @@
     userSettings = rec {
       username = "l-lin";
       name = "Louis LIN";
-      editor = "nvim"; # Default editor
-      term = "alacritty"; # Default terminal emulator
-      wm = "gnome"; # Selected window manager (one of the folder in ./nixos/modules/gui/*/)
-      wmType = if (wm == "hyprland") then "wayland" else "x11"; # Window manager type
+      editor = "nvim"; # default editor
+      term = "alacritty"; # default terminal emulator
+      shell = "zsh"; # shell to use
+      wm = "gnome"; # selected window manager (one of the folder in ./nixos/modules/gui/*/)
+      wmType = if (wm == "sway") then "wayland" else "x11"; # Window manager type
     };
 
   in {
