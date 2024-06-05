@@ -13,4 +13,8 @@
       ${builtins.readFile ./hyprland.conf}
     '';
   };
+
+  home.packages = with pkgs; [
+    wl-clipboard
+  ];
 }
