@@ -2,6 +2,35 @@ default: help
 
 PROJECTNAME=$(shell basename "$(PWD)")
 
+## home: apply home-manager configuration
+home:
+	home-manager switch --flake . --show-trace
+
+## home-news: show home-manager news entries
+home-news:
+	home-manager news --flake .
+
+## nixos: apply nixos configuration
+.PHONY: nixos
+nixos:
+	sudo nixos-rebuild switch --flake .
+
+## nixos-hardware-config: generate hardware-configuration
+nixos-hardware-config:
+	nixos-generate-config --show-hardware-config > ./nixos/hardware-configuration.nix
+
+## clean-home: clean up home-manager garbage
+clean-home:
+	nix-collect-garbage -d
+
+## clean-nixos: clean up nixos garbage
+clean-nixos:
+	sudo nix-collect-garbage -d
+	sudo nixos-rebuild boot --flake .
+
+## find-nix-package: find a nix package
+find-nix-package:
+	@nix search nixpkgs ${package}
 
 ## install: install all packages
 install:
