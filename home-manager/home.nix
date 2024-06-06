@@ -35,6 +35,7 @@
     curl
     fd
     fzf
+    gcc
     git
     lsd
     gnumake
