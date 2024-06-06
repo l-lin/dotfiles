@@ -14,6 +14,7 @@
   imports = [
     # TUI
     (./. + "/modules/tui/shell"+("/"+userSettings.shell))
+    ./modules/tui/git
     ./modules/tui/nvim
     ./modules/tui/xdg
     ./modules/tui/tmux
@@ -36,7 +37,6 @@
     fd
     fzf
     gcc
-    git
     lsd
     gnumake
     ripgrep
@@ -50,7 +50,6 @@
   # Enable programs
   # NOTE: What's the difference with `home.packages`?
   programs.home-manager.enable = true;
-  programs.git.enable = true;
   programs.alacritty.enable = true;
 
   home.sessionVariables = {
