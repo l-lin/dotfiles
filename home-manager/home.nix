@@ -15,11 +15,11 @@
     # TUI
     (./. + "/modules/tui/shell"+("/"+userSettings.shell))
     ./modules/tui/nvim
-    ./modules/tui/xdg.nix
-    ./modules/tui/tmux/tmux.nix
+    ./modules/tui/xdg
+    ./modules/tui/tmux
 
     # GUI
-    (./. + "/modules/gui"+("/"+userSettings.wmType+"/"+userSettings.wm)+".nix")
+    (./. + "/modules/gui/wm"+("/"+userSettings.wm))
   ];
 
   home = {

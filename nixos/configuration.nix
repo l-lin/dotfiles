@@ -26,10 +26,10 @@
     ./modules/users.nix
 
     # TUI
-    (./. + "/modules/tui/shell"+("/"+userSettings.shell)+".nix")
+    (./. + "/modules/tui/shell"+("/"+userSettings.shell))
 
     # GUI
-    (./. + "/modules/gui"+("/"+userSettings.wmType+"/"+userSettings.wm)+".nix")
+    (./. + "/modules/gui/wm"+("/"+userSettings.wm))
   ];
 
   # Nixpkgs stuff
