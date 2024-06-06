@@ -13,9 +13,10 @@
   # You can import other home-manager modules here
   imports = [
     # TUI
+    (./. + "/modules/tui/shell"+("/"+userSettings.shell))
+    ./modules/tui/nvim
     ./modules/tui/xdg.nix
     ./modules/tui/tmux/tmux.nix
-    (./. + "/modules/tui/shell"+("/"+userSettings.shell))
 
     # GUI
     (./. + "/modules/gui"+("/"+userSettings.wmType+"/"+userSettings.wm)+".nix")
@@ -40,7 +41,6 @@
     ripgrep
     stow
     wget
-    zsh
 
     # fonts
     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
@@ -50,9 +50,7 @@
   # NOTE: What's the difference with `home.packages`?
   programs.home-manager.enable = true;
   programs.git.enable = true;
-  programs.neovim.enable = true;
   programs.alacritty.enable = true;
-
 
   home.sessionVariables = {
     EDITOR = userSettings.editor;
