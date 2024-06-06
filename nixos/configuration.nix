@@ -25,6 +25,9 @@
     ./modules/printing.nix
     ./modules/users.nix
 
+    # TUI
+    (./. + "/modules/tui/shell"+("/"+userSettings.shell)+".nix")
+
     # GUI
     (./. + "/modules/gui"+("/"+userSettings.wmType+"/"+userSettings.wm)+".nix")
   ];
