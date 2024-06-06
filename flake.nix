@@ -54,8 +54,8 @@
       editor = "nvim"; # default editor
       term = "alacritty"; # default terminal emulator
       shell = "zsh"; # shell to use
-      wm = "gnome"; # selected window manager (one of the folder in ./nixos/modules/gui/*/)
-      wmType = if (wm == "sway") then "wayland" else "x11"; # Window manager type
+      wm = "hyprland"; # selected window manager (hyprland, sway or gnome)
+      wmType = "wayland"; # Window manager type (wayland or x11)
     };
 
   in {
