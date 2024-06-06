@@ -15,7 +15,7 @@
     # TUI
     ./modules/tui/xdg.nix
     ./modules/tui/tmux/tmux.nix
-    (./. + "/modules/tui/shell"+("/"+userSettings.shell)+".nix")
+    (./. + "/modules/tui/shell"+("/"+userSettings.shell))
 
     # GUI
     (./. + "/modules/gui"+("/"+userSettings.wmType+"/"+userSettings.wm)+".nix")
