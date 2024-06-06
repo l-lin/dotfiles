@@ -12,9 +12,9 @@
 }: {
   # You can import other home-manager modules here
   imports = [
-    ./modules/tui/tmux/tmux.nix
-
     # TUI
+    ./modules/tui/xdg.nix
+    ./modules/tui/tmux/tmux.nix
     (./. + "/modules/tui/shell"+("/"+userSettings.shell)+".nix")
 
     # GUI
@@ -53,18 +53,14 @@
   programs.neovim.enable = true;
   programs.alacritty.enable = true;
 
-  # Create XDG Dirs
-  xdg = {
-    userDirs = {
-      enable = true;
-      createDirectories = true;
-    };
-  };
 
   home.sessionVariables = {
     EDITOR = userSettings.editor;
     TERM = userSettings.term;
   };
+
+  # Nicely reload system units when changing configs
+  systemd.user.startServices = "sd-switch";
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "24.05";
