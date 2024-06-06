@@ -48,7 +48,7 @@
       grubDevice = ""; # device identifier for grub; only used for legacy (bios) boot mode
     };
     # ----- USER SETTINGS ----- #
-    userSettings = rec {
+    userSettings = {
       username = "l-lin";
       name = "Louis LIN";
       editor = "nvim"; # default editor

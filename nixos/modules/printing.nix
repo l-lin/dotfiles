@@ -2,7 +2,7 @@
 # local printing services which is provided by the software CUPS.
 # Setting up physical printer devices is done using hardware.printers option.
 #
-# See https://nixos.wiki/wiki/Printing
+# See: https://nixos.wiki/wiki/Printing
 { ... }: {
   # Enable CUPS to print documents.
   services.printing.enable = true;

@@ -172,6 +172,7 @@ nix-shell -p git gnumake
 git clone https://github.com/l-lin/dotfiles
 cd dotfiles
 make nixos
+make home
 reboot now
 ```
 
