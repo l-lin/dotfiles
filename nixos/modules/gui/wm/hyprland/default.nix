@@ -1,6 +1,3 @@
-# Not working for me... :(
-#
-# See https://wiki.hyprland.org/Nix/Hyprland-on-NixOS/
 { pkgs, ... }: {
 
   programs.hyprland.enable = true;

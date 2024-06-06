@@ -1,3 +1,9 @@
+#
+# Terminal multiplexer
+#
+# src: https://github.com/tmux/tmux/wiki
+#
+
 { pkgs, ...}: {
   programs.tmux = {
     enable = true;

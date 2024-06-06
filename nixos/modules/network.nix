@@ -1,6 +1,9 @@
+#
 # Networking config always goes in your system configuration.
 #
-# See: https://nixos.wiki/wiki/Networking
+# src: https://nixos.wiki/wiki/Networking
+#
+
 { systemSettings, ... }: {
   networking = {
     hostName = systemSettings.hostname;

@@ -1,4 +1,7 @@
-# See https://nixos.wiki/wiki/Zsh
+#
+# src: https://nixos.wiki/wiki/Zsh
+#
+
 { pkgs, ... }: {
   programs.zsh.enable = true;
   environment.shells = with pkgs; [ zsh ];

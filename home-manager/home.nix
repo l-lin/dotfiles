@@ -1,19 +1,16 @@
+#
 # This is your home-manager configuration file
 # Use this to configure your home environment (it replaces ~/.config/nixpkgs/home.nix)
 #
 # Exhaustive list of options: https://mynixos.com/home-manager/options
-{
-  inputs,
-  lib,
-  config,
-  pkgs,
-  userSettings,
-  ...
-}: {
+#
+
+{ inputs, lib, config, pkgs, userSettings, ... }: {
   # You can import other home-manager modules here
   imports = [
     # TUI
     (./. + "/modules/tui/shell"+("/"+userSettings.shell))
+    ./modules/tui/alacritty
     ./modules/tui/git
     ./modules/tui/nvim
     ./modules/tui/xdg
@@ -47,10 +44,8 @@
     (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
   ];
 
-  # Enable programs
-  # NOTE: What's the difference with `home.packages`?
+  # Enable home-manager
   programs.home-manager.enable = true;
-  programs.alacritty.enable = true;
 
   home.sessionVariables = {
     EDITOR = userSettings.editor;
