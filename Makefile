@@ -36,6 +36,10 @@ clean-nixos:
 find-nix-package:
 	@nix search nixpkgs ${package}
 
+## hyprland: reload hyprland config
+hyprland:
+	@hyprctl reload
+
 # ---------------------------------------------------------------------------
 
 ## install: install all packages
