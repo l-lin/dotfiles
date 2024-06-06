@@ -5,6 +5,7 @@
   lib,
   config,
   pkgs,
+  userSettings,
   ...
 }: {
   # You can import other NixOS modules here
@@ -23,6 +24,9 @@
     ./modules/pipewire.nix
     ./modules/printing.nix
     ./modules/users.nix
+
+    # GUI
+    (./. + "/modules/gui"+("/"+userSettings.wmType+"/"+userSettings.wm)+".nix")
   ];
 
   # Nixpkgs stuff
