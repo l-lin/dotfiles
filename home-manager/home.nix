@@ -18,6 +18,7 @@
     ./modules/tui/fzf
     ./modules/tui/git
     ./modules/tui/lazygit
+    ./modules/tui/navi
     ./modules/tui/nvim
     ./modules/tui/psql
     ./modules/tui/tealdeer
