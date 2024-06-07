@@ -25,7 +25,7 @@
       ignore-empty-password = true;
 
       # Colors
-      base-hl-color = "ffffff";
+      bs-hl-color = "ffffff";
       caps-lock-key-hl-color = "ffffff";
       caps-lock-bs-hl-color = "ffffff";
       key-hl-color = "00000066";
@@ -34,7 +34,7 @@
       inside-color = "00000033";
       inside-clear-color = "00000000";
       inside-caps-lock-color = "ffffff00";
-      inside-vr-color = "ffffff00";
+      inside-ver-color = "ffffff00";
       inside-wrong-color = "ffffff00";
 
       ring-color = "ffffff";
