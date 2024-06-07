@@ -3,5 +3,5 @@
 #
 
 { ... }: {
-  xdg.userDirs.pictures."nix.png".source = ./nix.png;
+  home.file."Pictures/nix.png".source = ./nix.png;
 }
