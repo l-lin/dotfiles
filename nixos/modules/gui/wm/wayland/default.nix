@@ -5,7 +5,7 @@
 #
 
 { ... }: {
-  # Need to add this line to make swaylock works.
-  # src: 
-  security.pam.services.swaylock = {};
+  imports = [
+    ./swaylock.nix
+  ];
 }
