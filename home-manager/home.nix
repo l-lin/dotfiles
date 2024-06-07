@@ -20,6 +20,7 @@
     ./modules/tui/lazygit
     ./modules/tui/nvim
     ./modules/tui/psql
+    ./modules/tui/tealdeer
     ./modules/tui/tmux
     ./modules/tui/xdg.nix
 
