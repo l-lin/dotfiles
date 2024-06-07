@@ -8,8 +8,8 @@ NIX_HOST=nixos
 ## home: apply home-manager configuration
 home:
 	home-manager switch -b backup --flake '.#${NIX_PROFILE}' --show-trace
-	@$(MAKE) hyprland
-	@$(MAKE) lazy-nvim-lock
+	@$(MAKE) hyprland --no-print-directory
+	@$(MAKE) lazy-nvim-lock --no-print-directory
 
 ## home-news: show home-manager news entries
 home-news:
