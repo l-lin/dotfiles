@@ -19,11 +19,11 @@
     ./modules/tui/fzf
     ./modules/tui/git
     ./modules/tui/lazygit
+    ./modules/tui/multiplexer/tmux
     ./modules/tui/navi
     ./modules/tui/nvim
     ./modules/tui/psql
     ./modules/tui/tealdeer
-    ./modules/tui/tmux
     ./modules/tui/xdg.nix
 
     # GUI
