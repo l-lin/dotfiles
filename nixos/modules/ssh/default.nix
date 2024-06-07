@@ -1,5 +1,6 @@
 #
 # SSH
+# /!\ Disable when not in VM!
 #
 
 { ... }: {
@@ -7,7 +8,8 @@
     enable = true;
     settings = {
       AllowUsers = [ "l-lin" ];
-      PasswordAuthentication = false;
+      # Allow ssh using passphrase, for easier connection to VM.
+      PasswordAuthentication = true;
       PermitRootLogin = "yes";
     };
   };
