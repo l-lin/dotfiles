@@ -4,13 +4,8 @@
 # src: https://wayland.freedesktop.org/
 #
 
-{ pkgs, ... }: {
-  imports = [
-    ./swaylock.nix
-  ];
-
-  home.packages = with pkgs; [
-    # Copy/paste utilities: https://github.com/bugaevc/wl-clipboard
-    wl-clipboard
-  ];
+{ ... }: {
+  # Need to add this line to make swaylock works.
+  # src: 
+  security.pam.services.swaylock = {};
 }

@@ -25,5 +25,4 @@
       ignore-empty-password = true;
     };
   };
-  security.pam.services.swaylock = {};
 }

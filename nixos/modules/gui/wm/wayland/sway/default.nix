@@ -5,5 +5,7 @@
 #
 
 { ... }: {
+  imports = [ ../default.nix ];
+
   programs.sway.enable = true;
 }
