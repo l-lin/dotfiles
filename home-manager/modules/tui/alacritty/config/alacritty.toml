@@ -36,6 +36,6 @@ lines = 24
 x = 12
 y = 12
 
-[shell]
-program = "/bin/tmux"
-args = ["-2", "-u"]
+#[shell]
+#program = "/bin/tmux"
+#args = ["-2", "-u"]
