@@ -1,5 +1,21 @@
+#
+# Best text editor in the world!
+# src: https://neovim.io/
+#
+
 { pkgs, ... }: {
-  home.packages = with pkgs; [ neovim ];
+  # https://mynixos.com/nixpkgs/options/programs.neovim
+  programs.neovim = {
+    enable = true;
+
+    # Symlink vi and vim to nvim binary.
+    viAlias = true;
+    vimAlias = true;
+
+    withRuby = true;
+    withNodeJs = true;
+    withPython3 = true;
+  };
 
   # Symlink ~/.config/nvim
   xdg.configFile.nvim = {
