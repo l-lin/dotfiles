@@ -26,6 +26,7 @@
     ./modules/network.nix
     ./modules/pipewire.nix
     ./modules/printing.nix
+    ./modules/ssh
     ./modules/users.nix
     ./modules/vm.nix
 
