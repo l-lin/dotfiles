@@ -13,6 +13,7 @@
     # TUI
     (./. + "/modules/tui/shell"+("/"+userSettings.shell))
     ./modules/tui/alacritty
+    ./modules/tui/bat.nix
     ./modules/tui/cli.nix
     ./modules/tui/git
     ./modules/tui/nvim
