@@ -23,7 +23,7 @@ home-news:
 ## nixos: apply NixOS configuration
 .PHONY: nixos
 nixos: nixos-hardware-config
-	@echo "${BLUE} I ${NC} Applying NixOS configuration..."
+	@echo -e "${BLUE} I ${NC} Applying NixOS configuration..."
 	sudo nixos-rebuild switch --flake '.#${NIX_HOST}'
 
 ## nixos-hardware-config: generate hardware-configuration
@@ -33,12 +33,12 @@ nixos-hardware-config:
 
 ## clean-home: clean up home-manager garbage
 clean-home:
-	@echo "${YELLOW} W ${NC} Cleaning up home-manager garbage..."
+	@echo -e "${YELLOW} W ${NC} Cleaning up home-manager garbage..."
 	nix-collect-garbage -d
 
 ## clean-nixos: clean up nixos garbage
 clean-nixos:
-	@echo "${YELLOW} W ${NC} Cleaning up NixOS garbage..."
+	@echo -e "${YELLOW} W ${NC} Cleaning up NixOS garbage..."
 	sudo nix-collect-garbage -d
 	sudo nixos-rebuild boot --flake '.#${NIX_HOST}'
 
@@ -50,12 +50,12 @@ find-nix-package:
 
 ## hyprland: reload hyprland configuration
 hyprland:
-	@echo "${BLUE} I ${NC} Reloading Hyprland configuration..."
+	@echo -e "${BLUE} I ${NC} Reloading Hyprland configuration..."
 	@hyprctl reload
 
 ## lazy-nvim-lock: add lazy-lock.json symlink to XDG folder
 lazy-nvim-lock:
-	@echo "${BLUE} I ${NC} Recreating neovim lazy-lock.json symlink..."
+	@echo -e "${BLUE} I ${NC} Recreating neovim lazy-lock.json symlink..."
 	@rm -rf "$${HOME}/.config/nvim/lazy-lock.json"
 	@ln -s ${PWD}/home-manager/modules/tui/nvim/lazy-lock.json "$${HOME}/.config/nvim/lazy-lock.json"
 
