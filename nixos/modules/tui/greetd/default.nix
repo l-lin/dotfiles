@@ -15,6 +15,7 @@
         --time \
         --asterisks \
         --user-menu \
+        --remember \
         --cmd Hyprland
       '';
     };
