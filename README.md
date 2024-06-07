@@ -1,161 +1,4 @@
-# Dotfiles
-
-This [dotfiles](http://dotfiles.github.io) is made to be worked with [ArchCraft](https://archcraft.io/).
-It's using the following:
-
-- [openbox](http://openbox.org/wiki/Main_Page): next generation window manager
-- [alacritty](https://github.com/alacritty/alacritty): A cross-platform, OpenGL terminal emulator.
-- [rofi](https://github.com/davatorium/rofi): window switcher, application launcher and dmenu replacement
-- [thunar](https://docs.xfce.org/xfce/thunar/start): file manager
-- [polybar](https://polybar.github.io/): fast and easy to use tool for creating status bars
-- [dunst](https://dunst-project.org/): lightweight replacement for the notification daemons
-- [plank](https://launchpad.net/plank): application dock
-
-Credit to [AlbertoV](https://www.deviantart.com/albertov) for his awesome [Totoro pixel art](./openbox/.config/openbox/themes/gruvbox/wallpaper).
-
-## Install & bootstraping dotfiles
-
-```bash
-make help
-```
-
-## Install TMUX plugins
-
-- Press "Prefix + I" (capital i)
-
-## Calibre
-
-### Installation
-
-```bash
-sudo -v && wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sudo sh /dev/stdin
-```
-
-### Configuration
-
-- Go to "Fetch news > Add or edit a custom resource"
-- Click on "New recipe"
-  - Set "Oldest article": 2 days
-  - Feed URL: http://getpocket.com/users/<username>/feed/unread
-- Click on "Preferences > Sharing books by email"
-  - Add email
-  - Setup the email server
-    - Hostname: smtp.gmail.com
-    - Port: 587
-    - Encryption: TLS
-
-## IntellIJ plugins
-
-- AceJump
-- Ansible
-- CodeGlance
-- Grep console
-- Maven Helper
-- IdeaVim
-- Ideolog
-- Settings repository
-- SonarLint
-- Terraform and HCL
-
-## Pair keyboard with bluetooth
-
-```bash
-$ # install bluez and bluez-utils if not already done
-$ yay -S bluez bluez-utils
-
-$ # start bluetooth service
-$ sudo systemctl start bluetooth
-$ # enable bluetooth service on startup
-$ sudo systemctl enable bluetooth
-
-$ # execute bluetoothctl
-$ bluetoothctl
-Agent registered
-[CHG] Controller XX:XX:XX:XX:XX:XX Pairable: yes
-[bluetooth]#
-[bluetooth]# power on
-[bluetooth]# agent on
-[bluetooth]# default-agent
-[bluetooth]# scan on
-<...>
-[NEW] Device YY:YY:YY:YY:YY:YY [ERGO K860]
-<...>
-[bluetooth]# connect YY:YY:YY:YY:YY:YY
-[bluetooth]# trust YY:YY:YY:YY:YY:YY
-[bluetooth]# quit
-```
-
-ℹ️ : some keyboards sends a pass code which has to be typed in on the
-bluetooth keyboard followed by the key "Enter" in order to pair
-successfully.
-
-```bash
-[bluetooth]# pair YY:YY:YY:YY:YY:YY
-[CHG] Device YY:YY:YY:YY:YY:YY Connected: no
-[CHG] Device YY:YY:YY:YY:YY:YY Connected: yes
-[agent] Passkey: 103760
-```
-
-Sources:
-
-- https://bbs.archlinux.org/viewtopic.php?id=258125
-- https://wiki.archlinux.org/title/Bluetooth_keyboard
-- https://medium.com/@n0tty/bluetooth-and-arch-linux-a1ae56599256
-
-## Forticlient VPN with SAML
-
-If the official client does not work with your OS, there is a workaround available: https://gitlab.com/openconnect/openconnect/-/issues/356
-
-### Install Openfortivpn
-#### From sources
-
-```bash
-# first install pre-requisites: https://github.com/gm-vm/openfortivpn#building-and-installing-from-source
-yay -S --noconfirm gcc automake autoconf make pkg-config
-
-# clone project
-git clone https://github.com/gm-vm/openfortivpn.git
-cd openfortivpn
-
-# build project
-./autogen.sh
-./configure --prefix=/usr/local --sysconfdir=/etc
-make
-sudo make install
-
-# check openfortivpn is installed correctly
-openfortivpn --version
-```
-
-#### From AUR
-
-```bash
-yay -S openfortivpn
-```
-
-### Install Openfortivpn webview
-
-```bash
-# download openfortivpn-webview to get the cookie
-wget -qO- https://github.com/gm-vm/openfortivpn-webview/releases/download/v1.1.0-electron/openfortivpn-webview-1.1.0.tar.xz \
-  | sudo tar -xvJ --transform='s/openfortivpn-webview-1.1.0/openfortivpn-webview/g' -C /usr/local \
-  && sudo ln -s /usr/local/openfortivpn-webview/openfortivpn-webview /usr/local/bin/openfortivpn-webview
-```
-
-### Usage
-
-```bash
-# open VPN in one command line
-VPN_HOST=some_host && VPN_PORT=443 \
-  && openfortivpn-webview "${VPN_HOST}:${VPN_PORT}" 2>/dev/null \
-  | sudo openfortivpn "${VPN_HOST}:${VPN_PORT}" --cookie-on-stdin --pppd-accept-remote
-```
-
-Note: we need to add the `--pppd-accept-remote` since `ppp` v2.5.0.
-See https://github.com/adrienverge/openfortivpn/issues/1076 for more information.
-
----
-# :snowflake: NisOS dotfiles
+# :snowflake: NixOS dotfiles
 
 ## Getting started
 
@@ -173,7 +16,7 @@ git clone https://github.com/l-lin/dotfiles
 cd dotfiles
 make nixos
 make home
-reboot now
+reboot
 ```
 
 ## Resources
@@ -210,9 +53,99 @@ nix search nixpkgs your_package
 
 ### Example of nix config
 
-- https://github.com/GaetanLepage/nix-config
-- https://github.com/ryan4yin/nix-config
-- https://gitlab.com/Zaney/zaneyos
 - https://github.com/Misterio77/nix-starter-configs
+  - os: nixos
+  - note: starter point for all new nixos configuration project
+- https://github.com/GaetanLepage/nix-config
+  - os: nixos
+  - wm: sway
+  - terminal emulator: foot
+  - launcher: rofi
+  - pdf viewer: zathura
+  - browser: firefox
+  - note:
+    - minimalist README
+- https://github.com/ryan4yin/nix-config
+  - os: nixos
+  - wm: hyprland, i3
+  - terminal emulator: kitty, wezterm
+  - note taking: joplin
+  - e-book viewer: foliate
+  - note:
+    - descriptive README
+    - using justfile for bootstrapring
+    - interesting packages to manage multimedia
+    - eye protection configuration
+    - some interesting packages to manage secrets
+- https://gitlab.com/Zaney/zaneyos
+  - os: nixos
+  - wm: hyprland
+  - terminal emulator: kitty
+  - launcher: wofi
+  - bar: waybar
+  - theme: yes
+- https://github.com/notusknot/dotfiles-nix/
+  - os: nixos
+  - wm: hyprland
+  - widget: eww
+  - terminal emulator: foot
+  - launcher: wofi
+  - notification: dunst
+  - browser: firefox
+  - note:
+    - each config is modularized
+    - minimalist README
 - https://github.com/Evertras/nix-systems
-
+  - os: nixos
+  - wm: hyprland, dwm, i3
+  - terminal emulator: alacritty, kitty, st
+  - notification: dunst
+  - browser: firefox
+  - theme: yes
+  - note:
+    - has lib to import all sub-directories
+    - interesting way to structure dotfiles
+- https://github.com/Aylur/dotfiles/tree/main
+  - os: nixos
+  - wm: hyprland, sway
+  - terminal emulator: wezterm
+  - browser: firefox
+  - theme: yes
+    - nice light theme
+- https://github.com/hyper-dot/Arch-Hyprland/tree/main
+  - os: archlinux
+  - wm: hyprland
+  - terminal emulator: alacritty
+  - notification: dunst
+  - bar: waybar
+  - note:
+    - use multiple files for hyprland config files
+- https://github.com/chadcat7/crystal
+  - os: nixos
+  - wm: hyprland, swayfx
+  - terminal emulator: wezterm, kitty, foot
+  - widget: ags
+  - bar: waybar
+  - browser: firefox, brave
+  - note taking: obsidian
+  - theme: yes
+  - note:
+    - nice looking widgets
+- https://codeberg.org/justgivemeaname/.dotfiles
+  - os: nixos
+  - wm: gnome
+  - terminal emulator: wezterm
+  - browser: brave
+  - note:
+    - good project to learn nix and home-manager
+- https://gitlab.com/hmajid2301/dotfiles
+  - os: nixos
+  - wm: hyprland
+  - terminal emulator: wezterm
+  - launcher: rofi
+  - bar: waybar
+- https://gitlab.com/usmcamp0811/dotfiles
+- https://gitlab.com/librephoenix/nixos-config
+  - os: nixos
+  - note:
+    - interesting way of using variables in configuration files

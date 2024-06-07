@@ -30,6 +30,7 @@
 
     # TUI
     (./. + "/modules/tui/shell"+("/"+userSettings.shell))
+    ./modules/tui/greetd
 
     # GUI
     (./. + "/modules/gui/wm"+("/"+userSettings.wm))
