@@ -7,7 +7,7 @@
 { pkgs, ... }: {
 
   imports = [
-    ./hyprlock
+    ./swaylock.nix
   ];
 
   home.packages = with pkgs; [
