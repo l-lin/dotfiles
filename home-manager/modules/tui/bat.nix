@@ -9,9 +9,20 @@
     config = {
       # Specify desired highlighting theme (e.g. "TwoDark"). Run `bat --list-themes`
       # for a list of all available themes
-      theme = "Catppuccin-mocha";
+      theme = "catppuccin-mocha";
       # Show line numbers, Git modifications and file header (but no grid)
       style = "numbers,changes,header";
+    };
+    themes = {
+      catppuccin-mocha = {
+        src = pkgs.fetchFromGitHub {
+          owner = "catppuccin";
+          repo = "bat";
+          rev = "d714cc1d358ea51bfc02550dabab693f70cccea0";
+          sha256 = "";
+        };
+        file = "themes/Catppuccin Mocha.tmTheme";
+      };
     };
   };
 }
