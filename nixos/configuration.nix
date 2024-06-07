@@ -35,7 +35,7 @@
     ./modules/tui/greetd
 
     # GUI
-    (./. + "/modules/gui/wm"+("/"+userSettings.wm))
+    (./. + "/modules/gui/wm"+("/"+userSettings.wmType+"/"+userSettings.wm))
   ];
 
   # Nixpkgs stuff

@@ -2,6 +2,8 @@
 #
 # See https://nixos.wiki/wiki/Sway
 { ... }: {
+  imports = [ ../default.nix ];
+
   wayland.windowManager.sway = {
     enable = true;
     config = {
@@ -17,11 +19,6 @@
 
         "type:touchpad" = {
           tap = "enabled";
-        };
-      };
-      output = {
-        "Virtual-1" = {
-          mode = "1920x1080@60Hz";
         };
       };
     };

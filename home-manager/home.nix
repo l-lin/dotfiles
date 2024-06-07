@@ -27,7 +27,7 @@
     ./modules/tui/xdg.nix
 
     # GUI
-    (./. + "/modules/gui/wm"+("/"+userSettings.wm))
+    (./. + "/modules/gui/wm"+("/"+userSettings.wmType+"/"+userSettings.wm))
     ./modules/gui/browser/firefox
   ];
 
