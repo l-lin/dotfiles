@@ -1,5 +1,5 @@
 { pkgs, ... }: {
-  home.packages = with pkgs; [ git ];
+  home.packages = with pkgs; [ git git-lfs ];
 
   # Symlink to ~/.gitconfig
   home.file.".gitconfig".source = ./config/.gitconfig;
