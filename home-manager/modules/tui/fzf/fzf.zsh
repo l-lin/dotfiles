@@ -6,5 +6,5 @@
 # See https://github.com/laktak/extrakto/issues/78
 
 source ~/.zshenv
-/usr/bin/fzf $@
+fzf $@
 
