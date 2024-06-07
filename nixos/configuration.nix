@@ -72,6 +72,16 @@
       # Workaround for https://github.com/NixOS/nix/issues/9574
       nix-path = config.nix.nixPath;
     };
+    # Enable automatic garbage collection.
+    # src: https://nixos.wiki/wiki/Storage_optimization
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 7d";
+    };
+    # Automatically run the nix store optimiser at a specific time (default to 03:45, set by `nix.optimise.dates`).
+    optimise.automatic = true;
+
     # Opinionated: disable channels
     channel.enable = false;
 
