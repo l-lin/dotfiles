@@ -55,6 +55,7 @@
       term = "alacritty"; # default terminal emulator
       shell = "zsh"; # shell to use
       wm = "hyprland"; # selected window manager (hyprland, sway or gnome)
+      browser = "firefox"; # default browser
     };
 
   in {

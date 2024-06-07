@@ -28,6 +28,7 @@
 
     # GUI
     (./. + "/modules/gui/wm"+("/"+userSettings.wm))
+    ./modules/gui/browser/firefox
   ];
 
   home = {
@@ -41,6 +42,7 @@
   home.sessionVariables = {
     EDITOR = userSettings.editor;
     TERM = userSettings.term;
+    BROWSER = userSettings.browser;
   };
 
   # Nicely reload system units when changing configs
