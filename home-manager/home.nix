@@ -8,12 +8,15 @@
 { inputs, lib, config, pkgs, userSettings, ... }: {
   # You can import other home-manager modules here
   imports = [
+    ./modules/fonts.nix
+
     # TUI
     (./. + "/modules/tui/shell"+("/"+userSettings.shell))
     ./modules/tui/alacritty
+    ./modules/tui/cli.nix
     ./modules/tui/git
     ./modules/tui/nvim
-    ./modules/tui/xdg
+    ./modules/tui/xdg.nix
     ./modules/tui/tmux
 
     # GUI
@@ -24,25 +27,6 @@
     username = userSettings.username;
     homeDirectory = "/home/"+userSettings.username;
   };
-
-  # TODO: move to their own .nix files
-  # Add stuff for your user as you see fit:
-  home.packages = with pkgs; [
-    # TUI
-    bat
-    curl
-    fd
-    fzf
-    gcc
-    lsd
-    gnumake
-    ripgrep
-    stow
-    wget
-
-    # fonts
-    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
-  ];
 
   # Enable home-manager
   programs.home-manager.enable = true;
