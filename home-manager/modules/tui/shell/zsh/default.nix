@@ -8,4 +8,8 @@
     source = ./config;
     recursive = true;
   };
+
+  # Custom directories configuration: https://github.com/mfaerevaag/wd
+  # Symlink to ~/.warprc
+  home.file.".warprc".source = ./.warprc;
 }
