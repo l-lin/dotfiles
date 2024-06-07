@@ -7,7 +7,7 @@
 { pkgs, ... }: {
 
   imports = [
-    ./swaylock
+    ./hyprlock
   ];
 
   home.packages = with pkgs; [
