@@ -6,7 +6,6 @@
   home.packages = with pkgs; [
     curl
     fd
-    fzf
     gcc
     lsd
     gnumake

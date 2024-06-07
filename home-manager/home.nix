@@ -15,6 +15,7 @@
     ./modules/tui/alacritty
     ./modules/tui/bat.nix
     ./modules/tui/cli.nix
+    ./modules/tui/fzf
     ./modules/tui/git
     ./modules/tui/nvim
     ./modules/tui/xdg.nix
