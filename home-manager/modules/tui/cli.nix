@@ -18,7 +18,7 @@
     # - Copy and paste
     # - Automatic adjustment of the X-session resolution to the client resolution
     # - Multiple displays
-    spice-vdagent
+    #spice-vdagent
 
     stow
     wget

@@ -27,6 +27,7 @@
     ./modules/pipewire.nix
     ./modules/printing.nix
     ./modules/users.nix
+    ./modules/vm.nix
 
     # TUI
     (./. + "/modules/tui/shell"+("/"+userSettings.shell))

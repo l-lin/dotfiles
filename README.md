@@ -105,7 +105,7 @@ nix search nixpkgs your_package
   - note:
     - has lib to import all sub-directories
     - interesting way to structure dotfiles
-- https://github.com/Aylur/dotfiles/tree/main
+- https://github.com/Aylur/dotfiles
   - os: nixos
   - wm: hyprland, sway
   - terminal emulator: wezterm
