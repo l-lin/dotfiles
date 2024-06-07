@@ -19,8 +19,9 @@
     ./modules/tui/git
     ./modules/tui/lazygit
     ./modules/tui/nvim
-    ./modules/tui/xdg.nix
+    ./modules/tui/psql
     ./modules/tui/tmux
+    ./modules/tui/xdg.nix
 
     # GUI
     (./. + "/modules/gui/wm"+("/"+userSettings.wm))
