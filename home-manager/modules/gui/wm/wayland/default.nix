@@ -6,6 +6,10 @@
 
 { pkgs, ... }: {
 
+  imports = [
+    ./swaylock
+  ];
+
   home.packages = with pkgs; [
     # Copy/paste utilities: https://github.com/bugaevc/wl-clipboard
     wl-clipboard
