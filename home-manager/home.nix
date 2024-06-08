@@ -30,6 +30,7 @@
     # GUI
     (./. + "/modules/gui/wm"+("/"+userSettings.wmType+"/"+userSettings.wm))
     ./modules/gui/browser/firefox
+    ./modules/gui/eww
     ./modules/gui/wall
   ];
 

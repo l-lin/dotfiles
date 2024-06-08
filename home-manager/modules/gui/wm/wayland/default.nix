@@ -6,7 +6,6 @@
 
 { pkgs, ... }: {
   imports = [
-    ./eww
     ./swaylock.nix
   ];
 
