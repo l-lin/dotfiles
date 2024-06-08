@@ -46,6 +46,8 @@
     jq
     # Decode and encode JWT: https://github.com/mike-engel/jwt-cli
     jwt-cli
+    # Kill all processes matching a pattern.
+    killall
     # Better ls command: https://github.com/lsd-rs/lsd
     lsd
     # Pretty ping: https://github.com/denilsonsa/prettyping
