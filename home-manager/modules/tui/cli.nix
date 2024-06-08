@@ -48,6 +48,8 @@
     jwt-cli
     # Kill all processes matching a pattern.
     killall
+    # Send desktop notifications: https://gitlab.gnome.org/GNOME/libnotify
+    libnotify
     # Better ls command: https://github.com/lsd-rs/lsd
     lsd
     # Pretty ping: https://github.com/denilsonsa/prettyping
