@@ -3,7 +3,10 @@
 # src: https://github.com/elkowar/eww
 #
 
-{ colorscheme, pkgs, ... }: {
+{ config, pkgs, ... }:
+let
+  palette = config.colorScheme.palette;
+in {
   home.packages = with pkgs; [ eww ];
 
   # Symlink to ~/.config/eww
@@ -14,24 +17,24 @@
 
   # Symlink to ~/.config/eww/style/_colors.scss
   xdg.configFile."eww/style/_colors.scss".text = ''
-    $background : #${colorscheme.background};
-    $foreground : #${colorscheme.foreground};
-    $background-alt : #${colorscheme.mbg};
-    $background-light : #${colorscheme.color0};
-    $foreground-alt : #${colorscheme.color7};
-    $red : #${colorscheme.color1};
-    $red-light : #${colorscheme.color9};
-    $green : #${colorscheme.color2};
-    $green-light : #${colorscheme.color10};
-    $yellow : #${colorscheme.color3};
-    $yellow-light : #${colorscheme.color11};
-    $blue : #${colorscheme.color4};
-    $blue-light : #${colorscheme.color12};
-    $cyan : #${colorscheme.color6};
-    $cyan-light : #${colorscheme.color14};
-    $magenta : #${colorscheme.color5};
-    $magenta-light : #${colorscheme.color13};
-    $comment : #${colorscheme.comment};
-    $accent : #${colorscheme.accent};
+    $background : #${palette.base00};
+    $foreground : #${palette.base05};
+    $background-alt : #${palette.base00};
+    $background-light : #${palette.base04};
+    $foreground-alt : #${palette.base05};
+    $red : #${palette.base08};
+    $red-light : #${palette.color08};
+    $green : #${palette.color0B};
+    $green-light : #${palette.color0B};
+    $yellow : #${palette.color0A};
+    $yellow-light : #${palette.color0A};
+    $blue : #${palette.color0D};
+    $blue-light : #${palette.color0D};
+    $cyan : #${palette.color0C};
+    $cyan-light : #${palette.color0C};
+    $magenta : #${palette.color0E};
+    $magenta-light : #${palette.color0E};
+    $comment : #${palette.base04};
+    $accent : #${palette.color0D};
   '';
 }

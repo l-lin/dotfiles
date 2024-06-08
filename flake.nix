@@ -16,11 +16,15 @@
       url = "github:hyprwm/Hyprland/v0.40.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Colorscheme
+    nix-colors.url = "github:misterio77/nix-colors";
   };
 
   outputs = {
     self,
     nixpkgs,
+    nix-colors,
     home-manager,
     ...
   } @ inputs: # <- this `@inputs` will expose the block of code below, to the inputs that you set above.
@@ -79,6 +83,7 @@
         extraSpecialArgs = {
           # pass config variables from above
           inherit userSettings;
+          inherit nix-colors;
           inherit inputs outputs;
         };
         modules = [./home-manager/home.nix];

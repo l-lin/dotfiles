@@ -5,10 +5,7 @@
 # Exhaustive list of options: https://mynixos.com/home-manager/options
 #
 
-{ inputs, lib, config, pkgs, userSettings, ... }:
-let
-  colorscheme = import (./. + "/modules/colorscheme"+("/"+userSettings.colorscheme)+".nix") { };
-in {
+{ inputs, lib, config, pkgs, userSettings, ... }: {
   # You can import other home-manager modules here
   imports = [
     ./modules/fonts.nix
@@ -30,7 +27,7 @@ in {
     ./modules/tui/xdg.nix
 
     # GUI
-    (./. + "/modules/gui/wm"+("/"+userSettings.wmType+"/"+userSettings.wm)) { inherit colorscheme; }
+    (./. + "/modules/gui/wm"+("/"+userSettings.wmType+"/"+userSettings.wm))
     ./modules/gui/browser/firefox
     ./modules/gui/wall
   ];
