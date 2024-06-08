@@ -3,22 +3,19 @@
 # src: https://github.com/swaywm/swaylock
 #
 
-{ userSettings, pkgs, ... }: {
+{ pkgs, ... }: {
   programs.swaylock = {
     enable = true;
     package = pkgs.swaylock-effects;
+
+    # https://github.com/swaywm/swaylock/blob/master/swaylock.1.scd
     settings = {
-      clock = true;
-      image = "/home/${userSettings.username}/Pictures/nix.png";
       show-failed-attempts = false;
 
       indicator = true;
       indicator-caps-lock = true;
       indicator-radius = 200;
       indicator-thickness = 25;
-
-      timestr = "%R";
-      datestr = "%a, %e of %B";
 
       line-uses-ring = false;
 
@@ -56,13 +53,22 @@
       text-wrong-color = "ffffff";
 
       # Effects
-      fade-in = "0.1";
+      # Options: https://github.com/jirutka/swaylock-effects
+      # Show date/time indicator.
+      clock = true;
+      timestr = "%R";
+      datestr = "%a, %e of %B";
 
+      # Use screenshots instead of an image.
+      screenshots = true;
+
+      # Password grace period.
       grace = 0;
       grace-no-mouse = true;
       grace-no-touch = true;
 
-      effect-blur = "20x6";
+      # Blur the image, <radius>x<times>.
+      effect-blur = "10x3";
     };
   };
 }
