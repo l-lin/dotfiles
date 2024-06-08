@@ -7,8 +7,6 @@
 #
 
 { pkgs, ... }: {
-  imports = [ ../default.nix ];
-
   programs.hyprland.enable = true;
 
   # Enable screen sharing

@@ -4,8 +4,9 @@
 # src: https://wayland.freedesktop.org/
 #
 
-{ pkgs, ... }: {
+{ pkgs, userSettings, ... }: {
   imports = [
+    (./. + "/modules/gui/wm"+("/"+userSettings.wmType+"/"+userSettings.wm))
     ./swaylock.nix
   ];
 

@@ -6,7 +6,7 @@
 # src: https://nixos.wiki/wiki/Printing
 #
 
-{ ... }: {
+{
   # Enable CUPS to print documents.
   services.printing.enable = true;
 }

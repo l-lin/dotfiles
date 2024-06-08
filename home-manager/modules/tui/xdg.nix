@@ -9,7 +9,7 @@
 # - https://mynixos.com/home-manager/options/xdg
 #
 
-{ ... }: {
+{
   xdg = {
     userDirs = {
       enable = true;

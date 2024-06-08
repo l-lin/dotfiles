@@ -6,9 +6,10 @@
 # src: https://nixos.wiki/wiki/PulseAudio
 #
 
-{ ... }: {
+{
   sound.enable = true;
   nixpkgs.config.pulseaudio = true;
+  # Allow bluetooth audio devices to be used with PulseAudio.
   hardware.pulseaudio.enable = false;
 }
 

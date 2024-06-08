@@ -4,8 +4,6 @@
 # src: https://nixos.wiki/wiki/Sway
 #
 
-{ ... }: {
-  imports = [ ../default.nix ];
-
+{
   programs.sway.enable = true;
 }

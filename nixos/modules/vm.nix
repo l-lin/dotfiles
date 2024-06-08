@@ -2,7 +2,7 @@
 # /!\ Disable when not in VM!
 #
 
-{ ... }: {
+{
   services = {
     # QEMU is a generic and open source machine emulator and virtualizer.
     # src: https://www.qemu.org/

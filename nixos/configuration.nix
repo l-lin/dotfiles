@@ -3,14 +3,7 @@
 # Use this to configure your system environment (it replaces /etc/nixos/configuration.nix)
 #
 
-{
-  inputs,
-  lib,
-  config,
-  pkgs,
-  userSettings,
-  ...
-}: {
+{ inputs, lib, config, pkgs, userSettings, ... }: {
   # You can import other NixOS modules here
   imports = [
     # Import your generated (nixos-generate-config) hardware configuration
@@ -28,14 +21,14 @@
     ./modules/printing.nix
     ./modules/ssh
     ./modules/users.nix
-    ./modules/vm.nix
+    #./modules/vm.nix
 
     # TUI
     (./. + "/modules/tui/shell"+("/"+userSettings.shell))
     ./modules/tui/greetd
 
     # GUI
-    (./. + "/modules/gui/wm"+("/"+userSettings.wmType+"/"+userSettings.wm))
+    (./. + "/modules/gui/wm"+("/"+userSettings.wmType))
   ];
 
   # Nixpkgs stuff

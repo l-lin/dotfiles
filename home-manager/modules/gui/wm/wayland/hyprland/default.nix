@@ -7,8 +7,6 @@
 #
 
 { pkgs, ... }: {
-  imports = [ ../default.nix ];
-
   wayland.windowManager.hyprland = {
     # Whether to enable Hyprland wayland compositor
     enable = true;

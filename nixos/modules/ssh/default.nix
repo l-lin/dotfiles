@@ -3,7 +3,7 @@
 # /!\ Disable when not in VM!
 #
 
-{ ... }: {
+{
   services.openssh = {
     enable = true;
     settings = {

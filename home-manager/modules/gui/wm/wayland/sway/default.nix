@@ -1,9 +1,7 @@
 # Sway is a tiling Wayland compositor and a drop-in replacement for the i3 window manager for X11.
 #
 # See https://nixos.wiki/wiki/Sway
-{ ... }: {
-  imports = [ ../default.nix ];
-
+{
   wayland.windowManager.sway = {
     enable = true;
     config = {
