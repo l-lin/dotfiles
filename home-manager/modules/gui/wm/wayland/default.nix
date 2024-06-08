@@ -8,7 +8,7 @@
   imports = [
     (./. + "/${userSettings.wm}")
     ./swaylock.nix
-    ./waybar
+    #./waybar
   ];
 
   home.packages = with pkgs; [
