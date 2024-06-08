@@ -5,10 +5,10 @@
 # Exhaustive list of options: https://mynixos.com/home-manager/options
 #
 
+{ inputs, lib, config, pkgs, userSettings, ... }:
 let
   colorscheme = import (./. + "/modules/colorscheme"+("/"+userSettings.colorscheme)+".nix") { };
-in
-{ inputs, lib, config, pkgs, userSettings, ... }: {
+in {
   # You can import other home-manager modules here
   imports = [
     ./modules/fonts.nix
