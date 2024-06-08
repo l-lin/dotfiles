@@ -8,7 +8,7 @@
     ./browser/firefox
     ./dunst
     ./hyprpicker.nix
-    #./eww
+    ./satty.nix
     ./wall
   ];
 }
