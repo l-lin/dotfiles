@@ -1,41 +1,17 @@
 
 (defwidget profile[]
   (box :orientation 'h'  :space-evenly false :class "profile" :spacing 20
-   (image :hexpand true :halign "start"  :image-width 50 :path pfp)
-  (box :orientation 'v' :valign 'center' :space-evenly false  :halign "end" :spacing 3
-    (box :class "profiletime" :halign "end" "${username}@${hostname}")
-    (box :class "profiletime" :halign "end" "${uptime}")
-    )
-  )
-)
-
-(defwidget music[]
-  (box :orientation "h" :space-evenly false :spacing 15
-    (overlay :hexpand true
-      (box :orientation 'v' :space-evenly false :class "music"  :style "background-image:  url('${cover_art}');" 
-      )
-      (box :class "music-g")
-      (box :orientation 'v'  :space-evenly false
-          (box :orientation  'v' :space-evenly false :vexpand true :class "musicinfo"
-              (box :orientation "v" :halign 'start' :space-evenly false :spacing 3
-                  (box :halign 'start' :class "musicname" song)
-                  (box :halign 'start' :class "musicartist" song_artist)
-              )
-          )
-          (scale :onchange "mpc seek {}%" :class "scale music-scale" :value current_status )
-        )
-    )
-  (box :orientation 'v' :class "musicbuttons"
-      (button :onclick "~/.config/eww/scripts/ms.sh  --prev":valign 'center' :class "musicbutton"  "󰒮")
-      (button :onclick "~/.config/eww/scripts/ms.sh  --toggle" :valign 'center' :class "musicbutton"  "${song_status}")
-      (button :onclick "~/.config/eww/scripts/ms.sh  --next" :valign 'center' :class "musicbutton"  "󰒭")
+    (image :hexpand true :halign "start"  :image-width 50 :path pfp)
+    (box :orientation 'v' :valign 'center' :space-evenly false  :halign "end" :spacing 3
+      (box :class "profiletime" :halign "end" "${username}@${hostname}")
+      (box :class "profiletime" :halign "end" "${uptime}")
     )
   )
 )
 
 (defwidget setbtn[?icon active func label]
   (button :halign 'center' :class "${active == 'active' ? 'active' : ''} setbtn" :onclick "${func}"
-      (box :hexpand true :halign "start" "${icon}" )
+    (box :hexpand true :halign "start" "${icon}" )
   )
 )
 

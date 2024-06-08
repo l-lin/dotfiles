@@ -15,20 +15,14 @@
 (defpoll volume :interval "1s" `pamixer --get-volume`)
 (defpoll brightness :interval "1s" `brightnessctl -m -d amdgpu_bl0 | awk -F, '{print substr($4, 0, length($4)-1)}' | tr -d '%'`)
 
-(defvar pfp "/home/namish/.config/eww/assets/pfp.png")
-(defvar fullpfp "/home/namish/.config/eww/assets/fullpfp.png")
+(defvar pfp "~/Pictures/hi.png")
+(defvar fullpfp "~/Pictures/zelda_wind_walker.png")
 
 (defpoll cputemp :interval "1s" "~/.config/eww/scripts/cpu.sh")
 (defpoll wifisped :interval "1s" "~/.config/eww/scripts/wifi.sh --speed")
 
 (defpoll battery :interval "1s" `~/.config/eww/scripts/bat.sh percent`)
 (defpoll wifiConnected :interval "2s" `~/.config/eww/scripts/wifi.sh --icon`)
-
-(defpoll song :interval "2s"  "~/.config/eww/scripts/ms.sh --song")
-(defpoll song_artist :interval "2s"  "~/.config/eww/scripts/ms.sh --artist")
-(defpoll current_status :interval "1s"  "~/.config/eww/scripts/ms.sh --time")
-(defpoll song_status :interval "1s"  "~/.config/eww/scripts/ms.sh --status")
-(defpoll cover_art :interval "2s"  "~/.config/eww/scripts/ms.sh --cover")
 
 (defpoll username :interval "48h"  "whoami")
 (defpoll hostname :interval "48h"  "hostname")
@@ -39,11 +33,6 @@
 (defpoll wifiactive :interval '1s' "~/.config/eww/scripts/wifi.sh --class")
 (defpoll btactive :interval '1s' "~/.config/eww/scripts/bl.sh --class")
 (defpoll wallpaper :interval "1h" "source ~/.local/bin/upw && echo $WALLPAPER")
-
-(defpoll weathericon :interval "2h" "~/.config/eww/scripts/weather.sh icon")
-(defpoll weatherimage :interval "2h" "~/.config/eww/scripts/weather.sh image")
-(defpoll current_temp :interval "2h" "~/.config/eww/scripts/weather.sh current_temp")
-(defpoll current_desc :interval "2h" "~/.config/eww/scripts/weather.sh weather_desc")
 
 (defpoll dunsthistory :interval "250ms" "dunstctl history")
 (defpoll dunstcount :interval "250ms" "dunstctl count history")

@@ -1,27 +1,12 @@
 (defwidget bar []
    (box :class "bar" :vexpand false :orientation "horizontal" :space-evenly false
     (box :halign "start" :valign "center":vexpand false   :space-evenly false :spacing 7 (launcher) (workspaces))
-    (box :halign "center" :valign "center" :hexpand true :vexpand false   :space-evenly false :spacing 7 (musicbar))
     (box :halign "end" :class "image" :valign "center" :space-evenly false :orientation 'h' :spacing 10 (both) (time) (profileimage))
   )
 )
 
 (defwidget profileimage[]
    (image  :image-width 42 :path pfp)
-)
-
-(defwidget musicbar[]
-      (overlay :hexpand true
-        (box :orientation 'v' :space-evenly false :class "musicbar" :halign 'center'  :style "background-image:  url('${cover_art}');") 
-        (box :class "barmusic-g")
-        (box :orientation 'h' :class "bmusicbuttons" :halign 'center' :valign 'center' :space-evenly false :spacing 120
-          (box :valign 'center' :class "hbmusicbutton"  "󰋎")
-        (box :orientation 'h' :class "bmusicbuttons" :halign 'center' :valign 'center' :space-evenly false
-          (button :onclick "~/.config/eww/scripts/ms.sh  --prev":valign 'center' :class "bmusicbutton"  "󰒮")
-          (button :onclick "~/.config/eww/scripts/ms.sh  --toggle" :valign 'center' :class "bmusicbutton"  "${song_status}")
-          (button :onclick "~/.config/eww/scripts/ms.sh  --next" :valign 'center' :class "bmusicbutton"  "󰒭")
-        ))
-      )
 )
 
 (defwidget time[]
@@ -68,7 +53,7 @@
     :geometry (geometry :x "20px"
       :y "20px"
       :width "70%"
-      :height "58px"
+      :height "38px"
       :anchor "top center")
     :stacking "fg"
     :exclusive true

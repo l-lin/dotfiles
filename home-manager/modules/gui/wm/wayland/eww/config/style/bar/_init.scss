@@ -129,31 +129,6 @@
   font-family: "Iosevka Nerd Font";
 }
 
-.musicbar {
-  @include rounding;
-  margin: 0px 0px;
-  background-position: bottom;
-  background-size: 100%;
-  min-height: 42px;
-  min-width: 280px;
-}
-
-.barmusic-g {
-  background-image: linear-gradient(to right, rgba($background, 0.8) 40%, rgba($background, 0.7));
-}
-
-.hbmusicbutton {
-  font-family: "Iosevka Nerd Font";
-  padding: 1rem;
-  font-size: 20px;
-}
-
-.bmusicbutton {
-  font-family: "Iosevka Nerd Font";
-  padding: 0.8rem;
-  font-size: 24px;
-}
-
 .bar {
   margin: 0.3rem 0.3rem;
   border-radius: 10px;

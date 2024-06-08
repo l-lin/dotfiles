@@ -97,17 +97,7 @@ calendar {
   color: $foreground;
 }
 
-.weatherimage {
-  min-height: 150px;
-  min-width: 400px;
-  @include rounding;
-  background-position: bottom;
-}
-
 .ok {
   padding: 3rem;
 }
 
-.wtemp {
-  font-size: 2.3em;
-}

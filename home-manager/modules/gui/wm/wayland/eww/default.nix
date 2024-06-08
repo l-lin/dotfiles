@@ -1,5 +1,9 @@
 #
 # Standalone widget system in any window manager.
+# Some example widgets:
+# - https://github.com/chadcat7/crystal/tree/glacier
+# - https://github.com/notusknot/dotfiles-nix
+#
 # src: https://github.com/elkowar/eww
 #
 

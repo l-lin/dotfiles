@@ -75,7 +75,7 @@
           (circprog :value cputemp :icon "󰔏" :label "TEMP" :color "green")
         )
         (box :class "stats" :orientation 'h' :hexpand true
-        (overlay  
+        (overlay
           (box :orientation 'v' :spacing 60
             (box :height 3 :class "gridline")
             (box :height 3 :class "gridline")
@@ -96,17 +96,6 @@
             (sc :val battery :color "green")
           )
         ))
-      )
-      (box :orientation "h" :vexpand true :class "dashmusic" :space-evenly false :spacing 20
-        (box :class "dashart" :style "background-image:  url('${cover_art}'); background-size:cover;")
-        (box :orientation 'v' :halign "center" :hexpand true :valign "center" :vexpand true :space-evenly false :class "dmi"
-                  (box :halign 'center' :class "musicname" song)
-                  (box :halign 'center' :class "musicartist" song_artist)
-  (box :orientation 'h'       (button :onclick "~/.config/eww/scripts/ms.sh  --prev":valign 'center' :class "musicbutton"  "󰒮")
-      (button :onclick "~/.config/eww/scripts/ms.sh  --toggle" :valign 'center' :class "musicbutton"  "${song_status}")
-      (button :onclick "~/.config/eww/scripts/ms.sh  --next" :valign 'center' :class "musicbutton"  "󰒭")
-    )
-        )
       )
     )
     (box :class "notifcenter" :orientation 'v' :space-evenly true

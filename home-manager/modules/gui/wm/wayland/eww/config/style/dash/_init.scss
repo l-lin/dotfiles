@@ -133,21 +133,3 @@
   color: $comment;
 }
 
-
-.dashmusic {
-  @include rounding;
-  background: rgba($background-alt, 0.8);
-  padding: 1rem;
-}
-
-.dashart {
-  @include rounding;
-  opacity: 0.6;
-  min-height: 100px;
-  min-width: 120px;
-}
-
-.dmi {
-  margin-top: 1rem;
-  font-family: Rubik;
-}
