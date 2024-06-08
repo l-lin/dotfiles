@@ -9,6 +9,7 @@
   # You can import other home-manager modules here
   imports = [
     ./modules/fonts.nix
+    ./modules/colorscheme.nix
 
     # TUI
     (./. + "/modules/tui/shell"+("/"+userSettings.shell))
