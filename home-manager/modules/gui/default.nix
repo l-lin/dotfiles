@@ -2,17 +2,13 @@
 # Graphical User Interfaces.
 #
 
-{ pkgs, userSettings, ... }: {
+{ userSettings, ... }: {
   imports = [
     (./. + "/wm/${userSettings.wmType}")
     ./browser/firefox
     ./dunst
+    ./hyprpicker.nix
     #./eww
     ./wall
-  ];
-
-  home.packages = with pkgs; [
-    # A wlroots-compatible Wayland color picker that does not suck: https://github.com/hyprwm/hyprpicker
-    hyprpicker
   ];
 }
