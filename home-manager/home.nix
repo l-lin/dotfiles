@@ -5,7 +5,7 @@
 # Exhaustive list of options: https://mynixos.com/home-manager/options
 #
 
-{ inputs, lib, config, pkgs, userSettings, ... }: {
+{ userSettings, ... }: {
   # You can import other home-manager modules here
   imports = [
     ./modules/fonts.nix
@@ -30,6 +30,8 @@
     # GUI
     (./. + "/modules/gui/wm/${userSettings.wmType}")
     ./modules/gui/browser/firefox
+    ./modules/gui/dunst
+    #./modules/gui/eww
     ./modules/gui/wall
   ];
 
