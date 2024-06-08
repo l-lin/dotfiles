@@ -12,7 +12,7 @@
     ./modules/colorscheme.nix
 
     # TUI
-    (./. + "/modules/tui/shell"+("/"+userSettings.shell))
+    (./. + "/modules/tui/shell/${userSettings.shell}")
     ./modules/tui/alacritty
     ./modules/tui/atuin
     ./modules/tui/bat.nix
@@ -28,7 +28,7 @@
     ./modules/tui/xdg.nix
 
     # GUI
-    (./. + "/modules/gui/wm"+("/"+userSettings.wmType))
+    (./. + "/modules/gui/wm/${userSettings.wmType}")
     ./modules/gui/browser/firefox
     ./modules/gui/eww
     ./modules/gui/wall

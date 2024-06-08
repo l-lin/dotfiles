@@ -6,7 +6,7 @@
 
 { userSettings, ... }: {
   imports = [
-    (./. + "/modules/gui/wm"+("/"+userSettings.wmType+"/"+userSettings.wm))
+    (./. + "/${userSettings.wm}")
     ./swaylock.nix
   ];
 }

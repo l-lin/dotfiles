@@ -24,11 +24,11 @@
     #./modules/vm.nix
 
     # TUI
-    (./. + "/modules/tui/shell"+("/"+userSettings.shell))
+    (./. + "/modules/tui/shell/${userSettings.shell}")
     ./modules/tui/greetd
 
     # GUI
-    (./. + "/modules/gui/wm"+("/"+userSettings.wmType))
+    (./. + "/modules/gui/wm/${userSettings.wmType}")
   ];
 
   # Nixpkgs stuff
