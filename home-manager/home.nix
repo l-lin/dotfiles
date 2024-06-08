@@ -6,33 +6,11 @@
 #
 
 { userSettings, ... }: {
-  # You can import other home-manager modules here
   imports = [
-    ./modules/fonts.nix
     ./modules/colorscheme.nix
-
-    # TUI
-    (./. + "/modules/tui/shell/${userSettings.shell}")
-    ./modules/tui/alacritty
-    ./modules/tui/atuin
-    ./modules/tui/bat.nix
-    ./modules/tui/cli.nix
-    ./modules/tui/fzf
-    ./modules/tui/git
-    ./modules/tui/lazygit
-    ./modules/tui/multiplexer/tmux
-    ./modules/tui/navi
-    ./modules/tui/nvim
-    ./modules/tui/psql
-    ./modules/tui/tealdeer
-    ./modules/tui/xdg.nix
-
-    # GUI
-    (./. + "/modules/gui/wm/${userSettings.wmType}")
-    ./modules/gui/browser/firefox
-    ./modules/gui/dunst
-    #./modules/gui/eww
-    ./modules/gui/wall
+    ./modules/fonts.nix
+    ./modules/gui
+    ./modules/tui
   ];
 
   home = {

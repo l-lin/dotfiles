@@ -1,8 +1,24 @@
 #
-# List of CLI to install that do not need special configuration.
+# Terminal User Interfaces.
 #
 
-{ pkgs, ... }: {
+{ pkgs, userSettings, ... }: {
+  imports = [
+    ./alacritty
+    ./atuin
+    ./bat.nix
+    ./fzf
+    ./git
+    ./lazygit
+    ./multiplexer/tmux
+    ./navi
+    ./nvim
+    ./psql
+    (./. + "/shell/${userSettings.shell}")
+    ./tealdeer
+    ./xdg.nix
+  ];
+
   home.packages = with pkgs; [
     # Code search-and-replace tool: https://github.com/dalance/amber
     amber
