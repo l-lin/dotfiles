@@ -1,0 +1,75 @@
+(defwidget bar []
+   (box :class "bar" :vexpand false :orientation "horizontal" :space-evenly false
+    (box :halign "start" :valign "center":vexpand false   :space-evenly false :spacing 7 (launcher) (workspaces))
+    (box :halign "center" :valign "center" :hexpand true :vexpand false   :space-evenly false :spacing 7 (musicbar))
+    (box :halign "end" :class "image" :valign "center" :space-evenly false :orientation 'h' :spacing 10 (both) (time) (profileimage))
+  )
+)
+
+(defwidget profileimage[]
+   (image  :image-width 42 :path pfp)
+)
+
+(defwidget musicbar[]
+      (overlay :hexpand true
+        (box :orientation 'v' :space-evenly false :class "musicbar" :halign 'center'  :style "background-image:  url('${cover_art}');") 
+        (box :class "barmusic-g")
+        (box :orientation 'h' :class "bmusicbuttons" :halign 'center' :valign 'center' :space-evenly false :spacing 120
+          (box :valign 'center' :class "hbmusicbutton"  "󰋎")
+        (box :orientation 'h' :class "bmusicbuttons" :halign 'center' :valign 'center' :space-evenly false
+          (button :onclick "~/.config/eww/scripts/ms.sh  --prev":valign 'center' :class "bmusicbutton"  "󰒮")
+          (button :onclick "~/.config/eww/scripts/ms.sh  --toggle" :valign 'center' :class "bmusicbutton"  "${song_status}")
+          (button :onclick "~/.config/eww/scripts/ms.sh  --next" :valign 'center' :class "bmusicbutton"  "󰒭")
+        ))
+      )
+)
+
+(defwidget time[]
+ (button :onclick "eww open --toggle moment" (box :class "time" "${hour} : ${minute} ${ampm}"))
+)
+(defwidget launcher[]
+  (button :onclick "eww open --toggle dash" (box :class "launcher" " "))
+)
+(defwidget batteryprog[]
+  (box :class "batbar"
+  (circular-progress :class "thingy"
+                   :value battery
+                   :thickness 3
+                   :clockwise true
+                     :start-at 30
+   (box :class "t")
+    ))
+)
+
+(defwidget wifiicon[]
+  (box :class "wifiicon" wifiConnected)
+)
+
+(defwidget both[]
+  (button :onclick "eww open --toggle control" (box :class "both" :space-evenly false :spacing 15 (batteryprog) (wifiicon)))
+  )
+
+(defwidget powericon[]
+  (box :class "powericon" "󰐥")
+)
+(deflisten workspaces_var :initial "[]"  `$HOME/.config/eww/scripts/ws.sh`)
+(defwidget workspaces []
+  (box
+    (box :orientation "h" :class "workspaces" :space-evenly "false" :halign "center" :spacing 10
+        (button :class {workspaces_var[0]} :valign "center" :onclick "hyprctl dispatch workspace 1")
+        (button :class {workspaces_var[1]} :valign "center" :onclick "hyprctl dispatch workspace 2")
+        (button :class {workspaces_var[2]} :valign "center" :onclick "hyprctl dispatch workspace 3")
+        (button :class {workspaces_var[3]} :valign "center" :onclick "hyprctl dispatch workspace 4")
+        (button :class {workspaces_var[4]} :valign "center" :onclick "hyprctl dispatch workspace 5")
+	)))
+
+(defwindow bar
+    :monitor 0
+    :geometry (geometry :x "20px"
+      :y "20px"
+      :width "70%"
+      :height "58px"
+      :anchor "top center")
+    :stacking "fg"
+    :exclusive true
+  (bar))

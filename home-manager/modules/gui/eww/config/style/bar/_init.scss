@@ -1,0 +1,184 @@
+.workspaces {
+  @include rounding;
+  padding: 16px;
+  margin-top: 2px;
+
+  inner {
+    &:hover {
+      background-color: $background-alt;
+    }
+  }
+
+  button {
+    border-style: none;
+    box-shadow: inherit;
+    text-shadow: inherit;
+    background-color: $comment;
+
+    min-width: 18px;
+    min-height: 18px;
+    margin: 0 0.4rem;
+    border-radius: 10px;
+
+    &:hover {
+      background-color: $foreground;
+    }
+
+    &.occupied {
+      background: rgba($foreground, 0.6);
+
+      &:hover {
+        background-color: $foreground;
+      }
+    }
+
+    &.active {
+      background: linear-gradient(to right, $accent, $accent);
+      background-size: cover;
+    }
+  }
+}
+
+.bar {
+  background: $background;
+}
+
+.barpor {
+  @include rounding;
+  padding: 8px;
+}
+
+.launcher {
+  font-family: "Iosevka Nerd Font";
+  color: $background-alt;
+  background: $accent;
+  @include rounding;
+  padding: 3px 12px;
+  margin: 5px 0;
+  margin-left: 0.5rem;
+  font-size: 22px;
+
+  &:hover {
+    color: $green;
+  }
+}
+
+.both {
+  background-color: $background-alt;
+  padding: 3px 12px;
+  border-radius: 50px 7px 7px 50px;
+  margin-top: 2px;
+  font-size: 16px;
+}
+
+.thingy {
+  color: $green;
+}
+
+.time {
+  font-family: "Rubik";
+  background-color: $background-alt;
+  padding: 3px 12px;
+  border-radius: 7px 50px 50px 7px;
+  margin-top: 2px;
+  font-size: 16px;
+}
+
+.t {
+  padding: 0.8rem;
+}
+
+.powericon {
+  font-family: "Iosevka Nerd Font";
+  background-color: $background-alt;
+  @include rounding;
+  padding: 3px 12px;
+  color: $red;
+  margin-top: 2px;
+  font-size: 20px;
+}
+
+.batteryicon {
+  font-family: "Iosevka Nerd Font";
+  font-size: 20px;
+  color: $background;
+}
+
+.bat_progress trough {
+  min-width: 8rem;
+  min-height: 22px;
+  background: rgba($blue, 0.1);
+  @include rounding;
+}
+
+.bat_progress trough highlight {
+  @include rounding;
+  background: linear-gradient(to right, $blue, $blue-light);
+}
+
+.batterybar {
+  margin: 2px 0;
+  @include rounding;
+  padding: 8px;
+  background: $background-alt;
+}
+
+.wifiicon {
+  font-size: 20px;
+  font-family: "Iosevka Nerd Font";
+}
+
+.musicbar {
+  @include rounding;
+  margin: 0px 0px;
+  background-position: bottom;
+  background-size: 100%;
+  min-height: 42px;
+  min-width: 280px;
+}
+
+.barmusic-g {
+  background-image: linear-gradient(
+    to right,
+    rgba($background, 0.8) 40%,
+    rgba($background, 0.7)
+  );
+}
+
+.hbmusicbutton {
+  font-family: "Iosevka Nerd Font";
+  padding: 1rem;
+  font-size: 20px;
+}
+
+.bmusicbutton {
+  font-family: "Iosevka Nerd Font";
+  padding: 0.8rem;
+  font-size: 24px;
+}
+
+.bar {
+  margin: 0.3rem 0.3rem;
+  border-radius: 10px;
+}
+
+.image {
+  margin-right: 0.5rem;
+  border-radius: 100px;
+}
+
+.icon {
+  background: $background-alt;
+  padding: 0.4rem 1rem;
+  font-size: 18px;
+  @include rounding;
+  margin: 4px 0;
+  margin-right: 0rem;
+  font-family: Material Design Icons Desktop;
+}
+
+.themes {
+  background: $background-alt;
+  margin: 4px 0;
+  padding: 0.4rem;
+}
