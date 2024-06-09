@@ -9,9 +9,9 @@
   ];
 
   home.packages = with pkgs; [
-    # PulseAudio Volume Control GUI.
-    pavucontrol
-    # Cli and curses mixer for pulseaudio.
+    # A minimalist command line interface to MPD: https://www.musicpd.org/clients/mpc/
+    mpc-cli
+    # CLI and curses mixer for pulseaudio.
     # src: https://github.com/GeorgeFilipkin/pulsemixer
     pulsemixer
   ];
