@@ -3,7 +3,7 @@
 ## Info
 
 - :bento: window manager: [hyprland](https://github.com/hyprwm/Hyprland)
-- :rocket: terminal emulator: [alacritty](https://alacritty.org/)
+- :milky_way: terminal emulator: [alacritty](https://alacritty.org/)
 - :shell: shell: [zsh](https://www.zsh.org/)
 - :memo: text editor: [neovim](https://neovim.io/)
 - :speech_balloon: notification: [dunst](https://dunst-project.org/)
@@ -12,6 +12,7 @@
 - :abc: fonts: [nerd fonts](https://github.com/ryanoasis/nerd-fonts)
 - :art: color scheme: [kanagawa](https://github.com/rebelot/kanagawa.nvim)
 - :file_folder: file manager: [lf](https://github.com/gokcehan/lf) / [thunar](https://gitlab.xfce.org/xfce/thunar)
+- :rocket: application launcher: [wofi](https://hg.sr.ht/~scoopta/wofi)
 
 ## Getting started
 
