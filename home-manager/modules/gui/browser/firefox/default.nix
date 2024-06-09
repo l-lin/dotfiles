@@ -6,4 +6,6 @@
   programs.firefox = {
     enable = true;
   };
+
+  imports = [ ./tridactyl ];
 }
