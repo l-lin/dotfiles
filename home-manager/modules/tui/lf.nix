@@ -21,13 +21,16 @@
       '';
 
       pager = ''
+        ''${{
         bat --paging=always "$f"
+        }}
       '';
     };
     keybindings = {
       a = "push %mkdir<space>";
-      d = "trash";
+      d = "delete";
       f = "fzf";
+      o = "open";
       O = "pager";
       t = "push %touch<space>";
       x = "cut";
@@ -39,7 +42,6 @@
       case "$file" in
           *.tar*) tar tf "$file";;
           *.zip) unzip -l "$file";;
-          *.pdf) pdftotext "$file" -;;
           *) bat --color=always --plain "$file";;
       esac
     '';
