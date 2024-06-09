@@ -39,6 +39,8 @@
     ctop
     # HTTP client: https://curl.se/
     curl
+    # Search DuckDuckGo from the terminal: https://github.com/jarun/ddgr
+    ddgr
     # Syntax-highlighting for git: https://github.com/dandavison/delta
     delta
     # Disk Usage/Free Utility: https://github.com/muesli/duf/
