@@ -1,3 +1,7 @@
+#
+# src: https://nixos.wiki/wiki/Zsh
+#
+
 { pkgs, ... }: {
   home.packages = with pkgs; [ zsh ];
 

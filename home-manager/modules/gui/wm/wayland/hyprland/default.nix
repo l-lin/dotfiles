@@ -29,7 +29,7 @@
 
       $main_mod = SUPER
       $terminal = ${userSettings.term}
-      $file_manager = ${userSettings.term} --command ${userSettings.tuiFileManager}
+      $file_manager = ${userSettings.term} --command ${userSettings.fileManager}
       $menu = rofi -show drun
       $color_picker = hyprpicker -a -r
       $lock_screen = swaylock

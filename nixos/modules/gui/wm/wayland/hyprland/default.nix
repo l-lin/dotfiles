@@ -1,6 +1,6 @@
 #
 # Dynamic tiling Wayland compositor
-# See:
+# src:
 # - https://hyprland.org/
 # - https://nixos.wiki/wiki/Hyprland
 # - https://wiki.hyprland.org/Nix/Hyprland-on-NixOS/

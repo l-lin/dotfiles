@@ -4,6 +4,6 @@
 
 { userSettings, ... }: {
   imports = [
-    (./. + "/${userSettings.tuiFileManager}")
+    (./. + "/${userSettings.fileManager}")
   ];
 }

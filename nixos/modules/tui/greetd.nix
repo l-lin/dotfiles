@@ -1,6 +1,5 @@
 #
 # Minimalist, agnostic and flexible login manager
-#
 # src:
 # - https://wiki.archlinux.org/title/Greetd
 # - https://github.com/apognu/tuigreet

@@ -4,7 +4,6 @@
 # GStreamer-based applications.
 # PipeWire has a great bluetooth support: because Pulseaudio was reported to have troubles with
 # bluetooth, PipeWire can be a good alternative.
-#
 # src: https://nixos.wiki/wiki/PipeWire
 #
 
