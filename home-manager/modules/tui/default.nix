@@ -25,6 +25,8 @@
   home.packages = with pkgs; [
     # Code search-and-replace tool: https://github.com/dalance/amber
     amber
+    # A menu-driven bash script for the management of removable media with udisks: https://github.com/jamielinux/bashmount
+    bashmount
     # Read and control device brightness: https://github.com/Hummer12007/brightnessctl
     brightnessctl
     # Monitor resources: https://github.com/aristocratos/btop
