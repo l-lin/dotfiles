@@ -26,5 +26,7 @@
     obsidian
     # Pulseaudio volume control: https://github.com/cdemoulins/pamixer
     pamixer
+    # Simple animated GIF screen recorder with an easy to use interface: https://github.com/phw/peek
+    peek
   ];
 }
