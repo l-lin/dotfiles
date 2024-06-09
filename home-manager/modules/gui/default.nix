@@ -8,6 +8,7 @@
     ./browser/firefox
     ./dunst
     ./hyprpicker.nix
+    ./jetbrains
     ./satty.nix
     ./wall
   ];
