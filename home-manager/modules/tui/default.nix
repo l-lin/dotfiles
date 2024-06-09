@@ -37,6 +37,8 @@
     curl
     # Syntax-highlighting for git: https://github.com/dandavison/delta
     delta
+    # Disk Usage/Free Utility: https://github.com/muesli/duf/
+    duf
     # More intuitive version of du: https://github.com/bootandy/dust
     dust
     # Wrapper to execute command in a pty: https://github.com/dtolnay/faketty
