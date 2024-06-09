@@ -20,7 +20,7 @@
     ./modules/network.nix
     ./modules/pipewire.nix
     ./modules/printing.nix
-    ./modules/ssh
+    ./modules/ssh.nix
     ./modules/users.nix
     #./modules/vm.nix
 
