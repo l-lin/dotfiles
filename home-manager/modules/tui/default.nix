@@ -4,7 +4,6 @@
 
 { pkgs, userSettings, ... }: {
   imports = [
-    ./alacritty
     ./atuin
     ./bat.nix
     ./fzf
@@ -19,6 +18,7 @@
     (./. + "/shell/${userSettings.shell}")
     ./spotify
     ./tealdeer
+    (./. + "/term/${userSettings.term}")
     ./xdg.nix
   ];
 
