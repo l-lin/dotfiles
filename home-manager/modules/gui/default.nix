@@ -10,6 +10,7 @@
     ./browser/w3m
     ./dunst
     ./hyprpicker.nix
+    ./image
     ./jetbrains
     ./satty.nix
     ./wall
