@@ -10,6 +10,7 @@
     ./dunst
     ./hyprpicker.nix
     ./jetbrains
+    ./mpd.nix
     ./satty.nix
     ./wall
   ];
