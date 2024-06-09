@@ -47,6 +47,8 @@
     faketty
     # User-friendly find: https://github.com/sharkdp/fd
     fd
+    # A complete, cross-platform solution to record, convert and stream audio and video: https://www.ffmpeg.org/
+    ffmpeg
     # A program that shows the type of files: https://darwinsys.com/file
     file
     # GNU Compiler Collection.
