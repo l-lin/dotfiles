@@ -25,6 +25,8 @@
   home.packages = with pkgs; [
     # Code search-and-replace tool: https://github.com/dalance/amber
     amber
+    # Read and control device brightness: https://github.com/Hummer12007/brightnessctl
+    brightnessctl
     # Monitor resources: https://github.com/aristocratos/btop
     btop
     # Client for cheat.sh: https://github.com/chubin/cheat.sh
@@ -77,6 +79,8 @@
     libnotify
     # Better ls command: https://github.com/lsd-rs/lsd
     lsd
+    # Stores, retrieves, generates, and synchronizes passwords securely: https://www.passwordstore.org/
+    pass-wayland
     # Pretty ping: https://github.com/denilsonsa/prettyping
     prettyping
     # Modern replacement for top: https://github.com/dalance/procs

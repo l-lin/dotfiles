@@ -13,10 +13,6 @@
   ];
 
   home.packages = with pkgs; [
-    # Read and control device brightness: https://github.com/Hummer12007/brightnessctl
-    brightnessctl
-    # Pulseaudio volume control: https://github.com/cdemoulins/pamixer
-    pamixer
     # Copy/paste utilities: https://github.com/bugaevc/wl-clipboard
     wl-clipboard
   ];
