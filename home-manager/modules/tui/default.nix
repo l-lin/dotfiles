@@ -4,13 +4,13 @@
 
 { pkgs, userSettings, ... }: {
   imports = [
+    ./audio
     ./atuin
     ./bat.nix
     ./fzf
     ./git
     ./lazygit
     ./lf.nix
-    ./mpd.nix
     ./multiplexer/tmux
     ./navi
     ./nvim
