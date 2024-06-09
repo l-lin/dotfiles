@@ -16,6 +16,7 @@
     ./nvim
     ./psql
     (./. + "/shell/${userSettings.shell}")
+    ./spotify
     ./tealdeer
     ./xdg.nix
   ];
