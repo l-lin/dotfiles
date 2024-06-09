@@ -1,7 +1,0 @@
-configuration {
-    show-icons:                 false;
-}
-/*
-USE_ICON=NO
-*/
-@theme "~/.config/rofi/colorschemes/kanagawa.rasi"
