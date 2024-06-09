@@ -14,6 +14,7 @@
     # System stuff
     ./modules/audio.nix
     ./modules/bootloader.nix
+    ./modules/bluetooth.nix
     ./modules/dbus.nix
     ./modules/i18n-l10n.nix
     ./modules/network.nix
