@@ -23,12 +23,9 @@
     ./modules/users.nix
     #./modules/vm.nix
 
-    # TUI
-    (./. + "/modules/tui/shell/${userSettings.shell}")
-    ./modules/tui/greetd
-
-    # GUI
-    (./. + "/modules/gui/wm/${userSettings.wmType}")
+    # UI
+    ./modules/gui
+    ./modules/tui
   ];
 
   # Nixpkgs stuff
