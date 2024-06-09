@@ -13,6 +13,7 @@
     ./image
     ./jetbrains
     ./satty.nix
+    ./video
     ./wall
   ];
 
