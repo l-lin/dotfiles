@@ -18,37 +18,17 @@
           bat --paging=always "$f"
         }}
       '';
-
-      fzf = ''
-        ''${{
-          res="$(find . -maxdepth 1 | fzf --reverse --header='Jump to location')"
-          if [ -n "$res" ]; then
-              if [ -d "$res" ]; then
-                  cmd="cd"
-              else
-                  cmd="select"
-              fi
-              res="$(printf '%s' "$res" | sed 's/\\/\\\\/g;s/"/\\"/g')"
-              lf -remote "send $id $cmd \"$res\""
-          fi
-        }}
-      '';
     };
-    extraConfig = ''
-      cmd open-with-gui &$@ $fx
-      cmd open-with-tui \$\$@ $fx
-    '';
 
     keybindings = {
       a = "push %mkdir<space>";
       d = "delete";
-      f = "fzf";
       gd = "cd ${config.xdg.userDirs.download}";
-      o = "push :open-with-gui<space>";
-      O = "push :open-with-tui<space>";
-      P = "pager";
+      o = "open";
+      O = "pager";
       t = "push %touch<space>";
-      T = "";
+      # Open terminal at current directory
+      T = "push %${userSettings.term}<enter>";
       x = "cut";
       "<enter>" = "open";
     };
