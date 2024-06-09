@@ -10,6 +10,7 @@
     ./fzf
     ./git
     ./lazygit
+    ./lf.nix
     ./multiplexer/tmux
     ./navi
     ./nvim
@@ -44,6 +45,8 @@
     gcc
     # Add `make` command.
     gnumake
+    # GNU implementation of the `tar' archiver: https://www.gnu.org/software/tar/
+    gnutar
     # Like cURL, but for gRPC: https://github.com/fullstorydev/grpcurl
     grpcurl
     # Enhance shell: https://github.com/charmbracelet/gum
@@ -78,6 +81,8 @@
     sd
     # Terminal based presentation tool: https://github.com/maaslalani/slides
     slides
+    # An extraction utility for archives compressed in .zip format: http://www.info-zip.org/
+    unzip
     # Modern watch command: https://github.com/sachaos/viddy
     viddy
     # WebSockets client: https://github.com/vi/websocat
@@ -88,5 +93,7 @@
     xsv
     # YAML/XML/TOML processor: https://github.com/kislyuk/yq
     yq
+    # Compressor/archiver for creating and modifying zipfiles: http://www.info-zip.org/
+    zip
   ];
 }
