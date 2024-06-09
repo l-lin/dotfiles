@@ -11,6 +11,7 @@
     ./git
     ./lazygit
     ./lf.nix
+    ./mpd.nix
     ./multiplexer/tmux
     ./navi
     ./nvim
