@@ -3,39 +3,55 @@
 # src: https://godoc.org/github.com/gokcehan/lf
 #
 
-{ inputs, pkgs, ...}: {
+{ config, inputs, pkgs, userSettings, ...}: {
   programs.lf = {
     enable = true;
     settings = {
       icons = true;
+      shell = userSettings.shell;
     };
+
     # options: https://github.com/gokcehan/lf/blob/master/doc.md
     commands = {
-      open = ''
+      pager = ''
         ''${{
-          case $(file --mime-type -Lb $f) in
-              text/*) lf -remote "send $id \$$EDITOR \$fx";;
-              *) for f in $fx; do xdg-open "$f" > /dev/null 2> /dev/null & done;;
-          esac
+          bat --paging=always "$f"
         }}
       '';
 
-      pager = ''
+      fzf = ''
         ''${{
-        bat --paging=always "$f"
+          res="$(find . -maxdepth 1 | fzf --reverse --header='Jump to location')"
+          if [ -n "$res" ]; then
+              if [ -d "$res" ]; then
+                  cmd="cd"
+              else
+                  cmd="select"
+              fi
+              res="$(printf '%s' "$res" | sed 's/\\/\\\\/g;s/"/\\"/g')"
+              lf -remote "send $id $cmd \"$res\""
+          fi
         }}
       '';
     };
+    extraConfig = ''
+      cmd open-with-gui &$@ $fx
+      cmd open-with-tui \$\$@ $fx
+    '';
+
     keybindings = {
       a = "push %mkdir<space>";
       d = "delete";
       f = "fzf";
-      o = "open";
-      O = "pager";
+      gd = "cd ${config.xdg.userDirs.download}";
+      o = "push :open-with-gui<space>";
+      O = "push :open-with-tui<space>";
+      P = "pager";
       t = "push %touch<space>";
+      T = "";
       x = "cut";
+      "<enter>" = "open";
     };
-
 
     previewer.source = pkgs.writeShellScript "lf-previewer.sh" ''
       file=$1
