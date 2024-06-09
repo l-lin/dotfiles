@@ -7,10 +7,10 @@
     ./audio
     ./atuin
     ./bat.nix
+    ./file-manager
     ./fzf
     ./git
     ./lazygit
-    ./lf.nix
     ./multiplexer/tmux
     ./navi
     ./nvim
