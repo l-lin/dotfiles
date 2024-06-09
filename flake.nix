@@ -64,7 +64,7 @@
       wmType = "wayland"; # selected window manager type (wayland or x11)
       browser = "firefox"; # default browser
       pager = "bat"; # default pager
-      tuiFileManager = "yazi"; # TUI file manager
+      tuiFileManager = "lf"; # TUI file manager (lf or yazi)
     };
 
   in {
