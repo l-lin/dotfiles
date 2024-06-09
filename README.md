@@ -1,5 +1,17 @@
 # :snowflake: NixOS dotfiles
 
+## Info
+
+- :bento: window manager: [hyprland](https://github.com/hyprwm/Hyprland)
+- :rocket"" terminal emulator: [alacritty](https://alacritty.org/)
+- :shell: shell: [zsh]((https://www.zsh.org/))
+- :memo: text editor: [neovim](https://neovim.io/)
+- :speech_balloon: notification: [dunst](https://dunst-project.org/)
+- :globe_with_meridians: browser: [firefox](https://www.mozilla.org/en-US/firefox/new/)
+- :camera: screenshot: [satty](https://github.com/gabm/Satty) + [grim](https://github.com/emersion/grim) + [slurp](https://github.com/emersion/slurp)
+- :abc: fonts: [nerd fonts](https://github.com/ryanoasis/nerd-fonts)
+- :art: color scheme: [kanagawa](https://github.com/rebelot/kanagawa.nvim)
+
 ## Getting started
 
 ```bash
