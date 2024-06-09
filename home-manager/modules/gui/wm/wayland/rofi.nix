@@ -7,20 +7,7 @@
 let
   palette = config.colorScheme.palette;
 in {
-  programs.rofi = with pkgs; {
-    enable = true;
-    package = rofi.override {
-      plugins = [
-        # Rofi frontend for Bitwarden: https://github.com/fdw/rofi-rbw
-        rofi-rbw-wayland
-        # Emoji selector: https://github.com/Mange/rofi-emoji
-        rofi-emoji
-        # VPN selector: https://gitlab.com/DamienCassou/rofi-vpn
-        rofi-vpn
-        rofi-wayland
-      ];
-    };
-  };
+  home.packages = with pkgs; [ rofi-wayland ];
 
   xdg.configFile."rofi/config.rasi".text = ''
     configuration {
@@ -49,7 +36,9 @@ in {
       y-offset:                    20px;
 
       enabled:                     true;
-      border-radius:               15px;
+      border-radius:               10px;
+      border:                      2;
+      border-color:                #${palette.base05};
       cursor:                      "default";
       background-color:            @background;
     }
