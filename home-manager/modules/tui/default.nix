@@ -41,6 +41,8 @@
     faketty
     # User-friendly find: https://github.com/sharkdp/fd
     fd
+    # A program that shows the type of files: https://darwinsys.com/file
+    file
     # GNU Compiler Collection.
     gcc
     # Add `make` command.
