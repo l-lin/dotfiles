@@ -25,6 +25,7 @@
     EDITOR = userSettings.editor;
     TERM = userSettings.term;
     BROWSER = userSettings.browser;
+    PAGER = userSettings.pager;
   };
 
   # Nicely reload system units when changing configs
