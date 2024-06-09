@@ -18,7 +18,7 @@
     (./. + "/shell/${userSettings.shell}")
     ./spotify
     ./tealdeer
-    (./. + "/term/${userSettings.term}")
+    ./term
     ./xdg.nix
   ];
 
