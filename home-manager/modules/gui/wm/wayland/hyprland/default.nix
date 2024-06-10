@@ -45,7 +45,7 @@
       ########################################### AUTOSTART #######################################
       # Autostart necessary processes (like notifications daemons, status bars, etc.)
 
-      #exec-once = swaybg -i $NIXOS_CONFIG_DIR/pics/wallpaper.png
+      exec-once = swaybg -i ${config.xdg.userDirs.pictures}/cat.jpg -m center -c 000000
       exec-once = $terminal
       exec-once = redshift
       #exec-once = eww daemon

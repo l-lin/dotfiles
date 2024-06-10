@@ -97,6 +97,8 @@
     sd
     # Terminal based presentation tool: https://github.com/maaslalani/slides
     slides
+    # A tool for managing the installation of multiple software packages in the same run-time directory tree: https://www.gnu.org/software/stow/
+    stow
     # An extraction utility for archives compressed in .zip format: http://www.info-zip.org/
     unzip
     # Modern watch command: https://github.com/sachaos/viddy
