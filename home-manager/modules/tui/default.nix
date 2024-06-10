@@ -7,6 +7,7 @@
     ./audio
     ./atuin
     ./bat.nix
+    ./code
     ./file-manager
     ./fzf
     ./git
