@@ -57,8 +57,9 @@
 
       # https://wiki.hyprland.org/Configuring/Monitors/
       # List all monitors with: hyprctl monitors all
-      #monitor=,1600x900@60,0x0,1
-      monitor=,preferred,auto,auto
+      monitor=eDP-1,1920x1080@60,0x0,1
+      monitor=DP-1,1920x1080@60,1920x0,1
+      #monitor=,preferred,auto,auto
 
       # Mouse and keyboard
       # https://wiki.hyprland.org/Configuring/Variables/#input
