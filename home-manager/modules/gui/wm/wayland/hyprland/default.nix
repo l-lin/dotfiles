@@ -78,7 +78,7 @@
         # 1 - Cursor movement will always change focus to the window under the cursor.
         # 2 - Cursor focus will be detached from keyboard focus. Clicking on a window will move keyboard focus to that window.
         # 3 - Cursor focus will be completely separate from keyboard focus. Clicking on a window will not change keyboard focus.
-        follow_mouse = 2
+        follow_mouse = 1
         # If enabled (1 or 2), focus will change to the window under the cursor when changing from
         # tiled-to-floating and vice versa. If 2, focus will also follow mouse on float-to-float switches.
         float_switch_override_focus = 2
