@@ -12,6 +12,7 @@
     ./hyprpicker.nix
     ./image
     ./jetbrains
+    ./redshift
     ./satty.nix
     ./video
     ./wall
