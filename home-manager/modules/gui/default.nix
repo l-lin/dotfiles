@@ -10,6 +10,7 @@
     ./browser/w3m
     ./dunst
     ./hyprpicker.nix
+    ./gtk
     ./image
     ./jetbrains
     ./messaging
