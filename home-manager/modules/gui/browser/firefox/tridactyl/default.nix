@@ -3,7 +3,7 @@
 # src: https://tridactyl.xyz/
 #
 
-{ userSettings, ... }: {
+{ pkgs, userSettings, ... }: {
   # Symlink to ~/.config/tridactyl/tridactylrc
   xdg.configFile."tridactyl/tridactylrc".text = ''
     " open nvim instead of default 'auto', which opens gvim (shortcut: Ctrl+i)
@@ -22,5 +22,12 @@
   # Symlink to ~/.config/tridactyl/themes
   xdg.configFile."tridactyl/themes" = {
     source = ./themes;
+  };
+
+  programs.firefox = {
+    # Need to install tridactyl-native in order to use ~/.config/tridactyl/.tridactylrc
+    nativeMessagingHosts = with pkgs; [
+      tridactyl-native
+    ];
   };
 }
