@@ -35,6 +35,7 @@
       $lock_screen = swaylock
       $screenshot = grim -g "$(slurp)" - | satty --filename - --fullscreen --output-filename ${config.xdg.userDirs.pictures}/screenshot-$(date '+%Y-%m-%d-%H%M%S').png
       $audio_mixer = ${userSettings.term} --command pulsemixer
+      $browser = ${userSettings.browser}
 
       ########################################### ENV VARIABLES #######################################
       # https://wiki.hyprland.org/Configuring/Environment-variables/
@@ -46,8 +47,10 @@
       # Autostart necessary processes (like notifications daemons, status bars, etc.)
 
       exec-once = swaybg -i ${config.xdg.userDirs.pictures}/cat.jpg -m center -c 000000
-      exec-once = $terminal
-      exec-once = redshift
+      exec-once = [workspace 1 silent] obsidian
+      exec-once = [workspace 2 silent] $terminal
+      exec-once = [workspace 2 silent] $browser
+      #exec-once = redshift
       #exec-once = eww daemon
       #exec-once = eww open bar
       #exec-once = killall -q waybar;sleep .5 && waybar
