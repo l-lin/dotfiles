@@ -9,6 +9,7 @@
     ./bat.nix
     ./code
     ./direnv
+    ./docker
     ./file-manager
     ./fzf
     ./git
