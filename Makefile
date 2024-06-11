@@ -57,6 +57,14 @@ create-symlinks:
 		fi; \
 	done
 
+## remove-symlinks: remove-symlinks
+remove-symlinks:
+	@if [ -z ${FOLDER} ]; then \
+		echo 'Missing `FOLDER` argument, usage: `make remove-symlinks FOLDER=<folder>`' >/dev/stderr && exit 1; \
+	fi
+	@cd stow \
+		&& stow --delete -t $${HOME} ${FOLDER}
+
 # --------------------------------------------------------------------------
 
 ## hyprland: reload hyprland configuration
