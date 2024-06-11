@@ -6,6 +6,8 @@
   path = ~/perso/.gitconfig
 [includeIf "gitdir:~/tmp/"]
   path = ~/perso/.gitconfig
+[includeIf "gitdir:~/.local/share/navi/"]
+  path = ~/perso/.gitconfig
 
 [alias]
   adda = add -A
