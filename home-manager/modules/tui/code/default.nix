@@ -5,6 +5,7 @@
 {
   imports = [
     ./go
+    ./java
     ./python
   ];
 }
