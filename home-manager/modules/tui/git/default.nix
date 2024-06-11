@@ -3,8 +3,8 @@
 
   # Symlink to ~/.gitconfig
   home.file.".gitconfig".source = ./config/.gitconfig;
-  # Symlink to ~/.gitignore_global
-  home.file.".gitignore_global".source = ./config/.gitignore_global;
+  # Symlink to ~/.config/git/ignore
+  xdg.configFile."git/ignore".source = ./config/ignore;
   # Symlink to ~/perso/.gitconfig
   home.file."perso/.gitconfig".source = ./config/.gitconfig_perso;
 }

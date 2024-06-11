@@ -47,6 +47,10 @@ Sandbox.java
 .cache
 .vscode
 .env
+.envrc
+.direnv
+shell.nix
+default.nix
 
 # Nvim plugin #
 ###############
