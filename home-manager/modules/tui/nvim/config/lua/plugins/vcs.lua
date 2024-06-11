@@ -126,6 +126,7 @@ return {
   -- gitlab MR integration
   {
     "harrisoncramer/gitlab.nvim",
+    enable = false,
     dependencies = {
       "MunifTanjim/nui.nvim",
       "nvim-lua/plenary.nvim",
