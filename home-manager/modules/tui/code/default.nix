@@ -4,6 +4,7 @@
 
 {
   imports = [
+    ./go
     ./python
   ];
 }
