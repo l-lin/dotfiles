@@ -50,7 +50,6 @@ Sandbox.java
 .envrc
 .direnv
 shell.nix
-default.nix
 
 # Nvim plugin #
 ###############
