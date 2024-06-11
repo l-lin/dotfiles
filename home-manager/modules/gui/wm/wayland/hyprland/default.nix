@@ -46,14 +46,11 @@
       ########################################### AUTOSTART #######################################
       # Autostart necessary processes (like notifications daemons, status bars, etc.)
 
-      exec-once = swaybg -i ${config.xdg.userDirs.pictures}/cat.jpg -m center -c 000000
+      exec-once = swaybg -i ${config.xdg.userDirs.pictures}/summer-dark.png -m center
       exec-once = [workspace 1 silent] obsidian
       exec-once = [workspace 2 silent] $terminal
       exec-once = [workspace 3 silent] $browser
-      #exec-once = redshift
-      #exec-once = eww daemon
-      #exec-once = eww open bar
-      #exec-once = killall -q waybar;sleep .5 && waybar
+      exec-once = waybar
       exec-once = dunst
 
       ########################################### DEVICES #######################################
@@ -191,7 +188,7 @@
         # Set to 0 or 1 to disable the anime mascot wallpapers
         force_default_wallpaper = 0
         # If true disables the random hyprland logo / anime girl background. :(
-        disable_hyprland_logo = false
+        disable_hyprland_logo = true
 
         # If true, the config will not reload automatically on save, and instead
         # needs to be reloaded with hyprctl reload. Might save on battery.
