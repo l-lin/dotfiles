@@ -49,7 +49,7 @@
       exec-once = swaybg -i ${config.xdg.userDirs.pictures}/cat.jpg -m center -c 000000
       exec-once = [workspace 1 silent] obsidian
       exec-once = [workspace 2 silent] $terminal
-      exec-once = [workspace 2 silent] $browser
+      exec-once = [workspace 3 silent] $browser
       #exec-once = redshift
       #exec-once = eww daemon
       #exec-once = eww open bar
@@ -226,7 +226,7 @@
       bind = $main_mod, E, exec, $file_manager
       bind = $main_mod, V, togglefloating,
       bind = $main_mod, F, fullscreen, 0
-      bind = $main_mod, R, exec, $menu
+      bind = $main_mod, SPACE, exec, $menu
       bind = $main_mod, P, exec, $color_picker
       bind = $main_mod, I, togglesplit
       bind = $main_mod, S, exec, $screenshot
@@ -269,15 +269,15 @@
       bind = $main_mod SHIFT, 0, movetoworkspace, 10
 
       # control volume,brightness,media players
-      bind = ,XF86AudioRaiseVolume,exec, pamixer -i 5
-      bind = ,XF86AudioLowerVolume,exec, pamixer -d 5
-      bind = ,XF86AudioMute,exec, pamixer -t
-      bind = ,XF86AudioMicMute,exec, pamixer --default-source -t
-      bind = ,XF86MonBrightnessDown,exec, brightnessctl set 5%-
-      bind = ,XF86MonBrightnessUp,exec, brightnessctl set +5%
-      bind = ,XF86AudioPlay,exec, mpc -q toggle
-      bind = ,XF86AudioNext,exec, mpc -q next
-      bind = ,XF86AudioPrev,exec, mpc -q prev
+      bind = ,XF86AudioRaiseVolume, exec, pamixer -i 5
+      bind = ,XF86AudioLowerVolume, exec, pamixer -d 5
+      bind = ,XF86AudioMute, exec, pamixer -t
+      bind = ,XF86AudioMicMute, exec, pamixer --default-source -t
+      bind = ,XF86MonBrightnessDown, exec, brightnessctl set 5%-
+      bind = ,XF86MonBrightnessUp, exec, brightnessctl set +5%
+      bind = ,XF86AudioPlay, exec, mpc -q toggle
+      bind = ,XF86AudioNext, exec, mpc -q next
+      bind = ,XF86AudioPrev, exec, mpc -q prev
     '';
   };
 }
