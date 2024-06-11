@@ -25,6 +25,8 @@
   ];
 
   home.packages = with pkgs; [
+    # Show battery status and other ACPI information: https://sourceforge.net/projects/acpiclient/
+    acpi
     # Code search-and-replace tool: https://github.com/dalance/amber
     amber
     # A menu-driven bash script for the management of removable media with udisks: https://github.com/jamielinux/bashmount
