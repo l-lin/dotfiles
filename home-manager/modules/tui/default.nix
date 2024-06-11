@@ -8,6 +8,7 @@
     ./atuin
     ./bat.nix
     ./code
+    ./direnv
     ./file-manager
     ./fzf
     ./git

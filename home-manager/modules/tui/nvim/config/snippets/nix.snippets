@@ -1,0 +1,18 @@
+# Nix snippets
+
+snippet direnv
+	{ pkgs ? import <nixpkgs> {}}:
+	
+	pkgs.mkShell {
+	  packages = [ pkgs.${1} ];
+	}
+
+snippet home
+	#
+	# ${1}
+	# src: ${2}
+	#
+	
+	{ pkgs, ... }: {
+		home.packages = with pkgs; [ ${4} ];
+	}

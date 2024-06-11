@@ -62,6 +62,9 @@ nix search nixpkgs your_package
 [MyNixOS](https://mynixos.com) is a nice website that contains all the options
 needed to configure your NixOS / home-manager / package.
 
+Another website that list all the home-manager options:
+[Home manager option search](https://home-manager-options.extranix.com/).
+
 #### Install a new package in home-manager
 
 Once you have the package name, you can install it in the `home-manager/` folder.
