@@ -11,7 +11,7 @@ window#waybar {
   color: @fg;
   transition-property: background-color;
   transition-duration: 0.5s;
-  border-radius: 15px;
+  border-radius: 8px;
 }
 
 #user,
@@ -49,9 +49,13 @@ window#waybar {
 #user {
   padding-left: 20px;
   padding-right: 20px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
 }
 
 #clock {
   padding-left: 20px;
   padding-right: 20px;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
