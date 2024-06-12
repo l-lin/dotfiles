@@ -9,6 +9,8 @@
   # Set the colorscheme
   colorScheme = inputs.nix-colors.colorSchemes."${userSettings.colorscheme}";
 
+  # TODO: create variable with more semantic field names
+
   # palette matching
   #
   # background = base00

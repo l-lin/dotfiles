@@ -1,0 +1,98 @@
+// https://github.com/Alexays/Waybar/wiki/Home
+{
+  "layer": "top",
+  "position": "top",
+  "output": "eDP-1",
+  "height": 60,
+  "spacing": 15,
+  "margin-top": 15,
+  "margin-left": 15,
+  "margin-bottom": 0,
+  "margin-right": 15,
+
+  "modules-left": ["user", "cpu", "memory", "temperature", "disk"],
+  "modules-center": ["hyprland/workspaces"],
+  "modules-right": ["privacy", "pulseaudio", "battery", "backlight", "network", "bluetooth", "tray", "clock"],
+
+  // LEFT -----------------------------------------------------------
+  "user": {
+    "format": "",
+    "icon": true
+  },
+  "cpu": {
+    "format": "\uf4bc  {usage}%"
+  },
+  "memory": {
+    "format": "\uf4bc  {used:0.1f}GiB"
+  },
+  "temperature": {
+    "format": " {temperatureC}°C"
+  },
+  "disk": {
+    "format": "󰒋  {free}"
+  },
+
+  // CENTER -----------------------------------------------------------
+  "hyprland/workspaces": {
+    "format": "{icon}",
+    "on-click": "activate",
+    "format-icons": {
+      "1": "",
+      "2": "",
+      "3": "󰈹",
+      "4": "󰍡",
+      "5": "󰝚"
+    },
+    "icon-size": 50,
+    "sort-by-number": true,
+    "persistent-workspaces": {
+      "*": 5
+    }
+  },
+
+  // RIGHT -----------------------------------------------------------
+  "pulseaudio": {
+    "format": "{icon}  {volume}%",
+    "format-icons": ["", "", "", ""],
+    "format-source-muted": "",
+    "max-volume": 100,
+    "scroll-step": 5
+  },
+  "battery": {
+    "interval": 60,
+    "format": "{icon}  {capacity}%",
+    "format-icons": ["", "", "", "", ""]
+  },
+  "backlight": {
+    "format": "{icon} {percent}%",
+    "format-icons": ["", "", "", "", "", "", "", "", ""]
+  },
+  "network": {
+    "format": "",
+    "format-ethernet": "󰈁 ",
+    "format-wifi": "{icon} ",
+    "format-disconnected": "󰤭 ",
+    "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
+    "tooltip-format-wifi": "{essid} ({signalStrength}%)",
+    "tooltip-format-ethernet": "{ifname}",
+    "tooltip-format-disconnected": "Disconnected",
+    "on-click": "alacritty --command nmtui"
+  },
+  "bluetooth": {
+    "format": "󰂯",
+    "format-disabled": "󰂲",
+    "format-connected": "󰂱",
+    "tooltip-format": "{controller_alias}\t{controller_address}",
+    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+    "on-click": "alacritty --command bluetoothctl"
+  },
+  "clock": {
+    "format": "{:%Y-%m-%d %H:%M}"
+  },
+  "tray": {
+    "icon-size": 16,
+    "spacing": 16,
+    "show-passive-items": true
+  }
+}

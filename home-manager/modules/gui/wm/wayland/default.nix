@@ -7,9 +7,9 @@
 { pkgs, userSettings, ... }: {
   imports = [
     (./. + "/${userSettings.wm}")
-      ./rofi.nix
+    ./rofi.nix
     ./swaylock.nix
-    #./waybar
+    ./waybar
   ];
 
   home.packages = with pkgs; [
