@@ -3,8 +3,8 @@
 # src: https://github.com/Misterio77/nix-colors
 #
 
-{ inputs, nix-colors, userSettings, ... }: {
-  imports = [ nix-colors.homeManagerModules.default ];
+{ inputs, userSettings, ... }: {
+  imports = [ inputs.nix-colors.homeManagerModules.default ];
 
   # Set the colorscheme
   colorScheme = inputs.nix-colors.colorSchemes."${userSettings.colorscheme}";
