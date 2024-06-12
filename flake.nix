@@ -20,10 +20,14 @@
     # Colorscheme
     nix-colors.url = "github:misterio77/nix-colors";
 
+    # Icons for LF
     lf-icons = {
       url = "github:gokcehan/lf";
       flake = false;
     };
+
+    # Spotify client
+    spicetify-nix.url = "github:the-argus/spicetify-nix";
   };
 
   outputs = {
@@ -64,7 +68,7 @@
       wmType = "wayland"; # selected window manager type (wayland or x11)
       browser = "firefox"; # default browser
       pager = "bat"; # default pager
-      fileManager = "lf"; # TUI file manager (lf or yazi)
+      fileManager = "yazi"; # TUI file manager (lf or yazi)
     };
 
   in {
