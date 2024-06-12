@@ -72,6 +72,30 @@ hyprland:
 	@echo -e "${BLUE} I ${NC} Reloading Hyprland configuration..."
 	@hyprctl reload
 
+## install-cheatsheets: install navi cheatsheets if not present
+install-cheatsheets:
+	@cheats=('github.com/l-lin/cheats') \
+		&& for c in $${cheats[@]}; do \
+			host=$$(echo $${c} | cut --delimiter '/' --fields 1) \
+			&& owner=$$(echo $${c} | cut --delimiter '/' --fields 2) \
+			&& repo=$$(echo $${c} | cut --delimiter '/' --fields 3) \
+			&& $(MAKE) install-cheatsheet HOST=$${host} OWNER=$${owner} REPO=$${repo} --no-print-directory; \
+		done
+
+## install-cheatsheet: install navi cheatsheet if not present
+install-cheatsheet:
+	@if [ -z ${HOST} ] || [ -z ${OWNER} ] || [ -z ${REPO} ]; then \
+		echo 'Missing argument, usage: `make install-cheatsheet HOST=<host> OWNER=<owner> REPO=<repo>`' >/dev/stderr && exit 1; \
+	fi
+	@cheatsheet_name="${OWNER}__${REPO}" \
+		&& folder_name="$$(echo $$(navi info cheats-path)/$${cheatsheet_name})" \
+		&& if [ -d $${folder_name} ]; then \
+			echo -e "${BLUE} I ${NC} Cheatsheet '$${cheatsheet_name}' already exists, skipping..."; \
+		else \
+			echo -e "${BLUE} I ${NC} Installing cheatsheet '$${cheatsheet_name}'."; \
+			git clone "git@${HOST}:${OWNER}/${REPO}" "$${folder_name}/$${cheatsheet_name}"; \
+		fi
+
 .PHONY: help
 all: help
 help: Makefile
