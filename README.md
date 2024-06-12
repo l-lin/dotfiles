@@ -142,6 +142,21 @@ applications, sometimes, I use symlink... I wonder if I should just use Nix / ho
 to handle all the package installation stuff and symlink the configuration files...
 Only time will tell.
 
+#### Write a shell script that will be available in PATH
+
+If you need to have a shell script available from anywhere,
+you will need to create like this:
+
+```nix
+home.packages = with pkgs; [
+  (writeShellScriptBin "my-awesome-script" ''
+    ${builtins.readFile ./my-awesome-script}
+  '')
+];
+```
+
+See https://discourse.nixos.org/t/link-scripts-to-bin-home-manager/41774/2.
+
 ---
 
 ## Resources
