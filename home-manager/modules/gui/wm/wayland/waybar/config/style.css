@@ -53,6 +53,18 @@ window#waybar {
   border-bottom-left-radius: 8px;
 }
 
+#privacy {
+  color: @red;
+}
+
+#battery.warning {
+  color: @yellow;
+}
+
+#battery.critical {
+  color: @red;
+}
+
 #clock {
   padding-left: 20px;
   padding-right: 20px;

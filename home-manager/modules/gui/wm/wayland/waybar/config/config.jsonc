@@ -10,9 +10,9 @@
   "margin-bottom": 0,
   "margin-right": 15,
 
-  "modules-left": ["user", "cpu", "memory", "temperature", "disk"],
+  "modules-left": ["user", "cpu", "memory", "temperature", "disk", "tray"],
   "modules-center": ["hyprland/workspaces"],
-  "modules-right": ["privacy", "pulseaudio", "battery", "backlight", "network", "bluetooth", "tray", "clock"],
+  "modules-right": ["privacy", "pulseaudio", "battery", "backlight", "network", "bluetooth", "clock"],
 
   // LEFT -----------------------------------------------------------
   "user": {
@@ -29,7 +29,7 @@
     "format": " {temperatureC}°C"
   },
   "disk": {
-    "format": "󰒋  {free}"
+    "format": "󰒋 {free}"
   },
 
   // CENTER -----------------------------------------------------------
@@ -61,7 +61,11 @@
   "battery": {
     "interval": 60,
     "format": "{icon}  {capacity}%",
-    "format-icons": ["", "", "", "", ""]
+    "format-icons": ["", "", "", "", ""],
+    "states": {
+      "warning": 30,
+      "critical": 15
+    }
   },
   "backlight": {
     "format": "{icon} {percent}%",
