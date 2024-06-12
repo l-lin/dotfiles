@@ -8,7 +8,7 @@
   imports = [
     (./. + "/${userSettings.wm}")
     ./rofi
-    ./swaylock.nix
+    ./swaylock
     ./waybar
   ];
 
