@@ -52,6 +52,13 @@
       exec-once = [workspace 3 silent] $browser
       exec-once = waybar
       exec-once = dunst
+      # Stick workspace to specific monitors.
+      # https://wiki.hyprland.org/FAQ/#how-do-i-move-my-favorite-workspaces-to-a-new-monitor-when-i-plug-it-in
+      exec-once = hyprctl dispatch moveworkspacetomonitor 1 0
+      exec-once = hyprctl dispatch moveworkspacetomonitor 2 1
+      exec-once = hyprctl dispatch moveworkspacetomonitor 3 1
+      exec-once = hyprctl dispatch moveworkspacetomonitor 4 1
+      exec-once = hyprctl dispatch moveworkspacetomonitor 5 1
 
       ########################################### DEVICES #######################################
 

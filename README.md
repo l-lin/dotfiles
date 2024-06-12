@@ -48,6 +48,9 @@ cd dotfiles
 make nixos
 make home
 reboot
+
+# synchronize shell history
+atuin login -u l-lin
 ```
 
 #### Find a package in the Nixpkgs
@@ -123,7 +126,21 @@ programs.tmux = {
     ${builtins.readFile ./.tmux.conf}
   '';
 };
+
+# If you need to write text directly in the nix file, because you need to use
+# some nix variable:
+xdg.configFile."waybar/colorscheme.css".text = ''
+@define-color fg #${palette.base05};
+@define-color fg-alt #${palette.base00};
+@define-color bg #${palette.base00};
+@define-color bg-alt #${palette.base0D};
+'';
 ```
+
+I know you will think there's no consistency, sometimes I'm using Nix to configure
+applications, sometimes, I use symlink... I wonder if I should just use Nix / home-manager
+to handle all the package installation stuff and symlink the configuration files...
+Only time will tell.
 
 ---
 
