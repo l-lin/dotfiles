@@ -23,6 +23,10 @@ return {
   },
   {
     "ellisonleao/gruvbox.nvim",
+    enable = false,
+  },
+  {
+    "neanias/everforest-nvim",
   },
 
   -- setup colorscheme

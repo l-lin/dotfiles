@@ -7,7 +7,7 @@
 { pkgs, userSettings, ... }: {
   imports = [
     (./. + "/${userSettings.wm}")
-    ./rofi.nix
+    ./rofi
     ./swaylock.nix
     ./waybar
   ];
