@@ -5,7 +5,6 @@
 { pkgs, userSettings, ... }: {
   imports = [
     ./audio
-    (./. + "/wm/${userSettings.wmType}")
     ./browser/firefox
     ./browser/w3m
     ./dunst
@@ -17,6 +16,7 @@
     ./satty
     ./video
     ./wall
+    (./. + "/wm/${userSettings.wmType}")
   ];
 
   home.packages = with pkgs; [
