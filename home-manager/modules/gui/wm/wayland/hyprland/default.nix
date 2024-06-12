@@ -6,7 +6,10 @@
 # - https://wiki.hyprland.org/Nix/Hyprland-on-NixOS/
 #
 
-{ config, pkgs, userSettings, ... }: {
+{ config, pkgs, userSettings, ... }:
+let
+  palette = config.colorScheme.palette;
+in {
   wayland.windowManager.hyprland = {
     # Whether to enable Hyprland wayland compositor
     enable = true;
@@ -118,8 +121,8 @@
         border_size = 2
 
         # https://wiki.hyprland.org/Configuring/Variables/#variable-types for info about colors
-        col.active_border = rgb(dcd7ba)
-        col.inactive_border = rgb(1f1f28)
+        col.active_border = rgb(${palette.base0D})
+        col.inactive_border = rgb(${palette.base00})
 
         # Set to true enable resizing windows by clicking and dragging on borders and gaps
         resize_on_border = true
