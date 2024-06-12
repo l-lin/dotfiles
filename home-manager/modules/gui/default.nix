@@ -14,7 +14,6 @@
     ./image
     ./jetbrains
     ./messaging
-    ./redshift
     ./satty
     ./video
     ./wall
