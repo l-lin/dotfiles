@@ -6,7 +6,7 @@
   imports = [
     ./audio
     ./atuin
-    ./bat.nix
+    ./bat
     ./code
     ./direnv
     ./docker
@@ -22,7 +22,7 @@
     ./spotify
     ./tealdeer
     ./term
-    ./xdg.nix
+    ./xdg
   ];
 
   home.packages = with pkgs; [

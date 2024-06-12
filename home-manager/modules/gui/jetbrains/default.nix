@@ -3,6 +3,9 @@
 # src: https://www.jetbrains.com/
 #
 
-{
-  home.file.".ideavimrc".source = ./.ideavimrc;
+{ pkgs, ... }: {
+  home.packages = with pkgs; [ jetbrains-toolbox ];
+
+  # Symlink to ~/.ideavimrc
+  home.file.".ideavimrc".source = ./config/.ideavimrc;
 }

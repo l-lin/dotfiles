@@ -6,6 +6,6 @@
 { pkgs, ... }: {
   home.packages = with pkgs; [ w3m ];
 
-  # Symlink to ~/.w3m
-  home.file.".w3m.keymap".source = ./keymap;
+  # Symlink to ~/.w3m/keymap
+  home.file.".w3m.keymap".source = ./config/keymap;
 }

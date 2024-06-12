@@ -9,13 +9,13 @@
     ./browser/firefox
     ./browser/w3m
     ./dunst
-    ./hyprpicker.nix
+    ./hyprpicker
     ./gtk
     ./image
     ./jetbrains
     ./messaging
     ./redshift
-    ./satty.nix
+    ./satty
     ./video
     ./wall
   ];
