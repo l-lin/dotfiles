@@ -31,6 +31,11 @@
   "disk": {
     "format": "󰒋 {free}"
   },
+  "tray": {
+    "icon-size": 16,
+    "spacing": 16,
+    "show-passive-items": true
+  },
 
   // CENTER -----------------------------------------------------------
   "hyprland/workspaces": {
@@ -93,10 +98,5 @@
   },
   "clock": {
     "format": "{:%Y-%m-%d %H:%M}"
-  },
-  "tray": {
-    "icon-size": 16,
-    "spacing": 16,
-    "show-passive-items": true
   }
 }
