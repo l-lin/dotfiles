@@ -10,10 +10,25 @@ in {
   services.dunst = {
     enable = true;
 
-    # For settings: man dunst.5
-    # also available here: https://github.com/dunst-project/dunst/blob/master/docs/dunst.5.pod
+    # For settings: `man dunst.5`.
+    # Also available here: https://github.com/dunst-project/dunst/blob/master/docs/dunst.5.pod
+    # Default values: https://github.com/dunst-project/dunst/blob/master/dunstrc
+    #
+    # Cannot use symlink to ~/.config/dunst/dunstrc and ~/.config/dunst/dunstrc.d/*.conf, it seems
+    # home-manager/nix is doing some stuff behind the scene that overrides the values...
     settings = {
       global = {
+        # Display notification on focused monitor.  Possible modes are:
+        #   mouse: follow mouse pointer
+        #   keyboard: follow window with keyboard focus
+        #   none: don't follow anything
+        #
+        # "keyboard" needs a window manager that exports the
+        # _NET_ACTIVE_WINDOW property.
+        # This should be the case for almost all modern window managers.
+        #
+        # If this option is set to mouse or keyboard, the monitor option
+        # will be ignored.
         follow = "mouse";
         # Dynamic width of the notification window, from 0 to 300px.
         width = "(0,300)";
@@ -27,14 +42,24 @@ in {
         # The distance in pixels from the content to the border of the window in the horizontal axis.
         horizontal_padding = 10;
 
+        # Defines width in pixels of frame around the notification window.
+        # Set to 0 to disable.
+        frame_width = 2;
+
         # Defines color of the frame around the notification window.
-        frame_color = "#${palette.base05}";
+        frame_color = "#${palette.base0D}";
         background = "#${palette.base00}";
         foreground = "#${palette.base05}";
 
         font = "JetBrainsMono Nerd Font 12";
 
-        corner_radius = 4;
+        # Define the corner radius of the notification window
+        # in pixel size. If the radius is 0, you have no rounded
+        # corners.
+        # The radius will be automatically lowered if it exceeds half of the
+        # notification height to avoid clipping text and/or icons.
+        corner_radius = 8;
+
         timeout = 4;
       };
 
