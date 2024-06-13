@@ -161,23 +161,42 @@ See https://discourse.nixos.org/t/link-scripts-to-bin-home-manager/41774/2.
 
 ## Resources
 
-There are lots of Nix documentation, but it's quite hard to find the "right" one depending on your level of understanding of Nix.
-The official Nix documentation delves a bit too much on the concepts (for the right reasons), whereas I just want to make something work fast.
+There are lots of Nix documentation, but it's quite hard to find the "right"
+one depending on your level of understanding of Nix.
+The official Nix documentation delves a bit too much on the concepts (for the
+right reasons), whereas I just want to make something work fast.
 
-I found [Evertras introduction to home-manager](https://github.com/Evertras/simple-homemanager) is the best documentation to start with Nix, along with https://zero-to-nix.com/.
+I found [Evertras introduction to home-manager](https://github.com/Evertras/simple-homemanager)
+is the best documentation to start with Nix, along with [zero-to-nix](https://zero-to-nix.com/).
+
+### Where to search?
+
+Most of the documentation you will search are the following:
+
+- https://mynixos.com/search
+  - search NixOS and home-manager options and packages
+- https://search.nixos.org/packages
+  - search NixOS and home-manager packages
+- https://home-manager-options.extranix.com/
+  - search home-manager options
+- https://nixos.wiki/index.php
+  - more in-depth documentation
+- https://nix.dev/search.html
+  - more in-depth documentation
 
 ### References
 
-- [nix command line reference](https://nix.dev/manual/nix/2.22/command-ref/new-cli/nix)
+- [Nix command line reference](https://nix.dev/manual/nix/2.22/command-ref/new-cli/nix)
 
 ### Tutorials
 
-- https://github.com/Evertras/simple-homemanager: best introduction to home-manager for newcomer
-- https://zero-to-nix.com/
-- https://nix.dev
-- https://josiahalenbrown.substack.com/p/installing-nixos-with-hyprland
-- https://www.bekk.christmas/post/2021/16/dotfiles-with-nix-and-home-manager
-- https://gist.github.com/thiloho/993be8693571c9868c1661ae0f3c776b
-- [writing Nix modules](https://nixos.org/manual/nixos/stable/#sec-writing-modules)
+- [Best introduction to home-manager for newcomer](https://github.com/Evertras/simple-homemanager)
+- [Zero to Nix](https://zero-to-nix.com/)
+- [nix.dev](https://nix.dev)
+- [Installing NixOS with Hyprland](https://josiahalenbrown.substack.com/p/installing-nixos-with-hyprland)
+- [Declarative management of dotfiles with Nix and Home Manager](https://www.bekk.christmas/post/2021/16/dotfiles-with-nix-and-home-manager)
+- [Getting started with the Nix ecosystem](https://gist.github.com/thiloho/993be8693571c9868c1661ae0f3c776b)
+- [Writing Nix modules](https://nixos.org/manual/nixos/stable/#sec-writing-modules)
 - [Nix module system](https://nix.dev/tutorials/module-system/)
+- [NixOS and flake unofficial book for beginners](https://nixos-and-flakes.thiscute.world/)
 
