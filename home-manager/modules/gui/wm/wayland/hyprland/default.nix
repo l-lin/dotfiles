@@ -49,19 +49,17 @@ in {
       ########################################### AUTOSTART #######################################
       # Autostart necessary processes (like notifications daemons, status bars, etc.)
 
+      # Stick workspace to specific monitors.
+      exec-once = handle-monitor-connect.sh
+
       exec-once = swaybg -i ${config.xdg.userDirs.pictures}/summer-dark.png -m center
+      exec-once = waybar
+      exec-once = dunst
+
+      # Open default applications
       exec-once = [workspace 1 silent] obsidian
       exec-once = [workspace 2 silent] $terminal
       exec-once = [workspace 3 silent] $browser
-      exec-once = waybar
-      exec-once = dunst
-      # Stick workspace to specific monitors.
-      # https://wiki.hyprland.org/FAQ/#how-do-i-move-my-favorite-workspaces-to-a-new-monitor-when-i-plug-it-in
-      exec-once = hyprctl dispatch moveworkspacetomonitor 1 0
-      exec-once = hyprctl dispatch moveworkspacetomonitor 2 1
-      exec-once = hyprctl dispatch moveworkspacetomonitor 3 1
-      exec-once = hyprctl dispatch moveworkspacetomonitor 4 1
-      exec-once = hyprctl dispatch moveworkspacetomonitor 5 1
 
       ########################################### DEVICES #######################################
 
@@ -287,4 +285,13 @@ in {
       bind = ,XF86AudioPrev, exec, mpc -q prev
     '';
   };
+
+  home.packages = with pkgs; [
+    # Utility for bidirectional data transfer between two independent data channels: http://www.dest-unreach.org/socat/
+    # Used by the script below `handle-monitor-connect.sh`.
+    socat
+    (writeShellScriptBin "handle-monitor-connect.sh" ''
+      ${builtins.readFile ./script/handle-monitor-connect.sh}
+    '')
+  ];
 }
