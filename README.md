@@ -157,6 +157,37 @@ home.packages = with pkgs; [
 
 See https://discourse.nixos.org/t/link-scripts-to-bin-home-manager/41774/2.
 
+### Pair bluetooth devices
+
+```bash
+$ # execute bluetoothctl
+$ bluetoothctl
+Agent registered
+[CHG] Controller XX:XX:XX:XX:XX:XX Pairable: yes
+[bluetooth]#
+[bluetooth]# power on
+[bluetooth]# agent on
+[bluetooth]# default-agent
+[bluetooth]# scan on
+<...>
+[NEW] Device YY:YY:YY:YY:YY:YY [ERGO K860]
+<...>
+[bluetooth]# connect YY:YY:YY:YY:YY:YY
+[bluetooth]# trust YY:YY:YY:YY:YY:YY
+[bluetooth]# quit
+```
+
+> [!TIP]
+> Some keyboards sends a pass code which has to be typed in on the
+> **bluetooth keyboard** followed by the key "Enter" in order to pair successfully:
+>
+> ```
+> [bluetooth]# pair YY:YY:YY:YY:YY:YY
+> [CHG] Device YY:YY:YY:YY:YY:YY Connected: no
+> [CHG] Device YY:YY:YY:YY:YY:YY Connected: yes
+> [agent] Passkey: 103760
+> ```
+
 ---
 
 ## Resources
