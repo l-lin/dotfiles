@@ -18,6 +18,7 @@
     ./modules/dbus.nix
     ./modules/i18n-l10n.nix
     ./modules/network.nix
+    ./modules/patchelf.nix
     ./modules/pipewire.nix
     ./modules/printing.nix
     ./modules/ssh.nix
