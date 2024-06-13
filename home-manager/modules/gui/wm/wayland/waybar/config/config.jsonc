@@ -57,9 +57,19 @@
 
   // RIGHT -----------------------------------------------------------
   "pulseaudio": {
-    "format": "{icon}  {volume}%",
-    "format-icons": ["", "", "", ""],
-    "format-source-muted": "",
+    "format": "{icon}  {volume}% {format_source}",
+    "format-muted": "  {format_source}",
+    "format-source": " {volume}%",
+    "format-source-muted": " ",
+    "format-icons": {
+      "headphone": "",
+      "hands-free": "󱡏",
+      "headset": "",
+      "phone": "",
+      "portable": "",
+      "car": "",
+      "default": [ "", "", "" ]
+    },
     "max-volume": 100,
     "scroll-step": 5
   },
