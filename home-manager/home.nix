@@ -8,7 +8,6 @@
 { userSettings, ... }: {
   imports = [
     ./modules/colorscheme.nix
-    ./modules/fonts.nix
     ./modules/gui
     ./modules/tui
   ];
