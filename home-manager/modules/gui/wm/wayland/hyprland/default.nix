@@ -36,7 +36,7 @@ in {
       $menu = rofi -show drun
       $color_picker = hyprpicker -a -r
       $lock_screen = swaylock
-      $screenshot = grim -g "$(slurp)" - | satty --filename - --fullscreen --output-filename ${config.xdg.userDirs.pictures}/screenshot-$(date '+%Y-%m-%d-%H%M%S').png
+      $screenshot = grim -g "$(slurp)" - | satty --filename - --fullscreen --output-filename ${config.xdg.userDirs.pictures}/screenshot-$(date '+%Y-%m-%d-%H%M%S').png --copy-command wl-copy --early-exit
       $audio_mixer = ${userSettings.term} --command pulsemixer
       $browser = ${userSettings.browser}
 
