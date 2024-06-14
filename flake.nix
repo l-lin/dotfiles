@@ -28,6 +28,9 @@
 
     # Spotify client
     spicetify-nix.url = "github:the-argus/spicetify-nix";
+
+    # Run unpatched binaries on NixOS
+    nix-alien.url = "github:thiagokokada/nix-alien";
   };
 
   outputs = {
@@ -92,6 +95,7 @@
         pkgs = nixpkgs.legacyPackages.${systemSettings.system}; # Home-manager requires 'pkgs' instance
         extraSpecialArgs = {
           # pass config variables from above
+          inherit systemSettings;
           inherit userSettings;
           inherit inputs outputs;
         };
