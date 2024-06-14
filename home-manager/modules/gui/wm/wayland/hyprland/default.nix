@@ -40,17 +40,14 @@ in {
       $audio_mixer = ${userSettings.term} --command pulsemixer
       $browser = ${userSettings.browser}
 
+      $monitor0 = eDP-1
+      $monitor1 = DP-1
+
       ########################################### ENV VARIABLES #######################################
       # https://wiki.hyprland.org/Configuring/Environment-variables/
 
-      env = XCURSOR_SIZE,24
-      env = HYPRCURSOR_SIZE,24
-
       ########################################### AUTOSTART #######################################
       # Autostart necessary processes (like notifications daemons, status bars, etc.)
-
-      # Stick workspace to specific monitors.
-      exec-once = handle-monitor-connect.sh
 
       exec-once = swaybg -i ${config.xdg.userDirs.pictures}/summer-dark.png -m center
       exec-once = waybar
@@ -64,13 +61,18 @@ in {
       exec-once = [workspace 2 silent] $terminal
       exec-once = [workspace 3 silent] $browser
 
+      # Set cursor: https://wiki.hyprland.org/FAQ/#how-do-i-change-me-mouse-cursor
+      # TODO: use theme variable to set it
+      exec-once = hyprctl setcursor Qogir 24
+
       ########################################### DEVICES #######################################
 
       # https://wiki.hyprland.org/Configuring/Monitors/
-      # List all monitors with: hyprctl monitors all
-      monitor=eDP-1,1920x1080@60,0x0,1
-      monitor=DP-1,1920x1080@60,1920x0,1
-      #monitor=,preferred,auto,auto
+      # List all monitors with `hyprctl monitors all`.
+      # Syntax: monitor=name, resolution, position, scale
+      monitor = $monitor0, 1920x1080@60, 0x0, 1
+      monitor = $monitor1, 1920x1080@60, 1920x0, 1
+      #monitor = ,preferred,auto,auto
 
       # Mouse and keyboard
       # https://wiki.hyprland.org/Configuring/Variables/#input
@@ -219,11 +221,21 @@ in {
         vfr = true
       }
 
-      ########################################### WINDOW AND WORKSPACE #######################################
+      ########################################### WINDOWS #######################################
       # https://wiki.hyprland.org/Configuring/Window-Rules/
-      # https://wiki.hyprland.org/Configuring/Workspace-Rules/
 
       windowrulev2 = suppressevent maximize, class:.*
+
+      ########################################### WORKSPACES #######################################
+      # https://wiki.hyprland.org/Configuring/Workspace-Rules/
+
+      # Bind workspace 1 to monitor 0, and so on
+      # Workspace index starts from 1.
+      workspace = 1, persistent:true, monitor:$monitor0, default:true
+      workspace = 2, persistent:true, monitor:$monitor1, default:true
+      workspace = 3, persistent:true, monitor:$monitor1, default:true
+      workspace = 4, persistent:true, monitor:$monitor1, default:true
+      workspace = 5, persistent:true, monitor:$monitor1, default:true
 
       ########################################### KEYBINDINGS #######################################
       # https://wiki.hyprland.org/Configuring/Binds/
@@ -288,14 +300,4 @@ in {
       bind = ,XF86AudioPrev, exec, mpc -q prev
     '';
   };
-
-  home.packages = with pkgs; [
-    # Utility for bidirectional data transfer between two independent data channels: http://www.dest-unreach.org/socat/
-    # Used by the script below `handle-monitor-connect.sh`.
-    # Not really working... :(
-    socat
-    (writeShellScriptBin "handle-monitor-connect.sh" ''
-      ${builtins.readFile ./script/handle-monitor-connect.sh}
-    '')
-  ];
 }
