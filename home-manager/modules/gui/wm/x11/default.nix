@@ -5,6 +5,7 @@
 
 { userSettings, ... }: {
   imports = [
+    ./redshift
     (./. + "/${userSettings.wm}")
   ];
 }
