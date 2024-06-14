@@ -50,6 +50,8 @@ in {
       # Hint electron apps to use wayland: https://nixos.wiki/wiki/Wayland#Electron_and_Chromium
       # More about Ozone Wayland: https://blogs.igalia.com/msisov/2020/11/20/chrome-chromium-on-wayland-the-waylandification-project/
       env = NIXOS_OZONE_WL, 1
+      # GTK: Use wayland if available, If not, then any other GDK backend: https://wiki.hyprland.org/Configuring/Environment-variables/#toolkit-backend-variables
+      env = GDK_BACKEND, wayland, *
 
       ########################################### AUTOSTART #######################################
       # Autostart necessary processes (like notifications daemons, status bars, etc.)

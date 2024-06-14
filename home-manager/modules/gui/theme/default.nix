@@ -15,8 +15,12 @@ let
 
   # Soothing pastel theme for GTK: https://github.com/catppuccin/gtk
   theme = {
-    name = "catppuccin-gtk";
-    package = pkgs.catppuccin-gtk;
+    name = "Catppuccin-Mocha-Compact-Blue-Dark";
+    # https://github.com/NixOS/nixpkgs/blob/nixos-24.05/pkgs/data/themes/catppuccin-gtk/default.nix
+    package = pkgs.catppuccin-gtk.override {
+      size = "compact";
+      variant = "mocha";
+    };
   };
   font = {
     name = "Ubuntu Nerd Font";
@@ -31,53 +35,28 @@ let
   };
   # An Adwaita style extra icons theme for Gnome Shell: https://github.com/somepaulo/MoreWaita
   iconTheme = {
-    name = "MoreWaita";
-    package = pkgs.morewaita-icon-theme;
+    name = "Papirus-Dark";
+    package = pkgs.papirus-icon-theme;
   };
 in {
-  home.packages = with pkgs; [
-      font.package
-      cursorTheme.package
-      iconTheme.package
-      gnome.adwaita-icon-theme
-      papirus-icon-theme
-  ];
-
   home = {
     sessionVariables = {
-      GTK_THEME = theme.name;
       XCURSOR_THEME = cursorTheme.name;
       XCURSOR_SIZE = "${toString cursorTheme.size}";
     };
-    pointerCursor =
-      cursorTheme
-      // {
-        gtk.enable = true;
-      };
-
-    file = {
-      ".config/gtk-4.0/gtk.css".text = ''
-        window.messagedialog .response-area > button,
-        window.dialog.message .dialog-action-area > button,
-        .background.csd{
-          border-radius: 8px;
-        }
-      '';
+    pointerCursor = {
+      gtk.enable = true;
+      name = cursorTheme.name;
+      size = cursorTheme.size;
+      package = cursorTheme.package;
     };
   };
 
   fonts.fontconfig.enable = true;
 
   gtk = {
-    inherit font cursorTheme iconTheme;
-    theme.name = theme.name;
+    inherit font cursorTheme iconTheme theme;
     enable = true;
-    gtk3.extraCss = ''
-      headerbar, .titlebar,
-      .csd:not(.popup):not(tooltip):not(messagedialog) decoration{
-        border-radius: 8px;
-      }
-    '';
   };
 
   # Enable toggle dark/light mode
