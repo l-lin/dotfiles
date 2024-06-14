@@ -20,12 +20,12 @@
     "format": "",
     "icon": true
   },
-  "cpu": {
-    "format": "\uf4bc  {usage}%",
+  "memory": {
+    "format": "  {used:0.1f}GiB",
     "on-click": "alacritty --class floating --command btop"
   },
-  "memory": {
-    "format": "\uf4bc  {used:0.1f}GiB",
+  "cpu": {
+    "format": "  {usage}%",
     "on-click": "alacritty --class floating --command btop"
   },
   "temperature": {
@@ -82,21 +82,33 @@
   "battery": {
     "interval": 60,
     "format": "{icon}  {capacity}%",
-    "format-icons": ["", "", "", "", ""],
+    "format-icons": [
+      "󰁺",
+      "󰁻",
+      "󰁼",
+      "󰁽",
+      "󰁾",
+      "󰁿",
+      "󰂀",
+      "󰂁",
+      "󰂂",
+      "󰁹"
+    ],
+    "format-charging": "󰂄 {capacity}%",
     "states": {
       "warning": 30,
       "critical": 15
     }
   },
   "backlight": {
-    "format": "{icon} {percent}%",
+    "format": "{icon} ",
     "format-icons": ["", "", "", "", "", "", "", "", ""]
   },
   "network": {
     "format": "",
     "format-ethernet": "󰈁 ",
     "format-wifi": "{icon} ",
-    "format-disconnected": "󰤭 ",
+    "format-disconnected": "󰤮 ",
     "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
     "tooltip-format-wifi": "{essid} ({signalStrength}%)",
     "tooltip-format-ethernet": "{ifname}",
@@ -113,7 +125,7 @@
     "on-click": "alacritty --class floating --command bluetoothctl"
   },
   "clock": {
-    "format": "{:%Y-%m-%d %H:%M}",
+    "format": "󰃭 {:%Y-%m-%d %H:%M}",
     "on-click": "alacritty --class floating --command calcure"
   }
 }

@@ -19,6 +19,7 @@ in {
 @define-color fg-alt #${palette.base00};
 @define-color bg #${palette.base00};
 @define-color bg-alt #${palette.base0D};
+@define-color green #${palette.base0B};
 @define-color yellow #${palette.base0A};
 @define-color red #${palette.base08};
   '';
