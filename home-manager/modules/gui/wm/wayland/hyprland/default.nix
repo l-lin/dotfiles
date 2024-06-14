@@ -230,8 +230,21 @@ in {
       # https://wiki.hyprland.org/Configuring/Window-Rules/
 
       windowrulev2 = suppressevent maximize, class:.*
+
       windowrulev2 = float, class:floating
       windowrulev2 = size 950 600, class:floating
+
+      windowrulev2 = float, title:^(Picture-in-Picture)$
+      windowrulev2 = size 960 540, title:^(Picture-in-Picture)$
+      windowrulev2 = move 100%-w-14, title:^(Picture-in-Picture)$
+
+      windowrulev2 = float, class:^(imv)$
+      windowrulev2 = center 1, class:^(imv)$
+      windowrulev2 = size 960 540, class:^(imv)$
+
+      windowrulev2 = float, class:^(mpv)$
+      windowrulev2 = center 1, class:^(mpv)$
+      windowrulev2 = size 960 540, class:^(mpv)$
 
       ########################################### WORKSPACES #######################################
       # https://wiki.hyprland.org/Configuring/Workspace-Rules/
