@@ -43,7 +43,7 @@ window#waybar {
   background-color: @bg-alt;
   color: @fg-alt;
 
-	border-radius: 10px;
+	border-radius: 8px;
 }
 
 #user {
