@@ -56,6 +56,9 @@ in {
       exec-once = waybar
       exec-once = dunst
 
+      # Set screen color temperature
+      exec-once = wlsunset -t 4000 -T 4500
+
       # Open default applications
       exec-once = [workspace 1 silent] obsidian
       exec-once = [workspace 2 silent] $terminal
@@ -289,6 +292,7 @@ in {
   home.packages = with pkgs; [
     # Utility for bidirectional data transfer between two independent data channels: http://www.dest-unreach.org/socat/
     # Used by the script below `handle-monitor-connect.sh`.
+    # Not really working... :(
     socat
     (writeShellScriptBin "handle-monitor-connect.sh" ''
       ${builtins.readFile ./script/handle-monitor-connect.sh}
