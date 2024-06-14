@@ -12,7 +12,7 @@
 
   "modules-left": ["user", "cpu", "memory", "temperature", "disk", "tray"],
   "modules-center": ["hyprland/workspaces"],
-  "modules-right": ["privacy", "pulseaudio", "battery", "backlight", "network", "bluetooth", "clock"],
+  "modules-right": ["privacy", "pulseaudio", "battery", "backlight", "network", "bluetooth", "clock", "custom/exit"],
 
   // LEFT -----------------------------------------------------------
   "user": {
@@ -127,5 +127,10 @@
   "clock": {
     "format": "󰃭 {:%Y-%m-%d %H:%M}",
     "on-click": "alacritty --class floating --command calcure"
+  },
+  "custom/exit": {
+    "tooltip": false,
+    "format": "",
+    "on-click": "sleep 0.1 && wlogout"
   }
 }

@@ -117,6 +117,8 @@
     websocat
     # CLI for retrieving files using HTTP, HTTPS and FTP.
     wget
+    # A wayland based logout menu: https://github.com/ArtsyMacaw/wlogout
+    wlogout
     # CSV toolkit: https://github.com/BurntSushi/xsv
     xsv
     # YAML/XML/TOML processor: https://github.com/kislyuk/yq
