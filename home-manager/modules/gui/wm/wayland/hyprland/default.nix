@@ -46,6 +46,10 @@ in {
       ########################################### ENV VARIABLES #######################################
       # https://wiki.hyprland.org/Configuring/Environment-variables/
 
+      # Hint electron apps to use wayland: https://nixos.wiki/wiki/Wayland#Electron_and_Chromium
+      # More about Ozone Wayland: https://blogs.igalia.com/msisov/2020/11/20/chrome-chromium-on-wayland-the-waylandification-project/
+      env = NIXOS_OZONE_WL, 1
+
       ########################################### AUTOSTART #######################################
       # Autostart necessary processes (like notifications daemons, status bars, etc.)
 

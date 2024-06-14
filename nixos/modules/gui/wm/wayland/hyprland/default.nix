@@ -9,14 +9,10 @@
 { pkgs, ... }: {
   programs.hyprland.enable = true;
 
-  # Enable screen sharing
-  xdg.portal = {
-    enable = true;
-    wlr.enable = true;
-    extraPortals = [
-      pkgs.xdg-desktop-portal-gtk
-    ];
-  };
+  # Enable XDG desktop integration.
+  # Used for screen sharing.
+  # src: https://flatpak.github.io/xdg-desktop-portal/docs/index.html
+  xdg.portal.enable = true;
 
   environment.sessionVariables = {
     # Hint electron apps to use wayland
