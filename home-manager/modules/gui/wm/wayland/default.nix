@@ -10,6 +10,7 @@
     ./rofi
     ./swaylock
     ./waybar
+    ./wlogout
   ];
 
   home.packages = with pkgs; [
