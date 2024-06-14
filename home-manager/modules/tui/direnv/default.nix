@@ -3,7 +3,7 @@
 # src: https://github.com/nix-community/nix-direnv
 #
 
-{
+{ pkgs, ... }: {
   programs = {
     # https://mynixos.com/search?q=direnv
     direnv = {
@@ -13,4 +13,13 @@
       nix-direnv.enable = true;
     };
   };
+
+  home.packages = with pkgs; [
+    (writeShellScriptBin "nixify" ''
+      ${builtins.readFile ./script/nixify.sh}
+    '')
+    (writeShellScriptBin "flakify" ''
+      ${builtins.readFile ./script/flakify.sh}
+    '')
+  ];
 }

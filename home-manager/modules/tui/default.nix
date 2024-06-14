@@ -74,8 +74,6 @@
     gum
     # User-friendly command line HTTP client: https://httpie.io/
     httpie
-    # A fast and modern static website engine: https://gohugo.io/
-    hugo
     # Benchmarking tool: https://github.com/sharkdp/hyperfine
     hyperfine
     # Interactive jq: https://git.sr.ht/~gpanders/ijq
