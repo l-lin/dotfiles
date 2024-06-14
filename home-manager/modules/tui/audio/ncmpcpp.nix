@@ -1,4 +1,6 @@
 #
+# TODO: still not yet configured correctly...
+#
 # A featureful ncurses based MPD client inspired by ncmpc.
 # src: https://rybczak.net/ncmpcpp/
 #

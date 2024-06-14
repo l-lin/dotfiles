@@ -269,11 +269,15 @@ in {
       bind = $main_mod, V, togglefloating,
       bind = $main_mod, F, fullscreen, 0
       bind = $main_mod, SPACE, exec, $menu
-      bind = $main_mod, P, exec, $color_picker
+      bind = $main_mod SHIFT, P, exec, $color_picker
       bind = $main_mod, I, togglesplit
       bind = $main_mod, S, exec, $screenshot
       bind = $main_mod, A, exec, $audio_mixer
       bind = $main_mod, C, exec, $calendar
+
+      # Control audio media
+      bind = $main_mod, N, exec, spotify-next.sh
+      bind = $main_mod, P, exec, spotify-play-pause.sh
 
       # Move focus with main_mod + hjkl
       bind = $main_mod, h, movefocus, l

@@ -1,4 +1,6 @@
 #
+# TODO: still not yet configured correctly...
+#
 # A flexible, powerful daemon for playing music.
 # src: https://www.musicpd.org/
 #
@@ -8,7 +10,7 @@
     mpd = {
       enable = true;
       musicDirectory = "${config.xdg.userDirs.music}";
-      dataDir = "${config.xdg.configHome}/mpd";
+      dataDir = "${config.xdg.dataHome}/mpd";
       extraConfig = ''
         auto_update           "yes"
         restore_paused        "yes"

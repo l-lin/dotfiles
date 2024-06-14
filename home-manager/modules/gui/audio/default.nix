@@ -5,11 +5,11 @@
 { pkgs, ... }: {
 
   imports = [
-    ./spicetify
+    ./spotify
   ];
 
   home.packages = with pkgs; [
-    # PulseAudio Volume Control GUI.
+    # PulseAudio Volume Control GUI: http://freedesktop.org/software/pulseaudio/pavucontrol/
     pavucontrol
   ];
 }

@@ -20,7 +20,6 @@
     ./nvim
     ./psql
     (./. + "/shell/${userSettings.shell}")
-    ./spotify
     ./tealdeer
     ./term
     ./xdg
