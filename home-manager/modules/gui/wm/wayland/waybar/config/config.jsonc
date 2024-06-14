@@ -16,20 +16,25 @@
 
   // LEFT -----------------------------------------------------------
   "user": {
+    "interval": "86400",
     "format": "",
     "icon": true
   },
   "cpu": {
-    "format": "\uf4bc  {usage}%"
+    "format": "\uf4bc  {usage}%",
+    "on-click": "alacritty --class floating --command btop"
   },
   "memory": {
-    "format": "\uf4bc  {used:0.1f}GiB"
+    "format": "\uf4bc  {used:0.1f}GiB",
+    "on-click": "alacritty --class floating --command btop"
   },
   "temperature": {
-    "format": " {temperatureC}°C"
+    "format": " {temperatureC}°C",
+    "on-click": "alacritty --class floating --command btop"
   },
   "disk": {
-    "format": "󰒋 {free}"
+    "format": "󰒋 {free}",
+    "on-click": "alacritty --class floating --command yazi"
   },
   "tray": {
     "icon-size": 16,
@@ -71,7 +76,8 @@
       "default": [ "", "", "" ]
     },
     "max-volume": 100,
-    "scroll-step": 5
+    "scroll-step": 5,
+    "on-click": "alacritty --class floating --command pulsemixer"
   },
   "battery": {
     "interval": 60,
@@ -95,7 +101,7 @@
     "tooltip-format-wifi": "{essid} ({signalStrength}%)",
     "tooltip-format-ethernet": "{ifname}",
     "tooltip-format-disconnected": "Disconnected",
-    "on-click": "alacritty --command nmtui"
+    "on-click": "alacritty --class floating --command nmtui connect"
   },
   "bluetooth": {
     "format": "󰂯",
@@ -104,7 +110,7 @@
     "tooltip-format": "{controller_alias}\t{controller_address}",
     "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
     "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
-    "on-click": "alacritty --command bluetoothctl"
+    "on-click": "alacritty --class floating --command bluetoothctl"
   },
   "clock": {
     "format": "{:%Y-%m-%d %H:%M}"

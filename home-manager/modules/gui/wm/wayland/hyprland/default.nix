@@ -32,12 +32,12 @@ in {
 
       $main_mod = SUPER
       $terminal = ${userSettings.term}
-      $file_manager = ${userSettings.term} --command ${userSettings.fileManager}
+      $file_manager = ${userSettings.term} --class floating --command ${userSettings.fileManager}
       $menu = rofi -show drun
       $color_picker = hyprpicker -a -r
       $lock_screen = swaylock
       $screenshot = grim -g "$(slurp)" - | satty --filename - --fullscreen --output-filename ${config.xdg.userDirs.pictures}/screenshot-$(date '+%Y-%m-%d-%H%M%S').png --copy-command wl-copy --early-exit
-      $audio_mixer = ${userSettings.term} --command pulsemixer
+      $audio_mixer = ${userSettings.term} --class floating --command pulsemixer
       $browser = ${userSettings.browser}
 
       $monitor0 = eDP-1
@@ -229,6 +229,8 @@ in {
       # https://wiki.hyprland.org/Configuring/Window-Rules/
 
       windowrulev2 = suppressevent maximize, class:.*
+      windowrulev2 = float, class:floating
+      windowrulev2 = size 950 600, class:floating
 
       ########################################### WORKSPACES #######################################
       # https://wiki.hyprland.org/Configuring/Workspace-Rules/
