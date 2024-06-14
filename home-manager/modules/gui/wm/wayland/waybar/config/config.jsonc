@@ -113,6 +113,7 @@
     "on-click": "alacritty --class floating --command bluetoothctl"
   },
   "clock": {
-    "format": "{:%Y-%m-%d %H:%M}"
+    "format": "{:%Y-%m-%d %H:%M}",
+    "on-click": "alacritty --class floating --command calcure"
   }
 }

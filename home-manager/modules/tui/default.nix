@@ -37,6 +37,8 @@
     brightnessctl
     # Monitor resources: https://github.com/aristocratos/btop
     btop
+    # TUI calendar: https://github.com/anufrievroman/calcure
+    calcure
     # Client for cheat.sh: https://github.com/chubin/cheat.sh
     cht-sh
     # Syntax highlighting for diff: https://www.colordiff.org/

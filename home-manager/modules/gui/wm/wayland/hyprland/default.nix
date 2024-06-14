@@ -39,6 +39,7 @@ in {
       $screenshot = grim -g "$(slurp)" - | satty --filename - --fullscreen --output-filename ${config.xdg.userDirs.pictures}/screenshot-$(date '+%Y-%m-%d-%H%M%S').png --copy-command wl-copy --early-exit
       $audio_mixer = ${userSettings.term} --class floating --command pulsemixer
       $browser = ${userSettings.browser}
+      $calendar = ${userSettings.term} --class floating --command calcure
 
       $monitor0 = eDP-1
       $monitor1 = DP-1
@@ -257,6 +258,7 @@ in {
       bind = $main_mod, I, togglesplit
       bind = $main_mod, S, exec, $screenshot
       bind = $main_mod, A, exec, $audio_mixer
+      bind = $main_mod, C, exec, $calendar
 
       # Move focus with main_mod + hjkl
       bind = $main_mod, h, movefocus, l
