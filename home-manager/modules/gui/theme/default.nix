@@ -5,8 +5,10 @@
 { pkgs, ... }:
 let
   # Iconic font aggregator, collection, & patcher. 3,600+ icons, 50+ patched fonts: https://nerdfonts.com/
+  # Find your fonts at https://www.nerdfonts.com/font-downloads.
   nerdfonts = pkgs.nerdfonts.override {
     fonts = [
+      "Ubuntu"
       "JetBrainsMono"
     ];
   };
@@ -17,7 +19,7 @@ let
     package = pkgs.catppuccin-gtk;
   };
   font = {
-    name = "JetBrainsMono Nerd Font";
+    name = "Ubuntu Nerd Font";
     package = nerdfonts;
     size = 12;
   };
