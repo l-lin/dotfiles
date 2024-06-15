@@ -6,7 +6,6 @@
   imports = [
     ./atuin
     ./bat
-    ./code
     ./direnv
     ./docker
     ./file-manager

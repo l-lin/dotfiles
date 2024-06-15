@@ -9,6 +9,7 @@
   imports = [
     ./modules/audio
     ./modules/browser
+    ./modules/code
     ./modules/colorscheme.nix
     ./modules/gui
     ./modules/messaging

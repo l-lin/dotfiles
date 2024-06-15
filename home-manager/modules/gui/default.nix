@@ -6,7 +6,6 @@
   imports = [
     ./dunst
     ./image
-    ./jetbrains
     ./satty
     ./theme
     ./wall

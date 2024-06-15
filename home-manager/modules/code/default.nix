@@ -6,6 +6,7 @@
   imports = [
     ./go
     ./java
+    ./jetbrains
     ./python
   ];
 }
