@@ -15,7 +15,6 @@
     ./multiplexer/tmux
     ./navi
     ./nix-alien
-    ./nvim
     ./psql
     (./. + "/shell/${userSettings.shell}")
     ./tealdeer
