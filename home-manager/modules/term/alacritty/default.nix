@@ -3,12 +3,14 @@
 # src: https://alacritty.org/
 #
 
-{ pkgs, ... }: {
-  home.packages = with pkgs; [ alacritty ];
-
-  # Symlink ~/.config/alacritty
-  xdg.configFile.alacritty = {
-    source = ./config;
-    recursive = true;
+{
+  programs.alacritty = {
+    enable = true;
+    settings = {
+      # We do not create a symlink using `xdg.configFile.alacritty` because stylix
+      # is creating the ~/.config/alacritty/alacritty.toml file. So we need to perform
+      # this small "hack" to import our settings.
+      import = [ ./config/alacritty.toml ];
+    };
   };
 }

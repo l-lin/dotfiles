@@ -10,5 +10,6 @@
   };
 
   # symlink to ~/.config/yazi
-  xdg.configFile.yazi.source = ./config;
+  xdg.configFile."yazi/keymap.toml".source = ./config/keymap.toml;
+  xdg.configFile."yazi/yazi.toml".source = ./config/yazi.toml;
 }

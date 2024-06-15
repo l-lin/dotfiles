@@ -6,35 +6,15 @@
 # --------------------------------------------------------
 # FZF options
 # --------------------------------------------------------
-export FZF_THEME="
---color=bg:${ZSH_THEME_BG}
---color=hl:${ZSH_THEME_ACCENT}
---color=fg:${ZSH_THEME_FG}
---color=fg+:bold:${ZSH_THEME_FG}
---color=bg+:${ZSH_THEME_BG}
---color=hl+:${ZSH_THEME_ACCENT}
---color=gutter:${ZSH_THEME_BG}
---color=info:${ZSH_THEME_GRAY}
---color=separator:${ZSH_THEME_ACCENT}
---color=border:${ZSH_THEME_GRAY}
---color=label:${ZSH_THEME_RED}
---color=prompt:${ZSH_THEME_RED}
---color=spinner:${ZSH_THEME_GRAY}
---color=pointer:bold:${ZSH_THEME_RED}
---color=marker:${ZSH_THEME_RED}
---color=header:${ZSH_THEME_RED}
---color=preview-fg:${ZSH_THEME_FG}
---color=preview-bg:${ZSH_THEME_BG}
---no-scrollbar
---prompt='󰍉 '
-"
 export FZF_DEFAULT_OPTS="
 --bind='?:toggle-preview' \
 --bind='alt-p:toggle-preview-wrap' \
 --preview-window='right:40%:border-none' \
 --tiebreak=chunk \
 --cycle \
-${FZF_THEME}"
+--no-scrollbar
+--prompt='󰍉 '
+"
 export FZF_TMUX_OPTS="-p 90%,90%"
 # preview content of the file under the cursor when searching for a file
 export FZF_CTRL_T_OPTS="--no-reverse --preview 'bat --style changes --color "always" {} | head -200'"

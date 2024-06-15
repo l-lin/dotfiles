@@ -14,8 +14,6 @@
     bashmount
     # Read and control device brightness: https://github.com/Hummer12007/brightnessctl
     brightnessctl
-    # Monitor resources: https://github.com/aristocratos/btop
-    btop
     # TUI calendar: https://github.com/anufrievroman/calcure
     calcure
     # Client for cheat.sh: https://github.com/chubin/cheat.sh

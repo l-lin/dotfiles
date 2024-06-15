@@ -5,7 +5,7 @@
 
 { config, pkgs, userSettings, ... }:
 let
-  palette = config.colorScheme.palette;
+  palette = config.lib.stylix.colors;
 in {
   programs.waybar = {
     enable = true;

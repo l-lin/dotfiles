@@ -8,7 +8,7 @@
 
 { config, pkgs, userSettings, ... }:
 let
-  palette = config.colorScheme.palette;
+  palette = config.lib.stylix.colors;
 in {
   wayland.windowManager.hyprland = {
     # Whether to enable Hyprland wayland compositor
@@ -56,8 +56,8 @@ in {
       ########################################### AUTOSTART #######################################
       # Autostart necessary processes (like notifications daemons, status bars, etc.)
 
-      exec-once = swaybg -i ${config.xdg.userDirs.pictures}/summer-dark.png -m center
-      exec-once = waybar
+      #exec-once = swaybg -i ${config.xdg.userDirs.pictures}/summer-dark.png -m center
+      exec = pkill waybar; sleep 0.5; waybar
       exec-once = dunst
 
       # Set screen color temperature

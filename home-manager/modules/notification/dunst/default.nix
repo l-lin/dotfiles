@@ -3,9 +3,9 @@
 # src: https://dunst-project.org/
 #
 
-{ config, ... }:
+{ config, lib, ... }:
 let
-  palette = config.colorScheme.palette;
+  palette = config.lib.stylix.colors;
 in {
   services.dunst = {
     enable = true;
@@ -48,10 +48,6 @@ in {
 
         # Defines color of the frame around the notification window.
         frame_color = "#${palette.base0D}";
-        background = "#${palette.base00}";
-        foreground = "#${palette.base05}";
-
-        font = "JetBrainsMono Nerd Font 12";
 
         # Define the corner radius of the notification window
         # in pixel size. If the radius is 0, you have no rounded
@@ -67,10 +63,17 @@ in {
       # Specific rules #
       ##################
 
-      urgency_low = {};
-      urgency_normal = {};
+      urgency_low = {
+        # Force color of the frame instead of the one from stylix.
+        frame_color = lib.mkForce "#${palette.base0D}";
+      };
+      urgency_normal = {
+        # Force color of the frame instead of the one from stylix.
+        frame_color = lib.mkForce "#${palette.base0D}";
+      };
       urgency_critical = {
-        frame_color = "#${palette.base08}";
+        # Force color of the frame instead of the one from stylix.
+        frame_color = lib.mkForce "#${palette.base08}";
         timeout = 0;
       };
     };

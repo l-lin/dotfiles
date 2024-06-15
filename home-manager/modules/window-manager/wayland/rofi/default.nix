@@ -5,7 +5,7 @@
 
 { config, pkgs, ... }:
 let
-  palette = config.colorScheme.palette;
+  palette = config.lib.stylix.colors;
 in {
   home.packages = with pkgs; [ rofi-wayland ];
 

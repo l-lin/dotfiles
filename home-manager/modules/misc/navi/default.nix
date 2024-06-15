@@ -7,5 +7,5 @@
   home.packages = with pkgs; [ navi ];
 
   # Symlink to ~/.config/navi/config.yaml
-  xdg.configFile."navi/config.yaml".source = ./config.yaml;
+  xdg.configFile."navi/config.yaml".source = ./config/config.yaml;
 }

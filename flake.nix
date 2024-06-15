@@ -31,6 +31,9 @@
 
     # Run unpatched binaries on NixOS
     nix-alien.url = "github:thiagokokada/nix-alien";
+
+    # Colorscheme management
+    stylix.url = "github:danth/stylix";
   };
 
   outputs = {
@@ -66,6 +69,7 @@
       editor = "nvim"; # default editor
       term = "kitty"; # default terminal emulator
       colorscheme = "kanagawa"; # colorscheme to use
+      theme = "kanagawa"; # colorscheme to use
       shell = "zsh"; # shell to use
       wm = "hyprland"; # selected window manager (hyprland, sway or gnome)
       wmType = "wayland"; # selected window manager type (wayland or x11)
