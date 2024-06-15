@@ -4,8 +4,11 @@
 
 {
   imports = [
+    ./direnv
+    ./docker
     ./go
     ./java
+    ./psql
     ./python
   ];
 }

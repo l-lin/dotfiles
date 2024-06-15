@@ -6,14 +6,11 @@
   imports = [
     ./atuin
     ./bat
-    ./direnv
-    ./docker
     ./file-manager
     ./fzf
     ./multiplexer/tmux
     ./navi
     ./nix-alien
-    ./psql
     (./. + "/shell/${userSettings.shell}")
     ./tealdeer
     ./term
