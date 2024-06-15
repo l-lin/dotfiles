@@ -9,6 +9,6 @@
     enableZshIntegration = true;
   };
 
-  # symlink to ~/.config/yazi/yazi.toml
-  xdg.configFile."yazi/yazi.toml".source = ./config/yazi.toml;
+  # symlink to ~/.config/yazi
+  xdg.configFile.yazi.source = ./config;
 }
