@@ -8,6 +8,10 @@
       type = types.path;
       description = "Background image to set on the monitors.";
     };
+    nvimColorScheme = mkOption {
+      type = types.str;
+      description = "NeoVim color scheme.";
+    };
   };
 
   imports = [

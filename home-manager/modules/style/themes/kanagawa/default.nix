@@ -10,6 +10,7 @@ in {
 
   theme = {
     inherit backgroundImage;
+    nvimColorScheme = "kanagawa";
   };
 
   stylix = {

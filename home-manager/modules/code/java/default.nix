@@ -9,4 +9,7 @@
     # Build automation tool (used primarily for Java projects): https://maven.apache.org/
     maven
   ];
+
+  # Symlink ~/.local/share/eclipse/java-code-style.xml
+  xdg.dataFile."eclipse/java-code-style.xml".source = ./config/java-code-style.xml;
 }

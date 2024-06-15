@@ -3,7 +3,7 @@
 # src: https://neovim.io/
 #
 
-{ pkgs, ... }: {
+{ config, pkgs, ... }: {
   # https://mynixos.com/nixpkgs/options/programs.neovim
   programs.neovim = {
     enable = true;
@@ -50,10 +50,18 @@
 
   # Symlink ~/.config/nvim
   xdg.configFile.nvim = {
-    source = ./config/nvim;
+    source = ./config;
     recursive = true;
   };
-
-  # Symlink ~/.local/share/eclipse/java-code-style.xml
-  home.file.".local/share/eclipse/java-code-style.xml".source = ./config/eclipse/java-code-style.xml;
+  xdg.configFile."nvim/lua/plugins/selected-colorscheme.lua".text = ''
+return {
+  -- setup colorscheme
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "${config.theme.nvimColorScheme}",
+    },
+  },
+}
+  '';
 }

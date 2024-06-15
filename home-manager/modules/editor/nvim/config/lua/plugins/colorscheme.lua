@@ -28,12 +28,4 @@ return {
   {
     "neanias/everforest-nvim",
   },
-
-  -- setup colorscheme
-  {
-    "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "kanagawa",
-    },
-  },
 }
