@@ -68,6 +68,8 @@
     libnotify
     # Better ls command: https://github.com/lsd-rs/lsd
     lsd
+    # A command-line utility for easily compressing and decompressing files and directories: https://github.com/ouch-org/ouch
+    ouch
     # Stores, retrieves, generates, and synchronizes passwords securely: https://www.passwordstore.org/
     pass-wayland
     # Pretty ping: https://github.com/denilsonsa/prettyping
