@@ -10,8 +10,6 @@
     ./docker
     ./file-manager
     ./fzf
-    ./git
-    ./lazygit
     ./multiplexer/tmux
     ./navi
     ./nix-alien

@@ -15,6 +15,7 @@
     ./modules/notification
     ./modules/theme
     ./modules/tui
+    ./modules/versioning
     ./modules/video
     ./modules/window-manager
   ];
