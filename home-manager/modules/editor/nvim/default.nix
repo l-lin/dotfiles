@@ -53,11 +53,12 @@
     source = ./config;
     recursive = true;
   };
-  xdg.configFile."nvim/lua/plugins/selected-colorscheme.lua".text = ''
+  xdg.configFile."nvim/lua/plugins/colorscheme.lua".text = ''
 -- set background
 vim.o.bg = "${config.theme.polarity}"
 
 return {
+  ${config.theme.nvimColorSchemePluginLua},
   -- setup colorscheme
   {
     "LazyVim/LazyVim",

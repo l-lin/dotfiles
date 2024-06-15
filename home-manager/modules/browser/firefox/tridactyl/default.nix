@@ -3,20 +3,23 @@
 # src: https://tridactyl.xyz/
 #
 
-{ pkgs, userSettings, ... }: {
+{ config, pkgs, userSettings, ... }:
+let
+  theme = if (config.theme.polarity == "dark") then "kanagawa" else "github-light";
+in {
   # Symlink to ~/.config/tridactyl/tridactylrc
   xdg.configFile."tridactyl/tridactylrc".text = ''
-    " open nvim instead of default 'auto', which opens gvim (shortcut: Ctrl+i)
-    set editorcmd ${userSettings.term} -e nvim %f '+normal!%lGzv%c|'
+" open nvim instead of default 'auto', which opens gvim (shortcut: Ctrl+i)
+set editorcmd ${userSettings.term} -e nvim %f '+normal!%lGzv%c|'
 
-    " theme
-    colors ${userSettings.theme}
+" theme
+colors ${theme}
 
-    " binds
-    bind H tabprev
-    bind L tabnext
-    bind J back
-    bind K forward
+" binds
+bind H tabprev
+bind L tabnext
+bind J back
+bind K forward
   '';
 
   # Symlink to ~/.config/tridactyl/themes

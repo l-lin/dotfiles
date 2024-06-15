@@ -12,6 +12,7 @@ in {
   theme = {
     inherit backgroundImage polarity;
     nvimColorScheme = "kanagawa";
+    nvimColorSchemePluginLua = "{ 'rebelot/kanagawa.nvim' }";
   };
 
   stylix = {
