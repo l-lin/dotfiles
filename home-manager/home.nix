@@ -14,6 +14,7 @@
     ./modules/file-manager
     ./modules/messaging
     ./modules/notification
+    ./modules/shell
     ./modules/theme
     ./modules/tui
     ./modules/versioning

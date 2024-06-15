@@ -7,10 +7,8 @@
     ./atuin
     ./bat
     ./fzf
-    ./multiplexer/tmux
     ./navi
     ./nix-alien
-    (./. + "/shell/${userSettings.shell}")
     ./tealdeer
     ./term
     ./xdg
