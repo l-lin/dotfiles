@@ -17,6 +17,7 @@
     ./modules/notification
     ./modules/tui
     ./modules/video
+    ./modules/window-manager
   ];
 
   home = {
