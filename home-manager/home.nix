@@ -11,6 +11,7 @@
     ./modules/colorscheme.nix
     ./modules/gui
     ./modules/tui
+    ./modules/video
   ];
 
   home = {

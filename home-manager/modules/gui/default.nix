@@ -12,7 +12,6 @@
     ./messaging
     ./satty
     ./theme
-    ./video
     ./wall
     (./. + "/wm/${userSettings.wmType}")
   ];
