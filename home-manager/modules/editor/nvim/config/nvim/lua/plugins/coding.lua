@@ -95,7 +95,7 @@ return {
         end, { "i", "s" }),
       })
       opts.sources = cmp.config.sources({
-        --{ name = "codeium" },
+        { name = "codeium" },
         { name = "nvim_lsp" },
         { name = "luasnip" },
       }, {
