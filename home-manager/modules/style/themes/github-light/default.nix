@@ -1,0 +1,49 @@
+#
+# 
+# src: https://github.com/rebelot/kanagawa.nvim
+#
+
+{ pkgs, ... }:
+let
+  backgroundImage = ../../../image/config/summer-light.png;
+  polarity = "light";
+in {
+
+  theme = {
+    inherit backgroundImage polarity;
+    nvimColorScheme = "github_light_high_contrast";
+  };
+
+  stylix = {
+    inherit polarity;
+    image = backgroundImage;
+    cursor = {
+      # Material Based Cursor Theme: https://github.com/ful1e5/Bibata_Cursor
+      name = "Bibata-Modern-Classic";
+      size = 24;
+      package = pkgs.bibata-cursors;
+
+      # Flat colorful design icon theme: https://github.com/vinceliuice/Qogir-icon-theme
+      #name = "Qogir";
+      #size = 24;
+      #package = pkgs.qogir-icon-theme;
+    };
+  };
+
+  gtk = {
+    iconTheme = {
+      # Pixel perfect icon theme for Linux: https://github.com/PapirusDevelopmentTeam/papirus-icon-theme
+      name = "Papirus-Light";
+      package = pkgs.papirus-icon-theme;
+    };
+    theme = {
+      # Soothing pastel theme for GTK: https://github.com/catppuccin/gtk
+      name = "Catppuccin-Latte-Compact-Blue-Light";
+      # https://github.com/NixOS/nixpkgs/blob/nixos-24.05/pkgs/data/themes/catppuccin-gtk/default.nix
+      package = pkgs.catppuccin-gtk.override {
+        size = "compact";
+        variant = "latte";
+      };
+    };
+  };
+}

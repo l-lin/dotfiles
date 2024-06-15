@@ -12,6 +12,10 @@
       type = types.str;
       description = "NeoVim color scheme.";
     };
+    polarity = mkOption {
+      type = types.str;
+      description = "Polarity of the theme (dark or light).";
+    };
   };
 
   imports = [

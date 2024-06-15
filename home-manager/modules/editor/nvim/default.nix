@@ -54,6 +54,9 @@
     recursive = true;
   };
   xdg.configFile."nvim/lua/plugins/selected-colorscheme.lua".text = ''
+-- set background
+vim.o.bg = "${config.theme.polarity}"
+
 return {
   -- setup colorscheme
   {

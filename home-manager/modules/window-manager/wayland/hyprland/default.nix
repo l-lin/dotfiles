@@ -131,7 +131,7 @@ in {
         border_size = 2
 
         # https://wiki.hyprland.org/Configuring/Variables/#variable-types for info about colors
-        col.active_border = rgb(${palette.base0D})
+        col.active_border = rgb(${palette.base05})
         col.inactive_border = rgb(${palette.base00})
 
         # Set to true enable resizing windows by clicking and dragging on borders and gaps

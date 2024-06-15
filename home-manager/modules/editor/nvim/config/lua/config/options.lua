@@ -12,7 +12,8 @@ vim.opt.scrolloff = 7
 -- vim.opt.wrap = true
 
 -- set background
-vim.o.bg = "dark"
+-- commented because it's now set by home-manager
+--vim.o.bg = "dark"
 
 -- disable auto-formatting
 vim.g.autoformat = false
