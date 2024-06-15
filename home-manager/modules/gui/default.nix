@@ -4,7 +4,6 @@
 
 { pkgs, userSettings, ... }: {
   imports = [
-    ./audio
     ./browser/firefox
     ./browser/w3m
     ./dunst

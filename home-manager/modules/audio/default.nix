@@ -3,9 +3,11 @@
 #
 
 { pkgs, ... }: {
+
   imports = [
     ./ncmpcpp.nix
     ./mpd.nix
+    ./spotify
   ];
 
   home.packages = with pkgs; [
@@ -16,5 +18,7 @@
     # CLI and curses mixer for pulseaudio.
     # src: https://github.com/GeorgeFilipkin/pulsemixer
     pulsemixer
+    # PulseAudio Volume Control GUI: http://freedesktop.org/software/pulseaudio/pavucontrol/
+    pavucontrol
   ];
 }

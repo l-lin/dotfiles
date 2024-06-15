@@ -4,7 +4,6 @@
 
 { pkgs, userSettings, ... }: {
   imports = [
-    ./audio
     ./atuin
     ./bat
     ./code
