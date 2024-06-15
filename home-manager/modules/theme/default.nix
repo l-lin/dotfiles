@@ -39,6 +39,10 @@ let
     package = pkgs.papirus-icon-theme;
   };
 in {
+  imports = [
+    ./colorscheme
+  ];
+
   home = {
     sessionVariables = {
       XCURSOR_THEME = cursorTheme.name;

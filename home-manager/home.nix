@@ -10,11 +10,10 @@
     ./modules/audio
     ./modules/browser
     ./modules/code
-    ./modules/colorscheme.nix
     ./modules/editor
-    ./modules/gui
     ./modules/messaging
     ./modules/notification
+    ./modules/theme
     ./modules/tui
     ./modules/video
     ./modules/window-manager
