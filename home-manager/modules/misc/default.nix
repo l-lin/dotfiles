@@ -32,6 +32,8 @@
     duf
     # More intuitive version of du: https://github.com/bootandy/dust
     dust
+    # A tool to read, write and edit EXIF meta information: https://exiftool.org/
+    exiftool
     # Wrapper to execute command in a pty: https://github.com/dtolnay/faketty
     faketty
     # User-friendly find: https://github.com/sharkdp/fd
