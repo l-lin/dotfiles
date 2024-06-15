@@ -30,9 +30,14 @@ edit = [
   # Modified here to hard-code the EDITOR.
   # For some reason, the $EDITOR is set to nano for floating windows, I don't understand why :/
 	{ run = 'nvim "$@"', desc = "$EDITOR", block = true, for = "unix" },
-	{ run = 'code "%*"',    orphan = true, desc = "code",         for = "windows" },
-	{ run = 'code -w "%*"', block = true,  desc = "code (block)", for = "windows" },
 ]
+edit-image = [
+	{ run = 'gimp "$@"', desc = "Open", for = "linux" },
+]
+open-image = [
+	{ run = 'imv "$@"', desc = "Open", for = "linux" },
+]
+
 open = [
 	{ run = 'xdg-open "$@"',                desc = "Open", for = "linux" },
 	{ run = 'open "$@"',                    desc = "Open", for = "macos" },
@@ -59,7 +64,7 @@ rules = [
 	{ name = "*/", use = [ "edit", "open", "reveal" ] },
 
 	{ mime = "text/*",          use = [ "edit", "reveal" ] },
-	{ mime = "image/*",         use = [ "open", "reveal" ] },
+	{ mime = "image/*",         use = [ "open-image", "edit-image", "reveal" ] },
 	{ mime = "{audio,video}/*", use = [ "play", "reveal" ] },
 	{ mime = "inode/x-empty",   use = [ "edit", "reveal" ] },
 
