@@ -13,11 +13,11 @@
     ./modules/editor
     ./modules/file-manager
     ./modules/messaging
+    ./modules/misc
     ./modules/notification
     ./modules/shell
     ./modules/term
     ./modules/theme
-    ./modules/tui
     ./modules/versioning
     ./modules/video
     ./modules/window-manager

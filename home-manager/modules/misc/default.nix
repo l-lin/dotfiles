@@ -1,5 +1,5 @@
 #
-# Terminal User Interfaces.
+# Other stuff I can't categorize.
 #
 
 { pkgs, userSettings, ... }: {
