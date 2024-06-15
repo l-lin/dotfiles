@@ -11,6 +11,7 @@
     ./modules/browser
     ./modules/colorscheme.nix
     ./modules/gui
+    ./modules/messaging
     ./modules/tui
     ./modules/video
   ];

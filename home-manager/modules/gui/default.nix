@@ -7,7 +7,6 @@
     ./dunst
     ./image
     ./jetbrains
-    ./messaging
     ./satty
     ./theme
     ./wall
