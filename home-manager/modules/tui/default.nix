@@ -6,7 +6,6 @@
   imports = [
     ./atuin
     ./bat
-    ./file-manager
     ./fzf
     ./multiplexer/tmux
     ./navi

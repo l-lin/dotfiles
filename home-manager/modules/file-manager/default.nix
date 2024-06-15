@@ -1,5 +1,5 @@
 #
-# TUI file manager
+# File manager.
 #
 
 { userSettings, ... }: {

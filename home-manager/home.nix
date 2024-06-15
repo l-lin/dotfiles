@@ -11,6 +11,7 @@
     ./modules/browser
     ./modules/code
     ./modules/editor
+    ./modules/file-manager
     ./modules/messaging
     ./modules/notification
     ./modules/theme
