@@ -8,6 +8,7 @@
 { userSettings, ... }: {
   imports = [
     ./modules/audio
+    ./modules/browser
     ./modules/colorscheme.nix
     ./modules/gui
     ./modules/tui

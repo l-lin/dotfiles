@@ -4,8 +4,6 @@
 
 { pkgs, userSettings, ... }: {
   imports = [
-    ./browser/firefox
-    ./browser/w3m
     ./dunst
     ./image
     ./jetbrains
