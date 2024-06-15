@@ -4,7 +4,6 @@
 
 { pkgs, userSettings, ... }: {
   imports = [
-    ./dunst
     ./image
     ./satty
     ./theme

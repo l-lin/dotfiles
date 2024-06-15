@@ -13,6 +13,7 @@
     ./modules/colorscheme.nix
     ./modules/gui
     ./modules/messaging
+    ./modules/notification
     ./modules/tui
     ./modules/video
   ];
