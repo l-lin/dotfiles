@@ -3,9 +3,12 @@
 # src: https://github.com/rebelot/kanagawa.nvim
 #
 
-{ pkgs, ... }: {
+{ pkgs, ... }:
+let
+  backgroundImage = ../../../image/config/summer-dark.png;
+in {
   stylix = {
-    image = ../../../image/config/summer-dark.png;
+    image = backgroundImage;
     polarity = "dark";
     cursor = {
       # Flat colorful design icon theme: https://github.com/vinceliuice/Qogir-icon-theme
@@ -31,4 +34,7 @@
       };
     };
   };
+
+  # Set background image at ~/.local/share/theme/background-image, will be used by Window compositor like Hyprland.
+  xdg.dataFile."theme/background-image".source = backgroundImage;
 }
