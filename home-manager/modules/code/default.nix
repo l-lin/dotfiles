@@ -2,7 +2,7 @@
 # Code related stuff.
 #
 
-{
+{ pkgs, ...}: {
   imports = [
     ./direnv
     ./docker
@@ -10,5 +10,10 @@
     ./java
     ./psql
     ./python
+  ];
+
+  home.packages = with pkgs; [
+    # GNU Compiler Collection.
+    gcc
   ];
 }

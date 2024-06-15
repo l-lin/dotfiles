@@ -47,8 +47,6 @@
     fd
     # A program that shows the type of files: https://darwinsys.com/file
     file
-    # GNU Compiler Collection.
-    gcc
     # Add `make` command.
     gnumake
     # GNU implementation of the `tar' archiver: https://www.gnu.org/software/tar/
