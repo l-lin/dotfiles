@@ -15,7 +15,5 @@
     mate.atril
     # A powerful knowledge base that works on top of a local folder of plain text Markdown files: https://obsidian.md/
     obsidian
-    # Pulseaudio volume control: https://github.com/cdemoulins/pamixer
-    pamixer
   ];
 }
