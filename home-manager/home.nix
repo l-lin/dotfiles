@@ -15,11 +15,13 @@
     ./modules/messaging
     ./modules/notification
     ./modules/shell
+    ./modules/term
     ./modules/theme
     ./modules/tui
     ./modules/versioning
     ./modules/video
     ./modules/window-manager
+    ./modules/xdg
   ];
 
   home = {

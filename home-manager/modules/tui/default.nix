@@ -10,8 +10,6 @@
     ./navi
     ./nix-alien
     ./tealdeer
-    ./term
-    ./xdg
   ];
 
   home.packages = with pkgs; [
