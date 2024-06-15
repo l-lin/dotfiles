@@ -64,7 +64,7 @@
       username = "l-lin";
       name = "Louis LIN";
       editor = "nvim"; # default editor
-      term = "alacritty"; # default terminal emulator
+      term = "kitty"; # default terminal emulator
       colorscheme = "kanagawa"; # colorscheme to use
       shell = "zsh"; # shell to use
       wm = "hyprland"; # selected window manager (hyprland, sway or gnome)

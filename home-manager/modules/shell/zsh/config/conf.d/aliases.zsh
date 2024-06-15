@@ -49,7 +49,7 @@ alias l="lsd -la --group-dirs first"
 alias ping="prettyping --nolegend"
 # ssh support with alacritty
 # see https://github.com/alacritty/alacritty/issues/3932 for more info
-alias ssh="TERM=xterm-256color ssh"
+#alias ssh="TERM=xterm-256color ssh"
 # find configured local DNS servers
 alias find-dns-servers="nmcli dev show | grep 'IP4.DNS'"
 # weather

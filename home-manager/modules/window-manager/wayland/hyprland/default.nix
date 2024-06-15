@@ -31,15 +31,15 @@ in {
       # https://wiki.hyprland.org/Configuring/Keywords/
 
       $main_mod = SUPER
-      $terminal = ${userSettings.term}
-      $file_manager = ${userSettings.term} --class floating --command ${userSettings.fileManager}
+      $terminal = ${userSettings.term} -e tmux -2 -u
+      $file_manager = ${userSettings.term} --class floating -e ${userSettings.fileManager}
       $menu = rofi -show drun
       $color_picker = hyprpicker -a -r
       $lock_screen = wlogout
       $screenshot = grim -g "$(slurp)" - | satty --filename - --fullscreen --output-filename ${config.xdg.userDirs.pictures}/screenshot-$(date '+%Y-%m-%d-%H%M%S').png --copy-command wl-copy --early-exit
-      $audio_mixer = ${userSettings.term} --class floating --command pulsemixer
+      $audio_mixer = ${userSettings.term} --class floating -e pulsemixer
       $browser = ${userSettings.browser}
-      $calendar = ${userSettings.term} --class floating --command calcure
+      $calendar = ${userSettings.term} --class floating -e calcure
 
       $monitor0 = eDP-1
       $monitor1 = DP-1

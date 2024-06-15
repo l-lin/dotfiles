@@ -3,7 +3,7 @@
 ## Info
 
 - :bento: window manager: [hyprland](https://github.com/hyprwm/Hyprland)
-- :milky_way: terminal emulator: [alacritty](https://alacritty.org/)
+- :milky_way: terminal emulator: [kitty](hhttps://sw.kovidgoyal.net/kitty/)
 - :shell: shell: [zsh](https://www.zsh.org/)
 - :memo: text editor: [neovim](https://neovim.io/)
 - :speech_balloon: notification: [dunst](https://dunst-project.org/)
