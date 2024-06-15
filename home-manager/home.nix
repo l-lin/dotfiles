@@ -12,6 +12,7 @@
     ./modules/code
     ./modules/editor
     ./modules/file-manager
+    ./modules/image
     ./modules/messaging
     ./modules/misc
     ./modules/notification
