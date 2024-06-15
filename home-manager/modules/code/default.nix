@@ -2,15 +2,8 @@
 # Code related stuff.
 #
 
-{ pkgs, ...}: {
-  imports = [
-    ./direnv
-    ./docker
-    ./go
-    ./java
-    ./psql
-    ./python
-  ];
+{ fileExplorer, pkgs, ...}: {
+  imports = fileExplorer.allSubdirs ./.;
 
   home.packages = with pkgs; [
     # GNU Compiler Collection.

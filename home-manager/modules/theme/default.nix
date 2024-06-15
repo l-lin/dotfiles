@@ -2,7 +2,7 @@
 # Theme related stuff, like icons, cursors, ...
 #
 
-{ pkgs, ... }:
+{ fileExplorer, pkgs, ... }:
 let
   # Iconic font aggregator, collection, & patcher. 3,600+ icons, 50+ patched fonts: https://nerdfonts.com/
   # Find your fonts at https://www.nerdfonts.com/font-downloads.
@@ -39,9 +39,7 @@ let
     package = pkgs.papirus-icon-theme;
   };
 in {
-  imports = [
-    ./colorscheme
-  ];
+  imports = fileExplorer.allSubdirs ./.;
 
   home = {
     sessionVariables = {

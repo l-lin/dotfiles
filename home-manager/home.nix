@@ -6,24 +6,7 @@
 #
 
 { userSettings, ... }: {
-  imports = [
-    ./modules/audio
-    ./modules/browser
-    ./modules/code
-    ./modules/editor
-    ./modules/file-manager
-    ./modules/image
-    ./modules/messaging
-    ./modules/misc
-    ./modules/notification
-    ./modules/shell
-    ./modules/term
-    ./modules/theme
-    ./modules/versioning
-    ./modules/video
-    ./modules/window-manager
-    ./modules/xdg
-  ];
+  imports = [ ./modules ];
 
   home = {
     username = userSettings.username;

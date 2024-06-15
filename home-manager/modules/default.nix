@@ -1,5 +1,5 @@
 #
-# Browsers to navigate the world!
+# Modules to install and configure at user level.
 #
 
 { fileExplorer, ... }: {

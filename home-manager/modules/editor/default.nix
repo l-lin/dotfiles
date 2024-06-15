@@ -2,11 +2,8 @@
 # Editors and IDE.
 #
 
-{ pkgs, ...}: {
-  imports = [
-    ./jetbrains
-    ./nvim
-  ];
+{ fileExplorer, pkgs, ...}: {
+  imports = fileExplorer.allSubdirs ./.;
 
   home.packages = with pkgs; [
     # Comprehensive, professional-quality productivity suite, a variant of openoffice.org: https://libreoffice.org/

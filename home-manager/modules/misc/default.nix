@@ -2,15 +2,8 @@
 # Other stuff I can't categorize.
 #
 
-{ pkgs, userSettings, ... }: {
-  imports = [
-    ./atuin
-    ./bat
-    ./fzf
-    ./navi
-    ./nix-alien
-    ./tealdeer
-  ];
+{ fileExplorer, pkgs, userSettings, ... }: {
+  imports = fileExplorer.allSubdirs ./.;
 
   home.packages = with pkgs; [
     # Show battery status and other ACPI information: https://sourceforge.net/projects/acpiclient/

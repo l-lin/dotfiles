@@ -47,6 +47,7 @@
 
   let
     inherit (self) outputs;
+    lib = nixpkgs.lib;
 
     # ---- SYSTEM SETTINGS ---- #
     systemSettings = {
@@ -73,6 +74,8 @@
       fileManager = "yazi"; # TUI file manager (lf or yazi)
     };
 
+    # shared utility libraries
+    fileExplorer = import ./lib/file-explorer.nix { inherit lib; };
   in {
     # NixOS configuration entrypoint
     # Available through 'nixos-rebuild --flake .'
@@ -82,7 +85,7 @@
           # pass config variables from above
           inherit systemSettings;
           inherit userSettings;
-          inherit inputs outputs;
+          inherit inputs;
         };
         modules = [./nixos/configuration.nix];
       };
@@ -95,9 +98,10 @@
         pkgs = nixpkgs.legacyPackages.${systemSettings.system}; # Home-manager requires 'pkgs' instance
         extraSpecialArgs = {
           # pass config variables from above
+          inherit fileExplorer;
           inherit systemSettings;
           inherit userSettings;
-          inherit inputs outputs;
+          inherit inputs;
         };
         modules = [./home-manager/home.nix];
       };

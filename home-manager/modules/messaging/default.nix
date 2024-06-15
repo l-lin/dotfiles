@@ -2,8 +2,6 @@
 # Messaging tools.
 #
 
-{
-  imports = [
-    ./teams
-  ];
+{ fileExplorer, ... }: {
+  imports = fileExplorer.allSubdirs ./.;
 }

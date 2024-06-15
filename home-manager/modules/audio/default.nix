@@ -2,13 +2,8 @@
 # Audio stuff.
 #
 
-{ pkgs, ... }: {
-
-  imports = [
-    ./ncmpcpp
-    ./mpd
-    ./spotify
-  ];
+{ fileExplorer, pkgs, ... }: {
+  imports = fileExplorer.allSubdirs ./.;
 
   home.packages = with pkgs; [
     # A minimalist command line interface to MPD: https://www.musicpd.org/clients/mpc/

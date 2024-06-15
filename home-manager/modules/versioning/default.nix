@@ -2,9 +2,6 @@
 # Versioning stuff.
 #
 
-{
-  imports = [
-    ./git
-    ./lazygit
-  ];
+{ fileExplorer, ... }: {
+  imports = fileExplorer.allSubdirs ./.;
 }
