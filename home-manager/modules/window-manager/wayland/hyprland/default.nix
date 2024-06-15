@@ -56,7 +56,7 @@ in {
       ########################################### AUTOSTART #######################################
       # Autostart necessary processes (like notifications daemons, status bars, etc.)
 
-      exec = pkill swaybg; sleep 0.5; swaybg -i ${config.xdg.dataHome}/theme/background-image -m center
+      exec = pkill swaybg; sleep 0.5; swaybg -i ${config.theme.backgroundImage} -m center
       exec = pkill waybar; sleep 0.5; waybar
       exec-once = dunst
 

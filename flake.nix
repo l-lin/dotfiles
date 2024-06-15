@@ -68,7 +68,6 @@
       name = "Louis LIN";
       editor = "nvim"; # default editor
       term = "kitty"; # default terminal emulator
-      colorscheme = "kanagawa"; # colorscheme to use
       theme = "kanagawa"; # colorscheme to use
       shell = "zsh"; # shell to use
       wm = "hyprland"; # selected window manager (hyprland, sway or gnome)

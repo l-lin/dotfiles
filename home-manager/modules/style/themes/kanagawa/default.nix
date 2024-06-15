@@ -7,6 +7,11 @@
 let
   backgroundImage = ../../../image/config/summer-dark.png;
 in {
+
+  theme = {
+    inherit backgroundImage;
+  };
+
   stylix = {
     image = backgroundImage;
     polarity = "dark";
@@ -34,7 +39,4 @@ in {
       };
     };
   };
-
-  # Set background image at ~/.local/share/theme/background-image, will be used by Window compositor like Hyprland.
-  xdg.dataFile."theme/background-image".source = backgroundImage;
 }

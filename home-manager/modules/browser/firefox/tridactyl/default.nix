@@ -10,7 +10,7 @@
     set editorcmd ${userSettings.term} -e nvim %f '+normal!%lGzv%c|'
 
     " theme
-    colors ${userSettings.colorscheme}
+    colors ${userSettings.theme}
 
     " binds
     bind H tabprev

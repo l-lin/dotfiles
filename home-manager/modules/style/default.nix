@@ -45,7 +45,7 @@ let
 in {
   imports = [
     inputs.stylix.homeManagerModules.stylix
-    (./. + "/themes/${userSettings.theme}")
+    ./themes
   ];
 
   stylix = {
@@ -76,7 +76,6 @@ in {
       gtk.enable = false;
       swaylock.enable = false;
       tmux.enable = false;
-      vim.enable = false;
       waybar.enable = false;
     };
   };
