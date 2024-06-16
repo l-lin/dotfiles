@@ -3,7 +3,7 @@
 ## Info
 
 - :bento: window manager: [hyprland](https://github.com/hyprwm/Hyprland)
-- :milky_way: terminal emulator: [kitty](hhttps://sw.kovidgoyal.net/kitty/)
+- :milky_way: terminal emulator: [kitty](https://sw.kovidgoyal.net/kitty/)
 - :shell: shell: [zsh](https://www.zsh.org/)
 - :memo: text editor: [neovim](https://neovim.io/)
 - :speech_balloon: notification: [dunst](https://dunst-project.org/)
@@ -11,8 +11,8 @@
 - :camera: screenshot: [satty](https://github.com/gabm/Satty) + [grim](https://github.com/emersion/grim) + [slurp](https://github.com/emersion/slurp)
 - :abc: fonts: [nerd fonts](https://github.com/ryanoasis/nerd-fonts)
 - :art: color scheme: [kanagawa](https://github.com/rebelot/kanagawa.nvim)
-- :file_folder: file manager: [lf](https://github.com/gokcehan/lf) / [thunar](https://gitlab.xfce.org/xfce/thunar)
-- :rocket: application launcher: [wofi](https://hg.sr.ht/~scoopta/wofi)
+- :file_folder: file manager: [yazi](https://yazi-rs.github.io/) / [thunar](https://gitlab.xfce.org/xfce/thunar)
+- :rocket: application launcher: [rofi](https://github.com/lbonn/rofi)
 
 ## Getting started
 
@@ -316,10 +316,18 @@ I'm using a symlink to the `${XDG_CONFIG_HOME}/nvim` folder, so LazyVim works
 without much issue, i.e. it will download the plugins, but I can't say the same
 about plugins that use downloaded binaries, e.g. LSP servers installed by [mason.nvim](https://github.com/williamboman/mason.nvim).
 
-For now, you will have to manually patch the binaries until I either decide to migrate
-to be Nix compliant or another option.
+I installed and configured [nix-ld](https://github.com/Mic92/nix-ld), so most binaries
+should work without any problem. If not please check below on how to configure it.
 
-See below for the list of mitigations to run external binaries on NixOS.
+I still don't know if I want to migrate NeoVim to be fully Nix compliant or keep
+it like this...
+
+#### Theme
+
+I used [stylix](https://github.com/danth/stylix) to manage color schemes and themes.
+So it should be easy to add new themes without much hassle.
+
+You can add them at the [themes folder](./home-manager/modules/style/themes/).
 
 ### Run
 
@@ -359,7 +367,6 @@ will try to access hard-coded FHS file path like `/usr/lib` or `/opt`.
 Moreover, most programs are using a hard-coded [Executable and Linkable Format (ELF)](https://lwn.net/Articles/631631/)
 path to be executed.
 
-> [!NOTE]
 > This format is a common standard file format for executable
 > files, object code, shared libraries, and core dumps.
 >
@@ -449,7 +456,6 @@ patchelf \
   marksman
 ```
 
-> [!NOTE]
 > rpath designates the run-time search path hard-coded in an executable file or
 > library. Dynamic linking loaders use the rpath to find required libraries.
 >
@@ -626,6 +632,7 @@ Most of the documentation you will search are the following:
 - [Writing Nix modules](https://nixos.org/manual/nixos/stable/#sec-writing-modules)
 - [Nix module system](https://nix.dev/tutorials/module-system/)
 - [NixOS and flake unofficial book for beginners](https://nixos-and-flakes.thiscute.world/)
+- [Nix cookbook and survival guide](https://nix4noobs.com/)
 
 ### Inspirations
 
