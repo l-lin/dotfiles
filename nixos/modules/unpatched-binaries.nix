@@ -26,21 +26,46 @@
     # Default: https://github.com/NixOS/nixpkgs/blob/nixos-24.05/nixos/modules/programs/nix-ld.nix#L44-L58
     libraries = [
       acl
+      alsa-lib
+      atk
       attr
       bzip2
+      cairo
+      cups
       curl
+      dbus
       expat
       fuse3
       glib
+      gtk3
       icu
+      libdrm
       libssh
       libsodium
+      libxkbcommon
       libxml2
+      mesa
+      nspr
       nss
       openssl
+      pango
       stdenv.cc.cc
       systemd
       util-linux
+      xorg.libX11
+      xorg.libXScrnSaver
+      xorg.libXcomposite
+      xorg.libXcursor
+      xorg.libXdamage
+      xorg.libXext
+      xorg.libXfixes
+      xorg.libXi
+      xorg.libXrandr
+      xorg.libXrender
+      xorg.libXtst
+      xorg.libxcb
+      xorg.libxkbfile
+      xorg.libxshmfence
       xz
       zlib
       zstd
