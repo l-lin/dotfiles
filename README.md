@@ -257,9 +257,36 @@ Agent registered
 > [agent] Passkey: 103760
 > ```
 
+#### LazyVim configuration
+
+> [!NOTE]
+> [LazyVim](https://github.com/LazyVim/LazyVim) is a plugin manager that will download
+> the plugins at "runtime". So it does not quite stick to the NixOS philosophy.
+> It's recommended to migrate to something else, like configuring directly in
+> [home-manager](https://mynixos.com/home-manager/options/programs.neovim), or using
+> [NixVim](https://github.com/nix-community/nixvim) instead.
+
+I'm using a symlink to the `${XDG_CONFIG_HOME}/nvim` folder, so LazyVim works
+without much issue, i.e. it will download the plugins, but I can't say the same
+about plugins that use downloaded binaries, e.g. LSP servers installed by [mason.nvim](https://github.com/williamboman/mason.nvim).
+
+For now, you will have to manually patch the binaries until I either decide to migrate
+to be Nix compliant or another option.
+
+See below for the list of mitigations to run external binaries on NixOS.
+
 ### Run
 
-#### Running a binary
+#### Running an external binary on NixOS
+
+> [!NOTE]
+> **TLDR:** I installed `nix-ld`, so most binaries should work without any problem.
+> If not, check below on how to configure it to make it work for your binary.
+>
+> Otherwise, there is also `nix-alien` and `steam-run` alternatives.
+
+<details>
+<summary>Click me if you really want to know the details...</summary>
 
 HA! Welcome to the dark side of NixOS. You want to run a binary
 you downloaded on the internet on NixOS? Nope, you can't!
@@ -267,6 +294,12 @@ you downloaded on the internet on NixOS? Nope, you can't!
 Well, it's logical as NixOS philosophy is to have reproducible
 and immutable environments. So it's logical some programs are not
 in the same place as the other Linux distribution.
+
+Precompiled binaries that were not created for NixOS usually have a
+so-called link-loader hardcoded into them. On Linux/x86_64 this is for example
+`/lib64/ld-linux-x86-64.so.2.` for glibc. NixOS, on the other hand,
+usually has its dynamic linker in the glibc package in the Nix store and
+therefore cannot run these binaries.
 
 __NixOS is not FHS compliant__
 
@@ -304,16 +337,175 @@ So what can you do?
 
 As it turns out, there are [10 different methods to run a non-nixos executable on Nixos](https://unix.stackexchange.com/questions/522822/different-methods-to-run-a-non-nixos-executable-on-nixos)! :scream:
 
-For now, I manually patch them, and if I'm lucky, that's enough:
+Here are some methods that worked for me:
+
+##### Patching ELF manually
 
 ```bash
+# You can manually patch them, and if you're lucky, that's enough:
 patchelf --set-interpreter $(patchelf --print-interpreter `which find`) lua-language-server
+
+# You can now execute it like any other binary:
+./lua-language-server
 ```
 
-If that's not enough... Well I still don't know as I still dread going down the
-rabbit hole...
+If that's not enough, e.g. there're some missing libraries:
 
-Some resources:
+```bash
+$ ldd marksman | grep 'not found'
+        libz.so.1 => not found
+        libstdc++.so.6 => not found
+```
+
+In that case, you need to:
+
+1. find which packages provide those libraries
+  - you can use `nix-index` to find the packages
+  - or you can use [https://pkgs.org](https://pkgs.org)
+  - `libz.so.1` is provided by `zlib` and `libstdc++.so.6` is part of the C/C++ compiler tool chain
+1. find the path to those packages in your [Nix store](https://nix4noobs.com/flakes/packages/#nix-store)
+  - if the package is not present in your Nix store, you will need to install it
+
+```bash
+$ # First generate the database index of all files in our channel (can be quite slow):
+$ nix-index
++ querying available packages
++ generating index: 114066 paths found :: 29905 paths not in binary cache :: 00000 paths in queue
++ wrote index of 70,026,341 bytes
+
+$ # We use the power of nix-locate to find the packages which contain the file:
+$ nix-locate --minimal --top-level -w lib/libz.so.1
+zlib.out
+remarkable-toolchain.out
+remarkable2-toolchain.out
+libz.out
+figma-linux.out
+$ nix-locate --minimal --top-level -w lib/libstdc++.so.6
+robo3t.out
+remarkable-toolchain.out
+remarkable2-toolchain.out
+libgcc.lib
+
+$ # You can find the package using the following command:
+$ nix eval 'nixpkgs#zlib.outPath' --raw
+/nix/store/lv6nackqis28gg7l2ic43f6nk52hb39g-zlib-1.3.1
+$ nix eval 'nixpkgs#stdenv.cc.cc.lib.outPath' --raw
+/nix/store/xvzz97yk73hw03v5dhhz3j47ggwf1yq1-gcc-13.2.0-lib
+```
+
+Now, patch the [Rpath](https://en.wikipedia.org/wiki/Rpath) of the binary.
+
+```bash
+# By patching the RPATH, marksman is now aware of the missing
+# libraries and works on NixOS
+patchelf \
+  --set-rpath "$(nix eval nixpkgs#zlib.outPath --raw)/lib:$(nix eval nixpkgs#stdenv.cc.cc.lib.outPath --raw)/lib" \
+  marksman
+```
+
+> [!NOTE]
+> rpath designates the run-time search path hard-coded in an executable file or
+> library. Dynamic linking loaders use the rpath to find required libraries.
+>
+> Specifically, it encodes a path to shared libraries into the header of an
+> executable (or another shared library). This rpath header value (so named in
+> the Executable and Linkable Format header standards) may either override or
+> supplement the system default dynamic linking search paths.
+
+As you can see, it's quite tedious and error-prone. The following options may be
+better.
+
+##### Running using `nix-alien`
+
+[nix-alien](https://github.com/thiagokokada/nix-alien) will help you run unpatched
+binaries without modifying them by setting the interpreter and linking the
+dynamic libraries needed.
+
+First add `nix-alien` in your home-manager configuration.
+
+It should already be present at [nix-alien](./home-manager/modules/misc/unpatched-binaries/default.nix):
+
+```nix
+{ inputs, systemSettings, ... }: {
+  home.packages = with inputs.nix-alien.packages.${systemSettings.system}; [ nix-alien ];
+}
+```
+
+Then, you can run it like this:
+
+```bash
+# It will open an interactive form to choose where the 
+nix-alien ./marksman
+```
+
+It also have other options. I still did not explore them.
+
+##### Using `nix-ld`
+
+[nix-ld](https://github.com/Mic92/nix-ld) provides a shim layer for these binaries.
+It is installed in the same location where other Linux distributions install their
+link loader, ie. `/lib64/ld-linux-x86-64.so.2` and then loads the actual link loader
+as specified in the environment variable `NIX_LD`. In addition, it also accepts a
+colon-separated path from library lookup paths in `NIX_LD_LIBRARY_PATH`. This
+environment variable is rewritten to `LD_LIBRARY_PATH` before passing execution to
+the actual `ld`. This allows you to specify additional libraries that the executable
+needs to run.
+
+First add `nix-ld` in your NixOS configuration.
+
+It should already be present at [nix-ld](./nixos/modules/unpatched-binaries.nix):
+
+```nix
+{ pkgs, ... }: {
+  programs.nix-ld = {
+    enable = true;
+    package = nix-ld-rs;
+    libraries = [
+      # ...
+    ];
+  };
+}
+```
+
+Now, you will be able to run any binary that only needs to have their interpreter
+patched! For example, most LSP servers will be able to run!
+
+If not, use `nix-index` with `nix-locate` to find the package of the missing library:
+
+```bash
+$ nix-locate --minimal --top-level -w lib/libgobject-2.0.so.0
+remarkable-toolchain.out
+remarkable2-toolchain.out
+glib.out
+```
+
+Then update [unpatched-binaries.nix](./nixos/modules/unpatched-binaries.nix) to include the package,
+and apply the change with `make nixos`.
+
+##### Using `steam-run`
+
+`steam-run` is a tool in the Nix package repository that provides an environment
+mimicking the traditional FHS, primarily intended for running the Steam gaming
+client on NixOS. However, it can be used for other use cases (like this one).
+
+First add `steam-run` in your NixOS configuration (should already be present):
+
+```nix
+{ pkgs, ... }: {
+  # Run commands in the same FHS environment that is used for Steam: https://store.steampowered.com/
+  environment.systemPackages = with pkgs; [ steam-run ];
+}
+```
+
+```bash
+# Once steam-run is installed system-wide, you can run any program in the FHS environment:
+steam-run your-program args
+
+# Example running openfortivpn-webclient binary in current folder:
+steam-run ./openfortivpn-webclient
+```
+
+##### Resources to run binaries in NixOS
 
 - [Packaging/Binaries - NixOS Wiki](https://nixos.wiki/wiki/Packaging/Binaries#Manual_Method)
 - [Patching Binaries for NixOS · Rootknecht.net](https://rootknecht.net/blog/patching-binaries-for-nixos/)
@@ -321,6 +513,7 @@ Some resources:
 - [Running Downloaded Binaries on NixOS](https://nixos-and-flakes.thiscute.world/best-practices/run-downloaded-binaries-on-nixos)
 - [Different methods to run a non-nixos executable on Nixos](https://unix.stackexchange.com/questions/522822/different-methods-to-run-a-non-nixos-executable-on-nixos)
 - [How programs get run: ELF binaries](https://lwn.net/Articles/631631/)
+- [How to make Mason works on NixOS](https://www.reddit.com/r/NixOS/comments/13uc87h/masonnvim_broke_on_nixos/)
 
 Some ways to create a FHS environment:
 
@@ -328,6 +521,7 @@ Some ways to create a FHS environment:
 - https://jorel.dev/NixOS4Noobs/fhs.html
 - https://nixos-and-flakes.thiscute.world/best-practices/run-downloaded-binaries-on-nixos
 
+</details>
 
 ### Misc
 
@@ -362,16 +556,14 @@ is the best documentation to start with Nix, along with [zero-to-nix](https://ze
 
 Most of the documentation you will search are the following:
 
-- https://mynixos.com/search
-  - search NixOS and home-manager options and packages
-- https://search.nixos.org/packages
-  - search NixOS and home-manager packages
-- https://home-manager-options.extranix.com/
-  - search home-manager options
-- https://nixos.wiki/index.php
-  - more in-depth documentation
-- https://nix.dev/search.html
-  - more in-depth documentation
+- https://search.nixos.org/packages: search Nix packages
+- https://search.nixos.org/options: search NixOS options
+- https://mynixos.com/search: search NixOS and home-manager options and packages
+- https://home-manager-options.extranix.com/: search home-manager options
+- https://nixos.wiki/index.php: more in-depth documentation
+- https://nix.dev/search.html: more in-depth documentation
+- https://nixos.org/manual/nixos/unstable/index.html#ch-configuration: system level configuration documentation
+- https://github.com/NixOS/nixpkgs: code source
 
 ### References
 

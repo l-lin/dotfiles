@@ -3,7 +3,7 @@
 # Use this to configure your system environment (it replaces /etc/nixos/configuration.nix)
 #
 
-{ inputs, lib, config, pkgs, userSettings, ... }: {
+{ inputs, lib, config, pkgs, ... }: {
   # You can import other NixOS modules here
   imports = [
     # Import your generated (nixos-generate-config) hardware configuration
@@ -22,6 +22,7 @@
     ./modules/pipewire.nix
     ./modules/printing.nix
     ./modules/ssh.nix
+    ./modules/unpatched-binaries.nix
     ./modules/users.nix
     #./modules/vm.nix
 
