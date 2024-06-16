@@ -389,3 +389,20 @@ Most of the documentation you will search are the following:
 - [Nix module system](https://nix.dev/tutorials/module-system/)
 - [NixOS and flake unofficial book for beginners](https://nixos-and-flakes.thiscute.world/)
 
+### Inspirations
+
+- https://github.com/Misterio77/nix-starter-configs
+- https://github.com/GaetanLepage/nix-config
+- https://github.com/ryan4yin/nix-config
+- https://gitlab.com/Zaney/zaneyos
+- https://github.com/notusknot/dotfiles-nix/
+- https://github.com/Evertras/nix-systems
+- https://github.com/Aylur/dotfiles
+- https://github.com/hyper-dot/Arch-Hyprland
+- https://github.com/chadcat7/crystal
+- https://codeberg.org/justgivemeaname/.dotfiles
+- https://gitlab.com/hmajid2301/dotfiles
+- https://gitlab.com/usmcamp0811/dotfiles
+- https://gitlab.com/librephoenix/nixos-config
+
+Wallpapers from: https://github.com/MathisP75/summer-day-and-night/
