@@ -2,9 +2,12 @@
 # Graphical User Interfaces.
 #
 
-{ userSettings, ...}: {
+{ userSettings, ...}:
+let
+  wmType = if (userSettings.wm == "gnome") then "x11" else "wayland";
+in {
   imports = [
-    (./. + "/wm/${userSettings.wmType}")
+    (./. + "/wm/${wmType}")
     ./thunar.nix
   ];
 }

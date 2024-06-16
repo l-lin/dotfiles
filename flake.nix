@@ -71,7 +71,6 @@
       theme = "kanagawa"; # colorscheme to use
       shell = "zsh"; # shell to use
       wm = "hyprland"; # selected window manager (hyprland, sway or gnome)
-      wmType = "wayland"; # selected window manager type (wayland or x11)
       browser = "firefox"; # default browser
       pager = "bat"; # default pager
       fileManager = "yazi"; # TUI file manager (lf or yazi)

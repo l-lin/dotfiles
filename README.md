@@ -157,6 +157,75 @@ home.packages = with pkgs; [
 
 See https://discourse.nixos.org/t/link-scripts-to-bin-home-manager/41774/2.
 
+#### Share variables between modules
+
+It's possible to share variables between modules, and it's quite useful if you
+want to set some values depending on which Nix file you import (e.g. for theming
+purpose). This promote modular and reusable configurations in NixOS and home-manager.
+
+First define the variable in the module A using `mkOption`:
+
+```nix
+{ config, lib, pkgs, ... }:
+
+with lib;
+
+let
+  myVariable = "Hello, World!";
+in
+{
+  options.myModuleA.myVariable = mkOption {
+    # You can find the exhaustive list of types here: https://nlewo.github.io/nixos-manual-sphinx/development/option-types.xml.html
+    type = types.str;
+    default = myVariable;
+    description = "A variable defined in module A";
+  };
+
+  config = {
+    myModuleA.myVariable = myVariable;
+
+    # Every options MUST now be inside `config`.
+    gtk.enable = true;
+  };
+}
+```
+
+Access the variable in another module:
+
+```nix
+{ config, lib, pkgs, ... }:
+
+let
+  myVariableFromA = config.myModuleA.myVariable;
+in
+{
+  options.myModuleB.someOption = mkOption {
+    type = types.str;
+    default = myVariableFromA;
+    description = "An option in module B using a variable from module A";
+  };
+
+  config = {
+    myModuleB.someOption = myVariableFromA;
+  };
+}
+```
+
+Finally, import both modules:
+
+```nix
+{ config, pkgs, ... }:
+
+{
+  imports = [
+    ./moduleA.nix
+    ./moduleB.nix
+  ];
+}
+```
+
+See https://nixos.wiki/wiki/NixOS:config_argument.
+
 #### Pair bluetooth devices
 
 ```bash

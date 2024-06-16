@@ -6,8 +6,11 @@
 # and a keyboard—and are often written and created using a widget toolkit.
 #
 
-{ userSettings, ... }: {
+{ userSettings, ... }:
+let
+  wmType = if (userSettings.wm == "gnome") then "x11" else "wayland";
+in{
   imports = [
-    (./. + "/${userSettings.wmType}")
+    (./. + "/${wmType}")
   ];
 }
