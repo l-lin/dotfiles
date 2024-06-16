@@ -22,8 +22,9 @@
   programs.nix-ld = with pkgs; {
     enable = true;
     package = nix-ld-rs;
-    # More extensive number of libraries here: https://github.com/Mic92/dotfiles/blob/main/nixos/modules/nix-ld.nix
     # Default: https://github.com/NixOS/nixpkgs/blob/nixos-24.05/nixos/modules/programs/nix-ld.nix#L44-L58
+    # More extensive number of libraries here: https://github.com/Mic92/dotfiles/blob/main/nixos/modules/nix-ld.nix
+    # Libraries used by steam-run: https://github.com/NixOS/nixpkgs/blob/master/pkgs/games/steam/fhsenv.nix
     libraries = [
       acl
       alsa-lib
