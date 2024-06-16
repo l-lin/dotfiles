@@ -90,6 +90,52 @@ There are several ways to install a new package in home-manager:
 }
 ```
 
+#### Install Forticlient VPN with SAML
+
+If your company is using Forticlient to connect to their VPN, you won't be able
+to use their binary.
+
+Instead, you have to use [openfortivpn](https://github.com/adrienverge/openfortivpn)
+with [openfortivpn-webview](https://github.com/gm-vm/openfortivpn-webview) to get
+the cookie for authentication.
+
+First download `openfortivpn`.
+It should already be present at [vpn/default.nix](./home-manager/modules/vpn/default.nix).
+
+```nix
+{ pkgs, ... }: {
+  home.packages = with pkgs; [ openfortivpn ];
+}
+```
+
+Download `openfortivpn-webview` and put the binary in your `$PATH`:
+
+```bash
+# I have ${HOME}/bin in my ${PATH}
+version=1.2.0 \
+  && wget -qO- \
+    https://github.com/gm-vm/openfortivpn-webview/releases/download/v${version}-electron/openfortivpn-webview-${version}.tar.xz \
+  && tar -xvJ --transform="s/openfortivpn-webview-${version}/openfortivpn-webview/g" -C "${HOME}/apps" \
+  && ln -s "${HOME}/apps/openfortivpn-webview/openfortivpn-webview" "${HOME}/bin/openfortivpn-webview"
+```
+
+> [!TIP]
+> I should create a flake to fetch the tarball and install it instead.
+
+Then use like this:
+
+```bash
+
+# open VPN in one command line
+VPN_HOST=some_host && VPN_PORT=443 \
+  && openfortivpn-webview "${VPN_HOST}:${VPN_PORT}" 2>/dev/null \
+  | sudo openfortivpn "${VPN_HOST}:${VPN_PORT}" --cookie-on-stdin --pppd-accept-remote
+```
+
+> [!NOTE]
+> We need to add the `--pppd-accept-remote` since `ppp` v2.5.0.
+> See https://github.com/adrienverge/openfortivpn/issues/1076 for more information.
+
 ### Configuration
 
 #### Symlink configuration files whenever you can
