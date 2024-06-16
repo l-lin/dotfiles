@@ -28,7 +28,7 @@ in {
 
   gtk = {
     iconTheme = {
-      # A GTK theme with the Kanagawa colour palette: https://github.com/Fausto-Korpsvart/Kanagawa-GKT-Theme
+      # An icon theme for the Kanagawa colour palette: https://github.com/Fausto-Korpsvart/Kanagawa-GKT-Theme
       name = "Kanagawa";
       package = pkgs.kanagawa-icon-theme;
 
@@ -37,17 +37,17 @@ in {
       #package = pkgs.papirus-icon-theme;
     };
     theme = {
-      # An icon theme for the Kanagawa colour palette: https://github.com/Fausto-Korpsvart/Kanagawa-GKT-Theme
-      name = "Kanagawa-BL";
-      package = pkgs.kanagawa-gtk-theme;
+      # A GTK theme with the Kanagawa colour palette: https://github.com/Fausto-Korpsvart/Kanagawa-GKT-Theme
+      #name = "Kanagawa-BL";
+      #package = pkgs.kanagawa-gtk-theme;
 
       # Soothing pastel theme for GTK: https://github.com/catppuccin/gtk
-      #name = "Catppuccin-Mocha-Compact-Blue-Dark";
-      ## https://github.com/NixOS/nixpkgs/blob/nixos-24.05/pkgs/data/themes/catppuccin-gtk/default.nix
-      #package = pkgs.catppuccin-gtk.override {
-      #  size = "compact";
-      #  variant = "mocha";
-      #};
+      name = "Catppuccin-Mocha-Compact-Blue-Dark";
+      # https://github.com/NixOS/nixpkgs/blob/nixos-24.05/pkgs/data/themes/catppuccin-gtk/default.nix
+      package = pkgs.catppuccin-gtk.override {
+        size = "compact";
+        variant = "mocha";
+      };
     };
   };
 }
