@@ -73,4 +73,5 @@ alias g="git"
 # --------------------------------------------------------
 # NIX
 # --------------------------------------------------------
-alias ns="nix-shell --command zsh -p "
+alias n="nix"
+alias ns="nix-shell --command zsh -p"
