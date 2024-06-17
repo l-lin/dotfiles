@@ -3,7 +3,7 @@
 # src: https://github.com/sharkdp/bat
 #
 
-{ pkgs, ... }: {
+{ ... }: {
   programs.bat = {
     enable = true;
     config = {

@@ -49,7 +49,7 @@
   helper = cache
 # delta configuration: https://dandavison.github.io/delta/configuration.html
 [delta]
-  syntax-theme = catppuccin-mocha
+  #syntax-theme = catppuccin-mocha
   line-numbers = true
   # side-by-side = true
 # diff with meaningful prefix and word-diff will find a letter as a word
