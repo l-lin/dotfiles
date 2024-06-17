@@ -30,6 +30,8 @@ nixos/
 stow/
 ```
 
+---
+
 ## Notes to my future self
 
 :wave: Hello, my future self. Yes, you! Here are some notes for you, as I know
@@ -329,6 +331,61 @@ So it should be easy to add new themes without much hassle.
 
 You can add them at the [themes folder](./home-manager/modules/style/themes/).
 
+#### Adding external binary to your `$PATH`
+
+If you want to install a tool / binary that is not present in the [`nixpkgs`](https://github.com/NixOS/nixpkgs),
+you will need to create a custom package / derivation and import in your home-manager
+configuration.
+
+> What are derivations?
+>
+> Derivations are produced in Nix (the language) by the derivation function (or any
+> of the higher-level helpers like mkDerivation or buildPythonPackage). A derivation
+> is saved as a .drv file to the nix store. It is ultimately this .drv file, which
+> Nix uses to build and install the software or resources (fonts, icon packs, ...).
+
+First create a `pkgs/your-package/default.nix` with the following content:
+
+```nix
+{ stdenvNoCC, lib }: stdenvNoCC.mkDerivation {
+  # ...
+}
+```
+
+You can find multiple tutorials online to create your own derivation:
+
+- https://zero-to-nix.com/concepts/derivations
+- https://ianthehenry.com/posts/how-to-learn-nix/my-first-derivation/
+- https://nix.dev/manual/nix/2.22/language/derivations.html
+
+You can use some nice builtins functions:
+
+- [builtins.fetchTarball](https://noogle.dev/f/builtins/fetchTarball)
+- [builtins.fetchUrl](https://noogle.dev/f/builtins/fetchurl)
+- [builtins.fetchGit](https://noogle.dev/f/builtins/fetchGit)
+- [builtins.fetchFromGitHub](https://noogle.dev/f/pkgs/fetchFromGitHub) (:warning: big H)
+- [builints.fetchzip](https://noogle.dev/f/pkgs/fetchzip) (:warning: small z)
+
+Do not forget to import your new package in `pkgs/default.nix`:
+
+```nix
+pkgs: {
+  your-package = pkgs.callPackage ./your-package { };
+}
+```
+
+Then in your home-manager configuration, you can import like this:
+
+```nix
+{ outputs, pkgs, systemSettings, ... }: {
+  home.packages = with pkgs; [
+    outputs.packages.${systemSettings.system}.openfortivpn-webview
+  ];
+}
+```
+
+Source: https://github.com/Misterio77/nix-starter-configs/issues/62.
+
 ### Run
 
 #### Running an external binary on NixOS
@@ -616,6 +673,7 @@ Most of the documentation you will search are the following:
 - https://nix.dev/search.html: more in-depth documentation
 - https://nixos.org/manual/nixos/unstable/index.html#ch-configuration: system level configuration documentation
 - https://github.com/NixOS/nixpkgs: code source
+- https://noogle.dev/: search Nix functions
 
 ### References
 
@@ -625,6 +683,7 @@ Most of the documentation you will search are the following:
 
 - [Best introduction to home-manager for newcomer](https://github.com/Evertras/simple-homemanager)
 - [Zero to Nix](https://zero-to-nix.com/)
+- [Nix pills](https://nixos.org/guides/nix-pills/)
 - [nix.dev](https://nix.dev)
 - [Installing NixOS with Hyprland](https://josiahalenbrown.substack.com/p/installing-nixos-with-hyprland)
 - [Declarative management of dotfiles with Nix and Home Manager](https://www.bekk.christmas/post/2021/16/dotfiles-with-nix-and-home-manager)
@@ -633,6 +692,10 @@ Most of the documentation you will search are the following:
 - [Nix module system](https://nix.dev/tutorials/module-system/)
 - [NixOS and flake unofficial book for beginners](https://nixos-and-flakes.thiscute.world/)
 - [Nix cookbook and survival guide](https://nix4noobs.com/)
+
+### Interesting topics
+
+- [Smaller stdenv for shells](https://discourse.nixos.org/t/smaller-stdenv-for-shells/28970)
 
 ### Inspirations
 

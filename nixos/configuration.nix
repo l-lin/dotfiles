@@ -52,8 +52,7 @@
     };
   };
 
-  # NOTE: I have no idea what the following does.
-  # Copied from https://github.com/Misterio77/nix-starter-configs/blob/main/minimal/nixos/configuration.nix#L43-L60.
+  # src: https://github.com/Misterio77/nix-starter-configs/blob/main/minimal/nixos/configuration.nix#L43-L60.
   nix = let
     flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
   in {

@@ -50,6 +50,19 @@
 
   let
     inherit (self) outputs;
+
+    # Supported systems for your flake packages, shell, etc.
+    systems = [
+      "aarch64-linux"
+      "i686-linux"
+      "x86_64-linux"
+      "aarch64-darwin"
+      "x86_64-darwin"
+    ];
+    # This is a function that generates an attribute by calling a function you
+    # pass to it, with each system as an argument
+    forAllSystems = nixpkgs.lib.genAttrs systems;
+
     lib = nixpkgs.lib;
 
     # ---- SYSTEM SETTINGS ---- #
@@ -79,6 +92,10 @@
     # shared utility libraries
     fileExplorer = import ./lib/file-explorer.nix { inherit lib; };
   in {
+    # Your custom packages.
+    # Accessible through 'nix build', 'nix shell', etc
+    packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
+
     # NixOS configuration entrypoint
     # Available through 'nixos-rebuild --flake .'
     nixosConfigurations = {
@@ -103,7 +120,7 @@
           inherit fileExplorer;
           inherit systemSettings;
           inherit userSettings;
-          inherit inputs;
+          inherit inputs outputs;
         };
         modules = [./home-manager/home.nix];
       };
