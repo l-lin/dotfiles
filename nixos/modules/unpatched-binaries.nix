@@ -36,6 +36,7 @@
       curl
       dbus
       expat
+      ffmpeg
       fuse3
       glib
       gtk3
