@@ -5,15 +5,16 @@
 # - https://spicetify.app/
 #
 
-{ pkgs, inputs, ... }:
+{ config, inputs, pkgs, ... }:
 let
   spicePkgs = inputs.spicetify-nix.packages.${pkgs.system}.default;
+  colorScheme = if (config.theme.polarity == "dark") then "mocha" else "latte";
 in {
   imports = [ inputs.spicetify-nix.homeManagerModule ];
   programs.spicetify = {
     enable = true;
     theme = spicePkgs.themes.catppuccin;
-    colorScheme = "mocha";
+    colorScheme = colorScheme;
     spotifyPackage = pkgs.spotify;
 
     enabledExtensions = with spicePkgs.extensions; [
