@@ -7,5 +7,5 @@
   home.packages = with pkgs; [ w3m ];
 
   # Symlink to ~/.w3m/keymap
-  home.file.".w3m.keymap".source = ./config/keymap;
+  home.file.".w3m/keymap".source = ./config/keymap;
 }
