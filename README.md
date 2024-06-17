@@ -650,4 +650,7 @@ Most of the documentation you will search are the following:
 - https://gitlab.com/usmcamp0811/dotfiles
 - https://gitlab.com/librephoenix/nixos-config
 
-Wallpapers from: https://github.com/MathisP75/summer-day-and-night/
+Wallpapers from:
+
+- https://github.com/MathisP75/summer-day-and-night/
+- https://kde.org/announcements/megarelease/6/

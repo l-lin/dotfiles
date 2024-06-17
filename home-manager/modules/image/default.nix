@@ -30,6 +30,8 @@
   home.file.".face".source = ./config/hi.png;
   home.file."Pictures/cat.jpg".source = ./config/cat.jpg;
   home.file."Pictures/hi.png".source = ./config/hi.png;
+  home.file."Pictures/scarlet-tree-dark.png".source = ./config/scarlet-tree-dark.png;
+  home.file."Pictures/scarlet-tree-light.png".source = ./config/scarlet-tree-light.png;
   home.file."Pictures/summer-dark.png".source = ./config/summer-dark.png;
   home.file."Pictures/summer-light.png".source = ./config/summer-light.png;
 }

@@ -5,7 +5,7 @@
 
 { pkgs, ... }:
 let
-  backgroundImage = ../../../image/config/summer-light.png;
+  backgroundImage = ../../../image/config/scarlet-tree-light.png;
   polarity = "light";
 in {
 
