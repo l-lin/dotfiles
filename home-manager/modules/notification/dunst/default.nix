@@ -47,7 +47,7 @@ in {
         frame_width = 2;
 
         # Defines color of the frame around the notification window.
-        frame_color = "#${palette.base0D}";
+        frame_color = "#${palette.base05}";
 
         # Define the corner radius of the notification window
         # in pixel size. If the radius is 0, you have no rounded
@@ -65,11 +65,11 @@ in {
 
       urgency_low = {
         # Force color of the frame instead of the one from stylix.
-        frame_color = lib.mkForce "#${palette.base0D}";
+        frame_color = lib.mkForce "#${palette.base05}";
       };
       urgency_normal = {
         # Force color of the frame instead of the one from stylix.
-        frame_color = lib.mkForce "#${palette.base0D}";
+        frame_color = lib.mkForce "#${palette.base05}";
       };
       urgency_critical = {
         # Force color of the frame instead of the one from stylix.

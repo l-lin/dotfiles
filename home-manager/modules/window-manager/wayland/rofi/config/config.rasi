@@ -16,7 +16,7 @@ window {
   enabled:                     true;
   border-radius:               8px;
   border:                      2;
-  border-color:                @selected;
+  border-color:                @foreground;
   cursor:                      "default";
   background-color:            @background;
 }
