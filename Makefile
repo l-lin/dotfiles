@@ -60,7 +60,7 @@ find-nix-package:
 	@if [ -z ${PACKAGE} ]; then \
 		echo 'Missing `PACKAGE` argument, usage: `make find-nix-package PACKAGE=<package>`' >/dev/stderr && exit 1; \
 	fi
-	@nix search nixpkgs ${package}
+	@nix search nixpkgs ${PACKAGE}
 
 ## find-nix-option: find Nix option documentation
 find-nix-option:

@@ -1,8 +1,7 @@
-
 acquisition:~/work/acquisition
 aqtp:~/work/cloud-aqtp
 big-cloud:~/work/big-cloud
-dotfiles:~/perso/dotfiles
+dotfiles:~/.config/dotfiles
 dotfiles-work:~/work/dotfiles
 leetcode:~/perso/leetcode
 mediamtx:~/work/mediamtx
