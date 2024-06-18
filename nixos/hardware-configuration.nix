@@ -35,6 +35,13 @@
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
+  # networking.interfaces.cni0.useDHCP = lib.mkDefault true;
+  # networking.interfaces.flannel.1.useDHCP = lib.mkDefault true;
+  # networking.interfaces.veth054fa42e.useDHCP = lib.mkDefault true;
+  # networking.interfaces.veth23125a6a.useDHCP = lib.mkDefault true;
+  # networking.interfaces.veth9be4d0f2.useDHCP = lib.mkDefault true;
+  # networking.interfaces.vethea9a26f9.useDHCP = lib.mkDefault true;
+  # networking.interfaces.vethf425a6a0.useDHCP = lib.mkDefault true;
   # networking.interfaces.wlo1.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";

@@ -9,20 +9,7 @@ BLUE=\033[1;30;44m
 YELLOW=\033[1;30;43m
 NC=\033[0m
 
-## home: apply home-manager configuration
-home:
-	@echo -e "${BLUE} I ${NC} Applying home-manager configuration..."
-	@if type nh >/dev/null 2>&1; then \
-		nh home switch --backup-extension bak --configuration "${NIX_PROFILE}" .; \
-	else \
-		home-manager switch -b bak --flake '.#${NIX_PROFILE}'; \
-	fi
-	@$(MAKE) hyprland --no-print-directory
-	@$(MAKE) create-symlinks --no-print-directory
-
-## home-news: show home-manager news entries
-home-news:
-	@home-manager news --flake '.#${NIX_PROFILE}'
+# NIXOS --------------------------------------------------------------------------
 
 ## nixos: apply NixOS configuration
 .PHONY: nixos
@@ -39,11 +26,6 @@ nixos: nixos-hardware-config
 nixos-hardware-config:
 	@rm ${NIXOS_HARDWARE_CONFIGURATION_FILE}
 	@nixos-generate-config --show-hardware-config > ${NIXOS_HARDWARE_CONFIGURATION_FILE}
-
-## clean-home: clean up home-manager garbage
-clean-home:
-	@echo -e "${YELLOW} W ${NC} Cleaning up home-manager garbage..."
-	@nix-collect-garbage -d
 
 ## clean-nixos: clean up nixos garbage
 clean-nixos:
@@ -69,7 +51,39 @@ find-nix-option:
 	fi
 	@nix-shell -p manix --run "manix '${OPTION}'"
 
-# --------------------------------------------------------------------------
+## update-nixos: update Nix package in NixOS
+update-nixos:
+	@echo -e "${BLUE} I ${NC} Updating Nix packages in NixOS..."
+	@sudo nix flake update
+
+# HOME-MANAGER --------------------------------------------------------------------------
+
+## home: apply home-manager configuration
+home:
+	@echo -e "${BLUE} I ${NC} Applying home-manager configuration..."
+	@if type nh >/dev/null 2>&1; then \
+		nh home switch --backup-extension bak --configuration "${NIX_PROFILE}" .; \
+	else \
+		home-manager switch -b bak --flake '.#${NIX_PROFILE}'; \
+	fi
+	@$(MAKE) hyprland --no-print-directory
+	@$(MAKE) create-symlinks --no-print-directory
+
+## home-news: show home-manager news entries
+home-news:
+	@home-manager news --flake '.#${NIX_PROFILE}'
+
+## clean-home: clean up home-manager garbage
+clean-home:
+	@echo -e "${YELLOW} W ${NC} Cleaning up home-manager garbage..."
+	@nix-collect-garbage -d
+
+## update-home: update Nix package in home-manager
+update-home:
+	@echo -e "${BLUE} I ${NC} Updating Nix packages in home-manager..."
+	@nix flake update
+
+# STOW --------------------------------------------------------------------------
 
 ## stow: add symlinks for files that need to be writeable
 create-symlinks:
