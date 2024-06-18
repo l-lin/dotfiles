@@ -66,6 +66,8 @@
     killall
     # Send desktop notifications: https://gitlab.gnome.org/GNOME/libnotify
     libnotify
+    # Tools for reading hardware sensors: https://hwmon.wiki.kernel.org/lm_sensors
+    lm_sensors
     # Better ls command: https://github.com/lsd-rs/lsd
     lsd
     # A command-line utility for easily compressing and decompressing files and directories: https://github.com/ouch-org/ouch
