@@ -25,7 +25,7 @@ in {
   "margin-bottom": 0,
   "margin-right": 15,
 
-  "modules-left": ["user", "cpu", "memory", "temperature", "disk", "tray"],
+  "modules-left": ["user", "disk", "memory", "cpu", "temperature", "tray"],
   "modules-center": ["hyprland/workspaces"],
   "modules-right": ["privacy", "pulseaudio", "battery", "backlight", "network", "bluetooth", "clock", "custom/exit"],
 
@@ -35,8 +35,12 @@ in {
     "format": "",
     "icon": true
   },
+  "disk": {
+    "format": "󰒋 {free}",
+    "on-click": "${userSettings.term} --class floating -e yazi"
+  },
   "memory": {
-    "format": "  {used:0.1f}GiB",
+    "format": "  {used:0.1f}GiB",
     "on-click": "${userSettings.term} --class floating -e btop"
   },
   "cpu": {
@@ -63,10 +67,6 @@ in {
     // $ # Here, the thermal zone to use is 7.
     // src: https://askubuntu.com/a/854029
     "thermal-zone": 7
-  },
-  "disk": {
-    "format": "󰒋 {free}",
-    "on-click": "${userSettings.term} --class floating -e yazi"
   },
   "tray": {
     "icon-size": 16,
