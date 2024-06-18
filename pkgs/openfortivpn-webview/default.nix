@@ -25,6 +25,7 @@
   meta = with lib; {
     description = "OpenfortiVPN webview to get the cookie";
     homepage = "https://github.com/gm-vm/openfortivpn-webview";
+    # list of nix licenses available here: https://github.com/NixOS/nixpkgs/blob/master/lib/licenses.nix
     license = licenses.mit;
     platforms = platforms.unix;
     mainProgram = "openfortivpn-webview";

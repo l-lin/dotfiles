@@ -2,7 +2,7 @@
 # Other stuff I can't categorize.
 #
 
-{ fileExplorer, pkgs, userSettings, ... }: {
+{ fileExplorer, pkgs, ... }: {
   imports = fileExplorer.allSubdirs ./.;
 
   home.packages = with pkgs; [
