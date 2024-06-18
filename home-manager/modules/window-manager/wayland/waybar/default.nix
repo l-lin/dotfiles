@@ -45,7 +45,24 @@ in {
   },
   "temperature": {
     "format": " {temperatureC}°C",
-    "on-click": "${userSettings.term} --class floating -e btop"
+    "on-click": "${userSettings.term} --class floating -e btop",
+    "critical-threshold": 90,
+    // $ # Find the right thermal zone for your CPU by using the following command:
+    // $ for f in /sys/class/thermal/thermal_zone*; do
+    //  echo "$f $(cat $f/type) $(cat $f/temp)" | column -t | sed 's/\(.\)..$/.\1°C/'
+    // done
+    // /sys/class/thermal/thermal_zone0  INT3400  Thermal  20.0°C
+    // /sys/class/thermal/thermal_zone1  pch_cannonlake  47.0°C
+    // /sys/class/thermal/thermal_zone2  TMEM  42.0°C
+    // /sys/class/thermal/thermal_zone3  acpitz  25.0°C
+    // /sys/class/thermal/thermal_zone4  TSKN  44.0°C
+    // /sys/class/thermal/thermal_zone5  NGFF  36.0°C
+    // /sys/class/thermal/thermal_zone6  B0D4  50.0°C
+    // /sys/class/thermal/thermal_zone7  x86_pkg_temp  55.0°C
+    // /sys/class/thermal/thermal_zone8  iwlwifi_1  44.0°C
+    // $ # Here, the thermal zone to use is 7.
+    // src: https://askubuntu.com/a/854029
+    "thermal-zone": 7
   },
   "disk": {
     "format": "󰒋 {free}",

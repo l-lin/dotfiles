@@ -63,7 +63,8 @@ window#waybar {
   color: @yellow;
 }
 
-#battery.critical {
+#battery.critical,
+#temperature.critical {
   color: @red;
 }
 
