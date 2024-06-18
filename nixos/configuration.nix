@@ -3,7 +3,7 @@
 # Use this to configure your system environment (it replaces /etc/nixos/configuration.nix)
 #
 
-{ inputs, lib, config, pkgs, ... }: {
+{ inputs, lib, config, pkgs, userSettings, ... }: {
   # You can import other NixOS modules here
   imports = [
     # Import your generated (nixos-generate-config) hardware configuration
@@ -63,6 +63,7 @@
       flake-registry = "";
       # Workaround for https://github.com/NixOS/nix/issues/9574
       nix-path = config.nix.nixPath;
+      trusted-users = [ "root" userSettings.username ];
     };
     # Enable automatic garbage collection.
     # src: https://nixos.wiki/wiki/Storage_optimization

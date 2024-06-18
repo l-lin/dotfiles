@@ -3,11 +3,11 @@
 # /!\ Disable when not in VM!
 #
 
-{
+{ userSettings, ... }: {
   services.openssh = {
     enable = true;
     settings = {
-      AllowUsers = [ "l-lin" ];
+      AllowUsers = [ userSettings.username ];
       # Allow ssh using passphrase, for easier connection to VM.
       PasswordAuthentication = true;
       PermitRootLogin = "yes";

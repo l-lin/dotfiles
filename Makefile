@@ -42,6 +42,10 @@ clean-nixos:
 	@sudo nix-collect-garbage -d
 	@sudo nixos-rebuild boot --flake '.#${NIX_HOST}'
 
+## check-nixos-health: check NixOS configuration
+check-nixos-health:
+	@nix-shell -p nix-health --run nix-health
+
 ## find-nix-package: find a nix package
 find-nix-package:
 	@nix search nixpkgs ${package}
