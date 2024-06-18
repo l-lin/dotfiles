@@ -7,6 +7,6 @@
 { userSettings, ... }: {
   imports = [
     (./. + "/${userSettings.wm}")
-    ./swaylock.nix
+    ./swaylock
   ];
 }

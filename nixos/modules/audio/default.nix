@@ -5,7 +5,9 @@
 # src: https://nixos.wiki/wiki/PulseAudio
 #
 
-{
+{ fileExplorer, ... }: {
+  imports = fileExplorer.allSubdirs ./.;
+
   sound.enable = true;
   nixpkgs.config.pulseaudio = true;
   # Allow bluetooth audio devices to be used with PulseAudio.

@@ -102,6 +102,7 @@
       "${systemSettings.hostname}" = nixpkgs.lib.nixosSystem {
         specialArgs = {
           # pass config variables from above
+          inherit fileExplorer;
           inherit systemSettings;
           inherit userSettings;
           inherit inputs;

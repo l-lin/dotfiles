@@ -1,8 +1,19 @@
 #
-# Timezone and locale
+# Desktop related configuration.
 #
 
-{ systemSettings, ... }: {
+{ pkgs, systemSettings, ... }: {
+  # D-Bus (short for "Desktop Bus") is a message-oriented middleware mechanism
+  # that allows communication between multiple processes running concurrently on the same machine.
+  services.dbus = {
+    enable = true;
+    packages = [ pkgs.dconf ];
+  };
+
+  # dconf is a low-level configuration system and settings management tool.
+  programs.dconf.enable = true;
+
+  # Timezone and locale
   time.timeZone = systemSettings.timezone;
   i18n = {
     defaultLocale = systemSettings.locale;

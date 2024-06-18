@@ -10,26 +10,7 @@
     # Auto-generated in /etc/nixos/ folder or by executing the following command:
     # nixos-generate-config --show-hardware-config
     ./hardware-configuration.nix
-
-    # System stuff
-    ./modules/audio.nix
-    ./modules/bootloader.nix
-    ./modules/bluetooth.nix
-    ./modules/dbus.nix
-    ./modules/i18n-l10n.nix
-    ./modules/network.nix
-    ./modules/nh.nix
-    ./modules/patchelf.nix
-    ./modules/pipewire.nix
-    ./modules/printing.nix
-    ./modules/ssh.nix
-    ./modules/unpatched-binaries.nix
-    ./modules/users.nix
-    #./modules/vm.nix
-
-    # UI
-    ./modules/gui
-    ./modules/tui
+    ./modules
   ];
 
   # Nixpkgs stuff
@@ -68,11 +49,12 @@
     };
     # Enable automatic garbage collection.
     # src: https://nixos.wiki/wiki/Storage_optimization
-    gc = {
-      automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 7d";
-    };
+    # Using nh gc instead of nix gc. See misc/nh/default.nix.
+    #gc = {
+    #  automatic = true;
+    #  dates = "weekly";
+    #  options = "--delete-older-than 7d";
+    #};
     # Automatically run the nix store optimiser at a specific time (default to 03:45, set by `nix.optimise.dates`).
     optimise.automatic = true;
 

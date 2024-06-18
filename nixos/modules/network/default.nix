@@ -4,7 +4,9 @@
 # src: https://nixos.wiki/wiki/Networking
 #
 
-{ systemSettings, ... }: {
+{ fileExplorer, systemSettings, ... }: {
+  imports = fileExplorer.allSubdirs ./.;
+
   networking = {
     hostName = systemSettings.hostname;
     networkmanager.enable = true;
