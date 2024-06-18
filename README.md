@@ -28,6 +28,10 @@ home-manager/
 nixos/
 # Configuration files that need to be writeable are symlinked in this folder.
 stow/
+# Contains some Nix libraries to be use in home-manager or NixOS configuration files.
+lib/
+# Contains Nix custom packages that are not present in nixpkgs.
+pkgs/
 ```
 
 ---
@@ -110,19 +114,9 @@ It should already be present at [vpn/default.nix](./home-manager/modules/vpn/def
 }
 ```
 
-Download `openfortivpn-webview` and put the binary in your `$PATH`:
-
-```bash
-# I have ${HOME}/bin in my ${PATH}
-version=1.2.0 \
-  && wget -qO- \
-    https://github.com/gm-vm/openfortivpn-webview/releases/download/v${version}-electron/openfortivpn-webview-${version}.tar.xz \
-  && tar -xvJ --transform="s/openfortivpn-webview-${version}/openfortivpn-webview/g" -C "${HOME}/apps" \
-  && ln -s "${HOME}/apps/openfortivpn-webview/openfortivpn-webview" "${HOME}/bin/openfortivpn-webview"
-```
-
-> [!TIP]
-> I should create a flake to fetch the tarball and install it instead.
+Download `openfortivpn-webview` and put the binary in your `$PATH`.
+It should already be present by using the derivation [./pkgs/openfortivpn-webview/default.nix]
+and importing at [vpn/default.nix](./home-manager/modules/vpn/default.nix).
 
 Then use like this:
 
@@ -357,6 +351,7 @@ You can find multiple tutorials online to create your own derivation:
 - https://zero-to-nix.com/concepts/derivations
 - https://ianthehenry.com/posts/how-to-learn-nix/my-first-derivation/
 - https://nix.dev/manual/nix/2.22/language/derivations.html
+- https://nix4noobs.com/packages/hello_world/
 
 You can use some nice builtins functions:
 
