@@ -110,6 +110,7 @@ local function create_mason_config()
     -- linter
     {
       "sonarlint",
+      enabled = false,
       url = "https://gitlab.com/schrieveslaach/sonarlint.nvim",
       ft = { "go", "js", "java", "xml" },
       opts = function()
