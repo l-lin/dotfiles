@@ -12,7 +12,11 @@ NC=\033[0m
 ## home: apply home-manager configuration
 home:
 	@echo -e "${BLUE} I ${NC} Applying home-manager configuration..."
-	@home-manager switch -b backup --flake '.#${NIX_PROFILE}' --show-trace
+	@if type nh >/dev/null 2>&1; then \
+		nh home switch --backup-extension bak --configuration "${NIX_PROFILE}" .; \
+	else \
+		home-manager switch -b bak --flake '.#${NIX_PROFILE}'; \
+	fi
 	@$(MAKE) hyprland --no-print-directory
 	@$(MAKE) create-symlinks --no-print-directory
 
@@ -24,7 +28,12 @@ home-news:
 .PHONY: nixos
 nixos: nixos-hardware-config
 	@echo -e "${BLUE} I ${NC} Applying NixOS configuration..."
-	@sudo nixos-rebuild switch --flake '.#${NIX_HOST}'
+	@if type nh >/dev/null 2>&1; then \
+		nh os switch --hostname "${NIX_HOST}" --ask .; \
+	else \
+		sudo nixos-rebuild switch --flake '.#${NIX_HOST}'; \
+	fi
+	@$(MAKE) check-nixos-health --no-print-directory
 
 ## nixos-hardware-config: generate hardware-configuration
 nixos-hardware-config:
@@ -46,9 +55,21 @@ clean-nixos:
 check-nixos-health:
 	@nix-shell -p nix-health --run nix-health
 
-## find-nix-package: find a nix package
+## find-nix-package: find a Nix package
 find-nix-package:
+	@if [ -z ${PACKAGE} ]; then \
+		echo 'Missing `PACKAGE` argument, usage: `make find-nix-package PACKAGE=<package>`' >/dev/stderr && exit 1; \
+	fi
 	@nix search nixpkgs ${package}
+
+## find-nix-option: find Nix option documentation
+find-nix-option:
+	@if [ -z ${OPTION} ]; then \
+		echo 'Missing `OPTION` argument, usage: `make find-nix-option OPTION=<option>`' >/dev/stderr && exit 1; \
+	fi
+	@nix-shell -p manix --run "manix '${OPTION}'"
+
+# --------------------------------------------------------------------------
 
 ## stow: add symlinks for files that need to be writeable
 create-symlinks:
