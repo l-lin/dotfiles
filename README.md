@@ -132,6 +132,66 @@ VPN_HOST=some_host && VPN_PORT=443 \
 > We need to add the `--pppd-accept-remote` since `ppp` v2.5.0.
 > See https://github.com/adrienverge/openfortivpn/issues/1076 for more information.
 
+#### Adding external binary to your `$PATH`
+
+If you want to install a tool / binary that is not present in the [`nixpkgs`](https://github.com/NixOS/nixpkgs),
+you will need to create a custom package / derivation and import in your home-manager
+configuration.
+
+> What are derivations?
+>
+> Derivations are produced in Nix (the language) by the derivation function (or any
+> of the higher-level helpers like mkDerivation or buildPythonPackage). A derivation
+> is saved as a .drv file to the nix store. It is ultimately this .drv file, which
+> Nix uses to build and install the software or resources (fonts, icon packs, ...).
+
+First create a `pkgs/your-package/default.nix` with the following content:
+
+```nix
+{ stdenvNoCC, lib }: stdenvNoCC.mkDerivation {
+  # ...
+}
+```
+
+You can find multiple tutorials online to create your own derivation:
+
+- https://nix.dev/tutorials/packaging-existing-software
+- https://zero-to-nix.com/concepts/derivations
+- https://ianthehenry.com/posts/how-to-learn-nix/my-first-derivation/
+- https://nix.dev/manual/nix/2.22/language/derivations.html
+- https://nix4noobs.com/packages/hello_world/
+
+You can use some nice builtins functions:
+
+- [builtins.fetchTarball](https://noogle.dev/f/builtins/fetchTarball)
+- [builtins.fetchUrl](https://noogle.dev/f/builtins/fetchurl)
+- [builtins.fetchGit](https://noogle.dev/f/builtins/fetchGit)
+- [builtins.fetchFromGitHub](https://noogle.dev/f/pkgs/fetchFromGitHub) (:warning: big H)
+- [builints.fetchzip](https://noogle.dev/f/pkgs/fetchzip) (:warning: small z)
+
+Do not forget to import your new package in `pkgs/default.nix`:
+
+```nix
+pkgs: {
+  your-package = pkgs.callPackage ./your-package { };
+}
+```
+
+Then in your home-manager configuration, you can import like this:
+
+```nix
+{ outputs, pkgs, systemSettings, ... }: {
+  home.packages = with pkgs; [
+    outputs.packages.${systemSettings.system}.openfortivpn-webview
+  ];
+}
+```
+
+Source: https://github.com/Misterio77/nix-starter-configs/issues/62.
+
+You could also use [nix-init](https://github.com/nix-community/nix-init) for generating
+Nix packages from URLs with hash prefetching, dependency inference, license detection, ...
+
 ### Configuration
 
 #### Symlink configuration files whenever you can
@@ -324,65 +384,6 @@ I used [stylix](https://github.com/danth/stylix) to manage color schemes and the
 So it should be easy to add new themes without much hassle.
 
 You can add them at the [themes folder](./home-manager/modules/style/themes/).
-
-#### Adding external binary to your `$PATH`
-
-If you want to install a tool / binary that is not present in the [`nixpkgs`](https://github.com/NixOS/nixpkgs),
-you will need to create a custom package / derivation and import in your home-manager
-configuration.
-
-> What are derivations?
->
-> Derivations are produced in Nix (the language) by the derivation function (or any
-> of the higher-level helpers like mkDerivation or buildPythonPackage). A derivation
-> is saved as a .drv file to the nix store. It is ultimately this .drv file, which
-> Nix uses to build and install the software or resources (fonts, icon packs, ...).
-
-First create a `pkgs/your-package/default.nix` with the following content:
-
-```nix
-{ stdenvNoCC, lib }: stdenvNoCC.mkDerivation {
-  # ...
-}
-```
-
-You can find multiple tutorials online to create your own derivation:
-
-- https://zero-to-nix.com/concepts/derivations
-- https://ianthehenry.com/posts/how-to-learn-nix/my-first-derivation/
-- https://nix.dev/manual/nix/2.22/language/derivations.html
-- https://nix4noobs.com/packages/hello_world/
-
-You can use some nice builtins functions:
-
-- [builtins.fetchTarball](https://noogle.dev/f/builtins/fetchTarball)
-- [builtins.fetchUrl](https://noogle.dev/f/builtins/fetchurl)
-- [builtins.fetchGit](https://noogle.dev/f/builtins/fetchGit)
-- [builtins.fetchFromGitHub](https://noogle.dev/f/pkgs/fetchFromGitHub) (:warning: big H)
-- [builints.fetchzip](https://noogle.dev/f/pkgs/fetchzip) (:warning: small z)
-
-Do not forget to import your new package in `pkgs/default.nix`:
-
-```nix
-pkgs: {
-  your-package = pkgs.callPackage ./your-package { };
-}
-```
-
-Then in your home-manager configuration, you can import like this:
-
-```nix
-{ outputs, pkgs, systemSettings, ... }: {
-  home.packages = with pkgs; [
-    outputs.packages.${systemSettings.system}.openfortivpn-webview
-  ];
-}
-```
-
-Source: https://github.com/Misterio77/nix-starter-configs/issues/62.
-
-You could also use [nix-init](https://github.com/nix-community/nix-init) for generating
-Nix packages from URLs with hash prefetching, dependency inference, license detection, ...
 
 ### Run
 
