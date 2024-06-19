@@ -1,5 +1,6 @@
 #
 # K3s is a simplified Kubernetes version that bundles Kubernetes cluster components into a few small binaries optimized for Edge and IoT devices.
+# You should k3d for local development instead as the latter is installed at user level.
 # src: https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/networking/cluster/k3s/docs/USAGE.md
 #
 
