@@ -381,6 +381,9 @@ Then in your home-manager configuration, you can import like this:
 
 Source: https://github.com/Misterio77/nix-starter-configs/issues/62.
 
+You could also use [nix-init](https://github.com/nix-community/nix-init) for generating
+Nix packages from URLs with hash prefetching, dependency inference, license detection, ...
+
 ### Run
 
 #### Running an external binary on NixOS
