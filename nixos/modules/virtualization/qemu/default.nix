@@ -1,11 +1,10 @@
 #
-# /!\ Disable when not in VM!
+# QEMU is a generic and open source machine emulator and virtualizer.
+# src: https://www.qemu.org/
 #
 
 {
   services = {
-    # QEMU is a generic and open source machine emulator and virtualizer.
-    # src: https://www.qemu.org/
     qemuGuest.enable = true;
 
     # Enhanced SPICE integration for linux QEMU guest
