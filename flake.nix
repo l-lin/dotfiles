@@ -1,8 +1,11 @@
 {
-  description = "l-lin NixOS/home-manager configuration";
+  description = "NixOS/home-manager configuration";
 
   inputs = {
     # Nixpkgs
+    # If you need to downgrade or upgrade certains packages to address bug or compatibily issues,
+    # you can use a specific nixpkgs version/hash, then use it on the specific package.
+    # src: https://nixos-and-flakes.thiscute.world/nixos-with-flakes/downgrade-or-upgrade-packages
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # Home manager

@@ -1,7 +1,5 @@
 # :snowflake: NixOS dotfiles
 
-## Info
-
 - :bento: window manager: [hyprland](https://github.com/hyprwm/Hyprland)
 - :milky_way: terminal emulator: [kitty](https://sw.kovidgoyal.net/kitty/)
 - :shell: shell: [zsh](https://www.zsh.org/)
@@ -22,28 +20,17 @@ make help
 ```
 
 ```bash
-# Install and configure package at user level.
-home-manager/
-# Install and configure package at system level.
-nixos/
-# Configuration files that need to be writeable are symlinked in this folder.
-stow/
-# Contains some Nix libraries to be use in home-manager or NixOS configuration files.
-lib/
-# Contains Nix custom packages that are not present in nixpkgs.
-pkgs/
+$ # folder description
+$ nix-shell -p tree --run 'tree -d -L 1'
+.
+├── home-manager # Install and configure package at user level.
+├── lib          # Contains some Nix libraries to be use in home-manager or NixOS configuration files.
+├── nixos        # Install and configure package at system level.
+├── pkgs         # Contains Nix custom packages that are not present in nixpkgs.
+└── stow         # Configuration files that need to be writeable are symlinked in this folder.
 ```
 
----
-
-## Notes to my future self
-
-:wave: Hello, my future self. Yes, you! Here are some notes for you, as I know
-you are forgetful.
-
-### Installation
-
-#### Fresh NixOS installation
+### Fresh NixOS installation
 
 For bootstrapping a fresh NixOS install as root:
 
@@ -58,6 +45,15 @@ reboot
 # synchronize shell history
 atuin login -u l-lin
 ```
+
+---
+
+## Notes to my future self
+
+:wave: Hello, my future self. Yes, you! Here are some notes for you, as I know
+you are forgetful.
+
+### Installation
 
 #### Find a package in the Nixpkgs
 
@@ -191,6 +187,69 @@ Source: https://github.com/Misterio77/nix-starter-configs/issues/62.
 
 You could also use [nix-init](https://github.com/nix-community/nix-init) for generating
 Nix packages from URLs with hash prefetching, dependency inference, license detection, ...
+
+#### I want to downgrade/upgrade a package
+
+As you may know (or not, if you forgot), packages are pinned to `nixpkgs`, so you may not
+have the latest version of a package, e.g. your favorite `Neovim`.
+
+Or worst, you have a bug or an incompatibility issue with a package pinned by `nixpkgs`.
+
+In Flakes, package versions and hash values are directly tied to the git commit,
+of their flake input. To modify the package version, you need to lock the git,
+commit of the flake input.
+
+Here's an example of how you can add multiple `nixpkgs` inputs, each using a,
+different git commit or branch:
+
+```nix
+{
+  description = "NixOS/home-manager configuration";
+
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    # ...
+  };
+
+  # ...
+  outputs = {
+    self,
+    nixpkgs,
+    nixpkgs-unstable,
+    home-manager,
+    ...
+  } @ inputs:
+    # ...
+    nixosConfigurations = {
+      "${systemSettings.hostname}" = nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          pkgs-unstable = import nixpkgs-unstable { };
+          inherit fileExplorer;
+          inherit systemSettings;
+          inherit userSettings;
+          inherit inputs;
+        };
+        modules = [./nixos/configuration.nix];
+      };
+    };
+}
+```
+
+Then in your package, you can use this pinned `nixpkgs`:
+
+```nix
+{ pkgs-unstable, ... }: {
+  programs.neovim = {
+    enable = true;
+    package = pkgs-unstable.neovim;
+  };
+}
+```
+
+Don't forget to apply your change in your home-manager afterwards!
+
+Source: https://nixos-and-flakes.thiscute.world/nixos-with-flakes/downgrade-or-upgrade-packages
 
 ### Configuration
 
@@ -691,6 +750,7 @@ Most of the documentation you will search are the following:
 - [Nix module system](https://nix.dev/tutorials/module-system/)
 - [NixOS and flake unofficial book for beginners](https://nixos-and-flakes.thiscute.world/)
 - [Nix cookbook and survival guide](https://nix4noobs.com/)
+- [Practical Nix flake anatomy](https://vtimofeenko.com/posts/practical-nix-flake-anatomy-a-guided-tour-of-flake.nix/)
 
 ### Interesting topics
 
