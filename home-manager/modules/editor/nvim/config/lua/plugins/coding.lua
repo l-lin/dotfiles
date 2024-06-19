@@ -60,6 +60,11 @@ return {
       -- sql autocompletion
       { "kristijanhusak/vim-dadbod-completion", ft = { "sql", "mysql", "psql" } },
     },
+    -- disable tab and s-tab from going to next completion element because I'm using tab for indenting
+    keys = {
+      { "<tab>", mode = { "i", "s" }, false },
+      { "<s-tab>", mode = { "i", "s" }, false },
+    },
     opts = function(_, opts)
       local cmp = require("cmp")
       local compare = require("cmp.config.compare")
