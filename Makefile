@@ -4,18 +4,19 @@ PROJECTNAME=$(shell basename "$(PWD)")
 NIXOS_HARDWARE_CONFIGURATION_FILE=./nixos/hardware-configuration.nix
 NIX_PROFILE=l-lin
 NIX_HOST=nixos
+THEMES_FOLDER=./home-manager/modules/style/themes
 
 PRE_COMMIT_FILE=./home-manager/modules/vcs/git/script/pre-commit.sh
 
 BLUE=\033[1;30;44m
 YELLOW=\033[1;30;43m
+RED=\033[1;30;41m
 NC=\033[0m
 
 # NIXOS --------------------------------------------------------------------------
 
-## nixos: apply NixOS configuration
-.PHONY: nixos
-nixos: nixos-hardware-config
+## update-nixos: apply NixOS configuration
+update-nixos: nixos-hardware-config
 	@echo -e "${BLUE} I ${NC} Applying NixOS configuration..."
 	@if type nh >/dev/null 2>&1; then \
 		nh os switch --hostname "${NIX_HOST}" --ask .; \
@@ -49,7 +50,7 @@ find-nix-package:
 ## find-nix-option: find Nix option documentation
 find-nix-option:
 	@if [ -z ${OPTION} ]; then \
-		echo 'Missing `OPTION` argument, usage: `make find-nix-option OPTION=<option>`' >/dev/stderr && exit 1; \
+		echo -e "${RED} E ${NC}Missing `OPTION` argument, usage: `make find-nix-option OPTION=<option>`" >/dev/stderr && exit 1; \
 	fi
 	@nix-shell -p manix --run "manix '${OPTION}'"
 
@@ -57,12 +58,12 @@ find-nix-option:
 update-flake:
 	@echo -e "${BLUE} I ${NC} Updating Nix flake lock file..."
 	@nix flake update
-	@$(MAKE) nixos home --no-print-directory
+	@$(MAKE) update-nixos update-home --no-print-directory
 
 # HOME-MANAGER --------------------------------------------------------------------------
 
-## home: apply home-manager configuration
-home: add-pre-commit-hook
+## update-home: apply home-manager configuration
+update-home: add-pre-commit-hook
 	@echo -e "${BLUE} I ${NC} Applying home-manager configuration..."
 	@if type nh >/dev/null 2>&1; then \
 		nh home switch --backup-extension bak --configuration "${NIX_PROFILE}" .; \
@@ -71,8 +72,8 @@ home: add-pre-commit-hook
 	fi
 	@$(MAKE) create-symlinks --no-print-directory
 
-## home-news: show home-manager news entries
-home-news:
+## show-home-news: show home-manager news entries
+show-home-news:
 	@home-manager news --flake '.#${NIX_PROFILE}'
 
 ## clean-home: clean up home-manager garbage
@@ -82,7 +83,7 @@ clean-home:
 
 # STOW --------------------------------------------------------------------------
 
-## stow: add symlinks for files that need to be writeable
+## create-symlinks: add symlinks for files that need to be writeable
 create-symlinks:
 	@cd stow \
 	&& for folder in $$(find . -type d -maxdepth 1 2>/dev/null); do \
@@ -96,15 +97,15 @@ create-symlinks:
 ## remove-symlinks: remove-symlinks
 remove-symlinks:
 	@if [ -z ${FOLDER} ]; then \
-		echo 'Missing `FOLDER` argument, usage: `make remove-symlinks FOLDER=<folder>`' >/dev/stderr && exit 1; \
+		echo -e "${RED} E ${NC}Missing `FOLDER` argument, usage: `make remove-symlinks FOLDER=<folder>`" >/dev/stderr && exit 1; \
 	fi
 	@cd stow \
 		&& stow --delete -t $${HOME} ${FOLDER}
 
 # --------------------------------------------------------------------------
 
-## hyprland: reload hyprland configuration
-hyprland:
+## reload-hyprland: reload hyprland configuration
+reload-hyprland:
 	@echo -e "${BLUE} I ${NC} Reloading Hyprland configuration..."
 	@hyprctl reload
 
@@ -118,10 +119,9 @@ install-cheatsheets:
 			&& $(MAKE) install-cheatsheet HOST=$${host} OWNER=$${owner} REPO=$${repo} --no-print-directory; \
 		done
 
-## install-cheatsheet: install navi cheatsheet if not present
 install-cheatsheet:
 	@if [ -z ${HOST} ] || [ -z ${OWNER} ] || [ -z ${REPO} ]; then \
-		echo 'Missing argument, usage: `make install-cheatsheet HOST=<host> OWNER=<owner> REPO=<repo>`' >/dev/stderr && exit 1; \
+		echo -e "${RED} E ${NC} Missing argument, usage: `make install-cheatsheet HOST=<host> OWNER=<owner> REPO=<repo>`" >/dev/stderr && exit 1; \
 	fi
 	@cheatsheet_name="${OWNER}__${REPO}" \
 		&& folder_name="$$(echo $$(navi info cheats-path)/$${cheatsheet_name})" \
@@ -132,9 +132,21 @@ install-cheatsheet:
 			git clone "git@${HOST}:${OWNER}/${REPO}" "$${folder_name}/$${cheatsheet_name}"; \
 		fi
 
-## add-pre-commit-hook: add git pre-commit hook
 add-pre-commit-hook:
 	@cp "${PRE_COMMIT_FILE}" .git/hooks/pre-commit
+
+## change-theme: change theme
+change-theme:
+	@if [ -z ${TO} ]; then \
+		echo -e "${RED} E ${NC} Missing argument, usage: `make change-theme TO=<theme>`" >/dev/stderr && exit 1; \
+	fi
+	@if [[ ! -d "${THEMES_FOLDER}/${TO}" ]]; then \
+		supported_themes=$$(find ${THEMES_FOLDER} -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | tr '\n' ' ') \
+		&& echo -e "${RED} E ${NC} Unsupported theme '${TO}', expecting one of '$${supported_themes% }'!" >/dev/stderr && exit 1; \
+	fi
+	@echo -e "${BLUE} I ${NC} Changing theme to '${TO}'..."
+	@sed -i 's~theme = "\(.*\)"~theme = "${TO}"~' flake.nix
+	@$(MAKE) update-home reload-hyprland --no-print-directory
 
 .PHONY: help
 all: help
