@@ -1,5 +1,4 @@
-#!/bin/bash
-
+#!/usr/bin/env bash
 
 get_all_used_swap() {
   for i in /proc/*/status ; do
