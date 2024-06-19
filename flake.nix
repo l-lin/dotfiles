@@ -3,17 +3,19 @@
 
   inputs = {
     # Nixpkgs
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # Home manager
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.05";
+      url = "github:nix-community/home-manager";
+      # home-manager will use the specified version of `nixpkgs`
+      # https://vtimofeenko.com/posts/practical-nix-flake-anatomy-a-guided-tour-of-flake.nix/#inputsfollows
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Hyprland window manager
     hyprland = {
-      url = "github:hyprwm/Hyprland/v0.40.0";
+      url = "github:hyprwm/Hyprland";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -27,7 +29,10 @@
     };
 
     # Spotify client
-    spicetify-nix.url = "github:the-argus/spicetify-nix";
+    spicetify-nix = {
+      url = "github:the-argus/spicetify-nix";
+      inputs.nipxpkgs.follows = "nixpkgs";
+    };
 
     # Run unpatched binaries on NixOS
     nix-alien.url = "github:thiagokokada/nix-alien";
