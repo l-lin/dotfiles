@@ -67,7 +67,6 @@ home:
 	else \
 		home-manager switch -b bak --flake '.#${NIX_PROFILE}'; \
 	fi
-	@$(MAKE) hyprland --no-print-directory
 	@$(MAKE) create-symlinks --no-print-directory
 
 ## home-news: show home-manager news entries
