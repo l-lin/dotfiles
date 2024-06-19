@@ -32,10 +32,10 @@ edit = [
 	{ run = 'nvim "$@"', desc = "$EDITOR", block = true, for = "unix" },
 ]
 edit-image = [
-	{ run = 'gimp "$@"', desc = "Open", for = "linux" },
+	{ run = 'gimp "$@"', desc = "Edit image", for = "linux" },
 ]
 open-image = [
-	{ run = 'imv "$@"', desc = "Open", for = "linux" },
+	{ run = 'imv "$@"', desc = "Open image", for = "linux" },
 ]
 
 open = [
