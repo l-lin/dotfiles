@@ -32,7 +32,6 @@ $screenshot = grim -g "$(slurp)" - | satty --filename - --fullscreen --output-fi
 $terminal = ${userSettings.term} -e tmux -2 -u
 
 # color scheme
-$background_image = ${config.theme.backgroundImage}
 $active_border_color = rgb(${palette.base05})
 $inactive_border_color = rgb(${palette.base00})
 

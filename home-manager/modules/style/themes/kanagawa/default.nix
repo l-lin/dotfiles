@@ -5,19 +5,19 @@
 
 { pkgs, ... }:
 let
-  backgroundImage = ../../../image/config/scarlet-tree-dark.png;
   polarity = "dark";
 in {
 
   theme = {
-    inherit backgroundImage polarity;
+    inherit polarity;
     nvimColorScheme = "kanagawa";
     nvimColorSchemePluginLua = "{ 'rebelot/kanagawa.nvim' }";
   };
 
   stylix = {
     inherit polarity;
-    image = backgroundImage;
+    # For some reason, stylix needs a background image...
+    image = ../../../image/wallpaper/dark/scarlet-tree.png;
     cursor = {
       # Material Based Cursor Theme: https://github.com/ful1e5/Bibata_Cursor
       name = "Bibata-Modern-Ice";

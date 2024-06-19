@@ -5,6 +5,7 @@
 { pkgs, ... }: {
   imports = [
     ./satty
+    ./wallpaper
   ];
 
   home.packages = with pkgs; [
@@ -22,16 +23,8 @@
     imv
     # Simple animated GIF screen recorder with an easy to use interface: https://github.com/phw/peek
     peek
-    # Wallpaper tool for Wayland conpositors: https://github.com/swaywm/swaybg
-    swaybg
   ];
 
   # ~/.face is used by waybar to set the user icon.
-  home.file.".face".source = ./config/hi.png;
-  home.file."Pictures/cat.jpg".source = ./config/cat.jpg;
-  home.file."Pictures/hi.png".source = ./config/hi.png;
-  home.file."Pictures/scarlet-tree-dark.png".source = ./config/scarlet-tree-dark.png;
-  home.file."Pictures/scarlet-tree-light.png".source = ./config/scarlet-tree-light.png;
-  home.file."Pictures/summer-dark.png".source = ./config/summer-dark.png;
-  home.file."Pictures/summer-light.png".source = ./config/summer-light.png;
+  home.file.".face".source = ./pictures/hi.png;
 }

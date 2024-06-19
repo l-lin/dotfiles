@@ -2,7 +2,7 @@
 # Theme related stuff, like icons, cursors, ... using stylix to manage them.
 # src: https://github.com/danth/stylix
 #
-# Palette matching:
+# Palette matching for kanagawa (colors differ depending on the theme):
 #
 # background = base00
 # foreground = base05
@@ -77,6 +77,7 @@ in {
       swaylock.enable = false;
       tmux.enable = false;
       waybar.enable = false;
+      wpaperd.enable = false;
     };
   };
 

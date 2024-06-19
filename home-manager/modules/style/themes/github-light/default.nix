@@ -5,12 +5,11 @@
 
 { pkgs, ... }:
 let
-  backgroundImage = ../../../image/config/scarlet-tree-light.png;
   polarity = "light";
 in {
 
   theme = {
-    inherit backgroundImage polarity;
+    inherit polarity;
     nvimColorScheme = "github_light_high_contrast";
     nvimColorSchemePluginLua = ''
 {
@@ -37,7 +36,8 @@ in {
 
   stylix = {
     inherit polarity;
-    image = backgroundImage;
+    # For some reason, stylix needs a background image...
+    image = ../../../image/wallpaper/light/scarlet-tree.png;
     cursor = {
       # Material Based Cursor Theme: https://github.com/ful1e5/Bibata_Cursor
       name = "Bibata-Modern-Classic";
