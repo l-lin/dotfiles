@@ -51,10 +51,11 @@ find-nix-option:
 	fi
 	@nix-shell -p manix --run "manix '${OPTION}'"
 
-## update-nixos: update Nix package in NixOS
-update-nixos:
-	@echo -e "${BLUE} I ${NC} Updating Nix packages in NixOS..."
-	@sudo nix flake update
+## update-flake: update Nix flake lock file
+update-flake:
+	@echo -e "${BLUE} I ${NC} Updating Nix flake lock file..."
+	@nix flake update
+	@$(MAKE) nixos home --no-print-directory
 
 # HOME-MANAGER --------------------------------------------------------------------------
 
@@ -77,11 +78,6 @@ home-news:
 clean-home:
 	@echo -e "${YELLOW} W ${NC} Cleaning up home-manager garbage..."
 	@nix-collect-garbage -d
-
-## update-home: update Nix package in home-manager
-update-home:
-	@echo -e "${BLUE} I ${NC} Updating Nix packages in home-manager..."
-	@nix flake update
 
 # STOW --------------------------------------------------------------------------
 
