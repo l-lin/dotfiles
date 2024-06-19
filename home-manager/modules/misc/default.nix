@@ -24,6 +24,8 @@
     ctop
     # HTTP client: https://curl.se/
     curl
+    # Scan Nix files for dead code: https://github.com/astro/deadnix
+    deadnix
     # Search DuckDuckGo from the terminal: https://github.com/jarun/ddgr
     ddgr
     # Syntax-highlighting for git: https://github.com/dandavison/delta

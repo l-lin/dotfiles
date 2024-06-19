@@ -3,7 +3,7 @@
 # src: https://github.com/alexays/waybar
 #
 
-{ config, pkgs, userSettings, ... }:
+{ config, userSettings, ... }:
 let
   palette = config.lib.stylix.colors;
 in {

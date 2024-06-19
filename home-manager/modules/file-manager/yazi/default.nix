@@ -3,7 +3,7 @@
 # src: https://yazi-rs.github.io/
 #
 
-{ userSettings, ...}: {
+{
   programs.yazi = {
     enable = true;
     enableZshIntegration = true;

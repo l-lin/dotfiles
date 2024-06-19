@@ -3,7 +3,7 @@
 # src: https://sw.kovidgoyal.net/kitty/
 #
 
-{ config, pkgs, ... }: {
+{
   programs.kitty = {
     enable = true;
     # https://sw.kovidgoyal.net/kitty/conf/

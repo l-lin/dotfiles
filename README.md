@@ -48,7 +48,7 @@ you are forgetful.
 For bootstrapping a fresh NixOS install as root:
 
 ```bash
-nix-shell -p git gnumake
+nix-shell -p git gnumake nh
 git clone https://github.com/l-lin/dotfiles
 cd dotfiles
 make nixos

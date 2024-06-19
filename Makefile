@@ -5,6 +5,8 @@ NIXOS_HARDWARE_CONFIGURATION_FILE=./nixos/hardware-configuration.nix
 NIX_PROFILE=l-lin
 NIX_HOST=nixos
 
+PRE_COMMIT_FILE=./home-manager/modules/vcs/git/script/pre-commit.sh
+
 BLUE=\033[1;30;44m
 YELLOW=\033[1;30;43m
 NC=\033[0m
@@ -60,7 +62,7 @@ update-flake:
 # HOME-MANAGER --------------------------------------------------------------------------
 
 ## home: apply home-manager configuration
-home:
+home: add-pre-commit-hook
 	@echo -e "${BLUE} I ${NC} Applying home-manager configuration..."
 	@if type nh >/dev/null 2>&1; then \
 		nh home switch --backup-extension bak --configuration "${NIX_PROFILE}" .; \
@@ -129,6 +131,10 @@ install-cheatsheet:
 			echo -e "${BLUE} I ${NC} Installing cheatsheet '$${cheatsheet_name}'."; \
 			git clone "git@${HOST}:${OWNER}/${REPO}" "$${folder_name}/$${cheatsheet_name}"; \
 		fi
+
+## add-pre-commit-hook: add git pre-commit hook
+add-pre-commit-hook:
+	@cp "${PRE_COMMIT_FILE}" .git/hooks/pre-commit
 
 .PHONY: help
 all: help

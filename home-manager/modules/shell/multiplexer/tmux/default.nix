@@ -4,7 +4,7 @@
 # src: https://github.com/tmux/tmux/wiki
 #
 
-{ config, pkgs, userSettings, ...}: {
+{ pkgs, userSettings, ...}: {
   programs.tmux = {
     enable = true;
     # Cannot set the shell directly in the tmux.conf file as the binary is not in /bin folder.
