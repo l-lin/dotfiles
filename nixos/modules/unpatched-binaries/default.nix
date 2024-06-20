@@ -102,11 +102,16 @@
     # - https://nixos.wiki/wiki/Packaging/Binaries
     # - https://rootknecht.net/blog/patching-binaries-for-nixos/
     # - https://github.com/NixOS/patchelf
-    patchelf
+    # usage:
+    # - patch interpreter
+    # patchelf --set-interpreter $(patchelf --print-interpreter `which find`) <binary>
+    # - patch rpath
+    # patchelf --set-rpath "$(nix eval 'nixpkgs#<lib1>.outPath' --raw)/lib:$(nix eval 'nixpkgs#<lib2>.outPath' --raw)/lib" <binary>
+    #patchelf
 
     # Run commands in the same FHS environment that is used for Steam.
     # usage: steam-run <binary> <args...>
-    steam-run
+    #steam-run
   ];
 
 }

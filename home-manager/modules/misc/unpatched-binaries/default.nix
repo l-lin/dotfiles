@@ -10,13 +10,15 @@
 # - https://www.reddit.com/r/NixOS/comments/13uc87h/masonnvim_broke_on_nixos/
 #
 
-{ inputs, systemSettings, ... }: {
-  # Run unpatched binaries on Nix/NixOS as nix-alien will download necessary dependencies for you.
-  # src: https://github.com/thiagokokada/nix-alien
-  # usage: nix-alien <binary> <args...>
-  home.packages = with inputs.nix-alien.packages.${systemSettings.system}; [ nix-alien ];
+{
+  home.packages = [
+    # Run unpatched binaries on Nix/NixOS as nix-alien will download necessary dependencies for you.
+    # src: https://github.com/thiagokokada/nix-alien
+    # usage: nix-alien <binary> <args...>
+    #inputs.nix-alien.packages.${systemSettings.system}.nix-alien
+  ];
 
   # Quickly locate nix packages with specific files: https://github.com/nix-community/nix-index
   # usage: nix-locate --minimal --top-level -w lib/libgobject-2.0.so.0
-  programs.nix-index.enable = true;
+  #programs.nix-index.enable = true;
 }
