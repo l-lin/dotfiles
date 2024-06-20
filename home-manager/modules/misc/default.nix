@@ -72,6 +72,8 @@
     lm_sensors
     # Better ls command: https://github.com/lsd-rs/lsd
     lsd
+    # High precision scientific calculator with full support for physical units: https://numbat.dev/
+    numbat
     # A command-line utility for easily compressing and decompressing files and directories: https://github.com/ouch-org/ouch
     ouch
     # Stores, retrieves, generates, and synchronizes passwords securely: https://www.passwordstore.org/
