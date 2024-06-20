@@ -36,10 +36,10 @@ For bootstrapping a fresh NixOS install as root:
 
 ```bash
 nix-shell -p git gnumake nh
+mkdir -p ~/.config && cd ~/.config
 git clone https://github.com/l-lin/dotfiles
 cd dotfiles
-make nixos
-make home
+make update-nixos update-home
 reboot
 
 # synchronize shell history
