@@ -110,6 +110,8 @@ local function create_mason_config()
     -- linter
     {
       "sonarlint",
+      -- WARN: For some reason, sonarlint has heavy performance impact on the code action (> 5 minutes for the popup to appear)...
+      -- Too lazy to investigate for now...
       enabled = false,
       url = "https://gitlab.com/schrieveslaach/sonarlint.nvim",
       ft = { "go", "js", "java", "xml" },
