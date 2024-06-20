@@ -10,6 +10,10 @@
 let
   palette = config.lib.stylix.colors;
 in {
+  imports = [
+    ./pyprland
+  ];
+
   wayland.windowManager.hyprland = {
     # Whether to enable Hyprland wayland compositor
     enable = true;
@@ -21,15 +25,17 @@ in {
 
 $main_mod = SUPER
 
-$audio_mixer = ${userSettings.term} --class floating -e pulsemixer
+$audio_mixer = pypr toggle audio_mixer && hyprctl dispatch bringactivetotop
 $browser = ${userSettings.browser}
-$calendar = ${userSettings.term} --class floating -e calcure
+$calendar = pypr toggle calendar && hyprctl dispatch bringactivetotop
+$calculator = pypr toggle calculator && hyprctl dispatch bringactivetotop
 $color_picker = hyprpicker -a -r
-$file_manager = ${userSettings.term} --class floating -e ${userSettings.fileManager}
+$file_manager = pypr toggle file_manager && hyprctl dispatch bringactivetotop
 $menu = rofi -show drun
 $lock_screen = wlogout
 $screenshot = grim -g "$(slurp)" - | satty --filename - --fullscreen --output-filename ${config.xdg.userDirs.pictures}/screenshot-$(date '+%Y-%m-%d-%H%M%S').png --copy-command wl-copy --early-exit
 $terminal = ${userSettings.term} -e tmux -2 -u
+$terminal_float = pypr toggle terminal && hyprctl dispatch bringactivetotop
 
 # color scheme
 $active_border_color = rgb(${palette.base05})
