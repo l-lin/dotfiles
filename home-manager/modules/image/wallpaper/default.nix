@@ -11,7 +11,7 @@
       any = {
         duration = "1h";
         mode = "center";
-        path = ./. + "/${config.theme.polarity}/";
+        path = "${config.xdg.userDirs.pictures}/wallpapers/${config.theme.polarity}/";
       };
     };
   };

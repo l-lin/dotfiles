@@ -37,7 +37,7 @@ in {
   stylix = {
     inherit polarity;
     # For some reason, stylix needs a background image...
-    image = ../../../image/wallpaper/light/scarlet-tree.png;
+    image = ../../../image/wallpaper/pictures/cat.jpg;
     cursor = {
       # Material Based Cursor Theme: https://github.com/ful1e5/Bibata_Cursor
       name = "Bibata-Modern-Classic";
