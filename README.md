@@ -252,6 +252,15 @@ Don't forget to apply your change in your home-manager afterwards!
 
 Source: https://nixos-and-flakes.thiscute.world/nixos-with-flakes/downgrade-or-upgrade-packages
 
+#### Some packages are broken after an upgrade
+
+If you are living dangerously, i.e. you are using the unstable version of `nixpkgs`,
+each package may be upgraded to their latest version. So you may have some packages
+that are not behaving the same as you wanted or are just broken.
+
+Here's a tutorial of someone that used `git bisect` to find and fix his issue:
+https://ipetkov.dev/blog/bisecting-nix-configurations/.
+
 ### Configuration
 
 #### Symlink configuration files whenever you can
