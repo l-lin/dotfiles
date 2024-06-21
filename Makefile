@@ -104,10 +104,9 @@ remove-symlinks:
 
 # --------------------------------------------------------------------------
 
-## reload-hyprland: reload hyprland configuration
-reload-hyprland:
-	@echo -e "${BLUE} I ${NC} Reloading Hyprland configuration..."
-	@hyprctl reload
+## reload-pyprland: reload pyprland configuration
+reload-pyprland:
+	@echo -e "${BLUE} I ${NC} Reloading pyprland configuration..."
 	@pypr reload
 
 ## install-cheatsheets: install navi cheatsheets if not present

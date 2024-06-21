@@ -39,7 +39,8 @@ nix-shell -p git gnumake nh
 mkdir -p ~/.config && cd ~/.config
 git clone https://github.com/l-lin/dotfiles
 cd dotfiles
-make update-nixos update-home
+make update-nixos
+make update-home
 reboot
 
 # synchronize shell history
