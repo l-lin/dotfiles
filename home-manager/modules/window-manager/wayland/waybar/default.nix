@@ -83,12 +83,7 @@ in {
       "2": "",
       "3": "󰈹",
       "4": "󰍡",
-      "5": "󰝚",
-      "scratch_audio_mixer": "_󰍰",
-      "scratch_calendar": "_󰃭",
-      "scratch_calculator": "_",
-      "scratch_file_manager": "_󰴉",
-      "scratch_terminal": "_",
+      "5": "󰝚"
     },
     "icon-size": 50,
     "sort-by-number": true,

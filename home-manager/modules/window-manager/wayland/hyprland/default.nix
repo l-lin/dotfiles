@@ -25,17 +25,18 @@ in {
 
 $main_mod = SUPER
 
-$audio_mixer = pypr toggle audio_mixer && hyprctl dispatch bringactivetotop
+$audio_mixer = pypr toggle audio_mixer
 $browser = ${userSettings.browser}
-$calendar = pypr toggle calendar && hyprctl dispatch bringactivetotop
-$calculator = pypr toggle calculator && hyprctl dispatch bringactivetotop
+$calendar = pypr toggle calendar
+$calculator = pypr toggle calculator
 $color_picker = hyprpicker -a -r
-$file_manager = pypr toggle file_manager && hyprctl dispatch bringactivetotop
+$file_manager = pypr toggle file_manager
 $menu = rofi -show drun
+$messaging = pypr toggle messaging
 $lock_screen = wlogout
 $screenshot = grim -g "$(slurp)" - | satty --filename - --fullscreen --output-filename ${config.xdg.userDirs.pictures}/screenshot-$(date '+%Y-%m-%d-%H%M%S').png --copy-command wl-copy --early-exit
 $terminal = ${userSettings.term} -e tmux -2 -u
-$terminal_float = pypr toggle terminal && hyprctl dispatch bringactivetotop
+$terminal_float = pypr toggle terminal
 
 # color scheme
 $active_border_color = rgb(${palette.base05})

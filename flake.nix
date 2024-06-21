@@ -32,10 +32,7 @@
     };
 
     # Spotify client
-    spicetify-nix = {
-      url = "github:the-argus/spicetify-nix";
-      inputs.nipxpkgs.follows = "nixpkgs";
-    };
+    spicetify-nix.url = "github:the-argus/spicetify-nix";
 
     # Run unpatched binaries on NixOS
     nix-alien.url = "github:thiagokokada/nix-alien";
