@@ -62,6 +62,15 @@ margin = 50
 size = "80% 85%"
 unfocus = "hide"
 
+[scratchpads.music_player]
+command = "spotify"
+animation = "fromBottom"
+title = "re:.*Spotify.*"
+match_by = "title"
+lazy = true
+margin = 50
+unfocus = "hide"
+
 [scratchpads.terminal]
 command = "${userSettings.term} --class scratchpad-terminal"
 animation = "fromTop"

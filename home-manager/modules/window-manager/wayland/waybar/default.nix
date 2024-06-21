@@ -82,13 +82,12 @@ in {
       "1": "󰠮",
       "2": "",
       "3": "󰈹",
-      "4": "",
-      "5": "󰝚"
+      "4": ""
     },
     "icon-size": 50,
     "sort-by-number": true,
     "persistent-workspaces": {
-      "*": 5
+      "*": 4
     }
   },
 
