@@ -11,7 +11,9 @@
 [pyprland]
 plugins = [
   # Easily toggle the visibility of applications: https://hyprland-community.github.io/pyprland/scratchpads.html.
-  "scratchpads"
+  "scratchpads",
+  # Implements a workspace layout where one window is bigger and centered, other windows are tiled as usual in the background: https://hyprland-community.github.io/pyprland/layout_center.html
+  "layout_center"
 ]
 
 # SCRATCHPADS -----------------------------------------------------------------
