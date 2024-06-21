@@ -146,7 +146,7 @@ change-theme:
 	fi
 	@echo -e "${BLUE} I ${NC} Changing theme to '${TO}'..."
 	@sed -i 's~theme = "\(.*\)"~theme = "${TO}"~' flake.nix
-	@$(MAKE) update-home reload-hyprland --no-print-directory
+	@$(MAKE) update-home --no-print-directory
 
 .PHONY: help
 all: help
