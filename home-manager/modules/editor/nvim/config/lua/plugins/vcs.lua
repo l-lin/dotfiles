@@ -21,6 +21,7 @@ return {
       { "<leader>gc", "<cmd>G commit<cr>", desc = "git commit" },
       { "<leader>gd", "<cmd>G difftool<cr>", desc = "git difftool" },
       { "<leader>gp", "<cmd>G pull<cr>", desc = "git pull" },
+      { "<leader>gO", "<cmd>G -p push<cr>", desc = "git push and display git message (useful for creating new PR/MR where the url is displayed in the git push message)" },
       { "<leader>gP", "<cmd>G push<cr>", desc = "git push" },
       { "<leader>gF", "<cmd>G push --force-with-lease<cr>", desc = "git push --force-with-lease" },
       { "<leader>gb", "<cmd>G blame<cr>", desc = "git blame" },
