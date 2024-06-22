@@ -6,6 +6,14 @@ local map = vim.keymap.set
 -- buffer
 map("n", "<F28>", "<cmd>bd<CR>", { noremap = true, silent = true, desc = "Close current buffer (Ctrl+F4)" })
 
+-- navigation
+map("n", "<C-d>", "<C-d>zz", { noremap = true })
+map("n", "<C-u>", "<C-u>zz", { noremap = true })
+
+-- search
+map("n", "n", "nzzzv", { noremap = true })
+map("n", "N", "Nzzzv", { noremap = true })
+
 -- tab
 map("n", "]<tab>", "<cmd>tabnext<cr>", { noremap = true, desc = "Next Tab" })
 map("n", "[<tab>", "<cmd>tabprevious<cr>", { noremap = true, desc = "Previous Tab" })
@@ -25,7 +33,7 @@ map("x", "^", "0")
 map("n", "^", "0")
 
 -- documentation
-vim.cmd([[ command CheatSheet split $HOME/.config/nvim/doc/cheat_sheet.txt]])
+vim.cmd([[ command CheatSheet split $HOME/.config/nvim/doc/cheat_sheet.txt ]])
 
 -- lazy
 vim.keymap.del("n", "<leader>l")
