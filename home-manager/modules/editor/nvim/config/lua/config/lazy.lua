@@ -37,9 +37,10 @@ require("lazy").setup({
     { import = "plugins.extras.lang.adoc" },
     { import = "plugins.extras.lang.java" },
     { import = "plugins.extras.lang.go" },
-    { import = "plugins.extras.test.neotest" },
     { import = "plugins.extras.coding.leetcode" },
     { import = "plugins.extras.coding.ollama" },
+    { import = "plugins.extras.test.neotest" },
+    --{ import = "plugins.extras.vcs.gitlab" },
   },
   defaults = {
     -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
