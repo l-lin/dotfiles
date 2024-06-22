@@ -5,6 +5,17 @@ return {
   -- fuzzy finding anything anywhere
   {
     "nvim-telescope/telescope.nvim",
+    dependencies = {
+      {
+        -- live grep with args
+        "nvim-telescope/telescope-live-grep-args.nvim",
+        config = function()
+          LazyVim.on_load("telescope.nvim", function()
+            pcall(require("telescope").load_extension, "live_grep_args")
+          end)
+        end,
+      },
+    },
     keys = {
       -- disable
       { "<leader>gc", false },
@@ -33,7 +44,7 @@ return {
       {
         "<M-f>",
         function()
-          require("telescope.builtin").live_grep()
+          require("telescope").extensions.live_grep_args.live_grep_args()
         end,
         mode = "n",
         noremap = true,
@@ -43,7 +54,7 @@ return {
       {
         "<M-f>",
         function()
-          require("telescope.builtin").live_grep({ default_text = telescope_commands.get_selected_text() })
+          require("telescope-live-grep-args.shortcuts").grep_visual_selection()
         end,
         mode = "v",
         noremap = true,
@@ -65,7 +76,14 @@ return {
       defaults = {
         mappings = {
           i = {
-            ["<C-f>"] = require("telescope.actions").preview_scrolling_left,
+            ["<C-j>"] = require("telescope.actions").preview_scrolling_left,
+            ["<C-k>"] = require("telescope.actions").preview_scrolling_right,
+            ["<C-f>"] = function(prompt_bufn)
+              require("telescope-live-grep-args.actions").quote_prompt({ postfix = " -t " })(prompt_bufn)
+            end,
+            ["<C-i>"] = function(prompt_bufn)
+              require("telescope-live-grep-args.actions").quote_prompt({ postfix = " --iglob " })(prompt_bufn)
+            end,
           },
         },
         prompt_prefix = " ",
