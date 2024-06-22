@@ -84,6 +84,7 @@
     userSettings = {
       username = "l-lin";
       name = "Louis LIN";
+      email = "lin.louis@pm.me";
       editor = "nvim"; # default editor
       term = "kitty"; # default terminal emulator
       theme = "kanagawa"; # colorscheme to use
