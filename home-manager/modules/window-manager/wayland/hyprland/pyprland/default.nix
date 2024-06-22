@@ -79,5 +79,14 @@ lazy = true
 margin = 50
 size = "80% 85%"
 unfocus = "hide"
+
+# LAYOUT_CENTER -----------------------------------------------------------------
+
+[layout_center]
+margin = 50
+next = "movefocus d"
+prev = "movefocus u"
+next2 = "movefocus r"
+prev2 = "movefocus l"
   '';
 }
