@@ -37,6 +37,9 @@ edit-image = [
 open-image = [
 	{ run = 'imv "$@"', desc = "Open image", for = "linux" },
 ]
+open-pdf = [
+	{ run = 'zathura "$@"', desc = "Open PDF", for = "linux" },
+]
 
 open = [
 	{ run = 'xdg-open "$@"',                desc = "Open", for = "linux" },
@@ -65,6 +68,7 @@ rules = [
 
 	{ mime = "text/*",          use = [ "edit", "reveal" ] },
 	{ mime = "image/*",         use = [ "open-image", "edit-image", "reveal" ] },
+	{ mime = "application/pdf", use = [ "open-pdf", "open", "reveal" ] },
 	{ mime = "{audio,video}/*", use = [ "play", "reveal" ] },
 	{ mime = "inode/x-empty",   use = [ "edit", "reveal" ] },
 
