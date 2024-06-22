@@ -16,31 +16,10 @@
     withRuby = true;
     withNodeJs = true;
     withPython3 = true;
-    #extraPackages = with pkgs; [
-    #  # Formatters
-    #  nixfmt-rfc-style # Nix
-    #  black # Python
-    #  prettierd # Multi-language
-    #  shfmt # Shell
-    #  isort # Python
-    #  stylua # Lua
 
-    #  # LSP
-    #  lua-language-server
-    #  nixd
-    #  nil
-
-    #  # Tools
-    #  cmake
-    #  fswatch # File watcher utility, replacing libuv.fs_event for neovim 10.0
-    #  fzf
-    #  gcc
-    #  git
-    #  gnumake
-    #  nodejs
-    #  sqlite
-    #  tree-sitter
-    #];
+    # Add imagemagick to support rendering images with NeoVim: https://github.com/3rd/image.nvim
+    extraLuaPackages = ps: [ ps.magick ];
+    extraPackages = with pkgs; [ imagemagick ];
 
     plugins = [
       # All other plugins are managed by lazy-nvim
