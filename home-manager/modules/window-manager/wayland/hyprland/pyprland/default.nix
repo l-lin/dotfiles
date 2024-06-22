@@ -72,12 +72,12 @@ margin = 50
 unfocus = "hide"
 
 [scratchpads.terminal]
-command = "${userSettings.term} --class scratchpad-terminal"
+command = "${userSettings.term} --class scratchpad-terminal -e tmux -2 -u"
 animation = "fromTop"
 class = "scratchpad-terminal"
 lazy = true
 margin = 50
-size = "80% 85%"
+size = "60% 75%"
 unfocus = "hide"
 
 # LAYOUT_CENTER -----------------------------------------------------------------
