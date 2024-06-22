@@ -147,6 +147,7 @@ change-theme:
 	@echo -e "${BLUE} I ${NC} Changing theme to '${TO}'..."
 	@sed -i 's~theme = "\(.*\)"~theme = "${TO}"~' flake.nix
 	@$(MAKE) update-home --no-print-directory
+	@tmux source "${XDG_CONFIG_HOME}/tmux/tmux.conf"
 
 .PHONY: help
 all: help
