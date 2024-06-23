@@ -148,6 +148,7 @@ change-theme:
 	@sed -i 's~theme = "\(.*\)"~theme = "${TO}"~' flake.nix
 	@$(MAKE) update-home --no-print-directory
 	@tmux source "${XDG_CONFIG_HOME}/tmux/tmux.conf"
+	@pkill wpaperd && wpaperd -d
 
 .PHONY: help
 all: help
