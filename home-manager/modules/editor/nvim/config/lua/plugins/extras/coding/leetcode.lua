@@ -34,5 +34,6 @@ return {
   },
   opts = {
     lang = "java",
+    image_support = true,
   },
 }
