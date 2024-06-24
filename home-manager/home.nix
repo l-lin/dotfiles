@@ -18,9 +18,15 @@
 
   home.sessionVariables = {
     EDITOR = userSettings.editor;
-    TERM = userSettings.term;
     BROWSER = userSettings.browser;
     PAGER = userSettings.pager;
+
+    # No need to not set the `TERM` env variable here.
+    # Tmux will fill it automatically with its conf file.
+    # Kitty will also do it automatically.
+    # If you force the env variable here by setting "kitty" for example, you may
+    # have some unexpected behavior, for example, the zsh-vi-mode will display
+    # a block instead of a beam in insert mode.
   };
 
   nixpkgs = {

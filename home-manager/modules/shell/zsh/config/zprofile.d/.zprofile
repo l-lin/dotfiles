@@ -4,35 +4,6 @@
 #
 
 # --------------------------------------------------------
-# FZF options
-# --------------------------------------------------------
-export FZF_DEFAULT_OPTS="
---bind='?:toggle-preview' \
---bind='alt-p:toggle-preview-wrap' \
---preview-window='right:40%:border-none' \
---tiebreak=chunk \
---cycle \
---no-scrollbar
---prompt='󰍉 '
-"
-export FZF_TMUX_OPTS="-p 90%,90%"
-# preview content of the file under the cursor when searching for a file
-export FZF_CTRL_T_OPTS="--no-reverse --preview 'bat --style changes --color "always" {} | head -200'"
-# preview full command
-export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:5:wrap"
-# show the entries of the directory
-export FZF_ALT_C_OPTS="--no-reverse --sort --preview 'tree -C {} | head -200'"
-# display hidden files with CTRL-T command
-export FZF_CTRL_T_COMMAND="fd --type f --hidden --exclude .git"
-# display hidden folders with ATL-C command
-export FZF_ALT_C_COMMAND="fd --type d --hidden --exclude .git"
-
-# --------------------------------------------------------
-# navi config
-# --------------------------------------------------------
-export NAVI_FZF_OVERRIDES_VAR="--preview-window top:50%:wrap:border"
-
-# --------------------------------------------------------
 # zsh-autoquoter configuration
 # --------------------------------------------------------
 export ZAQ_PREFIXES=(
@@ -71,7 +42,5 @@ export JDTLS_JVM_ARGS="-javaagent:$HOME/.local/share/nvim/mason/packages/jdtls/l
 # find & replace + rename diff tool to use
 export REP_PAGER="delta"
 export REN_PAGER="delta"
-
-export EDITOR="nvim"
 
 # vim: ft=zsh
