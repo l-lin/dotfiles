@@ -320,6 +320,8 @@ you will need to create like this:
 
 ```nix
 home.packages = with pkgs; [
+  # Register custom script as a package so I can call it from anywhere.
+  # src: https://discourse.nixos.org/t/link-scripts-to-bin-home-manager/41774/2
   (writeShellScriptBin "my-awesome-script" ''
     ${builtins.readFile ./my-awesome-script}
   '')
