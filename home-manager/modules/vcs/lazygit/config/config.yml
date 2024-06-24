@@ -9,7 +9,7 @@ git:
   mainBranches: [master, main, develop]
   paging:
     colorArg: always
-    pager: delta --dark --paging=never
+    pager: delta --detect-dark-light=auto --paging=never
 keybinding:
   universal:
     prevPage: "<c-u>"
