@@ -40,7 +40,7 @@ in {
     "on-click": "${userSettings.term} --class floating -e yazi"
   },
   "memory": {
-    "format": "  {used:0.1f}GiB",
+    "format": "  {percentage}%",
     "on-click": "${userSettings.term} --class floating -e btop"
   },
   "cpu": {
