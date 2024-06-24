@@ -10,5 +10,11 @@
   networking = {
     hostName = systemSettings.hostname;
     networkmanager.enable = true;
+
+    # Block hosts from several well-curated sources: https://github.com/StevenBlack/hosts
+    stevenblack = {
+      enable = true;
+      block = [ "fakenews" "gambling" ];
+    };
   };
 }
