@@ -17,12 +17,12 @@ in {
   opts = {
     specs = {
       github_light_high_contrast = {
-        bg0 = "#f2eede",
-        bg1 = "#f2eede",
+        bg0 = "#EFF1F5",
+        bg1 = "#EFF1F5",
         canvas = {
-          default = "#ffffff",
-          inset = "#ffffff",
-          overlay = "#ffffff",
+          default = "#FFFFFF",
+          inset = "#FFFFFF",
+          overlay = "#FFFFFF",
         },
       },
     },

@@ -1,13 +1,13 @@
 scheme: "Github Light"
 author: "https://github.com/tinted-theming/schemes/blob/spec-0.11/base16/github.yaml"
-base00: "F2EEDE" # changed this value so it's not pure white
+base00: "EFF1F5" # changed this value so it's not pure white
 base01: "F5F5F5"
 base02: "C8C8FA"
 base03: "969896"
 base04: "010409"
 base05: "333333"
 base06: "0349B4"
-base07: "F2EEDE"
+base07: "EFF1F5"
 base08: "ED6A43"
 base09: "0086B3"
 base0A: "795DA3"
