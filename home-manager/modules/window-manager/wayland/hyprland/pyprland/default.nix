@@ -83,7 +83,7 @@ unfocus = "hide"
 # LAYOUT_CENTER -----------------------------------------------------------------
 
 [layout_center]
-margin = 50
+margin = 32
 next = "movefocus d"
 prev = "movefocus u"
 next2 = "movefocus r"
