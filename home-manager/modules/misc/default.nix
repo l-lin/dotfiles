@@ -88,6 +88,8 @@
     sd
     # Terminal based presentation tool: https://github.com/maaslalani/slides
     slides
+    # CLI tool to insert spacers when command output stops: https://github.com/samwho/spacer
+    spacer
     # A tool for managing the installation of multiple software packages in the same run-time directory tree: https://www.gnu.org/software/stow/
     stow
     # An extraction utility for archives compressed in .zip format: http://www.info-zip.org/
