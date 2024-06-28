@@ -81,4 +81,11 @@ require("lazy").setup({
   dev = {
     path = "~/perso",
   },
+  -- Since Lazy v11, it supports LuaRocks, a package manager for Lua modules, for plugins that needs to install their dependencies,
+  -- e.g. image.nvim needs magick. However, there's still some issue with Nix (I did not investigate) and installed magick manually
+  -- with home-manager, so for now, no need to enable LuaRocks.
+  rocks = {
+    enabled = false,
+    hererocks = false,
+  },
 })
