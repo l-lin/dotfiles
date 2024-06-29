@@ -4,13 +4,20 @@
 # src: https://git-scm.com/
 #
 
-{ pkgs, userSettings, ... }: {
+{ config, pkgs, userSettings, ... }: {
   home.packages = with pkgs; [ git git-lfs ];
 
   # Symlink to ~/.gitconfig
   home.file.".gitconfig".source = ./config/.gitconfig;
   # Symlink to ~/.config/git/ignore
   xdg.configFile."git/ignore".source = ./config/ignore;
+  # Symlink to ~/.config/git/core
+  xdg.configFile."git/core".text = ''
+[core]
+  editor = ${userSettings.editor}
+  autocrlf = input
+  pager = delta --${config.theme.polarity}
+  '';
   # Symlink to ~/perso/.gitconfig
   home.file."perso/.gitconfig".text = ''
 [user]

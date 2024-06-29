@@ -11,6 +11,9 @@
 [includeIf "gitdir:~/.config/"]
   path = ~/perso/.gitconfig
 
+[include]
+  path = ~/.config/git/core
+
 [alias]
   adda = add -A
   ba = branch -avv
@@ -43,10 +46,6 @@
   ui = auto
 [commit]
   verbose = true
-[core]
-  editor = nvim
-  autocrlf = input
-  pager = delta
 [credential]
   helper = cache
 # delta configuration: https://dandavison.github.io/delta/configuration.html
