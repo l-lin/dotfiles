@@ -162,20 +162,8 @@ return {
     end,
   },
 
-  -- Ensure java debugger and test packages are installed
-  {
-    "mfussenegger/nvim-dap",
-    optional = true,
-    dependencies = {
-      {
-        "williamboman/mason.nvim",
-        opts = function(_, opts)
-          opts.ensure_installed = opts.ensure_installed or {}
-          vim.list_extend(opts.ensure_installed, { "java-test", "java-debug-adapter" })
-        end,
-      },
-    },
-  },
+  -- Debugger
+  { "mfussenegger/nvim-dap" },
 
   -- Set up lsp
   {
@@ -193,14 +181,16 @@ return {
     },
   },
 
-  -- Fetch Java related libraries from another registry (main mason registry does not have the latests JDTLS + java-test).
+  -- LSP/DAP/Linter manager
   {
     "williamboman/mason.nvim",
     opts = {
+      -- Fetch Java related libraries from another registry (main mason registry does not have the latests JDTLS + java-test).
       registries = {
         "github:nvim-java/mason-registry",
         "github:mason-org/mason-registry",
       },
+      ensure_installed = { "java-debug-adapter", "java-test", "jdtls", },
     },
   },
 
