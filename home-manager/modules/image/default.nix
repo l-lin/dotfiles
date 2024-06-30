@@ -23,6 +23,8 @@
     imv
     # Simple animated GIF screen recorder with an easy to use interface: https://github.com/phw/peek
     peek
+    # A command-line application to view images from the terminal written in Rust: https://github.com/atanunq/viu
+    viu
   ];
 
   # ~/.face is used by waybar to set the user icon.
