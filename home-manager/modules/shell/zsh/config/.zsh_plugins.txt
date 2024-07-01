@@ -13,11 +13,17 @@ romkatv/powerlevel10k
 # add more completions with plugins
 zsh-users/zsh-completions
 # enhance zsh
+# set up zsh completions
 mattmc3/zephyr path:plugins/completion
+# ensure common environment variables are set
 mattmc3/zephyr path:plugins/environment
+# make the terminal more colorful
 mattmc3/zephyr path:plugins/color
+# use a Fish-like conf.d directory for sourcing configs
 mattmc3/zephyr path:plugins/confd
+# set options and aliases related to Zsh directories and dirstack
 mattmc3/zephyr path:plugins/directory
+# set history options and define history aliases
 mattmc3/zephyr path:plugins/history
 
 # interactive git
