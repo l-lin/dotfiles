@@ -3,10 +3,10 @@
 # src: https://kubernetes.io/
 #
 
-{ pkgs, ... }: {
+{ fileExplorer, pkgs, ... }: {
+  imports = fileExplorer.allSubdirs ./.;
+
   home.packages = with pkgs; [
-    # A package manager for Kubernetes: https://github.com/kubernetes/helm
-    kubernetes-helm
     # A helper to run k3s (Lightweight Kubernetes. 5 less than k8s) in a docker container: https://github.com/k3d-io/k3d/
     k3d
 
@@ -18,5 +18,7 @@
     kubecolor
     # Faster way to switch between clusters and namespaces in kubectl: https://github.com/ahmetb/kubectx
     kubectx
+    # The Kubernetes IDE: https://k8slens.dev/
+    lens
   ];
 }
