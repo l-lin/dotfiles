@@ -3,6 +3,9 @@
 # src: https://github.com/mattmc3/zephyr/blob/main/plugins/environment/environment.plugin.zsh
 #
 
+# compinit dump file used for zsh completion
+export ZSH_COMPDUMP="${XDG_CACHE_HOME:-${HOME}/.cache}/zsh/.zcompdump"
+
 # --------------------------------------------------------
 # zsh-autoquoter configuration
 # --------------------------------------------------------
