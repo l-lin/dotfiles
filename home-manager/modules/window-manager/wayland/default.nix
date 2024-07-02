@@ -7,15 +7,6 @@
 { pkgs, userSettings, ... }: {
   imports = [
     (./. + "/${userSettings.wm}")
-    ./rofi
-    ./waybar
-    ./wlogout
-  ];
-
-  home.packages = with pkgs; [
-    # Copy/paste utilities: https://github.com/bugaevc/wl-clipboard
-    wl-clipboard
-    # Day/night gamma adjustments for Wayland: https://sr.ht/~kennylevinsen/wlsunset
-    wlsunset
+    ./modules
   ];
 }
