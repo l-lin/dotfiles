@@ -11,6 +11,7 @@ let
   palette = config.lib.stylix.colors;
 in {
   imports = [
+    ./hypridle
     ./pyprland
   ];
 
