@@ -16,10 +16,10 @@
 
   home.packages = with pkgs; [
     (writeShellScriptBin "nixify" ''
-      ${builtins.readFile ./script/nixify.sh}
+      ${builtins.readFile ./scripts/nixify.sh}
     '')
     (writeShellScriptBin "flakify" ''
-      ${builtins.readFile ./script/flakify.sh}
+      ${builtins.readFile ./scripts/flakify.sh}
     '')
   ];
 }

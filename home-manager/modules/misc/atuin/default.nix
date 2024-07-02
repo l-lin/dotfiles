@@ -8,6 +8,6 @@
   home.packages = with pkgs; [ atuin ];
 
   # Symlink to ~/.config/atuin/config.toml
-  xdg.configFile."atuin/config.toml".source = ./config.toml;
+  xdg.configFile."atuin/config.toml".source = ./.config/atuin/config.toml;
 }
 

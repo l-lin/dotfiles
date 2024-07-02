@@ -8,9 +8,9 @@
   home.packages = with pkgs; [ git git-lfs ];
 
   # Symlink to ~/.gitconfig
-  home.file.".gitconfig".source = ./config/.gitconfig;
+  home.file.".gitconfig".source = ./.gitconfig;
   # Symlink to ~/.config/git/ignore
-  xdg.configFile."git/ignore".source = ./config/ignore;
+  xdg.configFile."git/ignore".source = ./.config/git/ignore;
   # Symlink to ~/.config/git/core
   xdg.configFile."git/core".text = ''
 [core]

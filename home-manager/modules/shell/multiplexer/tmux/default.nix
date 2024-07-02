@@ -39,12 +39,12 @@
     ];
 
     extraConfig = ''
-      ${builtins.readFile ./config/tmux.conf}
+      ${builtins.readFile ./.config/tmux/tmux.conf}
     '';
   };
 
   # Symlinks to ~/.config/tmux/
-  xdg.configFile."tmux/plugins.conf".source = ./config/plugins.conf;
+  xdg.configFile."tmux/plugins.conf".source = ./.config/tmux/plugins.conf;
   xdg.configFile."tmux/colorscheme.conf".text = ''
 # Colorscheme (must be set before other plugins)
 set -g @plugin 'l-lin/tmux-colorscheme'

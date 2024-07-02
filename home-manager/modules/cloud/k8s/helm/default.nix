@@ -7,5 +7,5 @@
   home.packages = with pkgs; [ kubernetes-helm ];
 
   # Symlink ~/.config/zsh/completions/
-  xdg.configFile."zsh/completions/_helm".source = ./config/zsh/completions/_helm;
+  xdg.configFile."zsh/completions/_helm".source = ./.config/zsh/completions/_helm;
 }

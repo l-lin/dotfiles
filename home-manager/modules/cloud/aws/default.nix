@@ -10,7 +10,7 @@
 
     # Script to invoke bitwarden CLI to get AWS credentials.
     (writeShellScriptBin "aws-bw" ''
-      ${builtins.readFile ./script/aws-bw.sh}
+      ${builtins.readFile ./scripts/aws-bw.sh}
     '')
   ];
 }

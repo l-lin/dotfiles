@@ -4,12 +4,12 @@
 #
 
 {
-  programs.yazi = {
-    enable = true;
-    enableZshIntegration = true;
-  };
+  # Using `programs` instead of `home.packages` so stylix can customize the theme colors.
+  programs.yazi.enable = true;
 
-  # symlink to ~/.config/yazi
-  xdg.configFile."yazi/keymap.toml".source = ./config/keymap.toml;
-  xdg.configFile."yazi/yazi.toml".source = ./config/yazi.toml;
+  # Symlink to ~/.config/yazi
+  xdg.configFile.yazi = {
+     source = ./.config/yazi;
+     recursive = true;
+  };
 }

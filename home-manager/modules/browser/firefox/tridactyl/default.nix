@@ -24,7 +24,7 @@ bind K forward
 
   # Symlink to ~/.config/tridactyl/themes
   xdg.configFile."tridactyl/themes" = {
-    source = ./themes;
+    source = ./.config/tridactyl/themes;
   };
 
   programs.firefox = {

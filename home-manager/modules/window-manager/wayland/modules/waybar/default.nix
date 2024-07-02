@@ -167,7 +167,7 @@ in {
 }
 
   '';
-  xdg.configFile."waybar/style.css".source = ./config/style.css;
+  xdg.configFile."waybar/style.css".source = ./config/waybar/style.css;
   xdg.configFile."waybar/colorscheme.css".text = ''
 @define-color fg #${palette.base05};
 @define-color fg-alt #${palette.base00};

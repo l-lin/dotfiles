@@ -7,5 +7,5 @@
   home.packages = with pkgs; [ pgcli ];
 
   # Symlink to ~/.psqlrc
-  home.file.".psqlrc".source = ./config/.psqlrc;
+  home.file.".psqlrc".source = ./.psqlrc;
 }

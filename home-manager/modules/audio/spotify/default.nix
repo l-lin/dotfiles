@@ -29,10 +29,10 @@ in {
 
   home.packages = with pkgs; [
     (writeShellScriptBin "spotify-play-pause.sh" ''
-      ${builtins.readFile ./script/spotify-play-pause.sh}
+      ${builtins.readFile ./scripts/spotify-play-pause.sh}
     '')
     (writeShellScriptBin "spotify-next.sh" ''
-      ${builtins.readFile ./script/spotify-next.sh}
+      ${builtins.readFile ./scripts/spotify-next.sh}
     '')
   ];
 }

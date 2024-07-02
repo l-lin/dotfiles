@@ -7,5 +7,5 @@
   home.packages = with pkgs; [ hypridle ];
 
   # Symlink to ~/.config/hypr/hypridle.conf
-  xdg.configFile."hypr/hypridle.conf".source = ./config/hypridle.conf;
+  xdg.configFile."hypr/hypridle.conf".source = ./.config/hypr/hypridle.conf;
 }

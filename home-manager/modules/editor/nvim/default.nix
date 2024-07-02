@@ -29,7 +29,7 @@
 
   # Symlink ~/.config/nvim
   xdg.configFile.nvim = {
-    source = ./config;
+    source = ./.config/nvim;
     recursive = true;
   };
   xdg.configFile."nvim/lua/plugins/colorscheme.lua".text = ''

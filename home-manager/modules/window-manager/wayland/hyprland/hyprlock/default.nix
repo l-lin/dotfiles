@@ -7,5 +7,5 @@
   home.packages = with pkgs; [ hyprlock ];
 
   # Symlink to ~/.config/hypr/hyprlock.conf
-  xdg.configFile."hypr/hyprlock.conf".source = ./config/hyprlock.conf;
+  xdg.configFile."hypr/hyprlock.conf".source = ./.config/hypr/hyprlock.conf;
 }

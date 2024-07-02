@@ -3,6 +3,8 @@
 # src: https://nixos.wiki/wiki/Sway
 #
 
-{
+{ fileExplorer, ... }: {
+  imports = fileExplorer.allSubdirs ./.;
+
   programs.sway.enable = true;
 }

@@ -11,5 +11,5 @@
   ];
 
   # Symlink ~/.local/share/eclipse/java-code-style.xml
-  xdg.dataFile."eclipse/java-code-style.xml".source = ./config/java-code-style.xml;
+  xdg.dataFile."eclipse/java-code-style.xml".source = ./.local/share/eclipse/java-code-style.xml;
 }

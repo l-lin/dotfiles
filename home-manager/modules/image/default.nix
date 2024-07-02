@@ -2,11 +2,8 @@
 # Image related tools.
 #
 
-{ pkgs, ... }: {
-  imports = [
-    ./satty
-    ./wallpaper
-  ];
+{ fileExplorer, pkgs, ... }: {
+  imports = fileExplorer.allSubdirs ./.;
 
   home.packages = with pkgs; [
     # A wlroots-compatible Wayland color picker that does not suck.

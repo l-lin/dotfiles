@@ -21,5 +21,5 @@ in {
       urgent:         #${palette.base08};
     }
   '';
-  xdg.configFile."rofi/config.rasi".source = ./config/config.rasi;
+  xdg.configFile."rofi/config.rasi".source = ./config/rofi/config.rasi;
 }

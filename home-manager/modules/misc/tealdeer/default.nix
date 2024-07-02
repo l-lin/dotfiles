@@ -7,5 +7,5 @@
   home.packages = with pkgs; [ tealdeer ];
 
   # Symlink to ~/.config/tealdeer/config.toml
-  xdg.configFile."tealdeer/config.toml".source = ./config.toml;
+  xdg.configFile."tealdeer/config.toml".source = ./.config/tealdeer/config.toml;
 }

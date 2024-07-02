@@ -11,5 +11,5 @@
   };
 
   # Symlink to ~/.config/navi/config.yaml
-  xdg.configFile."navi/config.yaml".source = ./config/config.yaml;
+  xdg.configFile."navi/config.yaml".source = ./.config/navi/config.yaml;
 }

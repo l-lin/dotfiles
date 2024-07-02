@@ -10,5 +10,5 @@
   };
 
   # Symlink to ~/.config/swaylock/config
-  xdg.configFile."swaylock/config".source = ./config/config;
+  xdg.configFile."swaylock/config".source = ./.config/swaylock/config;
 }

@@ -6,7 +6,7 @@ NIX_PROFILE=l-lin
 NIX_HOST=nixos
 THEMES_FOLDER=./home-manager/modules/style/themes
 
-PRE_COMMIT_FILE=./home-manager/modules/vcs/git/script/pre-commit.sh
+PRE_COMMIT_FILE=./home-manager/modules/vcs/git/scripts/pre-commit.sh
 
 BLUE=\033[1;30;44m
 YELLOW=\033[1;30;43m

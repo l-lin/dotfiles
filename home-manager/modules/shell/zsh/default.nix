@@ -15,12 +15,12 @@
     #
     # So if I want to add my own `.zshenv` content with the env variables provided by home-manager,
     # we can append with the following:
-    envExtra = builtins.readFile ./config/.zshenv;
+    envExtra = builtins.readFile ./.config/zsh/.zshenv;
   };
 
   # Symlink ~/.config/zsh
   xdg.configFile.zsh = {
-    source = ./config;
+    source = ./.config/zsh;
     recursive = true;
   };
 }
