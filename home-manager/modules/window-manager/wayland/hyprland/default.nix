@@ -6,14 +6,11 @@
 # - https://wiki.hyprland.org/Nix/Hyprland-on-NixOS/
 #
 
-{ config, pkgs, userSettings, ... }:
+{ config, fileExplorer, pkgs, userSettings, ... }:
 let
   palette = config.lib.stylix.colors;
 in {
-  imports = [
-    ./hypridle
-    ./pyprland
-  ];
+  imports = fileExplorer.allSubdirs ./.;
 
   wayland.windowManager.hyprland = {
     # Whether to enable Hyprland wayland compositor

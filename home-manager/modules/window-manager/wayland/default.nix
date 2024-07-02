@@ -8,7 +8,6 @@
   imports = [
     (./. + "/${userSettings.wm}")
     ./rofi
-    ./swaylock
     ./waybar
     ./wlogout
   ];
