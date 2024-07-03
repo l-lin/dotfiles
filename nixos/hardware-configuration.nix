@@ -37,10 +37,10 @@
   networking.useDHCP = lib.mkDefault true;
   # networking.interfaces.br-3dc72680aecc.useDHCP = lib.mkDefault true;
   # networking.interfaces.docker0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.veth2da7146.useDHCP = lib.mkDefault true;
-  # networking.interfaces.veth43ffddf.useDHCP = lib.mkDefault true;
-  # networking.interfaces.veth6f9678e.useDHCP = lib.mkDefault true;
-  # networking.interfaces.vethdf768b2.useDHCP = lib.mkDefault true;
+  # networking.interfaces.veth55cff37.useDHCP = lib.mkDefault true;
+  # networking.interfaces.veth58878ad.useDHCP = lib.mkDefault true;
+  # networking.interfaces.veth7739270.useDHCP = lib.mkDefault true;
+  # networking.interfaces.veth83a27e9.useDHCP = lib.mkDefault true;
   # networking.interfaces.wlo1.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
