@@ -80,13 +80,15 @@ There are several ways to install a new package in home-manager:
 ```nix
 { pkgs, ... }: {
 
-  # By declaring directly their package name
+  # By declaring directly their package name.
+  # Using this way will only install the package.
   home.packages = with pkgs; [
     your-package
   ];
 
   # Sometimes, there's an option for that. You can check directly in https://mynixos.com.
-  # You will this syntax if you need to configure your package the "Nix way".
+  # You can use this syntax if you want to use default options set by home-manager or if
+  # some other package needs to know if your package is enabled or not (e.g. stylix).
   programs.your-package = {
     enable = true;
   };
