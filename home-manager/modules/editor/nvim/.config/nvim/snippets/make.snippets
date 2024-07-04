@@ -1,0 +1,33 @@
+# makefile
+
+snippet init
+	default: help
+
+	PROJECT_NAME=$(shell basename "$(PWD)")
+	OUTPUT_FOLDER=out
+
+	BLUE=\033[1;30;44m
+	YELLOW=\033[1;30;43m
+	RED=\033[1;30;41m
+	NC=\033[0m
+
+	## hello: say hello
+	hello:
+		@if [ -z \${AUDIENCE} ]; then \
+			echo 'Missing "AUDIENCE" argument, usage: "make hello AUDIENCE=<audience>"' >/dev/stderr && exit 1; \
+		fi
+		@echo -e "\${BLUE} I \${NC} Hello, \${AUDIENCE}."
+
+	.PHONY: help test
+	all: help
+	help: Makefile
+		@echo
+		@echo " Choose a command run in "\${PROJECT_NAME}":"
+		@echo
+		@sed -n 's/^##//p' \$< | column -t -s ':' |  sed -e 's/^/ /'
+		@echo
+
+snippet recipe
+	## ${1}: ${2}
+	${1}:
+		@${3}
