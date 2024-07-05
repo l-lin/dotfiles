@@ -20,7 +20,18 @@
   '';
   # Symlink to ~/perso/.gitconfig
   home.file."perso/.gitconfig".text = ''
+[commit]
+  # sign commits
+  gpgsign = true
+[gpg]
+  format = ssh
+[gpg "ssh"]
+  allowedSignersFile = ~/.ssh/allowed_signers
+[tag]
+  # sign tags
+  gpgsign = true
 [user]
   email = ${userSettings.email}
+  signingkey = ~/.ssh/id_ed25519.pub
   '';
 }

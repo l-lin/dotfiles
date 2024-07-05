@@ -45,6 +45,7 @@
   # activate color for all commands
   ui = auto
 [commit]
+  # display the pull/merge request url
   verbose = true
 [credential]
   helper = cache
