@@ -7,7 +7,10 @@
 set -eu
 
 if [ ! -f .envrc ]; then
-  echo 'use nix' > .envrc
+  cat << EOF > .envrc
+use nix
+dotenv_if_exists
+EOF
   direnv allow
 fi
 
@@ -31,6 +34,9 @@ pkgs.mkShell {
   ];
 }
 
+# If you need to export some environment variables, you can create a .env file and put them there.
+# They will be loaded automatically.
+
 
 # If you need multiple tools with specific revision, you can import multiple nixpkgs.
 #let
@@ -51,6 +57,6 @@ pkgs.mkShell {
 #  ];
 #}
 EOF
-  ${EDITOR:-vim} shell.nix
+  ${EDITOR:-nvim} shell.nix
 fi
 
