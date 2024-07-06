@@ -10,8 +10,6 @@
     # A helper to run k3s (Lightweight Kubernetes. 5 less than k8s) in a docker container: https://github.com/k3d-io/k3d/
     k3d
 
-    # Kubernetes CLI To Manage Your Clusters In Style: https://github.com/derailed/k9s
-    k9s
     # Kubernetes CLI: https://github.com/kubernetes/kubectl
     kubectl
     # Colorizes kubectl output: https://github.com/kubecolor/kubecolor
