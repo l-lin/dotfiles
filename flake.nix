@@ -15,6 +15,8 @@
       # https://vtimofeenko.com/posts/practical-nix-flake-anatomy-a-guided-tour-of-flake.nix/#inputsfollows
       inputs.nixpkgs.follows = "nixpkgs";
     };
+ 
+    # -------------------------------------------------------------
 
     # Hyprland window manager
     hyprland = {
@@ -22,20 +24,26 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Colorscheme
-    nix-colors.url = "github:misterio77/nix-colors";
-
     # Icons for LF
     lf-icons = {
       url = "github:gokcehan/lf";
       flake = false;
     };
 
-    # Spotify client
-    spicetify-nix.url = "github:the-argus/spicetify-nix";
-
     # Run unpatched binaries on NixOS
     nix-alien.url = "github:thiagokokada/nix-alien";
+
+    # Colorscheme
+    nix-colors.url = "github:misterio77/nix-colors";
+
+    # Atomic secret provisioning for NixOS based on sops
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Spotify client
+    spicetify-nix.url = "github:the-argus/spicetify-nix";
 
     # Colorscheme management
     stylix.url = "github:danth/stylix";
