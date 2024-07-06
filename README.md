@@ -458,6 +458,26 @@ So it should be easy to add new themes without much hassle.
 
 You can add them at the [themes folder](./home-manager/modules/style/themes/).
 
+#### XDG folder names and home directory as variables
+
+You can access to the XDG folder names and home directory by having `config` as parameter:
+
+```nix
+{ config, ... }: {
+  somePackage = {
+    # Interpolates into ~/some/file.txt
+    someOptionThatNeedsHomeDirectory = "${config.home.homeDirectory}/some/file.txt";
+
+    # Interpolates into ~/.config/some/file.txt
+    someOptionThatNeedsXdgConfigFolderName = "${config.xdg.configHome}/some/file.txt";
+
+    # Interpolates into ~/.local/share/some/file.txt
+    someOptionThatNeedsXdgDataFolderName = "${config.xdg.dataHome}/some/file.txt";
+  };
+}
+```
+
+
 ### Run
 
 #### Running an external binary on NixOS
