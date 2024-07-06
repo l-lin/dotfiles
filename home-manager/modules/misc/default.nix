@@ -10,6 +10,8 @@
     acpi
     # Code search-and-replace tool: https://github.com/dalance/amber
     amber
+    # A CLI utility for displaying current network utilization: https://github.com/imsnif/bandwhich
+    bandwhich
     # A menu-driven bash script for the management of removable media with udisks: https://github.com/jamielinux/bashmount
     bashmount
     # Read and control device brightness: https://github.com/Hummer12007/brightnessctl
@@ -92,6 +94,8 @@
     spacer
     # A tool for managing the installation of multiple software packages in the same run-time directory tree: https://www.gnu.org/software/stow/
     stow
+    # A log file highlighter: https://github.com/bensadeh/tailspin
+    tailspin
     # An extraction utility for archives compressed in .zip format: http://www.info-zip.org/
     unzip
     # Modern watch command: https://github.com/sachaos/viddy
