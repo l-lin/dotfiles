@@ -18,6 +18,18 @@ snippet init
 		fi
 		@echo -e "\${BLUE} I \${NC} Hello, \${AUDIENCE}."
 
+	## watch: watch source files
+	watch:
+		@echo "  > Watching files..."
+		@if !type "entr" > /dev/null 2>&1; then \
+			echo "  < Please install entr: http://eradman.com/entrproject/"; \
+		else \
+			while sleep 1; do \
+				find -type f -name '*.adoc' -or -name '*.yml' \
+				| entr -d $(MAKE) -s build; \
+			done; \
+		fi
+
 	.PHONY: help test
 	all: help
 	help: Makefile
