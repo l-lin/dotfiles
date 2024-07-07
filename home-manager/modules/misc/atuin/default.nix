@@ -4,11 +4,11 @@
 # src: https://github.com/atuinsh/atuin
 #
 
-{ config, pkgs, ... }: {
+{ config, pkgs, secrets, ... }: {
   home.packages = with pkgs; [ atuin ];
 
   # Generate the atuin key with sops-nix.
-  sops.secrets.atuin-key.sopsFile = ./secrets/atuin.yml;
+  sops.secrets.atuin-key.sopsFile = "${secrets}/sops/atuin.yaml";
 
   # Symlink to ~/.config/atuin/config.toml
   xdg.configFile."atuin/config.toml".text = ''

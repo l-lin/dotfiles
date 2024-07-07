@@ -47,12 +47,20 @@
 
     # Colorscheme management
     stylix.url = "github:danth/stylix";
+ 
+    ########################  My own repositories  #########################################
+
+    secrets = {
+      url = "git+ssh://git@github.com/l-lin/secrets.git?shallow=1";
+      flake = false;
+    };
   };
 
   outputs = {
     self,
     nixpkgs,
     home-manager,
+    secrets,
     ...
   } @ inputs: # <- this `@inputs` will expose the block of code below, to the inputs that you set above.
 
@@ -136,6 +144,7 @@
           inherit systemSettings;
           inherit userSettings;
           inherit inputs outputs;
+          inherit secrets;
         };
         modules = [./home-manager/home.nix];
       };

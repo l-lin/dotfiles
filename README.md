@@ -39,8 +39,8 @@ nix-shell -p git gnumake nh
 mkdir -p ~/.config && cd ~/.config
 git clone https://github.com/l-lin/dotfiles
 cd dotfiles
-make import-keys
 make update-nixos
+make import-keys
 make update-home
 reboot
 ```
@@ -479,28 +479,7 @@ You can access to the XDG folder names and home directory by having `config` as 
 
 You need to put some secret and use it in some configuration?
 
-First, create `home-manager/modules/your-module/secrets/your-module.yml` with `sops`:
-
-```bash
-mkdir -p home-manager/modules/your-module/secrets
-# sops will use age with your ~/.ssh/l-lin private key to decrypt the your-module.yml file
-sops home-manager/modules/your-module/secrets/your-module.yml
-```
-
-In the module configuration file, add the secret:
-
-```nix
-{ config, ... }: {
-  sops.secrets.your-secret.sopsFile = ./secrets/your-module.yml;
-
-  programs.your-module = {
-    enable = true;
-    settings = {
-      tokenFile = config.sops.secrets.your-secret.path;
-    };
-  };
-}
-```
+Check your [secrets private repository](https://github.com/l-lin/secrets).
 
 ### Run
 

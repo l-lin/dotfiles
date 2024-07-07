@@ -629,9 +629,27 @@
         "nix-alien": "nix-alien",
         "nix-colors": "nix-colors",
         "nixpkgs": "nixpkgs_2",
+        "secrets": "secrets",
         "sops-nix": "sops-nix",
         "spicetify-nix": "spicetify-nix",
         "stylix": "stylix"
+      }
+    },
+    "secrets": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1720385145,
+        "narHash": "sha256-oAFR2u4bYsAyz+BpiuDkdR0MU4F6Q1jXOJaiwiukcyM=",
+        "ref": "refs/heads/main",
+        "rev": "ca6ac640e9c91b7ba001499faf46908455e95de0",
+        "shallow": true,
+        "type": "git",
+        "url": "ssh://git@github.com/l-lin/secrets.git"
+      },
+      "original": {
+        "shallow": true,
+        "type": "git",
+        "url": "ssh://git@github.com/l-lin/secrets.git"
       }
     },
     "sops-nix": {
