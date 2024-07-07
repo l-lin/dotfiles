@@ -32,35 +32,34 @@ if [ ! -e flake.nix ]; then
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
-  outputs = { nixpkgs, flake-utils, ... }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = nixpkgs.legacyPackages.\${system};
+  outputs = { nixpkgs, flake-utils, ... }: flake-utils.lib.eachDefaultSystem (system:
+    let
+      pkgs = nixpkgs.legacyPackages.\${system};
 
-        # If you need to perform some customization, you can override it like this:
-        #customPkgs = (import nixpkgs {
-        #  inherit system;
-        #  config = {
-        #    allowBroken = true;
-        #    # Allow insecure package, see https://discourse.nixos.org/t/allow-insecure-packages-in-flake-nix/34655/2.
-        #    permittedInsecurePackages = [
-        #      "foo"
-        #    ];
-        #  };
-        #});
-      in
-      {
-        devShells.default = pkgs.mkShell {
-          packages = with pkgs; [
-            # Use to be able to call "make".
-            gnumake
-            # add your packages here
-          ];
+      # If you need to perform some customization, you can override it like this:
+      #customPkgs = (import nixpkgs {
+      #  inherit system;
+      #  config = {
+      #    allowBroken = true;
+      #    # Allow insecure package, see https://discourse.nixos.org/t/allow-insecure-packages-in-flake-nix/34655/2.
+      #    permittedInsecurePackages = [
+      #      "foo"
+      #    ];
+      #  };
+      #});
+    in {
+      devShells.default = pkgs.mkShell {
+        packages = with pkgs; [
+          # Use to be able to call "make".
+          gnumake
+          # add your packages here
+        ];
 
-          # Add your environment variables here, or create a .env file.
-          #THIS_IS_AN_ENV_VAR = "Hello";
-        };
-      });
+        # Add your environment variables here, or create a .env file.
+        #THIS_IS_AN_ENV_VAR = "Hello";
+      };
+    }
+  );
 }
 EOF
   ${EDITOR:-nvim} flake.nix
