@@ -32,6 +32,6 @@
   gpgsign = true
 [user]
   email = ${userSettings.email}
-  signingkey = ~/.ssh/id_ed25519.pub
+  signingkey = ~/.ssh/${userSettings.username}.pub
   '';
 }

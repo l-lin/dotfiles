@@ -101,7 +101,6 @@
       browser = "firefox"; # default browser
       pager = "bat"; # default pager
       fileManager = "yazi"; # TUI file manager (lf or yazi)
-      sshKey = "id_ed25519"; # ssh key to use
     };
 
     # shared utility libraries

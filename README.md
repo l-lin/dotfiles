@@ -39,8 +39,8 @@ nix-shell -p git gnumake nh
 mkdir -p ~/.config && cd ~/.config
 git clone https://github.com/l-lin/dotfiles
 cd dotfiles
-make update-nixos
 make import-keys
+make update-nixos
 make update-home
 reboot
 ```
@@ -483,7 +483,7 @@ First, create `home-manager/modules/your-module/secrets/your-module.yml` with `s
 
 ```bash
 mkdir -p home-manager/modules/your-module/secrets
-# sops will use age with your ~/.ssh/id_ed25519 private key to decrypt the your-module.yml file
+# sops will use age with your ~/.ssh/l-lin private key to decrypt the your-module.yml file
 sops home-manager/modules/your-module/secrets/your-module.yml
 ```
 
