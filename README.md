@@ -481,18 +481,19 @@ You can access to the XDG folder names and home directory by having `config` as 
 
 You need to put some secret and use it in some configuration?
 
-First, edit `home-manager/modules/security/sops/secrets.yml` with `sops`:
+First, create `home-manager/modules/your-module/secrets/your-module.yml` with `sops`:
 
 ```bash
-# sops will use age with your ~/.ssh/id_ed25519 private key to decrypt the secrets.yml file
-sops home-manager/modules/security/sops/secrets.yml
+mkdir -p home-manager/modules/your-module/secrets
+# sops will use age with your ~/.ssh/id_ed25519 private key to decrypt the your-module.yml file
+sops home-manager/modules/your-module/secrets/your-module.yml
 ```
 
 In the module configuration file, add the secret:
 
 ```nix
 { config, ... }: {
-  sops.secrets.your-secret = {};
+  sops.secrets.your-secret.sopsFile = ./secrets/your-module.yml;
 
   programs.your-module = {
     enable = true;

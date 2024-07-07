@@ -7,6 +7,6 @@
       readset = builtins.readDir rootPath;
       dirset = filterAttrs (_: type: type == "directory") readset;
       dirs = map (path: "${rootPath}/${path}") (builtins.attrNames dirset);
-      filteredDirs = filter (dir: !(any (name: dir == "${rootPath}/${name}") [ ".config" ".local" "pictures" "hosts" "scripts" ])) dirs;
+      filteredDirs = filter (dir: !(any (name: dir == "${rootPath}/${name}") [ ".config" ".local" "pictures" "hosts" "scripts" "secrets" ])) dirs;
     in filteredDirs;
 }
