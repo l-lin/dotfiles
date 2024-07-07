@@ -40,11 +40,9 @@ mkdir -p ~/.config && cd ~/.config
 git clone https://github.com/l-lin/dotfiles
 cd dotfiles
 make update-nixos
+make import-keys
 make update-home
 reboot
-
-# synchronize shell history
-atuin login -u l-lin
 ```
 
 ---

@@ -104,6 +104,10 @@ remove-symlinks:
 
 # --------------------------------------------------------------------------
 
+## import-keys: import SSH keys, SOPS age key and create git allowed signers
+import-keys:
+	@nix-shell --command zsh -p bitwarden-cli jq ssh-to-age --run "import-keys"
+
 ## reload-pyprland: reload pyprland configuration
 reload-pyprland:
 	@echo -e "${BLUE} I ${NC} Reloading pyprland configuration..."
