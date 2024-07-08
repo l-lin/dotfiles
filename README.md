@@ -35,13 +35,13 @@ $ nix-shell -p tree --run 'tree -d -L 1'
 For bootstrapping a fresh NixOS install as root:
 
 ```bash
-nix-shell -p git gnumake nh
+nix-shell -p git just nh
 mkdir -p ~/.config && cd ~/.config
 git clone https://github.com/l-lin/dotfiles
 cd dotfiles
-make import-keys
-make update-nixos
-make update-home
+just import-keys
+just update-nixos
+just update-home
 reboot
 ```
 
