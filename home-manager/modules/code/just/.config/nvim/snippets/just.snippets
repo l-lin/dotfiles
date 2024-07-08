@@ -21,7 +21,8 @@ snippet sample
     else \
       while sleep 1; do \
         find -type f -name '*.adoc' -or -name '*.yml' \
-        | entr -d just build; \
+        | entr -d just build \
+        | spacer; \
       done; \
     fi
 

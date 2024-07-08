@@ -15,6 +15,9 @@ EOF
 fi
 
 if [ ! -e flake.nix ]; then
+  touch flake.nix
+  # flake.nix must be tracked by git, otherwise it will not be picked up by direnv...
+  git add flake.nix
   cat <<EOF > flake.nix
 {
   description = "A basic flake with a shell";
@@ -50,8 +53,12 @@ if [ ! -e flake.nix ]; then
     in {
       devShells.default = pkgs.mkShell {
         packages = with pkgs; [
-          # Use to be able to call "make".
-          gnumake
+          # Run arbitrary commands when files change.
+          entr
+          # A handy way to save and run project-specific commands.
+          just
+          # CLI tool to insert spacers when command output stops.
+          spacer
           # add your packages here
         ];
 
