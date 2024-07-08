@@ -32,19 +32,19 @@ snippet sample
 
   # ----------------------------------------------------------------------
 
-  blue := '\033[1;30;44m'
-  yellow := '\033[1;30;43m'
-  red := '\033[1;30;41m'
-  nc := '\033[0m'
+  BLUE := '\033[1;30;44m'
+  YELLOW := '\033[1;30;43m'
+  RED := '\033[1;30;41m'
+  NC := '\033[0m'
 
   [private]
   info msg:
-    echo -e "{{blue}} I {{nc}} {{msg}}"
+    echo -e "{{BLUE}} I {{NC}} {{msg}}"
 
   [private]
   warn msg:
-    echo -e "{{yellow}} I {{nc}} {{msg}}"
+    echo -e "{{YELLOW}} W {{NC}} {{msg}}"
 
   [private]
   error msg:
-    echo -e "{{red}} E {{nc}} {{msg}}"
+    echo -e "{{RED}} E {{NC}} {{msg}}"
