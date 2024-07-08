@@ -1,9 +1,7 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 #
 # Refresh ZSH completions by deleting the `.zcompdump` files.
 #
-
-set -eu
 
 if [ -f "${ZSH_COMPDUMP}" ]; then
   rm "${ZSH_COMPDUMP}"
