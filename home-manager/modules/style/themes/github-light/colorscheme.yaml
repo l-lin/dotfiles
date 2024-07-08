@@ -8,7 +8,7 @@ base04: "010409"
 base05: "333333"
 base06: "0349B4"
 base07: "969896"
-base08: "ED6A43"
+base08: "A71D5D" # switched from "ED6A43" (base0E) because this is too light
 base09: "0086B3"
 base0A: "795DA3"
 base0B: "183691"

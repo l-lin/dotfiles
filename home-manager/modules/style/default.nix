@@ -74,6 +74,7 @@ in {
     targets = {
       hyprland.enable = false;
       gtk.enable = false;
+      k9s.enable = false;
       swaylock.enable = false;
       tmux.enable = false;
       waybar.enable = false;
