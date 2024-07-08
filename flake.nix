@@ -112,7 +112,7 @@
     };
 
     # shared utility libraries
-    fileExplorer = import ./lib/file-explorer.nix { inherit lib; };
+    fileExplorer = import ./scripts/file-explorer.nix { inherit lib; };
   in {
     # Your custom packages.
     # Accessible through 'nix build', 'nix shell', etc

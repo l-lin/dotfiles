@@ -24,9 +24,9 @@ $ # folder description
 $ nix-shell -p tree --run 'tree -d -L 1'
 .
 ├── home-manager # Install and configure package at user level.
-├── lib          # Contains some Nix libraries to be use in home-manager or NixOS configuration files.
 ├── nixos        # Install and configure package at system level.
 ├── pkgs         # Contains Nix custom packages that are not present in nixpkgs.
+├── scripts      # Contains some Nix scripts to be use in home-manager or NixOS configuration files, as well as some shell scripts to use outside of Nix.
 └── stow         # Configuration files that need to be writeable are symlinked in this folder.
 ```
 
@@ -39,8 +39,8 @@ nix-shell -p git gnumake nh
 mkdir -p ~/.config && cd ~/.config
 git clone https://github.com/l-lin/dotfiles
 cd dotfiles
-make update-nixos
 make import-keys
+make update-nixos
 make update-home
 reboot
 ```
