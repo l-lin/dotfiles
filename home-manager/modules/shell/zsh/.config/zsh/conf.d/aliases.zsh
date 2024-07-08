@@ -6,26 +6,29 @@
 # --------------------------------------------------------
 # Shortcuts
 # --------------------------------------------------------
+alias ap="ansible-playbook"
+# docker
+alias d="docker"
+alias dc="docker compose"
+alias g="git"
+alias h="helm"
+alias j="just"
+alias m="make"
+alias k="kubectl"
+# nix
+alias n="nix"
+alias ns="nix-shell --command zsh -p"
+alias tf="terraform"
 alias v="nvim"
-alias ddgr="BROWSER=w3m ddgr -n 5"
 # sudo
 alias sudo="sudo "
 alias _="sudo "
 alias please="sudo "
-# terraform
-alias tf="terraform"
-# kubernetes
-alias k="kubectl"
-# minikube
-alias mk="minikube"
-# helm
-alias h="helm"
-# ansible
-alias ap="ansible-playbook"
 
 # --------------------------------------------------------
 # Default options
 # --------------------------------------------------------
+alias ddgr="BROWSER=w3m ddgr -n 5"
 alias top="procs --watch --sortd cpu"
 alias watch="viddy"
 # Prevent recursive change on root directory
@@ -54,9 +57,6 @@ alias ping="prettyping --nolegend"
 alias find-dns-servers="nmcli dev show | grep 'IP4.DNS'"
 # weather
 alias weather="curl https://wttr.in/"
-# docker
-alias d="docker"
-alias dc="docker compose"
 # pandoc
 alias pandoc="docker run --rm --volume \${PWD}:/data --user $(id -u):$(id -g) pandoc/core:3.0.1-alpine"
 alias pandoc-latex="docker run --rm --volume \${PWD}:/data --user $(id -u):$(id -g) pandoc/latex:3.0.1-alpine"
@@ -65,18 +65,3 @@ alias awslocal='aws --endpoint-url=http://localhost:4566'
 # termgraph
 alias termgraph="docker run --rm --volume \${PWD}:/data --user $(id -u):$(id -g) ghcr.io/l-lin/termgraph:main"
 
-# --------------------------------------------------------
-# GIT
-# --------------------------------------------------------
-alias g="git"
-
-# --------------------------------------------------------
-# NIX
-# --------------------------------------------------------
-alias n="nix"
-alias ns="nix-shell --command zsh -p"
-
-# --------------------------------------------------------
-# SSH
-# --------------------------------------------------------
-alias lock-ssh-keys="ssh-add -D"
