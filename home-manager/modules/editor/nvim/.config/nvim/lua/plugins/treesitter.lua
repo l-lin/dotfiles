@@ -1,8 +1,4 @@
 return {
-  {
-    "nvim-treesitter/nvim-treesitter",
-    cmd = { "TSInstallSync" },
-  },
   -- Show context of the current function
   {
     "nvim-treesitter/nvim-treesitter-context",

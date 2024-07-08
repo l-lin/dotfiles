@@ -483,6 +483,28 @@ Check your [secrets private repository](https://github.com/l-lin/secrets).
 
 ### Run
 
+#### Adding new zsh completion scripts
+
+Sometimes, some commands are not available in the [default zsh completions](zsh-users/zsh-completions).
+
+However, some tools provide a completion script that is generated for you, e.g.:
+
+```bash
+just --completion zsh
+helm completion zsh
+```
+
+So after adding the completion script in your `${XDG_CONFIG_HOME}/zsh/completions` folder,
+you will notice that the completion does not work yet. It's because we are using a plugin
+that caches the completion script. So you will need to refresh the cache by calling the
+following:
+
+```bash
+refresh-zsh-completions
+```
+
+Then, open a new terminal session, and you are good to go!
+
 #### Running an external binary on NixOS
 
 > [!NOTE]

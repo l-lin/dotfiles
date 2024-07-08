@@ -43,6 +43,7 @@ require("lazy").setup({
     { import = "plugins.extras.editor.image" },
     { import = "plugins.extras.lang.adoc" },
     { import = "plugins.extras.lang.java" },
+    { import = "plugins.extras.lang.just" },
     { import = "plugins.extras.lang.go" },
     { import = "plugins.extras.test.neotest" },
     --{ import = "plugins.extras.vcs.gitlab" },
