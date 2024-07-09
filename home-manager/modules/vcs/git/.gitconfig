@@ -77,7 +77,7 @@
   # commands will be autocorrect (rset -> reset)
   autocorrect = prompt
 [init]
-  defaultBranch = master
+  defaultBranch = main
 [interactive]
   diffFilter = delta --color-only
 [log]
