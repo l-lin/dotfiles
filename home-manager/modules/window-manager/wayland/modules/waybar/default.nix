@@ -27,7 +27,7 @@ in {
 
   "modules-left": ["user", "disk", "memory", "cpu", "temperature", "tray"],
   "modules-center": ["hyprland/workspaces"],
-  "modules-right": ["privacy", "pulseaudio", "battery", "backlight", "network", "bluetooth", "clock", "custom/exit"],
+  "modules-right": ["privacy", "pulseaudio", "battery", "network", "bluetooth", "clock", "custom/exit"],
 
   // LEFT -----------------------------------------------------------
   "user": {
@@ -112,7 +112,7 @@ in {
   },
   "battery": {
     "interval": 60,
-    "format": "{icon}  {capacity}%",
+    "format": "{icon} {capacity}%",
     "format-icons": [
       "󰁺",
       "󰁻",
@@ -138,7 +138,7 @@ in {
   "network": {
     "format": "",
     "format-ethernet": "󰈁 ",
-    "format-wifi": "{icon} ",
+    "format-wifi": "{icon} {essid}",
     "format-disconnected": "󰤮 ",
     "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
     "tooltip-format-wifi": "{essid} ({signalStrength}%)",
