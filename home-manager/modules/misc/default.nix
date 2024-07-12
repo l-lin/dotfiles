@@ -88,14 +88,14 @@
     ripgrep
     # Intuitive find & replace: https://github.com/chmln/sd
     sd
-    # Terminal based presentation tool: https://github.com/maaslalani/slides
-    slides
     # CLI tool to insert spacers when command output stops: https://github.com/samwho/spacer
     spacer
     # A tool for managing the installation of multiple software packages in the same run-time directory tree: https://www.gnu.org/software/stow/
     stow
     # A log file highlighter: https://github.com/bensadeh/tailspin
     tailspin
+    # Command to produce a depth indented directory listing: https://oldmanprogrammer.net/source.php?dir=projects/tree
+    tree
     # An extraction utility for archives compressed in .zip format: http://www.info-zip.org/
     unzip
     # Modern watch command: https://github.com/sachaos/viddy
