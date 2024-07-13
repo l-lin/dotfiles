@@ -8,8 +8,9 @@
     settings = {
       AllowUsers = [ userSettings.username ];
       # Allow ssh using passphrase, for easier connection to VM.
-      PasswordAuthentication = true;
-      PermitRootLogin = "yes";
+      # Enable the following if you installed NixOS in a VM and you want to ssh in.
+      #PasswordAuthentication = true;
+      #PermitRootLogin = "yes";
     };
   };
 
