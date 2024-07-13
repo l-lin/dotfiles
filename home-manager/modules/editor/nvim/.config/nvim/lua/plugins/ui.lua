@@ -94,7 +94,7 @@ return {
   {
     "folke/which-key.nvim",
     opts = {
-      defaults = {
+      spec = {
         ["<leader>v"] = { name = "+nvim" },
       },
     },

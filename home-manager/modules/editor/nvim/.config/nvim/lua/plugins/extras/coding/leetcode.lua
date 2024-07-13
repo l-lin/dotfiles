@@ -15,7 +15,7 @@ return {
     {
       "folke/which-key.nvim",
       opts = {
-        defaults = {
+        spec = {
           ["<leader>l"] = { name = "+leet code" },
         },
       },
