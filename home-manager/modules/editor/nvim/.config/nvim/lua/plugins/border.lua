@@ -104,14 +104,6 @@ local function with_border(border_style)
       end,
     },
     {
-      "which-key.nvim",
-      opts = {
-        window = {
-          border = border_style,
-        },
-      },
-    },
-    {
       "gitsigns.nvim",
       opts = {
         preview_config = {

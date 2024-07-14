@@ -110,4 +110,12 @@ return {
       }
     }
   },
+
+  -- show keybindings in a popup
+  {
+    "which-key.nvim",
+    opts = {
+      preset = "modern",
+    },
+  },
 }
