@@ -19,6 +19,7 @@
     alsa.enable = true;
     alsa.support32Bit = true;
 
+    # Enable PulseAudio server emulation.
     pulse.enable = true;
     # If you want to use JACK applications, uncomment the following line:
     #jack.enable = true;

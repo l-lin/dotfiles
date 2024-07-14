@@ -35,12 +35,12 @@
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.br-2e818013d4e1.useDHCP = lib.mkDefault true;
+  # networking.interfaces.br-315d482c477e.useDHCP = lib.mkDefault true;
   # networking.interfaces.docker0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.veth091c3ec.useDHCP = lib.mkDefault true;
-  # networking.interfaces.veth2b47ba6.useDHCP = lib.mkDefault true;
-  # networking.interfaces.vethc06101c.useDHCP = lib.mkDefault true;
-  # networking.interfaces.vethd8bc89a.useDHCP = lib.mkDefault true;
+  # networking.interfaces.veth3a9cba8.useDHCP = lib.mkDefault true;
+  # networking.interfaces.veth676a042.useDHCP = lib.mkDefault true;
+  # networking.interfaces.veth6928964.useDHCP = lib.mkDefault true;
+  # networking.interfaces.vethde5007b.useDHCP = lib.mkDefault true;
   # networking.interfaces.wlo1.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";

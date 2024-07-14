@@ -9,8 +9,7 @@
   imports = fileExplorer.allSubdirs ./.;
 
   sound.enable = true;
-  nixpkgs.config.pulseaudio = true;
-  # Allow bluetooth audio devices to be used with PulseAudio.
+  # Use PipeWire instead of PulseAudio.
   hardware.pulseaudio.enable = false;
 }
 
