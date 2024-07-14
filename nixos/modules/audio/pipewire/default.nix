@@ -21,8 +21,15 @@
 
     # Enable PulseAudio server emulation.
     pulse.enable = true;
-    # If you want to use JACK applications, uncomment the following line:
-    #jack.enable = true;
+    # Enable JACK applications support.
+    jack.enable = true;
+    # Enable WirePlumber, a modular session / policy manager for PipeWire.
+    wireplumber.enable = true;
   };
+
+  # This is only meant for ALSA-based configurations, not for PipeWire.
+  sound.enable = false;
+  # Use PipeWire instead of PulseAudio.
+  hardware.pulseaudio.enable = false;
 }
 

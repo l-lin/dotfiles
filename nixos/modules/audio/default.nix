@@ -7,9 +7,5 @@
 
 { fileExplorer, ... }: {
   imports = fileExplorer.allSubdirs ./.;
-
-  sound.enable = true;
-  # Use PipeWire instead of PulseAudio.
-  hardware.pulseaudio.enable = false;
 }
 

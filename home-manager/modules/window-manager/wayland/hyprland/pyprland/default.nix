@@ -62,7 +62,7 @@ margin = 50
 size = "80% 85%"
 unfocus = "hide"
 
-[scratchpads.music_player]
+[scratchpads.spotify]
 command = "spotify"
 animation = "fromBottom"
 title = "re:.*Spotify.*"
@@ -70,6 +70,14 @@ match_by = "title"
 lazy = true
 margin = 50
 unfocus = "hide"
+
+[scratchpads.music_player]
+command = "${userSettings.term} --class scratchpad-music-player -e ncmpcpp --screen visualizer"
+animation = "fromRight"
+class = "scratchpad-music-player"
+lazy = true
+position = "74% 69%"
+size = "25% 25%"
 
 [scratchpads.terminal]
 command = "${userSettings.term} --class scratchpad-terminal -e tmux -2 -u"

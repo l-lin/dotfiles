@@ -471,6 +471,13 @@ You can access to the XDG folder names and home directory by having `config` as 
 
     # Interpolates into ~/.local/share/some/file.txt
     someOptionThatNeedsXdgDataFolderName = "${config.xdg.dataHome}/some/file.txt";
+
+    # Interpolates into ~/.cache/some/file.txt
+    someOptionThatNeedsXdgCacheFolderName = "${config.xdg.cacheHome}/some/file.txt";
+
+    # Interpolates into ~/Music/some/file.txt
+    # See https://home-manager-options.extranix.com/?query=xdg.userDirs&release=master for the exhaustive list of userDirs.
+    someOptionThatNeedsXdgUserDirs = "${config.xdg.userDirs.music}/some/file.txt";
   };
 }
 ```

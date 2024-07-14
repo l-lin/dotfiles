@@ -36,6 +36,7 @@ $messaging = pypr toggle messaging
 $music_player = pypr toggle music_player
 $screenshot = grim -g "$(slurp)" - | satty --filename - --fullscreen --output-filename ${config.xdg.userDirs.pictures}/screenshot-$(date '+%Y-%m-%d-%H%M%S').png --copy-command wl-copy --early-exit
 $screenrecord = pkill wf-recorder || wf-recorder -g "$(slurp)" -f ${config.xdg.userDirs.videos}/screenrecord-$(date '+%Y-%m-%d-%H%M%S').mp4
+$spotify = pypr toggle spotify
 $terminal = ${userSettings.term} -e tmux -2 -u
 $terminal_float = pypr toggle terminal
 
