@@ -47,10 +47,15 @@ find-nix-option option:
   nix-shell -p manix --run "manix '{{option}}'"
 
 #  update Nix flake lock file
-update-flake:
-  just info "Updating Nix flake lock file..."
-  nix flake update
-  just update-nixos update-home
+update-flake input="all":
+  if [[ "{{input}}" == "all" ]]; then \
+    just info "Updating Nix flake lock file..." \
+    && nix flake update \
+    && just update-nixos update-home; \
+  else \
+    just info "Updating Nix flake {{input}}..." \
+    && nix flake lock --update-input {{input}}; \
+  fi
 
 # HOME-MANAGER --------------------------------------------------------------------------
 
