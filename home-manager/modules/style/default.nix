@@ -75,6 +75,7 @@ in {
       hyprland.enable = false;
       gtk.enable = false;
       k9s.enable = false;
+      kitty.variant256Colors = true;
       swaylock.enable = false;
       tmux.enable = false;
       waybar.enable = false;

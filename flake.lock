@@ -66,22 +66,6 @@
         "type": "github"
       }
     },
-    "base16-kitty": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1665001328,
-        "narHash": "sha256-aRaizTYPpuWEcvoYE9U+YRX+Wsc8+iG0guQJbvxEdJY=",
-        "owner": "kdrag0n",
-        "repo": "base16-kitty",
-        "rev": "06bb401fa9a0ffb84365905ffbb959ae5bf40805",
-        "type": "github"
-      },
-      "original": {
-        "owner": "kdrag0n",
-        "repo": "base16-kitty",
-        "type": "github"
-      }
-    },
     "base16-schemes": {
       "flake": false,
       "locked": {
@@ -432,6 +416,23 @@
         "type": "github"
       }
     },
+    "l-lin-base16-kitty": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1721060225,
+        "narHash": "sha256-+vEXvEsar7w7wPVRmKx+rJKUTD5DBgLR7jfl0k7VhnE=",
+        "owner": "l-lin",
+        "repo": "base16-kitty",
+        "rev": "ed7fb1dec612e768c67095c853a6dcf18a7a3f6d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "l-lin",
+        "ref": "feat/cursor_text_color",
+        "repo": "base16-kitty",
+        "type": "github"
+      }
+    },
     "lf-icons": {
       "flake": false,
       "locked": {
@@ -625,6 +626,7 @@
       "inputs": {
         "home-manager": "home-manager",
         "hyprland": "hyprland",
+        "l-lin-base16-kitty": "l-lin-base16-kitty",
         "lf-icons": "lf-icons",
         "nix-alien": "nix-alien",
         "nix-colors": "nix-colors",
@@ -638,10 +640,10 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1720385145,
-        "narHash": "sha256-oAFR2u4bYsAyz+BpiuDkdR0MU4F6Q1jXOJaiwiukcyM=",
+        "lastModified": 1721027492,
+        "narHash": "sha256-xguLohG6BLNTLOqXEDDtjAMpE8/uv1iFyCj9nwsT7AA=",
         "ref": "refs/heads/main",
-        "rev": "ca6ac640e9c91b7ba001499faf46908455e95de0",
+        "rev": "4bc54f89402e1a9c31222d89aeac758e8571169a",
         "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/l-lin/secrets.git"
@@ -698,7 +700,9 @@
         "base16-fish": "base16-fish",
         "base16-foot": "base16-foot",
         "base16-helix": "base16-helix",
-        "base16-kitty": "base16-kitty",
+        "base16-kitty": [
+          "l-lin-base16-kitty"
+        ],
         "base16-tmux": "base16-tmux",
         "base16-vim": "base16-vim",
         "flake-compat": "flake-compat_2",

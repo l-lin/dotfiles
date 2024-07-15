@@ -46,13 +46,23 @@
     spicetify-nix.url = "github:the-argus/spicetify-nix";
 
     # Colorscheme management
-    stylix.url = "github:danth/stylix";
+    stylix = {
+      url = "github:danth/stylix";
+      inputs.base16-kitty.follows = "l-lin-base16-kitty";
+    };
  
     ########################  My own repositories  #########################################
 
     secrets = {
       url = "git+ssh://git@github.com/l-lin/secrets.git?shallow=1";
       flake = false;
+    };
+
+    # TODO: Remove me when https://github.com/kdrag0n/base16-kitty/pull/12 is merged.
+    # Fixed the `cursor_text_color` on kitty.
+    l-lin-base16-kitty = {
+      flake = false;
+      url = "github:l-lin/base16-kitty/feat/cursor_text_color";
     };
   };
 
