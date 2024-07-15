@@ -84,6 +84,9 @@ return {
             ["<C-i>"] = function(prompt_bufn)
               require("telescope-live-grep-args.actions").quote_prompt({ postfix = " --iglob " })(prompt_bufn)
             end,
+            ["<C-h>"] = function(prompt_bufn)
+              require("telescope-live-grep-args.actions").quote_prompt({ postfix = " -. " })(prompt_bufn)
+            end,
           },
         },
         prompt_prefix = " ",
