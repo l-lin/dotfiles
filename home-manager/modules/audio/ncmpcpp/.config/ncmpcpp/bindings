@@ -1,4 +1,4 @@
-# All keybindings viewable here: https://github.com/LukeSmithxyz/voidrice/blob/master/.config/ncmpcpp/bindings.
+# All keybindings viewable here: https://github.com/ncmpcpp/ncmpcpp/blob/master/doc/bindings
 
 def_key "?"
   show_help

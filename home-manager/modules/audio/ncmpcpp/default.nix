@@ -11,6 +11,7 @@ in {
 
   # Symlinks to ~/.config/ncmpcpp.
   xdg.configFile."ncmpcpp/bindings".source = ./.config/ncmpcpp/bindings;
+  # Default configuration: https://github.com/ncmpcpp/ncmpcpp/blob/master/doc/config.
   xdg.configFile."ncmpcpp/config".text = ''
 # miscelaneous
 ncmpcpp_directory = ${config.xdg.configHome}/ncmpcpp
@@ -22,6 +23,7 @@ visualizer_output_name = mpd_visualizer
 visualizer_type = spectrum
 visualizer_look = ●●
 visualizer_color = blue, cyan, green, yellow, magenta, red
+visualizer_in_stereo = no
 
 # appearance
 colors_enabled = yes
