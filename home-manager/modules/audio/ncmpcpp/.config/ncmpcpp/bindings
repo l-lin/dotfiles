@@ -3,20 +3,39 @@
 def_key "?"
   show_help
 
+# Navigation
 def_key "j"
   scroll_down
 def_key "k"
   scroll_up
-
 def_key "ctrl-u"
   page_up
 def_key "ctrl-d"
   page_down
+def_key "h"
+  previous_column
+def_key "l"
+  next_column
+def_key "g"
+  move_home
+def_key "G"
+  move_end
 
+# Switch screen
 def_key "P"
   show_playlist
 def_key "v"
   show_visualizer
 
+# Delete
+def_key "d"
+  delete_playlist_items
+def_key "d"
+  delete_browser_items
+def_key "d"
+  delete_stored_playlist
+
+# Features
 def_key "R"
   toggle_random
+

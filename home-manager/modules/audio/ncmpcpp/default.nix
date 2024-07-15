@@ -38,7 +38,8 @@ titles_visibility = no
 
 # progress bar
 progressbar_look = ▃▃▃
-progressbar_color = black # in light theme, black is white!
+# in light theme, black is white!
+progressbar_color = black
 progressbar_elapsed_color = blue
     '';
 }
