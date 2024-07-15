@@ -4,7 +4,6 @@
 #
 
 { config, pkgs, userSettings, ...}: let
-  progressbarColor = if (config.theme.polarity == "dark") then "black" else "white";
   ncmpcpp = pkgs.ncmpcpp.override { visualizerSupport = true; };
 in {
   home.packages = [ ncmpcpp ];
@@ -16,6 +15,7 @@ in {
 # miscelaneous
 ncmpcpp_directory = ${config.xdg.configHome}/ncmpcpp
 external_editor = ${userSettings.editor}
+startup_screen = visualizer
 
 # visualizer
 visualizer_data_source = /tmp/mpd.fifo
@@ -38,7 +38,7 @@ titles_visibility = no
 
 # progress bar
 progressbar_look = ▃▃▃
-progressbar_color = ${progressbarColor}
+progressbar_color = black # in light theme, black is white!
 progressbar_elapsed_color = blue
     '';
 }
