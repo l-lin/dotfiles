@@ -72,7 +72,7 @@ margin = 50
 unfocus = "hide"
 
 [scratchpads.music_player]
-command = "${userSettings.term} --class scratchpad-music-player -e ncmpcpp"
+command = "${userSettings.term} --class scratchpad-music-player -e ncmpcpp --screen visualizer"
 animation = "fromRight"
 class = "scratchpad-music-player"
 lazy = true

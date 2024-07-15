@@ -15,7 +15,6 @@ in {
 # miscelaneous
 ncmpcpp_directory = ${config.xdg.configHome}/ncmpcpp
 external_editor = ${userSettings.editor}
-startup_screen = visualizer
 
 # visualizer
 visualizer_data_source = /tmp/mpd.fifo
