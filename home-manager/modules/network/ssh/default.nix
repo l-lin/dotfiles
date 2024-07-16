@@ -15,6 +15,12 @@
         "*" = {
           identityFile = "${config.home.homeDirectory}/.ssh/${userSettings.username}";
         };
+        "swp*" = {
+          user = "admin";
+        };
+        "preprod-*" = {
+          user = "admin";
+        };
       };
     };
   };
