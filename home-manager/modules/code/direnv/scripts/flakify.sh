@@ -50,6 +50,9 @@ if [ ! -e flake.nix ]; then
       #    ];
       #  };
       #});
+
+      # If you only need to allowUnfree, you can do it in one-liner (but above still works):
+      #pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
     in {
       devShells.default = pkgs.mkShell {
         packages = with pkgs; [
