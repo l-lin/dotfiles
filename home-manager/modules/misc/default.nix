@@ -52,6 +52,8 @@
     grpcurl
     # Enhance shell: https://github.com/charmbracelet/gum
     gum
+    # HTTP load generator, ApacheBench (ab) replacement: https://github.com/rakyll/hey
+    hey
     # User-friendly command line HTTP client: https://httpie.io/
     httpie
     # Benchmarking tool: https://github.com/sharkdp/hyperfine
