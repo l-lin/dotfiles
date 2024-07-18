@@ -7,6 +7,7 @@
 - :speech_balloon: notification: [dunst](https://dunst-project.org/)
 - :globe_with_meridians: browser: [firefox](https://www.mozilla.org/en-US/firefox/new/)
 - :camera: screenshot: [satty](https://github.com/gabm/Satty) + [grim](https://github.com/emersion/grim) + [slurp](https://github.com/emersion/slurp)
+- :video_camera: screen recorder: [wf-recorder](https://github.com/ammen99/wf-recorder) + [slurp](https://github.com/emersion/slurp)
 - :abc: fonts: [nerd fonts](https://github.com/ryanoasis/nerd-fonts)
 - :art: color scheme: [kanagawa](https://github.com/rebelot/kanagawa.nvim)
 - :file_folder: file manager: [yazi](https://yazi-rs.github.io/) / [thunar](https://gitlab.xfce.org/xfce/thunar)
@@ -112,7 +113,7 @@ It should already be present at [vpn/default.nix](./home-manager/modules/vpn/def
 ```
 
 Download `openfortivpn-webview` and put the binary in your `$PATH`.
-It should already be present by using the derivation [./pkgs/openfortivpn-webview/default.nix]
+It should already be present by using the derivation [./pkgs/openfortivpn-webview/default.nix](./pkgs/openfortivpn-webview/default.nix)
 and importing at [vpn/default.nix](./home-manager/modules/vpn/default.nix).
 
 Then use like this:
@@ -249,6 +250,9 @@ Then in your package, you can use this pinned `nixpkgs`:
 ```
 
 Don't forget to apply your change in your home-manager afterwards!
+
+You can find the nixpkgs version/hash that contains your package at a specific version using
+https://lazamar.co.uk/nix-versions/.
 
 Source: https://nixos-and-flakes.thiscute.world/nixos-with-flakes/downgrade-or-upgrade-packages
 
