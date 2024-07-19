@@ -45,12 +45,4 @@ return {
       },
     },
   },
-  -- easily install/update lsp servers directly from neovim
-  {
-    "williamboman/mason.nvim",
-    cmd = { "MasonInstall", "MasonInstallAll" },
-    keys = {
-      { "<leader>vm", "<cmd>Mason<cr>", noremap = true, desc = "Open Mason" },
-    },
-  },
 }

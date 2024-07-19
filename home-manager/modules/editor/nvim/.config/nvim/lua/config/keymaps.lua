@@ -35,10 +35,6 @@ map("n", "^", "0")
 -- documentation
 vim.cmd([[ command CheatSheet split $HOME/.config/nvim/doc/cheat_sheet.txt ]])
 
--- lazy
-vim.keymap.del("n", "<leader>l")
-map("n", "<leader>vl", "<cmd>Lazy<cr>", { desc = "Lazy" })
-
 -- Diagnostics
 map("n", "<F25>", vim.diagnostic.open_float, { desc = "Line Diagnostics (Ctrl+F1)" })
 map("n", "<F2>", vim.diagnostic.goto_next, { desc = "Next diagnostic (F2)" })
