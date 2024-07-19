@@ -10,8 +10,8 @@ BW_SESSION=""
 username=${1:-l-lin}
 email=${2:-lin.louis@pm.me}
 
-ssh_folder="/home/${username}/.ssh"
-sops_folder="/home/${username}/.config/sops"
+ssh_folder="/${HOME}/.ssh"
+sops_folder="/${HOME}/.config/sops"
 
 # colors for logging
 blue="\e[1;30;44m"
@@ -82,6 +82,8 @@ unlock_bw
 import_ssh_keys
 create_git_allowed_signers
 import_sops_age_key
+
+ssh-add "${ssh_folder}/${username}"
 
 bw lock
 
