@@ -31,7 +31,7 @@ if [ ! -e flake.nix ]; then
   # Or if you need to pin a specific version, take one from:
   # - https://status.nixos.org/ to pin nixpkgs revision for reproducticible Nix expression
   # - https://lazamar.co.uk/nix-versions/ to find revision for a specific tool version
-  #inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  #inputs.nixpkgs.url = "github:NixOS/nixpkgs/3b24ff7508fc76bfcd203d50a37793ada396ca39";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
@@ -63,10 +63,32 @@ if [ ! -e flake.nix ]; then
           # CLI tool to insert spacers when command output stops.
           spacer
           # add your packages here
+
+          # If you need to install some python packages, uncomment the following, and install with `shellHook`.
+          #python3
+          #python3Packages.pip
+          #python3Packages.virtualenv
         ];
 
         # Add your environment variables here, or create a .env file.
         #THIS_IS_AN_ENV_VAR = "Hello";
+
+        # If you need to perform some shell scripting:
+        #shellHook = ''
+        #  # Create a virtual environment in the .venv directory
+        #  if [ ! -d .venv ]; then
+        #    virtualenv .venv
+        #  fi
+
+        #  # Activate the virtual environment
+        #  source .venv/bin/activate
+
+        #  if [ ! type presenterm-export >/dev/null 2>&1 ]; then
+        #    pip install presenterm-export
+        #  fi
+
+        #  echo "Virtual environment activated. Use 'deactivate' to exit."
+        #'';
       };
     }
   );
