@@ -622,18 +622,17 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1721027492,
-        "narHash": "sha256-xguLohG6BLNTLOqXEDDtjAMpE8/uv1iFyCj9nwsT7AA=",
+        "lastModified": 1721389835,
+        "narHash": "sha256-ZrEwRSURT/f7M5P58v2NuJ2T8dw9zWKWldDxvcAmjmQ=",
         "ref": "refs/heads/main",
-        "rev": "4bc54f89402e1a9c31222d89aeac758e8571169a",
-        "shallow": true,
+        "rev": "b041690e1e88d750a03f4b7be39f7ef167ad154b",
+        "revCount": 7,
         "type": "git",
-        "url": "ssh://git@github.com/l-lin/secrets.git"
+        "url": "file:./secrets"
       },
       "original": {
-        "shallow": true,
         "type": "git",
-        "url": "ssh://git@github.com/l-lin/secrets.git"
+        "url": "file:./secrets"
       }
     },
     "sops-nix": {

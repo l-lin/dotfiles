@@ -54,7 +54,7 @@
     ########################  My own repositories  #########################################
 
     secrets = {
-      url = "git+ssh://git@github.com/l-lin/secrets.git?shallow=1";
+      url = "git+file:./secrets";
       flake = false;
     };
   };

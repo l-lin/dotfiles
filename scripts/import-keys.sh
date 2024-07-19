@@ -18,7 +18,7 @@ blue="\e[1;30;44m"
 nc="\e[0m"
 
 info() {
-  echo -e "$blue I $nc $1"
+  echo -e "${blue} I ${nc} ${1}"
 }
 
 get_bw_notes() {

@@ -101,6 +101,10 @@ remove-symlinks folder:
 import-keys:
   nix-shell --command zsh -p bitwarden-cli jq ssh-to-age --run "./scripts/import-keys.sh {{NIX_PROFILE}}"
 
+# import secrets repository
+import-secrets:
+  ./scripts/import-secrets.sh {{NIX_PROFILE}}
+
 # reload pyprland configuration
 reload-pyprland:
   just info "Reloading pyprland configuration..."
