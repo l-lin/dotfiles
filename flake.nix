@@ -106,7 +106,7 @@
       email = "lin.louis@pm.me";
       editor = "nvim"; # default editor
       term = "kitty"; # default terminal emulator
-      theme = "github-light"; # colorscheme to use
+      theme = "kanagawa"; # colorscheme to use
       shell = "zsh"; # shell to use
       wm = "hyprland"; # selected window manager (hyprland, sway or gnome)
       browser = "firefox"; # default browser
