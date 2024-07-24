@@ -2,6 +2,6 @@
 # Cloud related stuff.
 #
 
-{
-  imports = [ ./aws ];
+{ fileExplorer, ... }: {
+  imports = fileExplorer.allSubdirs ./.;
 }
