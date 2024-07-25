@@ -36,12 +36,12 @@ size = "30% 80%"
 unfocus = "hide"
 
 [scratchpads.calendar]
-command = "${userSettings.term} --class scratchpad-calendar -e calcure"
+command = "${userSettings.term} --class scratchpad-calendar -e ${userSettings.shell} -c 'cal -n 2 -m --color=always | less'"
 animation = "fromRight"
 class = "scratchpad-calendar"
 lazy = true
-position = "45% 10%"
-size = "50% 50%"
+position = "74% 10%"
+size = "25% 25%"
 unfocus = "hide"
 
 [scratchpads.file_manager]

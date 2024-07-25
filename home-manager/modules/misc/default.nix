@@ -16,11 +16,6 @@
     bashmount
     # Read and control device brightness: https://github.com/Hummer12007/brightnessctl
     brightnessctl
-
-    # TUI calendar: https://github.com/anufrievroman/calcure
-    # BUG: Not working with 7e7c39ea35c5cdd002cd4588b03a3fb9ece6fad9 (2024-07-24). It depends on taskw which needs python312, whereas this component is using python3, alias of python311.
-    #calcure
-
     # Client for cheat.sh: https://github.com/chubin/cheat.sh
     cht-sh
     # Syntax highlighting for diff: https://www.colordiff.org/
