@@ -1,22 +1,7 @@
 return {
-  -- markdown table
-  {
-    "dhruvasagar/vim-table-mode",
-    ft = "markdown",
-    keys = {
-      {
-        "<leader>tm",
-        false,
-      },
-      {
-        "<leader>cM",
-        "<cmd>TableModeToggle<cr>",
-        noremap = true,
-        silent = true,
-        desc = "Toggle Markdown table",
-      },
-    },
-  },
+  -- #######################
+  -- override default config
+  -- #######################
 
   -- fuzzy finding anything anywhere
   {
@@ -166,7 +151,37 @@ return {
     end,
   },
 
+  -- autopairs - not quite as good as nvim-autopairs
+  {
+    "echasnovski/mini.pairs",
+    enabled = false,
+  },
+
+  -- #######################
+  -- add new plugins
+  -- #######################
+
+  -- markdown table
+  {
+    "dhruvasagar/vim-table-mode",
+    ft = "markdown",
+    keys = {
+      {
+        "<leader>tm",
+        false,
+      },
+      {
+        "<leader>cM",
+        "<cmd>TableModeToggle<cr>",
+        noremap = true,
+        silent = true,
+        desc = "Toggle Markdown table",
+      },
+    },
+  },
+
   -- snippet engine
+  -- NOTE: Not taking the one from LazyVim because it's adding some nvim-cmp config with tab, which I don't want.
   {
     "L3MON4D3/LuaSnip",
     dependencies = {
@@ -177,17 +192,12 @@ return {
         require("luasnip.loaders.from_lua").lazy_load()
       end,
     },
-    -- enable supertab, see https://www.lazyvim.org/configuration/recipes#supertab
     keys = function()
       return {}
     end,
   },
 
-  -- autopairs
-  {
-    "echasnovski/mini.pairs",
-    enabled = false,
-  },
+  -- autopairs - better than mini.pairs in my taste
   {
     "windwp/nvim-autopairs",
     event = "InsertEnter",

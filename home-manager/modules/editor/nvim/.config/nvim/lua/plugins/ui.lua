@@ -1,4 +1,8 @@
 return {
+  -- #######################
+  -- override default config
+  -- #######################
+
   -- nice UI for messages, cmdline and popupmenu
   {
     "folke/noice.nvim",
@@ -36,26 +40,6 @@ return {
         },
       },
     },
-  },
-
-  -- navigate between neovim and multiplexers
-  {
-    "numToStr/Navigator.nvim",
-    keys = {
-      { "<C-h>", "<cmd>NavigatorLeft<cr>",  mode = { "n", "t" }, silent = true, desc = "Navigate left" },
-      { "<C-l>", "<cmd>NavigatorRight<cr>", mode = { "n", "t" }, silent = true, desc = "Navigate right" },
-      { "<C-k>", "<cmd>NavigatorUp<cr>",    mode = { "n", "t" }, silent = true, desc = "Navigate up" },
-      { "<C-j>", "<cmd>NavigatorDown<cr>",  mode = { "n", "t" }, silent = true, desc = "Navigate down" },
-    },
-    cmd = {
-      "NavigatorUp",
-      "NavigatorDown",
-      "NavigatorRight",
-      "NavigatorLeft",
-    },
-    config = function()
-      require("Navigator").setup({})
-    end,
   },
 
   -- dashboard
@@ -97,7 +81,34 @@ return {
       spec = {
         ["<leader>v"] = { name = "+nvim" },
       },
+      preset = "modern",
     },
+  },
+
+
+
+  -- #######################
+  -- add new plugins
+  -- #######################
+
+  -- navigate between neovim and multiplexers
+  {
+    "numToStr/Navigator.nvim",
+    keys = {
+      { "<C-h>", "<cmd>NavigatorLeft<cr>",  mode = { "n", "t" }, silent = true, desc = "Navigate left" },
+      { "<C-l>", "<cmd>NavigatorRight<cr>", mode = { "n", "t" }, silent = true, desc = "Navigate right" },
+      { "<C-k>", "<cmd>NavigatorUp<cr>",    mode = { "n", "t" }, silent = true, desc = "Navigate up" },
+      { "<C-j>", "<cmd>NavigatorDown<cr>",  mode = { "n", "t" }, silent = true, desc = "Navigate down" },
+    },
+    cmd = {
+      "NavigatorUp",
+      "NavigatorDown",
+      "NavigatorRight",
+      "NavigatorLeft",
+    },
+    config = function()
+      require("Navigator").setup({})
+    end,
   },
 
   -- color highlighter
@@ -109,13 +120,5 @@ return {
         mode = "virtualtext",
       }
     }
-  },
-
-  -- show keybindings in a popup
-  {
-    "which-key.nvim",
-    opts = {
-      preset = "modern",
-    },
   },
 }

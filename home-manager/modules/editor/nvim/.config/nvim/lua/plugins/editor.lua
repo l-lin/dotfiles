@@ -2,6 +2,10 @@ local neotree_commands = require("plugins.custom.editor.neotree")
 local telescope_commands = require("plugins.custom.editor.telescope")
 
 return {
+  -- #######################
+  -- override default config
+  -- #######################
+
   -- fuzzy finding anything anywhere
   {
     "nvim-telescope/telescope.nvim",
@@ -161,73 +165,11 @@ return {
     },
   },
 
-  -- multilevel undo explorer
-  {
-    "mbbill/undotree",
-    keys = {
-      { "<leader>U", "<cmd>UndotreeToggle<cr>", noremap = true, desc = "Undotree Toggle" },
-    },
-  },
-
-  -- file explorer to edit filesystem like a normal buffer, vim-vinegar like
-  {
-    "stevearc/oil.nvim",
-    keys = {
-      {
-        "<leader>fo",
-        function()
-          require("oil").open()
-        end,
-        desc = "Oil open current directory",
-      },
-    },
-    config = function()
-      require("oil").setup()
-    end,
-  },
-
   -- highlight TODO comments
   {
     "folke/todo-comments.nvim",
     keys = {
       { "<M-2>", "<cmd>TodoTelescope<cr>", noremap = true, desc = "Telescope find TODO (Alt+2)" },
-    },
-  },
-
-  -- multiple cursors
-  {
-    "mg979/vim-visual-multi",
-    event = "ModeChanged",
-    init = function()
-      vim.cmd([[
-        let g:VM_theme = "paper"
-        let g:VM_maps = {}
-        let g:VM_maps["Find Under"] = "<A-h>"
-        let g:VM_maps["Find Subword Under"] = "<A-h>"
-      ]])
-    end,
-  },
-
-  -- search/replace in multiple files
-  {
-    "nvim-pack/nvim-spectre",
-    keys = {
-      {
-        "<M-r>",
-        "<cmd>lua require('spectre').open_file_search()<cr>",
-        desc = "Replace in file (Spectre) (Alt+r)",
-      },
-      {
-        "<M-r>",
-        "<cmd>lua require('spectre').open_file_search({select_word = true})<cr>",
-        mode = "v",
-        desc = "Replace in file (Spectre) (Alt+r)",
-      },
-    },
-    opts = {
-      highlight = {
-        search = "DiffAdd",
-      },
     },
   },
 
@@ -256,12 +198,58 @@ return {
     },
   },
 
+  -- code outline window 
   {
     "stevearc/aerial.nvim",
     keys = {
       { "<A-7>", "<cmd>AerialToggle<cr>", desc = "Aerial Symbols (Alt+7)" },
       { "<F36>", "<cmd>Telescope aerial<cr>", desc = "Goto Symbol (Ctrl+F12)" },
     },
+  },
+
+
+
+  -- #######################
+  -- add new plugins
+  -- #######################
+
+  -- multilevel undo explorer
+  {
+    "mbbill/undotree",
+    keys = {
+      { "<leader>U", "<cmd>UndotreeToggle<cr>", noremap = true, desc = "Undotree Toggle" },
+    },
+  },
+
+  -- file explorer to edit filesystem like a normal buffer, vim-vinegar like
+  {
+    "stevearc/oil.nvim",
+    keys = {
+      {
+        "<leader>fo",
+        function()
+          require("oil").open()
+        end,
+        desc = "Oil open current directory",
+      },
+    },
+    config = function()
+      require("oil").setup()
+    end,
+  },
+
+  -- multiple cursors
+  {
+    "mg979/vim-visual-multi",
+    event = "ModeChanged",
+    init = function()
+      vim.cmd([[
+        let g:VM_theme = "paper"
+        let g:VM_maps = {}
+        let g:VM_maps["Find Under"] = "<A-h>"
+        let g:VM_maps["Find Subword Under"] = "<A-h>"
+      ]])
+    end,
   },
 
   -- reopen closed buffer

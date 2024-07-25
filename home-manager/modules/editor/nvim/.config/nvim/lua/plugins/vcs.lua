@@ -12,6 +12,26 @@ local toggle_fugitive = function()
 end
 
 return {
+  -- #######################
+  -- override default config
+  -- #######################
+
+  -- git modifications explorer/handler
+  {
+    "lewis6991/gitsigns.nvim",
+    keys = {
+      { "<M-C-G>", "<cmd>Gitsigns preview_hunk_inline<cr>", desc = "Preview Hunk inline (Ctrl+Alt+g)" },
+      { "<M-C-Z>", "<cmd>Gitsigns reset_hunk<cr>", mode = { "n", "v" }, desc = "Reset hunk (Ctrl+Alt+z)" },
+    },
+  },
+
+
+
+
+  -- #######################
+  -- add new plugins
+  -- #######################
+
   -- git integration
   {
     "tpope/vim-fugitive",
@@ -26,15 +46,6 @@ return {
       { "<leader>gP", "<cmd>G push<cr>", desc = "git push" },
       { "<leader>gF", "<cmd>G push --force-with-lease<cr>", desc = "git push --force-with-lease" },
       { "<leader>gb", "<cmd>G blame<cr>", desc = "git blame" },
-    },
-  },
-
-  -- git modifications explorer/handler
-  {
-    "lewis6991/gitsigns.nvim",
-    keys = {
-      { "<M-C-G>", "<cmd>Gitsigns preview_hunk_inline<cr>", desc = "Preview Hunk inline (Ctrl+Alt+g)" },
-      { "<M-C-Z>", "<cmd>Gitsigns reset_hunk<cr>", mode = { "n", "v" }, desc = "Reset hunk (Ctrl+Alt+z)" },
     },
   },
 

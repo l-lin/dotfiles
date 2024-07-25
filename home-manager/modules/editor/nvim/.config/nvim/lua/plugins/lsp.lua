@@ -35,6 +35,10 @@ local function nvim_lspconfig_init()
 end
 
 return {
+  -- #######################
+  -- override default config
+  -- #######################
+
   -- easily config neovim lsp
   {
     "neovim/nvim-lspconfig",

@@ -1,4 +1,8 @@
 return {
+  -- #######################
+  -- override default config
+  -- #######################
+
   -- Show context of the current function
   {
     "nvim-treesitter/nvim-treesitter-context",

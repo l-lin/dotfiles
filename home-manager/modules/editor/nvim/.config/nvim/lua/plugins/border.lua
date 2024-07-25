@@ -53,21 +53,21 @@ local function with_border(border_style)
         end,
       },
     },
-    {
-      "ellisonleao/gruvbox.nvim",
-      opts = {
-        overrides = {
-          NormalFloat = { bg = "none" },
-          FloatBorder = { bg = "none" },
-          LazyNormal = { bg = "none" },
-          MasonNormal = { bg = "none" },
-          HoverNormal = { bg = "none" },
-          HoverBorder = { bg = "none" },
-          SagaNormal = { bg = "none" },
-          SagaBorder = { bg = "none" },
-        },
-      },
-    },
+    -- {
+    --   "ellisonleao/gruvbox.nvim",
+    --   opts = {
+    --     overrides = {
+    --       NormalFloat = { bg = "none" },
+    --       FloatBorder = { bg = "none" },
+    --       LazyNormal = { bg = "none" },
+    --       MasonNormal = { bg = "none" },
+    --       HoverNormal = { bg = "none" },
+    --       HoverBorder = { bg = "none" },
+    --       SagaNormal = { bg = "none" },
+    --       SagaBorder = { bg = "none" },
+    --     },
+    --   },
+    -- },
     -- {
     --   "projekt0n/github-nvim-theme",
     --   opts = {

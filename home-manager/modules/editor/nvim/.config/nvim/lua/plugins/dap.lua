@@ -1,4 +1,8 @@
 return {
+  -- #######################
+  -- override default config
+  -- #######################
+
   -- debugger engine
   {
     "mfussenegger/nvim-dap",
