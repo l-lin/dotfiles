@@ -263,4 +263,13 @@ return {
       { "<F36>", "<cmd>Telescope aerial<cr>", desc = "Goto Symbol (Ctrl+F12)" },
     },
   },
+
+  -- reopen closed buffer
+  {
+    "iamyoki/buffer-reopen.nvim",
+    keys = {
+      { "<C-S-t>", "<cmd>BufferHistory reopen<cr>", desc = "Reopen buffer (Ctrl+Shift+t)", mode = "n" },
+    },
+    opts = {},
+  },
 }

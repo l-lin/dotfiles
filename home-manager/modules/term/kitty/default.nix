@@ -15,5 +15,8 @@
 
       window_padding_width = 12;
     };
+    keybindings = {
+      "ctrl+shift+t" = "none";
+    };
   };
 }
