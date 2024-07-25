@@ -3,8 +3,7 @@
 #
 
 { fileExplorer, pkgs, ... }: {
-  #imports = fileExplorer.allSubdirs ./.;
-  imports = [ ./mpd ./ncmpcpp ];
+  imports = fileExplorer.allSubdirs ./.;
 
   home.packages = with pkgs; [
     # A minimalist command line interface to MPD: https://www.musicpd.org/clients/mpc/

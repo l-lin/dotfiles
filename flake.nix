@@ -43,7 +43,10 @@
     };
 
     # Spotify client
-    spicetify-nix.url = "github:the-argus/spicetify-nix";
+    spicetify-nix = {
+      url = "github:Gerg-L/spicetify-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Colorscheme management
     stylix = {
