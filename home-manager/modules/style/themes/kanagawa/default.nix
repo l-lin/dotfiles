@@ -42,7 +42,7 @@ in {
       #package = pkgs.kanagawa-gtk-theme;
 
       # Soothing pastel theme for GTK: https://github.com/catppuccin/gtk
-      name = "catppuccin-mocha-blue-compact+default";
+      name = "catppuccin-mocha-blue-compact";
       # https://github.com/NixOS/nixpkgs/blob/nixos-24.05/pkgs/data/themes/catppuccin-gtk/default.nix
       package = pkgs.catppuccin-gtk.override {
         size = "compact";
