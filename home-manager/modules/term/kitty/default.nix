@@ -16,6 +16,7 @@
       window_padding_width = 12;
     };
     keybindings = {
+      # Enable to have the same browser behavior to re-open nvim tab with `ctrl+shift+t`.
       "ctrl+shift+t" = "none";
     };
   };
