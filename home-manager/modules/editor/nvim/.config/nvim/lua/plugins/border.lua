@@ -1,31 +1,8 @@
-local function without_border()
-  return {
-    {
-      "rebelot/kanagawa.nvim",
-      opts = {
-        overrides = function(colors)
-          local theme = colors.theme
-          return {
-            LazyNormal = { bg = theme.ui.bg_m1 },
-            MasonNormal = { bg = theme.ui.bg_m1 },
-            TelescopeTitle = { fg = theme.ui.special, bold = true },
-            TelescopePromptNormal = { bg = theme.ui.bg_p1 },
-            TelescopePromptBorder = { fg = theme.ui.bg_p1, bg = theme.ui.bg_p1 },
-            TelescopeResultsNormal = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m1 },
-            TelescopeResultsBorder = { fg = theme.ui.bg_m1, bg = theme.ui.bg_m1 },
-            TelescopePreviewNormal = { bg = theme.ui.bg_dim },
-            TelescopePreviewBorder = { bg = theme.ui.bg_dim, fg = theme.ui.bg_dim },
-          }
-        end,
-      },
-    },
-  }
-end
-
 local function with_border(border_style)
   return {
     {
       "rebelot/kanagawa.nvim",
+      optional = true;
       opts = {
         colors = {
           theme = {
@@ -53,38 +30,24 @@ local function with_border(border_style)
         end,
       },
     },
-    -- {
-    --   "ellisonleao/gruvbox.nvim",
-    --   opts = {
-    --     overrides = {
-    --       NormalFloat = { bg = "none" },
-    --       FloatBorder = { bg = "none" },
-    --       LazyNormal = { bg = "none" },
-    --       MasonNormal = { bg = "none" },
-    --       HoverNormal = { bg = "none" },
-    --       HoverBorder = { bg = "none" },
-    --       SagaNormal = { bg = "none" },
-    --       SagaBorder = { bg = "none" },
-    --     },
-    --   },
-    -- },
-    -- {
-    --   "projekt0n/github-nvim-theme",
-    --   opts = {
-    --     groups = {
-    --       all = {
-    --         NormalFloat = { bg = "none" },
-    --         FloatBorder = { bg = "none" },
-    --         LazyNormal = { bg = "none" },
-    --         MasonNormal = { bg = "none" },
-    --         HoverNormal = { bg = "none" },
-    --         HoverBorder = { bg = "none" },
-    --         SagaNormal = { bg = "none" },
-    --         SagaBorder = { bg = "none" },
-    --       },
-    --     },
-    --   },
-    -- },
+    {
+      "projekt0n/github-nvim-theme",
+      optional = true;
+      opts = {
+        groups = {
+          all = {
+            NormalFloat = { bg = "none" },
+            FloatBorder = { bg = "none" },
+            LazyNormal = { bg = "none" },
+            MasonNormal = { bg = "none" },
+            HoverNormal = { bg = "none" },
+            HoverBorder = { bg = "none" },
+            SagaNormal = { bg = "none" },
+            SagaBorder = { bg = "none" },
+          },
+        },
+      },
+    },
     {
       "nvim-cmp",
       opts = function(_, opts)
@@ -125,14 +88,6 @@ local function with_border(border_style)
       end,
     },
     {
-      "glepnir/lspsaga.nvim",
-      opts = {
-        ui = {
-          border = border_style,
-        },
-      },
-    },
-    {
       "mason.nvim",
       opts = {
         ui = {
@@ -151,8 +106,4 @@ local function with_border(border_style)
   }
 end
 
-if vim.g.border_style == "none" then
-  return without_border()
-end
-
-return with_border(vim.g.border_style)
+return with_border("rounded")
