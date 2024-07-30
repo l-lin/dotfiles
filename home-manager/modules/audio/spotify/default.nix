@@ -8,13 +8,12 @@
 { config, inputs, pkgs, ... }:
 let
   spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.system};
-  theme = if (config.theme.polarity == "dark") then spicePkgs.themes.text else spicePkgs.themes.dribbblish;
-  colorScheme = if (config.theme.polarity == "dark") then "kanagawa" else "catppuccin-latte";
+  colorScheme = if (config.theme.polarity == "dark") then "catppuccin-mocha" else "catppuccin-latte";
 in {
   imports = [ inputs.spicetify-nix.homeManagerModules.default ];
   programs.spicetify = {
     enable = true;
-    theme = theme;
+    theme = spicePkgs.themes.dribbblish;
     colorScheme = colorScheme;
     spotifyPackage = pkgs.spotify;
 
