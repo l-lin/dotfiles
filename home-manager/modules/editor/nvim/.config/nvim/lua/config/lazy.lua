@@ -78,7 +78,7 @@ require("lazy").setup({
     },
   },
   ui = {
-    border = vim.g.border_style,
+    border = "rounded",
     icons = {
       ft = "",
       lazy = "󰂠 ",
