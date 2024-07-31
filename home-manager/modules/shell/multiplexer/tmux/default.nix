@@ -58,4 +58,13 @@ set -g @tmux-colorscheme-show-cpu true
 set -g @tmux-colorscheme-show-cpu-temp true
 set -g @tmux-colorscheme-show-ram true
   '';
+
+  home.packages = with pkgs; [
+    # Tmux end-of-line is behaving like VIM, i.e. taking the trailing newline.
+    # I don't want that, no need to suffer each time I want to copy a line without this newline.
+    (writeShellScriptBin "tmux-end-of-line" ''
+      tmux send -X end-of-line
+      tmux send -X cursor-left
+    '')
+  ];
 }
