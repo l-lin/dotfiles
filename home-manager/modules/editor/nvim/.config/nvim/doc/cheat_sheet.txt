@@ -105,23 +105,24 @@ COPY / PASTE                                                       cs-copy-paste
 `x`       - delete (cut) current character
 `shift-v` - to visual mode (to copy multiple lines)
 `C-v`     - multiline visual mode
-`"*y`     - copy selected text in visual mode to clipboard (3rd mouse click)
-`"*yy`    - copy current line to clipboard (3rd mouse click)
+`"+p`     - paste clipboard text
 
 ==================================================================================
 DELETE                                                                 cs-delete
 
-`dd`    - remove line
-`dw`    - delete until next word, excluding the first character
-`de`    - delete until end of the current, excluding the last character
-`d$`    - delete until end of line
-`D`     - same as d$
-`d^`    - delete up unto the beginning of the line
-`:1,4d` - delete line 1 to 40 included
-`:2,$d` - delete every lines from second one until the end of file
-`:.,$d` - delete every lines from the current one until the end of file
-`:%d`   - delete every lines
-`daw`   - delete word under cursor
+`dd`          - remove line
+`dw`          - delete until next word, excluding the first character
+`de`          - delete until end of the current, excluding the last character
+`d$`          - delete until end of line
+`D`           - same as d$
+`d^`          - delete up unto the beginning of the line
+`:1,4d`       - delete line 1 to 40 included
+`:2,$d`       - delete every lines from second one until the end of file
+`:.,$d`       - delete every lines from the current one until the end of file
+`:%d`         - delete every lines
+`daw`         - delete word under cursor
+`:g/pattern/d` - delete all lines containing "pattern"
+`:v/pattern/d` - delete all lines not containing "pattern"
 
 ==================================================================================
 SEARCH / REPLACE                                               cs-search-replace
@@ -173,6 +174,14 @@ FOLDING                                                               cs-folding
 `zR` - open all folds
 
 ==================================================================================
+CASE SENSITIVITY                                               cs-case-sensitivity
+
+`guw` - convert word to lowercase
+`gUw` - convert word to uppercase
+`guu` - convert line to lowercase
+`gUU` - convert line to uppercase
+
+==================================================================================
 DBEXT                                                                   cs-dbext
 
 `,se`  - execute sql query
@@ -209,10 +218,14 @@ features
 ==================================================================================
 VISUAL MODE                                                       cs-visual-mode
 
-`u` - to lower case
-`U` - to upper case
-`~` - change case
-`o` - swap between moving the top and bottom boundary
+`u`        - to lower case
+`U`        - to upper case
+`~`        - change case
+`o`        - swap between moving the top and bottom boundary
+`:norm A;` - insert semicolon to all selected lines
+`:norm $x` - delete last character
+`!jq .`    - pretty print JSON
+`!sort`    - sort lines
 
 ==================================================================================
 CUSTOM SHORTCUTS                                             cs-custom-shortcuts
