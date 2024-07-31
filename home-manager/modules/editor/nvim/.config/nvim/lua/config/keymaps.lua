@@ -4,13 +4,16 @@
 local map = vim.keymap.set
 
 -- buffer
+-- Same behavior as browsers (muscle memory).
 map("n", "<F28>", "<cmd>bd<CR>", { noremap = true, silent = true, desc = "Close current buffer (Ctrl+F4)" })
 
 -- navigation
+-- Always put cursor at middle of screen.
 map("n", "<C-d>", "<C-d>zz", { noremap = true })
 map("n", "<C-u>", "<C-u>zz", { noremap = true })
 
 -- search
+-- Always put cursor at middle of screen.
 map("n", "n", "nzzzv", { noremap = true })
 map("n", "N", "Nzzzv", { noremap = true })
 
@@ -26,16 +29,11 @@ map("n", "d", '"_d', { noremap = true })
 map("v", "d", '"_d', { noremap = true })
 map("v", "p", '"_dP', { noremap = true })
 
--- switch 0 and ^, I used 0 more and I need to stretch my left hand to type ^
-map("x", "0", "^")
-map("n", "0", "^")
-map("x", "^", "0")
-map("n", "^", "0")
-
 -- documentation
 vim.cmd([[ command CheatSheet split $HOME/.config/nvim/doc/cheat_sheet.txt ]])
 
 -- Diagnostics
+-- Same behavior as IntelliJ.
 map("n", "<F25>", vim.diagnostic.open_float, { desc = "Line Diagnostics (Ctrl+F1)" })
 map("n", "<F2>", vim.diagnostic.goto_next, { desc = "Next diagnostic (F2)" })
 
@@ -46,6 +44,3 @@ map("x", "$", "g_")
 map({ "n", "v" }, "<M-C-L>", function()
   require("lazyvim.util").format({ force = true })
 end, { desc = "Format" })
-
--- select all
-map("n", "<C-a>", "gg<S-v>G", { noremap = true, desc = "Select all" })
