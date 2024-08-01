@@ -45,7 +45,7 @@ $active_border_color = rgb(${palette.base05})
 $inactive_border_color = rgb(${palette.base00})
 
 $monitor0 = eDP-1
-$monitor1 = DP-1
+$monitor1 = HDMI-A-1
 
 ${builtins.readFile ./.config/hypr/hyprland.conf}
     '';
