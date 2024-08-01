@@ -8,5 +8,7 @@
   home.packages = with pkgs; [
     # GNU Compiler Collection.
     gcc
+    # Add `make` command.
+    gnumake
   ];
 }

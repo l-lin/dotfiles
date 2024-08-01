@@ -22,8 +22,6 @@
     colordiff
     # Monitor container resources: https://ctop.sh/
     ctop
-    # HTTP client: https://curl.se/
-    curl
     # Scan Nix files for dead code: https://github.com/astro/deadnix
     deadnix
     # Search DuckDuckGo from the terminal: https://github.com/jarun/ddgr
@@ -42,28 +40,12 @@
     fd
     # A program that shows the type of files: https://darwinsys.com/file
     file
-    # Add `make` command.
-    gnumake
     # GNU implementation of the `tar' archiver: https://www.gnu.org/software/tar/
     gnutar
-    # Like cURL, but for gRPC: https://github.com/fullstorydev/grpcurl
-    grpcurl
     # Enhance shell: https://github.com/charmbracelet/gum
     gum
-    # HTTP load generator, ApacheBench (ab) replacement: https://github.com/rakyll/hey
-    hey
-    # User-friendly command line HTTP client: https://httpie.io/
-    httpie
     # Benchmarking tool: https://github.com/sharkdp/hyperfine
     hyperfine
-    # Interactive jq: https://git.sr.ht/~gpanders/ijq
-    ijq
-    # Pager for JSON data: https://jless.io/
-    jless
-    # Create JSON objects: https://github.com/jpmens/jo
-    jo
-    # Lightweight and flexible JSON processor: https://jqlang.github.io/jq/
-    jq
     # Decode and encode JWT: https://github.com/mike-engel/jwt-cli
     jwt-cli
     # Kill all processes matching a pattern.
@@ -100,14 +82,8 @@
     unzip
     # Modern watch command: https://github.com/sachaos/viddy
     viddy
-    # WebSockets client: https://github.com/vi/websocat
-    websocat
-    # CLI for retrieving files using HTTP, HTTPS and FTP.
-    wget
     # CSV toolkit: https://github.com/BurntSushi/xsv
     xsv
-    # YAML/XML/TOML processor: https://github.com/kislyuk/yq
-    yq
     # Compressor/archiver for creating and modifying zipfiles: http://www.info-zip.org/
     zip
   ];

@@ -5,7 +5,7 @@
 #
 
 { pkgs, ... }: {
-  home.packages = with pkgs; [ temporal-cli ];
-
-  xdg.configFile."zsh/completions/_temporal".source = ./.config/zsh/completions/_temporal;
+  # home.packages = with pkgs; [ temporal-cli ];
+  #
+  # xdg.configFile."zsh/completions/_temporal".source = ./.config/zsh/completions/_temporal;
 }
