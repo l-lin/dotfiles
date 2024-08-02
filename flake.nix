@@ -107,14 +107,16 @@
       username = "l-lin";
       name = "Louis LIN";
       email = "lin.louis@pm.me";
+
+      browser = "firefox"; # default browser
+      fileManager = "yazi"; # TUI file manager (lf or yazi)
       editor = "nvim"; # default editor
+      messaging = "slack"; # default messaging tool
+      pager = "bat"; # default pager
       term = "kitty"; # default terminal emulator
       theme = "kanagawa"; # colorscheme to use
       shell = "zsh"; # shell to use
       wm = "hyprland"; # selected window manager (hyprland, sway or gnome)
-      browser = "firefox"; # default browser
-      pager = "bat"; # default pager
-      fileManager = "yazi"; # TUI file manager (lf or yazi)
     };
 
     # shared utility libraries

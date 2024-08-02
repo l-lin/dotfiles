@@ -53,15 +53,6 @@ margin = 50
 size = "80% 85%"
 unfocus = "hide"
 
-[scratchpads.messaging]
-command = "teams-for-linux"
-animation = "fromTop"
-class = "teams-for-linux"
-lazy = true
-margin = 50
-size = "80% 85%"
-unfocus = "hide"
-
 [scratchpads.spotify]
 command = "spotify"
 animation = "fromBottom"

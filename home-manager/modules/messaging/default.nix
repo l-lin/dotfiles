@@ -2,6 +2,6 @@
 # Messaging tools.
 #
 
-{ fileExplorer, ... }: {
-  imports = fileExplorer.allSubdirs ./.;
+{ userSettings, ... }: {
+  imports = [ ./${userSettings.messaging} ];
 }
