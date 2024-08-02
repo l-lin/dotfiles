@@ -41,6 +41,10 @@ window#waybar {
   padding: 0px;
 }
 
+#workspaces button {
+  padding-right: 14px;
+}
+
 #workspaces button.active {
   background-color: @bg-alt;
   color: @fg-alt;

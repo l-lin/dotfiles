@@ -19,11 +19,11 @@ in {
   "position": "top",
   "output": "eDP-1",
   "height": 60,
-  "spacing": 15,
-  "margin-top": 15,
-  "margin-left": 15,
+  "spacing": 7,
+  "margin-top": 7,
+  "margin-left": 7,
   "margin-bottom": 0,
-  "margin-right": 15,
+  "margin-right": 7,
 
   "modules-left": ["user", "disk", "memory", "cpu", "temperature", "tray"],
   "modules-center": ["hyprland/workspaces"],
@@ -79,10 +79,10 @@ in {
     "format": "{icon}",
     "on-click": "activate",
     "format-icons": {
-      "1": "󰠮",
+      "1": "󰡟",
       "2": "",
       "3": "󰈹",
-      "4": ""
+      "4": ""
     },
     "icon-size": 50,
     "sort-by-number": true,
