@@ -79,13 +79,13 @@ lazy = true
 position = "74% 69%"
 size = "25% 25%"
 
-[scratchpads.terminal]
-command = "${userSettings.term} --class scratchpad-terminal -e tmux -2 -u"
-animation = "fromTop"
-class = "scratchpad-terminal"
+[scratchpads.notes]
+command = "obsidian"
+animation = "fromBottom"
+class = "obsidian"
 lazy = true
-margin = 50
-size = "60% 75%"
+margin = 10
+size = "90% 90%"
 unfocus = "hide"
 
 # LAYOUT_CENTER -----------------------------------------------------------------
