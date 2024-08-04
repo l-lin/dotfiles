@@ -7,11 +7,10 @@ set -euo pipefail
 
 BW_SESSION=""
 
-username=${1:-l-lin}
-email=${2:-lin.louis@pm.me}
+declare -A keys=([l-lin]=lin.louis@pm.me [doctolib]=louis.lin@doctolib.com)
 
-ssh_folder="/${HOME}/.ssh"
-sops_folder="/${HOME}/.config/sops"
+ssh_folder="${HOME}/.ssh"
+sops_folder="${HOME}/.config/sops"
 
 # colors for logging
 blue="\e[1;30;44m"
@@ -37,6 +36,7 @@ get_bw_value() {
 }
 
 import_ssh_keys() {
+  local username=${1}
   local public_key="${ssh_folder}/${username}.pub"
   local private_key="${ssh_folder}/${username}"
 
@@ -54,13 +54,16 @@ import_ssh_keys() {
 }
 
 create_git_allowed_signers() {
+  local username=${1}
+  local email=${2}
   local public_key="${ssh_folder}/${username}.pub"
 
-  info "Creating file ${ssh_folder}/allowed_signers..."
-  echo "${email} namespaces=\"git\" $(cat "${public_key}")" > "${ssh_folder}/allowed_signers"
+  info "Adding ${username} to ${ssh_folder}/allowed_signers..."
+  echo "${email} namespaces=\"git\" $(cat "${public_key}")" >> "${ssh_folder}/allowed_signers"
 }
 
 import_sops_age_key() {
+  local username=${1}
   local age_key="${sops_folder}/age/${username}.age"
 
   info "Creating folder ${sops_folder}/age/..."
@@ -79,11 +82,13 @@ unlock_bw() {
 }
 
 unlock_bw
-import_ssh_keys
-create_git_allowed_signers
-import_sops_age_key
 
-ssh-add "${ssh_folder}/${username}"
+for username in "${!keys[@]}"; do
+  email="${keys[${username}]}"
+  import_ssh_keys "${username}"
+  create_git_allowed_signers "${username}" "${email}"
+  import_sops_age_key "${username}"
+done
 
 bw lock
 

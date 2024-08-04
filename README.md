@@ -44,6 +44,8 @@ just import-keys import-secrets
 just update-nixos
 just update-home
 reboot
+unleash-the-keys
+just install-cheatsheets
 ```
 
 ---
