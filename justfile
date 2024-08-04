@@ -131,7 +131,7 @@ install-cheatsheet host owner repo:
       just info "Cheatsheet '${cheatsheet_name}' already exists, skipping..."; \
     else \
       just info "Installing cheatsheet '${cheatsheet_name}'."; \
-      git clone "git@{{host}}:{{owner}}/{{repo}}" "${folder_name}/${cheatsheet_name}"; \
+      git clone "git@{{host}}:{{owner}}/{{repo}}" "${folder_name}"; \
     fi
 
 [private]
