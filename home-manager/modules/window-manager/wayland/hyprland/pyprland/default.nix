@@ -22,8 +22,8 @@ command = "${userSettings.term} --class scratchpad-audio-mixer -e pulsemixer"
 animation = "fromRight"
 class = "scratchpad-audio-mixer"
 lazy = true
-position = "65% 10%"
-size = "30% 30%"
+position = "49% 10%"
+size = "50% 50%"
 unfocus = "hide"
 
 [scratchpads.calculator]
