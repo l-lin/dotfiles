@@ -12,6 +12,5 @@
 
   # Symlinks
   xdg.configFile."navi/config.yaml".source = ./.config/navi/config.yaml;
-  xdg.configFile."tmux/plugins/navi/navi.tmux".source = ./.config/tmux/plugins/navi/navi.tmux;
   xdg.configFile."zsh/plugins/navi/navi.plugin.zsh".source = ./.config/zsh/plugins/navi/navi.plugin.zsh;
 }
