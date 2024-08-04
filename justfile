@@ -5,6 +5,9 @@ NIX_PROFILE := 'l-lin'
 NIX_HOST := 'nixos'
 THEMES_FOLDER := './home-manager/modules/style/themes'
 
+DEFAULT_THEME_DARK := 'kanagawa'
+DEFAULT_THEME_LIGHT := 'github-light'
+
 PRE_COMMIT_FILE := './home-manager/modules/vcs/git/scripts/pre-commit.sh'
 
 # display help
@@ -146,6 +149,19 @@ change-theme to:
   just update-home
   tmux source "${XDG_CONFIG_HOME}/tmux/tmux.conf"
   pkill wpaperd && wpaperd -d
+
+# switch polarity from dark to light or vice versa
+switch-polarity:
+  current_theme=$(just get-current-theme) && \
+  if [[ "{{DEFAULT_THEME_LIGHT}}" == "${current_theme}" ]]; then \
+    just change-theme '{{DEFAULT_THEME_DARK}}'; \
+  else \
+    just change-theme '{{DEFAULT_THEME_LIGHT}}'; \
+  fi
+
+[private]
+get-current-theme:
+  grep 'theme = ' flake.nix | sed 's~theme = "\(.*\)"; #.*~\1~' | sed 's/ //g'
 
 # LOGGING ------------------------------------------------------------------------
 
