@@ -79,7 +79,7 @@ in {
     "format": "{icon}",
     "on-click": "activate",
     "format-icons": {
-      "1": "󰡟",
+      "1": "",
       "2": "",
       "3": "󰈹",
       "4": ""

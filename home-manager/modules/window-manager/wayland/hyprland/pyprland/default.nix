@@ -70,10 +70,10 @@ lazy = true
 position = "74% 69%"
 size = "25% 25%"
 
-[scratchpads.notes]
-command = "obsidian"
+[scratchpads.messaging]
+command = "slack"
 animation = "fromBottom"
-class = "obsidian"
+class = "Slack"
 lazy = true
 margin = 10
 size = "90% 90%"
