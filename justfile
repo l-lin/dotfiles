@@ -62,6 +62,13 @@ update-flake input="all":
 
 # HOME-MANAGER --------------------------------------------------------------------------
 
+# install home-manager in standalone
+# src: https://nix-community.github.io/home-manager/index.xhtml#sec-install-standalone
+install-home-standalone:
+  nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+  nix-channel --update
+  nix-shell '<home-manager>' -A install
+
 # apply home-manager configuration
 update-home: add-pre-commit-hook
   just info "Applying home-manager configuration..."
