@@ -5,7 +5,7 @@
 
 { config, userSettings, ... }:
 let
-  palette = config.lib.stylix.colors;
+  #palette = config.lib.stylix.colors;
 in {
   programs.waybar = {
     enable = true;
@@ -169,12 +169,12 @@ in {
   '';
   xdg.configFile."waybar/style.css".source = ./config/waybar/style.css;
   xdg.configFile."waybar/colorscheme.css".text = ''
-@define-color fg #${palette.base05};
-@define-color fg-alt #${palette.base00};
-@define-color bg #${palette.base00};
-@define-color bg-alt #${palette.base0D};
-@define-color green #${palette.base0B};
-@define-color yellow #${palette.base0A};
-@define-color red #${palette.base08};
+@define-color fg #DCD7BA;
+@define-color fg-alt #1F1F28;
+@define-color bg #1F1F28;
+@define-color bg-alt #7E9CD8;
+@define-color green #76946A;
+@define-color yellow #C0A36E;
+@define-color red #C34043;
   '';
 }

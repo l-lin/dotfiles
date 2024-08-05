@@ -5,7 +5,7 @@
 
 { config, lib, ... }:
 let
-  palette = config.lib.stylix.colors;
+  #palette = config.lib.stylix.colors;
 in {
   services.dunst = {
     enable = true;
@@ -47,7 +47,7 @@ in {
         frame_width = 2;
 
         # Defines color of the frame around the notification window.
-        frame_color = "#${palette.base05}";
+        frame_color = "#DCD7BA";
 
         # Define the corner radius of the notification window
         # in pixel size. If the radius is 0, you have no rounded
@@ -65,15 +65,15 @@ in {
 
       urgency_low = {
         # Force color of the frame instead of the one from stylix.
-        frame_color = lib.mkForce "#${palette.base05}";
+        frame_color = lib.mkForce "#DCD7BA";
       };
       urgency_normal = {
         # Force color of the frame instead of the one from stylix.
-        frame_color = lib.mkForce "#${palette.base05}";
+        frame_color = lib.mkForce "#DCD7BA";
       };
       urgency_critical = {
         # Force color of the frame instead of the one from stylix.
-        frame_color = lib.mkForce "#${palette.base08}";
+        frame_color = lib.mkForce "#C34043";
         timeout = 0;
       };
     };

@@ -44,44 +44,51 @@ let
   };
 in {
   imports = [
-    inputs.stylix.homeManagerModules.stylix
+    #inputs.stylix.homeManagerModules.stylix
     ./themes
   ];
 
-  stylix = {
-    enable = true;
-    base16Scheme = (./. + "/themes/${userSettings.theme}/colorscheme.yaml");
-    fonts = {
-      monospace = {
-        name = "JetBrainsMono Nerd Font";
-        package = nerdfonts;
-      };
-      sansSerif = {
-        package = pkgs.dejavu_fonts;
-        name = "DejaVu Sans";
-      };
-      emoji = {
-        package = pkgs.noto-fonts-emoji;
-        name = "Noto Color Emoji";
-      };
-      sizes = {
-        terminal = 13;
-        applications = 12;
-        popups = 12;
-        desktop = 12;
-      };
-    };
-    targets = {
-      hyprland.enable = false;
-      gtk.enable = false;
-      k9s.enable = false;
-      kitty.variant256Colors = true;
-      swaylock.enable = false;
-      tmux.enable = false;
-      waybar.enable = false;
-      wpaperd.enable = false;
-    };
-  };
+  home.packages = [
+    nerdfonts
+    pkgs.dejavu_fonts
+    pkgs.noto-fonts-emoji
+  ];
+  fonts.fontconfig.enable = true;
+
+  # stylix = {
+  #   enable = true;
+  #   base16Scheme = (./. + "/themes/${userSettings.theme}/colorscheme.yaml");
+  #   fonts = {
+  #     monospace = {
+  #       name = "JetBrainsMono Nerd Font";
+  #       package = nerdfonts;
+  #     };
+  #     sansSerif = {
+  #       package = pkgs.dejavu_fonts;
+  #       name = "DejaVu Sans";
+  #     };
+  #     emoji = {
+  #       package = pkgs.noto-fonts-emoji;
+  #       name = "Noto Color Emoji";
+  #     };
+  #     sizes = {
+  #       terminal = 13;
+  #       applications = 12;
+  #       popups = 12;
+  #       desktop = 12;
+  #     };
+  #   };
+  #   targets = {
+  #     hyprland.enable = false;
+  #     gtk.enable = false;
+  #     k9s.enable = false;
+  #     kitty.variant256Colors = true;
+  #     swaylock.enable = false;
+  #     tmux.enable = false;
+  #     waybar.enable = false;
+  #     wpaperd.enable = false;
+  #   };
+  # };
 
   gtk.enable = true;
 }
