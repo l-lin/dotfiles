@@ -116,7 +116,7 @@
       term = "kitty"; # default terminal emulator
       theme = "kanagawa"; # colorscheme to use
       shell = "zsh"; # shell to use
-      wm = "hyprland"; # selected window manager (hyprland, sway or gnome)
+      wm = "gnome"; # selected window manager (hyprland, sway or gnome)
     };
 
     # shared utility libraries
