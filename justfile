@@ -1,4 +1,5 @@
 set quiet
+set shell := ["bash", "-c"]
 
 NIXOS_HARDWARE_CONFIGURATION_FILE := './nixos/hardware-configuration.nix'
 NIX_PROFILE := 'l-lin'
