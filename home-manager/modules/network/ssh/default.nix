@@ -71,6 +71,7 @@ add_ssh_keys() {
     | grep -v allowed_signers \
     | grep -v known_hosts \
     | grep -v pub \
+    | grep -v authorized_keys \
   ); do
     add_ssh_key "$ssh_key_filepath";
   done
