@@ -3,7 +3,7 @@
 # src: https://www.gnome.org/
 #
 
-{ pkgs, userSettings, ... }: with pkgs; {
+{ pkgs, ... }: with pkgs; {
   home.packages = [
     # GSettings editor for GNOME: https://apps.gnome.org/DconfEditor/
     dconf-editor
@@ -78,8 +78,7 @@
       };
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
         name = "kitty";
-        # TODO: fix kitty installation from home-manager then replace with `kitty` instead.
-        command = "/home/${userSettings.username}/.local/kitty.app/bin/kitty -e tmux -2 -u";
+        command = "kitty -e tmux -2 -u";
         binding = "<Super>t";
       };
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
