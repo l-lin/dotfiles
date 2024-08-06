@@ -14,17 +14,15 @@ in {
     nvimColorSchemePluginLua = "{ 'rebelot/kanagawa.nvim' }";
   };
 
-  # stylix = {
-  #   inherit polarity;
-  #   # For some reason, stylix needs a background image...
-  #   image = ../../../image/wallpaper/pictures/cat.jpg;
-  #   cursor = {
-  #     # Material Based Cursor Theme: https://github.com/ful1e5/Bibata_Cursor
-  #     name = "Bibata-Modern-Ice";
-  #     size = 24;
-  #     package = pkgs.bibata-cursors;
-  #   };
-  # };
+  stylix = {
+    inherit polarity;
+    cursor = {
+      # Material Based Cursor Theme: https://github.com/ful1e5/Bibata_Cursor
+      name = "Bibata-Modern-Ice";
+      size = 24;
+      package = pkgs.bibata-cursors;
+    };
+  };
 
   gtk = {
     iconTheme = {
