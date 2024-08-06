@@ -8,7 +8,7 @@ let
   palette = config.lib.stylix.colors;
 in {
   services.dunst = {
-    enable = true;
+    enable = false;
 
     # For settings: `man dunst.5`.
     # Also available here: https://github.com/dunst-project/dunst/blob/master/docs/dunst.5.pod
