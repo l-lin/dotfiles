@@ -76,6 +76,7 @@ in {
       bat.enable = true;
       btop.enable = true;
       fzf.enable = true;
+      gnome.enable = true;
       lazygit.enable = true;
       kitty.enable = true;
       kitty.variant256Colors = true;

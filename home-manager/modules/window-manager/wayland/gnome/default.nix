@@ -80,7 +80,7 @@
         name = "kitty";
         # TODO: fix kitty installation from home-manager then replace with `kitty` instead.
         command = "/home/${userSettings.username}/.local/kitty.app/bin/kitty -e tmux -2 -u";
-        binding = "<Super>Enter";
+        binding = "<Super>t";
       };
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
         name = "file explorer";

@@ -16,6 +16,8 @@ in {
 
   stylix = {
     inherit polarity;
+    # stylix needs a background image when gnome is enable.
+    image = ../../../image/wallpaper/pictures/cat.jpg;
     cursor = {
       # Material Based Cursor Theme: https://github.com/ful1e5/Bibata_Cursor
       name = "Bibata-Modern-Ice";
