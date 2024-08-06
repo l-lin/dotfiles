@@ -39,7 +39,7 @@
     cp -r {bin,share} "$out"
     ls -alh lib
     # libpython3.12.so.1.0 is in conflict with python3.
-    for f in $(find lib -depth 1 -type f | grep -v libpython3.12.so.1.0); do
+    for f in $(find lib -maxdepth 1 -type f); do
       cp "$f" "$out/lib"
     done
     for f in lib/*/; do
