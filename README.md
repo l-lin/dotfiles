@@ -63,10 +63,14 @@ cd ~/.config
 git clone https://github.com/l-lin/dotfiles
 cd dotfiles
 just import-keys import-secrets
+just install-home-standalone
 just update-home
 reboot
+
 unleash-the-keys
+wd dotfiles
 just install-cheatsheets
+git remote remove origin && git remote add origin git@github.com:l-lin/dotfiles && git fetch
 ```
 
 ---
