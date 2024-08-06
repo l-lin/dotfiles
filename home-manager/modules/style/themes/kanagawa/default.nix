@@ -29,16 +29,8 @@ in {
       # An icon theme for the Kanagawa colour palette: https://github.com/Fausto-Korpsvart/Kanagawa-GKT-Theme
       name = "Kanagawa";
       package = pkgs.kanagawa-icon-theme;
-
-      # Pixel perfect icon theme for Linux: https://github.com/PapirusDevelopmentTeam/papirus-icon-theme
-      #name = "Papirus-Dark";
-      #package = pkgs.papirus-icon-theme;
     };
     theme = {
-      # A GTK theme with the Kanagawa colour palette: https://github.com/Fausto-Korpsvart/Kanagawa-GKT-Theme
-      #name = "Kanagawa-BL";
-      #package = pkgs.kanagawa-gtk-theme;
-
       # Soothing pastel theme for GTK: https://github.com/catppuccin/gtk
       name = "catppuccin-mocha-blue-compact";
       # https://github.com/NixOS/nixpkgs/blob/nixos-24.05/pkgs/data/themes/catppuccin-gtk/default.nix

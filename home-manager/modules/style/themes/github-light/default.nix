@@ -36,18 +36,11 @@ in {
 
   stylix = {
     inherit polarity;
-    # For some reason, stylix needs a background image...
-    image = ../../../image/wallpaper/pictures/cat.jpg;
     cursor = {
       # Material Based Cursor Theme: https://github.com/ful1e5/Bibata_Cursor
       name = "Bibata-Modern-Classic";
       size = 24;
       package = pkgs.bibata-cursors;
-
-      # Flat colorful design icon theme: https://github.com/vinceliuice/Qogir-icon-theme
-      #name = "Qogir";
-      #size = 24;
-      #package = pkgs.qogir-icon-theme;
     };
   };
 
