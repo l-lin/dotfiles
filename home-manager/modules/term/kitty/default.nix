@@ -3,9 +3,10 @@
 # src: https://sw.kovidgoyal.net/kitty/
 #
 
-{
+{ outputs, systemSettings, ... }: {
   programs.kitty = {
     enable = true;
+    package = outputs.packages.${systemSettings.system}.kitty;
     # https://sw.kovidgoyal.net/kitty/conf/
     settings = {
       # Bell
