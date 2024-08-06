@@ -4,9 +4,6 @@
 # src: https://wayland.freedesktop.org/
 #
 
-{ pkgs, userSettings, ... }: {
-  imports = [
-    (./. + "/${userSettings.wm}")
-    ./modules
-  ];
+{ userSettings, ... }: {
+  imports = [ (./. + "/${userSettings.wm}") ];
 }
