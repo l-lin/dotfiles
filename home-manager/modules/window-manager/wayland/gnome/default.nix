@@ -55,10 +55,6 @@
         # Only visually alert, no need to have sound polution.
         audible-bell = false;
         visual-bell = false;
-
-        # Focus on window under mouse cursor.
-        auto-raise = true;
-        focus-mode = "sloppy";
       };
 
       # org.gnome.settings-daemon -------------------------------------------
