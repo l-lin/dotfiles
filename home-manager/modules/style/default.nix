@@ -72,18 +72,14 @@ in {
         desktop = 12;
       };
     };
-    # targets = {
-    #   hyprland.enable = false;
-    #   gtk.enable = false;
-    #   gnome.enable = false;
-    #   k9s.enable = false;
-    #   kitty.variant256Colors = true;
-    #   swaylock.enable = false;
-    #   tmux.enable = false;
-    #   waybar.enable = false;
-    #   wpaperd.enable = false;
-    #   xfce.enable = false;
-    # };
+    targets = {
+      bat.enable = true;
+      btop.enable = true;
+      fzf.enable = true;
+      lazygit.enable = true;
+      kitty.enable = true;
+      kitty.variant256Colors = true;
+    };
   };
 
   gtk.enable = true;
