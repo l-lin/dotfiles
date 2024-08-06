@@ -1,4 +1,4 @@
-# :snowflake: NixOS dotfiles
+# Dotfiles
 
 - :bento: window manager: [hyprland](https://github.com/hyprwm/Hyprland)
 - :milky_way: terminal emulator: [kitty](https://sw.kovidgoyal.net/kitty/)
@@ -42,6 +42,27 @@ git clone https://github.com/l-lin/dotfiles
 cd dotfiles
 just import-keys import-secrets
 just update-nixos
+just update-home
+reboot
+unleash-the-keys
+just install-cheatsheets
+```
+
+### Fresh Ubuntu installation
+
+```bash
+# install curl
+sudo apt install curl
+# install nix: https://zero-to-nix.com/start/install
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+```
+
+```bash
+nix-shell -p git just
+cd ~/.config
+git clone https://github.com/l-lin/dotfiles
+cd dotfiles
+just import-keys import-secrets
 just update-home
 reboot
 unleash-the-keys
