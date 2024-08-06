@@ -57,7 +57,6 @@
         visual-bell = false;
 
         # Focus on window under mouse cursor.
-        auto-raise-delay = 0;
         auto-raise = true;
         focus-mode = "sloppy";
       };
@@ -89,7 +88,7 @@
       # org.gnome.shell -------------------------------------------
 
       "org/gnome/shell" = {
-        favorite-apps = ["obsidian.desktop" "kitty.desktop" "firefox.desktop"];
+        favorite-apps = ["obsidian.desktop" "kitty.desktop" "firefox_firefox.desktop"];
         welcome-dialog-last-shown-version = "";
 
         disable-user-extensions = false;
