@@ -156,7 +156,7 @@ change-theme to:
   sed -i 's~theme = "\(.*\)"~theme = "{{to}}"~' flake.nix
   just update-home
   tmux source "${XDG_CONFIG_HOME}/tmux/tmux.conf"
-  pkill wpaperd && wpaperd -d
+  #pkill wpaperd && wpaperd -d
 
 # switch polarity from dark to light or vice versa
 switch-polarity:
