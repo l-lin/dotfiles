@@ -36,16 +36,7 @@
     mkdir -p "$kitten/bin"
 
     # We need to add everything from the tarball because it contains some dependencies used by the binary.
-    cp -r {bin,share} "$out"
-    ls -alh lib
-    # libpython3.12.so.1.0 is in conflict with python3.
-    for f in $(find lib -maxdepth 1 -type f); do
-      cp "$f" "$out/lib"
-    done
-    for f in lib/*/; do
-      echo $f
-      cp -r "$f" "$out/lib"
-    done
+    cp -r {bin,lib,share} "$out"
     cp bin/kitten "$kitten/bin/kitten"
 
     runHook postInstall
