@@ -4,5 +4,5 @@
 #
 
 { pkgs, ... }: {
-  home.packages = with pkgs; [ python313 ];
+  #home.packages = with pkgs; [ python313 ];
 }

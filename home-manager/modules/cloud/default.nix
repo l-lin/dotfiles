@@ -3,5 +3,5 @@
 #
 
 { fileExplorer, ... }: {
-  imports = fileExplorer.allSubdirs ./.;
+  #imports = fileExplorer.allSubdirs ./.;
 }

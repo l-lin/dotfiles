@@ -4,5 +4,5 @@
 #
 
 { pkgs, ... }: {
-  #home.packages = with pkgs; [ terraform ];
+  home.packages = with pkgs; [ terraform ];
 }
