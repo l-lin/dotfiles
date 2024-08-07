@@ -28,6 +28,9 @@
         # Disable Super to trigger window overview
         overlay-key = "";
       };
+      "org/gnome/mutter/keybindings" = {
+        switch-monitor = ["XF86Display"]; # Removing Super-p => used by spotify-toggle.
+      };
 
       # org.gnome.desktop -------------------------------------------
 
@@ -68,11 +71,14 @@
         custom-keybindings = [
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/audio-mixer/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/calculator/"
-          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/file-manager/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/file-manager-tui/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/file-manager-gui/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/mpc-next/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/mpc-toggle/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/mpd-start/"
-          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/nautilus/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/spotify/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/spotify-next/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/spotify-toggle/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/term/"
         ];
       };
@@ -87,12 +93,12 @@
         command = "${userSettings.term} -e numbat --intro-banner off";
         binding = "<Super>c";
       };
-      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/file-manager" = {
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/file-manager-tui" = {
         name = "file-explorer-tui";
         command = "${userSettings.term} -e ${userSettings.fileManager}";
         binding = "<Super>e";
       };
-      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/nautilus" = {
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/file-manager-gui" = {
         name = "file-explorer-gui";
         command = "nautilus";
         binding = "<Super><Shift>e";
@@ -111,6 +117,21 @@
         name = "mpd-start";
         command = "${userSettings.term} -e ncmpcpp --screen visualizer";
         binding = "<Super><Shift>m";
+      };
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/spotify" = {
+        name = "spotify";
+        command = "spotify";
+        binding = "<Super>m";
+      };
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/spotify-next" = {
+        name = "spotify-next";
+        command = "spotify-next";
+        binding = "<Super>n";
+      };
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/spotify-toggle" = {
+        name = "spotify";
+        command = "spotify-toggle";
+        binding = "<Super>p";
       };
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/term" = {
         name = "term";
@@ -153,6 +174,9 @@
         # WARN: May not be available on Ubuntu 24! Use `toggle-application-view` instead.
         toggle-overview = ["<Super>space"];
         toggle-application-view = [];
+
+        toggle-message-tray = ["<Super>v"]; # Removing key-binding Super-m => used by spotify.
+        focus-active-notification = []; # Removing key-binding Super-n => used by spotify-next.
       };
       "org/gnome/shell/extensions/tiling-assistant" = {
         # Move window to half of screen.

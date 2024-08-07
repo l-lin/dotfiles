@@ -28,10 +28,10 @@ in {
   };
 
   home.packages = with pkgs; [
-    (writeShellScriptBin "spotify-play-pause.sh" ''
-      ${builtins.readFile ./scripts/spotify-play-pause.sh}
+    (writeShellScriptBin "spotify-toggle" ''
+      ${builtins.readFile ./scripts/spotify-toggle.sh}
     '')
-    (writeShellScriptBin "spotify-next.sh" ''
+    (writeShellScriptBin "spotify-next" ''
       ${builtins.readFile ./scripts/spotify-next.sh}
     '')
   ];
