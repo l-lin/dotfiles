@@ -14,6 +14,8 @@
       enable_audio_bell = "no";
       bell_on_tab = "yes";
 
+      remember_window_size = "no";
+
       window_padding_width = 12;
     };
     keybindings = {

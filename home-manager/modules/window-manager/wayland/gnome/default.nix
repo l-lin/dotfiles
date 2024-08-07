@@ -3,7 +3,7 @@
 # src: https://www.gnome.org/
 #
 
-{ pkgs, ... }: with pkgs; {
+{ pkgs, userSettings, ... }: with pkgs; {
   home.packages = [
     # GSettings editor for GNOME: https://apps.gnome.org/DconfEditor/
     dconf-editor
@@ -66,19 +66,56 @@
         terminal = "disabled";
 
         custom-keybindings = [
-          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
-          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/audio-mixer/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/calculator/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/file-manager/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/mpc-next/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/mpc-toggle/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/mpd-start/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/nautilus/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/term/"
         ];
       };
-      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
-        name = "kitty";
-        command = "kitty -e tmux -2 -u";
-        binding = "<Super>t";
+
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/audio-mixer" = {
+        name = "audio-mixer";
+        command = "${userSettings.term} -e pulsemixer";
+        binding = "<Super>a";
       };
-      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
-        name = "file-explorer";
-        command = "nautilus";
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/calculator" = {
+        name = "calculator";
+        command = "${userSettings.term} -e numbat --intro-banner off";
+        binding = "<Super>c";
+      };
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/file-manager" = {
+        name = "file-explorer-tui";
+        command = "${userSettings.term} -e ${userSettings.fileManager}";
         binding = "<Super>e";
+      };
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/nautilus" = {
+        name = "file-explorer-gui";
+        command = "nautilus";
+        binding = "<Super><Shift>e";
+      };
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/mpc-next" = {
+        name = "mpc-next";
+        command = "mpc -q next";
+        binding = "<Super><Shift>n";
+      };
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/mpc-toggle" = {
+        name = "mpc-toggle";
+        command = "mpc -q toggle";
+        binding = "<Super><Shift>p";
+      };
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/mpd-start" = {
+        name = "mpd-start";
+        command = "pgrep mpd || mpd && mpc add $(mpc ls) && mpc random && mpc repeat";
+        binding = "<Super><Shift>m";
+      };
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/term" = {
+        name = "term";
+        command = "${userSettings.term} -e tmux -2 -u";
+        binding = "<Super>t";
       };
 
       # org.gnome.shell -------------------------------------------
@@ -115,6 +152,7 @@
         # Display overview.
         # WARN: May not be available on Ubuntu 24! Use `toggle-application-view` instead.
         toggle-overview = ["<Super>space"];
+        toggle-application-view = [];
       };
       "org/gnome/shell/extensions/tiling-assistant" = {
         # Move window to half of screen.
