@@ -31,6 +31,7 @@
       "org/gnome/desktop/wm/keybindings" = {
         close = ["<Super>q"];
         toggle-maximized = ["<Super>f"];
+        toggle-fullscreen = ["<Super><Shift>f"];
 
         minimize = []; # default was Super-h => used by tile-left-half-ignore-ta.
 
