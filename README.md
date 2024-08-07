@@ -55,9 +55,7 @@ just install-cheatsheets
 sudo apt install curl
 # install nix: https://zero-to-nix.com/start/install
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
-```
 
-```bash
 nix-shell -p git just
 cd ~/.config
 git clone https://github.com/l-lin/dotfiles
@@ -71,6 +69,8 @@ unleash-the-keys
 wd dotfiles
 just install-cheatsheets
 git remote remove origin && git remote add origin git@github.com:l-lin/dotfiles && git fetch
+# curl is installed from home-manager
+sudo apt remove curl
 ```
 
 ---
