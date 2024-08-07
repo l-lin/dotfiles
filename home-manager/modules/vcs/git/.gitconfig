@@ -1,5 +1,3 @@
-[includeIf "gitdir:~/work/"]
-  path = ~/work/.gitconfig
 [includeIf "gitdir:~/perso/"]
   path = ~/perso/.gitconfig
 [includeIf "gitdir:/tmp/"]
@@ -10,6 +8,11 @@
   path = ~/perso/.gitconfig
 [includeIf "gitdir:~/.config/"]
   path = ~/perso/.gitconfig
+
+[includeIf "gitdir:~/work/"]
+  path = ~/work/.gitconfig
+[includeIf "gitdir:~/.config/work-dotfiles/"]
+  path = ~/work/.gitconfig
 
 [include]
   path = ~/.config/git/core
