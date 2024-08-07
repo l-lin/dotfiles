@@ -112,8 +112,9 @@
         show-screenshot-ui = ["Print" "<Super>s"];
         screenshot-window = ["<Alt>Print" "<Super><Shift>s"];
 
-        # Display all application view.
-        toggle-application-view = ["<Super>space"];
+        # Display overview.
+        # WARN: May not be available on Ubuntu 24! Use `toggle-application-view` instead.
+        toggle-overview = ["<Super>space"];
       };
       "org/gnome/shell/extensions/tiling-assistant" = {
         # Move window to half of screen.
