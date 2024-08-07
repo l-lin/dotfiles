@@ -58,10 +58,14 @@ add_ssh_key() {
   local ssh_key_filename="$(basename $ssh_key_filepath)"
 
   info "Adding ssh key $ssh_key_filepath to ssh-agent."
-  # Fetch passphrase from bitwarden, then add ssh key to ssh-agent.
-  SSH_ASKPASS=parrot \
-    ssh-add $ssh_key_filepath \
-    <<< "$(bw list items --search ssh@$ssh_key_filename | jq -r '.[].fields[].value')"
+  if [[ $ssh_key_filename == '${userSettings.username}' ]]; then
+    # Fetch passphrase from bitwarden, then add ssh key to ssh-agent.
+    SSH_ASKPASS=parrot \
+      ssh-add $ssh_key_filepath \
+      <<< "$(bw list items --search ssh@${userSettings.username} | jq -r '.[].fields[].value')"
+  else
+    ssh-add $ssh_key_filepath
+  fi
 }
 
 add_ssh_keys() {
