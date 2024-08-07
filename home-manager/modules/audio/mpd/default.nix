@@ -35,6 +35,12 @@ audio_output {
   name "PipeWire"
 }
 
+# Make it work with PulseAudio.
+audio_output {
+  type "pulse"
+  name "PulseAudio"
+}
+
 # Useful to visualize MPD output with a MPD client, e.g. ncmpcpp.
 audio_output {
   type    "fifo"

@@ -109,7 +109,7 @@
       };
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/mpd-start" = {
         name = "mpd-start";
-        command = "pgrep mpd || mpd && mpc add $(mpc ls) && mpc random && mpc repeat";
+        command = "${userSettings.term} -e ncmpcpp --screen visualizer";
         binding = "<Super><Shift>m";
       };
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/term" = {
