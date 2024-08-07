@@ -7,10 +7,8 @@ set -euo pipefail
 
 BW_SESSION=""
 
-declare -A keys=([l-lin]=lin.louis@pm.me [doctolib]=louis.lin@doctolib.com)
-
-ssh_folder="${HOME}/.ssh"
-sops_folder="${HOME}/.config/sops"
+ssh_dir="${HOME}/.ssh"
+sops_dir="${HOME}/.config/sops"
 
 # colors for logging
 blue="\e[1;30;44m"
@@ -37,12 +35,13 @@ get_bw_value() {
 
 import_ssh_keys() {
   local username=${1}
-  local public_key="${ssh_folder}/${username}.pub"
-  local private_key="${ssh_folder}/${username}"
+  local ssh_key_filename=${2}
+  local public_key="${ssh_dir}/${ssh_key_filename}.pub"
+  local private_key="${ssh_dir}/${ssh_key_filename}"
 
-  info "Creating folder ${ssh_folder}/..."
-  mkdir -p "${ssh_folder}"
-  chmod 700 "${ssh_folder}"
+  info "Creating dir ${ssh_dir}/..."
+  mkdir -p "${ssh_dir}"
+  chmod 700 "${ssh_dir}"
 
   info "Importing public key ${public_key}..."
   get_bw_notes "ssh.pub@${username}" "${public_key}"
@@ -55,24 +54,27 @@ import_ssh_keys() {
 
 create_git_allowed_signers() {
   local username=${1}
-  local email=${2}
-  local public_key="${ssh_folder}/${username}.pub"
+  local ssh_key_filename=${2}
+  local email=${3}
+  local public_key="${ssh_dir}/${ssh_key_filename}.pub"
 
-  info "Adding ${username} to ${ssh_folder}/allowed_signers..."
-  echo "${email} namespaces=\"git\" $(cat "${public_key}")" >> "${ssh_folder}/allowed_signers"
+  info "Adding ${username} to ${ssh_dir}/allowed_signers..."
+  echo "${email} namespaces=\"git\" $(cat "${public_key}")" >> "${ssh_dir}/allowed_signers"
 }
 
 import_sops_age_key() {
   local username=${1}
-  local age_key="${sops_folder}/age/${username}.age"
+  local ssh_key_filename=${2}
+  local age_key="${sops_dir}/age/${username}.age"
+  local private_key="${ssh_dir}/${ssh_key_filename}"
 
-  info "Creating folder ${sops_folder}/age/..."
-  mkdir -p "${sops_folder}/age"
-  chmod 700 "${sops_folder}/age"
+  info "Creating dir ${sops_dir}/age/..."
+  mkdir -p "${sops_dir}/age"
+  chmod 700 "${sops_dir}/age"
 
   info "Importing SOPS age key ${age_key}..."
   SSH_TO_AGE_PASSPHRASE="$(get_bw_value "ssh@${username}" 'passphrase')" \
-    ssh-to-age -private-key -i "${ssh_folder}/${username}" > "${age_key}"
+    ssh-to-age -private-key -i "${private_key}" > "${age_key}"
   chmod 600 "${age_key}"
 }
 
@@ -82,13 +84,23 @@ unlock_bw() {
 }
 
 unlock_bw
+bw sync
 
-for username in "${!keys[@]}"; do
-  email="${keys[${username}]}"
-  import_ssh_keys "${username}"
-  create_git_allowed_signers "${username}" "${email}"
-  import_sops_age_key "${username}"
-done
+# Import personal SSH key.
+
+email="lin.louis@pm.me"
+username="l-lin"
+ssh_key_filename="${username}"
+import_ssh_keys "${username}" "${ssh_key_filename}"
+create_git_allowed_signers "${username}" "${ssh_key_filename}" "${email}"
+import_sops_age_key "${username}" "${ssh_key_filename}"
+
+# Import work SSH key.
+email="louis.lin@doctolib.com"
+username="doctolib"
+ssh_key_filename="id_ed25519_ubuntu"
+import_ssh_keys "${username}" "${ssh_key_filename}"
+create_git_allowed_signers "${username}" "${ssh_key_filename}" "${email}"
 
 bw lock
 
