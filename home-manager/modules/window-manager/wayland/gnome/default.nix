@@ -9,12 +9,6 @@
     dconf-editor
     # Gnome tweaks to change caps lock to Ctrl: https://gitlab.gnome.org/GNOME/gnome-tweaks
     gnome-tweaks
-    # # Hides the top bar, except in overview. However, there is an option to show the panel whenever the mouse pointer approaches the edge of the screen. And if "intellihide" is enabled, the panel only hides when a window takes the space: https://extensions.gnome.org/extension/545/hide-top-bar/
-    # gnomeExtensions.hide-top-bar
-    # # Tweak Tool to Customize GNOME Shell, Change the Behavior and Disable UI Elements: https://extensions.gnome.org/extension/3843/just-perfection/
-    # gnomeExtensions.just-perfection
-    # # Keyboard-driven layer for GNOME Shell: https://github.com/pop-os/shell
-    # gnomeExtensions.pop-shell
 
     # Copy/paste utilities: https://github.com/bugaevc/wl-clipboard
     wl-clipboard
@@ -151,20 +145,7 @@
           "ubuntu-dock@ubuntu.com"
           "ding@rastersoft.com"
         ];
-        # TODO: I cannot add new gnome extensions, there are not installed, I don't understand why...
-        # enabled-extensions = with pkgs.gnomeExtensions; [
-        #   # Hides the top bar, except in overview. However, there is an option to show the panel whenever the mouse pointer approaches the edge of the screen. And if "intellihide" is enabled, the panel only hides when a window takes the space: https://extensions.gnome.org/extension/545/hide-top-bar/
-        #   hide-top-bar.extensionUuid
-        #   # Tweak Tool to Customize GNOME Shell, Change the Behavior and Disable UI Elements: https://extensions.gnome.org/extension/3843/just-perfection/
-        #   just-perfection.extensionUuid
-        #   # Keyboard-driven layer for GNOME Shell: https://github.com/pop-os/shell
-        #   pop-shell.extensionUuid
-        # ];
       };
-      # "org/gnome/shell/extensions/hidetopbar" = {
-      #   enable-active-window = false;
-      #   enable-intellihide = false;
-      # };
       "org/gnome/shell/keybindings" = {
         # Screenshot.
         show-screenshot-ui = ["Print" "<Super>s"];
