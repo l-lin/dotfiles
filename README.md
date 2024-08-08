@@ -31,46 +31,58 @@ $ nix-shell -p tree --run 'tree -d -L 1'
 └── stow         # Configuration files that need to be writeable are symlinked in this folder.
 ```
 
-### Fresh NixOS installation
+### Fresh installation
 
-For bootstrapping a fresh NixOS install as root:
+#### :snowflake: NixOS
 
 ```bash
+# Clone dotfiles.
 nix-shell -p git just
 cd ~/.config
 git clone https://github.com/l-lin/dotfiles
 cd dotfiles
+
+# Install.
 just import-keys import-secrets
 just update-nixos
 just update-home
 reboot
+
+# Add navi cheatsheets.
 unleash-the-keys
 just install-cheatsheets
+
+# Fix dotfiles git remote to use ssh.
+wd dotfiles
+git remote remove origin && git remote add origin git@github.com:l-lin/dotfiles && git fetch
 ```
 
-### Fresh Ubuntu installation
+#### Ubuntu
 
 ```bash
-# install curl
+# install curl to install nix: https://zero-to-nix.com/start/install
 sudo apt install curl
-# install nix: https://zero-to-nix.com/start/install
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 
+# Clone dotfiles.
 nix-shell -p git just
 cd ~/.config
 git clone https://github.com/l-lin/dotfiles
 cd dotfiles
+
+# Install.
 just import-keys import-secrets
 just install-home-standalone
 just update-home
 reboot
 
+# Add navi cheatsheets.
 unleash-the-keys
-wd dotfiles
 just install-cheatsheets
+
+# Fix dotfiles git remote to use ssh.
+wd dotfiles
 git remote remove origin && git remote add origin git@github.com:l-lin/dotfiles && git fetch
-# curl is installed from home-manager
-sudo apt remove curl
 ```
 
 ---
