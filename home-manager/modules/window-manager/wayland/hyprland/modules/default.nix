@@ -1,5 +1,5 @@
 #
-# Modules for wayland window manager.
+# Modules for hyprland.
 #
 
 { fileExplorer, pkgs, ... }: {

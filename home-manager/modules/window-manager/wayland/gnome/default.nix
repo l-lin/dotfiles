@@ -3,16 +3,9 @@
 # src: https://www.gnome.org/
 #
 
-{ pkgs, userSettings, ... }: with pkgs; {
-  home.packages = [
-    # GSettings editor for GNOME: https://apps.gnome.org/DconfEditor/
-    dconf-editor
-    # Gnome tweaks to change caps lock to Ctrl: https://gitlab.gnome.org/GNOME/gnome-tweaks
-    gnome-tweaks
+{ fileExplorer, userSettings, ... }: {
+  imports = fileExplorer.allSubdirs ./.;
 
-    # Copy/paste utilities: https://github.com/bugaevc/wl-clipboard
-    wl-clipboard
-  ];
   dconf = {
     enable = true;
     settings = {
@@ -66,6 +59,7 @@
         custom-keybindings = [
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/audio-mixer/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/calculator/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/color-picker/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/file-manager-tui/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/file-manager-gui/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/mpc-next/"
@@ -87,6 +81,11 @@
         name = "calculator";
         command = "${userSettings.term} -e numbat --intro-banner off";
         binding = "<Super>c";
+      };
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/color-picker" = {
+        name = "color-picker";
+        command = "gcolor3";
+        binding = "<Super><Shift>o";
       };
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/file-manager-tui" = {
         name = "file-explorer-tui";
