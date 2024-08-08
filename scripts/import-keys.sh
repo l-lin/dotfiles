@@ -98,7 +98,7 @@ import_sops_age_key "${username}" "${ssh_key_filename}"
 # Import work SSH key.
 email="louis.lin@doctolib.com"
 username="doctolib"
-ssh_key_filename="id_ed25519_ubuntu"
+ssh_key_filename="id_ed25519_$(hostname | sed 's/-/_/')"
 import_ssh_keys "${username}" "${ssh_key_filename}"
 create_git_allowed_signers "${username}" "${ssh_key_filename}" "${email}"
 
