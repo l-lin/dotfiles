@@ -123,7 +123,7 @@ reload-pyprland:
 
 # install navi cheatsheets if not present
 install-cheatsheets:
-  cheats=('github.com/l-lin/cheats') \
+  cheats=('github.com/l-lin/cheats' 'github.com/l-lin/work-cheats') \
     && for c in ${cheats[@]}; do \
       host=$(echo ${c} | cut --delimiter '/' --fields 1) \
       && owner=$(echo ${c} | cut --delimiter '/' --fields 2) \
