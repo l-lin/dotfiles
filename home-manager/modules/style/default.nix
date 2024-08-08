@@ -73,6 +73,7 @@ in {
       };
     };
     targets = {
+      # WARN: Do not enable gtk! Otherwise, you might no longer login in your Ubuntu GUI...
       bat.enable = true;
       btop.enable = true;
       fzf.enable = true;
