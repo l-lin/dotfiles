@@ -40,8 +40,11 @@
     fd
     # A program that shows the type of files: https://darwinsys.com/file
     file
+
     # GNU implementation of the `tar' archiver: https://www.gnu.org/software/tar/
-    gnutar
+    # NOTE: Work internal tool needs native tar.
+    #gnutar
+ 
     # Enhance shell: https://github.com/charmbracelet/gum
     gum
     # Benchmarking tool: https://github.com/sharkdp/hyperfine
