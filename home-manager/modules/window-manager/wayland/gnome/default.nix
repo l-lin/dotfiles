@@ -3,8 +3,19 @@
 # src: https://www.gnome.org/
 #
 
-{ fileExplorer, userSettings, ... }: {
+{ fileExplorer, pkgs, userSettings, ... }: {
   imports = fileExplorer.allSubdirs ./.;
+
+  home.packages = with pkgs; [
+    # GSettings editor for GNOME: https://apps.gnome.org/DconfEditor/
+    dconf-editor
+    # A simple color chooser written in GTK3: https://gitlab.gnome.org/World/gcolor3
+    gcolor3
+    # Gnome tweaks to change caps lock to Ctrl: https://gitlab.gnome.org/GNOME/gnome-tweaks
+    gnome-tweaks
+    # Copy/paste utilities: https://github.com/bugaevc/wl-clipboard
+    wl-clipboard
+  ];
 
   dconf = {
     enable = true;
@@ -62,6 +73,7 @@
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/color-picker/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/file-manager-tui/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/file-manager-gui/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/logout/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/mpc-next/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/mpc-toggle/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/mpd-start/"
@@ -96,6 +108,11 @@
         name = "file-explorer-gui";
         command = "nautilus";
         binding = "<Super><Shift>e";
+      };
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/logout" = {
+        name = "logout";
+        command = "wlogout";
+        binding = "<Super><Shift>w";
       };
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/mpc-next" = {
         name = "mpc-next";
