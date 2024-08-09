@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
+#
 # Script to source AWS credentials from Bitwarden using bw-cli.
+# usage: aws-bw.sh -s '<bitwarden_item_name>'
+# example: aws-bw.sh -s 'aws@perso'
 # src: https://github.com/tdharris/aws-bitwarden-profile/tree/main
+#
 
 # Custom Field Names from Bitwarden
 DEFAULT_FIELD_AWS_ACCESS_KEY="AWS_ACCESS_KEY_ID"

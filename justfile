@@ -92,7 +92,7 @@ clean-home:
 # STOW --------------------------------------------------------------------------
 
 # add symlinks for files that need to be writeable
-create-symlinks:
+create-symlinks: init-directories
   cd stow \
   && for folder in $(find . -type d -maxdepth 1 2>/dev/null); do \
     if [[ "${folder}" != '.' ]] && [[ "${folder}" != './.git' ]]; then \
@@ -105,6 +105,13 @@ create-symlinks:
 # remove-symlinks
 remove-symlinks folder:
   cd stow && stow --delete -t "${HOME}" "{{folder}}"
+
+[private]
+init-directories:
+  cd stow \
+  && for folder in $(find . -mindepth 2 -type d -printf '%P\n' | cut -d '/' -f 2-); do \
+    mkdir -p "${HOME}/${folder}"; \
+  done
 
 # --------------------------------------------------------------------------
 
@@ -131,7 +138,7 @@ install-cheatsheets:
       && just install-cheatsheet ${host} ${owner} ${repo}; \
     done
 
-# install navi cheatsheet
+[private]
 install-cheatsheet host owner repo:
   cheatsheet_name="{{owner}}__{{repo}}" \
     && folder_name="$(echo $(navi info cheats-path)/${cheatsheet_name})" \

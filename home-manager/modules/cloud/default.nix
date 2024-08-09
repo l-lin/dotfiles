@@ -3,5 +3,6 @@
 #
 
 { fileExplorer, ... }: {
+  imports = [ ./aws ];
   #imports = fileExplorer.allSubdirs ./.;
 }
