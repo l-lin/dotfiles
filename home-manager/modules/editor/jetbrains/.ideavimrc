@@ -57,12 +57,13 @@ vnoremap gc :action CommentByLineComment<CR>
 nnoremap <leader>nl :action AceAction<CR>
 " do not include white space characters when using $ in visual mode, see https://vi.stackexchange.com/q/12607/15292
 vnoremap $ g_
-" go to first character in line (need to stretch my left hand to type ^)
-vnoremap 0 ^
-nnoremap 0 ^
 " better indenting
 vnoremap < <gv
 vnoremap > >gv
+" navigation
+" Always put cursor at middle of screen.
+nnoremap <C-d> <C-d>zz
+nnoremap <C-u> <C-u>zz
 
 " VCS
 " keys from vim-gitgutter
