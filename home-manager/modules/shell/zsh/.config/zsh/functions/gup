@@ -3,6 +3,6 @@
 # synchronize and delete merged branches
 #
 
-local target_branch=${1:-develop}
+local target_branch=${1:-main}
 git fetch --all --prune && git checkout "${target_branch}" && git pull && gbdr
 
