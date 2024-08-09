@@ -5,7 +5,7 @@
 # - https://github.com/Mic92/sops-nix
 #
 
-{ config, inputs, pkgs, userSettings, ... }: {
+{ config, inputs, pkgs, ... }: {
   # Install SOPS CLI.
   home.packages = with pkgs; [ sops ];
   # Install sops-nix.
@@ -23,8 +23,11 @@
     #     | jq -r '.[].fields[].value'\
     #   )" \
     #   nix-shell -p ssh-to-age --run \
-    #     "ssh-to-age -private-key -i ~/.ssh/l-lin > ~/.config/sops/age/l-lin.age"
+    #     "ssh-to-age -private-key -i ~/.ssh/l-lin >> ~/.config/sops/age/keys.txt"
     # ```
-    keyFile = "${config.home.homeDirectory}/.config/sops/age/${userSettings.username}.age";
+    #
+    # Sops will look by default for the key in `~/.config/sops/age/keys.txt`.
+    # src: https://github.com/getsops/sops?tab=readme-ov-file#22encrypting-using-age
+    keyFile = "${config.xdg.configHome}/sops/age/keys.txt";
   };
 }

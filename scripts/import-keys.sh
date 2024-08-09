@@ -65,7 +65,7 @@ create_git_allowed_signers() {
 import_sops_age_key() {
   local username=${1}
   local ssh_key_filename=${2}
-  local age_key="${sops_dir}/age/${username}.age"
+  local age_key="${sops_dir}/age/keys.txt"
   local private_key="${ssh_dir}/${ssh_key_filename}"
 
   info "Creating dir ${sops_dir}/age/..."
@@ -74,7 +74,7 @@ import_sops_age_key() {
 
   info "Importing SOPS age key ${age_key}..."
   SSH_TO_AGE_PASSPHRASE="$(get_bw_value "ssh@${username}" 'passphrase')" \
-    ssh-to-age -private-key -i "${private_key}" > "${age_key}"
+    ssh-to-age -private-key -i "${private_key}" >> "${age_key}"
   chmod 600 "${age_key}"
 }
 
@@ -91,16 +91,17 @@ bw sync
 email="lin.louis@pm.me"
 username="l-lin"
 ssh_key_filename="${username}"
-import_ssh_keys "${username}" "${ssh_key_filename}"
-create_git_allowed_signers "${username}" "${ssh_key_filename}" "${email}"
+#import_ssh_keys "${username}" "${ssh_key_filename}"
+#create_git_allowed_signers "${username}" "${ssh_key_filename}" "${email}"
 import_sops_age_key "${username}" "${ssh_key_filename}"
 
 # Import work SSH key.
 email="louis.lin@doctolib.com"
 username="doctolib"
 ssh_key_filename="id_ed25519_$(hostname | sed 's/-/_/')"
-import_ssh_keys "${username}" "${ssh_key_filename}"
-create_git_allowed_signers "${username}" "${ssh_key_filename}" "${email}"
+#import_ssh_keys "${username}" "${ssh_key_filename}"
+#create_git_allowed_signers "${username}" "${ssh_key_filename}" "${email}"
+import_sops_age_key "${username}" "${ssh_key_filename}"
 
 bw lock
 
