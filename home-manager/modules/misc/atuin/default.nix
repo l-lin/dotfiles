@@ -13,7 +13,7 @@
   # Symlink to ~/.config/atuin/config.toml
   xdg.configFile."atuin/config.toml".text = ''
 ## where to store your encryption key, default is your system data directory
-#key_path = "${config.sops.secrets.atuin-key.path}"
+key_path = "${config.sops.secrets.atuin-key.path}"
 
 ## enable or disable showing a preview of the selected command
 ## useful when the command is longer than the terminal width and is cut off

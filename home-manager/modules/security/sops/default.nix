@@ -26,7 +26,5 @@
     #     "ssh-to-age -private-key -i ~/.ssh/l-lin > ~/.config/sops/age/l-lin.age"
     # ```
     keyFile = "${config.home.homeDirectory}/.config/sops/age/${userSettings.username}.age";
-    # This will automatically import SSH keys as age keys.
-    sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/${userSettings.username}" ];
   };
 }
