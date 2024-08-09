@@ -7,9 +7,10 @@ dotfiles-work:~/work/dotfiles
 leetcode:~/perso/leetcode
 mediamtx:~/work/mediamtx
 navi:~/.local/share/navi/cheats/l-lin__cheats
-navi-work:~/.local/share/navi/cheats/l-lin__work-cheats
 nvim:~/perso/dotfiles/nvim/.config/nvim
 playbook:~/work/sandbox/playbook
 record-service:~/work/record-service
 swapi:~/work/smart-wearables-platform-api
 video:~/work/video-service
+work-dotfiles:~/.config/work-dotfiles
+work-navi:~/.local/share/navi/cheats/l-lin__work-cheats
