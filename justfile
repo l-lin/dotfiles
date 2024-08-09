@@ -178,6 +178,14 @@ switch-polarity:
 get-current-theme:
   grep 'theme = ' flake.nix | sed 's~theme = "\(.*\)"; #.*~\1~' | sed 's/ //g'
 
+# ------------------------------------------------------------------------
+
+# install lombok in xdg data home
+# TODO: move Lombok installation in nvim lua script instead, so I don't need to call this recipe and it's downloaded
+# automatically once the LSP server is installed.
+install-lombok:
+  curl -L -o "${HOME}/.local/share/nvim/mason/packages/jdtls/lombok.jar" https://projectlombok.org/downloads/lombok.jar
+
 # LOGGING ------------------------------------------------------------------------
 
 BLUE := '\033[1;30;44m'
