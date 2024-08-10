@@ -47,10 +47,15 @@ Sandbox.java
 .cache
 .vscode
 .env
-.direnv
 # Some nvim plugins are generating this file...
 server exited unexpectedly
 
 # Nvim plugin #
 ###############
 .gitlab.nvim
+
+# Nvim plugin #
+###############
+.envrc
+.direnv
+shell.nix
