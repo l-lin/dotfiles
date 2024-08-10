@@ -1,4 +1,8 @@
 return {
+  -- #######################
+  -- override default config
+  -- #######################
+
   {
     "mfussenegger/nvim-lint",
     opts = {

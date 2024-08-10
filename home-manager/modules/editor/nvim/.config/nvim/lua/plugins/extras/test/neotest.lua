@@ -1,4 +1,8 @@
 return {
+  -- #######################
+  -- override default config
+  -- #######################
+
   {
     "nvim-neotest/neotest",
     keys = {
