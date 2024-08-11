@@ -108,7 +108,7 @@
       name = "Louis LIN";
       email = "lin.louis@pm.me";
 
-      browser = "firefox"; # default browser
+      browser = "floorp"; # default browser
       fileManager = "yazi"; # TUI file manager (lf or yazi)
       editor = "nvim"; # default editor
       messaging = "slack"; # default messaging tool

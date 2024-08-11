@@ -5,7 +5,7 @@
 # - https://github.com/yokoffing/Betterfox
 #
 
-{ pkgs, ... }:
+{ pkgs, userSettings, ... }:
 let
   userJs = pkgs.fetchFromGitHub {
     owner = "yokoffing";
@@ -14,12 +14,47 @@ let
     rev = "115.0";
     sha256 = "sha256-g/8jfjPFTvml4QOGpNBJbxeqiakK+a+B/2MfjeMiF5I";
   } + "/user.js";
+  profileName = userSettings.username;
+
+  # Native messaging hosts installation.
+  # I think floorp still does not override native messaging hosts, so add-on like tridactyl is still
+  # trying to read from `~/.mozilla/native-messaging-hosts`.
+  vendorPath = if isDarwin then
+    "Library/Application Support/Mozilla"
+  else
+    ".mozilla";
+  inherit (pkgs.stdenv.hostPlatform) isDarwin;
+  nativeMessagingHostsPath = if isDarwin then
+    "${vendorPath}/NativeMessagingHosts"
+  else
+    "${vendorPath}/native-messaging-hosts";
+  nativeMessagingHostsJoined = pkgs.symlinkJoin {
+    name = "floorp_native-messaging-hosts";
+    paths = [
+      # Link a .keep file to keep the directory around.
+      (pkgs.writeTextDir "lib/mozilla/native-messaging-hosts/.keep" "")
+      # Link package configured native messaging hosts (entire browser actually).
+      pkgs.floorp
+    ]
+      # Link user configured native messaging hosts.
+      ++ [ pkgs.tridactyl-native ];
+  };
 in {
   home.packages = with pkgs; [ floorp ];
 
   # Symlinks to ~/.floorp.
-  home.file.".floorp/profiles.ini".source = ./.floorp/profiles.ini;
-  home.file.".floorp/default/user.js".text = ''
+  home.file.".floorp/profiles.ini".text = ''
+[Profile0]
+Name=${profileName}
+IsRelative=1
+Path=${profileName}
+Default=1
+
+[General]
+StartWithLastProfile=1
+Version=2
+  '';
+  home.file.".floorp/${profileName}/user.js".text = ''
     ${builtins.readFile userJs}
 
     // Browser Manager Sidebar.
@@ -47,4 +82,9 @@ in {
     // Do not show search bar in new tabs.
     user_pref("browser.newtabpage.activity-stream.showSearch", false);
   '';
+  # Symlink to ~/.mozilla/native-messaging-hosts.
+  home.file."${nativeMessagingHostsPath}" = {
+    source = "${nativeMessagingHostsJoined}/lib/mozilla/native-messaging-hosts";
+    recursive = true;
+  };
 }

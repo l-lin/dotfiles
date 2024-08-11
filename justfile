@@ -74,7 +74,7 @@ install-home-standalone:
 update-home: add-pre-commit-hook
   just info "Applying home-manager configuration..."
   if type nh >/dev/null 2>&1; then \
-    nh home switch --backup-extension bak --configuration "{{NIX_PROFILE}}" .; \
+    nh home switch --backup-extension bak --configuration "{{NIX_PROFILE}}" . -- --show-trace; \
   else \
     home-manager switch -b bak --flake '.#{{NIX_PROFILE}}'; \
   fi
@@ -185,6 +185,15 @@ get-current-theme:
 # automatically once the LSP server is installed.
 install-lombok:
   curl -L -o "${HOME}/.local/share/nvim/mason/packages/jdtls/lombok.jar" https://projectlombok.org/downloads/lombok.jar
+
+# open firefox add-ons to install
+# TODO: floorp does not seem to sync add-ons when connecting to firefox sync.
+# So for now, let's install them manually, until I find a way to sync them, e.g. using NUR?
+open-firefox-add-ons:
+  add_ons=('bitwarden-password-manager' 'darkreader' 'human-factory' 'languagetool' 'multi-account-containers' 'ninja-cookie' 'refined-doctolib' 'tridactyl-vim' 'ublock-origin') \
+  && for add_on in ${add_ons[@]}; do \
+    xdg-open "https://addons.mozilla.org/en-US/firefox/addon/${add_on}/"; \
+  done
 
 # LOGGING ------------------------------------------------------------------------
 
