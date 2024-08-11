@@ -157,7 +157,7 @@
       # org.gnome.shell -------------------------------------------
 
       "org/gnome/shell" = {
-        favorite-apps = ["obsidian.desktop" "kitty.desktop" "firefox_firefox.desktop" "slack.desktop"];
+        favorite-apps = ["obsidian.desktop" "kitty.desktop" "floorp.desktop" "slack.desktop"];
         welcome-dialog-last-shown-version = "";
 
         disable-user-extensions = false;

@@ -24,7 +24,7 @@
   nativeBuildInputs = [ xz ];
 
   outputs = [ "out" "kitten" ];
-  
+
   unpackPhase = ''
     xz -d < ${src} | tar xvf -
   '';

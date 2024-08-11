@@ -2,10 +2,6 @@
 # Web browser.
 #
 
-{
-  programs.firefox = {
-    enable = true;
-  };
-
-  imports = [ ./tridactyl ];
+{ fileExplorer, ... }: {
+  imports = fileExplorer.allSubdirs ./.;
 }
