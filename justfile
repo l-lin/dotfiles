@@ -54,8 +54,7 @@ find-nix-option option:
 update-flake input="all":
   if [[ "{{input}}" == "all" ]]; then \
     just info "Updating Nix flake lock file..." \
-    && nix flake update \
-    && just update-nixos update-home; \
+    && nix flake update; \
   else \
     just info "Updating Nix flake {{input}}..." \
     && nix flake lock --update-input {{input}}; \
