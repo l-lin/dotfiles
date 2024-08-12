@@ -67,6 +67,9 @@ Version=2
     // Do not show search bar in new tabs.
     user_pref("browser.newtabpage.activity-stream.showSearch", false);
 
+    // Do not show warning when going to about:config.
+    user_pref("browser.aboutConfig.showWarning", false);
+
     /******************************************************************************
      * SECTION: HTTPS-ONLY MODE                                                  *
     ******************************************************************************/
