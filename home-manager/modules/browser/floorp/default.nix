@@ -57,6 +57,39 @@ Version=2
   home.file.".floorp/${profileName}/user.js".text = ''
     ${builtins.readFile userJs}
 
+    /******************************************************************************
+      * SECTION: BROWSER                                                         *
+    ******************************************************************************/
+
+    // Ctrl+Tab cycles through tabs in recently used order.
+    user_pref("browser.ctrlTab.sortByRecentlyUsed", true);
+
+    // Do not show search bar in new tabs.
+    user_pref("browser.newtabpage.activity-stream.showSearch", false);
+
+    /******************************************************************************
+     * SECTION: HTTPS-ONLY MODE                                                  *
+    ******************************************************************************/
+
+    // PREF: enable HTTPS-only Mode
+    // Private Browsing only
+    user_pref("dom.security.https_only_mode", true);
+
+    // PREF: HTTP background requests in HTTPS-only Mode
+    // When attempting to upgrade, if the server doesn't respond within 3 seconds[=default time],
+    // Firefox sends HTTP requests in order to check if the server supports HTTPS or not.
+    // This is done to avoid waiting for a timeout which takes 90 seconds.
+    // Firefox only sends top level domain when falling back to http.
+    // [WARNING] Disabling causes long timeouts when no path to HTTPS is present.
+    // [NOTE] Use "Manage Exceptions" for sites known for no HTTPS.
+    // [1] https://bugzilla.mozilla.org/buglist.cgi?bug_id=1642387,1660945
+    // [2] https://blog.mozilla.org/attack-and-defense/2021/03/10/insights-into-https-only-mode/
+    user_pref("dom.security.https_only_mode_send_http_background_request", false);
+
+    /******************************************************************************
+      * SECTION: FLOORP                                                          *
+    ******************************************************************************/
+
     // Browser Manager Sidebar.
     user_pref("floorp.browser.sidebar.enable", false);
     user_pref("floorp.browser.sidebar.is.displayed", false);
@@ -71,16 +104,11 @@ Version=2
 
     // Sleeping tabs.
     user_pref("floorp.tabsleep.excludeHosts", "app.slack.com,mail.google.com,mail.proton.me");
+    user_pref("floorp.tabsleep.enabled", true);
     user_pref("floorp.tabsleep.tabTimeoutMinutes", 20);
 
     // I don't use Floorp Notes, so no need to sync.
     user_pref("services.sync.prefs.sync.floorp.browser.note.memos", false);
-
-    // Ctrl+Tab cycles through tabs in recently used order.
-    user_pref("browser.ctrlTab.sortByRecentlyUsed", true);
-
-    // Do not show search bar in new tabs.
-    user_pref("browser.newtabpage.activity-stream.showSearch", false);
   '';
   # Symlink to ~/.mozilla/native-messaging-hosts.
   home.file."${nativeMessagingHostsPath}" = {
