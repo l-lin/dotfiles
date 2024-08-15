@@ -9,7 +9,7 @@ THEMES_FOLDER := './home-manager/modules/style/themes'
 DEFAULT_THEME_DARK := 'kanagawa'
 DEFAULT_THEME_LIGHT := 'github-light'
 
-PRE_COMMIT_FILE := './home-manager/modules/vcs/git/scripts/pre-commit.sh'
+PRE_COMMIT_FILE := './home-manager/modules/vcs/git/.config/git/hooks/scan-nix-files.sh'
 
 # display help
 help:
