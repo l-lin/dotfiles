@@ -6,6 +6,6 @@
 # and a keyboard—and are often written and created using a widget toolkit.
 #
 
-{ userSettings, ... }: {
+{
   imports = [ ./wayland ];
 }

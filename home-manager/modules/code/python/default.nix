@@ -3,6 +3,8 @@
 # src: https://www.python.org/
 #
 
-{ pkgs, ... }: {
-  #home.packages = with pkgs; [ python313 ];
-}
+# HACK: DISABLED because I don't need python yet.
+# { pkgs, ... }: {
+#   home.packages = with pkgs; [ python313 ];
+# }
+{}

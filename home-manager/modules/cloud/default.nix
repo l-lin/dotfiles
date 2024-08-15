@@ -2,7 +2,9 @@
 # Cloud related stuff.
 #
 
-{ fileExplorer, ... }: {
+{
   imports = [ ./aws ];
-  #imports = fileExplorer.allSubdirs ./.;
+
+  # HACK: DISABLED because I don't need terraform and k8s yet.
+  # imports = fileExplorer.allSubdirs ./.;
 }

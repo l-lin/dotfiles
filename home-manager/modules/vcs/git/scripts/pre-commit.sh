@@ -9,5 +9,5 @@ if ! type deadnix &>/dev/null; then
   exit 0
 fi
 
-deadnix --fail --exclude nixos/hardware-configuration.nix .
+deadnix --fail --exclude nixos/hardware-configuration.nix
 

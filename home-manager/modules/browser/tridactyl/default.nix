@@ -3,7 +3,7 @@
 # src: https://tridactyl.xyz/
 #
 
-{ config, pkgs, userSettings, ... }:
+{ config, userSettings, ... }:
 let
   theme = if (config.theme.polarity == "dark") then "kanagawa" else "github-light";
   vendorPath = if userSettings.browser == "floorp" then

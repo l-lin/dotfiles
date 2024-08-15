@@ -10,7 +10,7 @@ let
   userJs = pkgs.fetchFromGitHub {
     owner = "yokoffing";
     repo = "Betterfox";
-    # NOTE: Do not forget to sync the version with the Firefox version provided by Floorp.
+    # WARN: Do not forget to sync the version with the Firefox version provided by Floorp.
     rev = "115.0";
     sha256 = "sha256-g/8jfjPFTvml4QOGpNBJbxeqiakK+a+B/2MfjeMiF5I";
   } + "/user.js";

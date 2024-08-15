@@ -29,7 +29,7 @@
       "org/gnome/mutter/keybindings" = {
         switch-monitor = ["XF86Display"]; # Removing Super-p => used by spotify-toggle.
 
-        # NOTE: Keybindings available only on Ubuntu 22.
+        # WARN: Keybindings available only on Ubuntu 22.
         toggle-tiled-left = ["<Super>h" "<Super>Left"];
         toggle-tiled-right = ["<Super>l" "<Super>Right"];
       };
@@ -181,7 +181,7 @@
         focus-active-notification = []; # Removing key-binding Super-n => used by spotify-next.
       };
 
-      # NOTE: Keybindings available only on Ubuntu 24.
+      # WARN: Keybindings available only on Ubuntu 24.
       # "org/gnome/shell/extensions/tiling-assistant" = {
       #   # Move window to half of screen.
       #   tile-left-half-ignore-ta = ["<Super>h"];

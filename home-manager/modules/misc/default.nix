@@ -40,8 +40,8 @@
     file
 
     # GNU implementation of the `tar' archiver: https://www.gnu.org/software/tar/
-    # NOTE: Work internal tool needs native tar.
-    #gnutar
+    # HACK: DISABLED because work internal tool needs native tar.
+    # gnutar
  
     # Enhance shell: https://github.com/charmbracelet/gum
     gum

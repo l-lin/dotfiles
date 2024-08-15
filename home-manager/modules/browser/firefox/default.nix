@@ -2,12 +2,12 @@
 # Web browser.
 #
 
-{ fileExplorer, pkgs, userSettings, ... }:
+{ pkgs, userSettings, ... }:
 let
   userJs = pkgs.fetchFromGitHub {
     owner = "yokoffing";
     repo = "Betterfox";
-    # NOTE: Do not forget to sync the version with the Firefox version.
+    # WARN: Do not forget to sync the version with the Firefox version.
     rev = "128.0";
     sha256 = "sha256-Xbe9gHO8Kf9C+QnWhZr21kl42rXUQzqSDIn99thO1kE";
   } + "/user.js";

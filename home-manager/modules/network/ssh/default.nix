@@ -2,7 +2,7 @@
 # SSH
 #
 
-{ config, pkgs, userSettings, ... }: {
+{ pkgs, userSettings, ... }: {
   # programs = {
   #   ssh = {
   #     enable = true;

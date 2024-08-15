@@ -186,8 +186,7 @@ install-lombok:
   curl -L -o "${HOME}/.local/share/nvim/mason/packages/jdtls/lombok.jar" https://projectlombok.org/downloads/lombok.jar
 
 # open firefox add-ons to install
-# TODO: floorp does not seem to sync add-ons when connecting to firefox sync.
-# So for now, let's install them manually, until I find a way to sync them, e.g. using NUR?
+# NOTE: When using user.js, it's not possible to use firefox sync, so I need to install them manually.
 open-firefox-add-ons:
   add_ons=('bitwarden-password-manager' 'darkreader' 'human-factory' 'languagetool' 'multi-account-containers' 'ninja-cookie' 'refined-doctolib' 'tridactyl-vim' 'ublock-origin') \
   && for add_on in ${add_ons[@]}; do \

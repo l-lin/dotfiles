@@ -4,8 +4,10 @@
 # src: https://docs.temporal.io/cli
 #
 
-{ pkgs, ... }: {
-  # home.packages = with pkgs; [ temporal-cli ];
-  #
-  # xdg.configFile."zsh/completions/_temporal".source = ./.config/zsh/completions/_temporal;
-}
+# HACK: DISABLED because I don't need temporal yet.
+# { pkgs, ... }: {
+#   home.packages = with pkgs; [ temporal-cli ];
+#
+#   xdg.configFile."zsh/completions/_temporal".source = ./.config/zsh/completions/_temporal;
+# }
+{}

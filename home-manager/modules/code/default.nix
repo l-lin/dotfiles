@@ -2,10 +2,10 @@
 # Code related stuff.
 #
 
-{ fileExplorer, pkgs, ...}: {
+{ fileExplorer, ...}: {
   imports = fileExplorer.allSubdirs ./.;
 
-  # NOTE: Work internal tool needs native gcc and make.
+  # HACK: DISABLED because work internal tool needs native gcc and make.
   # home.packages = with pkgs; [
   #   # GNU Compiler Collection.
   #   gcc
