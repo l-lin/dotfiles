@@ -5,13 +5,29 @@
 #
 
 { config, pkgs, userSettings, ... }: {
-  home.packages = with pkgs; [ git git-lfs ];
+  home.packages = with pkgs; [
+    git
+    git-lfs
+
+    (writeShellScriptBin "install-pre-commit-hook" ''
+touch .git/hooks/pre-commit
+chmod +x .git/hooks/pre-commit
+cat <<EOF > .git/hooks/pre-commit
+#!/usr/bin/env bash
+set -e
+${config.xdg.configHome}/git/hooks/check-no-commit.sh
+EOF
+    '')
+  ];
 
   # Symlink to ~/.gitconfig
   home.file.".gitconfig".source = ./.gitconfig;
-  # Symlink to ~/.config/git/ignore
+  # Symlink to ~/.config/git
   xdg.configFile."git/ignore".source = ./.config/git/ignore;
-  # Symlink to ~/.config/git/core
+  xdg.configFile."git/hooks" = {
+    source = ./.config/git/hooks;
+    recursive = true;
+  };
   xdg.configFile."git/core".text = ''
 [core]
   editor = ${userSettings.editor}
