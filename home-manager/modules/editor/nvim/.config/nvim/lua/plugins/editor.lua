@@ -222,21 +222,21 @@ return {
   },
 
   -- file explorer to edit filesystem like a normal buffer, vim-vinegar like
-  {
-    "stevearc/oil.nvim",
-    keys = {
-      {
-        "<leader>fo",
-        function()
-          require("oil").open()
-        end,
-        desc = "Oil open current directory",
-      },
-    },
-    config = function()
-      require("oil").setup()
-    end,
-  },
+  -- {
+  --   "stevearc/oil.nvim",
+  --   keys = {
+  --     {
+  --       "<leader>fo",
+  --       function()
+  --         require("oil").open()
+  --       end,
+  --       desc = "Oil open current directory",
+  --     },
+  --   },
+  --   config = function()
+  --     require("oil").setup()
+  --   end,
+  -- },
 
   -- multiple cursors
   {
