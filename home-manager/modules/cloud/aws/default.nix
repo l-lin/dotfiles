@@ -6,7 +6,7 @@
 { pkgs, ... }: {
   home.packages = with pkgs; [
     # Unified tool to manage your AWS services. https://aws.amazon.com/cli/
-    awscli
+    awscli2
 
     # Script to invoke bitwarden CLI to get AWS credentials.
     (writeShellScriptBin "aws-bw" ''
