@@ -62,8 +62,8 @@ update-flake input="all":
 
 # HOME-MANAGER --------------------------------------------------------------------------
 
-# install home-manager in standalone
 # src: https://nix-community.github.io/home-manager/index.xhtml#sec-install-standalone
+# install home-manager in standalone
 install-home-standalone:
   nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
   nix-channel --update
@@ -179,14 +179,14 @@ get-current-theme:
 
 # ------------------------------------------------------------------------
 
-# install lombok in xdg data home
 # TODO: move Lombok installation in nvim lua script instead, so I don't need to call this recipe and it's downloaded
 # automatically once the LSP server is installed.
+# install lombok in xdg data home
 install-lombok:
   curl -L -o "${HOME}/.local/share/nvim/mason/packages/jdtls/lombok.jar" https://projectlombok.org/downloads/lombok.jar
 
-# open firefox add-ons to install
 # NOTE: When using user.js, it's not possible to use firefox sync, so I need to install them manually.
+# open firefox add-ons to install
 open-firefox-add-ons:
   add_ons=('bitwarden-password-manager' 'darkreader' 'human-factory' 'languagetool' 'multi-account-containers' 'ninja-cookie' 'refined-doctolib' 'tridactyl-vim' 'ublock-origin') \
   && for add_on in ${add_ons[@]}; do \
