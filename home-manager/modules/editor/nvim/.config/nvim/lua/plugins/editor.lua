@@ -114,9 +114,6 @@ return {
   -- file explorer
   {
     "nvim-neo-tree/neo-tree.nvim",
-    keys = {
-      { "<A-1>", "<leader>fE", desc = "Explorer NeoTree (root dir) (Alt+1)", remap = true },
-    },
     opts = {
       close_if_last_window = true,
       enable_git_status = false,
@@ -220,23 +217,6 @@ return {
       { "<leader>U", "<cmd>UndotreeToggle<cr>", noremap = true, desc = "Undotree Toggle" },
     },
   },
-
-  -- file explorer to edit filesystem like a normal buffer, vim-vinegar like
-  -- {
-  --   "stevearc/oil.nvim",
-  --   keys = {
-  --     {
-  --       "<leader>fo",
-  --       function()
-  --         require("oil").open()
-  --       end,
-  --       desc = "Oil open current directory",
-  --     },
-  --   },
-  --   config = function()
-  --     require("oil").setup()
-  --   end,
-  -- },
 
   -- multiple cursors
   {
