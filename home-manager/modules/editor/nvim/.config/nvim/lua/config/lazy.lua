@@ -51,6 +51,7 @@ require("lazy").setup({
     { import = "plugins.extras.lang.java" },
     { import = "plugins.extras.lang.just" },
     { import = "plugins.extras.lang.markdown" },
+    { import = "plugins.extras.lang.xml" },
     { import = "plugins.extras.test.neotest" },
     --{ import = "plugins.extras.vcs.gitlab" },
   },
