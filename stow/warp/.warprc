@@ -1,6 +1,7 @@
-doctolib:~/work/doctolib
+boot:~/work/doctoboot
 dotfiles:~/.config/dotfiles
 leetcode:~/perso/leetcode
+monolith:~/work/doctolib
 navi:~/.local/share/navi/cheats/l-lin__cheats
 nvim:~/perso/dotfiles/nvim/.config/nvim
 phr:~/work/patient-health-record
