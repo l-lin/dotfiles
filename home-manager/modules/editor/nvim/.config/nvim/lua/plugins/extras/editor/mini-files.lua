@@ -18,6 +18,10 @@ return {
         -- Whether to use for editing directories.
         use_as_default_explorer = true,
       },
+      mappings = {
+        go_in = "",
+        go_out = "",
+      },
     },
   },
 }
