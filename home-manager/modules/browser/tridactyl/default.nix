@@ -21,10 +21,11 @@ set editorcmd ${userSettings.term} -e nvim %f '+normal!%lGzv%c|'
 colors ${theme}
 
 " binds
-bind H tabprev
-bind L tabnext
-bind J back
-bind K forward
+" With vertical tabs, it's more intuitive to use J/K to navigate tabs instead.
+"bind H tabprev
+"bind L tabnext
+"bind J back
+"bind K forward
 
 set profiledir ${config.home.homeDirectory}/${vendorPath}/${profileName}
   '';
