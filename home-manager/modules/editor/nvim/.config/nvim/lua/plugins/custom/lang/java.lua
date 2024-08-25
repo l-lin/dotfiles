@@ -182,20 +182,46 @@ local function attach_keymaps()
       if client and client.name == "jdtls" then
         local jdtls = require("jdtls")
         local jdtls_test = require("jdtls.tests")
-        vim.keymap.set("n", "<M-C-V>", jdtls.extract_variable_all, { noremap = true, silent = true, desc = "Extract variable" })
-        vim.keymap.set("v", "<M-C-V>", [[<ESC><CMD>lua require("jdtls").extract_variable_all(true)<CR>]], { noremap = true, silent = true, desc = "Extract variable" })
-        vim.keymap.set("i", "<M-C-V>", [[<ESC><CMD>lua require("jdtls").extract_variable_all()<CR>]], { noremap = true, silent = true, desc = "Extract variable" })
+        local map = vim.keymap.set
 
-        vim.keymap.set("n", "<M-C-C>", jdtls.extract_constant, { noremap = true, silent = true, desc = "Extract constant" })
-        vim.keymap.set("v", "<M-C-C>", [[<ESC><CMD>lua require("jdtls").extract_constant(true)<CR>]], { noremap = true, silent = true, desc = "Extract constant" })
-        vim.keymap.set("i", "<M-C-C>", [[<ESC><CMD>lua require("jdtls").extract_constant()<CR>]], { noremap = true, silent = true, desc = "Extract constant" })
+        map("n", "<M-C-V>", jdtls.extract_variable_all, { noremap = true, silent = true, desc = "Extract variable" })
+        map("v", "<M-C-V>", [[<ESC><CMD>lua require("jdtls").extract_variable_all(true)<CR>]], { noremap = true, silent = true, desc = "Extract variable" })
+        map("i", "<M-C-V>", [[<ESC><CMD>lua require("jdtls").extract_variable_all()<CR>]], { noremap = true, silent = true, desc = "Extract variable" })
 
-        vim.keymap.set("v", "<M-C-N>", [[<ESC><CMD>lua require("jdtls").extract_method(true)<CR>]], { noremap = true, silent = true, desc = "Extract method" })
+        map("n", "<M-C-C>", jdtls.extract_constant, { noremap = true, silent = true, desc = "Extract constant" })
+        map("v", "<M-C-C>", [[<ESC><CMD>lua require("jdtls").extract_constant(true)<CR>]], { noremap = true, silent = true, desc = "Extract constant" })
+        map("i", "<M-C-C>", [[<ESC><CMD>lua require("jdtls").extract_constant()<CR>]], { noremap = true, silent = true, desc = "Extract constant" })
 
-        vim.keymap.set("n", "<F33>", jdtls.compile, { noremap = true, silent = true, desc = "Compile (Ctrl+F9)" })
-        vim.keymap.set("n", "<M-C-O>", jdtls.organize_imports, { noremap = true, silent = true, desc = "Organize imports (Ctrl+Alt+o)" })
-        vim.keymap.set("n", "<leader>cR", "<cmd>JdtRestart<cr>", { noremap = true, silent = true, desc = "Restart jdtls server" })
-        vim.keymap.set("n", "<C-T>", jdtls_test.goto_subjects, { noremap = true, silent = true, desc = "Find associated test or class file (Ctrl+t)" })
+        map("v", "<M-C-N>", [[<ESC><CMD>lua require("jdtls").extract_method(true)<CR>]], { noremap = true, silent = true, desc = "Extract method" })
+
+        map("n", "<F33>", jdtls.compile, { noremap = true, silent = true, desc = "Compile (Ctrl+F9)" })
+        map("n", "<M-C-O>", jdtls.organize_imports, { noremap = true, silent = true, desc = "Organize imports (Ctrl+Alt+o)" })
+        map("n", "<leader>cR", "<cmd>JdtRestart<cr>", { noremap = true, silent = true, desc = "Restart jdtls server" })
+        map("n", "<C-T>", jdtls_test.goto_subjects, { noremap = true, silent = true, desc = "Find associated test or class file (Ctrl+t)" })
+
+        local wk = require("which-key")
+        wk.add({
+          {
+            mode = "n",
+            buffer = args.buf,
+            { "<leader>cx", group = "extract" },
+            { "<leader>cxv", require("jdtls").extract_variable_all, desc = "Extract Variable" },
+            { "<leader>cxc", require("jdtls").extract_constant, desc = "Extract Constant" },
+            { "gs", require("jdtls").super_implementation, desc = "Goto Super" },
+            { "gS", require("jdtls.tests").goto_subjects, desc = "Goto Subjects" },
+            { "<leader>co", require("jdtls").organize_imports, desc = "Organize Imports" },
+          },
+        })
+        wk.add({
+          {
+            mode = "v",
+            buffer = args.buf,
+            { "<leader>cx", group = "extract" },
+            { "<leader>cxm", [[<ESC><CMD>lua require('jdtls').extract_method(true)<CR>]], desc = "Extract Method", },
+            { "<leader>cxv", [[<ESC><CMD>lua require('jdtls').extract_variable_all(true)<CR>]], desc = "Extract Variable", },
+            { "<leader>cxc", [[<ESC><CMD>lua require('jdtls').extract_constant(true)<CR>]], desc = "Extract Constant", },
+          },
+        })
 
         local mason_registry = require("mason-registry")
         if mason_registry.has_package("java-debug-adapter") then
@@ -214,8 +240,19 @@ local function attach_keymaps()
                 vmArgs = "-Djunit.jupiter.extensions.autodetection.enabled=true --enable-preview",
               },
             }
-            vim.keymap.set("n", "<M-S-F9>", function() jdtls.pick_test(jdtls_test_opts) end, { noremap = true, silent = true, desc = "Run specific test (Alt+Shift+F9)" })
-            vim.keymap.set("n", "<F21>", function() jdtls.test_nearest_method(jdtls_test_opts) end, { noremap = true, silent = true, desc = "Test method (Shift+F9)" })
+            map("n", "<M-S-F9>", function() jdtls.pick_test(jdtls_test_opts) end, { noremap = true, silent = true, desc = "Run specific test (Alt+Shift+F9)" })
+            map("n", "<F21>", function() jdtls.test_nearest_method(jdtls_test_opts) end, { noremap = true, silent = true, desc = "Test method (Shift+F9)" })
+
+            wk.add({
+              {
+                mode = "n",
+                buffer = args.buf,
+                { "<leader>t", group = "test" },
+                { "<leader>tt", function() jdtls.test_class(jdtls_test_opts) end, desc = "Run All Test", },
+                { "<leader>tr", function() jdtls.test_nearest_method(jdtls_test_opts) end, desc = "Run nearest test (Shift+F9)", },
+                { "<leader>tT", function() jdtls.pick_test(jdtls_test_opts) end, desc = "Run specific test (Alt+Shift+F9)" },
+              },
+            })
           end
         end
       end
@@ -224,7 +261,7 @@ local function attach_keymaps()
 end
 
 ---Configure JDTLS server by starting the LSP server and attaching keymaps.
-local function setup_jdtls()
+local function jdtls_config()
   if get_root_dir() == nil then
     return
   end
@@ -234,5 +271,5 @@ end
 
 local M = {}
 M.root_markers = root_markers
-M.setup_jdtls = setup_jdtls
+M.jdtls_config = jdtls_config
 return M

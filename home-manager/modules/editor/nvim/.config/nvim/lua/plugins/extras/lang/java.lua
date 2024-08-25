@@ -63,6 +63,6 @@ return {
         },
       },
     },
-    config = java_configurer.setup_jdtls,
+    config = java_configurer.jdtls_config,
   },
 }
