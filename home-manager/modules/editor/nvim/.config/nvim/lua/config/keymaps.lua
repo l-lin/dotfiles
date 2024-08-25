@@ -1,11 +1,14 @@
--- Keymaps are automatically loaded on the VeryLazy event
--- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
--- Add any additional keymaps here
+-- Keymaps are automatically loaded on the VeryLazy event.
+-- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua.
+-- Add any additional keymaps here.
 local map = vim.keymap.set
 
 -- buffer
 -- Same behavior as browsers (muscle memory).
 map("n", "<F28>", "<cmd>bd<CR>", { noremap = true, silent = true, desc = "Close current buffer (Ctrl+F4)" })
+map("n", "<leader>yf", "<cmd>let @+=expand('%')<CR>", { noremap = true, desc = "Copy current buffer relative path to clipboard" })
+map("n", "<leader>yF", "<cmd>let @+=expand('%:p')<CR>", { noremap = true, desc = "Copy current buffer absolute path to clipboard" })
+map("n", "<leader>yn", "<cmd>let @+=expand('%:t')<CR>", { noremap = true, desc = "Copy current buffer file name to clipboard" })
 
 -- navigation
 -- Always put cursor at middle of screen.
@@ -25,9 +28,10 @@ map("n", "[<tab>", "<cmd>tabprevious<cr>", { noremap = true, desc = "Previous Ta
 map("n", "<C-y>", "dd", { noremap = true, desc = "Delete line" })
 
 -- use different buffer for delete and paste
-map("n", "d", '"_d', { noremap = true })
-map("v", "d", '"_d', { noremap = true })
-map("v", "p", '"_dP', { noremap = true })
+-- Disabling because pressing `d` or `p` when filling snippets is annoying.
+-- map("n", "d", '"_d', { noremap = true })
+-- map("v", "d", '"_d', { noremap = true })
+-- map("v", "p", '"_dP', { noremap = true })
 
 -- documentation
 vim.cmd([[ command CheatSheet split $HOME/.config/nvim/doc/cheat_sheet.txt ]])
