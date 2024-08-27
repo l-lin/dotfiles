@@ -108,7 +108,7 @@ Version=2
     // Sleeping tabs.
     user_pref("floorp.tabsleep.excludeHosts", "app.slack.com,mail.google.com,mail.proton.me");
     user_pref("floorp.tabsleep.enabled", true);
-    user_pref("floorp.tabsleep.tabTimeoutMinutes", 20);
+    user_pref("floorp.tabsleep.tabTimeoutMinutes", 60);
 
     // I don't use Floorp Notes, so no need to sync.
     user_pref("services.sync.prefs.sync.floorp.browser.note.memos", false);
