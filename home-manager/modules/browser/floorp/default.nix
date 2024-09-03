@@ -10,9 +10,10 @@ let
   userJs = pkgs.fetchFromGitHub {
     owner = "yokoffing";
     repo = "Betterfox";
-    # WARN: Do not forget to sync the version with the Firefox version provided by Floorp.
-    rev = "115.0";
-    sha256 = "sha256-g/8jfjPFTvml4QOGpNBJbxeqiakK+a+B/2MfjeMiF5I";
+    # WARN: Do not forget to sync the version with the Firefox version provided by Floorp
+    # at https://github.com/Floorp-Projects/Floorp/blob/ESR128/browser/config/version.txt.
+    rev = "128.0";
+    sha256 = "sha256-Xbe9gHO8Kf9C+QnWhZr21kl42rXUQzqSDIn99thO1kE=";
   } + "/user.js";
   profileName = userSettings.username;
 
@@ -40,6 +41,7 @@ let
       ++ [ pkgs.tridactyl-native ];
   };
 in {
+  # BUG: floorp from home-manager has some issue with WebGL!
   home.packages = with pkgs; [ floorp ];
 
   # Symlinks to ~/.floorp.
