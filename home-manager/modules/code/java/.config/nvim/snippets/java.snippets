@@ -94,7 +94,14 @@ snippet testpojo
 		 then do not throw exception.
 		""")
 	void correctArguments() {
-		assertDoesNotThrow(() -> new ${1}(${2}));
+		// GIVEN
+    ThrowingSupplier<HealthSuggestionOperations> supplier = () -> ${1}(${2}));
+
+    // WHEN
+    var actual = assertDoesNotThrow(supplier);
+
+    // THEN
+    assertNotNull(actual);
 	}
 
 	@ParameterizedTest(name = "{0}")
@@ -109,21 +116,22 @@ snippet testpojo
 		String arg,
 		String expectedErrorMessage
 	) {
-		IllegalArgumentException actual = assertThrows(
-			IllegalArgumentException.class,
-			() -> new ${1}(arg),
-			desc
-		);
+    // GIVEN
+    Executable executable = () -> new ${1}(arg);
 
-		assertEquals(expectedErrorMessage, actual.getMessage());
+    // WHEN
+    var actual = assertThrows(IllegalArgumentException.class, executable, desc);
+
+    // THEN
+    assertEquals(expectedErrorMessage, actual.getMessage());
 	}
 
 	private static Stream<Arguments> invalidArgumentsProvider() {
 		return Stream.of(
 			Arguments.of(
-				"null ",
+				"null ${3}",
 				null,
-				" is mandatory."
+				"${3} is mandatory"
 			)
 		);
 	}
