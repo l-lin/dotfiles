@@ -9,7 +9,7 @@ local function create_cmd()
 
   -- use root folder name as the project name
   local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
-  local jdtls_cache_dir = vim.fn.stdpath("cache") .. "/jdtls/" .. project_name
+  local jdtls_cache_dir = vim.fn.stdpath("cache") .. "/jdtls/workspaces/" .. project_name
 
   return {
     "java",
