@@ -13,4 +13,5 @@
 pkgs: {
   openfortivpn-webview = pkgs.callPackage ./openfortivpn-webview { };
   kitty = pkgs.callPackage ./kitty { };
+  floorp = pkgs.callPackage ./floorp { };
 }
