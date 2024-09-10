@@ -43,6 +43,7 @@ let
 in {
   # BUG: floorp from home-manager has some issue with WebGL!
   home.packages = with pkgs; [ floorp ];
+  #home.packages = [ outputs.packages.${systemSettings.system}.floorp ];
 
   # Symlinks to ~/.floorp.
   home.file.".floorp/profiles.ini".text = ''
@@ -105,7 +106,7 @@ Version=2
     user_pref("floorp.browser.workspace.manageOnBMS", true);
 
     // Rounded corners.
-    user_pref("floorp.delete.browser.border", true);
+    user_pref("floorp.delete.browser.border", false);
 
     // Sleeping tabs.
     user_pref("floorp.tabsleep.excludeHosts", "app.slack.com,mail.google.com,mail.proton.me");
@@ -114,6 +115,15 @@ Version=2
 
     // I don't use Floorp Notes, so no need to sync.
     user_pref("services.sync.prefs.sync.floorp.browser.note.memos", false);
+
+    // Homepage: display unsplash.
+    user_pref("browser.newtabpage.activity-stream.floorp.background.type", 1);
+    user_pref("browser.newtabpage.activity-stream.floorp.newtab.imagecredit.hide", true);
+    user_pref("browser.newtabpage.activity-stream.floorp.newtab.releasenote.hide", true);
+
+    // Open new tabs next to the current tab.
+    user_pref("floorp.browser.tabs.openNewTabPosition", 1);
+
   '';
   # Symlink to ~/.mozilla/native-messaging-hosts.
   home.file."${nativeMessagingHostsPath}" = {
