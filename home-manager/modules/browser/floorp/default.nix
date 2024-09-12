@@ -106,7 +106,7 @@ Version=2
     user_pref("floorp.browser.workspace.manageOnBMS", true);
 
     // Rounded corners.
-    user_pref("floorp.delete.browser.border", true);
+    user_pref("floorp.delete.browser.border", false);
 
     // Sleeping tabs.
     user_pref("floorp.tabsleep.excludeHosts", "app.slack.com,mail.google.com,mail.proton.me");
