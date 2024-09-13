@@ -40,9 +40,6 @@
 # Specific #
 ############
 .tool-versions
-application-local*
-application-dev*
-application-swp*
 Sandbox.java
 .cache
 .vscode
