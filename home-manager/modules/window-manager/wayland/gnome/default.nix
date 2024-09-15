@@ -5,6 +5,7 @@
 
 { fileExplorer, pkgs, userSettings, ... }: let
   # Ubuntu 20.04 is using gnome 42.
+  # To know which gnome version you're using, run `gnome-shell --version`.
   # However, nixpkgs seems to only takes the 3 latest gnome versions (which is currently 44, 45 and 46).
   # See https://github.com/NixOS/nixpkgs/blob/d0bac0dc755a3b62d2edcdb6a1152beefe50231a/pkgs/desktops/gnome/extensions/default.nix#L69.
   pkgs-22 = import (builtins.fetchTarball {
@@ -28,8 +29,9 @@ in {
     # You can find the list of gnome extensions here with their gnome version compatibilities:
     # https://github.com/NixOS/nixpkgs/blob/master/pkgs/desktops/gnome/extensions/extensions.json
 
-    # Keyboard-driven layer for GNOME Shell: https://github.com/pop-os/shell
+    # Keyboard-driven layer for GNOME Shell: https://github.com/pop-os/shell.
     pkgs-22.gnomeExtensions.pop-shell
+    # A glimpse into your computer's temperature, voltage, fan speed, memory usage, processor load, system resources, network speed and storage stats: https://extensions.gnome.org/extension/1460/vitals/
     pkgs-22.gnomeExtensions.vitals
   ];
 
@@ -40,8 +42,11 @@ in {
       # org.gnome.mutter -------------------------------------------
 
       "org/gnome/mutter" = {
-        # Disable Super to trigger window overview
+        # Disable Super to trigger window overview.
         overlay-key = "";
+
+        # Disable dynamic workspaces, use fixed workspaces instead.
+        dynamic-workspaces = false;
       };
       "org/gnome/mutter/keybindings" = {
         switch-monitor = ["XF86Display"]; # Removing Super-p => used by spotify-toggle.
@@ -85,6 +90,9 @@ in {
       "org/gnome/desktop/wm/preferences" = {
         # Buttons top right to minimize, maximize or close the window.
         button-layout = ":minimize,maximize,close";
+
+        # Fixed workspace.
+        num-workspaces = 5;
 
         # Only visually alert, no need to have sound polution.
         audible-bell = false;
@@ -236,6 +244,9 @@ in {
 
       "org/gnome/shell/extensions/pop-shell" = {
         active-hint = true;
+        active-hint-border-radius = 2;
+        gap-inner = 4;
+        gap-outer = 4;
         tile-by-default = true;
       };
     };
