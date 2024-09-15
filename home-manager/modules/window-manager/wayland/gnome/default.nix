@@ -3,11 +3,12 @@
 # src: https://www.gnome.org/
 #
 
-{ config, fileExplorer, pkgs, userSettings, ... }: let
+{ config, fileExplorer, lib, pkgs, userSettings, ... }: let
   # Ubuntu 20.04 is using gnome 42.
   # To know which gnome version you're using, run `gnome-shell --version`.
   # However, nixpkgs seems to only takes the 3 latest gnome versions (which is currently 44, 45 and 46).
-  # See https://github.com/NixOS/nixpkgs/blob/d0bac0dc755a3b62d2edcdb6a1152beefe50231a/pkgs/desktops/gnome/extensions/default.nix#L69.
+  # So I need to get the gnome extension from an older version of nixpkgs.
+  # src: https://github.com/NixOS/nixpkgs/blob/d0bac0dc755a3b62d2edcdb6a1152beefe50231a/pkgs/desktops/gnome/extensions/default.nix#L69.
   pkgs-22 = import (builtins.fetchTarball {
     url = "https://github.com/NixOS/nixpkgs/archive/nixos-22.11.tar.gz";
     sha256 = "1xi53rlslcprybsvrmipm69ypd3g3hr7wkxvzc73ag8296yclyll";
@@ -39,6 +40,12 @@ in {
   # Get the list of gnome settings by running `dconf-editor`.
   dconf = {
     enable = true;
+    # NOTE: Settings to write to the dconf configuration system.
+    # Note that the database is strongly-typed so you need to use the same types as described in the GSettings schema. For example, if an option is of type
+    # `uint32` (`u`), you need to wrap the number using the `lib.hm.gvariant.mkUint32` constructor.
+    # Otherwise, since Nix integers are implicitly coerced to `int32` (`i`), it would get stored in the database as such, and GSettings
+    # might be confused when loading the setting.
+    # src: https://github.com/nix-community/home-manager/blob/e524c57b1fa55d6ca9d8354c6ce1e538d2a1f47f/modules/misc/dconf.nix#L60-L73
     settings = {
       # org.gnome.mutter -------------------------------------------
 
@@ -243,15 +250,24 @@ in {
 
       # org.gnome.shell.extensions -------------------------------------------
 
-      "org/gnome/shell/extensions/pop-shell" = {
+      "org/gnome/shell/extensions/pop-shell" = with lib.hm.gvariant; {
+        # Highlight the active window.
         active-hint = true;
-        # Does not seem to work? Either way, the one that is set is 2, which is fine for me.
-        active-hint-border-radius = 2;
-        gap-inner = 4;
-        gap-outer = 4;
+        active-hint-border-radius = mkUint32 8;
         # Change the active window border color.
-        # See https://github.com/pop-os/shell/issues/1582 & https://github.com/NixOS/nixpkgs/issues/256889.
+        # src:
+        # - https://github.com/pop-os/shell/issues/1582
+        # - https://github.com/NixOS/nixpkgs/issues/256889
         hint-color-rgba = palette.base0D;
+
+        # Gaps between windows.
+        gap-inner = mkUint32 4;
+        gap-outer = mkUint32 4;
+
+        # Remove gaps if there's only one window.
+        smart-gaps = false;
+
+        # Tile mode by default.
         tile-by-default = true;
       };
 
