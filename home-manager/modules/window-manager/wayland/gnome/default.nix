@@ -3,7 +3,15 @@
 # src: https://www.gnome.org/
 #
 
-{ fileExplorer, pkgs, userSettings, ... }: {
+{ fileExplorer, pkgs, userSettings, ... }: let
+  # Ubuntu 20.04 is using gnome 42.
+  # However, nixpkgs seems to only takes the 3 latest gnome versions (which is currently 44, 45 and 46).
+  # See https://github.com/NixOS/nixpkgs/blob/d0bac0dc755a3b62d2edcdb6a1152beefe50231a/pkgs/desktops/gnome/extensions/default.nix#L69.
+  pkgs-22 = import (builtins.fetchTarball {
+    url = "https://github.com/NixOS/nixpkgs/archive/nixos-22.11.tar.gz";
+    sha256 = "1xi53rlslcprybsvrmipm69ypd3g3hr7wkxvzc73ag8296yclyll";
+  }) { inherit (pkgs) system; };
+in {
   imports = fileExplorer.allSubdirs ./.;
 
   home.packages = with pkgs; [
@@ -15,8 +23,17 @@
     gnome-tweaks
     # Copy/paste utilities: https://github.com/bugaevc/wl-clipboard
     wl-clipboard
+
+    # GNOME EXTENSIONS
+    # You can find the list of gnome extensions here with their gnome version compatibilities:
+    # https://github.com/NixOS/nixpkgs/blob/master/pkgs/desktops/gnome/extensions/extensions.json
+
+    # Keyboard-driven layer for GNOME Shell: https://github.com/pop-os/shell
+    pkgs-22.gnomeExtensions.pop-shell
+    pkgs-22.gnomeExtensions.vitals
   ];
 
+  # Get the list of gnome settings by running `dconf-editor`.
   dconf = {
     enable = true;
     settings = {
@@ -29,9 +46,9 @@
       "org/gnome/mutter/keybindings" = {
         switch-monitor = ["XF86Display"]; # Removing Super-p => used by spotify-toggle.
 
-        # WARN: Keybindings available only on Ubuntu 22.
-        toggle-tiled-left = ["<Super>h" "<Super>Left"];
-        toggle-tiled-right = ["<Super>l" "<Super>Right"];
+        # WARN: Keybindings available only on Ubuntu 20.
+        #toggle-tiled-left = ["<Super>h" "<Super>Left"];
+        #toggle-tiled-right = ["<Super>l" "<Super>Right"];
       };
 
       # org.gnome.desktop -------------------------------------------
@@ -44,8 +61,19 @@
         minimize = []; # default was Super-h => used by tile-left-half-ignore-ta.
 
         # Move window to monitors.
-        move-to-monitor-left = ["<Super><Shift>h"];
-        move-to-monitor-right = ["<Super><Shift>l"];
+        #move-to-monitor-left = ["<Super><Shift>h"];
+        #move-to-monitor-right = ["<Super><Shift>l"];
+        move-to-workspace-1 = ["<Super><Shift>1"];
+        move-to-workspace-2 = ["<Super><Shift>2"];
+        move-to-workspace-3 = ["<Super><Shift>3"];
+        move-to-workspace-4 = ["<Super><Shift>4"];
+        move-to-workspace-5 = ["<Super><Shift>5"];
+
+        switch-to-workspace-1 = ["<Super>1"];
+        switch-to-workspace-2 = ["<Super>2"];
+        switch-to-workspace-3 = ["<Super>3"];
+        switch-to-workspace-4 = ["<Super>4"];
+        switch-to-workspace-5 = ["<Super>5"];
 
         switch-input-source = ["XF86Keyboard"]; # disable Super-space => used by toggle-application-view.
         switch-input-source-backward = ["<Shift>XF86Keyboard"];
@@ -161,6 +189,15 @@
         welcome-dialog-last-shown-version = "";
 
         disable-user-extensions = false;
+        # Get the list of enabled extension names by running `gnome-extensions list`.
+        # You can get the extension name directly from nix store:
+        # `ls /nix/store/abc-gnome-shell-extension-highlight-focus-12/share/gnome-shell/extensions/`
+        # Or using `pkgs.gnomeExtensions.<package-name>.extensionUuid`
+        enabled-extensions = with pkgs-22.gnomeExtensions; [
+          pop-shell.extensionUuid
+          vitals.extensionUuid
+        ];
+
         disabled-extensions = [
           "disabled"
           "ubuntu-dock@ubuntu.com"
@@ -179,6 +216,13 @@
 
         toggle-message-tray = ["<Super>v"]; # Removing key-binding Super-m => used by spotify.
         focus-active-notification = []; # Removing key-binding Super-n => used by spotify-next.
+
+        # Remove default keybindings for switching to applications (using to switch to workspaces).
+        switch-to-application-1 = [];
+        switch-to-application-2 = [];
+        switch-to-application-3 = [];
+        switch-to-application-4 = [];
+        switch-to-application-5 = [];
       };
 
       # WARN: Keybindings available only on Ubuntu 24.
@@ -187,6 +231,13 @@
       #   tile-left-half-ignore-ta = ["<Super>h"];
       #   tile-right-half-ignore-ta = ["<Super>l"];
       # };
+
+      # org.gnome.shell.extensions -------------------------------------------
+
+      "org/gnome/shell/extensions/pop-shell" = {
+        active-hint = true;
+        tile-by-default = true;
+      };
     };
   };
 }

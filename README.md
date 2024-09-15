@@ -98,6 +98,7 @@ you are forgetful.
 - [Add shell script available in `$PATH` in NixOS](https://l-lin.github.io/nix/add-shell-script-available-in-PATH-in-NixOS)
 - [Adding external binary to your `$PATH`](https://l-lin.github.io/nix/add-external-binary-in-PATH-in-NixOS)
 - [I want to downgrade/upgrade a package](https://l-lin.github.io/nix/downgrade-or-upgrade-a-package-in-NixOS)
+- [Use a different version of nixpkgs in home-manager](https://l-lin.github.io/nix/home-manager/use-different-version-of-nixpkgs-in-home-manager)
 - [Share variables between modules](https://l-lin.github.io/nix/share-variables-between-Nix-modules)
 - [Running an external binary on NixOS](https://l-lin.github.io/nix/running-an-external-binary-on-NixOS)
 - [Pair bluetooth devices](https://l-lin.github.io/unix/pair-bluetooth-devices)
