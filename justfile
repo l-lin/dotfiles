@@ -70,7 +70,7 @@ install-home-standalone:
   nix-shell '<home-manager>' -A install
 
 # apply home-manager configuration
-update-home: add-pre-commit-hook
+update-home: add-pre-commit-hook delete-mimeapps
   just info "Applying home-manager configuration..."
   if type nh >/dev/null 2>&1; then \
     nh home switch --backup-extension bak --configuration "{{NIX_PROFILE}}" . -- --show-trace; \
@@ -83,10 +83,15 @@ update-home: add-pre-commit-hook
 show-home-news:
   home-manager news --flake '.#{{NIX_PROFILE}}'
 
-#  clean up home-manager garbage
+# clean up home-manager garbage
 clean-home:
   just warn "Cleaning up home-manager garbage..."
   nix-collect-garbage -d
+
+# some apps overwrite and replace the mimeapps.list
+[private]
+delete-mimeapps:
+  rm -rf ${HOME}/.config/mimeapps.list.bak
 
 # STOW --------------------------------------------------------------------------
 
