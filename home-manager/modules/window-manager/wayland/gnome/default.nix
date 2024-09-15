@@ -254,6 +254,11 @@ in {
         hint-color-rgba = palette.base0D;
         tile-by-default = true;
       };
+
+      "org/gnome/shell/extensions/vitals" = {
+        # Position of the vitals panel: 0 == left.
+        position-in-panel = 0;
+      };
     };
   };
 }
