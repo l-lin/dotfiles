@@ -3,7 +3,7 @@
 # src: https://www.gnome.org/
 #
 
-{ fileExplorer, pkgs, userSettings, ... }: let
+{ config, fileExplorer, pkgs, userSettings, ... }: let
   # Ubuntu 20.04 is using gnome 42.
   # To know which gnome version you're using, run `gnome-shell --version`.
   # However, nixpkgs seems to only takes the 3 latest gnome versions (which is currently 44, 45 and 46).
@@ -12,6 +12,7 @@
     url = "https://github.com/NixOS/nixpkgs/archive/nixos-22.11.tar.gz";
     sha256 = "1xi53rlslcprybsvrmipm69ypd3g3hr7wkxvzc73ag8296yclyll";
   }) { inherit (pkgs) system; };
+  palette = config.lib.stylix.colors.withHashtag;
 in {
   imports = fileExplorer.allSubdirs ./.;
 
@@ -244,9 +245,13 @@ in {
 
       "org/gnome/shell/extensions/pop-shell" = {
         active-hint = true;
+        # Does not seem to work? Either way, the one that is set is 2, which is fine for me.
         active-hint-border-radius = 2;
         gap-inner = 4;
         gap-outer = 4;
+        # Change the active window border color.
+        # See https://github.com/pop-os/shell/issues/1582 & https://github.com/NixOS/nixpkgs/issues/256889.
+        hint-color-rgba = palette.base0D;
         tile-by-default = true;
       };
     };
