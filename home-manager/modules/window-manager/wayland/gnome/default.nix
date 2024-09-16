@@ -45,6 +45,7 @@ in {
     # `uint32` (`u`), you need to wrap the number using the `lib.hm.gvariant.mkUint32` constructor.
     # Otherwise, since Nix integers are implicitly coerced to `int32` (`i`), it would get stored in the database as such, and GSettings
     # might be confused when loading the setting.
+    # You can find the list of gnome settings by executing `dconf-editor`.
     # src: https://github.com/nix-community/home-manager/blob/e524c57b1fa55d6ca9d8354c6ce1e538d2a1f47f/modules/misc/dconf.nix#L60-L73
     settings = {
       # org.gnome.mutter -------------------------------------------
@@ -258,7 +259,7 @@ in {
         # src:
         # - https://github.com/pop-os/shell/issues/1582
         # - https://github.com/NixOS/nixpkgs/issues/256889
-        hint-color-rgba = palette.base0D;
+        hint-color-rgba = palette.base05;
 
         # Gaps between windows.
         gap-inner = mkUint32 4;
@@ -269,6 +270,12 @@ in {
 
         # Tile mode by default.
         tile-by-default = true;
+
+        # Move mouse cursor to the center of the window.
+        # FIXME: This does not seem to work on Wayload unfortunately :(
+        # src: https://github.com/pop-os/shell/discussions/1201
+        mouse-cursor-focus-location = mkUint32 4;
+        mouse-cursor-follows-active-window = true;
       };
 
       "org/gnome/shell/extensions/vitals" = {
