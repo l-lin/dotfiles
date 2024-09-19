@@ -193,6 +193,13 @@ return {
         },
       },
     },
+    keys = {
+      -- disable the default flash keymaps, let me use the default behavior
+      { "s", mode = { "n", "x", "o" }, false },
+      { "S", mode = { "n", "o", "x" }, false },
+      { "<leader>sf", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+      { "<leader>sF", mode = { "n", "o", "x" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+    },
   },
 
   -- code outline window 
