@@ -61,6 +61,10 @@ return {
         show_buffer_close_icons = false,
       },
     },
+    keys = {
+      { "<S-h>", false },
+      { "<S-l>", false },
+    },
   },
 
   -- status line (bottom bar)

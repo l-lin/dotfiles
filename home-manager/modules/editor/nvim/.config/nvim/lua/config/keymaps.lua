@@ -48,3 +48,8 @@ map("x", "$", "g_")
 map({ "n", "v" }, "<M-C-L>", function()
   require("lazyvim.util").format({ force = true })
 end, { desc = "Format" })
+
+-- remove keymaps set globally by LazyVim
+-- use default H and L to navigate
+vim.keymap.del("n", "<S-h>")
+vim.keymap.del("n", "<S-l>")
