@@ -6,7 +6,7 @@
 vim.opt.pumblend = 0
 
 -- set 7 lines to the cursor when moving vertically
-vim.opt.scrolloff = 7
+--vim.opt.scrolloff = 7
 
 -- enable word wrap
 -- vim.opt.wrap = true
