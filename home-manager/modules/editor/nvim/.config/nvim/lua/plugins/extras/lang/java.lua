@@ -4,7 +4,10 @@ local mason_registries = { "github:nvim-java/mason-registry", "github:mason-org/
 
 return {
   recommended = function()
-    return LazyVim.extras.wants({ ft = "java", root = java_configurer.root_markers })
+    return LazyVim.extras.wants({
+      ft = "java",
+      root = java_configurer.root_markers,
+    })
   end,
 
   -- Disable neotest (supported by https://github.com/rcasia/neotest-java but less developer friendly)

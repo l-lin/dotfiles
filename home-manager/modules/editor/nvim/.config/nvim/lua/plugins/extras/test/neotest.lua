@@ -1,4 +1,19 @@
 return {
+  -- Installing rust-analyzer Language Server because I keep getting the following error message when executing neo-test:
+  -- > **rust-analyzer** not found in PATH, please install it.\nhttps://rust-analyzer.github.io/
+  -- It appears it was removed from LazyVim Rust extras because, for Rust devs, rust-analyzer is installed from a toolchain
+  -- different to Mason.
+  -- But neotest seems to use rust-analyzer... And I do not install it from another source, thus adding this dependency here.
+  -- src: https://github.com/LazyVim/LazyVim/pull/2755
+  {
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        rust_analyzer = {},
+      },
+    },
+  },
+
   -- #######################
   -- override default config
   -- #######################
