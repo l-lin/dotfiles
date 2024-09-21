@@ -1,5 +1,6 @@
 boot:~/work/doctoboot
 dotfiles:~/.config/dotfiles
+lazy:~/perso/LazyVim
 leetcode:~/perso/leetcode
 monolith:~/work/doctolib
 navi:~/.local/share/navi/cheats/l-lin__cheats
