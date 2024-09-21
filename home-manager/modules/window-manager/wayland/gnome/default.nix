@@ -31,6 +31,8 @@ in {
     # You can find the list of gnome extensions here with their gnome version compatibilities:
     # https://github.com/NixOS/nixpkgs/blob/master/pkgs/desktops/gnome/extensions/extensions.json
 
+    # Tweak Tool to Customize GNOME Shell, Change the Behavior and Disable UI Elements: https://extensions.gnome.org/extension/3843/just-perfection.
+    pkgs-22.gnomeExtensions.just-perfection
     # Keyboard-driven layer for GNOME Shell: https://github.com/pop-os/shell.
     pkgs-22.gnomeExtensions.pop-shell
     # A glimpse into your computer's temperature, voltage, fan speed, memory usage, processor load, system resources, network speed and storage stats: https://extensions.gnome.org/extension/1460/vitals/
@@ -211,6 +213,7 @@ in {
         # `ls /nix/store/abc-gnome-shell-extension-highlight-focus-12/share/gnome-shell/extensions/`
         # Or using `pkgs.gnomeExtensions.<package-name>.extensionUuid`
         enabled-extensions = with pkgs-22.gnomeExtensions; [
+          just-perfection.extensionUuid
           pop-shell.extensionUuid
           vitals.extensionUuid
         ];
@@ -250,6 +253,17 @@ in {
       # };
 
       # org.gnome.shell.extensions -------------------------------------------
+
+      "org/gnome/shell/extensions/just-perfection" = {
+        # Remove useless Activities button (button from top-left).
+        activities-button = false;
+        # No need for animations, let's go faaast.
+        animation = 0;
+        # No need to display the app menu, which is the current window menu context.
+        app-menu = false;
+        # When GNOME Shell is starting up for the first time, display the Desktop directly.
+        startup-status = 0;
+      };
 
       "org/gnome/shell/extensions/pop-shell" = with lib.hm.gvariant; {
         # Highlight the active window.
