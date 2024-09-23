@@ -30,6 +30,8 @@
     duf
     # More intuitive version of du: https://github.com/bootandy/dust
     dust
+    # A modern, maintained replacement for ls: https://github.com/eza-community/eza
+    eza
     # A tool to read, write and edit EXIF meta information: https://exiftool.org/
     exiftool
     # Wrapper to execute command in a pty: https://github.com/dtolnay/faketty
@@ -55,8 +57,6 @@
     libnotify
     # Tools for reading hardware sensors: https://hwmon.wiki.kernel.org/lm_sensors
     lm_sensors
-    # Better ls command: https://github.com/lsd-rs/lsd
-    lsd
     # Yet another nix cli helper: https://github.com/viperML/nh
     nh
     # High precision scientific calculator with full support for physical units: https://numbat.dev/

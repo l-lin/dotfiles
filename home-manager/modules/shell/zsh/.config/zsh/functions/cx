@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#
+# Change directory and immediately list files.
+#
+
+cd "$@" && eza -l --icons --git -a --group-directories-first

@@ -46,8 +46,9 @@ alias rmf="rm -rf"
 # tar
 alias tarx="tar xzvf"
 alias tarc="tar czvf"
-# lsd
-alias l="lsd -la --group-dirs first"
+# eza
+alias l="eza -l --icons --git -a --group-directories-first"
+alias lt="eza --tree --level=2 --long --icons --git --group-directories-first"
 # prettyping
 alias ping="prettyping --nolegend"
 # ssh support with alacritty
