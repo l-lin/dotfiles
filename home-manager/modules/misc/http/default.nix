@@ -10,11 +10,11 @@
     grpcurl
     # HTTP load generator, ApacheBench (ab) replacement: https://github.com/rakyll/hey
     hey
-    # User-friendly command line HTTP client: https://httpie.io/
-    httpie
     # WebSockets client: https://github.com/vi/websocat
     websocat
     # CLI for retrieving files using HTTP, HTTPS and FTP.
     wget
+    # Friendly and fast tool for sending HTTP requests: https://github.com/ducaale/xh
+    xh
   ];
 }

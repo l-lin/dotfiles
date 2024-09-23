@@ -65,4 +65,6 @@ alias pandoc-latex="docker run --rm --volume \${PWD}:/data --user $(id -u):$(id 
 alias awslocal='aws --endpoint-url=http://localhost:4566'
 # termgraph
 alias termgraph="docker run --rm --volume \${PWD}:/data --user $(id -u):$(id -g) ghcr.io/l-lin/termgraph:main"
-
+# xh
+alias http="xh"
+alias https="xhs"
