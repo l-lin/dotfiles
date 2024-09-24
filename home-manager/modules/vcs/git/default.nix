@@ -6,6 +6,8 @@
 
 { config, pkgs, userSettings, ... }: {
   home.packages = with pkgs; [
+    # GitHub CLI tool: https://cli.github.com/
+    gh
     git
     git-lfs
 
