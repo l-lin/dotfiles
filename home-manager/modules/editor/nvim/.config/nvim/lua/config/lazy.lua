@@ -12,7 +12,7 @@ require("lazy").setup({
     -- add LazyVim and import its plugins
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
     -- import any extras modules here
-    { import = "lazyvim.plugins.extras.coding.codeium" },
+    --{ import = "lazyvim.plugins.extras.coding.codeium" },
     { import = "lazyvim.plugins.extras.coding.yanky" },
     { import = "lazyvim.plugins.extras.editor.aerial" },
     { import = "lazyvim.plugins.extras.editor.harpoon2" },
@@ -45,6 +45,7 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.util.project" },
     -- import/override with your plugins
     { import = "plugins" },
+    { import = "plugins.extras.coding.codeium" },
     --{ import = "plugins.extras.coding.leetcode" },
     --{ import = "plugins.extras.coding.ollama" },
     { import = "plugins.extras.coding.yanky" },
