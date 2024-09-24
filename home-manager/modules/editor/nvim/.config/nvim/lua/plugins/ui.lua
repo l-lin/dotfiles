@@ -83,7 +83,7 @@ return {
     "folke/which-key.nvim",
     opts = {
       spec = {
-        ["<leader>v"] = { name = "+nvim" },
+        { "<leader>y", group = "yank" },
       },
       preset = "modern",
     },

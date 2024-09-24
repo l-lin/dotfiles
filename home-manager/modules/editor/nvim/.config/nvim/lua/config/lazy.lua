@@ -53,6 +53,7 @@ require("lazy").setup({
     { import = "plugins.extras.editor.mini-files" },
     { import = "plugins.extras.editor.telescope" },
     --{ import = "plugins.extras.lang.adoc" },
+    { import = "plugins.extras.lang.http" },
     { import = "plugins.extras.lang.java" },
     { import = "plugins.extras.lang.just" },
     { import = "plugins.extras.lang.markdown" },

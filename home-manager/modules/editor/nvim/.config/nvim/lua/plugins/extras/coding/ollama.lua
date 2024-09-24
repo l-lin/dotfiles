@@ -7,7 +7,7 @@ return {
         "folke/which-key.nvim",
         opts = {
           spec = {
-            ["<leader>o"] = { name = "+ollama" },
+            { "<leader>o", group = "+ollama" },
           },
         },
       },

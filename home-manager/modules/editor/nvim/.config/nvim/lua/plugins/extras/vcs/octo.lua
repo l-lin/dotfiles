@@ -13,7 +13,7 @@ return {
       { "<leader>gS", false },
 
       { "<leader>gl", "<cmd>Octo pr list<CR>", desc = "List PRs (Octo)" },
-      { "<leader>vR", "<cmd>Octo thread resolve<CR>", desc = "Resolve thread (Octo)" },
+      { "<leader>vR", "<cmd>Octo thread resolve<CR>", desc = "Resolve thread (Octo)", ft = "octo" },
     },
   },
 }
