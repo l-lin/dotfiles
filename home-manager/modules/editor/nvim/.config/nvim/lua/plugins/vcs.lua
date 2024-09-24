@@ -55,7 +55,6 @@ return {
     cmd = { "DiffviewOpen", "DiffviewFileHistory", "DiffviewToggleFiles", "DiffviewFocusFiles" },
     keys = {
       { "<leader>gL", "<cmd>DiffviewFileHistory<cr>", noremap = true, silent = true, desc = "Check full project git history" },
-      { "<leader>gl", "<cmd>DiffviewFileHistory %<cr>", noremap = true, silent = true, desc = "Check current file git history (Alt+9)" },
       { "<A-9>", "<cmd>DiffviewFileHistory %<cr>", noremap = true, silent = true, desc = "Check current file git history (Alt+9)" },
       { "<A-8>", "<cmd>DiffviewToggleFiles<cr>", noremap = true, silent = true, desc = "Toggle diffview files (Alt+8)" },
       { "<leader>go", "<cmd>DiffviewOpen<cr>", noremap = true, silent = true, desc = "Git status with Diffview" },
