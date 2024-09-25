@@ -206,8 +206,6 @@ return {
   {
     "stevearc/aerial.nvim",
     keys = {
-      { "<leader>cs", false },
-
       { "<A-7>", "<cmd>AerialToggle<cr>", desc = "Aerial Symbols (Alt+7)" },
       { "<F36>", "<cmd>Telescope aerial<cr>", desc = "Goto Symbol (Ctrl+F12)" },
     },
