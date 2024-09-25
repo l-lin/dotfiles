@@ -197,12 +197,26 @@ return {
       -- disable the default flash keymaps, let me use the default behavior
       { "s", mode = { "n", "x", "o" }, false },
       { "S", mode = { "n", "o", "x" }, false },
-      { "<leader>sf", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
-      { "<leader>sF", mode = { "n", "o", "x" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+      {
+        "<leader>sf",
+        mode = { "n", "x", "o" },
+        function()
+          require("flash").jump()
+        end,
+        desc = "Flash",
+      },
+      {
+        "<leader>sF",
+        mode = { "n", "o", "x" },
+        function()
+          require("flash").treesitter()
+        end,
+        desc = "Flash Treesitter",
+      },
     },
   },
 
-  -- code outline window 
+  -- code outline window
   {
     "stevearc/aerial.nvim",
     keys = {
@@ -210,8 +224,6 @@ return {
       { "<F36>", "<cmd>Telescope aerial<cr>", desc = "Goto Symbol (Ctrl+F12)" },
     },
   },
-
-
 
   -- #######################
   -- add new plugins

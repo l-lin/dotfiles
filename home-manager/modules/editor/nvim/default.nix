@@ -28,10 +28,6 @@
   };
 
   # Symlink ~/.config/nvim
-  xdg.configFile.nvim = {
-    source = ./.config/nvim;
-    recursive = true;
-  };
   xdg.configFile."nvim/lua/plugins/colorscheme.lua".text = ''
 -- set background
 vim.o.bg = "${config.theme.polarity}"
