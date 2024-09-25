@@ -7,7 +7,7 @@ return {
         "folke/which-key.nvim",
         opts = {
           spec = {
-            { "<leader>o", group = "+ollama" },
+            { "<leader>ao", group = "ollama" },
           },
         },
       },
@@ -16,38 +16,38 @@ return {
 
     keys = {
       {
-        "<leader>oo",
+        "<leader>aop",
         ":<c-u>lua require('ollama').prompt()<cr>",
         desc = "Ollama prompt",
         mode = { "n", "v" },
       },
       -- default prompts: https://github.com/nomnivore/ollama.nvim/blob/main/lua/ollama/prompts.lua
       {
-        "<leader>oa",
+        "<leader>aoa",
         ":<c-u>lua require('ollama').prompt('Ask_About_Code')<cr>",
         desc = "Ollama ask about code",
         mode = { "n", "v" },
       },
       {
-        "<leader>oe",
+        "<leader>aoe",
         ":<c-u>lua require('ollama').prompt('Explain_Code')<cr>",
         desc = "Ollama explain code",
         mode = { "n", "v" },
       },
       {
-        "<leader>og",
+        "<leader>aog",
         ":<c-u>lua require('ollama').prompt('Generate_Code')<cr>",
         desc = "Ollama generate code",
         mode = { "n", "v" },
       },
       {
-        "<leader>om",
+        "<leader>aom",
         ":<c-u>lua require('ollama').prompt('Modify_Code')<cr>",
         desc = "Ollama modify code",
         mode = { "n", "v" },
       },
-      { "<leader>os", "<cmd>OllamaServe<cr>", desc = "Ollama start server", mode = "n" },
-      { "<leader>oS", "<cmd>OllamaServeStop<cr>", desc = "Ollama stop server", mode = "n" },
+      { "<leader>aos", "<cmd>OllamaServe<cr>", desc = "Ollama start server", mode = "n" },
+      { "<leader>aoS", "<cmd>OllamaServeStop<cr>", desc = "Ollama stop server", mode = "n" },
     },
 
     ---@type Ollama.Config

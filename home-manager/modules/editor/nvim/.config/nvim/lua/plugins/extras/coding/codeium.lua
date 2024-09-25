@@ -4,12 +4,38 @@ return {
   {
     "monkoose/neocodeium",
     event = "VeryLazy",
+    {
+      "folke/which-key.nvim",
+      opts = {
+        spec = {
+          { "<leader>a", group = "ai" },
+        },
+      },
+    },
     keys = {
-      { "<leader>ca", "<cmd>NeoCodeium enable<cr>", silent = true, noremap = true, desc = "Startup NeoCodeium" },
-      { "<leader>cA", "<cmd>NeoCodeium disable<cr>", silent = true, noremap = true, desc = "Stop NeoCodeium" },
-      { "<C-e>", "<cmd>lua require('neocodeium').accept()<cr>", mode = "i", silent = true, desc = "Accept NeoCodeium suggestion" },
-      { "<A-a>", "<cmd>lua require('neocodeium').accept_line()<cr>", mode = "i", silent = true, desc = "Accept NeoCodeium line suggestion" },
-      { "<A-e>", "<cmd>lua require('neocodeium').cycle_or_complete()<cr>", mode = "i", silent = true, desc = "Cycle NeoCodeium suggestion" },
+      { "<leader>as", "<cmd>NeoCodeium enable<cr>", silent = true, noremap = true, desc = "Start NeoCodeium" },
+      { "<leader>aS", "<cmd>NeoCodeium disable<cr>", silent = true, noremap = true, desc = "Stop NeoCodeium" },
+      {
+        "<C-e>",
+        "<cmd>lua require('neocodeium').accept()<cr>",
+        mode = "i",
+        silent = true,
+        desc = "Accept NeoCodeium suggestion",
+      },
+      {
+        "<A-a>",
+        "<cmd>lua require('neocodeium').accept_line()<cr>",
+        mode = "i",
+        silent = true,
+        desc = "Accept NeoCodeium line suggestion",
+      },
+      {
+        "<A-e>",
+        "<cmd>lua require('neocodeium').cycle_or_complete()<cr>",
+        mode = "i",
+        silent = true,
+        desc = "Cycle NeoCodeium suggestion",
+      },
       { "<A-c>", "<cmd>lua require('neocodeium').clear()<cr>", mode = "i", silent = true, desc = "Clear NeoCodeium" },
     },
     config = function()
