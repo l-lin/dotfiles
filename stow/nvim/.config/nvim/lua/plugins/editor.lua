@@ -19,6 +19,16 @@ return {
           end)
         end,
       },
+      {
+        "l-lin/smart-open.nvim",
+        branch = "0.2.x",
+        config = function()
+          LazyVim.on_load("telescope.nvim", function()
+            require("telescope").load_extension("smart_open")
+          end)
+        end,
+        dependencies = { "kkharji/sqlite.lua" },
+      },
     },
     keys = {
       -- disable
@@ -28,7 +38,8 @@ return {
       {
         "<C-g>",
         function()
-          require("telescope.builtin").find_files()
+          -- require("telescope.builtin").find_files()
+          require("telescope").extensions.smart_open.smart_open({ cwd_only = true, match_algorithm = "fzf" })
         end,
         mode = "n",
         noremap = true,
@@ -38,7 +49,12 @@ return {
       {
         "<C-g>",
         function()
-          require("telescope.builtin").find_files({ default_text = telescope_commands.get_selected_text() })
+          -- require("telescope.builtin").find_files({ default_text = telescope_commands.get_selected_text() })
+          require("telescope").extensions.smart_open.smart_open({
+            cwd_only = true,
+            match_algorithm = "fzf",
+            default_text = telescope_commands.get_selected_text(),
+          })
         end,
         mode = "v",
         noremap = true,
