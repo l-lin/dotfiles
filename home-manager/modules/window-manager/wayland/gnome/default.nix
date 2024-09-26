@@ -226,8 +226,8 @@ in {
       };
       "org/gnome/shell/keybindings" = {
         # Screenshot.
-        show-screenshot-ui = ["Print" "<Super>s"];
-        screenshot-window = ["<Alt>Print" "<Super><Shift>s"];
+        show-screenshot-ui = ["Print" "<Super><Shift>s"];
+        screenshot-window = ["<Alt>Print"];
 
         # Display overview.
         # WARN: May not be available on Ubuntu 24! Use `toggle-application-view` instead.
