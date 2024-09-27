@@ -11,8 +11,21 @@ local function get_selected_text()
   return text
 end
 
+local function find_associate_test_or_file()
+  local default_text = ""
+  local filename = vim.fn.expand("%:t")
+  local name, extension = filename:match("(.+)%.(.+)")
+  if name:sub(-#"_test") == "_test" then
+    default_text = name:gsub("_test", "") .. "." .. extension
+  else
+    default_text = name .. "_test." .. extension
+  end
+  return default_text
+end
+
 local M = {}
 
 M.get_selected_text = get_selected_text
+M.find_associate_test_or_file = find_associate_test_or_file
 
 return M

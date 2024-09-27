@@ -62,6 +62,19 @@ return {
         desc = "Find file (Ctrl+g)",
       },
       {
+        "<C-t>",
+        function()
+          require("telescope").extensions.smart_open.smart_open({
+            cwd_only = true,
+            match_algorithm = "fzf",
+            default_text = telescope_commands.find_associate_test_or_file(),
+          })
+        end,
+        desc = "Find associated test file (Ctrl+t)",
+        noremap = true,
+        silent = true,
+      },
+      {
         "<M-f>",
         function()
           require("telescope").extensions.live_grep_args.live_grep_args()
