@@ -276,8 +276,8 @@ in {
         hint-color-rgba = palette.base05;
 
         # Gaps between windows.
-        gap-inner = mkUint32 4;
-        gap-outer = mkUint32 4;
+        gap-inner = mkUint32 2;
+        gap-outer = mkUint32 2;
 
         # Remove gaps if there's only one window.
         smart-gaps = false;
