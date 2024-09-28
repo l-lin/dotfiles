@@ -61,6 +61,7 @@ jeffreytse/zsh-vi-mode
 "${ZSH_CUSTOM}" path:plugins/fzf kind:defer
 "${ZSH_CUSTOM}" path:plugins/navi kind:defer
 "${ZSH_CUSTOM}" path:plugins/pet kind:defer
+"${ZSH_CUSTOM}" path:plugins/sol kind:defer
 "${ZSH_CUSTOM}" path:plugins/work-env kind:defer
 "${ZSH_CUSTOM}" path:plugins/zfunctions
 
