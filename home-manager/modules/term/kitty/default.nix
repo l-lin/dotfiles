@@ -16,7 +16,9 @@
 
       remember_window_size = "no";
 
-      window_padding_width = 12;
+      window_padding_width = 8;
+
+      hide_window_decorations = "yes";
     };
     keybindings = {
       # Enable to have the same browser behavior to re-open nvim tab with `ctrl+shift+t`.
