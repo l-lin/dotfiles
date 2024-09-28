@@ -6,7 +6,6 @@
   imports = [
     (./. + "/${userSettings.browser}")
     ./tridactyl
-    #./zen
   ];
 
   # Set the default web browser for tools like xdg-open.
