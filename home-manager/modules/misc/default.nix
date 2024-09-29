@@ -30,6 +30,8 @@
     duf
     # More intuitive version of du: https://github.com/bootandy/dust
     dust
+    # Run arbitrary commands when files change: https://eradman.com/entrproject/
+    entr
     # A modern, maintained replacement for ls: https://github.com/eza-community/eza
     eza
     # A tool to read, write and edit EXIF meta information: https://exiftool.org/
