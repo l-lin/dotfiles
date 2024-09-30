@@ -4,11 +4,13 @@ return {
   {
     "monkoose/neocodeium",
     event = "VeryLazy",
-    {
-      "folke/which-key.nvim",
-      opts = {
-        spec = {
-          { "<leader>a", group = "ai" },
+    dependencies = {
+      {
+        "folke/which-key.nvim",
+        opts = {
+          spec = {
+            { "<leader>a", group = "ai" },
+          },
         },
       },
     },
