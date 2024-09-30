@@ -95,7 +95,7 @@ snippet testpojo
 		""")
 	void correctArguments() {
 		// GIVEN
-    ThrowingSupplier<HealthSuggestionOperations> supplier = () -> ${1}(${2}));
+    ThrowingSupplier<${1}> supplier = () -> new ${1}(${2});
 
     // WHEN
     var actual = assertDoesNotThrow(supplier);
