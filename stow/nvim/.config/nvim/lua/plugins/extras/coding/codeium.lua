@@ -50,10 +50,10 @@ return {
         enabled = false,
         -- When set to `true`, autosuggestions are disabled.
         -- Use `require'neodecodeium'.cycle_or_complete()` to show suggestions manually
-        manual = false,
+        manual = true,
         -- Set to `true` to disable some non-important messages, like "NeoCodeium: server started..."
         silent = true,
-        debounce = true,
+        debounce = false,
         filetypes = {
           help = false,
           gitcommit = false,
@@ -68,13 +68,12 @@ return {
         end,
       })
 
-      cmp.event:on("menu_opened", function()
-        neocodeium.clear()
-      end)
-      cmp.setup({
-        completion = {
-          autocomplete = false,
-        },
+      -- create an autocommand which closes cmp when ai completions are displayed
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "NeoCodeiumCompletionDisplayed",
+        callback = function()
+          cmp.abort()
+        end,
       })
     end,
   },

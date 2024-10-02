@@ -65,6 +65,8 @@ return {
         ["<C-Space>"] = cmp.mapping.complete(),
         -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
         ["<C-e>"] = cmp.mapping.confirm({ select = true }),
+        -- Abort cmp suggestions, use same keymap as neocodeium.
+        ["<A-e>"] = cmp.mapping.abort(),
         ["<CR>"] = cmp.mapping.confirm({ select = true }),
         -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
         ["<S-CR>"] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
@@ -85,7 +87,7 @@ return {
         end, { "i", "s" }),
       })
       opts.sources = cmp.config.sources({
-        { name = "codeium" },
+        --{ name = "codeium" },
         { name = "nvim_lsp" },
         { name = "luasnip" },
       }, {
