@@ -17,10 +17,11 @@ in {
 " open nvim instead of default 'auto', which opens gvim (shortcut: Ctrl+i)
 set editorcmd ${userSettings.term} -e nvim %f '+normal!%lGzv%c|'
 
-" theme
-colors ${theme}
+" THEME
+" The custom theme is in conflict with Dark Reader extension, i.e. display a huge ugly white rectangular behind tridactyl.
+"colors ${theme}
 
-" binds
+" BINDS
 " With vertical tabs, it's more intuitive to use J/K to navigate tabs instead.
 bind K tabprev
 bind J tabnext
