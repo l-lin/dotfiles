@@ -1,6 +1,6 @@
 #
-# 
-# src: https://github.com/rebelot/kanagawa.nvim
+# GitHub's themes
+# src: https://github.com/projekt0n/github-nvim-theme
 #
 
 { pkgs, ... }:
