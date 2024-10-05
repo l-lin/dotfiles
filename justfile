@@ -57,7 +57,7 @@ update-flake input="all":
     && nix flake update; \
   else \
     just info "Updating Nix flake {{input}}..." \
-    && nix flake lock --update-input {{input}}; \
+    && nix flake update {{input}}; \
   fi
 
 # HOME-MANAGER --------------------------------------------------------------------------
