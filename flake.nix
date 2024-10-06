@@ -56,7 +56,7 @@
 
     # Zen web browser
     zen-browser = {
-      url = "github:MarceColl/zen-browser-flake";
+      url = "github:ch4og/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
  
@@ -120,7 +120,7 @@
       messaging = "slack"; # default messaging tool
       pager = "bat"; # default pager
       term = "kitty"; # default terminal emulator
-      theme = "kanagawa"; # colorscheme to use
+      theme = "github-light"; # colorscheme to use
       shell = "zsh"; # shell to use
       wm = "gnome"; # selected window manager (hyprland, sway or gnome)
     };
