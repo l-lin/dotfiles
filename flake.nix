@@ -52,10 +52,20 @@
     stylix = {
       url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.tinted-kitty.follows = "tinted-kitty-l-lin";
+    };
+
+    # TODO: Remove me when stylix https://github.com/danth/stylix/issues/567 is fixed.
+    # Fix the `cursor_text_color` on kitty.
+    tinted-kitty-l-lin = {
+      flake = false;
+      url = "github:l-lin/tinted-kitty";
     };
 
     # Zen web browser
     zen-browser = {
+      # TODO: Revert to original repository once https://github.com/MarceColl/zen-browser-flake/pull/50 is merged.
+      #url = "github:MarceColl/zen-browser-flake";
       url = "github:ch4og/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
