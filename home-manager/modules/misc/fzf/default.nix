@@ -15,6 +15,7 @@
       "--cycle"
       "--no-scrollbar"
       "--prompt='󰍉 '"
+      "--header='?: toggle preview | A-p: toggle preview wrap'"
     ];
 
     # Find file with CTRL-G (set in fzf.plugins.zsh).
@@ -31,4 +32,7 @@
 
     tmux.shellIntegrationOptions = [ "-p 90%,90%" ];
   };
+
+  # Symlink ~/.config/zsh/plugins/fzf/fzf.plugin.zsh
+  xdg.configFile."zsh/plugins/fzf/fzf.plugin.zsh".source = ./.config/zsh/plugins/fzf/fzf.plugin.zsh;
 }

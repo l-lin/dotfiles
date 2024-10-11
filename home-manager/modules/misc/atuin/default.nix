@@ -46,5 +46,8 @@ keymap_mode = "auto"
 ## "{blink,steady}-{block,underilne,bar}".
 keymap_cursor = { emacs = "blink-block", vim_insert = "blink-bar", vim_normal = "steady-block" }
   '';
+
+  # Symlink ~/.config/zsh/plugins/atuin/atuin.plugin.zsh
+  xdg.configFile."zsh/plugins/atuin/atuin.plugin.zsh".source = ./.config/zsh/plugins/atuin/atuin.plugin.zsh;
 }
 

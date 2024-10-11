@@ -2,7 +2,7 @@
 # Other stuff I can't categorize.
 #
 
-{ fileExplorer, outputs, pkgs, systemSettings, ... }: {
+{ fileExplorer, pkgs, ... }: {
   imports = fileExplorer.allSubdirs ./.;
 
   home.packages = with pkgs; [
@@ -91,8 +91,5 @@
     xsv
     # Compressor/archiver for creating and modifying zipfiles: http://www.info-zip.org/
     zip
-
-    # A de-minifier (formatter, exploder, beautifier) for shell one-liners: https://github.com/noperator/sol
-    outputs.packages.${systemSettings.system}.sol
   ];
 }

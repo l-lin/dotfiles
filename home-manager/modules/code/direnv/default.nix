@@ -20,4 +20,7 @@
       ${builtins.readFile ./scripts/flakify.sh}
     '')
   ];
+
+  # Symlink ~/.config/zsh/plugins/direnv/direnv.plugin.zsh
+  xdg.configFile."zsh/plugins/direnv/direnv.plugin.zsh".source = ./.config/zsh/plugins/direnv/direnv.plugin.zsh;
 }
