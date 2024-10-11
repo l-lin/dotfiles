@@ -128,7 +128,7 @@
       fileManager = "yazi"; # TUI file manager (lf or yazi)
       editor = "nvim"; # default editor
       messaging = "slack"; # default messaging tool
-      pager = "bat"; # default pager
+      pager = "less"; # default pager
       term = "kitty"; # default terminal emulator
       theme = "kanagawa"; # colorscheme to use
       shell = "zsh"; # shell to use
