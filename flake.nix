@@ -130,7 +130,7 @@
       messaging = "slack"; # default messaging tool
       pager = "bat"; # default pager
       term = "kitty"; # default terminal emulator
-      theme = "github-light"; # colorscheme to use
+      theme = "kanagawa"; # colorscheme to use
       shell = "zsh"; # shell to use
       wm = "gnome"; # selected window manager (hyprland, sway or gnome)
     };
