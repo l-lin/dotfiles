@@ -59,6 +59,7 @@ jeffreytse/zsh-vi-mode
 "${ZSH_CUSTOM}" path:plugins/atuin kind:defer
 "${ZSH_CUSTOM}" path:plugins/direnv kind:defer
 "${ZSH_CUSTOM}" path:plugins/fzf kind:defer
+"${ZSH_CUSTOM}" path:plugins/jira kind:defer
 "${ZSH_CUSTOM}" path:plugins/navi kind:defer
 "${ZSH_CUSTOM}" path:plugins/pet kind:defer
 "${ZSH_CUSTOM}" path:plugins/sol kind:defer
