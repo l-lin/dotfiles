@@ -10,7 +10,7 @@ fi
 
 function _jira_issue_interactive() {
   jira issue list -a$(jira me) -s~Done --plain --columns id,status,summary \
-    | fzf-tmux -p 90%,90% \
+    | fzf \
       --header-lines 1 \
       --preview-window 'top:70%:border-bottom:hidden' \
       --preview 'jira issue view {1}' \
