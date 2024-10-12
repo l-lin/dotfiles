@@ -1,0 +1,11 @@
+#!/usr/bin/env zsh
+#
+# Refresh ZSH antidote plugins by deleting the `~/.config/zsh/.zsh_plugins.zsh` files.
+#
+
+zsh_plugins_file="${HOME}/.config/zsh/.zsh_plugins.zsh"
+
+if [ -f "${zsh_plugins_file}" ]; then
+  rm "${zsh_plugins_file}"
+fi
+
