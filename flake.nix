@@ -64,9 +64,7 @@
 
     # Zen web browser
     zen-browser = {
-      # TODO: Revert to original repository once https://github.com/MarceColl/zen-browser-flake/pull/50 is merged.
-      #url = "github:MarceColl/zen-browser-flake";
-      url = "github:ch4og/zen-browser-flake";
+      url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
  
