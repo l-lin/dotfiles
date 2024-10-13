@@ -60,7 +60,7 @@ require("lazy").setup({
     --{ import = "plugins.extras.test.http" },
     { import = "plugins.extras.test.neotest" },
     --{ import = "plugins.extras.vcs.gitlab" },
-    { import = "plugins.extras.vcs.octo" },
+    --{ import = "plugins.extras.vcs.octo" },
   },
   defaults = {
     -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
