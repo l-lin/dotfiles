@@ -9,7 +9,7 @@ if ! type jira >/dev/null 2>&1; then
 fi
 
 function _jira_issue_interactive() {
-  jira issue list -a$(jira me) -s~Done --plain --columns id,status,summary \
+  jira sprint list --current -s~Done --order-by status --plain --columns id,assignee,status,summary \
     | fzf \
       --header-lines 1 \
       --preview-window 'top:70%:border-bottom:hidden' \
