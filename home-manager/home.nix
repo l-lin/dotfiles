@@ -18,6 +18,7 @@
 
   home.sessionVariables = {
     EDITOR = userSettings.editor;
+    VISUAL = userSettings.editor;
     BROWSER = userSettings.browser;
     PAGER = userSettings.pager;
 
