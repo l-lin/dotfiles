@@ -9,7 +9,9 @@ if ! type jira >/dev/null 2>&1; then
 fi
 
 function _jira_issue_interactive() {
-  jira sprint list --current -s~Done --order-by status --plain --columns id,assignee,status,summary \
+  local cmd
+  cmd='jira sprint list --current -s~Done --order-by status --plain --columns id,assignee,status,summary'
+  jira issue view $(eval "${cmd}" \
     | fzf \
       --header-lines 1 \
       --preview-window 'top:70%:border-bottom:hidden' \
@@ -19,14 +21,16 @@ function _jira_issue_interactive() {
       --bind 'alt-j:preview-down' \
       --bind 'alt-k:preview-up' \
       --bind "alt-a:execute(jira issue assign {1} $(jira me))" \
-      --bind 'alt-e:execute(jira issue edit {1})' \
-      --bind 'alt-m:execute(jira issue move {1})' \
       --bind 'alt-c:execute(jira issue comment add {1})' \
+      --bind 'alt-e:execute(jira issue edit {1})' \
+      --bind "alt-m:execute(jira issue move {1})+reload(${cmd})" \
       --bind 'alt-o:execute(jira open {1})' \
-      --bind "alt-y:execute-silent(echo -n {1} | wl-copy)" \
-      --header 'A-a: assign to me | A-e: edit | A-m: move | A-c: add comment | A-o: open | A-y: yank id | ?: toggle preview | A-p: toggle preview wrap | A-/: toggle wrap' \
+      --bind "alt-r:reload(${cmd})" \
+      --bind "alt-u:execute(jira issue assign {1} x)" \
+      --bind 'alt-y:execute-silent(echo -n {1} | wl-copy)' \
+      --header 'A-a: assign to me | A-c: add comment | A-e: edit | A-m: move | A-o: open | A-r: reload | A-u: unassign | A-y: yank id | ?: toggle preview' \
     | awk '{ print $1 }' \
-    | wl-copy
+  )
 }
 
 zle -N _jira_issue_interactive
