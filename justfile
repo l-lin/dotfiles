@@ -70,7 +70,7 @@ install-home-standalone:
   nix-shell '<home-manager>' -A install
 
 # apply home-manager configuration
-update-home: add-pre-commit-hook delete-mimeapps
+update-home: add-pre-commit-hook
   just info "Applying home-manager configuration..."
   if type nh >/dev/null 2>&1; then \
     nh home switch --backup-extension bak --configuration "{{NIX_PROFILE}}" . -- --show-trace; \
@@ -87,11 +87,6 @@ show-home-news:
 clean-home:
   just warn "Cleaning up home-manager garbage..."
   nix-collect-garbage -d
-
-# some apps overwrite and replace the mimeapps.list
-[private]
-delete-mimeapps:
-  rm -rf ${HOME}/.config/mimeapps.list.bak
 
 # STOW --------------------------------------------------------------------------
 
@@ -184,8 +179,7 @@ get-current-theme:
 
 # ------------------------------------------------------------------------
 
-# TODO: move Lombok installation in nvim lua script instead, so I don't need to call this recipe and it's downloaded
-# automatically once the LSP server is installed.
+# NOTE: I should not need this recipe as I'm using nvim-java/mason-registry, which install Lombok.
 # install lombok in xdg data home
 install-lombok:
   curl -L -o "${HOME}/.local/share/nvim/mason/packages/jdtls/lombok.jar" https://projectlombok.org/downloads/lombok.jar
