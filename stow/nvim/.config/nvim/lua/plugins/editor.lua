@@ -2,6 +2,9 @@ local neotree_commands = require("plugins.custom.editor.neotree")
 local telescope_commands = require("plugins.custom.editor.telescope")
 
 return {
+  -- No need for grug-far, let's use quickfix list!
+  { "MagicDuck/grug-far.nvim", enabled = false, },
+
   -- #######################
   -- override default config
   -- #######################
