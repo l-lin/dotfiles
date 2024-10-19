@@ -123,6 +123,15 @@ return {
             ["<C-h>"] = function(prompt_bufn)
               require("telescope-live-grep-args.actions").quote_prompt({ postfix = " -. " })(prompt_bufn)
             end,
+            -- Invert the keymap because I'm already using C-q with tmux, and I more often sending the whole result to qflist.
+            ["<M-q>"] = function(prompt_bufn)
+                require("telescope.actions").send_to_qflist(prompt_bufn)
+                require("trouble").open({ mode = "qflist", focus = true })
+            end,
+            ["<C-q>"] = function(prompt_bufn)
+                require("telescope.actions").send_selected_to_qflist(prompt_bufn)
+                require("trouble").open({ mode = "qflist", focus = true })
+            end,
           },
         },
         prompt_prefix = " ",
@@ -208,8 +217,7 @@ return {
     "folke/trouble.nvim",
     cmd = { "Trouble" },
     keys = {
-      { "<leader>xo", "<cmd>Trouble telescope toggle focus=true<cr>", desc = "Toggle Trouble (Alt+3)" },
-      { "<M-3>", "<cmd>Trouble telescope toggle focus=true<cr>", desc = "Toggle Trouble (Alt+3)" },
+      { "<M-3>", "<cmd>Trouble qflist toggle focus=true<cr>", desc = "Toggle Trouble (Alt+3)" },
     },
   },
 
