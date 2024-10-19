@@ -42,7 +42,7 @@ return {
         "<C-g>",
         function()
           -- require("telescope.builtin").find_files()
-          require("telescope").extensions.smart_open.smart_open({ cwd_only = true, match_algorithm = "fzf" })
+          require("telescope").extensions.smart_open.smart_open({ cwd_only = true, match_algorithm = "fzf", filename_first = false })
         end,
         mode = "n",
         noremap = true,
@@ -57,6 +57,7 @@ return {
             cwd_only = true,
             match_algorithm = "fzf",
             default_text = telescope_commands.get_selected_text(),
+            filename_first = false,
           })
         end,
         mode = "v",
