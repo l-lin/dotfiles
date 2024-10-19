@@ -18,6 +18,7 @@
 
     # Let home-manager manage ~/.config/mimeapps.list.
     # Useful to set the default web browser for example.
-    mimeApps.enable = true;
+    # HACK: DISABLED because I'm currently using native install of Zen browser.
+    #mimeApps.enable = true;
   };
 }
