@@ -10,7 +10,8 @@
     defaultOptions = [
       "--bind='?:toggle-preview'"
       "--bind='alt-p:toggle-preview-wrap'"
-      "--preview-window='right:40%:border-none'"
+      "--preview-window='down:65%:border-top'"
+      "--layout=reverse"
       "--tiebreak=chunk"
       "--cycle"
       "--no-scrollbar"
@@ -22,7 +23,7 @@
     # FZF_ALT_C_COMMAND
     fileWidgetCommand = "fd --type f --hidden --exclude .git";
     # FZF_CTRL_T_OPTS
-    fileWidgetOptions = [ "--no-reverse --preview 'bat --style changes --color \"always\" {} | head -200'" ];
+    fileWidgetOptions = [ "--preview 'bat --style changes --color \"always\" {} | head -200'" ];
 
     # Change directory with ALT-C.
     # FZF_ALT_C_COMMAND
