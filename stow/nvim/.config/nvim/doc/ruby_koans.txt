@@ -1,0 +1,2789 @@
+*ruby_koans.txt*             The Koans walk you along the path to enlightenment.
+
+================================================================================
+SYMBOLS                                            *ruby-koans-array-assignment*
+
+>ruby
+    class AboutArrayAssignment < Neo::Koan
+      def test_non_parallel_assignment
+        names = ["John", "Smith"]
+        assert_equal %w[John Smith], names
+      end
+
+      def test_parallel_assignments
+        first_name, last_name = ["John", "Smith"]
+        assert_equal 'John', first_name
+        assert_equal 'Smith', last_name
+      end
+
+      def test_parallel_assignments_with_extra_values
+        first_name, last_name = ["John", "Smith", "III"]
+        assert_equal 'John', first_name
+        assert_equal 'Smith', last_name
+      end
+
+      def test_parallel_assignments_with_splat_operator
+        first_name, *last_name = ["John", "Smith", "III"]
+        assert_equal 'John', first_name
+        assert_equal %w[Smith III], last_name
+      end
+
+      def test_parallel_assignments_with_too_few_values
+        first_name, last_name = ["Cher"]
+        assert_equal 'Cher', first_name
+        assert_equal nil, last_name
+      end
+
+      def test_parallel_assignments_with_subarrays
+        first_name, last_name = [["Willie", "Rae"], "Johnson"]
+        assert_equal %w[Willie Rae], first_name
+        assert_equal 'Johnson', last_name
+      end
+
+      def test_parallel_assignment_with_one_variable
+        first_name, = ["John", "Smith"]
+        assert_equal 'John', first_name
+      end
+
+      def test_swapping_with_parallel_assignment
+        first_name = "Roy"
+        last_name = "Rob"
+        first_name, last_name = last_name, first_name
+        assert_equal 'Rob', first_name
+        assert_equal 'Roy', last_name
+      end
+    end
+>
+<
+================================================================================
+SYMBOLS                                                       *ruby-koans-array*
+
+>ruby
+    class AboutArrays < Neo::Koan
+      def test_creating_arrays
+        empty_array = Array.new
+        assert_equal Array, empty_array.class
+        assert_equal 0, empty_array.size
+      end
+
+      def test_array_literals
+        array = Array.new
+        assert_equal [], array
+
+        array[0] = 1
+        assert_equal [1], array
+
+        # Arrays have no fixed size in Ruby!
+        array[1] = 2
+        assert_equal [1, 2], array
+
+        # We can use the shovel operator to append to the array.
+        array << 333
+        assert_equal [1, 2, 333], array
+
+        # Or we could use the method `append`.
+        array = array.append(444)
+        assert_equal [1, 2, 333, 444], array
+      end
+
+      def test_accessing_array_elements
+        array = [:peanut, :butter, :and, :jelly]
+
+        assert_equal :peanut, array[0]
+        assert_equal :peanut, array.first
+        assert_equal :jelly, array[3]
+        assert_equal :jelly, array.last
+        # In reverse!
+        assert_equal :jelly, array[-1]
+        assert_equal :butter, array[-3]
+
+        # If the index is > size, it's returning nil, not an exception.
+        assert_equal nil, array[4]
+        assert_equal 4, array.size
+      end
+
+      def test_slicing_arrays
+        array = [:peanut, :butter, :and, :jelly]
+
+        # /!\ It's [index, size]!!!
+        # Not to confuse with [index_start, index_end)!!!
+        assert_equal [:peanut], array[0, 1]
+        # We can use `%i[symbol1 symbol2]` instead to create an array of symbols.
+        assert_equal %i[peanut butter], array[0, 2]
+        assert_equal %i[and jelly], array[2, 2]
+        assert_equal %I[and jelly], array[2, 20]
+        assert_equal [], array[4, 0]
+        assert_equal [], array[4, 100]
+        # Not sure why this is `nil`?
+        assert_equal nil, array[5, 0]
+      end
+
+      def test_arrays_and_ranges
+        assert_equal Range, (1..5).class
+        assert_not_equal [1, 2, 3, 4, 5], (1..5)
+        # Double dots `..` is end inclusive.
+        assert_equal [1, 2, 3, 4, 5], (1..5).to_a
+        # Triple dots `...` is end exclusive.
+        assert_equal [1, 2, 3, 4], (1...5).to_a
+      end
+
+      def test_slicing_with_ranges
+        array = [:peanut, :butter, :and, :jelly]
+
+        # Same here, double dots `..` is end inclusive.
+        assert_equal %i[peanut butter and], array[0..2]
+        # Same here, triple dots `...` is end exclusive.
+        assert_equal %i[peanut butter], array[0...2]
+        assert_equal %i[and jelly], array[2..-1]
+        assert_equal %i[and jelly], array[2..]
+      end
+
+      def test_pushing_and_popping_arrays
+        array = [1, 2]
+        # Push is appending to the end, like `<<` and `append`.
+        array.push(:last)
+
+        assert_equal [1, 2, :last], array
+
+        popped_value = array.pop
+        assert_equal :last, popped_value
+        assert_equal [1, 2], array
+      end
+
+      def test_shifting_arrays
+        array = [1, 2]
+        # Prepend to array.
+        array.unshift(:first)
+
+        assert_equal [:first, 1, 2], array
+
+        # Get element from the left/bottom.
+        shifted_value = array.shift
+        assert_equal :first, shifted_value
+        assert_equal [1, 2], array
+      end
+    end
+<
+
+================================================================================
+SYMBOLS                                                     *ruby-koans-blocks*
+
+>ruby
+    class AboutBlocks < Neo::Koan
+      def method_with_block
+        result = yield
+        result
+      end
+
+      def test_methods_can_take_blocks
+        yielded_result = method_with_block { 1 + 2 }
+        assert_equal 3, yielded_result
+      end
+
+      def test_blocks_can_be_defined_with_do_end_too
+        yielded_result = method_with_block do 1 + 2 end
+        assert_equal 3, yielded_result
+      end
+
+      # ------------------------------------------------------------------
+
+      def method_with_block_arguments
+        yield("Jim")
+      end
+
+      def test_blocks_can_take_arguments
+        method_with_block_arguments do |argument|
+          assert_equal 'Jim', argument
+        end
+      end
+
+      # ------------------------------------------------------------------
+
+      def many_yields
+        yield(:peanut)
+        yield(:butter)
+        yield(:and)
+        yield(:jelly)
+      end
+
+      def test_methods_can_call_yield_many_times
+        result = []
+        many_yields { |item| result << item }
+        assert_equal %i[peanut butter and jelly], result
+      end
+
+      # ------------------------------------------------------------------
+
+      def yield_tester
+        # NOTE: WTF? Is `block_given` a ruby keyword?
+        # It seems there's also an equivalent, which is `defined?`.
+        # src: https://www.ruby-forum.com/t/block-given-vs-defined-yield/102463
+        if block_given?
+          yield
+        else
+          :no_block
+        end
+      end
+
+      def test_methods_can_see_if_they_have_been_called_with_a_block
+        assert_equal :with_block, yield_tester { :with_block }
+        assert_equal :no_block, yield_tester
+      end
+
+      # ------------------------------------------------------------------
+
+      def test_block_can_affect_variables_in_the_code_where_they_are_created
+        value = :initial_value
+        method_with_block { value = :modified_in_a_block }
+        assert_equal :modified_in_a_block, value
+      end
+
+      def test_blocks_can_be_assigned_to_variables_and_called_explicitly
+        add_one = lambda { |n| n + 1 }
+        assert_equal 11, add_one.call(10)
+
+        # Alternative calling syntax
+        add_one = ->(n) { n + 1 }
+        assert_equal 11, add_one[10]
+      end
+
+      def test_stand_alone_blocks_can_be_passed_to_methods_expecting_blocks
+        make_upper = lambda { |n| n.upcase }
+        result = method_with_block_arguments(&make_upper)
+        assert_equal 'JIM', result
+      end
+
+      # ------------------------------------------------------------------
+
+      def method_with_explicit_block(&block)
+        block.call(10)
+      end
+
+      def test_methods_can_take_an_explicit_block_argument
+        assert_equal 20, method_with_explicit_block { |n| n * 2 }
+
+        add_one = lambda { |n| n + 1 }
+        assert_equal 11, method_with_explicit_block(&add_one)
+      end
+
+    end
+<
+
+================================================================================
+SYMBOLS                                                *ruby-koans-class-method*
+
+>ruby
+    class AboutClassMethods < Neo::Koan
+      class Dog
+      end
+
+      def test_objects_are_objects
+        fido = Dog.new
+        assert_equal true, fido.is_a?(Object)
+      end
+
+      def test_classes_are_classes
+        assert_equal true, Dog.is_a?(Class)
+      end
+
+      def test_classes_are_objects_too
+        assert_equal true, Dog.is_a?(Object)
+      end
+
+      def test_objects_have_methods
+        fido = Dog.new
+        assert fido.methods.size > 1
+      end
+
+      def test_classes_have_methods
+        assert Dog.methods.size > 1
+      end
+
+      def test_you_can_define_methods_on_individual_objects
+        fido = Dog.new
+        def fido.wag
+          :fidos_wag
+        end
+        assert_equal :fidos_wag, fido.wag
+      end
+
+      def test_other_objects_are_not_affected_by_these_singleton_methods
+        fido = Dog.new
+        rover = Dog.new
+        def fido.wag
+          :fidos_wag
+        end
+
+        assert_raise(NoMethodError) do
+          rover.wag
+        end
+      end
+
+      # ------------------------------------------------------------------
+
+      class Dog2
+        def wag
+          :instance_level_wag
+        end
+      end
+
+      def Dog2.wag
+        :class_level_wag
+      end
+
+      def test_since_classes_are_objects_you_can_define_singleton_methods_on_them_too
+        assert_equal :class_level_wag, Dog2.wag
+      end
+
+      def test_class_methods_are_independent_of_instance_methods
+        fido = Dog2.new
+        assert_equal :instance_level_wag, fido.wag
+        assert_equal :class_level_wag, Dog2.wag
+      end
+
+      # ------------------------------------------------------------------
+
+      class Dog
+        attr_accessor :name
+      end
+
+      def Dog.name
+        @name
+      end
+
+      def test_classes_and_instances_do_not_share_instance_variables
+        fido = Dog.new
+        fido.name = "Fido"
+        assert_equal 'Fido', fido.name
+        assert_equal nil, Dog.name
+      end
+
+      # ------------------------------------------------------------------
+
+      class Dog
+        def Dog.a_class_method
+          :dogs_class_method
+        end
+      end
+
+      def test_you_can_define_class_methods_inside_the_class
+        assert_equal :dogs_class_method, Dog.a_class_method
+      end
+
+      # ------------------------------------------------------------------
+
+      LastExpressionInClassStatement = class Dog
+                                        21
+                                      end
+
+      def test_class_statements_return_the_value_of_their_last_expression
+        assert_equal 21, LastExpressionInClassStatement
+      end
+
+      # ------------------------------------------------------------------
+
+      SelfInsideOfClassStatement = class Dog
+                                    self
+                                  end
+
+      def test_self_while_inside_class_is_class_object_not_instance
+        assert_equal true, Dog == SelfInsideOfClassStatement
+      end
+
+      # ------------------------------------------------------------------
+
+      class Dog
+        def self.class_method2
+          :another_way_to_write_class_methods
+        end
+      end
+
+      def test_you_can_use_self_instead_of_an_explicit_reference_to_dog
+        assert_equal :another_way_to_write_class_methods, Dog.class_method2
+      end
+
+      # ------------------------------------------------------------------
+
+      class Dog
+        class << self
+          def another_class_method
+            :still_another_way
+          end
+        end
+      end
+
+      def test_heres_still_another_way_to_write_class_methods
+        assert_equal :still_another_way, Dog.another_class_method
+      end
+
+      # THINK ABOUT IT:
+      #
+      # The two major ways to write class methods are:
+      #   class Demo
+      #     def self.method
+      #     end
+      #
+      #     class << self
+      #       def class_methods
+      #       end
+      #     end
+      #   end
+      #
+      # Which do you prefer and why?
+      # Are there times you might prefer one over the other?
+      #
+      # The methods without `self` are specific to each instance of the class,
+      # whereas the other one is common to all instances.
+
+      # ------------------------------------------------------------------
+
+      def test_heres_an_easy_way_to_call_class_methods_from_instance_methods
+        fido = Dog.new
+        assert_equal :still_another_way, fido.class.another_class_method
+      end
+
+    end
+<
+
+================================================================================
+SYMBOLS                                                     *ruby-koans-classes*
+
+>ruby
+    class AboutClasses < Neo::Koan
+      class Dog
+      end
+
+      def test_instances_of_classes_can_be_created_with_new
+        fido = Dog.new
+        assert_equal AboutClasses::Dog, fido.class
+      end
+
+      # ------------------------------------------------------------------
+
+      class Dog2
+        def set_name(a_name)
+          @name = a_name
+        end
+      end
+
+      def test_instance_variables_can_be_set_by_assigning_to_them
+        fido = Dog2.new
+        assert_equal [], fido.instance_variables
+
+        fido.set_name("Fido")
+        assert_equal [:@name], fido.instance_variables
+      end
+
+      def test_instance_variables_cannot_be_accessed_outside_the_class
+        fido = Dog2.new
+        fido.set_name("Fido")
+
+        assert_raise(NoMethodError) do
+          fido.name
+        end
+
+        assert_raise(SyntaxError) do
+          eval "fido.@name"
+          # NOTE: Using eval because the above line is a syntax error.
+        end
+      end
+
+      def test_you_can_politely_ask_for_instance_variable_values
+        fido = Dog2.new
+        fido.set_name("Fido")
+
+        assert_equal 'Fido', fido.instance_variable_get("@name")
+      end
+
+      def test_you_can_rip_the_value_out_using_instance_eval
+        fido = Dog2.new
+        fido.set_name("Fido")
+
+        assert_equal 'Fido', fido.instance_eval("@name")  # string version
+        assert_equal 'Fido', fido.instance_eval { @name } # block version
+      end
+
+      # ------------------------------------------------------------------
+
+      class Dog3
+        def set_name(a_name)
+          @name = a_name
+        end
+        def name
+          @name
+        end
+      end
+
+      def test_you_can_create_accessor_methods_to_return_instance_variables
+        fido = Dog3.new
+        fido.set_name("Fido")
+
+        assert_equal 'Fido', fido.name
+      end
+
+      # ------------------------------------------------------------------
+
+      class Dog4
+        attr_reader :name
+
+        def set_name(a_name)
+          @name = a_name
+        end
+      end
+
+
+      def test_attr_reader_will_automatically_define_an_accessor
+        fido = Dog4.new
+        fido.set_name("Fido")
+
+        assert_equal 'Fido', fido.name
+      end
+
+      # ------------------------------------------------------------------
+
+      class Dog5
+        attr_accessor :name
+      end
+
+
+      def test_attr_accessor_will_automatically_define_both_read_and_write_accessors
+        fido = Dog5.new
+
+        fido.name = "Fido"
+        assert_equal 'Fido', fido.name
+      end
+
+      # ------------------------------------------------------------------
+
+      class Dog6
+        attr_reader :name
+        def initialize(initial_name)
+          @name = initial_name
+        end
+      end
+
+      def test_initialize_provides_initial_values_for_instance_variables
+        fido = Dog6.new("Fido")
+        assert_equal 'Fido', fido.name
+      end
+
+      def test_args_to_new_must_match_initialize
+        assert_raise(ArgumentError) do
+          Dog6.new
+        end
+        # THINK ABOUT IT:
+        # Why is this so?
+        # A: We need to provide an argument since we defined this `initialize` method.
+      end
+
+      def test_different_objects_have_different_instance_variables
+        fido = Dog6.new("Fido")
+        rover = Dog6.new("Rover")
+
+        assert_equal true, rover.name != fido.name
+      end
+
+      # ------------------------------------------------------------------
+
+      class Dog7
+        attr_reader :name
+
+        def initialize(initial_name)
+          @name = initial_name
+        end
+
+        def get_self
+          self
+        end
+
+        # NOTE: We can override to `to_s` method, which can be used in the string interpolation.
+        def to_s
+          @name
+        end
+
+        # NOTE: Ruby special method to pretty print in the logs?
+        # src: https://stackoverflow.com/questions/354547/how-do-i-dump-an-objects-fields-to-the-console
+        def inspect
+          "<Dog named '#{name}'>"
+        end
+      end
+
+      def test_inside_a_method_self_refers_to_the_containing_object
+        fido = Dog7.new("Fido")
+
+        fidos_self = fido.get_self
+        assert_equal fido, fidos_self
+      end
+
+      def test_to_s_provides_a_string_version_of_the_object
+        fido = Dog7.new("Fido")
+        assert_equal 'Fido', fido.to_s
+      end
+
+      def test_to_s_is_used_in_string_interpolation
+        fido = Dog7.new("Fido")
+        assert_equal 'My dog is Fido', "My dog is #{fido}"
+      end
+
+      def test_inspect_provides_a_more_complete_string_version
+        fido = Dog7.new("Fido")
+        assert_equal "<Dog named 'Fido'>", fido.inspect
+      end
+
+      def test_all_objects_support_to_s_and_inspect
+        array = [1,2,3]
+
+        assert_equal '[1, 2, 3]', array.to_s
+        assert_equal '[1, 2, 3]', array.inspect
+
+        assert_equal 'STRING', "STRING".to_s
+        assert_equal '"STRING"', "STRING".inspect
+      end
+
+    end
+<
+
+================================================================================
+SYMBOLS                                                   *ruby-koans-constants*
+
+>ruby
+    C = "top level"
+
+    class AboutConstants < Neo::Koan
+
+      C = "nested"
+
+      def test_nested_constants_may_also_be_referenced_with_relative_paths
+        assert_equal 'nested', C
+      end
+
+      def test_top_level_constants_are_referenced_by_double_colons
+        assert_equal 'top level', ::C
+      end
+
+      def test_nested_constants_are_referenced_by_their_complete_path
+        assert_equal 'nested', AboutConstants::C
+        assert_equal 'nested', ::AboutConstants::C
+      end
+
+      # ------------------------------------------------------------------
+
+      class Animal
+        LEGS = 4
+        def legs_in_animal
+          LEGS
+        end
+
+        class NestedAnimal
+          def legs_in_nested_animal
+            LEGS
+          end
+        end
+      end
+
+      def test_nested_classes_inherit_constants_from_enclosing_classes
+        assert_equal 4, Animal::NestedAnimal.new.legs_in_nested_animal
+      end
+
+      # ------------------------------------------------------------------
+
+      class Reptile < Animal
+        def legs_in_reptile
+          LEGS
+        end
+      end
+
+      def test_subclasses_inherit_constants_from_parent_classes
+        assert_equal 4, Reptile.new.legs_in_reptile
+      end
+
+      # ------------------------------------------------------------------
+
+      class MyAnimals
+        LEGS = 2
+
+        class Bird < Animal
+          def legs_in_bird
+            LEGS
+          end
+        end
+      end
+
+      def test_who_wins_with_both_nested_and_inherited_constants
+        assert_equal 2, MyAnimals::Bird.new.legs_in_bird
+      end
+
+      # QUESTION: Which has precedence: The constant in the lexical scope,
+      # or the constant from the inheritance hierarchy?
+      #
+      # A: The constant in the inheritance hierarchy.
+      # Module nesting will yield to:
+      # [AboutConstants::MyAnimals::Bird, AboutConstants::MyAnimals, AboutConstants]
+      #
+      # src: https://stackoverflow.com/a/13669251/3612053
+
+      # ------------------------------------------------------------------
+
+      class MyAnimals::Oyster < Animal
+        def legs_in_oyster
+          LEGS
+        end
+      end
+
+      def test_who_wins_with_explicit_scoping_on_class_definition
+        assert_equal 4, MyAnimals::Oyster.new.legs_in_oyster
+      end
+
+      # QUESTION: Now which has precedence: The constant in the lexical
+      # scope, or the constant from the inheritance hierarchy?  Why is it
+      # different than the previous answer?
+      #
+      # A: Now, the constant in the lexical scope because module nesting will yield to:
+      # [AboutConstants::MyAnimals::Oyster, AboutConstants]
+      #
+      # Well not so trivial... Better not override those constants, so we don't have to
+      # think about those edge cases.
+      #
+      # src: https://stackoverflow.com/a/13669251/3612053
+    end
+<
+
+================================================================================
+SYMBOLS                                           *ruby-koans-control-statement*
+
+>ruby
+    class AboutControlStatements < Neo::Koan
+
+      def test_if_then_else_statements
+        if true
+          result = :true_value
+        else
+          result = :false_value
+        end
+        assert_equal :true_value, result
+      end
+
+      def test_if_then_statements
+        result = :default_value
+        if true
+          result = :true_value
+        end
+        assert_equal :true_value, result
+      end
+
+      def test_if_statements_return_values
+        value = if true
+                  :true_value
+                else
+                  :false_value
+                end
+        assert_equal :true_value, value
+
+        value = if false
+                  :true_value
+                else
+                  :false_value
+                end
+        assert_equal :false_value, value
+
+        # NOTE: Actually, EVERY statement in Ruby will return a value, not
+        # just if statements.
+      end
+
+      def test_if_statements_with_no_else_with_false_condition_return_value
+        value = if false
+                  :true_value
+                end
+        assert_equal nil, value
+      end
+
+      def test_condition_operators
+        assert_equal :true_value, (true ? :true_value : :false_value)
+        assert_equal :false_value, (false ? :true_value : :false_value)
+      end
+
+      def test_if_statement_modifiers
+        result = :default_value
+        result = :true_value if true
+
+        assert_equal :true_value, result
+      end
+
+      def test_unless_statement
+        result = :default_value
+        unless false    # same as saying 'if !false', which evaluates as 'if true'
+          result = :false_value
+        end
+        assert_equal :false_value, result
+      end
+
+      def test_unless_statement_evaluate_true
+        result = :default_value
+        unless true    # same as saying 'if !true', which evaluates as 'if false'
+          result = :true_value
+        end
+        assert_equal :default_value, result
+      end
+
+      def test_unless_statement_modifier
+        result = :default_value
+        result = :false_value unless false
+
+        assert_equal :false_value, result
+      end
+
+      def test_while_statement
+        i = 1
+        result = 1
+        while i <= 10
+          result = result * i
+          i += 1
+        end
+        assert_equal 3_628_800, result
+      end
+
+      def test_break_statement
+        i = 1
+        result = 1
+        while true
+          break unless i <= 10
+          result = result * i
+          i += 1
+        end
+        assert_equal 3_628_800, result
+      end
+
+      def test_break_statement_returns_values
+        i = 1
+        result = while i <= 10
+          break i if i % 2 == 0
+          i += 1
+        end
+
+        assert_equal 2, result
+      end
+
+      def test_next_statement
+        i = 0
+        result = []
+        while i < 10
+          i += 1
+          next if i.even?
+
+          result << i
+        end
+        assert_equal [1, 3, 5, 7, 9], result
+      end
+
+      def test_for_statement
+        array = ["fish", "and", "chips"]
+        result = []
+        for item in array
+          result << item.upcase
+        end
+        assert_equal %w[FISH AND CHIPS], result
+
+        array.each { |i| result << i.upcase }
+        assert_equal %w[FISH AND CHIPS FISH AND CHIPS], result
+      end
+
+      def test_times_statement
+        sum = 0
+        10.times do
+          sum += 1
+        end
+        assert_equal 10, sum
+        10.times { |i| sum += i }
+        assert_equal 55, sum
+      end
+    end
+<
+================================================================================
+SYMBOLS                                                  *ruby-koans-exceptions*
+
+>ruby
+    class AboutExceptions < Neo::Koan
+
+      class MySpecialError < RuntimeError
+      end
+
+      def test_exceptions_inherit_from_Exception
+        assert_equal RuntimeError, MySpecialError.ancestors[1]
+        assert_equal StandardError, MySpecialError.ancestors[2]
+        assert_equal Exception, MySpecialError.ancestors[3]
+        assert_equal Object, MySpecialError.ancestors[4]
+      end
+
+      def test_rescue_clause
+        result = nil
+        begin
+          fail "Oops"
+        rescue StandardError => ex
+          result = :exception_handled
+        end
+
+        assert_equal :exception_handled, result
+
+        assert_equal true, ex.is_a?(StandardError), "Should be a Standard Error"
+        assert_equal true, ex.is_a?(RuntimeError),  "Should be a Runtime Error"
+
+        assert RuntimeError.ancestors.include?(StandardError),
+          "RuntimeError is a subclass of StandardError"
+
+        assert_equal 'Oops', ex.message
+      end
+
+      def test_raising_a_particular_error
+        result = nil
+        begin
+          # 'raise' and 'fail' are synonyms
+          raise MySpecialError, "My Message"
+        rescue MySpecialError => ex
+          result = :exception_handled
+        end
+
+        assert_equal :exception_handled, result
+        assert_equal 'My Message', ex.message
+      end
+
+      def test_ensure_clause
+        result = nil
+        begin
+          fail "Oops"
+        rescue StandardError
+          result = :exception_handled
+        ensure
+          result = :always_run
+        end
+
+        assert_equal :always_run, result
+      end
+
+      # Sometimes, we must know about the unknown
+      def test_asserting_an_error_is_raised
+        # A do-end is a block, a topic to explore more later
+        assert_raise(MySpecialError) do
+          raise MySpecialError.new("New instances can be raised directly.")
+        end
+      end
+
+    end
+<
+
+================================================================================
+SYMBOLS                                                      *ruby-koans-hashes*
+
+>ruby
+    class AboutHashes < Neo::Koan
+      def test_creating_hashes
+        empty_hash = Hash.new
+        assert_equal Hash, empty_hash.class
+        assert_equal({}, empty_hash)
+        assert_equal 0, empty_hash.size
+      end
+
+      def test_hash_literals
+        hash = { :one => "uno", :two => "dos" }
+        assert_equal 2, hash.size
+      end
+
+      def test_accessing_hashes
+        hash = { :one => "uno", :two => "dos" }
+        assert_equal 'uno', hash[:one]
+        assert_equal 'dos', hash[:two]
+        assert_equal nil, hash[:doesnt_exist]
+      end
+
+      def test_accessing_hashes_with_fetch
+        hash = { :one => "uno" }
+        assert_equal 'uno', hash.fetch(:one)
+        assert_raise(KeyError) do
+          hash.fetch(:doesnt_exist)
+        end
+
+        # THINK ABOUT IT:
+        #
+        # Why might you want to use #fetch instead of #[] when accessing hash keys?
+        #
+        # A: Using `#fetch` will raise an exception, whereas `#[]` returns `nil`, so we
+        # will get the error only afterwards.
+        # `#fetch` is feature-rich compared to `#[]`.
+        #
+        # src: https://stackoverflow.com/a/16569515/3612053
+      end
+
+      def test_changing_hashes
+        hash = { :one => "uno", :two => "dos" }
+        hash[:one] = "eins"
+
+        # It seems this syntax is prefered (since ruby 1.9).
+        expected = { one: 'eins', two: 'dos' }
+        assert_equal expected, hash
+
+        # Bonus Question: Why was "expected" broken out into a variable
+        # rather than used as a literal?
+      end
+
+      def test_hash_is_unordered
+        hash1 = { :one => "uno", :two => "dos" }
+        hash2 = { :two => "dos", :one => "uno" }
+
+        assert_equal true, hash1 == hash2
+      end
+
+      def test_hash_keys
+        hash = { :one => "uno", :two => "dos" }
+        assert_equal 2, hash.keys.size
+        assert_equal true, hash.keys.include?(:one)
+        assert_equal true, hash.keys.include?(:two)
+        assert_equal Array, hash.keys.class
+      end
+
+      def test_hash_values
+        hash = { :one => "uno", :two => "dos" }
+        assert_equal 2, hash.values.size
+        assert_equal true, hash.values.include?("uno")
+        assert_equal true, hash.values.include?("dos")
+        assert_equal Array, hash.values.class
+      end
+
+      def test_combining_hashes
+        hash = { "jim" => 53, "amy" => 20, "dan" => 23 }
+        new_hash = hash.merge({ "jim" => 54, "jenny" => 26 })
+
+        assert_equal true, hash != new_hash
+
+        expected = { "jim" => 54, "amy" => 20, "dan" => 23, "jenny" => 26 }
+        assert_equal true, expected == new_hash
+      end
+
+      def test_default_value
+        hash1 = Hash.new
+        hash1[:one] = 1
+
+        assert_equal 1, hash1[:one]
+        assert_equal nil, hash1[:two]
+
+        hash2 = Hash.new("dos")
+        hash2[:one] = 1
+
+        assert_equal 1, hash2[:one]
+        assert_equal 'dos', hash2[:two]
+      end
+
+      def test_default_value_is_the_same_object
+        hash = Hash.new([])
+
+        hash[:one] << "uno"
+        hash[:two] << "dos"
+
+        # That's really suprising... Is it because we set the default value to an array
+        # so all the keys are using the same array?
+        # Weir behavior TBH...
+        assert_equal %w[uno dos], hash[:one]
+        assert_equal hash[:one], hash[:two]
+        assert_equal %w[uno dos], hash[:three]
+
+        assert_equal true, hash[:one].object_id == hash[:two].object_id
+      end
+
+      def test_default_value_with_block
+        hash = Hash.new { |h, key| h[key] = [] }
+
+        hash[:one] << "uno"
+        hash[:two] << "dos"
+        # We can still put whatever we want, the hash has no fixed value type.
+        hash[:four] = 'foo'
+
+        assert_equal ['uno'], hash[:one]
+        assert_equal ['dos'], hash[:two]
+        assert_equal [], hash[:three]
+        assert_equal 'foo', hash[:four]
+      end
+
+      def test_default_value_attribute
+        hash = Hash.new
+
+        assert_equal nil, hash[:some_key]
+
+        hash.default = 'peanut'
+
+        assert_equal 'peanut', hash[:some_key]
+      end
+    end
+<
+
+================================================================================
+SYMBOLS                                                 *ruby-koans-inheritance*
+
+>ruby
+    class AboutInheritance < Neo::Koan
+      class Dog
+        attr_reader :name
+
+        def initialize(name)
+          @name = name
+        end
+
+        def bark
+          "WOOF"
+        end
+      end
+
+      class Chihuahua < Dog
+        def wag
+          :happy
+        end
+
+        def bark
+          "yip"
+        end
+      end
+
+      def test_subclasses_have_the_parent_as_an_ancestor
+        assert_equal true, Chihuahua.ancestors.include?(Dog)
+      end
+
+      def test_all_classes_ultimately_inherit_from_object
+        assert_equal true, Chihuahua.ancestors.include?(Object)
+      end
+
+      def test_subclasses_inherit_behavior_from_parent_class
+        chico = Chihuahua.new("Chico")
+        assert_equal 'Chico', chico.name
+      end
+
+      def test_subclasses_add_new_behavior
+        chico = Chihuahua.new("Chico")
+        assert_equal :happy, chico.wag
+
+        assert_raise(NoMethodError) do
+          fido = Dog.new("Fido")
+          fido.wag
+        end
+      end
+
+      def test_subclasses_can_modify_existing_behavior
+        chico = Chihuahua.new("Chico")
+        assert_equal 'yip', chico.bark
+
+        fido = Dog.new("Fido")
+        assert_equal 'WOOF', fido.bark
+      end
+
+      # ------------------------------------------------------------------
+
+      class BullDog < Dog
+        def bark
+          super + ", GROWL"
+        end
+      end
+
+      def test_subclasses_can_invoke_parent_behavior_via_super
+        ralph = BullDog.new("Ralph")
+        assert_equal 'WOOF, GROWL', ralph.bark
+      end
+
+      # ------------------------------------------------------------------
+
+      class GreatDane < Dog
+        def growl
+          super.bark + ", GROWL"
+        end
+      end
+
+      def test_super_does_not_work_cross_method
+        george = GreatDane.new("George")
+        assert_raise(NoMethodError) do
+          george.growl
+        end
+      end
+
+    end
+<
+
+================================================================================
+SYMBOLS                                                   *ruby-koans-iteration*
+
+>ruby
+    class AboutIteration < Neo::Koan
+
+      # -- An Aside ------------------------------------------------------
+      # Ruby 1.8 stores names as strings. Ruby 1.9 and later stores names
+      # as symbols. So we use a version dependent method "as_name" to
+      # convert to the right format in the koans. We will use "as_name"
+      # whenever comparing to lists of methods.
+
+      in_ruby_version("1.8") do
+        def as_name(name)
+          name.to_s
+        end
+      end
+
+      in_ruby_version("1.9", "2", "3") do
+        def as_name(name)
+          name.to_sym
+        end
+      end
+
+      # Ok, now back to the Koans.
+      # -------------------------------------------------------------------
+
+      def test_each_is_a_method_on_arrays
+        assert_equal true, [].methods.include?(as_name(:each))
+      end
+
+      def test_iterating_with_each
+        array = [1, 2, 3]
+        sum = 0
+        array.each do |item|
+          sum += item
+        end
+        assert_equal 6, sum
+      end
+
+      def test_each_can_use_curly_brace_blocks_too
+        array = [1, 2, 3]
+        sum = 0
+        array.each { |item| sum += item }
+        assert_equal 6, sum
+      end
+
+      def test_break_works_with_each_style_iterations
+        array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        sum = 0
+        array.each do |item|
+          break if item > 3
+          sum += item
+        end
+        assert_equal 6, sum
+      end
+
+      def test_collect_transforms_elements_of_an_array
+        array = [1, 2, 3]
+        new_array = array.collect { |item| item + 10 }
+        assert_equal [11, 12, 13], new_array
+
+        # NOTE: 'map' is another name for the 'collect' operation.
+        # It's an alias to 'collect', as 'map' is something used in other
+        # programming languages, so developers can feel at home.
+        # src: https://stackoverflow.com/a/5254764/3612053
+        another_array = array.map { |item| item + 10 }
+        assert_equal [11, 12, 13], another_array
+      end
+
+      def test_select_selects_certain_items_from_an_array
+        array = [1, 2, 3, 4, 5, 6]
+
+        even_numbers = array.select { |item| item.even? }
+        assert_equal [2, 4, 6], even_numbers
+
+        # NOTE: 'find_all' is another name for the 'select' operation
+        more_even_numbers = array.find_all { |item| (item % 2) == 0 }
+        assert_equal [2, 4, 6], more_even_numbers
+      end
+
+      def test_find_locates_the_first_element_matching_a_criteria
+        array = ["Jim", "Bill", "Clarence", "Doug", "Eli"]
+
+        assert_equal "Clarence", array.find { |item| item.size > 4 }
+      end
+
+      def test_inject_will_blow_your_mind
+        result = [2, 3, 4].inject(0) { |sum, item| sum + item }
+        assert_equal 9, result
+
+        result2 = [2, 3, 4].inject(1) { |product, item| product * item }
+        assert_equal 24, result2
+
+        # Extra Credit:
+        # Describe in your own words what inject does.
+        # It's the same as Java's `reduce` method to perform a reduction of the
+        # this array, using the accumulation function to generate the output.
+        # In the above examples, one sum all the elements of the array,
+        # and the other is multiplying every elements of the array.
+        # The parameter used in the `inject` is the first value of the output,
+        # so 0 when performing the sum of elements, and 1 for multiplications.
+      end
+
+      def test_all_iteration_methods_work_on_any_collection_not_just_arrays
+        # Ranges act like a collection
+        result = (1..3).map { |item| item + 10 }
+        assert_equal [11, 12, 13], result
+
+        # Files act like a collection of lines
+        File.open("example_file.txt") do |file|
+          upcase_lines = file.map { |line| line.strip.upcase }
+          assert_equal %w[THIS IS A TEST], upcase_lines
+        end
+
+        # NOTE: You can create your own collections that work with each,
+        # map, select, etc.
+      end
+
+      # Bonus Question:  In the previous koan, we saw the construct:
+      #
+      #   File.open(filename) do |file|
+      #     # code to read 'file'
+      #   end
+      #
+      # Why did we do it that way instead of the following?
+      #
+      #   file = File.open(filename)
+      #   # code to read 'file'
+      #
+      # When you get to the "AboutSandwichCode" koan, recheck your answer.
+      #
+      # A: If I have to guess, it's because we are opening a file, and we need
+      # to close it after finishing processing it. So this `do end` ensure the
+      # file is closed.
+
+    end
+<
+
+================================================================================
+SYMBOLS                                            *ruby-koans-keyword-argument*
+
+>ruby
+    class AboutKeywordArguments < Neo::Koan
+
+      def method_with_keyword_arguments(one: 1, two: 'two')
+        [one, two]
+      end
+
+      def test_keyword_arguments
+        assert_equal Array, method_with_keyword_arguments.class
+        assert_equal [1, 'two'], method_with_keyword_arguments
+        assert_equal %w[one two], method_with_keyword_arguments(one: 'one')
+        assert_equal [1, 2], method_with_keyword_arguments(two: 2)
+      end
+
+      def method_with_keyword_arguments_with_mandatory_argument(one, two: 2, three: 3)
+        [one, two, three]
+      end
+
+      def test_keyword_arguments_with_wrong_number_of_arguments
+        exception = assert_raise (ArgumentError) do
+          method_with_keyword_arguments_with_mandatory_argument
+        end
+        assert_match(/given 0, expected 1/, exception.message)
+      end
+
+      def method_with_mandatory_keyword_arguments(one:, two: 'two')
+        [one, two]
+      end
+
+      def test_mandatory_keyword_arguments
+        assert_equal %w[one two], method_with_mandatory_keyword_arguments(one: 'one')
+        assert_equal [1, 2], method_with_mandatory_keyword_arguments(two: 2, one: 1)
+      end
+
+      def test_mandatory_keyword_arguments_without_mandatory_argument
+        exception = assert_raise(ArgumentError) do
+          method_with_mandatory_keyword_arguments
+        end
+        assert_match(/missing keyword: :one/, exception.message)
+      end
+
+    end
+<
+
+================================================================================
+SYMBOLS                                             *ruby-koans-message-passing*
+
+>ruby
+    class AboutMessagePassing < Neo::Koan
+
+      class MessageCatcher
+        def caught?
+          true
+        end
+      end
+
+      def test_methods_can_be_called_directly
+        mc = MessageCatcher.new
+
+        assert mc.caught?
+      end
+
+      def test_methods_can_be_invoked_by_sending_the_message
+        mc = MessageCatcher.new
+
+        assert mc.send(:caught?)
+      end
+
+      def test_methods_can_be_invoked_more_dynamically
+        mc = MessageCatcher.new
+
+        assert mc.send("caught?")
+        assert mc.send("caught" + "?" )    # What do you need to add to the first string?
+        assert mc.send("CAUGHT?".downcase )      # What would you need to do to the string?
+      end
+
+      def test_send_with_underscores_will_also_send_messages
+        mc = MessageCatcher.new
+
+        assert_equal true, mc.__send__(:caught?)
+
+        # THINK ABOUT IT:
+        #
+        # Why does Ruby provide both send and __send__ ?
+        #
+        # We might need to define a custom `send` method, because `send` is too generic,
+        # and if we still want to use the native `send`, we can use `__send__`.
+        #
+        # src: https://stackoverflow.com/a/4658359/3612053
+      end
+
+      def test_classes_can_be_asked_if_they_know_how_to_respond
+        mc = MessageCatcher.new
+
+        assert_equal true, mc.respond_to?(:caught?)
+        assert_equal false, mc.respond_to?(:does_not_exist)
+      end
+
+      # ------------------------------------------------------------------
+
+      class MessageCatcher
+        def add_a_payload(*args)
+          args
+        end
+      end
+
+      def test_sending_a_message_with_arguments
+        mc = MessageCatcher.new
+
+        assert_equal [], mc.add_a_payload
+        assert_equal [], mc.send(:add_a_payload)
+
+        assert_equal [3, 4, nil, 6], mc.add_a_payload(3, 4, nil, 6)
+        assert_equal [3, 4, nil, 6], mc.send(:add_a_payload, 3, 4, nil, 6)
+      end
+
+      # NOTE:
+      #
+      # Both obj.msg and obj.send(:msg) sends the message named :msg to
+      # the object. We use "send" when the name of the message can vary
+      # dynamically (e.g. calculated at run time), but by far the most
+      # common way of sending a message is just to say: obj.msg.
+
+      # ------------------------------------------------------------------
+
+      class TypicalObject
+      end
+
+      def test_sending_undefined_messages_to_a_typical_object_results_in_errors
+        typical = TypicalObject.new
+
+        exception = assert_raise(NoMethodError) do
+          typical.foobar
+        end
+        assert_match(/foobar/, exception.message)
+      end
+
+      def test_calling_method_missing_causes_the_no_method_error
+        typical = TypicalObject.new
+
+        exception = assert_raise(NoMethodError) do
+          typical.method_missing(:foobar)
+        end
+        assert_match(/foobar/, exception.message)
+
+        # THINK ABOUT IT:
+        #
+        # If the method :method_missing causes the NoMethodError, then
+        # what would happen if we redefine method_missing?
+        #
+        # NOTE:
+        #
+        # In Ruby 1.8 the method_missing method is public and can be
+        # called as shown above. However, in Ruby 1.9 (and later versions)
+        # the method_missing method is private. We explicitly made it
+        # public in the testing framework so this example works in both
+        # versions of Ruby. Just keep in mind you can't call
+        # method_missing like that after Ruby 1.9 normally.
+        #
+        # Thanks.  We now return you to your regularly scheduled Ruby
+        # Koans.
+      end
+
+      # ------------------------------------------------------------------
+
+      class AllMessageCatcher
+        def method_missing(method_name, *args, &block)
+          "Someone called #{method_name} with <#{args.join(", ")}>"
+        end
+      end
+
+      def test_all_messages_are_caught
+        catcher = AllMessageCatcher.new
+
+        assert_equal 'Someone called foobar with <>', catcher.foobar
+        assert_equal 'Someone called foobaz with <1>', catcher.foobaz(1)
+        assert_equal 'Someone called sum with <1, 2, 3, 4, 5, 6>', catcher.sum(1,2,3,4,5,6)
+      end
+
+      def test_catching_messages_makes_respond_to_lie
+        catcher = AllMessageCatcher.new
+
+        assert_nothing_raised do
+          catcher.any_method
+        end
+        assert_equal false, catcher.respond_to?(:any_method)
+      end
+
+      # ------------------------------------------------------------------
+
+      class WellBehavedFooCatcher
+        def method_missing(method_name, *args, &block)
+          if method_name.to_s[0,3] == "foo"
+            "Foo to you too"
+          else
+            super(method_name, *args, &block)
+          end
+        end
+      end
+
+      def test_foo_method_are_caught
+        catcher = WellBehavedFooCatcher.new
+
+        assert_equal 'Foo to you too', catcher.foo_bar
+        assert_equal 'Foo to you too', catcher.foo_baz
+      end
+
+      def test_non_foo_messages_are_treated_normally
+        catcher = WellBehavedFooCatcher.new
+
+        assert_raise(NoMethodError) do
+          catcher.normal_undefined_method
+        end
+      end
+
+      # ------------------------------------------------------------------
+
+      # (note: just reopening class from above)
+      class WellBehavedFooCatcher
+        def respond_to?(method_name)
+          if method_name.to_s[0,3] == "foo"
+            true
+          else
+            super(method_name)
+          end
+        end
+      end
+
+      def test_explicitly_implementing_respond_to_lets_objects_tell_the_truth
+        catcher = WellBehavedFooCatcher.new
+
+        assert_equal true, catcher.respond_to?(:foo_bar)
+        assert_equal false, catcher.respond_to?(:something_else)
+      end
+
+    end
+<
+
+================================================================================
+SYMBOLS                                                     *ruby-koans-methods*
+
+>ruby
+    def my_global_method(a,b)
+      a + b
+    end
+
+    class AboutMethods < Neo::Koan
+
+      def test_calling_global_methods
+        assert_equal 5, my_global_method(2,3)
+      end
+
+      def test_calling_global_methods_without_parentheses
+        result = my_global_method 2, 3
+        assert_equal 5, result
+      end
+
+      # NOTE: We are Using eval below because the example code is
+      # considered to be syntactically invalid.
+      def test_sometimes_missing_parentheses_are_ambiguous
+        #eval "assert_equal 5, my_global_method 2, 3" # ENABLE CHECK
+        eval "assert_equal(5, my_global_method(2, 3))" # ENABLE CHECK
+        #
+        # Ruby doesn't know if you mean:
+        #
+        #   assert_equal(5, my_global_method(2), 3)
+        # or
+        #   assert_equal(5, my_global_method(2, 3))
+        #
+        # Rewrite the eval string to continue.
+        #
+      end
+
+      # NOTE: wrong number of arguments is not a SYNTAX error, but a
+      # runtime error.
+      def test_calling_global_methods_with_wrong_number_of_arguments
+        exception = assert_raise(ArgumentError) do
+          my_global_method
+        end
+        assert_match(/given 0, expected 2/, exception.message)
+
+        exception = assert_raise(ArgumentError) do
+          my_global_method(1,2,3)
+        end
+        assert_match(/given 3, expected 2/, exception.message)
+      end
+
+      # ------------------------------------------------------------------
+
+      def method_with_defaults(a, b=:default_value)
+        [a, b]
+      end
+
+      def test_calling_with_default_values
+        assert_equal [1, :default_value], method_with_defaults(1)
+        assert_equal [1, 2], method_with_defaults(1, 2)
+      end
+
+      # ------------------------------------------------------------------
+
+      def method_with_var_args(*args)
+        args
+      end
+
+      def test_calling_with_variable_arguments
+        # WTF? Why is it an `Array`? Why not a `Method`?
+        assert_equal Array, method_with_var_args.class
+        assert_equal [], method_with_var_args
+        assert_equal [:one], method_with_var_args(:one)
+        assert_equal %i[one two], method_with_var_args(:one, :two)
+      end
+
+      # ------------------------------------------------------------------
+
+      def method_with_explicit_return
+        :a_non_return_value
+        return :return_value
+        :another_non_return_value
+      end
+
+      def test_method_with_explicit_return
+        assert_equal :return_value, method_with_explicit_return
+      end
+
+      # ------------------------------------------------------------------
+
+      def method_without_explicit_return
+        :a_non_return_value
+        :return_value
+      end
+
+      def test_method_without_explicit_return
+        assert_equal :return_value, method_without_explicit_return
+      end
+
+      # ------------------------------------------------------------------
+
+      def my_method_in_the_same_class(a, b)
+        a * b
+      end
+
+      def test_calling_methods_in_same_class
+        assert_equal 12, my_method_in_the_same_class(3,4)
+      end
+
+      def test_calling_methods_in_same_class_with_explicit_receiver
+        assert_equal 12, self.my_method_in_the_same_class(3,4)
+      end
+
+      # ------------------------------------------------------------------
+
+      def my_private_method
+        "a secret"
+      end
+      private :my_private_method
+
+      def test_calling_private_methods_without_receiver
+        assert_equal 'a secret', my_private_method
+      end
+
+      if before_ruby_version("2.7")   # https://github.com/edgecase/ruby_koans/issues/12
+        def test_calling_private_methods_with_an_explicit_receiver
+          exception = assert_raise(___) do
+            self.my_private_method
+          end
+          assert_match /__/, exception.message
+        end
+      end
+
+      # ------------------------------------------------------------------
+
+      class Dog
+        def name
+          "Fido"
+        end
+
+        private
+
+        def tail
+          "tail"
+        end
+      end
+
+      def test_calling_methods_in_other_objects_require_explicit_receiver
+        rover = Dog.new
+        assert_equal 'Fido', rover.name
+      end
+
+      def test_calling_private_methods_in_other_objects
+        rover = Dog.new
+        assert_raise(NoMethodError) do
+          rover.tail
+        end
+      end
+    end
+<
+
+================================================================================
+SYMBOLS                                                     *ruby-koans-modules*
+
+>ruby
+    class AboutModules < Neo::Koan
+      module Nameable
+        def set_name(new_name)
+          @name = new_name
+        end
+
+        def here
+          :in_module
+        end
+      end
+
+      def test_cant_instantiate_modules
+        assert_raise(NoMethodError) do
+          Nameable.new
+        end
+      end
+
+      # ------------------------------------------------------------------
+
+      class Dog
+        include Nameable
+
+        attr_reader :name
+
+        def initialize
+          @name = "Fido"
+        end
+
+        def bark
+          "WOOF"
+        end
+
+        def here
+          :in_object
+        end
+      end
+
+      def test_normal_methods_are_available_in_the_object
+        fido = Dog.new
+        assert_equal 'WOOF', fido.bark
+      end
+
+      def test_module_methods_are_also_available_in_the_object
+        fido = Dog.new
+        assert_nothing_raised do
+          fido.set_name("Rover")
+        end
+      end
+
+      def test_module_methods_can_affect_instance_variables_in_the_object
+        fido = Dog.new
+        assert_equal 'Fido', fido.name
+        fido.set_name("Rover")
+        assert_equal 'Rover', fido.name
+      end
+
+      def test_classes_can_override_module_methods
+        fido = Dog.new
+        assert_equal :in_object, fido.here
+      end
+    end
+<
+================================================================================
+SYMBOLS                                                         *ruby-koans-nil*
+
+>ruby
+    class AboutNil < Neo::Koan
+      def test_nil_is_an_object
+        assert_equal true, nil.is_a?(Object), "Unlike NULL in other languages"
+      end
+
+      def test_you_dont_get_null_pointer_errors_when_calling_methods_on_nil
+        # What happens when you call a method that doesn't exist.  The
+        # following begin/rescue/end code block captures the exception and
+        # makes some assertions about it.
+        begin
+          nil.some_method_nil_doesnt_know_about
+        rescue Exception => ex
+          # What exception has been caught?
+          assert_equal NoMethodError, ex.class
+
+          # What message was attached to the exception?
+          # (HINT: replace __ with part of the error message.)
+          assert_match(/undefined method/, ex.message)
+        end
+      end
+
+      def test_nil_has_a_few_methods_defined_on_it
+        obj = nil
+        assert_equal true, obj == nil
+        # Why is it not called `is_nil?`?
+        assert_equal true, obj.nil?
+        assert_equal '', nil.to_s
+        assert_equal 'nil', nil.inspect
+
+        # THINK ABOUT IT:
+        #
+        # Is it better to use
+        #    obj.nil?
+        # or
+        #    obj == nil
+        # Why?
+        #
+        # A: It's better to use `obj.nil?` as it's semantically better.
+        # Moreover, only `nil` will answer `true` to `nil?`, whereas `==` will perform
+        # micro comparison with the other object, so a bit more performant to use
+        # `nil?`.
+        #
+        # src: https://stackoverflow.com/a/1972305/3612053
+      end
+    end
+<
+
+================================================================================
+SYMBOLS                                                     *ruby-koans-objects*
+
+>ruby
+    class AboutObjects < Neo::Koan
+      def test_everything_is_an_object
+        assert_equal true, 1.is_a?(Object)
+        assert_equal true, 1.5.is_a?(Object)
+        assert_equal true, "string".is_a?(Object)
+        assert_equal true, nil.is_a?(Object)
+        assert_equal true, Object.is_a?(Object)
+      end
+
+      def test_objects_can_be_converted_to_strings
+        assert_equal '123', 123.to_s
+        # This is weird...
+        assert_equal '', nil.to_s
+      end
+
+      def test_objects_can_be_inspected
+        assert_equal '123', 123.inspect
+        # This is also weird...
+        assert_equal 'nil', nil.inspect
+      end
+
+      def test_every_object_has_an_id
+        obj = Object.new
+        assert_equal Integer, obj.object_id.class
+        # Why 100?
+        assert_equal 100, obj.object_id
+
+        another_obj = Object.new
+        # What's the logic behind assigning the object id?
+        assert_equal 120, another_obj.object_id
+      end
+
+      def test_every_object_has_different_id
+        obj = Object.new
+        another_obj = Object.new
+        assert_equal true, obj.object_id != another_obj.object_id
+      end
+
+      def test_small_integers_have_fixed_ids
+        assert_equal 1, 0.object_id
+        assert_equal 3, 1.object_id
+        assert_equal 5, 2.object_id
+        assert_equal 201, 100.object_id
+
+        # THINK ABOUT IT:
+        # What pattern do the object IDs for small integers follow?
+        #
+        # The object ID is calculated from the objects value plus some additional
+        # information. From that calculation you can derive the values you are seeing
+        # in your examples.
+        #
+        # src: https://stackoverflow.com/a/3952814/3612053
+      end
+
+      def test_clone_creates_a_different_object
+        obj = Object.new
+        copy = obj.clone
+
+        assert_equal true, obj           != copy
+        assert_equal true, obj.object_id != copy.object_id
+      end
+    end
+<
+
+================================================================================
+SYMBOLS                                                *ruby-koans-open-classes*
+
+>ruby
+    class AboutOpenClasses < Neo::Koan
+      class Dog
+        def bark
+          "WOOF"
+        end
+      end
+
+      def test_as_defined_dogs_do_bark
+        fido = Dog.new
+        assert_equal 'WOOF', fido.bark
+      end
+
+      # ------------------------------------------------------------------
+
+      # Open the existing Dog class and add a new method.
+      # NOTE: Interesting... But does that not make it dangerous? Especially for libraries?
+      class Dog
+        def wag
+          "HAPPY"
+        end
+      end
+
+      def test_after_reopening_dogs_can_both_wag_and_bark
+        fido = Dog.new
+        assert_equal 'HAPPY', fido.wag
+        assert_equal 'WOOF', fido.bark
+      end
+
+      # ------------------------------------------------------------------
+
+      class ::Integer
+        def answer_to_life_universe_and_everything?
+          self == 42
+        end
+      end
+
+      def test_even_existing_built_in_classes_can_be_reopened
+        assert_equal false, 1.answer_to_life_universe_and_everything?
+        assert_equal true, 42.answer_to_life_universe_and_everything?
+      end
+
+      # NOTE: To understand why we need the :: before Integer, you need to
+      # become enlightened about scope.
+    end
+<
+
+================================================================================
+SYMBOLS                                         *ruby-koans-regular-expressions*
+
+>ruby
+    class AboutRegularExpressions < Neo::Koan
+      def test_a_pattern_is_a_regular_expression
+        assert_equal Regexp, /pattern/.class
+      end
+
+      def test_a_regexp_can_search_a_string_for_matching_content
+        assert_equal 'match', "some matching content"[/match/]
+      end
+
+      def test_a_failed_match_returns_nil
+        assert_equal nil, "some matching content"[/missing/]
+      end
+
+      # ------------------------------------------------------------------
+
+      def test_question_mark_means_optional
+        assert_equal 'ab', "abbcccddddeeeee"[/ab?/]
+        assert_equal 'a', "abbcccddddeeeee"[/az?/]
+      end
+
+      def test_plus_means_one_or_more
+        assert_equal 'bccc', "abbcccddddeeeee"[/bc+/]
+      end
+
+      def test_asterisk_means_zero_or_more
+        assert_equal 'abb', "abbcccddddeeeee"[/ab*/]
+        assert_equal 'a', "abbcccddddeeeee"[/az*/]
+        assert_equal '', "abbcccddddeeeee"[/z*/]
+
+        # THINK ABOUT IT:
+        #
+        # When would * fail to match?
+        #
+        # A: I don't think it will fail to match, if we're only using this *.
+      end
+
+      # THINK ABOUT IT:
+      #
+      # We say that the repetition operators above are "greedy."
+      #
+      # Why?
+      # Repetition is greedy by default: as many occurrences as possible are matched
+      # while still allowing the overall match to succeed. By contrast, lazy matching
+      # makes the minimal amount of matches necessary for overall success.
+      # A greedy metacharacter can be made lazy by following it with ?.
+      #
+      # Both patterns below match the string. The first uses a greedy quantifier so
+      # '.+' matches '<a><b>'; the second uses a lazy quantifier so '.+?' matches
+      # '<a>':
+      def test_greedy_or_not
+        assert_equal '<a><b>', /<.+>/.match('<a><b>')[0]
+        assert_equal '<a>', /<.+?>/.match('<a><b>')[0]
+      end
+
+      # ------------------------------------------------------------------
+
+      def test_the_left_most_match_wins
+        assert_equal 'a', "abbccc az"[/az*/]
+      end
+
+      # ------------------------------------------------------------------
+
+      def test_character_classes_give_options_for_a_character
+        animals = ["cat", "bat", "rat", "zat"]
+        assert_equal(%w[cat bat rat], animals.select { |a| a[/[cbr]at/] })
+      end
+
+      def test_slash_d_is_a_shortcut_for_a_digit_character_class
+        assert_equal '42', "the number is 42"[/[0123456789]+/]
+        assert_equal '42', "the number is 42"[/\d+/]
+      end
+
+      def test_character_classes_can_include_ranges
+        assert_equal '42', "the number is 42"[/[0-9]+/]
+      end
+
+      def test_slash_s_is_a_shortcut_for_a_whitespace_character_class
+        assert_equal " \t\n", "space: \t\n"[/\s+/]
+      end
+
+      def test_slash_w_is_a_shortcut_for_a_word_character_class
+        # NOTE: This is more like how a programmer might define a word.
+        assert_equal 'variable_1', "variable_1 = 42"[/[a-zA-Z0-9_]+/]
+        assert_equal 'variable_1', "variable_1 = 42"[/\w+/]
+      end
+
+      def test_period_is_a_shortcut_for_any_non_newline_character
+        assert_equal 'abc', "abc\n123"[/a.+/]
+      end
+
+      def test_a_character_class_can_be_negated
+        assert_equal 'the number is ', "the number is 42"[/[^0-9]+/]
+      end
+
+      def test_shortcut_character_classes_are_negated_with_capitals
+        assert_equal 'the number is ', "the number is 42"[/\D+/]
+        assert_equal 'space:', "space: \t\n"[/\S+/]
+        # ... a programmer would most likely do
+        assert_equal ' = ', "variable_1 = 42"[/[^a-zA-Z0-9_]+/]
+        assert_equal ' = ', "variable_1 = 42"[/\W+/]
+      end
+
+      # ------------------------------------------------------------------
+
+      def test_slash_a_anchors_to_the_start_of_the_string
+        assert_equal 'start', "start end"[/\Astart/]
+        assert_equal nil, "start end"[/\Aend/]
+      end
+
+      def test_slash_z_anchors_to_the_end_of_the_string
+        assert_equal 'end', "start end"[/end\z/]
+        assert_equal nil, "start end"[/start\z/]
+      end
+
+      def test_caret_anchors_to_the_start_of_lines
+        assert_equal '2', "num 42\n2 lines"[/^\d+/]
+      end
+
+      def test_dollar_sign_anchors_to_the_end_of_lines
+        assert_equal '42', "2 lines\nnum 42"[/\d+$/]
+      end
+
+      def test_slash_b_anchors_to_a_word_boundary
+        assert_equal 'vines', "bovine vines"[/\bvine./]
+      end
+
+      # ------------------------------------------------------------------
+
+      def test_parentheses_group_contents
+        assert_equal 'hahaha', "ahahaha"[/(ha)+/]
+      end
+
+      # ------------------------------------------------------------------
+
+      def test_parentheses_also_capture_matched_content_by_number
+        assert_equal 'Gray', "Gray, James"[/(\w+), (\w+)/, 1]
+        assert_equal 'James', "Gray, James"[/(\w+), (\w+)/, 2]
+      end
+
+      def test_variables_can_also_be_used_to_access_captures
+        assert_equal 'Gray, James', "Name:  Gray, James"[/(\w+), (\w+)/]
+        assert_equal 'Gray', ::Regexp.last_match(1)
+        assert_equal 'James', ::Regexp.last_match(2)
+      end
+
+      # ------------------------------------------------------------------
+
+      def test_a_vertical_pipe_means_or
+        grays = /(James|Dana|Summer) Gray/
+        assert_equal 'James Gray', "James Gray"[grays]
+        assert_equal 'Summer', "Summer Gray"[grays, 1]
+        assert_equal nil, "Jim Gray"[grays, 1]
+      end
+
+      # THINK ABOUT IT:
+      #
+      # Explain the difference between a character class ([...]) and alternation (|).
+      # A: Using [...] is per character, whereas using alternation (|), we can use words.
+
+      # ------------------------------------------------------------------
+
+      def test_scan_is_like_find_all
+        assert_equal %w[one two three], "one two-three".scan(/\w+/)
+      end
+
+      def test_sub_is_like_find_and_replace
+        assert_equal 'one t-three', 'one two-three'.sub(/(t\w*)/) { ::Regexp.last_match(1)[0, 1] }
+      end
+
+      def test_gsub_is_like_find_and_replace_all
+        assert_equal 'one t-t', 'one two-three'.gsub(/(t\w*)/) { ::Regexp.last_match(1)[0, 1] }
+      end
+    end
+<
+
+================================================================================
+SYMBOLS                                               *ruby-koans-sandwich-code*
+
+>ruby
+    class AboutSandwichCode < Neo::Koan
+
+      def count_lines(file_name)
+        file = open(file_name)
+        count = 0
+        while file.gets
+          count += 1
+        end
+        count
+      ensure
+        file.close if file
+      end
+
+      def test_counting_lines
+        assert_equal 4, count_lines("example_file.txt")
+      end
+
+      # ------------------------------------------------------------------
+
+      def find_line(file_name)
+        file = open(file_name)
+        while line = file.gets
+          return line if line.match(/e/)
+        end
+      ensure
+        file.close if file
+      end
+
+      def test_finding_lines
+        assert_equal "test\n", find_line("example_file.txt")
+      end
+
+      # ------------------------------------------------------------------
+      # THINK ABOUT IT:
+      #
+      # The count_lines and find_line are similar, and yet different.
+      # They both follow the pattern of "sandwich code".
+      #
+      # Sandwich code is code that comes in three parts: (1) the top slice
+      # of bread, (2) the meat, and (3) the bottom slice of bread.  The
+      # bread part of the sandwich almost always goes together, but
+      # the meat part changes all the time.
+      #
+      # Because the changing part of the sandwich code is in the middle,
+      # abstracting the top and bottom bread slices to a library can be
+      # difficult in many languages.
+      #
+      # (Aside for C++ programmers: The idiom of capturing allocated
+      # pointers in a smart pointer constructor is an attempt to deal with
+      # the problem of sandwich code for resource allocation.)
+      #
+      # Consider the following code:
+      #
+
+      def file_sandwich(file_name)
+        file = open(file_name)
+        yield(file)
+      ensure
+        file.close if file
+      end
+
+      # Now we write:
+
+      def count_lines2(file_name)
+        file_sandwich(file_name) do |file|
+          count = 0
+          while file.gets
+            count += 1
+          end
+          count
+        end
+      end
+
+      def test_counting_lines2
+        assert_equal 4, count_lines2("example_file.txt")
+      end
+
+      # ------------------------------------------------------------------
+
+      def find_line2(file_name)
+        # Rewrite find_line using the file_sandwich library function.
+        file_sandwich(file_name) do |file|
+          while (line = file.gets)
+            return line if line.match(/e/)
+          end
+        end
+      end
+
+      def test_finding_lines2
+        assert_equal "test\n", find_line2("example_file.txt")
+      end
+
+      # ------------------------------------------------------------------
+
+      def count_lines3(file_name)
+        open(file_name) do |file|
+          count = 0
+          while file.gets
+            count += 1
+          end
+          count
+        end
+      end
+
+      def test_open_handles_the_file_sandwich_when_given_a_block
+        assert_equal 4, count_lines3("example_file.txt")
+      end
+
+    end
+<
+
+================================================================================
+SYMBOLS                                                     *ruby-koans-symbols*
+
+>ruby
+    class AboutSymbols < Neo::Koan
+      def test_symbols_are_symbols
+        symbol = :ruby
+        assert_equal true, symbol.is_a?(Symbol)
+      end
+
+      def test_symbols_can_be_compared
+        symbol1 = :a_symbol
+        symbol2 = :a_symbol
+        symbol3 = :something_else
+
+        assert_equal true, symbol1 == symbol2
+        assert_equal false, symbol1 == symbol3
+      end
+
+      def test_identical_symbols_are_a_single_internal_object
+        symbol1 = :a_symbol
+        symbol2 = :a_symbol
+
+        assert_equal true, symbol1           == symbol2
+        assert_equal true, symbol1.object_id == symbol2.object_id
+      end
+
+      # That's kind of weird to have the method names also become symbols...
+      def test_method_names_become_symbols
+        symbols_as_strings = Symbol.all_symbols.map { |x| x.to_s }
+        assert_equal true, symbols_as_strings.include?("test_method_names_become_symbols")
+      end
+
+      # THINK ABOUT IT:
+      #
+      # Why do we convert the list of symbols to strings and then compare
+      # against the string value rather than against symbols?
+      #
+      # A: In Ruby, we can create symbols "on the fly". So doing
+      # ```
+      # assert_equal true, Symbol.all_symbols.include?(:IDoNotExist)
+      # ```
+      # will be valid, even if the :IDoNotExist was not initialized beforehand.
+      #
+      # src: https://stackoverflow.com/a/4686160/3612053
+      #
+
+      in_ruby_version("mri") do
+        RubyConstant = "What is the sound of one hand clapping?"
+        def test_constants_become_symbols
+          all_symbols_as_strings = Symbol.all_symbols.map { |x| x.to_s }
+
+          assert_equal true, all_symbols_as_strings.include?("RubyConstant")
+        end
+      end
+
+      def test_symbols_can_be_made_from_strings
+        string = "catsAndDogs"
+        assert_equal :catsAndDogs, string.to_sym
+      end
+
+      def test_symbols_with_spaces_can_be_built
+        symbol = :"cats and dogs"
+
+        assert_equal "cats and dogs".to_sym, symbol
+      end
+
+      def test_symbols_with_interpolation_can_be_built
+        value = "and"
+        symbol = :"cats #{value} dogs"
+
+        assert_equal "cats and dogs".to_sym, symbol
+      end
+
+      def test_to_s_is_called_on_interpolated_symbols
+        symbol = :cats
+        string = "It is raining #{symbol} and dogs."
+
+        assert_equal "It is raining cats and dogs.", string
+      end
+
+      def test_symbols_are_not_strings
+        symbol = :ruby
+        assert_equal false, symbol.is_a?(String)
+        assert_equal false, symbol.eql?("ruby")
+      end
+
+      def test_symbols_do_not_have_string_methods
+        symbol = :not_a_string
+        assert_equal false, symbol.respond_to?(:each_char)
+        assert_equal false, symbol.respond_to?(:reverse)
+      end
+
+      # It's important to realize that symbols are not "immutable
+      # strings", though they are immutable. None of the
+      # interesting string operations are available on symbols.
+
+      def test_symbols_cannot_be_concatenated
+        # Exceptions will be pondered further down the path
+        assert_raise(NoMethodError) do
+          :cats + :dogs
+        end
+      end
+
+      def test_symbols_can_be_dynamically_created
+        assert_equal :catsdogs, ("cats" + "dogs").to_sym
+      end
+
+      # THINK ABOUT IT:
+      #
+      # Why is it not a good idea to dynamically create a lot of symbols?
+      #
+      # A: Creating lots of symbols will allocate lots of memory.
+      #
+      # src: https://stackoverflow.com/questions/4573991/why-is-it-not-a-good-idea-to-dynamically-create-a-lot-of-symbols-in-ruby-for-ve
+      #
+    end
+<
+
+================================================================================
+SYMBOLS                                                       *ruby-koans-scope*
+
+>ruby
+    class AboutScope < Neo::Koan
+      module Jims
+        class Dog
+          def identify
+            :jims_dog
+          end
+        end
+      end
+
+      module Joes
+        class Dog
+          def identify
+            :joes_dog
+          end
+        end
+      end
+
+      def test_dog_is_not_available_in_the_current_scope
+        assert_raise(NameError) do
+          Dog.new
+        end
+      end
+
+      def test_you_can_reference_nested_classes_using_the_scope_operator
+        fido = Jims::Dog.new
+        rover = Joes::Dog.new
+        assert_equal :jims_dog, fido.identify
+        assert_equal :joes_dog, rover.identify
+
+        assert_equal true, fido.class != rover.class
+        assert_equal true, Jims::Dog != Joes::Dog
+      end
+
+      # ------------------------------------------------------------------
+
+      class String
+      end
+
+      # NOTE: Weird and confusing. Special case for bare bone classes?
+      # Recipe for disaster...
+      def test_bare_bones_class_names_assume_the_current_scope
+        assert_equal true, AboutScope::String == String
+      end
+
+      def test_nested_string_is_not_the_same_as_the_system_string
+        assert_equal false, String == "HI".class
+      end
+
+      def test_use_the_prefix_scope_operator_to_force_the_global_scope
+        assert_equal true, ::String == "HI".class
+      end
+
+      # ------------------------------------------------------------------
+
+      PI = 3.1416
+
+      def test_constants_are_defined_with_an_initial_uppercase_letter
+        assert_equal 3.1416, PI
+      end
+
+      # ------------------------------------------------------------------
+
+      MyString = ::String
+
+      def test_class_names_are_just_constants
+        assert_equal true, MyString == ::String
+        assert_equal true, MyString == "HI".class
+      end
+
+      def test_constants_can_be_looked_up_explicitly
+        assert_equal true, PI == AboutScope.const_get("PI")
+        assert_equal true, MyString == AboutScope.const_get("MyString")
+      end
+
+      def test_you_can_get_a_list_of_constants_for_any_class_or_module
+        assert_equal [:Dog], Jims.constants
+        assert Object.constants.size > 1
+      end
+    end
+<
+
+================================================================================
+STRINGS                                                     *ruby-koans-strings*
+
+>ruby
+    class AboutStrings < Neo::Koan
+      def test_double_quoted_strings_are_strings
+        string = "Hello, World"
+        assert_equal true, string.is_a?(String)
+      end
+
+      def test_single_quoted_strings_are_also_strings
+        string = 'Goodbye, World'
+        # It seems adding parentheses when calling methods is optional.
+        # Not according to this ruby style, which makes them mandatory:
+        # https://rubystyle.guide/#method-call-parentheses
+        assert_equal(true, string.is_a?(String))
+      end
+
+      def test_use_single_quotes_to_create_string_with_double_quotes
+        string = 'He said, "Go Away."'
+        assert_equal 'He said, "Go Away."', string
+      end
+
+      def test_use_double_quotes_to_create_strings_with_single_quotes
+        string = "Don't"
+        assert_equal "Don't", string
+      end
+
+      def test_use_backslash_for_those_hard_cases
+        a = "He said, \"Don't\""
+        b = 'He said, "Don\'t"'
+        assert_equal true, a == b
+      end
+
+      # Why give multiple ways to create flexible string???
+      def test_use_flexible_quoting_to_handle_really_hard_cases
+        a = %(flexible quotes can handle both ' and " characters)
+        b = %!flexible quotes can handle both ' and " characters!
+        c = %{flexible quotes can handle both ' and " characters}
+        assert_equal true, a == b
+        assert_equal true, a == c
+      end
+
+      def test_flexible_quotes_can_handle_multiple_lines
+        long_string = %{
+    It was the best of times,
+    It was the worst of times.
+    }
+        assert_equal 54, long_string.length
+        # Last newline is not counted in the `line.count`, so we can always
+        # set the last line with only the delimiter.
+        assert_equal 3, long_string.lines.count
+        # The first line is counted in the string.
+        # Use double quote to interpret the newline.
+        assert_equal "\n", long_string[0,1]
+      end
+
+
+      def test_plus_will_concatenate_two_strings
+        string = "Hello, " + "World"
+        assert_equal 'Hello, World', string
+      end
+
+      def test_plus_concatenation_will_leave_the_original_strings_unmodified
+        hi = "Hello, "
+        there = "World"
+        string = hi + there
+        assert_equal 'Hello, ', hi
+        assert_equal 'World', there
+      end
+
+      def test_plus_equals_will_concatenate_to_the_end_of_a_string
+        hi = "Hello, "
+        there = "World"
+        hi += there
+        assert_equal 'Hello, World', hi
+      end
+
+      def test_plus_equals_also_will_leave_the_original_string_unmodified
+        original_string = "Hello, "
+        # Is it creating another instance? Not it's not, see below (line 112).
+        hi = original_string
+        there = "World"
+        hi += there
+        assert_equal 'Hello, ', original_string
+      end
+
+      def test_the_shovel_operator_will_also_append_content_to_a_string
+        hi = "Hello, "
+        there = "World"
+        # Not sure why ruby decided to have multiple ways of concatenating strings...
+        hi << there
+        assert_equal 'Hello, World', hi
+        assert_equal 'World', there
+      end
+
+      def test_the_shovel_operator_modifies_the_original_string
+        original_string = "Hello, "
+        hi = original_string
+        there = "World"
+        hi << there
+        # Ah! That's why there's two ways of concatenating...
+        # So my assumption earlier that it creates another instance / copy of the
+        # string is wrong.
+        assert_equal 'Hello, World', original_string
+
+        # THINK ABOUT IT:
+        #
+        # Ruby programmers tend to favor the shovel operator (<<) over the
+        # plus equals operator (+=) when building up strings.  Why?
+        #
+        # If I have to take a guess, it's because it's taking less memory
+        # to use the shovel operator.
+      end
+
+      def test_double_quoted_string_interpret_escape_characters
+        string = "\n"
+        assert_equal 1, string.size
+      end
+
+      def test_single_quoted_string_do_not_interpret_escape_characters
+        string = '\n'
+        assert_equal 2, string.size
+      end
+
+      def test_single_quotes_sometimes_interpret_escape_characters
+        string = '\\\''
+        # So confusing... and error prone. Not sure the intent behind this logic...
+        assert_equal 2, string.size
+        assert_equal "\\'", string
+      end
+
+      def test_double_quoted_strings_interpolate_variables
+        value = 123
+        string = "The value is #{value}"
+        assert_equal 'The value is 123', string
+      end
+
+      def test_single_quoted_strings_do_not_interpolate
+        value = 123
+        string = 'The value is #{value}'
+        assert_equal 'The value is #{value}', string
+      end
+
+      def test_any_ruby_expression_may_be_interpolated
+        string = "The square root of 5 is #{Math.sqrt(5)}"
+        assert_equal 'The square root of 5 is 2.23606797749979', string
+      end
+
+      def test_you_can_get_a_substring_from_a_string
+        string = "Bacon, lettuce and tomato"
+        # Not quite sure what to think of this syntax...
+        # A bit weird to have the number of characters to fetch as the second
+        # parameter of the string[]...
+        assert_equal 'let', string[7,3]
+        assert_equal 'let', string[7..9]
+      end
+
+      def test_you_can_get_a_single_character_from_a_string
+        string = "Bacon, lettuce and tomato"
+        assert_equal 'a', string[1]
+
+        # Surprised?
+      end
+
+      in_ruby_version("1.9", "2", "3") do
+        def test_in_modern_ruby_single_characters_are_represented_by_strings
+          assert_equal 'a', ?a
+          assert_equal false, ?a == 97
+        end
+      end
+
+      def test_strings_can_be_split
+        string = "Sausage Egg Cheese"
+        # So it's using space as the delimiter by default.
+        words = string.split
+        assert_equal ['Sausage', 'Egg', 'Cheese'], words
+      end
+
+      def test_strings_can_be_split_with_different_patterns
+        string = "the:rain:in:spain"
+        words = string.split(/:/)
+        # We can also use quote instead of the weird / for specifying the delimiter...
+        #words = string.split(':')
+        assert_equal ['the', 'rain', 'in', 'spain'], words
+
+        # NOTE: Patterns are formed from Regular Expressions.  Ruby has a
+        # very powerful Regular Expression library.  We will become
+        # enlightened about them soon.
+      end
+
+      def test_strings_can_be_joined
+        words = ["Now", "is", "the", "time"]
+        assert_equal 'Now is the time', words.join(" ")
+      end
+
+      def test_strings_are_unique_objects
+        a = "a string"
+        b = "a string"
+
+        # == is checking the value, not their references.
+        assert_equal true, a           == b
+        assert_equal false, a.object_id == b.object_id
+      end
+      def test_here_documents_can_also_handle_multiple_lines
+        # We can use unix style to create multiple lines.
+        long_string = <<EOS
+    It was the best of times,
+    It was the worst of times.
+    EOS
+        assert_equal 53, long_string.length
+        assert_equal 2, long_string.lines.count
+        assert_equal 'I', long_string[0,1]
+      end
+    end
+<
+
+================================================================================
+STRINGS                                                      *ruby-koans-to-str*
+
+>ruby
+    class AboutToStr < Neo::Koan
+
+      class CanNotBeTreatedAsString
+        def to_s
+          "non-string-like"
+        end
+      end
+
+      def test_to_s_returns_a_string_representation
+        not_like_a_string = CanNotBeTreatedAsString.new
+        assert_equal 'non-string-like', not_like_a_string.to_s
+      end
+
+      def test_normally_objects_cannot_be_used_where_strings_are_expected
+        assert_raise(TypeError) do
+          File.exist?(CanNotBeTreatedAsString.new)
+        end
+      end
+
+      # ------------------------------------------------------------------
+
+      class CanBeTreatedAsString
+        def to_s
+          "string-like"
+        end
+
+        def to_str
+          to_s
+        end
+      end
+
+      def test_to_str_also_returns_a_string_representation
+        like_a_string = CanBeTreatedAsString.new
+        assert_equal 'string-like', like_a_string.to_str
+      end
+
+      def test_to_str_allows_objects_to_be_treated_as_strings
+        assert_equal false, File.exist?(CanBeTreatedAsString.new)
+      end
+
+      # ------------------------------------------------------------------
+
+      def acts_like_a_string?(string)
+        string = string.to_str if string.respond_to?(:to_str)
+        string.is_a?(String)
+      end
+
+      def test_user_defined_code_can_check_for_to_str
+        assert_equal false, acts_like_a_string?(CanNotBeTreatedAsString.new)
+        assert_equal true, acts_like_a_string?(CanBeTreatedAsString.new)
+      end
+    end
+<
+
+
+================================================================================
+STRINGS                                                  *ruby-koans-true-false*
+
+>ruby
+    class AboutTrueAndFalse < Neo::Koan
+      def truth_value(condition)
+        if condition
+          :true_stuff
+        else
+          :false_stuff
+        end
+      end
+
+      def test_true_is_treated_as_true
+        assert_equal :true_stuff, truth_value(true)
+      end
+
+      def test_false_is_treated_as_false
+        assert_equal :false_stuff, truth_value(false)
+      end
+
+      def test_nil_is_treated_as_false_too
+        assert_equal :false_stuff, truth_value(nil)
+      end
+
+      def test_everything_else_is_treated_as_true
+        assert_equal :true_stuff, truth_value(1)
+        assert_equal :true_stuff, truth_value(0)
+        assert_equal :true_stuff, truth_value([])
+        assert_equal :true_stuff, truth_value({})
+        assert_equal :true_stuff, truth_value("Strings")
+        assert_equal :true_stuff, truth_value("")
+      end
+    end
+<
+
+vim:tw=78:ts=8:noet:ft=help:norl:

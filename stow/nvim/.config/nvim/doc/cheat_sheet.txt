@@ -1,40 +1,31 @@
-" vim: filetype=help foldmethod=marker foldmarker=<<<,>>> modifiable noreadonly
-cheatsheet.txt VIM Cheatsheet
-cheatsheet
+*cheat_sheet.txt*                                       My Own VIM cheat sheets.
 
-==================================================================================
- ██████╗██╗  ██╗███████╗ █████╗ ████████╗███████╗██╗  ██╗███████╗███████╗████████╗
-██╔════╝██║  ██║██╔════╝██╔══██╗╚══██╔══╝██╔════╝██║  ██║██╔════╝██╔════╝╚══██╔══╝
-██║     ███████║█████╗  ███████║   ██║   ███████╗███████║█████╗  █████╗     ██║
-██║     ██╔══██║██╔══╝  ██╔══██║   ██║   ╚════██║██╔══██║██╔══╝  ██╔══╝     ██║
-╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████║██║  ██║███████╗███████╗   ██║
- ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝
-==================================================================================
-CONTENTS                                                             cs-contents
+================================================================================
+TOC                                                        *cs-table-of-content*
 
- 1.    Normal mode................................cs-normal-mode
- 1.1.  Cursor movement............................cs-cursor-movement
- 1.2.  Marks......................................cs-marks
- 1.3.  Copy / paste...............................cs-copy-paste
- 1.5.  Delete.....................................cs-delete
- 1.5.  Search / Replace...........................cs-search-replace
- 1.6.  Correct words..............................cs-correct-words
- 1.8.  Undo / Redo................................cs-undo-redo
- 1.9.  Spell checking.............................cs-spell-checking
- 1.10. Folding....................................cs-folding
- 1.11. DBExt......................................cs-dbext
- 1.12. DrawIt.....................................cs-drawit
- 1.13. Custom shortcuts...........................cs-custom-shortcuts
- 1.14. Surround...................................cs-surround
- 2.    Visual mode................................cs-visual-mode
- 3.    Commands...................................cs-commands
- 3.1.  Buffers....................................cs-buffers
- 3.2.  Splits.....................................cs-splits
- 3.3.  Explorer...................................cs-explorer
- 4.    Tips & tricks..............................cs-tips-n-tricks
+ 1.    Normal mode............................... |cs-normal-mode|
+ 1.1.  Cursor movement........................... |cs-cursor-movement|
+ 1.2.  Marks..................................... |cs-marks|
+ 1.3.  Copy / paste.............................. |cs-copy-paste|
+ 1.5.  Delete.................................... |cs-delete|
+ 1.5.  Search / Replace.......................... |cs-search-replace|
+ 1.6.  Correct words............................. |cs-correct-words|
+ 1.8.  Undo / Redo............................... |cs-undo-redo|
+ 1.9.  Spell checking............................ |cs-spell-checking|
+ 1.10. Folding................................... |cs-folding|
+ 1.11. DBExt..................................... |cs-dbext|
+ 1.12. DrawIt.................................... |cs-drawit|
+ 1.13. Custom shortcuts.......................... |cs-custom-shortcuts|
+ 1.14. Surround.................................. |cs-surround|
+ 2.    Visual mode............................... |cs-visual-mode|
+ 3.    Commands.................................. |cs-commands|
+ 3.1.  Buffers................................... |cs-buffers|
+ 3.2.  Splits.................................... |cs-splits|
+ 3.3.  Explorer.................................. |cs-explorer|
+ 4.    Tips & tricks............................. |cs-tips-n-tricks|
 
-==================================================================================
-NORMAL MODE                                                       cs-normal-mode
+================================================================================
+NORMAL MODE                                                     *cs-normal-mode*
 
 `ZZ`    - save and exit
 `ZQ`    - exit without saving
@@ -51,8 +42,8 @@ NORMAL MODE                                                       cs-normal-mode
 `C-d`   - delete word after cursor
 `R`     - switch to replace mode
 
-==================================================================================
-CURSOR MOVEMENT                                               cs-cursor-movement
+================================================================================
+CURSOR MOVEMENT                                             *cs-cursor-movement*
 
 `w`   - jump by start of words (punctuation considered words)
 `W`   - jump by words (spaces separate words)
@@ -81,8 +72,8 @@ CURSOR MOVEMENT                                               cs-cursor-movement
 `{`   - previous paragraph
 `}`   - next paragraph
 
-==================================================================================
-MARKS                                                                   cs-marks
+================================================================================
+MARKS                                                                 *cs-marks*
 
 `ma`     - set mark `a` at current cursor location
 `'a`     - jump to line of mark
@@ -91,8 +82,8 @@ MARKS                                                                   cs-marks
 `'Z`     - jump to .zshrc
 `:marks` - list all current marks
 
-==================================================================================
-COPY / PASTE                                                       cs-copy-paste
+================================================================================
+COPY / PASTE                                                     *cs-copy-paste*
 
 `yy`      - yank (copy) a line
 `2yy`     - yank 2 lines
@@ -107,8 +98,8 @@ COPY / PASTE                                                       cs-copy-paste
 `C-v`     - multiline visual mode
 `"+p`     - paste clipboard text
 
-==================================================================================
-DELETE                                                                 cs-delete
+================================================================================
+DELETE                                                               *cs-delete*
 
 `dd`          - remove line
 `dw`          - delete until next word, excluding the first character
@@ -124,8 +115,8 @@ DELETE                                                                 cs-delete
 `:g/pattern/d` - delete all lines containing "pattern"
 `:v/pattern/d` - delete all lines not containing "pattern"
 
-==================================================================================
-SEARCH / REPLACE                                               cs-search-replace
+================================================================================
+SEARCH / REPLACE                                             *cs-search-replace*
 
 `/pattern`               - search for pattern
 `?pattern`               - search backward for pattern
@@ -136,8 +127,8 @@ SEARCH / REPLACE                                               cs-search-replace
 `:/\v(\w+)`              - search with regexp
 `:%s/\v([0-9]+)/Foo\1/g` - search with regexp and replace with group
 
-==================================================================================
-CORRECT WORDS                                                   cs-correct-words
+================================================================================
+CORRECT WORDS                                                 *cs-correct-words*
 
 `x`   - delete char UNDER cursor
 `X`   - delete char BEFORE cursor
@@ -149,14 +140,14 @@ CORRECT WORDS                                                   cs-correct-words
 `cc`  - correct the entire line
 `#J`  - merge # number of lines together
 
-==================================================================================
-UNDO - REDO                                                         cs-undo-redo
+================================================================================
+UNDO - REDO                                                       *cs-undo-redo*
 
 `u`   - undo
 `C-r` - undo the undo
 
-==================================================================================
-SPELL CHECKING                                                 cs-spell-checking
+===============================================================================
+SPELL CHECKING                                               *cs-spell-checking*
 
 `]s` - go to next misspelled word
 `[s` - go to previous misspelled word
@@ -164,8 +155,8 @@ SPELL CHECKING                                                 cs-spell-checking
 `zg` - add word under the cursor as good word
 `,c` - perform :GrammarousCheck to check grammar errors
 
-==================================================================================
-FOLDING                                                               cs-folding
+================================================================================
+FOLDING                                                             *cs-folding*
 
 `zc` - close fold
 `zo` - open fold
@@ -173,24 +164,24 @@ FOLDING                                                               cs-folding
 `zM` - close all folds
 `zR` - open all folds
 
-==================================================================================
-CASE SENSITIVITY                                               cs-case-sensitivity
+================================================================================
+CASE SENSITIVITY                                           *cs-case-sensitivity*
 
 `guw` - convert word to lowercase
 `gUw` - convert word to uppercase
 `guu` - convert line to lowercase
 `gUU` - convert line to uppercase
 
-==================================================================================
-DBEXT                                                                   cs-dbext
+================================================================================
+DBEXT                                                                 *cs-dbext*
 
 `,se`  - execute sql query
 `,sbp` - change profile
 `,sdt` - describe table
 `,slt` - list tables
 
-==================================================================================
-DRAWIT                                                                 cs-drawit
+================================================================================
+DRAWIT                                                               *cs-drawit*
 
 `,di` - start drawing
 `,ds` - stop drawing
@@ -215,8 +206,8 @@ features
 `,^`        - draw fat ^  arrow
 `,v`        - draw fat v  arrow
 
-==================================================================================
-VISUAL MODE                                                       cs-visual-mode
+================================================================================
+VISUAL MODE                                                     *cs-visual-mode*
 
 `u`        - to lower case
 `U`        - to upper case
@@ -227,8 +218,8 @@ VISUAL MODE                                                       cs-visual-mode
 `!jq .`    - pretty print JSON
 `!sort`    - sort lines
 
-==================================================================================
-CUSTOM SHORTCUTS                                             cs-custom-shortcuts
+================================================================================
+CUSTOM SHORTCUTS                                           *cs-custom-shortcuts*
 
 `C-Tab` - omnicompletion
 `;;`    - switch buffer
@@ -244,8 +235,8 @@ CUSTOM SHORTCUTS                                             cs-custom-shortcuts
 `C-y`   - cut line
 `,l`    - format code
 
-==================================================================================
-SURROUND PLUGIN SHORTCUTS                                            cs-surround
+================================================================================
+SURROUND PLUGIN SHORTCUTS                                          *cs-surround*
 
 Ref https://github.com/tpope/vim-surround/blob/master/doc/surround.txt
 
@@ -253,8 +244,8 @@ Ref https://github.com/tpope/vim-surround/blob/master/doc/surround.txt
 `ds` - delete surrounding
 `ys` - takes a valid Vim motion or text object as the first object and wraps it
 
-==================================================================================
-COMMANDS                                                             cs-commands
+================================================================================
+COMMANDS                                                           *cs-commands*
 
 Ref: https://learnvim.irian.to/basics/the_global_command
 
@@ -270,8 +261,8 @@ Ref: https://learnvim.irian.to/basics/the_global_command
 `:g/foo/g/bar/d` - find lines containing "foo", then among them, delete all lines containing "bar"
 `:g/foo/d _` - delete all lines containing "foo" and do not save them in yank register
 
-==================================================================================
-BUFFERS                                                               cs-buffers
+================================================================================
+BUFFERS                                                             *cs-buffers*
 
 `:enew`   - create a new buffer
 `:bd`     - remove current buffer
@@ -281,26 +272,26 @@ BUFFERS                                                               cs-buffers
 `<C-w>p`  - move to floating buffer
 `<C-^>`   - switch back and forth from buffer
 
-==================================================================================
-SPLITS                                                                 cs-splits
+================================================================================
+SPLITS                                                               *cs-splits*
 
 `<C-w>`  - "leader" key mapping to handle splits
 `<C-w>v` - split vertically
 `<C-w>s` - split horizontally
 
-==================================================================================
-EXPLORER                                                             cs-explorer
+================================================================================
+EXPLORER                                                           *cs-explorer*
 
 `:e`       - open a file
 `:Explore` - open explorer
 
-==================================================================================
-INSERT MODE                                                       cs-insert-mode
+================================================================================
+INSERT MODE                                                     *cs-insert-mode*
 
 `<C-r>` - open yank register
 
-==================================================================================
-TIPS & TRICKS                                                   cs-tips-n-tricks
+================================================================================
+TIPS & TRICKS                                                 *cs-tips-n-tricks*
 
 Comment multiple lines
 ----------------------
@@ -330,3 +321,8 @@ Sorting text
 `:sort /pattern/ `- sort depending on what comes after the match
 `:sort /[^,]*,/`  - sort every line of a CSV file depending on the second column
 
+Update help documentation
+-------------------------
+`:helptags ALL` - update help documentation
+
+vim:tw=78:ts=8:noet:ft=help:norl:
