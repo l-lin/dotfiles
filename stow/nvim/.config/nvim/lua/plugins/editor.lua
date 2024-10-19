@@ -140,11 +140,15 @@ return {
           "truncate",
         },
         layout_strategy = "vertical",
+        sorting_strategy = "ascending",
         layout_config = {
-          prompt_position = "top",
-          mirror = true,
-          height = 0.99,
-          width = 0.99,
+          vertical = {
+            prompt_position = "top",
+            mirror = true,
+            height = 0.99,
+            width = 0.99,
+            preview_height = 0.65,
+          }
         },
       },
       pickers = {
