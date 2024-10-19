@@ -1,6 +1,17 @@
 local neotree_commands = require("plugins.custom.editor.neotree")
 local telescope_commands = require("plugins.custom.editor.telescope")
 
+local find_files = function(default_text)
+  -- require("telescope.builtin").find_files({ default_text = default_text })
+
+  require("telescope").extensions.smart_open.smart_open({
+    cwd_only = true,
+    match_algorithm = "fzf",
+    default_text = default_text,
+    filename_first = false,
+  })
+end
+
 return {
   -- No need for grug-far, let's use quickfix list!
   { "MagicDuck/grug-far.nvim", enabled = false, },
@@ -41,8 +52,7 @@ return {
       {
         "<C-g>",
         function()
-          -- require("telescope.builtin").find_files()
-          require("telescope").extensions.smart_open.smart_open({ cwd_only = true, match_algorithm = "fzf", filename_first = false })
+          find_files("")
         end,
         mode = "n",
         noremap = true,
@@ -52,13 +62,7 @@ return {
       {
         "<C-g>",
         function()
-          -- require("telescope.builtin").find_files({ default_text = telescope_commands.get_selected_text() })
-          require("telescope").extensions.smart_open.smart_open({
-            cwd_only = true,
-            match_algorithm = "fzf",
-            default_text = telescope_commands.get_selected_text(),
-            filename_first = false,
-          })
+          find_files(telescope_commands.get_selected_text())
         end,
         mode = "v",
         noremap = true,
@@ -68,11 +72,7 @@ return {
       {
         "<C-t>",
         function()
-          require("telescope").extensions.smart_open.smart_open({
-            cwd_only = true,
-            match_algorithm = "fzf",
-            default_text = telescope_commands.find_associate_test_or_file(),
-          })
+          find_files(telescope_commands.find_associate_test_or_file())
         end,
         desc = "Find associated test file (Ctrl+t)",
         noremap = true,
@@ -139,7 +139,10 @@ return {
         path_display = {
           "truncate",
         },
+        layout_strategy = "vertical",
         layout_config = {
+          prompt_position = "top",
+          mirror = true,
           height = 0.99,
           width = 0.99,
         },
