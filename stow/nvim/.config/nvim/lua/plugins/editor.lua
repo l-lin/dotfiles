@@ -113,8 +113,8 @@ return {
       defaults = {
         mappings = {
           i = {
-            ["<C-j>"] = require("telescope.actions").preview_scrolling_left,
-            ["<C-k>"] = require("telescope.actions").preview_scrolling_right,
+            ["<C-j>"] = require("telescope.actions").preview_scrolling_down,
+            ["<C-k>"] = require("telescope.actions").preview_scrolling_up,
             ["<C-f>"] = function(prompt_bufn)
               require("telescope-live-grep-args.actions").quote_prompt({ postfix = " -t " })(prompt_bufn)
             end,
@@ -145,8 +145,6 @@ return {
           vertical = {
             prompt_position = "top",
             mirror = true,
-            height = 0.99,
-            width = 0.99,
             preview_height = 0.65,
           }
         },

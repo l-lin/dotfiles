@@ -10,6 +10,10 @@
     defaultOptions = [
       "--bind='?:toggle-preview'"
       "--bind='alt-p:toggle-preview-wrap'"
+      "--bind='ctrl-d:preview-half-page-down'"
+      "--bind='ctrl-j:preview-down'"
+      "--bind='ctrl-k:preview-up'"
+      "--bind='ctrl-u:preview-half-page-up'"
       "--preview-window='down:65%:border-top'"
       "--layout=reverse"
       "--tiebreak=chunk"
