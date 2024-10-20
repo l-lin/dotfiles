@@ -1,17 +1,31 @@
 # Dotfiles
 
+:snowflake: NixOS
+
 - :bento: window manager: [hyprland](https://github.com/hyprwm/Hyprland)
 - :milky_way: terminal emulator: [kitty](https://sw.kovidgoyal.net/kitty/)
 - :shell: shell: [zsh](https://www.zsh.org/)
 - :memo: text editor: [neovim](https://neovim.io/)
 - :speech_balloon: notification: [dunst](https://dunst-project.org/)
-- :globe_with_meridians: browser: [firefox](https://www.mozilla.org/en-US/firefox/new/)
+- :globe_with_meridians: browser: [zen](https://zen-browser.app/)
 - :camera: screenshot: [satty](https://github.com/gabm/Satty) + [grim](https://github.com/emersion/grim) + [slurp](https://github.com/emersion/slurp)
 - :video_camera: screen recorder: [wf-recorder](https://github.com/ammen99/wf-recorder) + [slurp](https://github.com/emersion/slurp)
 - :abc: fonts: [nerd fonts](https://github.com/ryanoasis/nerd-fonts)
 - :art: color scheme: [kanagawa](https://github.com/rebelot/kanagawa.nvim)
 - :file_folder: file manager: [yazi](https://yazi-rs.github.io/) / [thunar](https://gitlab.xfce.org/xfce/thunar)
 - :rocket: application launcher: [rofi](https://github.com/lbonn/rofi)
+
+:penguin: Ubuntu
+
+- :bento: window manager: [gnome](https://www.gnome.org/) with [pop!_os shell](https://github.com/pop-os/shell)
+- :milky_way: terminal emulator: [kitty](https://sw.kovidgoyal.net/kitty/)
+- :shell: shell: [zsh](https://www.zsh.org/)
+- :memo: text editor: [neovim](https://neovim.io/)
+- :speech_balloon: notification: [dunst](https://dunst-project.org/)
+- :globe_with_meridians: browser: [zen](https://zen-browser.app/)
+- :abc: fonts: [nerd fonts](https://github.com/ryanoasis/nerd-fonts)
+- :art: color scheme: [kanagawa](https://github.com/rebelot/kanagawa.nvim)
+- :file_folder: file manager: [yazi](https://yazi-rs.github.io/) / [thunar](https://gitlab.xfce.org/xfce/thunar)
 
 ## Getting started
 
@@ -57,7 +71,7 @@ wd dotfiles
 git remote remove origin && git remote add origin git@github.com:l-lin/dotfiles && git fetch
 ```
 
-#### Ubuntu
+#### :penguin: Ubuntu
 
 ```bash
 # install curl to install nix: https://zero-to-nix.com/start/install
@@ -101,6 +115,7 @@ you are forgetful.
 - [Use a different version of nixpkgs in home-manager](https://l-lin.github.io/nix/home-manager/use-different-version-of-nixpkgs-in-home-manager)
 - [Share variables between modules](https://l-lin.github.io/nix/share-variables-between-Nix-modules)
 - [Running an external binary on NixOS](https://l-lin.github.io/nix/running-an-external-binary-on-NixOS)
+- [XDG folder names and home directory as variables](https://l-lin.github.io/nix/nix-xdg-folder-names-and-home-directory-as-variables)
 - [Pair bluetooth devices](https://l-lin.github.io/unix/pair-bluetooth-devices)
 
 ### Some packages are broken after an upgrade
@@ -181,38 +196,16 @@ should work without any problem. If not please check below on how to configure i
 I still don't know if I want to migrate NeoVim to be fully Nix compliant or keep
 it like this...
 
+> [!NOTE]
+> I moved all my NeoVim configuration to the `stow/` folder, as updating a NeoVim Lua
+> file through home-manager resulted in slow feedback (~20s).
+
 ### Styling
 
 I used [stylix](https://github.com/danth/stylix) to manage color schemes and themes.
 So it should be easy to add new themes without much hassle.
 
 You can add them at the [themes folder](./home-manager/modules/style/themes/).
-
-### XDG folder names and home directory as variables
-
-You can access to the XDG folder names and home directory by having `config` as parameter:
-
-```nix
-{ config, ... }: {
-  somePackage = {
-    # Interpolates into ~/some/file.txt
-    someOptionThatNeedsHomeDirectory = "${config.home.homeDirectory}/some/file.txt";
-
-    # Interpolates into ~/.config/some/file.txt
-    someOptionThatNeedsXdgConfigFolderName = "${config.xdg.configHome}/some/file.txt";
-
-    # Interpolates into ~/.local/share/some/file.txt
-    someOptionThatNeedsXdgDataFolderName = "${config.xdg.dataHome}/some/file.txt";
-
-    # Interpolates into ~/.cache/some/file.txt
-    someOptionThatNeedsXdgCacheFolderName = "${config.xdg.cacheHome}/some/file.txt";
-
-    # Interpolates into ~/Music/some/file.txt
-    # See https://home-manager-options.extranix.com/?query=xdg.userDirs&release=master for the exhaustive list of userDirs.
-    someOptionThatNeedsXdgUserDirs = "${config.xdg.userDirs.music}/some/file.txt";
-  };
-}
-```
 
 ### Creating a new secret
 
