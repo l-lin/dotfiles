@@ -49,7 +49,7 @@ require("lazy").setup({
     --{ import = "plugins.extras.coding.leetcode" },
     --{ import = "plugins.extras.coding.ollama" },
     { import = "plugins.extras.coding.yanky" },
-    { import = "plugins.extras.editor.image" },
+    --{ import = "plugins.extras.editor.image" },
     { import = "plugins.extras.editor.mini-files" },
     --{ import = "plugins.extras.lang.adoc" },
     { import = "plugins.extras.lang.java" },
