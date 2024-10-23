@@ -18,13 +18,13 @@ function _jira_issue_interactive() {
       --preview 'jira issue view {1}' \
       --bind '?:toggle-preview' \
       --bind 'alt-p:toggle-preview-wrap' \
-      --bind "alt-a:execute(jira issue assign {1} $(jira me))" \
+      --bind "alt-a:execute(jira issue assign {1} $(jira me))+reload(${cmd})" \
       --bind 'alt-c:execute(jira issue comment add {1})' \
-      --bind 'alt-e:execute(jira issue edit {1})' \
+      --bind "alt-e:execute(jira issue edit {1})+reload(${cmd})" \
       --bind "alt-m:execute(jira issue move {1})+reload(${cmd})" \
       --bind 'alt-o:execute(jira open {1})' \
       --bind "alt-r:reload(${cmd})" \
-      --bind "alt-u:execute(jira issue assign {1} x)" \
+      --bind "alt-u:execute(jira issue assign {1} x)+reload(${cmd})" \
       --bind 'alt-y:execute-silent(echo -n {1} | wl-copy)' \
       --bind "enter:execute(jira issue view {1})" \
       --header 'A-a: assign to me | A-c: add comment | A-e: edit | A-m: move | A-o: open | A-r: reload | A-u: unassign | A-y: yank id | ?: toggle preview'
