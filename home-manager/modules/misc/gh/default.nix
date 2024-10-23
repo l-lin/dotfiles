@@ -4,7 +4,11 @@
 #
 
 { pkgs, ... }: {
-  home.packages = with pkgs; [ gh ];
+  home.packages = with pkgs; [
+    gh
+    # Github Cli extension to display a dashboard with pull requests and issues: https://github.com/dlvhdr/gh-dash.
+    gh-dash
+  ];
 
   # Symlink ~/.config/zsh/completions/_gh
   xdg.configFile."zsh/completions/_gh".source = ./.config/zsh/completions/_gh;
