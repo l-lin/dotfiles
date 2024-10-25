@@ -59,6 +59,8 @@
     libnotify
     # Tools for reading hardware sensors: https://hwmon.wiki.kernel.org/lm_sensors
     lm_sensors
+    # A set of tools for controlling the network subsystem in Linux: http://net-tools.sourceforge.net/
+    nettools
     # Yet another nix cli helper: https://github.com/viperML/nh
     nh
     # High precision scientific calculator with full support for physical units: https://numbat.dev/
