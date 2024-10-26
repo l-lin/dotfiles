@@ -3,7 +3,10 @@
 # src: https://neovim.io/
 #
 
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }: 
+let
+  palette = config.lib.stylix.colors.withHashtag;
+in {
   # https://mynixos.com/nixpkgs/options/programs.neovim
   programs.neovim = {
     enable = true;
@@ -28,9 +31,12 @@
   };
 
   # Symlink ~/.config/nvim
-  xdg.configFile."nvim/lua/plugins/colorscheme.lua".text = ''
+  xdg.configFile."nvim/lua/plugins/colorscheme.lua".text = with palette; ''
 -- set background
 vim.o.bg = "${config.theme.polarity}"
+-- Global variables ftw! Too lazy to have something "smart" but complex...
+vim.g.colorscheme_faint = "${base04-hex}"
+vim.g.colorscheme_error = "${base08-hex}"
 
 return {
   ${config.theme.nvimColorSchemePluginLua},

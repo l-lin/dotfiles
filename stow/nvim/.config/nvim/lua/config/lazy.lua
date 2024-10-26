@@ -59,6 +59,7 @@ require("lazy").setup({
     { import = "plugins.extras.lang.xml" },
     --{ import = "plugins.extras.test.http" },
     { import = "plugins.extras.test.neotest" },
+    { import = "plugins.extras.ui.hlchunk" },
     --{ import = "plugins.extras.vcs.gitlab" },
     --{ import = "plugins.extras.vcs.octo" },
   },
