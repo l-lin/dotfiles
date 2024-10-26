@@ -21,6 +21,7 @@ return {
       mappings = {
         go_in = "",
         go_out = "",
+        synchronize = "<C-s>",
       },
     },
   },
