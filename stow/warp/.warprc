@@ -1,12 +1,14 @@
 boot:~/work/doctoboot
 dotfiles:~/.config/dotfiles
 koans:~/perso/study/ruby/koans
+kubetailrb:~/perso/kubetailrb
 lazy:~/perso/LazyVim
 leetcode:~/perso/leetcode
 monolith:~/work/doctolib
 navi:~/.local/share/navi/cheats/l-lin__cheats
 notes:~/perso/notes
 nvim:~/perso/dotfiles/nvim/.config/nvim
+pcc:~/work/preventive-continuous-care
 pcp:~/work/patient-care-plan
 phr:~/work/patient-health-record
 work-dotfiles:~/.config/work-dotfiles
