@@ -22,12 +22,5 @@ vim.g.autoformat = false
 vim.o.tabstop = 2
 vim.o.shiftwidth = vim.o.tabstop
 
---
--- RUBY
---
-
--- Not sure why the guy mention ruby-lsp from shopify is way better than solargraph
--- in https://github.com/LazyVim/LazyVim/pull/3652...
--- From my small experience with Ruby, ruby-lsp does not give me good suggestions...
--- Maybe I did not configure my Ruby project correctly?
---vim.g.lazyvim_ruby_lsp = "solargraph"
+-- do not have long lines
+vim.o.textwidth = 80

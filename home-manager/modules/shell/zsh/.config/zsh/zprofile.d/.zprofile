@@ -46,4 +46,8 @@ export JDTLS_JVM_ARGS="-javaagent:$HOME/.local/share/nvim/mason/packages/jdtls/l
 export REP_PAGER="delta"
 export REN_PAGER="delta"
 
+# auto-detect Gemfile in the current or parent directory, to avoid prefixing all ruby/gem commands with "bundle exec"
+# src: https://ruby-doc.org/3.3.5/stdlibs/rubygems/Gem.html
+export RUBYGEMS_GEMDEPS=-
+
 # vim: ft=zsh

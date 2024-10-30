@@ -24,6 +24,10 @@ alias v="nvim"
 alias sudo="sudo "
 alias _="sudo "
 alias please="sudo "
+# ruby
+alias ru="ruby"
+alias bu="bundle"
+alias ra="rake"
 
 # --------------------------------------------------------
 # Default options
