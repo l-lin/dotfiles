@@ -1835,7 +1835,6 @@ SYMBOLS                                                         *ruby-koans-nil*
       def test_nil_has_a_few_methods_defined_on_it
         obj = nil
         assert_equal true, obj == nil
-        # Why is it not called `is_nil?`?
         assert_equal true, obj.nil?
         assert_equal '', nil.to_s
         assert_equal 'nil', nil.inspect
