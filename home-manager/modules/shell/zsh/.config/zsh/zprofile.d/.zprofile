@@ -39,15 +39,4 @@ export ZVM_KEYTIMEOUT=0.1
 # --------------------------------------------------------
 export GREP_COLORS='mt=32'
 
-export MAVEN_OPTS="-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss"
-export JDTLS_JVM_ARGS="-javaagent:$HOME/.local/share/nvim/mason/packages/jdtls/lombok.jar"
-
-# find & replace + rename diff tool to use
-export REP_PAGER="delta"
-export REN_PAGER="delta"
-
-# auto-detect Gemfile in the current or parent directory, to avoid prefixing all ruby/gem commands with "bundle exec"
-# src: https://ruby-doc.org/3.3.5/stdlibs/rubygems/Gem.html
-export RUBYGEMS_GEMDEPS=-
-
 # vim: ft=zsh
