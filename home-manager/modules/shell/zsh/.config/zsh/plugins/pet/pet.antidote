@@ -1,0 +1,4 @@
+# Add keybinding to open pet.
+"${ZSH_CUSTOM}" path:plugins/pet kind:defer
+
+# vim: ft=config

@@ -1,0 +1,6 @@
+# Easily navigate to saved folders.
+mfaerevaag/wd kind:defer
+# Add Ctrl+b keybinding to open warps with FZF.
+"${ZSH_CUSTOM}" path:plugins/wd kind:defer
+
+# vim: ft=config

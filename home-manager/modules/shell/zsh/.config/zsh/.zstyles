@@ -39,6 +39,7 @@ zstyle ':zephyr:plugin:editor' symmetric-ctrl-z 'yes'
 # Expand aliases to their actual command like Fish abbreviations.
 zstyle ':zephyr:plugin:editor' glob-alias 'yes'
 noexpand=(
+  chmod
   ddgr
   df
   du

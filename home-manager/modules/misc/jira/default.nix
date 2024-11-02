@@ -8,5 +8,8 @@
 
   # Symlink ~/.config/zsh/*
   xdg.configFile."zsh/completions/_jira".source = ./.config/zsh/completions/_jira;
-  xdg.configFile."zsh/plugins/jira/jira.plugin.zsh".source = ./.config/zsh/plugins/jira/jira.plugin.zsh;
+  xdg.configFile."zsh/plugins/jira" = {
+    source = ./.config/zsh/plugins/jira;
+    recursive = true;
+  };
 }

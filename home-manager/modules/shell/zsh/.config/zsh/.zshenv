@@ -16,7 +16,7 @@
 # - conf.d/: contains configuration files
 # - functions/: contains shell functions
 # - plugins/: contains custom plugins
-#   - do not forget to include the plugin in `.zsh_plugins.txt` so antidote will load it
+#   - call `refresh-zsh-antidote-plugins` if you add/remove plugins
 # - zprofile.d/: env variables to source in login shells (e.g. `.zprofile.work`)
 #
 # order of operations: .zshenv -> .zprofile -> .zshrc -> .zlogin -> .zlogout

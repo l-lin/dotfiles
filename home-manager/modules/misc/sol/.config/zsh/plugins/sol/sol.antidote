@@ -1,0 +1,4 @@
+# Add keybinding to execute sol.
+"${ZSH_CUSTOM}" path:plugins/sol kind:defer
+
+# vim: ft=config

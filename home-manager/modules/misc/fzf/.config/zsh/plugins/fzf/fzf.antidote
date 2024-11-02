@@ -1,0 +1,8 @@
+# Custom shortcut for fzf.
+Aloxaf/fzf-tab kind:defer
+# Collection of fzf-tab's source.
+Freed-Wu/fzf-tab-source kind:defer
+# Override fzf custom bindings.
+"${ZSH_CUSTOM}" path:plugins/fzf kind:defer
+
+# vim: ft=config

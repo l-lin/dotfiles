@@ -3,10 +3,20 @@
 # Refresh ZSH antidote plugins.
 #
 
-zsh_plugins_file_cache="${ZDOTDIR}/.zsh_plugins.zsh"
-zsh_plugins_file="${ZDOTDIR}/.zsh_plugins.txt"
-
-if [ -f "${zsh_plugins_file_cache}" ] && [ -f "${zsh_plugins_file}" ]; then
-  antidote bundle < "${zsh_plugins_file}" >! "${zsh_plugins_file_cache}"
+if [[ -z ${ANTIDOTE_STATIC_FILE} ]] || [[ -z ${ANTIDOTE_BUNDLE_FILE} ]]; then
+  return
 fi
+
+[[ -f ${ANTIDOTE_STATIC_FILE} ]] && rm -rf ${ANTIDOTE_STATIC_FILE}
+[[ -f ${ANTIDOTE_BUNDLE_FILE} ]] && rm -rf ${ANTIDOTE_BUNDLE_FILE}
+
+# Ensure `plugins.antidote` is always first!
+cat ${ZDOTDIR}/plugins/plugins.antidote > ${ANTIDOTE_BUNDLE_FILE}
+for zplugin in ${ZDOTDIR}/plugins/**/*.antidote; do
+  if [[ ${zplugin##*/} != ${ANTIDOTE_BUNDLE_FILE##*/} ]]; then
+    cat ${zplugin} >> ${ANTIDOTE_BUNDLE_FILE}
+  fi
+done
+unset zplugin
+antidote bundle < ${ANTIDOTE_BUNDLE_FILE} > ${ANTIDOTE_STATIC_FILE}
 

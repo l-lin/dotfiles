@@ -4,6 +4,6 @@
 
 # import zprofiles
 for f in "${ZDOTDIR}"/zprofile.d/.zprofile*; do
-  . "${f}"
+  source "${f}"
 done
 

@@ -21,6 +21,9 @@
     '')
   ];
 
-  # Symlink ~/.config/zsh/plugins/direnv/direnv.plugin.zsh
-  xdg.configFile."zsh/plugins/direnv/direnv.plugin.zsh".source = ./.config/zsh/plugins/direnv/direnv.plugin.zsh;
+  # Symlink ~/.config/zsh/plugins/direnv
+  xdg.configFile."zsh/plugins/direnv" = {
+    source = ./.config/zsh/plugins/direnv;
+    recursive = true;
+  };
 }

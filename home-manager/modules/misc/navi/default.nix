@@ -12,5 +12,8 @@
 
   # Symlinks
   xdg.configFile."navi/config.yaml".source = ./.config/navi/config.yaml;
-  xdg.configFile."zsh/plugins/navi/navi.plugin.zsh".source = ./.config/zsh/plugins/navi/navi.plugin.zsh;
+  xdg.configFile."zsh/plugins/navi" = {
+    source = ./.config/zsh/plugins/navi;
+    recursive = true;
+  };
 }

@@ -38,6 +38,9 @@
     tmux.shellIntegrationOptions = [ "-p 90%,90%" ];
   };
 
-  # Symlink ~/.config/zsh/plugins/fzf/fzf.plugin.zsh
-  xdg.configFile."zsh/plugins/fzf/fzf.plugin.zsh".source = ./.config/zsh/plugins/fzf/fzf.plugin.zsh;
+  # Symlink ~/.config/zsh/plugins/fzf/
+  xdg.configFile."zsh/plugins/fzf" = {
+    source = ./.config/zsh/plugins/fzf;
+    recursive = true;
+  };
 }

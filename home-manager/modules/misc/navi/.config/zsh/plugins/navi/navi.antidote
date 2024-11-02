@@ -1,0 +1,4 @@
+# Add custom keybindings to execute navi.
+"${ZSH_CUSTOM}" path:plugins/navi kind:defer
+
+# vim: ft=config
