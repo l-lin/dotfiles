@@ -8,7 +8,6 @@ monolith:~/work/doctolib
 navi:~/.local/share/navi/cheats/l-lin__cheats
 notes:~/perso/notes
 pcc:~/work/preventive-continuous-care
-pcp:~/work/patient-care-plan
 phr:~/work/patient-health-record
 tf:~/work/terraform-infra
 work-dotfiles:~/.config/work-dotfiles
