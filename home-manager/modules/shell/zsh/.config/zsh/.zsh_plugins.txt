@@ -15,49 +15,52 @@ zsh-users/zsh-completions
 # enhance zsh
 # set up zsh completions
 mattmc3/zephyr path:plugins/completion
-# ensure common environment variables are set
+# Override and fill in the gaps of the default keybinds.
+mattmc3/zephyr path:plugins/editor
+# Ensure common environment variables are set.
 mattmc3/zephyr path:plugins/environment
-# make the terminal more colorful
+# Make the terminal more colorful.
 mattmc3/zephyr path:plugins/color
-# use a Fish-like conf.d directory for sourcing configs
+# Use a Fish-like conf.d directory for sourcing configs.
 mattmc3/zephyr path:plugins/confd
-# set options and aliases related to Zsh directories and dirstack
+# Set options and aliases related to Zsh directories and dirstack.
 mattmc3/zephyr path:plugins/directory
-# set history options and define history aliases
+# Set history options and define history aliases.
 mattmc3/zephyr path:plugins/history
-# Load and initialize the built-in zsh prompt system
+# Load and initialize the built-in zsh prompt system.
 mattmc3/zephyr path:plugins/prompt
 
-# interactive git
+# Interactive git.
 wfxr/forgit kind:defer
 
-# custom shortcut for fzf
+# Custom shortcut for fzf.
 Aloxaf/fzf-tab kind:defer
-# collection of fzf-tab's source
+# Collection of fzf-tab's source.
 Freed-Wu/fzf-tab-source kind:defer
 
-# easily navigate to saved folders
+# Easily navigate to saved folders.
 mfaerevaag/wd kind:defer
 
-# access to most visited directories
+# Access to most visited directories.
 skywind3000/z.lua kind:defer
 
-# add quotes automatically to commands
+# Add quotes automatically to commands.
 ianthehenry/zsh-autoquoter kind:defer
 
-# suggestion commands based on command history
-# must not defer, otherwise it will throw the "increase FUNCNEST" error
+# Suggestion commands based on command history.
+# /!\ Must not defer, otherwise it will throw the "increase FUNCNEST" error.
 zsh-users/zsh-autosuggestions
 
-# add syntax highlighting
-# must not defer, otherwise it will throw the "increase FUNCNEST" error
+# Add syntax highlighting.
+# /!\ Must not defer, otherwise it will throw the "increase FUNCNEST" error.
 zsh-users/zsh-syntax-highlighting
 
-# better vi mode
+# Better vi mode.
 jeffreytse/zsh-vi-mode
 
-# custom plugins
-"${ZSH_CUSTOM}" path:plugins/abbr kind:defer
+#
+# Custom plugins.
+#
 "${ZSH_CUSTOM}" path:plugins/atuin kind:defer
 "${ZSH_CUSTOM}" path:plugins/direnv kind:defer
 "${ZSH_CUSTOM}" path:plugins/fzf kind:defer
@@ -65,7 +68,6 @@ jeffreytse/zsh-vi-mode
 "${ZSH_CUSTOM}" path:plugins/navi kind:defer
 "${ZSH_CUSTOM}" path:plugins/pet kind:defer
 "${ZSH_CUSTOM}" path:plugins/sol kind:defer
-"${ZSH_CUSTOM}" path:plugins/work-env kind:defer
 "${ZSH_CUSTOM}" path:plugins/zfunctions
 
 # vim: ft=config

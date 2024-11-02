@@ -2,28 +2,55 @@
 # .zstyles - zstyle settings for features/plugins that need them.
 #
 
-# --------------------------------------------------------
+#
 # antidote
-# --------------------------------------------------------
+#
+
 zstyle ':antidote:bundle' use-friendly-names 'yes'
 zstyle ':antidote:plugin:*' defer-options '-p'
 
-# --------------------------------------------------------
-# abbreviations
-# --------------------------------------------------------
+#
+# Zephyr features
+#
+
+# Use caching.
+zstyle ':zephyr:plugin:*' 'use-cache' yes
+
+#
+# prompt
+#
+
+# Set prompt.
+zstyle ':zephyr:plugin:prompt' theme p10k lean
+
+#
+# Editor
+#
+
+# Set the key mapping style to 'emacs' or 'vi'.
+zstyle ':zephyr:plugin:editor' key-bindings 'vi'
+
+# Auto convert .... to ../..
+zstyle ':zephyr:plugin:editor' dot-expansion 'yes'
+
+# Use ^z to return background processes to foreground.
+zstyle ':zephyr:plugin:editor' symmetric-ctrl-z 'yes'
+
+# Expand aliases to their actual command like Fish abbreviations.
+zstyle ':zephyr:plugin:editor' glob-alias 'yes'
 noexpand=(
   ddgr
   df
   du
   gif
+  grep
   l
+  ls
   ssh
   top
   watch
+  z
 )
-zstyle ':zsh_custom:plugin:abbreviations' noexpand $noexpand
-
-# Set prompt
-zstyle ':zephyr:plugin:prompt' theme p10k lean
+zstyle ':zephyr:plugin:editor:glob-alias' noexpand $noexpand
 
 # vim: ft=zsh

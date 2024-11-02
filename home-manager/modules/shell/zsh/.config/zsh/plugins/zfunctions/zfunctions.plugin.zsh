@@ -1,4 +1,4 @@
-#!/usr/bin/diff
+#!/usr/bin/env zsh
 #
 # zfunctions: use a Fish-like functions directory for zsh functions.
 # src: https://github.com/mattmc3/zephyr/blob/main/plugins/zfunctions/zfunctions.plugin.zsh
