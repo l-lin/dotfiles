@@ -23,4 +23,7 @@ noexpand=(
 )
 zstyle ':zsh_custom:plugin:abbreviations' noexpand $noexpand
 
+# Set prompt
+zstyle ':zephyr:plugin:prompt' theme p10k lean
+
 # vim: ft=zsh

@@ -21,4 +21,14 @@ export ANTIDOTE_HOME="${XDG_CACHE_HOME:=$HOME/.cache}/antidote"
 source ${ANTIDOTE_HOME}/mattmc3/antidote/antidote.zsh
 antidote load
 
+# Set prompt theme
+typeset -ga ZSH_THEME
+zstyle -a ':zephyr:plugin:prompt' theme ZSH_THEME ||
+ZSH_THEME=(p10k lean)
+
+# Manually set your prompt ask powerlevel10k may not work well with post_zshrc.
+setopt prompt_subst transient_rprompt
+autoload -Uz promptinit && promptinit
+prompt "$ZSH_THEME[@]"
+
 # vim: ft=zsh

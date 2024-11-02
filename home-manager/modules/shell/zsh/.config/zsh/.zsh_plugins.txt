@@ -25,6 +25,8 @@ mattmc3/zephyr path:plugins/confd
 mattmc3/zephyr path:plugins/directory
 # set history options and define history aliases
 mattmc3/zephyr path:plugins/history
+# Load and initialize the built-in zsh prompt system
+mattmc3/zephyr path:plugins/prompt
 
 # interactive git
 wfxr/forgit kind:defer
