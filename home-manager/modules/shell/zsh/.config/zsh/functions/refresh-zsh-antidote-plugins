@@ -1,11 +1,12 @@
 #!/usr/bin/env zsh
 #
-# Refresh ZSH antidote plugins by deleting the `~/.config/zsh/.zsh_plugins.zsh` files.
+# Refresh ZSH antidote plugins.
 #
 
-zsh_plugins_file="${HOME}/.config/zsh/.zsh_plugins.zsh"
+zsh_plugins_file_cache="${ZDOTDIR}/.zsh_plugins.zsh"
+zsh_plugins_file="${ZDOTDIR}/.zsh_plugins.txt"
 
-if [ -f "${zsh_plugins_file}" ]; then
-  rm "${zsh_plugins_file}"
+if [ -f "${zsh_plugins_file_cache}" ] && [ -f "${zsh_plugins_file}" ]; then
+  antidote bundle < "${zsh_plugins_file}" >! "${zsh_plugins_file_cache}"
 fi
 
