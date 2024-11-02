@@ -46,9 +46,15 @@ noexpand=(
   grep
   l
   ls
+  lt
+  pandoc
+  pandoc-latex
+  ping
   ssh
+  termgraph
   top
   watch
+  weather
   z
 )
 zstyle ':zephyr:plugin:editor:glob-alias' noexpand $noexpand
