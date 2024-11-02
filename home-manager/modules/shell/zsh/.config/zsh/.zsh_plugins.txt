@@ -68,6 +68,7 @@ jeffreytse/zsh-vi-mode
 "${ZSH_CUSTOM}" path:plugins/navi kind:defer
 "${ZSH_CUSTOM}" path:plugins/pet kind:defer
 "${ZSH_CUSTOM}" path:plugins/sol kind:defer
+"${ZSH_CUSTOM}" path:plugins/wd kind:defer
 "${ZSH_CUSTOM}" path:plugins/zfunctions
 
 # vim: ft=config
