@@ -7,68 +7,107 @@
 # src: https://getantidote.github.io/
 #
 
-# prompt theme
-romkatv/powerlevel10k
+#
+# Prompt
+#
 
-# add more completions with plugins
-zsh-users/zsh-completions
-# enhance zsh
-# set up zsh completions
-mattmc3/zephyr path:plugins/completion
-# Override and fill in the gaps of the default keybinds.
-mattmc3/zephyr path:plugins/editor
-# Ensure common environment variables are set.
-mattmc3/zephyr path:plugins/environment
+# Fast zsh prompt theme.
+"${ZSH_CUSTOM}" path:plugins/p10k-instaprompt
+romkatv/powerlevel10k
+# Load and initialize the built-in zsh prompt system.
+mattmc3/zephyr path:plugins/prompt
+# /!\ Must be called after zephyr/prompt plugin!
+"${ZSH_CUSTOM}" path:plugins/prompt
 # Make the terminal more colorful.
 mattmc3/zephyr path:plugins/color
-# Use a Fish-like conf.d directory for sourcing configs.
-mattmc3/zephyr path:plugins/confd
+
+#
+# Environment
+#
+
+# Ensure common environment variables are set.
+mattmc3/zephyr path:plugins/environment
 # Set options and aliases related to Zsh directories and dirstack.
 mattmc3/zephyr path:plugins/directory
 # Set history options and define history aliases.
 mattmc3/zephyr path:plugins/history
-# Load and initialize the built-in zsh prompt system.
-mattmc3/zephyr path:plugins/prompt
+
+#
+# Completions
+#
+
+# add more completions with plugins
+zsh-users/zsh-completions
+# set up zsh completions
+mattmc3/zephyr path:plugins/completion
+
+#
+# Editor
+#
+
+# Override and fill in the gaps of the default keybinds.
+mattmc3/zephyr path:plugins/editor
+# Better vi mode.
+jeffreytse/zsh-vi-mode
+
+#
+# Fish-like
+#
+
+# Use a Fish-like conf.d directory for sourcing configs.
+mattmc3/zephyr path:plugins/confd
+# Lazy load a Fish-like functions directory.
+"${ZSH_CUSTOM}" path:plugins/zfunctions
+# Suggestion commands based on command history.
+# /!\ Must not defer, otherwise it will throw the "increase FUNCNEST" error.
+zsh-users/zsh-autosuggestions
+# Add syntax highlighting.
+# /!\ Must not defer, otherwise it will throw the "increase FUNCNEST" error.
+zsh-users/zsh-syntax-highlighting
+
+#
+# Enhance ZSH
+#
+
+# Access to most visited directories.
+skywind3000/z.lua kind:defer
+# Add quotes automatically to commands.
+ianthehenry/zsh-autoquoter kind:defer
+
+#
+# Git
+#
 
 # Interactive git.
 wfxr/forgit kind:defer
+
+#
+# FZF
+#
 
 # Custom shortcut for fzf.
 Aloxaf/fzf-tab kind:defer
 # Collection of fzf-tab's source.
 Freed-Wu/fzf-tab-source kind:defer
+# Override fzf custom bindings.
+"${ZSH_CUSTOM}" path:plugins/fzf kind:defer
+
+#
+# Warp
+#
 
 # Easily navigate to saved folders.
 mfaerevaag/wd kind:defer
-
-# Access to most visited directories.
-skywind3000/z.lua kind:defer
-
-# Add quotes automatically to commands.
-ianthehenry/zsh-autoquoter kind:defer
-
-# Suggestion commands based on command history.
-# /!\ Must not defer, otherwise it will throw the "increase FUNCNEST" error.
-zsh-users/zsh-autosuggestions
-
-# Add syntax highlighting.
-# /!\ Must not defer, otherwise it will throw the "increase FUNCNEST" error.
-zsh-users/zsh-syntax-highlighting
-
-# Better vi mode.
-jeffreytse/zsh-vi-mode
+"${ZSH_CUSTOM}" path:plugins/wd kind:defer
 
 #
 # Custom plugins.
 #
 "${ZSH_CUSTOM}" path:plugins/atuin kind:defer
 "${ZSH_CUSTOM}" path:plugins/direnv kind:defer
-"${ZSH_CUSTOM}" path:plugins/fzf kind:defer
 "${ZSH_CUSTOM}" path:plugins/jira kind:defer
 "${ZSH_CUSTOM}" path:plugins/navi kind:defer
 "${ZSH_CUSTOM}" path:plugins/pet kind:defer
 "${ZSH_CUSTOM}" path:plugins/sol kind:defer
-"${ZSH_CUSTOM}" path:plugins/wd kind:defer
-"${ZSH_CUSTOM}" path:plugins/zfunctions
 
 # vim: ft=config
