@@ -24,7 +24,7 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.formatting.prettier" },
     --{ import = "lazyvim.plugins.extras.lang.ansible" },
     { import = "lazyvim.plugins.extras.lang.docker" },
-    --{ import = "lazyvim.plugins.extras.lang.helm" },
+    { import = "lazyvim.plugins.extras.lang.helm" },
     { import = "lazyvim.plugins.extras.lang.json" },
     { import = "lazyvim.plugins.extras.lang.git" },
     { import = "lazyvim.plugins.extras.lang.go" },
@@ -45,7 +45,7 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.util.project" },
     -- import/override with your plugins
     { import = "plugins" },
-    { import = "plugins.extras.coding.codeium" },
+    --{ import = "plugins.extras.coding.codeium" },
     --{ import = "plugins.extras.coding.leetcode" },
     --{ import = "plugins.extras.coding.ollama" },
     { import = "plugins.extras.coding.yanky" },
