@@ -45,6 +45,9 @@ keymap_mode = "auto"
 ## in entering the cursor shape.  Available values are "default" and
 ## "{blink,steady}-{block,underilne,bar}".
 keymap_cursor = { emacs = "blink-block", vim_insert = "blink-bar", vim_normal = "steady-block" }
+
+## Invert the UI - put the search bar at the top.
+invert = true
   '';
 
   # Symlink ~/.config/zsh/plugins/atuin
