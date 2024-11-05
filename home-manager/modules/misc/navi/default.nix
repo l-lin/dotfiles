@@ -7,7 +7,7 @@
   home.packages = with pkgs; [ navi ];
 
   home.sessionVariables = {
-    NAVI_FZF_OVERRIDES_VAR = "--preview-window top:50%:wrap:border";
+    NAVI_FZF_OVERRIDES_VAR = "--preview-window bottom:50%:wrap:border";
   };
 
   # Symlinks
