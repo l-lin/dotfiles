@@ -1,18 +1,31 @@
 #
 # Desktop environment.
+# To know which gnome version you're using, run `gnome-shell --version`.
+#
 # src: https://www.gnome.org/
 #
 
 { config, fileExplorer, lib, pkgs, userSettings, ... }: let
-  # Ubuntu 20.04 is using gnome 42.
-  # To know which gnome version you're using, run `gnome-shell --version`.
-  # However, nixpkgs seems to only takes the 3 latest gnome versions (which is currently 44, 45 and 46).
-  # So I need to get the gnome extension from an older version of nixpkgs.
+  # Nixpkgs seems to only takes the 3 latest gnome versions (which is currently 44, 45 and 46).
+  # So if you need to get the gnome extensions from an older version of nixpkgs,
+  # you will need to get from an older nixpkgs archive.
   # src: https://github.com/NixOS/nixpkgs/blob/d0bac0dc755a3b62d2edcdb6a1152beefe50231a/pkgs/desktops/gnome/extensions/default.nix#L69.
-  pkgs-22 = import (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/nixos-22.11.tar.gz";
-    sha256 = "1xi53rlslcprybsvrmipm69ypd3g3hr7wkxvzc73ag8296yclyll";
-  }) { inherit (pkgs) system; };
+  #
+  # Example for getting Gnome v22:
+  #
+  # ```
+  # pkgs-22 = import (builtins.fetchTarball {
+  #   url = "https://github.com/NixOS/nixpkgs/archive/nixos-22.11.tar.gz";
+  #   sha256 = "1xi53rlslcprybsvrmipm69ypd3g3hr7wkxvzc73ag8296yclyll";
+  # }) { inherit (pkgs) system; };
+  # ```
+  #
+  # Then instead of importing with standard pkgs:
+  #
+  # ```nix
+  # home.packages = [ pkgs-22.gnomeExtensions.pop-shell ];
+  # ```
+
   palette = config.lib.stylix.colors.withHashtag;
 in {
   imports = fileExplorer.allSubdirs ./.;
@@ -32,11 +45,11 @@ in {
     # https://github.com/NixOS/nixpkgs/blob/master/pkgs/desktops/gnome/extensions/extensions.json
 
     # Tweak Tool to Customize GNOME Shell, Change the Behavior and Disable UI Elements: https://extensions.gnome.org/extension/3843/just-perfection.
-    pkgs-22.gnomeExtensions.just-perfection
+    gnomeExtensions.just-perfection
     # Keyboard-driven layer for GNOME Shell: https://github.com/pop-os/shell.
-    pkgs-22.gnomeExtensions.pop-shell
+    gnomeExtensions.pop-shell
     # A glimpse into your computer's temperature, voltage, fan speed, memory usage, processor load, system resources, network speed and storage stats: https://extensions.gnome.org/extension/1460/vitals/
-    pkgs-22.gnomeExtensions.vitals
+    gnomeExtensions.vitals
   ];
 
   # Get the list of gnome settings by running `dconf-editor`.
@@ -93,6 +106,11 @@ in {
 
         switch-input-source = ["XF86Keyboard"]; # disable Super-space => used by toggle-application-view.
         switch-input-source-backward = ["<Shift>XF86Keyboard"];
+
+        # NOTE: pop-shell keybindings:
+        # <Super><Enter>: to activate window management mode.
+        # <Super>o: toggle orientation of a fork's tiling orientation.
+        # <Super>g: toggle window between floating and tiling.
       };
       "org/gnome/desktop/interface" = {
         clock-show-weekday = true;
@@ -204,7 +222,7 @@ in {
       # org.gnome.shell -------------------------------------------
 
       "org/gnome/shell" = {
-        favorite-apps = ["obsidian.desktop" "kitty.desktop" "floorp.desktop" "slack.desktop"];
+        favorite-apps = ["obsidian.desktop" "kitty.desktop" "slack.desktop"];
         welcome-dialog-last-shown-version = "";
 
         disable-user-extensions = false;
@@ -212,7 +230,7 @@ in {
         # You can get the extension name directly from nix store:
         # `ls /nix/store/abc-gnome-shell-extension-highlight-focus-12/share/gnome-shell/extensions/`
         # Or using `pkgs.gnomeExtensions.<package-name>.extensionUuid`
-        enabled-extensions = with pkgs-22.gnomeExtensions; [
+        enabled-extensions = with pkgs.gnomeExtensions; [
           just-perfection.extensionUuid
           pop-shell.extensionUuid
           vitals.extensionUuid
@@ -230,7 +248,6 @@ in {
         screenshot-window = ["<Alt>Print"];
 
         # Display overview.
-        # WARN: May not be available on Ubuntu 24! Use `toggle-application-view` instead.
         toggle-overview = ["<Super>space"];
         toggle-application-view = [];
 
@@ -244,13 +261,6 @@ in {
         switch-to-application-4 = [];
         switch-to-application-5 = [];
       };
-
-      # WARN: Keybindings available only on Ubuntu 24.
-      # "org/gnome/shell/extensions/tiling-assistant" = {
-      #   # Move window to half of screen.
-      #   tile-left-half-ignore-ta = ["<Super>h"];
-      #   tile-right-half-ignore-ta = ["<Super>l"];
-      # };
 
       # org.gnome.shell.extensions -------------------------------------------
 
