@@ -54,7 +54,7 @@ local function sanitize_for_ruby(target)
 end
 
 local function find_associate_test_or_file()
-  local relative_filepath = vim.fn.expand("%")
+  local relative_filepath = vim.fn.expand("%:.")
   local _, extension = relative_filepath:match("(.+)%.(.+)")
 
   local target = add_or_remove_test_suffix(relative_filepath)

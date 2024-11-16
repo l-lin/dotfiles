@@ -6,7 +6,7 @@ local map = vim.keymap.set
 -- buffer
 -- Same behavior as browsers (muscle memory).
 map("n", "<F28>", "<cmd>bd<CR>", { noremap = true, silent = true, desc = "Close current buffer (Ctrl+F4)" })
-map("n", "<leader>yf", "<cmd>let @+=expand('%')<CR>", { noremap = true, desc = "Copy current buffer relative path to clipboard" })
+map("n", "<leader>yf", "<cmd>let @+=expand('%:.')<CR>", { noremap = true, desc = "Copy current buffer relative path to clipboard" })
 map("n", "<leader>yF", "<cmd>let @+=expand('%:p')<CR>", { noremap = true, desc = "Copy current buffer absolute path to clipboard" })
 map("n", "<leader>yn", "<cmd>let @+=expand('%:t')<CR>", { noremap = true, desc = "Copy current buffer file name to clipboard" })
 
