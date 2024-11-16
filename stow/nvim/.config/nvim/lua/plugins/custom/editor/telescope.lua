@@ -11,16 +11,59 @@ local function get_selected_text()
   return text
 end
 
-local function find_associate_test_or_file()
-  local default_text = ""
-  local filename = vim.fn.expand("%:t")
+local function is_test(filepath)
+  local filename = filepath:match("([^/]+)$")
+  return filename:match("_test") ~= nil
+end
+
+local function add_or_remove_test_suffix(filename)
   local name, extension = filename:match("(.+)%.(.+)")
-  if name:sub(-#"_test") == "_test" then
-    default_text = name:gsub("_test", "") .. "." .. extension
-  else
-    default_text = name .. "_test." .. extension
+
+  if is_test(filename) then
+    return name:gsub("_test", "") .. "." .. extension
   end
-  return default_text
+
+  return name .. "_test." .. extension
+end
+
+local function sanitize_for_ruby(target)
+  local parts = {}
+  for part in target:gmatch("([^/]+)") do
+    table.insert(parts, part)
+  end
+
+  -- If we are in a project that uses engines, i.e. directory in convention:
+  -- engines/engine_name/app/path/to/file.rb => engines/engine_name/test/path/to/file_test.rb
+  if #parts > 2 and parts[1] == "engines" then
+    if is_test(target) then
+      parts[3] = "test"
+    else
+      parts[3] = "app"
+    end
+  else
+    -- Using the default ruby bundler path convention:
+    -- lib/path/to/file.rb => test/path/to/file_test.rb
+    if is_test(target) then
+      parts[1] = "test"
+    else
+      parts[1] = "lib"
+    end
+  end
+
+  return table.concat(parts, "/")
+end
+
+local function find_associate_test_or_file()
+  local relative_filepath = vim.fn.expand("%")
+  local _, extension = relative_filepath:match("(.+)%.(.+)")
+
+  local target = add_or_remove_test_suffix(relative_filepath)
+
+  if extension == "rb" then
+    return sanitize_for_ruby(target)
+  end
+
+  return target
 end
 
 local M = {}
