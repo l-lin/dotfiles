@@ -126,13 +126,18 @@ return {
             end,
             -- Invert the keymap because I'm already using C-q with tmux, and I more often sending the whole result to qflist.
             ["<M-q>"] = function(prompt_bufn)
-                require("telescope.actions").send_to_qflist(prompt_bufn)
-                require("trouble").open({ mode = "qflist", focus = true })
+              require("telescope.actions").send_to_qflist(prompt_bufn)
+              require("trouble").open({ mode = "qflist", focus = true })
             end,
             ["<C-q>"] = function(prompt_bufn)
-                require("telescope.actions").send_selected_to_qflist(prompt_bufn)
-                require("trouble").open({ mode = "qflist", focus = true })
+              require("telescope.actions").send_selected_to_qflist(prompt_bufn)
+              require("trouble").open({ mode = "qflist", focus = true })
             end,
+            ["<C-o>"] = function(prompt_bufn)
+              local picker = require("telescope.actions.state").get_current_picker(prompt_bufn)
+              local prompt = picker:_get_prompt()
+              vim.api.nvim_command("edit! " .. prompt)
+            end
           },
         },
         prompt_prefix = " ",
