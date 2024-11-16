@@ -13,8 +13,9 @@ function _jira_issue_interactive() {
   cmd='jira sprint list --current -s~Done --order-by status --plain --columns id,assignee,status,summary'
   eval "${cmd}" \
     | fzf \
+      --no-reverse \
       --header-lines 1 \
-      --preview-window 'bottom:70%:border-top:hidden' \
+      --preview-window 'top:70%:border-bottom:hidden' \
       --preview 'jira issue view {1}' \
       --bind '?:toggle-preview' \
       --bind 'alt-p:toggle-preview-wrap' \

@@ -47,7 +47,11 @@ keymap_mode = "auto"
 keymap_cursor = { emacs = "blink-block", vim_insert = "blink-bar", vim_normal = "steady-block" }
 
 ## Invert the UI - put the search bar at the top.
-invert = true
+#invert = true
+
+## Enable this, and Atuin will reduce motion in the TUI as much as possible.
+## Users with motion sensitivity can find the live-updating timestamps distracting.
+prefers_reduced_motion = true
   '';
 
   # Symlink ~/.config/zsh/plugins/atuin

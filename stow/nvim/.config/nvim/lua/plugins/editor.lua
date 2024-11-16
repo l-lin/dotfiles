@@ -143,8 +143,8 @@ return {
         sorting_strategy = "ascending",
         layout_config = {
           vertical = {
-            prompt_position = "top",
-            mirror = true,
+            prompt_position = "bottom",
+            mirror = false,
             preview_height = 0.65,
           }
         },
