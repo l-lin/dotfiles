@@ -308,4 +308,8 @@ in {
       };
     };
   };
+
+  # Disable gnome-screenshot shutter sound.
+  # src: https://unix.stackexchange.com/a/735126
+  xdg.dataFile."sounds/__custom/screen-capture.disabled".text = "";
 }
