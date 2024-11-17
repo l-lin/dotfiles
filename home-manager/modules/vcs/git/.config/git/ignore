@@ -17,12 +17,12 @@
 *.jar
 *.rar
 *.tar
-#*.zip
+*.zip
 *.tgz
 
 # Logs and databases #
 ######################
-#*.log
+*.log
 #*.sql
 #*.sqlite
 
@@ -44,15 +44,13 @@ Sandbox.java
 .cache
 .vscode
 .env
+.note.md
 # Some nvim plugins are generating this file...
 server exited unexpectedly
 
 # Nvim plugin #
 ###############
 .gitlab.nvim
-
-# Nvim plugin #
-###############
 .envrc
 .direnv
 shell.nix
