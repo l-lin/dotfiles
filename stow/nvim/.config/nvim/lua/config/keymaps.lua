@@ -6,6 +6,8 @@ local map = vim.keymap.set
 -- buffer
 -- Same behavior as browsers (muscle memory).
 map("n", "<F28>", "<cmd>bd<CR>", { noremap = true, silent = true, desc = "Close current buffer (Ctrl+F4)" })
+
+-- yank file path / name
 map("n", "<leader>yf", "<cmd>let @+=expand('%:.')<CR>", { noremap = true, desc = "Copy current buffer relative path to clipboard" })
 map("n", "<leader>yF", "<cmd>let @+=expand('%:p')<CR>", { noremap = true, desc = "Copy current buffer absolute path to clipboard" })
 map("n", "<leader>yn", "<cmd>let @+=expand('%:t')<CR>", { noremap = true, desc = "Copy current buffer file name to clipboard" })
@@ -35,6 +37,7 @@ map("n", "[<tab>", "<cmd>tabprevious<cr>", { noremap = true, desc = "Previous Ta
 
 -- editing
 map("n", "<C-y>", "dd", { noremap = true, desc = "Delete line" })
+map("n", "<leader>cn", "<cmd>vsplit .note.md<CR>", { noremap = true, desc = "Open project note" })
 
 -- use different buffer for delete and paste
 -- Disabling because pressing `d` or `p` when filling snippets is annoying.
