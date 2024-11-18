@@ -3,4 +3,4 @@
 # interfactive git checkout
 #
 
-git branch | fzf --header Checkout | xargs git checkout
+git branch | sed 's/\+//' | sed 's/\*//' | sed 's/ *//' | sort | uniq | fzf --header Checkout | xargs git checkout
