@@ -101,7 +101,7 @@ snippet testpojo
     var actual = assertDoesNotThrow(supplier);
 
     // THEN
-    assertNotNull(actual);
+    assertThat(actual).isNotNull();
 	}
 
 	@ParameterizedTest(name = "{0}")
@@ -123,7 +123,7 @@ snippet testpojo
     var actual = assertThrows(IllegalArgumentException.class, executable, desc);
 
     // THEN
-    assertEquals(expectedErrorMessage, actual.getMessage());
+    assertThat(actual).extracting(Exception::getMessage).isEqualTo(expectedErrorMessage);
 	}
 
 	private static Stream<Arguments> invalidArgumentsProvider() {
@@ -137,11 +137,11 @@ snippet testpojo
 	}
 
 snippet ae
-	assertEquals(${1:expected}, ${2:actual});
+	assertThat(${1:actual}).isEqualTo(${2:expected});
 
 snippet at
-	assertTrue(${1:actual});
+	assertThat(${1:actual}).isTrue();
 
 snippet af
-	assertFalse(${1:actual});
+	assertThat(${1:actual}).isFalse();
 
