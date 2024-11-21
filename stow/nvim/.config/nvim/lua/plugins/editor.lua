@@ -91,7 +91,7 @@ return {
       {
         "<M-f>",
         function()
-          require("telescope-live-grep-args.shortcuts").grep_visual_selection()
+          require("telescope-live-grep-args.shortcuts").grep_visual_selection({ postfix = '', quote = false })
         end,
         mode = "v",
         noremap = true,
