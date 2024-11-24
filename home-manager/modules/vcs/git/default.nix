@@ -24,6 +24,7 @@ EOF
 
   # Symlink to ~/.gitconfig
   home.file.".gitconfig".source = ./.gitconfig;
+
   # Symlink to ~/.config/git
   xdg.configFile."git/ignore".source = ./.config/git/ignore;
   xdg.configFile."git/hooks" = {
@@ -36,6 +37,7 @@ EOF
   autocrlf = input
   pager = delta --${config.theme.polarity}
   '';
+
   # Symlink to ~/perso/.gitconfig
   home.file."perso/.gitconfig".text = ''
 [commit]
@@ -52,4 +54,10 @@ EOF
   email = ${userSettings.email}
   signingkey = ~/.ssh/${userSettings.username}.pub
   '';
+
+  # Symlink ~/.config/zsh/plugins/git
+  xdg.configFile."zsh/plugins/git" = {
+    source = ./.config/zsh/plugins/git;
+    recursive = true;
+  };
 }
