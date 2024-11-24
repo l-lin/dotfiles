@@ -1,6 +1,0 @@
-#!/usr/bin/env zsh
-#
-# interfactive git checkout
-#
-
-git branch | sed 's/\+//' | sed 's/\*//' | sed 's/ *//' | sort | uniq | fzf --height 30% --no-reverse --header Checkout | xargs git checkout
