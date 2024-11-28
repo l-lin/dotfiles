@@ -64,7 +64,7 @@ if [ ! -e flake.nix ]; then
           spacer
           # add your packages here
 
-          # If you need to install some python packages, uncomment the following, and install with `shellHook`.
+          # If you need to install some python packages, uncomment the following, and install with 'shellHook'.
           #python3
           #python3Packages.pip
           #python3Packages.virtualenv
