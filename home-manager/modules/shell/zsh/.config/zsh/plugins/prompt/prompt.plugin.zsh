@@ -16,3 +16,10 @@ ZSH_THEME=(p10k lean)
 setopt prompt_subst transient_rprompt
 autoload -Uz promptinit && promptinit
 prompt "$ZSH_THEME[@]"
+
+# Define p10k function to add a custom prompt segment.
+function prompt_remote_context() {
+  if [[ ! -z "${PROMPT_REMOTE_CONTEXT}" ]]; then
+    p10k segment -b 1 -f 3 -i '⚠️' -t "${PROMPT_REMOTE_CONTEXT}"
+  fi
+}
