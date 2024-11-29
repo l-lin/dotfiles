@@ -12,4 +12,7 @@
     # https://ruby-doc.org/3.3.5/stdlibs/rubygems/Gem.html
     RUBYGEMS_GEMDEPS = "-";
   };
+
+  # Symlink ~/.config/zsh/zprofile.d/
+  xdg.configFile."zsh/zprofile.d/.zprofile.ruby".source = ./.config/zsh/zprofile.d/.zprofile.ruby;
 }

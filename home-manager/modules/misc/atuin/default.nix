@@ -8,7 +8,7 @@
   home.packages = with pkgs; [ atuin ];
 
   # Generate the atuin key with sops-nix.
-  sops.secrets.atuin-key.sopsFile = "${secrets}/sops/atuin.yaml";
+  sops.secrets.atuin-key.sopsFile = "${secrets}/sops/api-keys.yaml";
 
   # Symlink to ~/.config/atuin/config.toml
   xdg.configFile."atuin/config.toml".text = ''
