@@ -1,0 +1,323 @@
+*rails.txt*                                                        Ruby on Rails
+
+================================================================================
+DIRECTORIES                                                  *rails-directories*
+
+- `app/`: Contains the controllers, models, views, helpers, mailers, jobs, and
+  assets for your application. You'll focus on this folder for the remainder
+  of this guide.
+- `bin/`: Contains the rails script that starts your app and can contain other
+  scripts you use to set up, update, deploy, or run your application.
+- `config/`: Contains configuration for your application's routes, database,
+  and more. This is covered in more detail in Configuring Rails Applications.
+- `config.ru`: Rack configuration for Rack-based servers used to start the
+  application. For more information about Rack, see the Rack website.
+- `db/`: Contains your current database schema, as well as the database
+  migrations.
+- `Dockerfile`: Configuration file for Docker.
+- `Gemfile`
+- `Gemfile.lock`: These files allow you to specify what gem dependencies are
+  needed for your Rails application. These files are used by the Bundler gem.
+  For more information about Bundler, see the Bundler website.
+- `lib/`: Extended modules for your application.
+- `log/`: Application log files.
+- `public/`: Contains static files and compiled assets. When your app is
+  running, this directory will be exposed as-is.
+- `Rakefile`: This file locates and loads tasks that can be run from the
+  command line. The task definitions are defined throughout the components of
+  Rails. Rather than changing Rakefile, you should add your own tasks by
+  adding files to the lib/tasks directory of your application.
+- `README.md`: This is a brief instruction manual for your application. You
+  should edit this file to tell others what your application does, how to set
+  it up, and so on.
+- `script/`: Contains one-off or general purpose scripts and benchmarks.
+- `storage/`: Active Storage files for Disk Service. This is covered in Active
+  Storage Overview.
+- `test/`: Unit tests, fixtures, and other test apparatus. These are covered
+  in Testing Rails Applications.
+- `tmp/`: Temporary files (like cache and pid files).
+- `vendor/`: A place for all third-party code. In a typical Rails application
+  this includes vendored gems.
+- `.dockerignore`: This file tells Docker which files it should not copy into
+  the container.
+- `.gitattributes`: This file defines metadata for specific paths in a git
+  repository. This metadata can be used by git and other tools to enhance
+  their behavior. See the gitattributes documentation for more information.
+- `.github/`: Contains GitHub specific files.
+- `.gitignore`: This file tells git which files (or patterns) it should
+  ignore. See GitHub - Ignoring files for more information about ignoring
+  files.
+- `.rubocop.yml`: This file contains the configuration for RuboCop.
+- `.ruby-version`: This file contains the default Ruby version.
+
+================================================================================
+ACTIVE RECORD                                              *rails-active-record*
+
+src: https://guides.rubyonrails.org/active_record_basics.html
+
+Active Record is part of the `M` in MVC - the model - which is the layer of
+the system responsible for representing data and business logic. Active Record
+helps you create and use Ruby objects whose attributes require persistent
+storage to a database.
+
+Active Record gives us the ability to do the following using Ruby objects:
+
+- Represent models and their data.
+- Represent associations between models.
+- Represent inheritance hierarchies through related models.
+- Validate models before they get persisted to the database.
+- Perform database operations in an object-oriented fashion.
+
+NAMING CONVENTION                        *rails-active-record-naming-convention*
+
+Active Record uses this naming convention to map between models (represented
+by Ruby objects) and database tables:
+
+Rails will pluralize your model's class names to find the respective database
+table. For example, a class named Book maps to a database table named books.
+The Rails pluralization mechanisms are very powerful and capable of
+pluralizing (and singularizing) both regular and irregular words in the
+English language. This uses the Active Support pluralize method.
+
+For class names composed of two or more words, the model class name will
+follow the Ruby conventions of using an UpperCamelCase name. The database
+table name, in that case, will be a snake_case name. For example:
+
+- `BookClub` is the model class, singular with the first letter of each word capitalized.
+- `book_clubs` is the matching database table, plural with underscores separating words.
+
+SCHEMAS_CONVENTION                       *rails-active-record-schema-convention*
+
+Active Record uses conventions for column names in the database tables as well, depending on the purpose of these columns.
+
+- `Primary keys` - By default, Active Record will use an integer column named id
+  as the table's primary key (bigint for PostgreSQL, MySQL, and MariaDB,
+  integer for SQLite). When using Active Record Migrations to create your
+  tables, this column will be automatically created.
+- `Foreign keys` - These fields should be named following the pattern
+  singularized_table_name_id (e.g., order_id, line_item_id). These are the
+  fields that Active Record will look for when you create associations between
+  your models.
+
+There are also some optional column names that will add additional features to Active Record instances:
+
+- `created_at` - Automatically gets set to the current date and time when the
+  record is first created.
+- `updated_at` - Automatically gets set to the current date and time whenever
+  the record is created or updated.
+- `lock_version` - Adds optimistic locking to a model.
+- `type` - Specifies that the model uses Single Table Inheritance.
+- `(association_name)_type` - Stores the type for polymorphic associations.
+- `(table_name)_count` - Used to cache the number of belonging objects on
+  associations. For example, if Articles have many Comments, a comments_count
+  column in the articles table will cache the number of existing comments for
+  each article.
+
+
+What if you need to follow a different naming convention or need to use your
+Rails application with a legacy database? No problem, you can easily override
+the default conventions.
+
+Since `ApplicationRecord` inherits from `ActiveRecord::Base`, your
+application's models will have a number of helpful methods available to them.
+For example, you can use the `ActiveRecord::Base.table_name=` method to
+customize the table name that should be used:
+
+>ruby
+    class Book < ApplicationRecord
+      self.table_name = "my_books"
+    end
+<
+
+If you do so, you will have to manually define the class name that is hosting
+the fixtures (`my_books.yml`) using the `set_fixture_class` method in your
+test definition:
+
+>ruby
+    # test/models/book_test.rb
+    class BookTest < ActiveSupport::TestCase
+      set_fixture_class my_books: Book
+      fixtures :my_books
+      # ...
+    end
+<
+
+It's also possible to override the column that should be used as the table's
+primary key using the `ActiveRecord::Base.primary_key=` method:
+
+>ruby
+    class Book < ApplicationRecord
+      self.primary_key = "book_id"
+    end
+<
+
+================================================================================
+VALIDATION                                                    *rails-validation*
+
+src: https://guides.rubyonrails.org/active_record_validations.html
+
+|rails-active-record| allows you to validate the state of a model before it
+gets written into the database. There are several methods that allow for
+different types of validations. For example, validate that an attribute value
+is not empty, is unique, is not already in the database, follows a specific
+format, and many more.
+
+Methods like `save`, `create` and `update` validate a model before persisting
+it to the database. If the model is invalid, no database operations are
+performed. In this case the `save` and `update` methods return `false`. The
+create method still returns the object, which can be checked for errors. All
+of these methods have a bang counterpart (that is, `save!`, `create!` and
+`update!`), which are stricter in that they raise an
+`ActiveRecord::RecordInvalid` exception when validation fails. A quick example
+to illustrate:
+
+>ruby
+    class User < ApplicationRecord
+      validates :name, presence: true
+    end
+<
+
+>ruby
+    irb> user = User.new
+    irb> user.save
+    => false
+    irb> user.save!
+    ActiveRecord::RecordInvalid: Validation failed: Name can't be blank
+<
+
+The create method always returns the model, regardless of its validity. You
+can then inspect this model for any errors.
+
+>ruby
+    irb> user = User.create
+    => #<User:0x000000013e8b5008 id: nil, name: nil>
+    irb> user.errors.full_messages
+    => ["Name can't be blank"]
+<
+
+================================================================================
+MIGRATION                                                   *rails-db-migration*
+
+src: https://guides.rubyonrails.org/active_record_migrations.html
+
+Rails provides a convenient way to manage changes to a database schema via
+migrations. Migrations are written in a domain-specific language and stored in
+files which are executed against any database that |rails-active-record| supports.
+
+Here's a migration that creates a new table called publications:
+
+>ruby
+    class CreatePublications < ActiveRecord::Migration[8.0]
+      def change
+        create_table :publications do |t|
+          t.string :title
+          t.text :description
+          t.references :publication_type
+          t.references :publisher, polymorphic: true
+          t.boolean :single_issue
+
+          t.timestamps
+        end
+      end
+    end
+<
+
+Note that the above code is database-agnostic: it will run in MySQL, MariaDB,
+PostgreSQL, SQLite, and others.
+
+Rails keeps track of which migrations have been committed to the database and
+stores them in a neighboring table in that same database called
+schema_migrations.
+
+To run the migration and create the table, you'd run `bin/rails db:migrate`,
+and to roll it back and delete the table, `bin/rails db:rollback`.
+
+================================================================================
+CALLBACK                                                        *rails-callback*
+
+src: https://guides.rubyonrails.org/active_record_callbacks.html
+
+|rails-active-record| callbacks allow you to attach code to certain events in
+the lifecycle of your models. This enables you to add behavior to your models
+by executing code when those events occur, like when you create a new record,
+update it, destroy it, and so on.
+
+>ruby
+    class User < ApplicationRecord
+      after_create :log_new_user
+
+      private
+        def log_new_user
+          puts "A new user was registered"
+        end
+    end
+<
+
+>ruby
+    irb> @user = User.create
+    A new user was registered
+<
+
+Available callbacks:
+
+- before_validation
+- after_validation
+- before_save
+- around_save
+- before_create
+- around_create
+- after_create
+- after_save
+- after_commit / after_rollback
+
+================================================================================
+ASSOCIATION                                                  *rails-association*
+
+src: https://guides.rubyonrails.org/association_basics.html
+
+|rails-active-record| associations allow you to define relationships between
+models. Associations can be used to describe one-to-one, one-to-many, and
+many-to-many relationships. For example, a relationship like "Author has many
+Books" can be defined as follows:
+
+>ruby
+    class Author < ApplicationRecord
+      has_many :books
+    end
+<
+
+The `Author` class now has methods to add and remove books to an author, and
+much more.
+
+Types of associations:
+
+- belongs_to
+- has_one
+- has_many
+- has_many :through
+- has_one :through
+- has_and_belongs_to_many
+
+================================================================================
+ACTIVE MODEL                                                *rails-active-model*
+
+src: https://guides.rubyonrails.org/active_model_basics.html
+
+To understand Active Model, you need to know a little about
+|rails-active-record|. |rails-active-record| is an ORM (Object Relational
+Mapper) that connects objects whose data requires persistent storage to a
+relational database. However, it has functionality that is useful outside of
+the ORM, some of these include validations, callbacks, translations, the
+ability to create custom attributes, etc.
+
+Some of this functionality was abstracted from Active Record to form Active
+Model. Active Model is a library containing various modules that can be used
+on plain Ruby objects that require model-like features but are not tied to any
+table in a database.
+
+In summary, while |rails-active-record| provides an interface for defining
+models that correspond to database tables, Active Model provides functionality
+for building model-like Ruby classes that don't necessarily need to be backed
+by a database. Active Model can be used independently of |rails-active-record|.
+
+vim:tw=78:ts=8:noet:ft=help:norl:
