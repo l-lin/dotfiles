@@ -15,6 +15,7 @@ alias h="helm"
 alias j="just"
 alias m="make"
 alias k="kubectl"
+alias kb="kubetailrb"
 # nix
 alias n="nix"
 alias ns="nix-shell --command zsh -p"
