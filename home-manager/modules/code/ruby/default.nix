@@ -6,12 +6,12 @@
 #
 
 {
-  # home.sessionVariables = {
-  #   # auto-detect Gemfile in the current or parent directory, to avoid prefixing
-  #   # all ruby/gem commands with "bundle exec" src:
-  #   # https://ruby-doc.org/3.3.5/stdlibs/rubygems/Gem.html
-  #   RUBYGEMS_GEMDEPS = "-";
-  # };
+  home.sessionVariables = {
+    # auto-detect Gemfile in the current or parent directory, to avoid prefixing
+    # all ruby/gem commands with "bundle exec" src:
+    # https://ruby-doc.org/3.3.5/stdlibs/rubygems/Gem.html
+    RUBYGEMS_GEMDEPS = "-";
+  };
 
   # Symlink ~/.config/zsh/zprofile.d/
   xdg.configFile."zsh/zprofile.d/.zprofile.ruby".source = ./.config/zsh/zprofile.d/.zprofile.ruby;
