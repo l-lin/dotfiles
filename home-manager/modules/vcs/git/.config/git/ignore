@@ -51,6 +51,9 @@ server exited unexpectedly
 # Nvim plugin #
 ###############
 .gitlab.nvim
+
+# Nix specific #
+################
 .envrc
 .direnv
 shell.nix
