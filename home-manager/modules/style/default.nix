@@ -32,17 +32,7 @@
 # foreground = base06
 #
 
-{ inputs, pkgs, userSettings, ... }:
-let
-  # Iconic font aggregator, collection, & patcher. 3,600+ icons, 50+ patched fonts: https://nerdfonts.com/
-  # Find your fonts at https://www.nerdfonts.com/font-downloads.
-  nerdfonts = pkgs.nerdfonts.override {
-    fonts = [
-      "Ubuntu"
-      "JetBrainsMono"
-    ];
-  };
-in {
+{ inputs, pkgs, userSettings, ... }: {
   imports = [
     inputs.stylix.homeManagerModules.stylix
     ./themes
@@ -54,8 +44,16 @@ in {
     base16Scheme = (./. + "/themes/${userSettings.theme}/colorscheme.yaml");
     fonts = {
       monospace = {
+        # kitty use fontconfig, which keeps track of all the fonts and their
+        # paths on the system. The new namespace moves around some fonts, and it
+        # seems the fontconfig cache has not been updated.
+        # To manually reload the fontconfig cache, execute: `fc-cache -r`.
+        # src: https://github.com/danth/stylix/issues/650#issuecomment-2509746627
+        #
+        # List of fonts enable can be found here:
+        # https://github.com/NixOS/nixpkgs/blob/c55d81a2ef622a0838d2c398ae6f8523862227af/pkgs/data/fonts/nerd-fonts/manifests/fonts.json#L315
+        package = pkgs.nerd-fonts.jetbrains-mono;
         name = "JetBrainsMono Nerd Font";
-        package = nerdfonts;
       };
       sansSerif = {
         package = pkgs.dejavu_fonts;
