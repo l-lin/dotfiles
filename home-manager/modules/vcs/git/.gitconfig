@@ -18,11 +18,11 @@
   path = ~/.config/git/core
 
 [alias]
-  adda = add -A
+  adda = add --all -- ':!flake.nix' ':!flake.lock'
   ba = branch -avv
   bd = branch -D
   cdiff = log --oneline --no-merges
-  ci = !git add -A && git commit
+  ci = !git adda && git commit
   co = checkout
   cp = cherry-pick
   ignore = update-index --assume-unchanged
