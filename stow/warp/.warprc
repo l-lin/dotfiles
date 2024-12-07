@@ -1,4 +1,3 @@
-
 boot:~/work/doctoboot
 dotfiles:~/.config/dotfiles
 kubetailrb:~/perso/kubetailrb

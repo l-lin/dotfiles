@@ -15,13 +15,22 @@ custom_wd_browse() {
         echo "This functionality requires fzf. Please install fzf first."
         return 1
     fi
-    local entries=("${(@f)$(sed "s:${HOME}:~:g" "$WD_CONFIG" | awk -F ':' '{print $1 " -> " $2}')}")
+    local entries=("${(@f)$(sed "s:${HOME}:~:g" "$WD_CONFIG")}")
     local script_path="${${(%):-%x}:h}"
     local wd_remove_output=$(mktemp "${TMPDIR:-/tmp}/wd.XXXXXXXXXX")
-    entries=("All warp points:" "Press enter to select. Press delete to remove" "${entries[@]}")
-    local fzf_bind="delete:execute(echo {} | awk -F ' -> ' '{print \$1}' | xargs -I {} "$script_path/wd.sh" rm {} > "$wd_remove_output")+abort"
+    local fzf_bind="delete:execute(echo {} | awk '{print \$1}' | xargs -I {} "$script_path/wd.sh" rm {} > "$wd_remove_output")+abort"
     # Customize the fzf option.
-    local selected_entry=$(printf '%s\n' "${entries[@]}" | fzf --height 30% --no-reverse --header-lines=2 --bind="$fzf_bind")
+    local selected_entry=$( \
+      printf '%s\n' "${entries[@]}" \
+      | column -s':' -t \
+      | fzf \
+        --header='Enter: select | Delete: remove' \
+        --height 30% \
+        --no-reverse \
+        --header-lines 1 \
+        --bind="$fzf_bind" \
+      | awk '{ print $1 }'
+    )
     if [[ -e $wd_remove_output ]]; then
         cat "$wd_remove_output"
         rm "$wd_remove_output"
