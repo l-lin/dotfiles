@@ -16,7 +16,7 @@ custom_wd_browse() {
         return 1
     fi
     local entries=("${(@f)$(sed "s:${HOME}:~:g" "$WD_CONFIG")}")
-    local script_path="${${(%):-%x}:h}"
+    local script_path=$(antidote path mfaerevaag/wd)
     local wd_remove_output=$(mktemp "${TMPDIR:-/tmp}/wd.XXXXXXXXXX")
     local fzf_bind="delete:execute(echo {} | awk '{print \$1}' | xargs -I {} "$script_path/wd.sh" rm {} > "$wd_remove_output")+abort"
     # Customize the fzf option.
@@ -27,7 +27,6 @@ custom_wd_browse() {
         --header='Enter: select | Delete: remove' \
         --height 30% \
         --no-reverse \
-        --header-lines 1 \
         --bind="$fzf_bind" \
       | awk '{ print $1 }'
     )
