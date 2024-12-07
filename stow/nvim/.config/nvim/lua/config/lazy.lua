@@ -56,6 +56,7 @@ require("lazy").setup({
     { import = "plugins.extras.lang.just" },
     { import = "plugins.extras.lang.markdown" },
     { import = "plugins.extras.lang.ruby" },
+    { import = "plugins.extras.lang.typescript" },
     { import = "plugins.extras.lang.xml" },
     --{ import = "plugins.extras.test.http" },
     { import = "plugins.extras.test.neotest" },
