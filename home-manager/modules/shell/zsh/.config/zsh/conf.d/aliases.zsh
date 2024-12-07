@@ -6,20 +6,23 @@
 # --------------------------------------------------------
 # Shortcuts
 # --------------------------------------------------------
-alias ap="ansible-playbook"
 # docker
 alias d="docker"
 alias dc="docker compose"
-alias g="git"
-alias h="helm"
+alias ldo="lazydocker"
+# make
 alias j="just"
 alias m="make"
+# ops
+alias ap="ansible-playbook"
+alias h="helm"
 alias k="kubectl"
 alias kb="kubetailrb"
+alias tf="terraform"
 # nix
 alias n="nix"
 alias ns="nix-shell --command zsh -p"
-alias tf="terraform"
+# editor
 alias v="nvim"
 # sudo
 alias sudo="sudo "
@@ -29,6 +32,9 @@ alias please="sudo "
 alias ru="ruby"
 alias bu="bundle"
 alias ra="rake"
+# git
+alias g="git"
+alias lg="lazygit"
 
 # --------------------------------------------------------
 # Default options
