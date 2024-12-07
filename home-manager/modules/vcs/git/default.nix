@@ -54,10 +54,4 @@ EOF
   email = ${userSettings.email}
   signingkey = ~/.ssh/${userSettings.username}.pub
   '';
-
-  # Symlink ~/.config/zsh/plugins/git
-  xdg.configFile."zsh/plugins/git" = {
-    source = ./.config/zsh/plugins/git;
-    recursive = true;
-  };
 }
