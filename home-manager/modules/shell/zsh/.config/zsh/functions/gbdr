@@ -4,4 +4,4 @@
 # src: https://stackoverflow.com/questions/6127328/how-do-i-delete-all-git-branches-which-have-been-merged
 #
 
-git branch --merged | grep -Ev "(^\*|^\+|master|main|dev)" | xargs --no-run-if-empty git branch -D
+git branch --verbose | grep '\[gone\]' | grep -v '^+' | awk '{print $1}' | xargs --no-run-if-empty git branch -D
