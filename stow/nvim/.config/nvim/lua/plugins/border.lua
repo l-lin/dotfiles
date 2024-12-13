@@ -49,22 +49,28 @@ local function with_border(border_style)
       },
     },
     {
-      "nvim-cmp",
-      opts = function(_, opts)
-        local bordered = require("cmp.config.window").bordered
-        local window_opts = {
-          border = border_style,
-          scrollbar = false,
-          col_offset = -4,
-          side_padding = 0,
-        }
-        return vim.tbl_deep_extend("force", opts, {
-          window = {
-            completion = bordered(window_opts),
-            documentation = bordered(window_opts),
+      "saghen/blink.cmp",
+      opts = {
+        completion = {
+          menu = {
+            border = border_style,
+            winhighlight = 'Normal:None,FloatBorder:None,CursorLine:BlinkCmpMenuSelection,Search:None',
+            scrollbar = false,
           },
-        })
-      end,
+          documentation = {
+            window = {
+              border = border_style,
+              scrollbar = false,
+            },
+          },
+          signature = {
+            window = {
+              border = border_style,
+              scrollbar = false,
+            },
+          },
+        },
+      },
     },
     {
       "gitsigns.nvim",

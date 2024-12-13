@@ -7,9 +7,6 @@ return {
   {
     "folke/noice.nvim",
     opts = {
-      popupmenu = {
-        backend = "cmp",
-      },
       lsp = {
         progress = {
           view = "virtualtext",
@@ -22,24 +19,6 @@ return {
       { "<c-d>", function() if not require("noice.lsp").scroll(4) then return "<c-d>" end end, silent = true, expr = true, desc = "Scroll forward", mode = {"i", "n", "s"} },
       { "<c-u>", function() if not require("noice.lsp").scroll(-4) then return "<c-u>" end end, silent = true, expr = true, desc = "Scroll backward", mode = {"i", "n", "s"}},
     }
-  },
-
-  -- better vim.ui
-  {
-    "stevearc/dressing.nvim",
-    opts = {
-      input = {
-        -- When true, <Esc> will close the modal
-        insert_only = false,
-        -- When true, input will start in insert mode.
-        start_in_insert = false,
-        mappings = {
-          n = {
-            ["q"] = "Close",
-          },
-        },
-      },
-    },
   },
 
   -- dashboard

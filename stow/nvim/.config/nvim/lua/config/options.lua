@@ -28,3 +28,5 @@ vim.o.textwidth = 80
 -- lazyvim config
 -- use telescope
 vim.g.lazyvim_picker = "telescope"
+-- disable animations, let's go fast!
+vim.g.snacks_animate = false

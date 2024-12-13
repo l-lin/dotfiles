@@ -1,6 +1,19 @@
 return {
+  -- #######################
+  -- override default config
+  -- #######################
+
   -- Use hlchunk instead to render the indent lines.
-  { "lukas-reineke/indent-blankline.nvim", enabled = false },
+  {
+    "folke/snacks.nvim",
+    opts = {
+      indent = { enabled = false },
+    },
+  },
+
+  -- #######################
+  -- add new plugins
+  -- #######################
 
   -- Highlight indent line.
   {

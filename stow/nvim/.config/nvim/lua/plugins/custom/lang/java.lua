@@ -164,7 +164,7 @@ local function start_or_attach_jdtls()
         root_dir = get_root_dir(),
         init_options = create_init_options(),
         -- enable CMP capabilities
-        capabilities = require("cmp_nvim_lsp").default_capabilities(),
+        capabilities = require('blink.cmp').get_lsp_capabilities(),
         settings = create_settings(),
       }
       local jdtls_opts = require("lazyvim.util").opts("nvim-jdtls")
