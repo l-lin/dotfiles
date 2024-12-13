@@ -24,3 +24,7 @@ vim.o.shiftwidth = vim.o.tabstop
 
 -- do not have long lines
 vim.o.textwidth = 80
+
+-- lazyvim config
+-- use telescope
+vim.g.lazyvim_picker = "telescope"
