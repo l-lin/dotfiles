@@ -1,17 +1,3 @@
-local function find_engines ()
-  local relative_filepath = vim.fn.expand("%:.")
-  local _, extension = relative_filepath:match("(.+)%.(.+)$")
-
-  if extension == "rb" then
-    local parts = vim.fn.split(relative_filepath, "/")
-    if #parts > 2 and parts[1] == "engines" then
-      return "engines/" .. parts[2]
-    end
-  end
-
-  return vim.api.nvim_buf_get_name(0)
-end
-
 return {
   -- Alternative LSP server to ruby-lsp for navigation (no auto-completion).
   {
@@ -80,22 +66,6 @@ return {
               :totable()
           end,
         },
-      },
-    },
-  },
-
-  -- Navigate and manipulate file system.
-  {
-    "echasnovski/mini.files",
-    optional = true,
-    keys = {
-      {
-        "<leader>fh",
-        function()
-          require("mini.files").open(find_engines(), true)
-        end,
-        desc = "Open mini.files in current Ruby engine",
-        remap = true,
       },
     },
   },
