@@ -1,0 +1,51 @@
+{
+  "sugg": {
+    "prefix": "sugg",
+    "body": [
+      "__suggestion__: ${1}"
+    ],
+    "description": "PR: add a suggestion."
+  },
+  "suggnonblocking": {
+    "prefix": "suggnonblocking",
+    "body": [
+      "__suggestion (non-blocking)__: ${1}"
+    ],
+    "description": "PR: add a suggestion as non-blocking."
+  },
+  "thoughts": {
+    "prefix": "thoughts",
+    "body": [
+      "__thoughts__: ${1}"
+    ],
+    "description": "PR: add thoughts."
+  },
+  "chore": {
+    "prefix": "chore",
+    "body": [
+      "__chore__: ${1}"
+    ],
+    "description": "PR: add a chore task."
+  },
+  "nitpick": {
+    "prefix": "nitpick",
+    "body": [
+      "__nitpick__: ${1}"
+    ],
+    "description": "PR: add a nitpick."
+  },
+  "issue": {
+    "prefix": "issue",
+    "body": [
+      "__issue__: ${1}"
+    ],
+    "description": "PR: add an issue."
+  },
+  "question": {
+    "prefix": "question",
+    "body": [
+      "__question__: ${1}"
+    ],
+    "description": "PR: add a question."
+  }
+}

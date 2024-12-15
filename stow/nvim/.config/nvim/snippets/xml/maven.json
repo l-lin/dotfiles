@@ -1,0 +1,33 @@
+{
+  "dep": {
+    "prefix": "dep",
+    "body": [
+      "<dependency>",
+      "  <groupId>${1}</groupId>",
+      "  <artifactId>${2}</artifactId>",
+      "  <version>${3}</version>",
+      "</dependency>"
+    ],
+    "description": "Maven: add a dependency declaration."
+  },
+  "pl": {
+    "prefix": "pl",
+    "body": [
+      "<plugin>",
+      "  <groupId>${1}</groupId>",
+      "  <artifactId>${2}</artifactId>",
+      "  <version>${3}</version>",
+      "</plugin>"
+    ],
+    "description": "Maven: add a plugin definition."
+  },
+  "disable-spotless": {
+    "prefix": "disable-spotless",
+    "body": [
+      "<!-- NOCOMMIT -->",
+      "<inherited>false</inherited>"
+    ],
+    "description": "Maven: disable spotless."
+  }
+}
+

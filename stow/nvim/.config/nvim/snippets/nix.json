@@ -1,0 +1,27 @@
+{
+  "direnv": {
+    "prefix": "direnv",
+    "body": [
+      "{ pkgs ? import <nixpkgs> {}}:",
+      "",
+      "pkgs.mkShell {",
+      "  packages = [ pkgs.${1} ];",
+      "}"
+    ],
+    "description": "Create new direnv."
+  },
+  "home": {
+    "prefix": "home",
+    "body": [
+      "#",
+      "# ${1}",
+      "# src: ${2}",
+      "#",
+      "",
+      "{ pkgs, ... }: {",
+      "  home.packages = with pkgs; [ ${4} ];",
+      "}"
+    ],
+    "description": "Create new home-manager module."
+  }
+}
