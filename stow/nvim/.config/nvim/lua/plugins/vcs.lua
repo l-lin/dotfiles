@@ -9,6 +9,12 @@ local toggle_fugitive = function()
     end
   end
   vim.cmd("Git")
+
+  -- directly goes to the first changed file line, which is located at line 6!
+  local line_count = vim.api.nvim_buf_line_count(0)
+  if line_count >= 6 then
+    vim.api.nvim_win_set_cursor(0, {6, 0})
+  end
 end
 
 return {
@@ -37,7 +43,7 @@ return {
     "tpope/vim-fugitive",
     keys = {
       { "<A-0>", toggle_fugitive, desc = "git status (Alt+0)" },
-      { "<leader>gb", "<cmd>G blame<cr>", desc = "git blame" },
+      -- { "<leader>gb", "<cmd>G blame<cr>", desc = "git blame" },
       { "<leader>gc", "<cmd>G commit<cr>", desc = "git commit" },
       { "<leader>gd", "<cmd>G difftool<cr>", desc = "git difftool" },
       { "<leader>gF", "<cmd>G push --force-with-lease<cr>", desc = "git push --force-with-lease" },
