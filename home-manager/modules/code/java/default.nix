@@ -17,6 +17,4 @@
 
   # Symlink ~/.local/share/eclipse/java-code-style.xml
   xdg.dataFile."eclipse/java-code-style.xml".source = ./.local/share/eclipse/java-code-style.xml;
-  # Symlink ~/.config/nvim/snippets/java.snippets
-  xdg.configFile."nvim/snippets/java.snippets".source = ./.config/nvim/snippets/java.snippets;
 }

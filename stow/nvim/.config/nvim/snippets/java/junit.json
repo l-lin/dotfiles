@@ -1,0 +1,217 @@
+{
+  "ball": {
+    "prefix": "ball",
+    "body": [
+      "@BeforeAll",
+      "static void beforeAll() {",
+      "    ${1}",
+      "}"
+    ],
+    "description": "Java: before all."
+  },
+  "all": {
+    "prefix": "all",
+    "body": [
+      "@AfterAll",
+      "static void afterAll() {",
+      "    ${1}",
+      "}"
+    ],
+    "description": "Java: after all."
+  },
+  "beach": {
+    "prefix": "beach",
+    "body": [
+      "@BeforeEach",
+      "void beforeEach() {",
+      "    ${1}",
+      "}"
+    ],
+    "description": "Java: before each."
+  },
+  "aeach": {
+    "prefix": "aeach",
+    "body": [
+      "@AfterEach",
+      "void afterEach() {",
+      "    ${1}",
+      "}"
+    ],
+    "description": "Java: after each."
+  },
+  "given": {
+    "prefix": "given",
+    "body": [
+      "given(${1}).willReturn(${2});"
+    ],
+    "description": "Java: mockito simulate behavior."
+  },
+  "then": {
+    "prefix": "then",
+    "body": [
+      "then(${1}).should().${2};"
+    ],
+    "description": "Java: mockito verify behavior."
+  },
+  "mock": {
+    "prefix": "mock",
+    "body": [
+      "${1} ${2} = mock(${1}.class);"
+    ],
+    "description": "Java: create mock."
+  },
+  "nested": {
+    "prefix": "nested",
+    "body": [
+      "@Nested",
+      "class ${1}Test {",
+      "    ${2}",
+      "}"
+    ],
+    "description": "Java: create nested class."
+  },
+  "test": {
+    "prefix": "test",
+    "body": [
+      "@Test",
+      "@DisplayName(\"\"\"",
+      "    Given ${1},",
+      "      when ${2},",
+      "      then ${3}.",
+      "    \"\"\")",
+      "void ${4}() {",
+      "  // GIVEN",
+      "  ${5}",
+      "",
+      "  // WHEN",
+      "",
+      "  // THEN",
+      "}"
+    ],
+    "description": "Java: create test."
+  },
+  "tabletest": {
+    "prefix": "tabletest",
+    "body": [
+      "@ParameterizedTest(name = \"\"\"",
+      "    Given {0},",
+      "      when ${1},",
+      "      then ${2}.",
+      "    \"\"\")",
+      "@MethodSource(\"${3}Provider\")",
+      "void ${4}() {",
+      "  // GIVEN",
+      "  ${6}",
+      "",
+      "  // WHEN",
+      "",
+      "  // THEN",
+      "}",
+      "",
+      "private static Stream<Arguments> ${3}Provider() {",
+      "  return Stream.of(",
+      "    Arguments.of(",
+      "      \"${5}\",",
+      "      )",
+      "  );",
+      "}"
+    ],
+    "description": "Java: create table test."
+  },
+  "testmethodsource": {
+    "prefix": "testmethodsource",
+    "body": [
+      "private static Stream<Arguments> ${1}Provider() {",
+      "  return Stream.of(",
+      "    Arguments.of(",
+      "      \"${2}\",",
+      "      )",
+      "  );",
+      "}"
+    ],
+    "description": "Java: add method source."
+  },
+  "ath": {
+    "prefix": "ath",
+    "body": [
+      "${1} actual = assertThrows(${1}.class, () -> ${2});"
+    ],
+    "description": "Java: assert throw."
+  },
+  "ae": {
+    "prefix": "ae",
+    "body": [
+      "assertThat(${1:actual}).isEqualTo(${2:expected});"
+    ],
+    "description": "Java: assert equal."
+  },
+  "at": {
+    "prefix": "at",
+    "body": [
+      "assertThat(${1:actual}).isTrue();"
+    ],
+    "description": "Java: assert is true."
+  },
+  "af": {
+    "prefix": "af",
+    "body": [
+      "assertThat(${1:actual}).isFalse();"
+    ],
+    "description": "Java: assert is false."
+  },
+  "testpojo": {
+    "prefix": "testpojo",
+    "body": [
+      "@Test",
+      "@DisplayName(\"\"\"",
+      "  Given correct arguments,",
+      "    when creating new ${1},",
+      "    then do not throw exception.",
+      "  \"\"\")",
+      "void correctArguments() {",
+      "  // GIVEN",
+      "  ThrowingSupplier<${1}> supplier = () -> new ${1}(${2});",
+      "",
+      "  // WHEN",
+      "  var actual = assertDoesNotThrow(supplier);",
+      "",
+      "  // THEN",
+      "  assertThat(actual).isNotNull();",
+      "}",
+      "",
+      "@ParameterizedTest(name = \"{0}\")",
+      "@MethodSource(\"invalidArgumentsProvider\")",
+      "@DisplayName(\"\"\"",
+      "  Given incorrect arguments,",
+      "    when creating new ${1},",
+      "    then throw exception.",
+      "  \"\"\")",
+      "void incorrectArguments(",
+      "  String desc,",
+      "  String arg,",
+      "  String expectedErrorMessage",
+      ") {",
+      "  // GIVEN",
+      "  Executable executable = () -> new ${1}(arg);",
+      "",
+      "  // WHEN",
+      "  var actual = assertThrows(IllegalArgumentException.class, executable, desc);",
+      "",
+      "  // THEN",
+      "  assertThat(actual).extracting(Exception::getMessage).isEqualTo(expectedErrorMessage);",
+      "}",
+      "",
+      "private static Stream<Arguments> invalidArgumentsProvider() {",
+      "  return Stream.of(",
+      "    Arguments.of(",
+      "      \"null ${3}\",",
+      "      null,",
+      "      \"${3} is mandatory\"",
+      "    )",
+      "  );",
+      "}"
+    ],
+    "description": "description"
+  }
+}
+

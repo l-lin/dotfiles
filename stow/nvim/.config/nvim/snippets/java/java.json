@@ -1,0 +1,17 @@
+{
+  "prsf": {
+    "prefix": "prsf",
+    "body": [
+      "private static final ${1};"
+    ],
+    "description": "Java: create constant."
+  },
+  "pf": {
+    "prefix": "pf",
+    "body": [
+      "private final ${1};"
+    ],
+    "description": "Java: create variable."
+  }
+}
+

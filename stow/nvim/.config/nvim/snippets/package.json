@@ -3,6 +3,14 @@
   "contributes": {
     "snippets": [
       {
+        "language": ["java"],
+        "path": "./java/java.json"
+      },
+      {
+        "language": ["java"],
+        "path": "./java/junit.json"
+      },
+      {
         "language": ["json"],
         "path": "./json/dap.json"
       },
