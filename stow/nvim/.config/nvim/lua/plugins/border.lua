@@ -63,12 +63,6 @@ local function with_border(border_style)
               scrollbar = false,
             },
           },
-          signature = {
-            window = {
-              border = border_style,
-              scrollbar = false,
-            },
-          },
         },
       },
     },
