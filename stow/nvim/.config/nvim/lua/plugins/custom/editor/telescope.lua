@@ -53,6 +53,14 @@ local function sanitize_for_ruby(target)
   return table.concat(parts, "/")
 end
 
+---Find the associate test or implementation file depending on the current
+---opened file in the current buffer.
+---E.g. if the current buffer is:
+---- lib/path/to/file.rb => test/path/to/file_test.rb
+---- test/path/to/file_test.rb => lib/path/to/file.rb
+---- src/foobar.go => src/foobar_test.go
+---- src/foobar_test.go => src/foobar.go
+---@return string: the associated test or implementation file
 local function find_associate_test_or_file()
   local relative_filepath = vim.fn.expand("%:.")
   local _, extension = relative_filepath:match("(.+)%.(.+)")

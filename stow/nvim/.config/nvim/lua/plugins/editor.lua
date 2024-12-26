@@ -1,5 +1,6 @@
 local neotree_commands = require("plugins.custom.editor.neotree")
 local telescope_commands = require("plugins.custom.editor.telescope")
+local telescope_live_multigrep = require("plugins.custom.editor.telescope-live-multigrep")
 
 local find_files = function(default_text)
   -- require("telescope.builtin").find_files({ default_text = default_text })
@@ -24,15 +25,6 @@ return {
   {
     "nvim-telescope/telescope.nvim",
     dependencies = {
-      {
-        -- live grep with args
-        "nvim-telescope/telescope-live-grep-args.nvim",
-        config = function()
-          LazyVim.on_load("telescope.nvim", function()
-            pcall(require("telescope").load_extension, "live_grep_args")
-          end)
-        end,
-      },
       {
         "l-lin/smart-open.nvim",
         branch = "0.2.x",
@@ -80,9 +72,7 @@ return {
       },
       {
         "<M-f>",
-        function()
-          require("telescope").extensions.live_grep_args.live_grep_args()
-        end,
+        telescope_live_multigrep.search,
         mode = "n",
         noremap = true,
         silent = true,
@@ -90,8 +80,8 @@ return {
       },
       {
         "<M-f>",
-        function()
-          require("telescope-live-grep-args.shortcuts").grep_visual_selection({ postfix = '', quote = false })
+        function(opts)
+          telescope_live_multigrep.search(opts, telescope_commands.get_selected_text())
         end,
         mode = "v",
         noremap = true,
@@ -115,15 +105,6 @@ return {
           i = {
             ["<C-j>"] = require("telescope.actions").preview_scrolling_down,
             ["<C-k>"] = require("telescope.actions").preview_scrolling_up,
-            ["<C-f>"] = function(prompt_bufn)
-              require("telescope-live-grep-args.actions").quote_prompt({ postfix = " -t " })(prompt_bufn)
-            end,
-            ["<C-g>"] = function(prompt_bufn)
-              require("telescope-live-grep-args.actions").quote_prompt({ postfix = " --iglob " })(prompt_bufn)
-            end,
-            ["<C-h>"] = function(prompt_bufn)
-              require("telescope-live-grep-args.actions").quote_prompt({ postfix = " -. " })(prompt_bufn)
-            end,
             -- Invert the keymap because I'm already using C-q with tmux, and I more often sending the whole result to qflist.
             ["<M-q>"] = function(prompt_bufn)
               require("telescope.actions").send_to_qflist(prompt_bufn)
