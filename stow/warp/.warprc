@@ -8,6 +8,7 @@ navi:~/.local/share/navi/cheats/l-lin__cheats
 notes:~/perso/notes
 pcc:~/work/preventive-continuous-care
 phr:~/work/patient-health-record
+project-notes:~/perso/project-notes
 tf:~/work/terraform-infra
 work-dotfiles:~/.config/work-dotfiles
 work-navi:~/.local/share/navi/cheats/l-lin__work-cheats
