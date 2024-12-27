@@ -37,7 +37,6 @@ map("n", "[<tab>", "<cmd>tabprevious<cr>", { noremap = true, desc = "Previous Ta
 
 -- editing
 map("n", "<C-y>", "dd", { noremap = true, desc = "Delete line" })
-map("n", "<leader>cn", "<cmd>vsplit .note.md<CR>", { noremap = true, desc = "Open project note" })
 
 -- use different buffer for delete and paste
 -- Disabling because pressing `d` or `p` when filling snippets is annoying.

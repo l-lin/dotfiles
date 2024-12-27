@@ -44,7 +44,6 @@ Sandbox.java
 .cache
 .vscode
 .env
-.note.md
 # Some nvim plugins are generating this file...
 server exited unexpectedly
 
