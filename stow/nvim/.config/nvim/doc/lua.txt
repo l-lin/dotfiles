@@ -1,0 +1,187 @@
+*lua.txt*                                                                    Lua
+
+src: TJ DeVries https://www.youtube.com/watch?v=CuWfgiwI73Q
+
+You can also do `:help lua`.
+
+================================================================================
+VARIABLES                                                        *lua-variables*
+
+>lua
+    local number = 5
+
+    local str = "hello, world"
+    local another_str = 'also works'
+    local multi_line = [[ This is
+      multi line and literal ]]
+
+    local truth, lies = true, false
+
+    local nothing = nil
+<
+
+Effectively, Lua's only data structure is table.
+It's the same structure used for lists and maps.
+
+>lua
+    -- as list
+    local list = { "first", 2, false, function() print("Fourth!") end }
+    print("It's 1-indexed: ", list[1])
+    print("Fourth is 4...", list[4]())
+
+    -- as map
+    local m = {
+      literal_key = "a string",
+      ["an expression"] = "also works",
+      [function() end] = true,
+    }
+    print("literal key: ", m[literal_key])
+    print("an expression: ", m["an expression"])
+    -- prints nothing because they are different functions
+    print("function: " m[function() end])
+<
+
+================================================================================
+FUNCTIONS                                                        *lua-functions*
+
+>lua
+    -- how to declare a new function
+    local function hello(name)
+      print("Hello!", name)
+    end
+    -- or like this
+    local greet = function(name)
+      -- .. is string concatenation
+      print("Greeting, " .. name .. "!")
+    end
+
+    -- functions can return multiple values
+    local returns_four_values = function()
+      return 1, 2, 3, 4
+    end
+    first, second, last = returns_four_values()
+    -- the `4` is discarded
+
+    -- variadic arguments
+    local variable_arguments = function(...)
+      local arguments = { ... }
+      for i, v in ipairs({ ... }) do
+        print(i, v)
+      end
+      return unpack(arguments)
+    end
+    -- will print:
+    -- 1 hello
+    -- 2 world
+    -- 3 !
+    -- 1: hello world!
+    print("1:", variable_arguments("hello", "world", "!"))
+    -- will print:
+    -- 1 hello
+    -- 2 world
+    -- 3 !
+    -- 2: hello <lost>
+    -- It's because it's only using "one" slot here, so the rest is discarded.
+    print("2:", variable_arguments("hello", "world", "!"), "<lost>")
+
+    -- colon functions
+    local MyTable = {}
+    function MyTable:something(...) end
+    -- syntaxic sugar as
+    function MyTable.something(self, ...) end
+<
+
+================================================================================
+CONTROL FLOW                                                  *lua-control-flow*
+
+>lua
+    -- loop over list
+    local arr = { "foo", "bar" }
+    for index = 1, #arr do
+      print(index, arr[index])
+    end
+    for index, value in ipairs(arr) do
+      print(index, value)
+    end
+
+    -- loop over map
+    local m = { foo: "bar", another_field: 123 }
+    for key, value in pairs(m) do
+      print(key, value)
+    end
+<
+
+>lua
+    local foobar(flag)
+      if (flag) then
+        print("This is true")
+      else
+        print("This is false")
+      end
+    end
+
+    -- falsey: nil, false
+    foobar()
+    foobar(nil)
+    foobar(false)
+
+    -- truthy: everything else
+    foobar(true)
+    foobar(0)
+    foobar({})
+<
+
+================================================================================
+MODULES                                                            *lua-modules*
+
+There's isn't anything special about modules. Modules are just files.
+
+>lua
+    -- foo.lua
+    local M = {}
+    M.cool_function = function() end
+    return M
+
+    -- bar.lua
+    local foo = require("foo")
+    foo.cool_function()
+<
+================================================================================
+METATABLE                                                        *lua-metatable*
+
+>lua
+    -- redefine add operation on table
+    local vector_mt = {}
+    vector_mt.__add = function(left, right)
+      return setmetatable({
+        left[1] + right[1]
+        left[2] + right[2]
+        left[3] + right[3]
+      }, vector_mt)
+    end
+    local v1 = setmetatable({ 3, 1, 5 }, vector_mt)
+    local v2 = setmetatable({ -3, 2, 2 }, vector_mt)
+    local v3 = v1 + v2
+    -- prints: 0 3 7
+    print(v3[1], v3[2], v3[3])
+    -- prints { 0, 6, 14 }
+    print(v3 + v3)
+
+    -- redefine index operation
+    local fib_mt = {
+      __index = function(self, key)
+        if key < 2 then return 1 end
+        self[key] = self[key - 2] + self[key - 1]
+        return self[key]
+      end
+    }
+    local fib = setmetatable({}, fib_mt)
+    print(fib[5])
+    print(fib[1000])
+
+    -- other notable fields:
+    -- `__newindex(self, key, value)`
+    -- `__call(self, ...)`
+<
+
+vim:tw=78:ts=8:noet:ft=help:norl:
