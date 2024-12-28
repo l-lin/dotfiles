@@ -5,7 +5,7 @@
 
 { pkgs, ... }: {
   home.packages = with pkgs; [
-    jdk21
+    jdk23
     # Build automation tool (used primarily for Java projects): https://maven.apache.org/
     maven
   ];
