@@ -13,6 +13,7 @@ return {
   -- Disable neotest (supported by https://github.com/rcasia/neotest-java but less developer friendly)
   {
     "nvim-neotest/neotest",
+    optional = true,
     keys = {
       { "<M-S-F9>", false },
       { "<F21>", false },

@@ -1,4 +1,9 @@
 return {
+  -- I do not use DAP for Ruby projects.
+  { "suketa/nvim-dap-ruby", enabled = false },
+  -- I do not execute test from nvim.
+  { "olimorris/neotest-rspec", enabled = false },
+
   -- Alternative LSP server to ruby-lsp for navigation (no auto-completion).
   {
     "neovim/nvim-lspconfig",

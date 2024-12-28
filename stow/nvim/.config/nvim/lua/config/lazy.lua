@@ -9,45 +9,52 @@ vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 
 require("lazy").setup({
   spec = {
+    -- ##################################
     -- add LazyVim and import its plugins
+    -- ##################################
+
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
-    -- import any extras modules here
+
     --{ import = "lazyvim.plugins.extras.coding.codeium" },
     { import = "lazyvim.plugins.extras.coding.yanky" },
-    { import = "lazyvim.plugins.extras.editor.aerial" },
+    -- { import = "lazyvim.plugins.extras.editor.aerial" },
     { import = "lazyvim.plugins.extras.editor.harpoon2" },
     { import = "lazyvim.plugins.extras.editor.mini-files" },
     --{ import = "lazyvim.plugins.extras.editor.overseer" },
-    { import = "lazyvim.plugins.extras.editor.refactoring" },
+    -- { import = "lazyvim.plugins.extras.editor.refactoring" },
     { import = "lazyvim.plugins.extras.editor.telescope" },
     { import = "lazyvim.plugins.extras.dap.core" },
     { import = "lazyvim.plugins.extras.formatting.prettier" },
     --{ import = "lazyvim.plugins.extras.lang.ansible" },
     { import = "lazyvim.plugins.extras.lang.docker" },
-    { import = "lazyvim.plugins.extras.lang.helm" },
+    -- { import = "lazyvim.plugins.extras.lang.helm" },
     { import = "lazyvim.plugins.extras.lang.json" },
     { import = "lazyvim.plugins.extras.lang.git" },
     { import = "lazyvim.plugins.extras.lang.go" },
-    { import = "lazyvim.plugins.extras.lang.kotlin" },
+    -- { import = "lazyvim.plugins.extras.lang.kotlin" },
     { import = "lazyvim.plugins.extras.lang.markdown" },
     { import = "lazyvim.plugins.extras.lang.nix" },
     { import = "lazyvim.plugins.extras.lang.ruby" },
-    { import = "lazyvim.plugins.extras.lang.rust" },
-    { import = "lazyvim.plugins.extras.lang.sql" },
+    -- { import = "lazyvim.plugins.extras.lang.rust" },
+    -- { import = "lazyvim.plugins.extras.lang.sql" },
     -- { import = "lazyvim.plugins.extras.lang.terraform" },
     { import = "lazyvim.plugins.extras.lang.toml" },
     { import = "lazyvim.plugins.extras.lang.typescript" },
     { import = "lazyvim.plugins.extras.lang.yaml" },
-    { import = "lazyvim.plugins.extras.lsp.none-ls" },
-    { import = "lazyvim.plugins.extras.test.core" },
-    { import = "lazyvim.plugins.extras.util.dot" },
+    { import = "lazyvim.plugins.extras.linting.eslint" },
+    -- { import = "lazyvim.plugins.extras.lsp.none-ls" },
+    -- { import = "lazyvim.plugins.extras.test.core" },
+    -- { import = "lazyvim.plugins.extras.util.dot" },
     --{ import = "lazyvim.plugins.extras.util.octo" },
     --{ import = "lazyvim.plugins.extras.util.project" },
+
+    -- #################################
     -- import/override with your plugins
+    -- #################################
+
     { import = "plugins" },
     --{ import = "plugins.extras.coding.codeium" },
     --{ import = "plugins.extras.coding.leetcode" },
-    --{ import = "plugins.extras.coding.ollama" },
     { import = "plugins.extras.coding.yanky" },
     --{ import = "plugins.extras.editor.image" },
     { import = "plugins.extras.editor.global-note" },
@@ -59,8 +66,7 @@ require("lazy").setup({
     { import = "plugins.extras.lang.ruby" },
     { import = "plugins.extras.lang.typescript" },
     { import = "plugins.extras.lang.xml" },
-    --{ import = "plugins.extras.test.http" },
-    { import = "plugins.extras.test.neotest" },
+    -- { import = "plugins.extras.test.neotest" },
     { import = "plugins.extras.ui.hlchunk" },
     --{ import = "plugins.extras.vcs.gitlab" },
     --{ import = "plugins.extras.vcs.octo" },

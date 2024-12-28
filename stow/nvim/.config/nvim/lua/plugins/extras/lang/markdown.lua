@@ -1,4 +1,7 @@
 return {
+  -- I do not use the preview feature.
+  { "iamcco/markdown-preview.nvim", enabled = false },
+
   -- #######################
   -- override default config
   -- #######################

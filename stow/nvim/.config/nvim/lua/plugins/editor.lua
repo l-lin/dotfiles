@@ -218,6 +218,8 @@ return {
   -- location.
   {
     "folke/flash.nvim",
+    -- I do not use it after all...
+    enabled = false,
     event = "VeryLazy",
     opts = {
       modes = {
