@@ -93,7 +93,5 @@
     xsv
     # Compressor/archiver for creating and modifying zipfiles: http://www.info-zip.org/
     zip
-    # File distribution system using the rsync algorithm: http://zsync.moria.org.uk/
-    zsync
   ];
 }
