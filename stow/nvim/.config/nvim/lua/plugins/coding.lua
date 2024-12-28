@@ -55,10 +55,7 @@ return {
   },
 
   -- autopairs - not quite as good as nvim-autopairs
-  {
-    "echasnovski/mini.pairs",
-    enabled = false,
-  },
+  { "echasnovski/mini.pairs", enabled = false },
 
   -- Navigate and manipulate file system.
   {
@@ -79,25 +76,6 @@ return {
   -- #######################
   -- add new plugins
   -- #######################
-
-  -- markdown table
-  {
-    "dhruvasagar/vim-table-mode",
-    ft = "markdown",
-    keys = {
-      {
-        "<leader>tm",
-        false,
-      },
-      {
-        "<leader>cM",
-        "<cmd>TableModeToggle<cr>",
-        noremap = true,
-        silent = true,
-        desc = "Toggle Markdown table",
-      },
-    },
-  },
 
   -- autopairs - better than mini.pairs in my taste
   {

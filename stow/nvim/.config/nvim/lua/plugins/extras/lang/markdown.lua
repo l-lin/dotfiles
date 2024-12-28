@@ -9,7 +9,27 @@ return {
       linters_by_ft = {
         -- Disable linter, let me freely write anything without hassle!
         -- src: https://github.com/LazyVim/LazyVim/issues/2437
-        markdown = { },
+        markdown = {},
+      },
+    },
+  },
+
+  -- #######################
+  -- add new plugins
+  -- #######################
+
+  -- markdown table
+  {
+    "dhruvasagar/vim-table-mode",
+    ft = "markdown",
+    keys = {
+      { "<leader>tm", false },
+      {
+        "<leader>cM",
+        "<cmd>TableModeToggle<cr>",
+        noremap = true,
+        silent = true,
+        desc = "Toggle Markdown table",
       },
     },
   },
