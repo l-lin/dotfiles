@@ -21,10 +21,10 @@ return {
           if not configs.fuzzy_ls then
             configs.fuzzy_ls = {
               default_config = {
-                cmd = { vim.fn.expand("~/.local/share/nvim/lazy/fuzzy_ruby_server/bin/fuzzy_x86_64-unknown-linux-gnu") },
+                cmd = { vim.fn.expand(vim.fn.stdpath("data") .. "/lazy/fuzzy_ruby_server/bin/fuzzy_x86_64-unknown-linux-gnu") },
                 filetypes = { "ruby" },
                 root_dir = function(fname)
-                  return lspconfig.util.find_git_ancestor(fname)
+                  return vim.fs.dirname(vim.fs.find('.git', { path = fname, upward = true })[1])
                 end,
                 settings = {},
                 init_options = {
@@ -40,32 +40,6 @@ return {
           end
           lspconfig.fuzzy_ls.setup(opts)
         end,
-      },
-    },
-  },
-
-  -- Neotest adapter for Minitest.
-  {
-    "nvim-neotest/neotest",
-    optional = true,
-    dependencies = {
-      "zidhuss/neotest-minitest",
-    },
-    opts = {
-      adapters = {
-        ["neotest-minitest"] = {
-          test_cmd = function()
-            return vim
-              .iter({
-                "bundle",
-                "exec",
-                "rails",
-                "test",
-              })
-              :flatten()
-              :totable()
-          end,
-        },
       },
     },
   },
