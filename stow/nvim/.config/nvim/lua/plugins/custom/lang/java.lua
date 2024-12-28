@@ -27,7 +27,7 @@ local function create_cmd()
     "java.base/java.lang=ALL-UNNAMED",
     "-javaagent:" .. lombok_path,
     "-jar",
-    vim.fn.glob(jdtls_path .. "/plugins/org.eclipse.equinox.launcher_*.jar"),
+    vim.fn.glob(jdtls_path .. "/plugins/org.eclipse.equinox.launcher.jar"),
     "-configuration",
     jdtls_path .. "/config_linux",
     "-data",
