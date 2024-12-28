@@ -45,7 +45,9 @@ map("n", "<C-y>", "dd", { noremap = true, desc = "Delete line" })
 -- map("v", "p", '"_dP', { noremap = true })
 
 -- documentation
-vim.cmd([[ command CheatSheet split $HOME/.config/nvim/doc/cheat_sheet.txt ]])
+vim.api.nvim_create_user_command('CheatSheet', function()
+  vim.cmd('split ' .. vim.fn.expand(vim.fn.stdpath("config") .. '/doc/cheat_sheet.txt'))
+end, {})
 
 -- Diagnostics
 -- Same behavior as IntelliJ.
