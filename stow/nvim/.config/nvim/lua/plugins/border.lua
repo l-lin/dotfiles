@@ -50,6 +50,7 @@ local function with_border(border_style)
     },
     {
       "saghen/blink.cmp",
+      optional = true;
       opts = {
         completion = {
           menu = {
@@ -67,7 +68,8 @@ local function with_border(border_style)
       },
     },
     {
-      "gitsigns.nvim",
+      "lewis6991/gitsigns.nvim",
+      optional = true;
       opts = {
         preview_config = {
           border = border_style,
@@ -75,7 +77,8 @@ local function with_border(border_style)
       },
     },
     {
-      "nvim-lspconfig",
+      "neovim/nvim-lspconfig",
+      optional = true;
       opts = function(_, opts)
         -- Set LspInfo border
         require("lspconfig.ui.windows").default_options.border = border_style
@@ -86,7 +89,8 @@ local function with_border(border_style)
       end,
     },
     {
-      "mason.nvim",
+      "williamboman/mason.nvim",
+      optional = true;
       opts = {
         ui = {
           border = border_style,
@@ -94,7 +98,8 @@ local function with_border(border_style)
       },
     },
     {
-      "noice.nvim",
+      "folke/noice.nvim",
+      optional = true;
       opts = {
         presets = {
           lsp_doc_border = true,
