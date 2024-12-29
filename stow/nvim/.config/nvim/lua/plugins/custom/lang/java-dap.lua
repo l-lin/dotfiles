@@ -6,15 +6,37 @@ local function setup()
 
   vim.api.nvim_create_autocmd("LspAttach", {
     callback = function()
-      -- custom init for Java debugger
+      -- Custom init for Java debugger.
       require("jdtls").setup_dap({ hotcodereplace = "auto", config_overrides = {} })
       require("jdtls.dap").setup_dap_main_class_configs()
-      -- setup dap config by VsCode launch.json file
+      -- Setup dap config by VsCode launch.json file.
       require("dap.ext.vscode").load_launchjs()
     end,
   })
 end
 
+-- See https://github.com/mfussenegger/nvim-jdtls#java-debug-installation.
+local function create_bundles()
+  local has_java_debug_adapter, java_debug_adapter_pkg = pcall(require, "java-debug-adapter")
+  if not has_java_debug_adapter then
+    return {}
+  end
+
+  local bundles = {}
+  -- jdtls tools configuration for debugging support
+  local java_debug_adapter_path = java_debug_adapter_pkg:get_install_path()
+  local jar_patterns = {
+    java_debug_adapter_path .. "/extension/server/com.microsoft.java.debug.plugin-*.jar",
+  }
+  for _, jar_pattern in ipairs(jar_patterns) do
+    for _, bundle in ipairs(vim.split(vim.fn.glob(jar_pattern), "\n")) do
+      table.insert(bundles, bundle)
+    end
+  end
+  return bundles
+end
+
 local M = {}
 M.setup = setup
+M.create_bundles = create_bundles
 return M

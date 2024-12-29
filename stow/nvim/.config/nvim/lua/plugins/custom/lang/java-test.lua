@@ -1,5 +1,5 @@
--- custom keymaps for Java test runner (not yet compatible with neotest)
--- enable junit extension detection to activate https://github.com/laech/java-stacksrc
+-- Custom keymaps for Java test runner (not yet compatible with neotest).
+-- Enable junit extension detection to activate https://github.com/laech/java-stacksrc.
 local jdtls_test_opts = {
   config_overrides = {
     vmArgs = "-Djunit.jupiter.extensions.autodetection.enabled=true --enable-preview",
@@ -43,28 +43,19 @@ end
 
 -- See https://github.com/mfussenegger/nvim-jdtls#java-debug-installation
 local function create_bundles()
-  -- lookup paths for java test and debugger package
-  local mason_registry = require("mason-registry")
+  local has_java_test, java_test_pkg = pcall(require, "java-test")
+  if not has_java_test then
+    return {}
+  end
+
   local bundles = {}
-  if mason_registry.has_package("java-test") and mason_registry.has_package("java-debug-adapter") then
-    -- jdtls tools configuration for debugging support
-    local java_debug_adapter_pkg = mason_registry.get_package("java-debug-adapter")
-    local java_debug_adapter_path = java_debug_adapter_pkg:get_install_path()
-    local java_test_pkg = mason_registry.get_package("java-test")
-    local java_test_path = java_test_pkg:get_install_path()
-    local jar_patterns = {
-      java_debug_adapter_path .. "/extension/server/com.microsoft.java.debug.plugin-*.jar",
-      java_test_path .. "/extension/server/*.jar",
-    }
-    for _, jar_pattern in ipairs(jar_patterns) do
-      for _, bundle in ipairs(vim.split(vim.fn.glob(jar_pattern), "\n")) do
-        if
-          not vim.endswith(bundle, "com.microsoft.java.test.runner-jar-with-dependencies.jar")
-          and not vim.endswith(bundle, "com.microsoft.java.test.runner.jar")
-        then
-          table.insert(bundles, bundle)
-        end
-      end
+  local java_test_path = java_test_pkg:get_install_path()
+  local jar_patterns = {
+    java_test_path .. "/extension/server/*.jar",
+  }
+  for _, jar_pattern in ipairs(jar_patterns) do
+    for _, bundle in ipairs(vim.split(vim.fn.glob(jar_pattern), "\n")) do
+      table.insert(bundles, bundle)
     end
   end
   return bundles

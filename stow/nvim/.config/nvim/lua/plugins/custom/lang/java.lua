@@ -5,10 +5,39 @@ local home = os.getenv("HOME")
 -- Path to java binary to use when starting up the LS server.
 local java_path = home .. "/.nix-profile/bin/java"
 
+-- List of Java runtimes, which can be useful if you're starting jdtls with a
+-- Java version that's different from the one the project uses.
+-- The field `name` must be a valid `ExecutionEnvironment`,
+-- you can find the list here:
+-- https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
+local function create_runtimes()
+  return {
+    {
+      name = "JavaSE-23",
+      path = java_path,
+    },
+  }
+end
+
 local function create_cmd()
   -- Points to $HOME/.local/share/nvim/mason/packages/jdtls/.
   local jdtls_path = require("mason-registry").get_package("jdtls"):get_install_path()
+
+  -- Path to config depending on the platform.
+  local platform_config = ""
+  if vim.fn.has("mac") == 1 then
+    platform_config = jdtls_path .. "/config_mac"
+  elseif vim.fn.has("unix") == 1 then
+    platform_config = jdtls_path .. "/config_linux"
+  elseif vim.fn.has("win32") == 1 then
+    platform_config = jdtls_path .. "/config_win"
+  end
+
+  -- Path to Lombok JAR.
   local lombok_path = require("mason-registry").get_package("lombok-nightly"):get_install_path() .. "/lombok.jar"
+
+  -- Path to launcher JAR.
+  local launcher_path = vim.fn.glob(jdtls_path .. "/plugins/org.eclipse.equinox.launcher.jar")
 
   -- Use root folder name as the project name.
   local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
@@ -30,9 +59,9 @@ local function create_cmd()
     "java.base/java.lang=ALL-UNNAMED",
     "-javaagent:" .. lombok_path,
     "-jar",
-    vim.fn.glob(jdtls_path .. "/plugins/org.eclipse.equinox.launcher.jar"),
+    launcher_path,
     "-configuration",
-    jdtls_path .. "/config_linux",
+    platform_config,
     "-data",
     jdtls_cache_dir,
   }
@@ -80,6 +109,7 @@ local function create_settings()
       },
       configuration = {
         updateBuildConfiguration = "interactive",
+        runtimes = create_runtimes(),
       },
       contentProvider = {
         preferred = "fernflower",
@@ -101,6 +131,11 @@ local function create_settings()
         downloadSources = true,
       },
       maxConcurrentBuilds = 12,
+      project = {
+        referencedLibraries = {
+          -- add any library jars here for the lsp to pick them up
+        },
+      },
       references = {
         includeDecompiledSources = true,
       },
@@ -123,6 +158,7 @@ end
 -- See https://github.com/mfussenegger/nvim-jdtls#java-debug-installation
 local function create_init_options()
   local bundles = {}
+  vim.list_extend(bundles, require("plugins.custom.lang.java-dap").create_bundles() or {})
   vim.list_extend(bundles, require("plugins.custom.lang.java-test").create_bundles() or {})
   return { bundles = bundles }
 end
