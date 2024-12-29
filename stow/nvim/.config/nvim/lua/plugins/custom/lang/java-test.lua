@@ -6,38 +6,34 @@ local jdtls_test_opts = {
   },
 }
 
-local function attach_keymaps()
+local function attach_keymaps(bufnr)
   local mason_registry = require("mason-registry")
   if not mason_registry.has_package("java-test") then
     return
   end
 
-  vim.api.nvim_create_autocmd("LspAttach", {
-    callback = function(args)
-      local jdtls = require("jdtls")
-      local jdtls_test = require("jdtls.tests")
+  local jdtls = require("jdtls")
+  local jdtls_test = require("jdtls.tests")
 
-      vim.keymap.set("n", "<C-T>", jdtls_test.goto_subjects, { noremap = true, silent = true, desc = "Find associated test or class file (Ctrl+t)" })
-      vim.keymap.set("n", "<M-S-F9>", function()
-        jdtls.pick_test(jdtls_test_opts)
-      end, { noremap = true, silent = true, desc = "Run specific test (Alt+Shift+F9)" })
+  vim.keymap.set("n", "<C-T>", jdtls_test.goto_subjects, { buffer = bufnr, noremap = true, silent = true, desc = "Find associated test or class file (Ctrl+t)" })
+  vim.keymap.set("n", "<M-S-F9>", function()
+    jdtls.pick_test(jdtls_test_opts)
+  end, { buffer = bufnr, noremap = true, silent = true, desc = "Run specific test (Alt+Shift+F9)" })
 
-      vim.keymap.set("n", "<F21>", function()
-        jdtls.test_nearest_method(jdtls_test_opts)
-      end, { noremap = true, silent = true, desc = "Test method (Shift+F9)" })
+  vim.keymap.set("n", "<F21>", function()
+    jdtls.test_nearest_method(jdtls_test_opts)
+  end, { buffer = bufnr, noremap = true, silent = true, desc = "Test method (Shift+F9)" })
 
-      local wk = require("which-key")
-      wk.add({
-        {
-          mode = "n",
-          buffer = args.buf,
-          { "<leader>t", group = "test" },
-          { "<leader>tt", function() jdtls.test_class(jdtls_test_opts) end, desc = "Run All Test" },
-          { "<leader>tr", function() jdtls.test_nearest_method(jdtls_test_opts) end, desc = "Run nearest test (Shift+F9)" },
-          { "<leader>tT", function() jdtls.pick_test(jdtls_test_opts) end, desc = "Run specific test (Alt+Shift+F9)" },
-        },
-      })
-    end,
+  local wk = require("which-key")
+  wk.add({
+    {
+      mode = "n",
+      buffer = bufnr,
+      { "<leader>t", group = "test" },
+      { "<leader>tt", function() jdtls.test_class(jdtls_test_opts) end, desc = "Run All Test" },
+      { "<leader>tr", function() jdtls.test_nearest_method(jdtls_test_opts) end, desc = "Run nearest test (Shift+F9)" },
+      { "<leader>tT", function() jdtls.pick_test(jdtls_test_opts) end, desc = "Run specific test (Alt+Shift+F9)" },
+    },
   })
 end
 

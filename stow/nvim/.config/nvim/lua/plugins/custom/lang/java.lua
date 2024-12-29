@@ -1,3 +1,5 @@
+local java_cmds = vim.api.nvim_create_augroup('java_cmds', { clear = true })
+
 local root_markers = { ".git", "mvnw", "gradlew" }
 
 local home = os.getenv("HOME")
@@ -127,6 +129,12 @@ local function create_settings()
       implementationsCodeLens = {
         enabled = true,
       },
+      inlayHints = {
+          enabled = true,
+          parameterNames = {
+             enabled = 'all' -- literals, all, none
+          }
+      },
       maven = {
         downloadSources = true,
       },
@@ -160,7 +168,24 @@ local function create_init_options()
   local bundles = {}
   vim.list_extend(bundles, require("plugins.custom.lang.java-dap").create_bundles() or {})
   vim.list_extend(bundles, require("plugins.custom.lang.java-test").create_bundles() or {})
-  return { bundles = bundles }
+
+  local extendedClientCapabilities = require("jdtls").extendedClientCapabilities;
+  extendedClientCapabilities.onCompletionItemSelectedCommand = "editor.action.triggerParameterHints"
+
+  return {
+    bundles = bundles,
+    extendedClientCapabilities = extendedClientCapabilities
+  }
+end
+
+local function create_capabilities()
+  require("jdtls").extendedClientCapabilities.resolveAdditionalTextEditsSupport = true
+  local has_blink, blink = pcall(require, "blink.cmp")
+  return vim.tbl_deep_extend(
+      'force',
+      vim.lsp.protocol.make_client_capabilities(),
+      has_blink and blink.get_lsp_capabilities() or {}
+  )
 end
 
 ---@return string root_dir The path to the root directory.
@@ -168,78 +193,74 @@ local function get_root_dir()
   return require("jdtls.setup").find_root(root_markers)
 end
 
+-- Setup keymap and dap after the lsp is fully attached
+-- https://github.com/mfussenegger/nvim-jdtls#nvim-dap-configuration
+-- https://neovim.io/doc/user/lsp.html#LspAttach
+local function attach_keymaps(bufnr)
+  local jdtls = require("jdtls")
+
+  vim.keymap.set("n", "<M-C-V>", jdtls.extract_variable_all, { buffer = bufnr, noremap = true, silent = true, desc = "Extract variable" })
+  vim.keymap.set("v", "<M-C-V>", [[<ESC><CMD>lua require("jdtls").extract_variable_all(true)<CR>]], { buffer = bufnr, noremap = true, silent = true, desc = "Extract variable" })
+  vim.keymap.set("i", "<M-C-V>", [[<ESC><CMD>lua require("jdtls").extract_variable_all()<CR>]], { buffer = bufnr, noremap = true, silent = true, desc = "Extract variable" })
+
+  vim.keymap.set("n", "<M-C-C>", jdtls.extract_constant, { buffer = bufnr, noremap = true, silent = true, desc = "Extract constant" })
+  vim.keymap.set("v", "<M-C-C>", [[<ESC><CMD>lua require("jdtls").extract_constant(true)<CR>]], { buffer = bufnr, noremap = true, silent = true, desc = "Extract constant" })
+  vim.keymap.set("i", "<M-C-C>", [[<ESC><CMD>lua require("jdtls").extract_constant()<CR>]], { buffer = bufnr, noremap = true, silent = true, desc = "Extract constant" })
+
+  vim.keymap.set("v", "<M-C-N>", [[<ESC><CMD>lua require("jdtls").extract_method(true)<CR>]], { buffer = bufnr, noremap = true, silent = true, desc = "Extract method" })
+
+  vim.keymap.set("n", "<F33>", jdtls.compile, { buffer = bufnr, noremap = true, silent = true, desc = "Compile (Ctrl+F9)" })
+  vim.keymap.set("n", "<M-C-O>", jdtls.organize_imports, { buffer = bufnr, noremap = true, silent = true, desc = "Organize imports (Ctrl+Alt+o)" })
+
+  local wk = require("which-key")
+  wk.add({
+    {
+      mode = "n",
+      buffer = bufnr,
+      { "<leader>cx", group = "extract" },
+      { "<leader>cxv", require("jdtls").extract_variable_all, desc = "Extract Variable" },
+      { "<leader>cxc", require("jdtls").extract_constant, desc = "Extract Constant" },
+      { "gs", require("jdtls").super_implementation, desc = "Goto Super" },
+      { "gS", require("jdtls.tests").goto_subjects, desc = "Goto Subjects" },
+      { "<leader>co", require("jdtls").organize_imports, desc = "Organize Imports" },
+    },
+  })
+  wk.add({
+    {
+      mode = "v",
+      buffer = bufnr,
+      { "<leader>cx", group = "extract" },
+      { "<leader>cxm", [[<ESC><CMD>lua require('jdtls').extract_method(true)<CR>]], desc = "Extract Method", },
+      { "<leader>cxv", [[<ESC><CMD>lua require('jdtls').extract_variable_all(true)<CR>]], desc = "Extract Variable", },
+      { "<leader>cxc", [[<ESC><CMD>lua require('jdtls').extract_constant(true)<CR>]], desc = "Extract Constant", },
+    },
+  })
+end
+
+-- Perform some action when JDTLS is fully attached, like adding some keymaps.
+local function on_attach(_, bufnr)
+  attach_keymaps(bufnr)
+  -- Attach DAP and java-test only after JDTLS is fully started.
+  require("plugins.custom.lang.java-dap").setup()
+  require("plugins.custom.lang.java-test").attach_keymaps(bufnr)
+end
+
 -- Attach jdtls for the proper filetypes (i.e. java).
 -- Existing server will be reused if the root_dir matches.
 local function start_or_attach_jdtls()
   vim.api.nvim_create_autocmd("FileType", {
     pattern = { "java" },
+    group = java_cmds,
+    desc = "Setup JDTLS",
     callback = function()
-      local jdtls_base_config = {
+      require("jdtls").start_or_attach({
+        capabilities = create_capabilities(),
         cmd = create_cmd(),
-        root_dir = get_root_dir(),
+        flags = { allow_incremental_sync = true },
         init_options = create_init_options(),
-        -- enable CMP capabilities
-        capabilities = require("blink.cmp").get_lsp_capabilities(),
+        on_attach = on_attach,
+        root_dir = get_root_dir(),
         settings = create_settings(),
-      }
-      local jdtls_opts = require("lazyvim.util").opts("nvim-jdtls")
-      require("jdtls").start_or_attach(vim.tbl_deep_extend("force", jdtls_base_config, jdtls_opts or {}))
-    end,
-  })
-end
-
--- Setup keymap and dap after the lsp is fully attached
--- https://github.com/mfussenegger/nvim-jdtls#nvim-dap-configuration
--- https://neovim.io/doc/user/lsp.html#LspAttach
-local function attach_keymaps()
-  vim.api.nvim_create_autocmd("LspAttach", {
-    callback = function(args)
-      -- only after the jdtls client is attached
-      local client = vim.lsp.get_client_by_id(args.data.client_id)
-      -- check client is not nil
-      if not client or not client.name == "jdtls" then
-        return
-      end
-
-      local jdtls = require("jdtls")
-      local map = vim.keymap.set
-
-      map("n", "<M-C-V>", jdtls.extract_variable_all, { noremap = true, silent = true, desc = "Extract variable" })
-      map("v", "<M-C-V>", [[<ESC><CMD>lua require("jdtls").extract_variable_all(true)<CR>]], { noremap = true, silent = true, desc = "Extract variable" })
-      map("i", "<M-C-V>", [[<ESC><CMD>lua require("jdtls").extract_variable_all()<CR>]], { noremap = true, silent = true, desc = "Extract variable" })
-
-      map("n", "<M-C-C>", jdtls.extract_constant, { noremap = true, silent = true, desc = "Extract constant" })
-      map("v", "<M-C-C>", [[<ESC><CMD>lua require("jdtls").extract_constant(true)<CR>]], { noremap = true, silent = true, desc = "Extract constant" })
-      map("i", "<M-C-C>", [[<ESC><CMD>lua require("jdtls").extract_constant()<CR>]], { noremap = true, silent = true, desc = "Extract constant" })
-
-      map("v", "<M-C-N>", [[<ESC><CMD>lua require("jdtls").extract_method(true)<CR>]], { noremap = true, silent = true, desc = "Extract method" })
-
-      map("n", "<F33>", jdtls.compile, { noremap = true, silent = true, desc = "Compile (Ctrl+F9)" })
-      map("n", "<M-C-O>", jdtls.organize_imports, { noremap = true, silent = true, desc = "Organize imports (Ctrl+Alt+o)" })
-      map("n", "<leader>cR", "<cmd>JdtRestart<cr>", { noremap = true, silent = true, desc = "Restart jdtls server" })
-
-      local wk = require("which-key")
-      wk.add({
-        {
-          mode = "n",
-          buffer = args.buf,
-          { "<leader>cx", group = "extract" },
-          { "<leader>cxv", require("jdtls").extract_variable_all, desc = "Extract Variable" },
-          { "<leader>cxc", require("jdtls").extract_constant, desc = "Extract Constant" },
-          { "gs", require("jdtls").super_implementation, desc = "Goto Super" },
-          { "gS", require("jdtls.tests").goto_subjects, desc = "Goto Subjects" },
-          { "<leader>co", require("jdtls").organize_imports, desc = "Organize Imports" },
-        },
-      })
-      wk.add({
-        {
-          mode = "v",
-          buffer = args.buf,
-          { "<leader>cx", group = "extract" },
-          { "<leader>cxm", [[<ESC><CMD>lua require('jdtls').extract_method(true)<CR>]], desc = "Extract Method", },
-          { "<leader>cxv", [[<ESC><CMD>lua require('jdtls').extract_variable_all(true)<CR>]], desc = "Extract Variable", },
-          { "<leader>cxc", [[<ESC><CMD>lua require('jdtls').extract_constant(true)<CR>]], desc = "Extract Constant", },
-        },
       })
     end,
   })
@@ -251,9 +272,6 @@ local function jdtls_config()
     return
   end
   start_or_attach_jdtls()
-  require("plugins.custom.lang.java-dap").setup()
-  attach_keymaps()
-  require("plugins.custom.lang.java-test").attach_keymaps()
 end
 
 local M = {}
