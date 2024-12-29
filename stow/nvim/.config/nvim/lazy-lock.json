@@ -9,6 +9,7 @@
   "conform.nvim": { "branch": "master", "commit": "9180320205d250429f0f80e073326c674e2a7149" },
   "diffview.nvim": { "branch": "main", "commit": "4516612fe98ff56ae0415a259ff6361a89419b0a" },
   "dressing.nvim": { "branch": "master", "commit": "3a45525bb182730fe462325c99395529308f431e" },
+  "emoji.nvim": { "branch": "main", "commit": "8422df2b94beebf97569eee56deb37a307b59037" },
   "flash.nvim": { "branch": "main", "commit": "34c7be146a91fec3555c33fe89c7d643f6ef5cf1" },
   "friendly-snippets": { "branch": "main", "commit": "efff286dd74c22f731cdec26a70b46e5b203c619" },
   "fuzzy_ruby_server": { "branch": "master", "commit": "6f1f2170aa6815648cc7dc40c6e2e6d3f658b4dd" },
