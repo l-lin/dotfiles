@@ -7,11 +7,12 @@ local home = os.getenv("HOME")
 -- Path to java binary to use when starting up the LS server.
 local java_path = home .. "/.nix-profile/bin/java"
 
--- List of Java runtimes, which can be useful if you're starting jdtls with a
--- Java version that's different from the one the project uses.
--- The field `name` must be a valid `ExecutionEnvironment`,
--- you can find the list here:
--- https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
+---List of Java runtimes, which can be useful if you're starting jdtls with a
+---Java version that's different from the one the project uses.
+---The field `name` must be a valid `ExecutionEnvironment`,
+---you can find the list here:
+---https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
+---@return table runtimes table of Java runtimes to use
 local function create_runtimes()
   return {
     {
@@ -21,6 +22,7 @@ local function create_runtimes()
   }
 end
 
+---@return table cmd command to execute JDTLS
 local function create_cmd()
   -- Points to $HOME/.local/share/nvim/mason/packages/jdtls/.
   local jdtls_path = require("mason-registry").get_package("jdtls"):get_install_path()
@@ -69,9 +71,9 @@ local function create_cmd()
   }
 end
 
--- Here you can configure eclipse.jdt.ls specific settings
--- See https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
--- for a list of options
+---Create settings to configure eclipse.jdt.ls specific settings.
+---src: https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
+---@return table settings Eclipse JDT LS settings
 local function create_settings()
   return {
     java = {
@@ -163,13 +165,14 @@ local function create_settings()
   }
 end
 
--- See https://github.com/mfussenegger/nvim-jdtls#java-debug-installation
+---See https://github.com/mfussenegger/nvim-jdtls#java-debug-installation
+---@return table init_options initial options used to configure JDTLS
 local function create_init_options()
   local bundles = {}
   vim.list_extend(bundles, require("plugins.custom.lang.java-dap").create_bundles() or {})
   vim.list_extend(bundles, require("plugins.custom.lang.java-test").create_bundles() or {})
 
-  local extendedClientCapabilities = require("jdtls").extendedClientCapabilities;
+  local extendedClientCapabilities = require("jdtls").extendedClientCapabilities
   extendedClientCapabilities.onCompletionItemSelectedCommand = "editor.action.triggerParameterHints"
 
   return {
@@ -178,6 +181,8 @@ local function create_init_options()
   }
 end
 
+---Create the capabilities used in JDTLS.
+---@return lsp.ClientCapabilities lsp_capabilities LSP capabilities, e.g. auto-completion
 local function create_capabilities()
   require("jdtls").extendedClientCapabilities.resolveAdditionalTextEditsSupport = true
   local has_blink, blink = pcall(require, "blink.cmp")
@@ -188,14 +193,16 @@ local function create_capabilities()
   )
 end
 
----@return string root_dir The path to the root directory.
+---@return string root_dir path to the root directory.
 local function get_root_dir()
   return require("jdtls.setup").find_root(root_markers)
 end
 
--- Setup keymap and dap after the lsp is fully attached
--- https://github.com/mfussenegger/nvim-jdtls#nvim-dap-configuration
--- https://neovim.io/doc/user/lsp.html#LspAttach
+---Setup keymap after the JDTLS is fully attached.
+---src:
+---- https://github.com/mfussenegger/nvim-jdtls#nvim-dap-configuration
+---- https://neovim.io/doc/user/lsp.html#LspAttach
+---@param bufnr number current buffer to attach the keymaps
 local function attach_keymaps(bufnr)
   local jdtls = require("jdtls")
 
@@ -237,16 +244,34 @@ local function attach_keymaps(bufnr)
   })
 end
 
--- Perform some action when JDTLS is fully attached, like adding some keymaps.
-local function on_attach(_, bufnr)
+---Enable codelens to display the number of references.
+---Can be useful to find dead code.
+---@param bufnr number current buffer
+local function enable_codelens(bufnr)
+  pcall(vim.lsp.codelens.refresh)
+
+  vim.api.nvim_create_autocmd("BufWritePost", {
+    buffer = bufnr,
+    group = java_cmds,
+    desc = "Refresh codelens",
+    callback = function()
+      pcall(vim.lsp.codelens.refresh)
+    end,
+  })
+end
+
+---Perform some action when JDTLS is fully attached, like adding some keymaps.
+---@param client any
+---@param bufnr number current buffer
+local function on_attach(client, bufnr)
   attach_keymaps(bufnr)
+  enable_codelens(bufnr)
   -- Attach DAP and java-test only after JDTLS is fully started.
   require("plugins.custom.lang.java-dap").setup()
   require("plugins.custom.lang.java-test").attach_keymaps(bufnr)
 end
 
--- Attach jdtls for the proper filetypes (i.e. java).
--- Existing server will be reused if the root_dir matches.
+---Attach jdtls for the proper filetypes (i.e. java).
 local function start_or_attach_jdtls()
   vim.api.nvim_create_autocmd("FileType", {
     pattern = { "java" },
