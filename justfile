@@ -97,6 +97,7 @@ create-symlinks: init-directories
     if [[ "${folder}" != '.' ]] && [[ "${folder}" != './.git' ]]; then \
       app=$(echo "${folder}" | sed 's~./~~') \
       && just info "Add symlinks for ${app}" \
+      && stow --delete -t "${HOME}" "${app}" \
       && stow -t "${HOME}" "${app}"; \
     fi; \
   done
@@ -178,11 +179,6 @@ get-current-theme:
   grep 'theme = ' flake.nix | sed 's~theme = "\(.*\)"; #.*~\1~' | sed 's/ //g'
 
 # ------------------------------------------------------------------------
-
-# NOTE: I should not need this recipe as I'm using nvim-java/mason-registry, which install Lombok.
-# install lombok in xdg data home
-install-lombok:
-  curl -L -o "${HOME}/.local/share/nvim/mason/packages/jdtls/lombok.jar" https://projectlombok.org/downloads/lombok.jar
 
 # NOTE: When using user.js, it's not possible to use firefox sync, so I need to install them manually.
 # open firefox add-ons to install
