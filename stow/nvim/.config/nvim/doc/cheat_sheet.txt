@@ -41,6 +41,10 @@ NORMAL MODE                                                     *cs-normal-mode*
 `C-w`   - delete word before cursor
 `C-d`   - delete word after cursor
 `R`     - switch to replace mode
+`]m`    - next method start
+`[m`    - previous method start
+`]M`    - next method end
+`[M`    - previous method end
 
 ================================================================================
 CURSOR MOVEMENT                                             *cs-cursor-movement*
@@ -153,7 +157,7 @@ SPELL CHECKING                                               *cs-spell-checking*
 `[s` - go to previous misspelled word
 `z=` - find suggestions for the word
 `zg` - add word under the cursor as good word
-`,c` - perform :GrammarousCheck to check grammar errors
+`zw` - mark word under the cursor as bad / mispelling
 
 ================================================================================
 FOLDING                                                             *cs-folding*
@@ -288,7 +292,8 @@ EXPLORER                                                           *cs-explorer*
 ================================================================================
 INSERT MODE                                                     *cs-insert-mode*
 
-`<C-r>` - open yank register
+`<C-r>`  - open yank register
+`<C-r>=` - open calculator
 
 ================================================================================
 TIPS & TRICKS                                                 *cs-tips-n-tricks*
