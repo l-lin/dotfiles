@@ -265,7 +265,10 @@ end
 ---@param bufnr number current buffer
 local function on_attach(client, bufnr)
   attach_keymaps(bufnr)
-  enable_codelens(bufnr)
+
+  -- Disabling codelens as it slows down the editor after all...
+  -- enable_codelens(bufnr)
+
   -- Attach DAP and java-test only after JDTLS is fully started.
   require("plugins.custom.lang.java-dap").setup()
   require("plugins.custom.lang.java-test").attach_keymaps(bufnr)
