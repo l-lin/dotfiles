@@ -70,9 +70,7 @@ return {
       { "<leader>mC", "<cmd>DiffviewFileHistory --range=origin/HEAD...HEAD --right-only --no-merges<cr>", noremap = true, silent = true, desc = "Review MR/PR commit by commit (Diffview)" },
       { "<leader>mx", "<cmd>DiffviewClose<cr>", noremap = true, silent = true, desc = "Close review (Diffview)" },
     },
-    config = function()
-      require("diffview").setup()
-    end,
     dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {},
   },
 }
