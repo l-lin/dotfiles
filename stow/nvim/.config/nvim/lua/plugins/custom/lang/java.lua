@@ -16,7 +16,7 @@ local java_path = home .. "/.nix-profile/bin/java"
 local function create_runtimes()
   return {
     {
-      name = "JavaSE-23",
+      name = "JavaSE-21",
       path = java_path,
     },
   }
