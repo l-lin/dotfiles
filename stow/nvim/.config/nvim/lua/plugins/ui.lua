@@ -1,4 +1,24 @@
 return {
+  -- ###############
+  -- disable plugins
+  -- ###############
+
+  -- Disable bufferline (topbar), let's use Telescope/fzf for everything!
+  {
+    "akinsho/bufferline.nvim",
+    enabled = false,
+    opts = {
+      options = {
+        show_close_icon = false,
+        show_buffer_close_icons = false,
+      },
+    },
+    keys = {
+      { "<S-h>", false },
+      { "<S-l>", false },
+    },
+  },
+
   -- #######################
   -- override default config
   -- #######################
@@ -36,21 +56,6 @@ return {
     },
   },
 
-  -- buffer line (top bar)
-  {
-    "akinsho/bufferline.nvim",
-    opts = {
-      options = {
-        show_close_icon = false,
-        show_buffer_close_icons = false,
-      },
-    },
-    keys = {
-      { "<S-h>", false },
-      { "<S-l>", false },
-    },
-  },
-
   -- status line (bottom bar)
   {
     "nvim-lualine/lualine.nvim",
@@ -83,10 +88,10 @@ return {
   {
     "numToStr/Navigator.nvim",
     keys = {
-      { "<C-h>", "<cmd>NavigatorLeft<cr>",  mode = { "n", "t" }, silent = true, desc = "Navigate left" },
+      { "<C-h>", "<cmd>NavigatorLeft<cr>", mode = { "n", "t" }, silent = true, desc = "Navigate left" },
       { "<C-l>", "<cmd>NavigatorRight<cr>", mode = { "n", "t" }, silent = true, desc = "Navigate right" },
-      { "<C-k>", "<cmd>NavigatorUp<cr>",    mode = { "n", "t" }, silent = true, desc = "Navigate up" },
-      { "<C-j>", "<cmd>NavigatorDown<cr>",  mode = { "n", "t" }, silent = true, desc = "Navigate down" },
+      { "<C-k>", "<cmd>NavigatorUp<cr>", mode = { "n", "t" }, silent = true, desc = "Navigate up" },
+      { "<C-j>", "<cmd>NavigatorDown<cr>", mode = { "n", "t" }, silent = true, desc = "Navigate down" },
     },
     cmd = {
       "NavigatorUp",
@@ -94,9 +99,7 @@ return {
       "NavigatorRight",
       "NavigatorLeft",
     },
-    config = function()
-      require("Navigator").setup({})
-    end,
+    opts = {},
   },
 
   -- color highlighter
