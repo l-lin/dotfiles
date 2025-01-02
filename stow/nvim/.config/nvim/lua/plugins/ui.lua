@@ -64,6 +64,27 @@ return {
         section_separators = "",
         component_separators = "",
       },
+      sections = {
+        -- No need to display the mode.
+        lualine_a = {},
+        lualine_c = {
+          -- No need to display the root dir.
+          {
+            "diagnostics",
+            symbols = {
+              error = LazyVim.config.icons.diagnostics.Error,
+              warn = LazyVim.config.icons.diagnostics.Warn,
+              info = LazyVim.config.icons.diagnostics.Info,
+              hint = LazyVim.config.icons.diagnostics.Hint,
+            },
+          },
+          { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
+          -- No need to display the treesitter location.
+          { LazyVim.lualine.pretty_path({ modified_hl = '' }) },
+        },
+        -- No need to display the clock.
+        lualine_z = {},
+      }
     },
   },
 
