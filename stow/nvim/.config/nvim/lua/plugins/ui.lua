@@ -2,6 +2,10 @@ return {
   -- ###############
   -- disable plugins
   -- ###############
+  -- remove colorschemes
+  { "folke/tokyonight.nvim", enabled = false },
+  { "catppuccin/nvim", enabled = false },
+  { "catppuccin", enabled = false },
 
   -- Disable bufferline (topbar), let's use Telescope/fzf for everything!
   {
