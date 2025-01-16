@@ -11,7 +11,7 @@ local function get_selected_text()
   return text
 end
 
-local function is_test(filepath)
+local function is_implementation(filepath)
   local filename = filepath:match("([^/]+)$")
   return filename:match("_test") ~= nil
 end
@@ -19,7 +19,7 @@ end
 local function add_or_remove_test_suffix(filename)
   local name, extension = filename:match("(.+)%.(.+)")
 
-  if is_test(filename) then
+  if is_implementation(filename) then
     return name:gsub("_test", "") .. "." .. extension
   end
 
@@ -33,17 +33,26 @@ local function sanitize_for_ruby(target)
   end
 
   -- If we are in a project that uses engines, i.e. directory in convention:
-  -- engines/engine_name/app/path/to/file.rb => engines/engine_name/test/path/to/file_test.rb
+  -- engines/engine_name/app/path/to/file.rb <=> engines/engine_name/test/path/to/file_test.rb
+  -- engines/engine_name/lib/path/to/file.rb <=> engines/engine_name/test/lib/path/to/file_test.rb
   if #parts > 2 and parts[1] == "engines" then
-    if is_test(target) then
-      parts[3] = "test"
+    if is_implementation(target) then
+      if parts[3] == "lib" then -- engines/engine_name/lib/path/to/file.rb => engines/engine_name/test/lib/path/to/file_test.rb
+        parts[3] = "test/lib"
+      else -- engines/engine_name/app/path/to/file.rb => engines/engine_name/test/path/to/file_test.rb
+        parts[3] = "test"
+      end
     else
-      parts[3] = "app"
+      if #parts > 3 and parts[4] == "lib" then -- engines/engine_name/test/lib/path/to/file_test.rb => engines/engine_name/lib/path/to/file.rb
+        table.remove(parts, 3)
+      else -- engines/engine_name/test/path/to/file_test.rb => engines/engine_name/app/path/to/file.rb
+        parts[3] = "app"
+      end
     end
   else
     -- Using the default ruby bundler path convention:
     -- lib/path/to/file.rb => test/path/to/file_test.rb
-    if is_test(target) then
+    if is_implementation(target) then
       parts[1] = "test"
     else
       parts[1] = "lib"
