@@ -3,6 +3,7 @@ dotfiles:~/.config/dotfiles
 kubetailrb:~/perso/kubetailrb
 kube:~/work/kube
 lazy:~/perso/LazyVim
+mobile:~/work/doctolib-mobile-apps
 monolith:~/work/doctolib
 navi:~/.local/share/navi/cheats/l-lin__cheats
 notes:~/perso/notes
