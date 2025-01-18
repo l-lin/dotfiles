@@ -11,7 +11,7 @@ local function get_selected_text()
   return text
 end
 
----Check if the given filepath is a test or implementatio file.
+---Check if the given filepath is a test or implementation file.
 ---@param filepath string the filepath to check
 ---@param test_suffix string the test suffix, e.g. "_test" or ".test" depending on the programming language
 ---@return boolean is_implementation true if it's an implementation file, false otherwise

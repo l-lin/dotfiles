@@ -23,8 +23,8 @@ local function nvim_lspconfig_init()
     noremap = true,
     desc = "LSP references (Ctrl+Shift+7)",
   }
-  keys[#keys + 1] = { "<F18>", vim.lsp.buf.rename, noremap = true, desc = "Rename" }
-  keys[#keys + 1] = { "<M-CR>", vim.lsp.buf.code_action, noremap = true, desc = "Code action" }
+  keys[#keys + 1] = { "<F18>", vim.lsp.buf.rename, noremap = true, desc = "Rename (Ctr+F6)" }
+  keys[#keys + 1] = { "<M-CR>", vim.lsp.buf.code_action, noremap = true, desc = "Code action (Ctrl+Enter)" }
   keys[#keys + 1] = {
     "<M-C-B>",
     function()
