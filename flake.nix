@@ -25,7 +25,7 @@
     };
 
     # Run unpatched binaries on NixOS
-    nix-alien.url = "github:thiagokokada/nix-alien";
+    #nix-alien.url = "github:thiagokokada/nix-alien";
 
     # Atomic secret provisioning for NixOS based on sops
     sops-nix = {
