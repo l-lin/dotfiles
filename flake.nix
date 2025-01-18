@@ -27,9 +27,6 @@
     # Run unpatched binaries on NixOS
     nix-alien.url = "github:thiagokokada/nix-alien";
 
-    # Colorscheme
-    nix-colors.url = "github:misterio77/nix-colors";
-
     # Atomic secret provisioning for NixOS based on sops
     sops-nix = {
       url = "github:Mic92/sops-nix";
