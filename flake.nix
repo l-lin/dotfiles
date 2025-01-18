@@ -19,10 +19,10 @@
     # -------------------------------------------------------------
 
     # Hyprland window manager
-    hyprland = {
-      url = "github:hyprwm/Hyprland";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # hyprland = {
+    #   url = "github:hyprwm/Hyprland";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
 
     # Run unpatched binaries on NixOS
     #nix-alien.url = "github:thiagokokada/nix-alien";
