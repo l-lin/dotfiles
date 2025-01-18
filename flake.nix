@@ -24,12 +24,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Icons for LF
-    lf-icons = {
-      url = "github:gokcehan/lf";
-      flake = false;
-    };
-
     # Run unpatched binaries on NixOS
     nix-alien.url = "github:thiagokokada/nix-alien";
 

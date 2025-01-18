@@ -599,22 +599,6 @@
         "type": "github"
       }
     },
-    "lf-icons": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1736938650,
-        "narHash": "sha256-cmIyB0fNihcRLPpc8kZj3SoPn2oZChPCXsOR5BKjw3E=",
-        "owner": "gokcehan",
-        "repo": "lf",
-        "rev": "2745c1ab22676405ef27198a1b4f18b2bb7c2f36",
-        "type": "github"
-      },
-      "original": {
-        "owner": "gokcehan",
-        "repo": "lf",
-        "type": "github"
-      }
-    },
     "nix-alien": {
       "inputs": {
         "flake-compat": "flake-compat_2",
@@ -766,7 +750,6 @@
       "inputs": {
         "home-manager": "home-manager",
         "hyprland": "hyprland",
-        "lf-icons": "lf-icons",
         "nix-alien": "nix-alien",
         "nix-colors": "nix-colors",
         "nixpkgs": "nixpkgs_2",
