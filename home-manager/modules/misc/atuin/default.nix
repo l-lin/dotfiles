@@ -4,7 +4,10 @@
 # src: https://github.com/atuinsh/atuin
 #
 
-{ config, pkgs, secrets, ... }: {
+{ config, pkgs, secrets, ... }:
+let
+  palette = config.lib.stylix.colors.withHashtag;
+in {
   home.packages = with pkgs; [ atuin ];
 
   # Generate the atuin key with sops-nix.
@@ -52,6 +55,23 @@ keymap_cursor = { emacs = "blink-block", vim_insert = "blink-bar", vim_normal = 
 ## Enable this, and Atuin will reduce motion in the TUI as much as possible.
 ## Users with motion sensitivity can find the live-updating timestamps distracting.
 prefers_reduced_motion = true
+
+[theme]
+name = "custom"
+  '';
+  xdg.configFile."atuin/themes/custom.toml".text = with palette; ''
+[theme]
+name = "custom"
+
+[colors]
+AlertInfo = "${base0D-hex}"
+AlertWarn = "${base0A-hex}"
+AlertError = "${base08-hex}"
+Annotation = "${base07-hex}"
+Base = "${base05-hex}"
+Guidance = "${base0C-hex}"
+Important = "${base0E-hex}"
+Title = "${base0D-hex}"
   '';
 
   # Symlink ~/.config/zsh/plugins/atuin
