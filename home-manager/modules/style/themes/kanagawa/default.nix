@@ -10,6 +10,7 @@ in {
 
   theme = {
     inherit polarity;
+    ghosttyColorScheme = "Kanagawa Wave";
     nvimColorScheme = "kanagawa";
     nvimColorSchemePluginLua = "{ 'rebelot/kanagawa.nvim' }";
   };

@@ -72,8 +72,8 @@
 
   outputs = {
     self,
-    nixpkgs,
     home-manager,
+    nixpkgs,
     secrets,
     ...
   } @ inputs: # <- this `@inputs` will expose the block of code below, to the inputs that you set above.
@@ -121,7 +121,7 @@
       editor = "nvim"; # default editor
       messaging = "slack"; # default messaging tool
       pager = "less"; # default pager
-      term = "kitty"; # default terminal emulator
+      term = "ghostty"; # default terminal emulator
       theme = "kanagawa"; # colorscheme to use
       shell = "zsh"; # shell to use
       wm = "gnome"; # selected window manager (hyprland, sway or gnome)
@@ -158,10 +158,10 @@
         extraSpecialArgs = {
           # pass config variables from above
           inherit fileExplorer;
-          inherit systemSettings;
-          inherit userSettings;
           inherit inputs outputs;
           inherit secrets;
+          inherit systemSettings;
+          inherit userSettings;
         };
         modules = [./home-manager/home.nix];
       };

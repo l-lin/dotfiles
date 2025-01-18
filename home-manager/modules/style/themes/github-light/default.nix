@@ -10,6 +10,8 @@ in {
 
   theme = {
     inherit polarity;
+    # Not using Ghostty Github color-scheme because the yellow is not readable...
+    ghosttyColorScheme = "AtomOneLight";
     nvimColorScheme = "github_light_high_contrast";
     nvimColorSchemePluginLua = ''
 {

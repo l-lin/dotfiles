@@ -3,7 +3,7 @@
 # src: https://neovim.io/
 #
 
-{ config, pkgs, ... }: 
+{ config, pkgs, ... }:
 let
   palette = config.lib.stylix.colors.withHashtag;
 in {
