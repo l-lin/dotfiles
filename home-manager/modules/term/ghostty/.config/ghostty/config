@@ -7,7 +7,14 @@
 # Font
 #
 
-font-family = "JetBrainsMono Nerd font"
+# WARN: Cannot set the font-family, otherwise, ghostty crashes on startup with
+# the following error:
+# > error(gtk_surface): surface failed to realize: error.CannotOpenResource
+# Using `strace -o ghostty.log ghostty`, the issue comes from this issue:
+# > openat(AT_FDCWD, "~/.nix-profile/share/fonts/truetype/NerdFonts/JetBrainsMonoNerdFont-Regular.ttf", O_RDONLY) = -1 ENOENT (No such file or directory)
+# I'm not sure why it's looking at the wrong directory, but since the default
+# Ghostty font is JetBrainsMono, I don't really need to customize it.
+#font-family = "JetBrainsMono Nerd font"
 
 #
 # Window

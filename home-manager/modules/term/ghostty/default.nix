@@ -3,25 +3,30 @@
 # src: https://ghostty.org/
 #
 
-{ config, ... }:
+{ config, nixgl, pkgs, ... }:
 let
   palette = config.lib.stylix.colors.withHashtag;
 in {
-  # HACK: DISABLED because Ghostty is not working well on Ubuntu with
-  # home-manager, as it crashes on startup with the following error:
-  # > Failed to create EGL display
-  # The solution to use NixGL does not work for me, as I'm getting another error:
-  # > error(gtk_surface): surface failed to realize: error.CannotOpenResource
-  # src: https://github.com/ghostty-org/ghostty/discussions/3763
-  # So the last way is to install via the `.deb` file...
-  # src: https://ghostty.org/docs/install/binary#ubuntu
-  #home.packages = with pkgs; [ ghostty ];
+  # To access the GPU, programs need access to OpenGL and Vulkan libraries.
+  # While this works transparently on NixOS, it does not on other Linux systems.
+  # A solution is provided by NixGL, which can be integrated into Home Manager.
+  # src: https://nix-community.github.io/home-manager/index.xhtml#sec-usage-gpu-non-nixos
+  nixGL.packages = nixgl.packages;
+  nixGL.defaultWrapper = "mesa";
+  nixGL.offloadWrapper = "intel";
+
+  programs.ghostty = {
+    enable = true;
+    enableZshIntegration = true;
+
+    package = config.lib.nixGL.wrap pkgs.ghostty;
+  };
 
   # Symlink ~/.config/ghostty/config
   xdg.configFile."ghostty/config".source = ./.config/ghostty/config;
   xdg.configFile."ghostty/color-scheme".text = with palette; ''
 #
-# UI
+# Color Scheme
 #
 
 # Theme to use. To see a list of available themes, run `ghostty +list-themes`.

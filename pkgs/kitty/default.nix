@@ -3,11 +3,13 @@
 # src: https://github.com/kovidgoyal/kitty
 #
 # Creating my nix package myself because the one provided by the official nixpkgs is not working well
-# in non-NixOS, as kitty is using OpenGL.
+# in non-NixOS systems, as kitty is using OpenGL.
 # src:
 # - https://discourse.nixos.org/t/egl-program-is-unusable-when-built-with-nix/5976/2
 # - https://github.com/NixOS/nixpkgs/issues/290847
 # - https://github.com/NixOS/nixpkgs/issues/9415
+#
+# Another approach is to use NixGL, like I did with wezterm and ghostty.
 #
 
 { lib, stdenvNoCC, xz }: stdenvNoCC.mkDerivation rec {
