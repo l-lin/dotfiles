@@ -13,6 +13,24 @@ local find_files = function(default_text)
   })
 end
 
+local mappings = {
+  -- Invert the keymap because I'm already using C-q with tmux, and I more often sending the whole result to qflist.
+  ["<M-q>"] = function(prompt_bufn)
+    require("telescope.actions").send_to_qflist(prompt_bufn)
+    require("trouble").open({ mode = "qflist", focus = true })
+  end,
+  ["<C-q>"] = function(prompt_bufn)
+    require("telescope.actions").send_selected_to_qflist(prompt_bufn)
+    require("trouble").open({ mode = "qflist", focus = true })
+  end,
+  ["<C-o>"] = function(prompt_bufn)
+    local picker = require("telescope.actions.state").get_current_picker(prompt_bufn)
+    local prompt = picker:_get_prompt()
+    vim.api.nvim_command("edit! " .. prompt)
+  end,
+  ["<M-d>"] = require("telescope.actions").delete_buffer,
+}
+
 return {
   -- No need for grug-far, let's use quickfix list!
   { "MagicDuck/grug-far.nvim", enabled = false, },
@@ -102,24 +120,8 @@ return {
     opts = {
       defaults = {
         mappings = {
-          i = {
-            ["<C-j>"] = require("telescope.actions").preview_scrolling_down,
-            ["<C-k>"] = require("telescope.actions").preview_scrolling_up,
-            -- Invert the keymap because I'm already using C-q with tmux, and I more often sending the whole result to qflist.
-            ["<M-q>"] = function(prompt_bufn)
-              require("telescope.actions").send_to_qflist(prompt_bufn)
-              require("trouble").open({ mode = "qflist", focus = true })
-            end,
-            ["<C-q>"] = function(prompt_bufn)
-              require("telescope.actions").send_selected_to_qflist(prompt_bufn)
-              require("trouble").open({ mode = "qflist", focus = true })
-            end,
-            ["<C-o>"] = function(prompt_bufn)
-              local picker = require("telescope.actions.state").get_current_picker(prompt_bufn)
-              local prompt = picker:_get_prompt()
-              vim.api.nvim_command("edit! " .. prompt)
-            end
-          },
+          i = mappings,
+          n = mappings,
         },
         prompt_prefix = " ",
         path_display = {
