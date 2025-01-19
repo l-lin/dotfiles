@@ -30,3 +30,6 @@ vim.o.textwidth = 80
 vim.g.lazyvim_picker = "telescope"
 -- disable animations, let's go fast!
 vim.g.snacks_animate = false
+
+-- add virtual column so that I don't go over it
+-- vim.opt.colorcolumn = "80"

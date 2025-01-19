@@ -61,11 +61,8 @@ map("n", "[<tab>", "<cmd>tabprevious<cr>", { noremap = true, desc = "Previous Ta
 -- editing (same behavior as Intellij)
 map("n", "<C-y>", "dd", { noremap = true, desc = "Delete line" })
 
--- use different buffer for delete and paste
--- Disabling because pressing `d` or `p` when filling snippets is annoying.
--- map("n", "d", '"_d', { noremap = true })
--- map("v", "d", '"_d', { noremap = true })
--- map("v", "p", '"_dP', { noremap = true })
+-- special keymap to cut to black hole, so I don't lose what I yank to my register '+'
+map({ "n", "v" }, "<M-d>", '"_d', { noremap = true })
 
 -- documentation
 vim.api.nvim_create_user_command('CheatSheet', function()
