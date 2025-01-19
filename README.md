@@ -3,7 +3,7 @@
 :snowflake: NixOS
 
 - :bento: window manager: [hyprland](https://github.com/hyprwm/Hyprland)
-- :milky_way: terminal emulator: [kitty](https://sw.kovidgoyal.net/kitty/)
+- :ghost: terminal emulator: [ghostty](https://ghostty.org/)
 - :shell: shell: [zsh](https://www.zsh.org/)
 - :memo: text editor: [neovim](https://neovim.io/)
 - :speech_balloon: notification: [dunst](https://dunst-project.org/)
@@ -18,7 +18,7 @@
 :penguin: Ubuntu
 
 - :bento: window manager: [gnome](https://www.gnome.org/) with [pop!_os shell](https://github.com/pop-os/shell)
-- :milky_way: terminal emulator: [kitty](https://sw.kovidgoyal.net/kitty/)
+- :ghost: terminal emulator: [ghostty](https://ghostty.org/)
 - :shell: shell: [zsh](https://www.zsh.org/)
 - :memo: text editor: [neovim](https://neovim.io/)
 - :speech_balloon: notification: [dunst](https://dunst-project.org/)
