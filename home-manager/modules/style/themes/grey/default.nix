@@ -10,7 +10,6 @@ in {
 
   theme = {
     inherit polarity;
-    ghosttyColorScheme = "AtomOneLight";
     nvimColorScheme = "grey";
     nvimColorSchemePluginLua = "{ 'yorickpeterse/nvim-grey' }";
   };

@@ -9,10 +9,6 @@
 
 { lib, userSettings, ... }: {
   options.theme = with lib; {
-    ghosttyColorScheme = mkOption {
-      type = types.str;
-      description = "Ghostty color scheme.";
-    };
     nvimColorScheme = mkOption {
       type = types.str;
       description = "NeoVim color scheme.";

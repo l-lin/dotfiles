@@ -35,11 +35,37 @@ in {
 
 # Theme to use. To see a list of available themes, run `ghostty +list-themes`.
 # src: https://ghostty.org/docs/config/reference#theme
-theme = "${config.theme.ghosttyColorScheme}"
 # Overriding the background and foreground from the one defined by Stylix
 # because the colors used in the Ghostty themes are not the same as the
 # color-scheme used in Neovim.
+# black
+palette = 0=${base00-hex}
+palette = 8=${base04-hex}
+# red
+palette = 1=${base08-hex}
+palette = 9=${base08-hex}
+# green
+palette = 2=${base0B-hex}
+palette = 10=${base0B-hex}
+# yellow
+palette = 3=${base0A-hex}
+palette = 11=${base0A-hex}
+# blue
+palette = 4=${base0D-hex}
+palette = 12=${base0D-hex}
+# purple
+palette = 5=${base0E-hex}
+palette = 13=${base0E-hex}
+# aqua
+palette = 6=${base0C-hex}
+palette = 14=${base0C-hex}
+# white
+palette = 7=${base06-hex}
+palette = 15=${base05-hex}
 background = "${base00-hex}"
 foreground = "${base05-hex}"
+cursor-color = "${base05-hex}"
+selection-background = "${base02-hex}"
+selection-foreground = "${base05-hex}"
   '';
 }
