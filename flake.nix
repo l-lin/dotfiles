@@ -53,6 +53,8 @@
       url = "github:l-lin/tinted-kitty";
     };
 
+    nixgl.url = "github:nix-community/nixgl";
+
     ########################  My own repositories  #########################################
 
     secrets = {
@@ -64,6 +66,7 @@
   outputs = {
     self,
     home-manager,
+    nixgl,
     nixpkgs,
     secrets,
     ...
@@ -150,6 +153,7 @@
           # pass config variables from above
           inherit fileExplorer;
           inherit inputs outputs;
+          inherit nixgl;
           inherit secrets;
           inherit systemSettings;
           inherit userSettings;

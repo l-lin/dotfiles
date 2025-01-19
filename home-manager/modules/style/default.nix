@@ -79,6 +79,7 @@
       lazygit.enable = true;
       kitty.enable = true;
       kitty.variant256Colors = true;
+      wezterm.enable = true;
     };
   };
 
