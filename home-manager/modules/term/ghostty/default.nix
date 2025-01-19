@@ -19,11 +19,15 @@ in {
     enable = true;
     enableZshIntegration = true;
 
+    # Use the wrapped Ghostty that uses NixGL.
     package = config.lib.nixGL.wrap pkgs.ghostty;
   };
 
   # Symlink ~/.config/ghostty/config
   xdg.configFile."ghostty/config".source = ./.config/ghostty/config;
+  # Not using stylix because I want to use Ghostty default fonts instead.
+  # I could not manage to find the same font as Ghostty...
+  # Moreover, it seems the palette chosen for Ghostty is not quite right.
   xdg.configFile."ghostty/color-scheme".text = with palette; ''
 #
 # Color Scheme

@@ -50,10 +50,14 @@
         # To manually reload the fontconfig cache, execute: `fc-cache -r`.
         # src: https://github.com/danth/stylix/issues/650#issuecomment-2509746627
         #
-        # List of fonts enable can be found here:
+        # List of Nerd Fonts can be found here:
         # https://github.com/NixOS/nixpkgs/blob/c55d81a2ef622a0838d2c398ae6f8523862227af/pkgs/data/fonts/nerd-fonts/manifests/fonts.json#L315
-        package = pkgs.nerd-fonts.jetbrains-mono;
-        name = "JetBrainsMono Nerd Font";
+        #
+        # For Ghostty, using Nerd Fonts does not work well, maybe because the
+        # fonts are installed in ~/.nix-profile/share/fonts/truetype/NerdFonts/
+        # instead of ~/.nix-profile/share/fonts/truetype/.
+        package = pkgs.jetbrains-mono;
+        name = "JetBrainsMono";
       };
       sansSerif = {
         package = pkgs.dejavu_fonts;
