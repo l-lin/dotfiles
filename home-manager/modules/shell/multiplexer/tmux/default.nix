@@ -58,6 +58,7 @@ set -g @tmux-colorscheme-show-cpu true
 set -g @tmux-colorscheme-show-cpu-temp true
 set -g @tmux-colorscheme-show-ram true
   '';
+  xdg.configFile."zsh/functions/switch-tmux-window".source = ./.config/zsh/functions/switch-tmux-window;
 
   home.packages = with pkgs; [
     # Tmux end-of-line is behaving like VIM, i.e. taking the trailing newline.
