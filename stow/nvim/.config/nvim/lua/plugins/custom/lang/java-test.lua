@@ -39,10 +39,11 @@ end
 
 -- See https://github.com/mfussenegger/nvim-jdtls#java-debug-installation
 local function create_bundles()
-  local has_java_test, java_test_pkg = pcall(require, "java-test")
-  if not has_java_test then
-    return {}
+  local mason_registry = require("mason-registry")
+  if not mason_registry.has_package("java-test") then
+    return
   end
+  local java_test_pkg = mason_registry.get_package("java-test")
 
   local bundles = {}
   local java_test_path = java_test_pkg:get_install_path()

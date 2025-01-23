@@ -13,10 +13,11 @@ end
 
 -- See https://github.com/mfussenegger/nvim-jdtls#java-debug-installation.
 local function create_bundles()
-  local has_java_debug_adapter, java_debug_adapter_pkg = pcall(require, "java-debug-adapter")
-  if not has_java_debug_adapter then
-    return {}
+  local mason_registry = require("mason-registry")
+  if not mason_registry.has_package("java-debug-adapter") then
+    return
   end
+  local java_debug_adapter_pkg = mason_registry.get_package("java-debug-adapter")
 
   local bundles = {}
   -- jdtls tools configuration for debugging support
