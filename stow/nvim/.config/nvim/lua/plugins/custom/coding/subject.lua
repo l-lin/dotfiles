@@ -1,16 +1,3 @@
----Get the text selected in visual mode, to be used for example in the Telescope opts `default_text`.
----@return string: the selected text from visual mode
-local function get_selected_text()
-  vim.cmd('noau normal! "vy"')
-  local text = vim.fn.getreg("v")
-  vim.fn.setreg("v", {})
-  text = string.gsub(text, "\n", "")
-  if string.len(text) == 0 then
-    text = ""
-  end
-  return text
-end
-
 ---Check if the given filepath is a test or implementation file.
 ---@param filepath string the filepath to check
 ---@param test_suffix string the test suffix, e.g. "_test" or ".test" depending on the programming language
@@ -106,7 +93,7 @@ end
 ---- src/foobar.go => src/foobar_test.go
 ---- src/foobar_test.go => src/foobar.go
 ---@return string: the associated test or implementation file
-local function find_associate_test_or_file()
+local function find_subject()
   local relative_filepath = vim.fn.expand("%:.")
   local filetype = vim.bo.filetype
 
@@ -122,8 +109,5 @@ local function find_associate_test_or_file()
 end
 
 local M = {}
-
-M.get_selected_text = get_selected_text
-M.find_associate_test_or_file = find_associate_test_or_file
-
+M.find_subject = find_subject
 return M

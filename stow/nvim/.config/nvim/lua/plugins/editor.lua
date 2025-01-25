@@ -1,6 +1,7 @@
 local neotree_commands = require("plugins.custom.editor.neotree")
-local telescope_commands = require("plugins.custom.editor.telescope")
+local selector = require("plugins.custom.editor.selector")
 local telescope_live_multigrep = require("plugins.custom.editor.telescope-live-multigrep")
+local subject = require("plugins.custom.coding.subject")
 
 local find_files = function(default_text)
   -- require("telescope.builtin").find_files({ default_text = default_text })
@@ -72,7 +73,7 @@ return {
       {
         "<C-g>",
         function()
-          find_files(telescope_commands.get_selected_text())
+          find_files(selector.get_selected_text())
         end,
         mode = "v",
         noremap = true,
@@ -82,7 +83,7 @@ return {
       {
         "<C-t>",
         function()
-          find_files(telescope_commands.find_associate_test_or_file())
+          find_files(subject.find_subject())
         end,
         desc = "Find associated test file (Ctrl+t)",
         noremap = true,
@@ -99,7 +100,7 @@ return {
       {
         "<M-f>",
         function(opts)
-          telescope_live_multigrep.search(opts, telescope_commands.get_selected_text())
+          telescope_live_multigrep.search(opts, selector.get_selected_text())
         end,
         mode = "v",
         noremap = true,
