@@ -14,7 +14,7 @@ end
 ---Check if the given filepath is a test or implementation file.
 ---@param filepath string the filepath to check
 ---@param test_suffix string the test suffix, e.g. "_test" or ".test" depending on the programming language
----@return boolean is_implementation true if it's an implementation file, false otherwise
+---@return boolean is_test true if it's an test file, false otherwise
 local function is_test(filepath, test_suffix)
   local filename = filepath:match("([^/]+)$")
   return filename:match(test_suffix) ~= nil
@@ -108,13 +108,13 @@ end
 ---@return string: the associated test or implementation file
 local function find_associate_test_or_file()
   local relative_filepath = vim.fn.expand("%:.")
-  local _, file_extension = relative_filepath:match("(.+)%.(.+)")
+  local filetype = vim.bo.filetype
 
-  if file_extension == "rb" then
+  if filetype == "ruby" then
     return sanitize_for_ruby(relative_filepath)
   end
 
-  if file_extension == "ts" or file_extension == "tsx" then
+  if filetype == "typescript" or filetype == "typescriptreact" then
     return sanitize_for_ts(relative_filepath)
   end
 
