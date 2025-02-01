@@ -89,8 +89,6 @@
     unzip
     # Modern watch command: https://github.com/sachaos/viddy
     viddy
-    # CSV toolkit: https://github.com/BurntSushi/xsv
-    xsv
     # Compressor/archiver for creating and modifying zipfiles: http://www.info-zip.org/
     zip
   ];
