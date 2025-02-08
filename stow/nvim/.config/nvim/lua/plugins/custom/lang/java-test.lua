@@ -30,9 +30,10 @@ local function attach_keymaps(bufnr)
       mode = "n",
       buffer = bufnr,
       { "<leader>t", group = "test" },
-      { "<leader>tt", function() jdtls.test_class(jdtls_test_opts) end, desc = "Run All Test" },
-      { "<leader>tr", function() jdtls.test_nearest_method(jdtls_test_opts) end, desc = "Run nearest test (Shift+F9)" },
-      { "<leader>tT", function() jdtls.pick_test(jdtls_test_opts) end, desc = "Run specific test (Alt+Shift+F9)" },
+      { "<leader>ta", function() jdtls.test_class(jdtls_test_opts) end, desc = "Run All Test" },
+      { "<leader>tg", jdtls_test.generate, desc = "Generate test" },
+      { "<leader>tn", function() jdtls.test_nearest_method(jdtls_test_opts) end, desc = "Run nearest test (Shift+F9)" },
+      { "<leader>ts", function() jdtls.pick_test(jdtls_test_opts) end, desc = "Run specific test (Alt+Shift+F9)" },
     },
   })
 end
