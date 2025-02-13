@@ -70,7 +70,7 @@ install-home-standalone:
   nix-shell '<home-manager>' -A install
 
 # apply home-manager configuration
-update-home: add-pre-commit-hook
+update-home:
   just info "Applying home-manager configuration..."
   if type nh >/dev/null 2>&1; then \
     nh home switch --backup-extension bak --configuration "{{NIX_PROFILE}}" . -- --show-trace; \
@@ -148,10 +148,6 @@ install-cheatsheet host owner repo:
       just info "Installing cheatsheet '${cheatsheet_name}'."; \
       git clone "git@{{host}}:{{owner}}/{{repo}}" "${folder_name}"; \
     fi
-
-[private]
-add-pre-commit-hook:
-  cp "{{PRE_COMMIT_FILE}}" .git/hooks/pre-commit
 
 # change theme
 change-theme to:

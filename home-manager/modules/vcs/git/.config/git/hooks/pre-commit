@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+pre_commit_files="${XDG_CONFIG_HOME}/git/hooks/pre-commit.d/*"
+
+for hook in ${pre_commit_files}; do
+  source "${hook}"
+  RESULT=$?
+  if [ ${RESULT} != 0 ]; then
+    echo "pre-commit.d/${hook} returned non-zero: ${RESULT}, abort commit"
+    exit ${RESULT}
+  fi
+done
+
+exit 0

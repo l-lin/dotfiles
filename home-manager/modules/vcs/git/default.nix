@@ -10,16 +10,6 @@
     gh
     git
     git-lfs
-
-    (writeShellScriptBin "install-pre-commit-hook" ''
-touch .git/hooks/pre-commit
-chmod +x .git/hooks/pre-commit
-cat <<EOF > .git/hooks/pre-commit
-#!/usr/bin/env bash
-set -e
-${config.xdg.configHome}/git/hooks/check-no-commit.sh
-EOF
-    '')
   ];
 
   # Symlink to ~/.gitconfig
@@ -36,6 +26,7 @@ EOF
   editor = ${userSettings.editor}
   autocrlf = input
   pager = delta --${config.theme.polarity}
+  hooksPath = ${config.xdg.configHome}/git/hooks
   '';
 
   # Symlink to ~/perso/.gitconfig
