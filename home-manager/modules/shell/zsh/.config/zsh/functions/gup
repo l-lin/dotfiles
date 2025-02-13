@@ -4,5 +4,8 @@
 #
 
 local target_branch=${1:-main}
+if ! git show-ref --verify --quiet "refs/heads/${target_branch}"; then
+    target_branch=master
+fi
 git fetch --all --prune && git checkout "${target_branch}" && git pull && gbdr
 
