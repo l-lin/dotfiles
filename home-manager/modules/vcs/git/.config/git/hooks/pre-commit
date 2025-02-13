@@ -1,14 +1,27 @@
 #!/usr/bin/env bash
 
-pre_commit_files="${XDG_CONFIG_HOME}/git/hooks/pre-commit.d/*"
+function execute_global_pre_commit_hooks() {
+  local global_pre_commit_files
+  global_pre_commit_files="${XDG_CONFIG_HOME}/git/hooks/pre-commit.d/*"
 
-for hook in ${pre_commit_files}; do
-  source "${hook}"
-  RESULT=$?
-  if [ ${RESULT} != 0 ]; then
-    echo "pre-commit.d/${hook} returned non-zero: ${RESULT}, abort commit"
-    exit ${RESULT}
+  for hook in ${global_pre_commit_files}; do
+    "${SHELL}" "${hook}"
+    RESULT=$?
+    if [ ${RESULT} != 0 ]; then
+      echo "pre-commit.d/${hook} returned non-zero: ${RESULT}, abort commit"
+      exit ${RESULT}
+    fi
+  done
+}
+
+function execute_local_pre_commit_hook() {
+  local local_pre_commit_hook
+  local_pre_commit_hook="$(pwd)/.git/hooks/pre-commit"
+
+  if [ -e "${local_pre_commit_hook}" ]; then
+    "${SHELL}" "${local_pre_commit_hook}"
   fi
-done
+}
 
-exit 0
+execute_global_pre_commit_hooks
+execute_local_pre_commit_hook
