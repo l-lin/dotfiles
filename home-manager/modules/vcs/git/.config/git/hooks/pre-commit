@@ -2,7 +2,7 @@
 
 function execute_global_pre_commit_hooks() {
   local global_pre_commit_files
-  global_pre_commit_files="${XDG_CONFIG_HOME}/git/hooks/pre-commit.d/*"
+  global_pre_commit_files="${XDG_CONFIG_HOME:-${HOME}/.config}/git/hooks/pre-commit.d/*"
 
   for hook in ${global_pre_commit_files}; do
     "${SHELL}" "${hook}"
