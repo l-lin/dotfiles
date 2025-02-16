@@ -6,6 +6,7 @@
 { pkgs, ... }: {
   imports = [
     ./redshift
+    ./rofi
     # (./. + "/${userSettings.wm}")
   ];
 
