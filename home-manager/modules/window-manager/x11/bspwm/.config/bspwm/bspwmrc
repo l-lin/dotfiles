@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+#
+# bspcm configurations.
+#
+
+# [ ] install xbacklight
+# [ ] lock: xlock / xscreensaver / xsecurelock => do I need a lock? Shall I just suspend each time instead?
+# [ ] suspend
+# [ ] screenshot (flameshot?)
+# [ ] music
+# [ ] ...
+# refactor
+# [ ] keybinding on its own file
+# [ ] init applications on its own file
+# [ ] move to dotfiles
+# colorscheme
+# [ ] change color & font on the bar
+# [ ] ghostty has a border?
+
+pgrep -x sxhkd > /dev/null || sxhkd &
+
+"${XDG_CONFIG_HOME:-${HOME}/.config/}/bspwm/scripts/setup-monitor.sh"
+
+bspc config window_gap 0
+bspc config split_ratio 0.5
+
+# Border configuration.
+bspc config border_width 2
+# Do not add border if single node.
+bspc config borderless_monocle true
+bspc config single_monocle true
+
+# Monitor configurations.
+bspc config remove_disabled_monitors true
+bspc config remove_unplugged_monitors true
+bspc config merge_overlapping_monitors false
+
+#
+# Rules.
+#
+
+bspc rule -a Obsidian desktop='^1'
+bspc rule -a Zen desktop='^3'
+bspc rule -a Gimp desktop='^4' state=floating follow=on
+# bspc rule -a mplayer2 state=floating
+# bspc rule -a Kupfer.py focus=on
+# bspc rule -a Screenkey manage=off
+
+#
+# Keyboard customization.
+#
+
+# Switch capslock to Ctrl.
+setxkbmap -layout us -option ctrl:nocaps -variant altgr-intl
+
+"${XDG_CONFIG_HOME:-${HOME}/.config/}/bspwm/scripts/polybar.sh"

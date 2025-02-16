@@ -1,0 +1,69 @@
+#
+# bspmwm management
+#
+
+# Move / Focus desktops.
+super + {_,shift + }{1-5,0}
+  bspc {desktop --focus,node --to-desktop} '{1,2,3,4,5}'
+
+# Move / Focus nodes.
+super + {_,shift + }{h,j,k,l}
+	bspc node -{f,s} {west,south,north,east}
+
+# Brightness control.
+# TODO: Not working, the command works, but the brightness is not updated...
+XF86MonBrightness{Down,Up}
+	brightnessctl set {5%-,+5%}
+
+XF86AudioRaiseVolume
+  pamixer -i 5
+
+XF86AudioLowerVolume
+  pamixer -d 5
+
+XF86AudioMute
+  pamixer -t
+# bind = ,XF86AudioMicMute, exec, pamixer --default-source -t
+# bind = ,XF86AudioPlay, exec, mpc -q toggle
+# bind = ,XF86AudioNext, exec, mpc -q next
+# bind = ,XF86AudioPrev, exec, mpc -q prev
+
+# Close / Kill a node.
+super + {_,shift + }q
+  bspc node -{c,k}
+
+# Toggle fullscreen.
+super + f
+  bspc node -t ~fullscreen
+
+# Reload sxhkd.
+super + Escape
+  pkill -USR1 -x sxhkd
+
+# Quit/Reload bspmwm.
+super + control + {q,r}
+  bspc {quit,wm -r}
+
+#
+# Applications
+#
+
+# Audio mix.
+super + a
+  ghostty -e pulsemixer
+
+# Calculator.
+super + c
+  ghostty -e numbat --intro-banner off
+
+# File manager.
+super + e
+  ghostty -e yazi
+
+# Terminal.
+super + t
+  ghostty -e tmux -2 -u
+
+# Window switcher, run dialog and dmenu replacement.
+super + space
+  rofi -show drun
