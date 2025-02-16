@@ -4,8 +4,12 @@
 # src: https://wayland.freedesktop.org/
 #
 
-{ userSettings, ... }: {
-  imports = [ (./. + "/${userSettings.wm}") ];
+{
+  imports = [
+    # TODO: Keeping Gnome Wayland, in case I have some issue with X WM...
+    # (./. + "/${userSettings.wm}")
+    ./gnome
+  ];
 
   home.sessionVariables = {
     # Hint electron apps to use wayland

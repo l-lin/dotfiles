@@ -7,5 +7,9 @@
 #
 
 {
-  imports = [ ./wayland ];
+  imports = [
+    # TODO: Keeping both until I'm confident to have a single WM.
+    ./wayland
+    ./x11
+  ];
 }
