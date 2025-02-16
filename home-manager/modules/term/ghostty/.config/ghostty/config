@@ -27,6 +27,9 @@ window-padding-y = 8
 # src: https://ghostty.org/docs/config/reference#window-decoration
 window-decoration = false
 
+# No need to display the mouse.
+mouse-hide-while-typing = true
+
 #
 # Keybindings
 #
