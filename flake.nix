@@ -43,14 +43,6 @@
     stylix = {
       url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.tinted-kitty.follows = "tinted-kitty-l-lin";
-    };
-
-    # TODO: Remove me when stylix https://github.com/danth/stylix/issues/571 is fixed.
-    # Fix the `cursor_text_color` on kitty.
-    tinted-kitty-l-lin = {
-      flake = false;
-      url = "github:l-lin/tinted-kitty";
     };
 
     nixgl.url = "github:nix-community/nixgl";

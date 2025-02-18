@@ -331,8 +331,7 @@
         "secrets": "secrets",
         "sops-nix": "sops-nix",
         "spicetify-nix": "spicetify-nix",
-        "stylix": "stylix",
-        "tinted-kitty-l-lin": "tinted-kitty-l-lin"
+        "stylix": "stylix"
       }
     },
     "secrets": {
@@ -410,9 +409,7 @@
         ],
         "systems": "systems_2",
         "tinted-foot": "tinted-foot",
-        "tinted-kitty": [
-          "tinted-kitty-l-lin"
-        ],
+        "tinted-kitty": "tinted-kitty",
         "tinted-tmux": "tinted-tmux",
         "tinted-zed": "tinted-zed"
       },
@@ -477,19 +474,20 @@
         "type": "github"
       }
     },
-    "tinted-kitty-l-lin": {
+    "tinted-kitty": {
       "flake": false,
       "locked": {
-        "lastModified": 1728200537,
-        "narHash": "sha256-eIeAQVzFSMnFEWnzj2YdWHYiYirQj5AEaWQTj4G54EQ=",
-        "owner": "l-lin",
+        "lastModified": 1716423189,
+        "narHash": "sha256-2xF3sH7UIwegn+2gKzMpFi3pk5DlIlM18+vj17Uf82U=",
+        "owner": "tinted-theming",
         "repo": "tinted-kitty",
-        "rev": "0649cb87030070e03a986eae503984312557c5a7",
+        "rev": "eb39e141db14baef052893285df9f266df041ff8",
         "type": "github"
       },
       "original": {
-        "owner": "l-lin",
+        "owner": "tinted-theming",
         "repo": "tinted-kitty",
+        "rev": "eb39e141db14baef052893285df9f266df041ff8",
         "type": "github"
       }
     },
