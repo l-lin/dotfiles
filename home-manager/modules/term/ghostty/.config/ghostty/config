@@ -20,8 +20,8 @@
 # Window
 #
 
-window-padding-x = 8
-window-padding-y = 8
+window-padding-x = 0
+window-padding-y = 0
 
 # `false` will make windows without native decorations, i.e. titlebar and borders.
 # src: https://ghostty.org/docs/config/reference#window-decoration
