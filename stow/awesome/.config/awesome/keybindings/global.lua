@@ -38,12 +38,27 @@ local function globalkeys()
     awful.key({ }, "XF86MonBrightnessUp", function () awful.spawn("brightnessctl set +10%") end, { description = "Brightness +10%", group = "hotkeys" }),
     awful.key({ }, "XF86MonBrightnessDown", function () awful.spawn("brightnessctl set 10%-") end, { description = "Brightness -10%", group = "hotkeys" }),
 
+    -- TODO: is it useful?
+    awful.key(
+      { config.modkey }, "x",
+      function()
+        awful.prompt.run({
+          prompt = "Run Lua code: ",
+          textbox = awful.screen.focused().mypromptbox.widget,
+          exe_callback = awful.util.eval,
+          history_path = awful.util.get_cache_dir() .. "/history_eval",
+        })
+      end,
+      { description = "lua execute prompt", group = "awesome" }
+    ),
+
     -- Sound control
     awful.key(
       { }, "XF86AudioRaiseVolume",
       function ()
         awful.spawn("pamixer -i 5")
-        beautiful.volume.update()
+        -- TODO: update volume widget
+        -- beautiful.volume.update()
       end,
       { description = "sound +5%", group = "hotkeys" }
     ),
@@ -51,7 +66,7 @@ local function globalkeys()
       { }, "XF86AudioLowerVolume",
       function ()
         awful.spawn("pamixer -d 5")
-        beautiful.volume.update()
+        -- beautiful.volume.update()
       end,
       { description = "sound -5%", group = "hotkeys" }
     ),
@@ -59,7 +74,7 @@ local function globalkeys()
       { }, "XF86AudioMute",
       function ()
         awful.spawn("pamixer -t")
-        beautiful.volume.update()
+        -- beautiful.volume.update()
       end,
       { description = "mute sound", group = "hotkeys" }
     )
@@ -97,15 +112,6 @@ local function globalkeys()
     --   { description = "show weather", group = "widgets" }
     -- ),
 
-    -- TODO: is it useful?
-		-- awful.key({ config.modkey }, "x", function()
-		-- 	awful.prompt.run({
-		-- 		prompt = "Run Lua code: ",
-		-- 		textbox = awful.screen.focused().mypromptbox.widget,
-		-- 		exe_callback = awful.util.eval,
-		-- 		history_path = awful.util.get_cache_dir() .. "/history_eval",
-		-- 	})
-		-- end, { description = "lua execute prompt", group = "awesome" })
 	)
 
 	-- Bind all key numbers to tags.

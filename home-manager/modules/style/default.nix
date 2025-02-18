@@ -52,12 +52,8 @@
         #
         # List of Nerd Fonts can be found here:
         # https://github.com/NixOS/nixpkgs/blob/c55d81a2ef622a0838d2c398ae6f8523862227af/pkgs/data/fonts/nerd-fonts/manifests/fonts.json#L315
-        #
-        # For Ghostty, using Nerd Fonts does not work well, maybe because the
-        # fonts are installed in ~/.nix-profile/share/fonts/truetype/NerdFonts/
-        # instead of ~/.nix-profile/share/fonts/truetype/.
-        package = pkgs.jetbrains-mono;
-        name = "JetBrainsMono";
+        package = pkgs.nerd-fonts.jetbrains-mono;
+        name = "JetBrainsMono Nerd Font";
       };
       sansSerif = {
         package = pkgs.dejavu_fonts;

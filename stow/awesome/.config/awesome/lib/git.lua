@@ -5,7 +5,6 @@ local naughty = require("naughty")
 ---
 ---@param file string the file or directory to check
 ---@return boolean ok if the file or directory exists
----@return string? err error if there are any issue
 local function exists(file)
    local ok, err, code = os.rename(file, file)
    if not ok then
@@ -18,7 +17,7 @@ local function exists(file)
 end
 
 local function extract_project_name(project_url)
-    return project_url:match("([^/]+)$")
+  return project_url:match("([^/]+)$")
 end
 
 local function clone_if_not_exists(plugin_url)

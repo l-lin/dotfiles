@@ -6,10 +6,6 @@
 { userSettings, ... }: {
   # HACK: Using native installation.
 
-  xdg.configFile."awesome" = {
-    source = ./.config/awesome;
-    recursive = true;
-  };
   xdg.configFile."awesome/config.lua".text = ''
 local M = {}
 M.modkey = "Mod4"

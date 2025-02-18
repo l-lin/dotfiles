@@ -2,16 +2,18 @@
 -- when there are errors.
 require("setup.errors")
 
-require("lib/git").clone_if_not_exists("https://github.com/lcpz/lain")
-
-require("colorscheme")
-require("setup.layout")
 -- Set the terminal for applications that require it
 require("menubar").utils.terminal = require("config").terminal
+
+require("lib/git").clone_if_not_exists("https://github.com/lcpz/lain")
+
+require("setup.theme")
+require("setup.layout")
 require("setup.screen")
 require("setup.signals")
 require("setup.mouse")
 require("setup.rules")
+
 require("keybindings.global")
 
 -- Rules of thumb when a shell is needed:
