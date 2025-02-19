@@ -6,6 +6,7 @@ local theme = {}
 
 theme.font          = "JetBrainsMono Nerd Font"
 
+-- Setting colors in accordance of the taglist.
 theme.bg_normal     = "#1F1F28"
 theme.bg_focus      = "#7E9CD8"
 theme.bg_urgent     = theme.bg_normal
@@ -24,6 +25,12 @@ theme.border_width  = dpi(2)
 theme.border_normal = theme.bg_normal
 theme.border_focus  = "#7E9CD8"
 theme.border_marked = theme.bg_urgent
+
+-- Variables set for theming the menu:
+-- menu_[bg|fg]_[normal|focus]
+-- menu_[border_color|border_width]
+theme.menu_height = dpi(15)
+theme.menu_width  = dpi(100)
 
 theme.wallpaper = os.getenv("HOME") .. "/.wallpaper"
 
