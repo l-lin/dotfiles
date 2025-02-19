@@ -26,7 +26,7 @@ function _jira_issue_interactive() {
       --bind 'ctrl-b:execute(jira open {1})' \
       --bind "ctrl-r:reload(${cmd})" \
       --bind "alt-u:execute(jira issue assign {1} x)+reload(${cmd})" \
-      --bind 'ctrl-y:execute-silent(echo -n {1} | wl-copy)' \
+      --bind 'ctrl-y:execute-silent(echo -n {1} | xsel -b)' \
       --bind "enter:execute(jira issue view {1})" \
       --header 'A-a: assign to me | A-c: add comment | A-e: edit | A-m: move | C-b: open | C-r: reload | A-u: unassign | C-y: yank id | ?: toggle preview'
 }
