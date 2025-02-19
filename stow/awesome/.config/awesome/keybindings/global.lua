@@ -96,7 +96,7 @@ local function globalkeys()
 
     -- Applications
     -- TODO: LOCK
-		-- awful.key({ constants.modkey }, "w", function() awful.spawn{ "xlock" } end, { description = "lockscreen", group = "tag" }),
+    awful.key({ config.modkey }, "w", function() awful.spawn("xscreensaver-command -lock") end, { description = "lockscreen", group = "tag" }),
     awful.key({ config.modkey }, "c", function() awful.spawn(config.terminal .. " -e numbat --intro-banner off") end, { description = "open calculator", group = "hotkeys" }),
     awful.key({ config.modkey, "Shift" }, "o", function() awful.spawn("gcolor3") end, { description = "open color picker", group = "hotkeys" })
 	)

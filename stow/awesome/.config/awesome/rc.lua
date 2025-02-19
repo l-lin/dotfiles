@@ -26,3 +26,4 @@ local awful = require("awful")
 awful.spawn("setxkbmap -layout us -option ctrl:nocaps -variant altgr-intl")
 -- One single monitor to rule them all.
 awful.spawn(os.getenv("HOME") .. "/.config/awesome/scripts/monitor-setup.sh")
+awful.spawn.with_shell("pgrep xscreensaver || xscreensaver -nosplash")
