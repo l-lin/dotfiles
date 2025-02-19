@@ -27,6 +27,9 @@
   autocrlf = input
   pager = delta --${config.theme.polarity}
   hooksPath = ${config.xdg.configHome}/git/hooks
+  # accelerate git status on big repo
+  fsmonitor = true
+  untrackedcache = true
   '';
 
   # Symlink to ~/perso/.gitconfig

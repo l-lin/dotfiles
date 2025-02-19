@@ -107,6 +107,9 @@
 [tag]
   # sort by most recently used
   sort = taggerdate
+[maintenance]
+  auto = false
+  strategy = incremental
 # shortcuts
 [url "git@github.com:"]
   insteadOf = github:
