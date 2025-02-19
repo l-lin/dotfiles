@@ -3,6 +3,7 @@ local awesome, client, root = awesome, client, root
 local awful = require("awful")
 local beautiful = require("beautiful")
 local gears = require("gears")
+local naughty = require("naughty")
 
 local config = require("config")
 
@@ -17,7 +18,6 @@ local function globalkeys()
 		awful.key({ config.modkey }, "Left", awful.tag.viewprev, { description = "view previous", group = "tag" }),
 		awful.key({ config.modkey }, "Right", awful.tag.viewnext, { description = "view next", group = "tag" }),
 		awful.key({ config.modkey }, "Escape", awful.tag.history.restore, { description = "go back", group = "tag" }),
-
 		-- Layout
 		awful.key({ config.modkey, "Control" }, "Left", function() awful.tag.incmwfact(-0.05) end, { description = "decrease width factor", group = "layout" }),
 		awful.key({ config.modkey, "Control" }, "Down", function() awful.client.incwfact(-0.1) end, { description = "decrease height factor", group = "layout" }),
@@ -38,6 +38,13 @@ local function globalkeys()
     awful.key({ }, "XF86MonBrightnessUp", function () awful.spawn("brightnessctl set +10%") end, { description = "Brightness +10%", group = "hotkeys" }),
     awful.key({ }, "XF86MonBrightnessDown", function () awful.spawn("brightnessctl set 10%-") end, { description = "Brightness -10%", group = "hotkeys" }),
 
+    -- Screenshot
+    awful.key({ config.modkey }, "s", function () awful.spawn("flameshot gui") end, { description = "take screenshot", group = "hotkeys" }),
+
+    -- Notifications
+    awful.key({ config.modkey }, "v", function() naughty.toggle() end, { description = "toggle notifications", group = "hotkeys" }),
+    awful.key({ config.modkey, "Control" }, "v", function() naughty.destroy_all_notifications() end, { description = "destroy notifications", group = "hotkeys" }),
+
     -- TODO: is it useful?
     awful.key(
       { config.modkey }, "x",
@@ -53,6 +60,14 @@ local function globalkeys()
     ),
 
     -- Sound control
+    -- Not sure I don't need to use the terminal here...
+    awful.key({ config.modkey }, "a", function() awful.spawn("pulsemixer") end, { description = "open audio control", group = "hotkeys" }),
+    awful.key({ config.modkey, "Shift" }, "m", function() awful.spawn(config.terminal .. " -e ncmpcpp --screen visualizer") end, { description = "open mpd visualizer", group = "hotkeys" }),
+    awful.key({ config.modkey, "Shift" }, "n", function() awful.spawn("mpc -q next") end, { description = "next mpd song", group = "hotkeys" }),
+    awful.key({ config.modkey, "Shift" }, "p", function() awful.spawn("mpc -q toggle") end, { description = "toggle mpd play/pause", group = "hotkeys" }),
+    awful.key({ config.modkey }, "m", function() awful.spawn("spotify") end, { description = "open spotify", group = "hotkeys" }),
+    awful.key({ config.modkey }, "n", function() awful.spawn("spotify-next") end, { description = "next spotify song", group = "hotkeys" }),
+    awful.key({ config.modkey }, "p", function() awful.spawn("spotify-toggle") end, { description = "toggle spotify play/pause", group = "hotkeys" }),
     awful.key(
       { }, "XF86AudioRaiseVolume",
       function ()
@@ -77,41 +92,13 @@ local function globalkeys()
         -- beautiful.volume.update()
       end,
       { description = "mute sound", group = "hotkeys" }
-    )
+    ),
 
     -- Applications
     -- TODO: LOCK
 		-- awful.key({ constants.modkey }, "w", function() awful.spawn{ "xlock" } end, { description = "lockscreen", group = "tag" }),
-
-    -- Widgets
-    -- awful.key(
-    --   { constants.modkey }, "c",
-    --   function()
-    --     if beautiful.cal then
-    --       beautiful.cal.show(7)
-    --     end
-    --   end,
-    --   { description = "show calendar", group = "widgets" }
-    -- ),
-    -- awful.key(
-    --   { constants.modkey }, "e",
-    --   function()
-    --     if beautiful.fs then
-    --       beautiful.fs.show(7)
-    --     end
-    --   end,
-    --   { description = "show filesystem", group = "widgets" }
-    -- ),
-    -- awful.key(
-    --   { constants.modkey, "Shift" }, "w",
-    --   function()
-    --     if beautiful.weather then
-    --       beautiful.weather.show(7)
-    --     end
-    --   end,
-    --   { description = "show weather", group = "widgets" }
-    -- ),
-
+    awful.key({ config.modkey }, "c", function() awful.spawn(config.terminal .. " -e numbat --intro-banner off") end, { description = "open calculator", group = "hotkeys" }),
+    awful.key({ config.modkey, "Shift" }, "o", function() awful.spawn("gcolor3") end, { description = "open color picker", group = "hotkeys" })
 	)
 
 	-- Bind all key numbers to tags.
