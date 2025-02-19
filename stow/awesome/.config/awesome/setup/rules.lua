@@ -20,8 +20,12 @@ awful.rules.rules = {
   },
 
   -- Floating clients.
+  -- To find the instance/class/name/role, execute the following
+  --   xprop | grep "WM_CLASS\|WM_NAME\|WM_WINDOW_ROLE"
+  -- and click on the window to get the information.
   -- TODO: add clients + doc to find the class/instance/role...
   {
+    properties = { floating = true },
     rule_any = {
       instance = {
         "DTA", -- Firefox addon DownThemAll.
@@ -52,7 +56,6 @@ awful.rules.rules = {
         "pop-up", -- e.g. Google Chrome's (detached) Developer Tools.
       },
     },
-    properties = { floating = true },
   },
 
   -- Pin application on specific tags.
