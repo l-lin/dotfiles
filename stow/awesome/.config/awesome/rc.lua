@@ -22,5 +22,7 @@ require("keybindings.global")
 -- - When the command is a shell alias
 -- src: https://awesomewm.org/apidoc/libraries/awful.spawn.html
 local awful = require("awful")
+-- Change capslock to ctrl.
 awful.spawn("setxkbmap -layout us -option ctrl:nocaps -variant altgr-intl")
+-- One single monitor to rule them all.
 awful.spawn(os.getenv("HOME") .. "/.config/awesome/scripts/monitor-setup.sh")
