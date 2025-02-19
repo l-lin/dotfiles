@@ -9,6 +9,8 @@
     # TODO: Keeping Gnome Wayland, in case I have some issue with X WM...
     # (./. + "/${userSettings.wm}")
     ./gnome
+
+    ./tools
   ];
 
   home.sessionVariables = {
