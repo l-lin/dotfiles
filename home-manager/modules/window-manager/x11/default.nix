@@ -15,6 +15,8 @@
     #xsecurelock
     # Resize and Rotate for X window manager: https://wiki.archlinux.org/title/Xrandr
     xorg.xrandr
+    # Command-line program for getting and setting the contents of the X selection: http://www.kfish.org/software/xsel
+    xsel
   ];
 
   home.sessionVariables = {
