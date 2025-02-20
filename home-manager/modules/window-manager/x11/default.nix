@@ -12,6 +12,13 @@
   # HACK: xscreensaver is installed natively because I'm getting some
   # "Permission denied" with the one installed from home-manager.
   # I should investigate it when I have the time...
+  #
+  # If the authentication fails even with right password, you might need to
+  # manually set some permission on a specific file:
+  #
+  #   chmod u+s /sbin/unix_chkpwd
+  #
+  # src: https://unix.stackexchange.com/a/422556
 
   home.packages = with pkgs; [
     # Resize and Rotate for X window manager: https://wiki.archlinux.org/title/Xrandr
