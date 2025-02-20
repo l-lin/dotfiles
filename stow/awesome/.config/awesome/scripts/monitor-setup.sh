@@ -10,8 +10,17 @@
 # xrandr | grep " connected " | awk '{ print$1 }'
 # ```
 laptop_monitor='eDP-1'
+connected_monitors=$(xrandr | grep " connected")
 
-if [[ $(xrandr | grep -c " connected") -gt 1 ]]; then
+if [[ $(echo "${connected_monitors}" | wc -l) -gt 1 ]]; then
+  external_monitor=$(echo "${connected_monitors}" | grep -v "${laptop_monitor}" | awk '{ print $1 }')
+
+  # If the external monitor is not displayed, then we should display it before
+  # disabling the laptop monitor.
+  if ! echo "${connected_monitors}" | grep -q '1920'; then
+    xrandr --output "${external_monitor}" --auto
+  fi
+
   # Disable Laptop monitor, so that I can focus on a single monitor.
   xrandr --output "${laptop_monitor}" --off
 else
