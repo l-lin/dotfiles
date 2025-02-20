@@ -7,10 +7,11 @@ local awful = require("awful")
 
 -- Change capslock to ctrl.
 awful.spawn("setxkbmap -layout us -option ctrl:nocaps -variant altgr-intl")
--- One single monitor to rule them all.
-awful.spawn(os.getenv("HOME") .. "/.config/awesome/scripts/monitor-setup.sh")
+-- Set screen locker.
 awful.spawn.with_shell("pgrep xscreensaver || xscreensaver -nosplash")
+-- Screenshot tool must be started in background in order to be used.
 awful.spawn.with_shell("pgrep flameshot || flameshot")
+-- Night screen light.
 awful.spawn.with_shell("pgrep redshift || redshift")
 -- Suspend notifications by default.
 require("naughty").suspend()

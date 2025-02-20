@@ -2,9 +2,7 @@
 -- when there are errors.
 require("setup.errors")
 require("setup.theme")
-
--- Set the terminal for applications that require it
-require("menubar").utils.terminal = require("config").terminal
+require("setup.monitors")
 
 require("lib/git").clone_if_not_exists("https://github.com/lcpz/lain")
 
