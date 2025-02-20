@@ -5,7 +5,6 @@ local gears = require("gears")
 local naughty = require("naughty")
 
 local config = require("config")
-local wibar = require("setup.wibar")
 
 local function globalkeys()
   local widgets = require("lib.widgets")
