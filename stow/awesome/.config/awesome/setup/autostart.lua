@@ -11,3 +11,5 @@ awful.spawn("setxkbmap -layout us -option ctrl:nocaps -variant altgr-intl")
 awful.spawn(os.getenv("HOME") .. "/.config/awesome/scripts/monitor-setup.sh")
 awful.spawn.with_shell("pgrep xscreensaver || xscreensaver -nosplash")
 awful.spawn.with_shell("pgrep flameshot || flameshot")
+-- Suspend notifications by default.
+require("naughty").suspend()
