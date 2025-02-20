@@ -23,7 +23,6 @@ awful.rules.rules = {
   -- To find the instance/class/name/role, execute the following
   --   xprop | grep "WM_CLASS\|WM_NAME\|WM_WINDOW_ROLE"
   -- and click on the window to get the information.
-  -- TODO: add clients + doc to find the class/instance/role...
   {
     properties = { floating = true },
     rule_any = {
@@ -59,7 +58,7 @@ awful.rules.rules = {
   },
 
   -- Pin application on specific tags.
-  { rule = { class = "obsidian" }, properties = { tag = "1" } },
+  { rule = { class = "obsidian" }, properties = { tag = "2" } },
   { rule = { class = "Zen" }, properties = { tag = "3" } },
   { rule = { class = "Slack" }, properties = { tag = "4" } },
   { rule = { class = "Spotify" }, properties = { tag = "5" } },

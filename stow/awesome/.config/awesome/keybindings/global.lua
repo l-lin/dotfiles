@@ -1,13 +1,15 @@
 local awesome, client, root = awesome, client, root
 
 local awful = require("awful")
-local beautiful = require("beautiful")
 local gears = require("gears")
 local naughty = require("naughty")
 
 local config = require("config")
+local wibar = require("setup.wibar")
 
 local function globalkeys()
+  local widgets = require("lib.widgets")
+
 	local keys = gears.table.join(
     -- awesome
 		awful.key({ config.modkey, "Shift" }, "s", require("awful.hotkeys_popup").show_help, { description = "show help", group = "awesome" }),
@@ -68,34 +70,11 @@ local function globalkeys()
     awful.key({ config.modkey }, "m", function() awful.spawn("spotify") end, { description = "open spotify", group = "hotkeys" }),
     awful.key({ config.modkey }, "n", function() awful.spawn("spotify-next") end, { description = "next spotify song", group = "hotkeys" }),
     awful.key({ config.modkey }, "p", function() awful.spawn("spotify-toggle") end, { description = "toggle spotify play/pause", group = "hotkeys" }),
-    awful.key(
-      { }, "XF86AudioRaiseVolume",
-      function ()
-        awful.spawn("pamixer -i 5")
-        -- TODO: update volume widget
-        -- beautiful.volume.update()
-      end,
-      { description = "sound +5%", group = "hotkeys" }
-    ),
-    awful.key(
-      { }, "XF86AudioLowerVolume",
-      function ()
-        awful.spawn("pamixer -d 5")
-        -- beautiful.volume.update()
-      end,
-      { description = "sound -5%", group = "hotkeys" }
-    ),
-    awful.key(
-      { }, "XF86AudioMute",
-      function ()
-        awful.spawn("pamixer -t")
-        -- beautiful.volume.update()
-      end,
-      { description = "mute sound", group = "hotkeys" }
-    ),
+    awful.key({ }, "XF86AudioRaiseVolume", function () awful.spawn.with_line_callback("pamixer -i 5", { exit = widgets.volume.update }) end, { description = "sound +5%", group = "hotkeys" }),
+    awful.key({ }, "XF86AudioLowerVolume", function () awful.spawn.with_line_callback("pamixer -d 5", { exit = widgets.volume.update }) end, { description = "sound -5%", group = "hotkeys" }),
+    awful.key({ }, "XF86AudioMute", function () awful.spawn.with_line_callback("pamixer -t", { exit = widgets.volume.update }) end, { description = "mute sound", group = "hotkeys" }),
 
     -- Applications
-    -- TODO: LOCK
     awful.key({ config.modkey }, "w", function() awful.spawn("xscreensaver-command -lock") end, { description = "lockscreen", group = "tag" }),
     awful.key({ config.modkey }, "c", function() awful.spawn(config.terminal .. " -e numbat --intro-banner off") end, { description = "open calculator", group = "hotkeys" }),
     awful.key({ config.modkey, "Shift" }, "o", function() awful.spawn("gcolor3") end, { description = "open color picker", group = "hotkeys" })
