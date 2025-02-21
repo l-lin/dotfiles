@@ -17,6 +17,5 @@ awful.spawn.with_shell("pgrep redshift || redshift")
 require("naughty").suspend()
 -- Start applications if not started
 awful.spawn.with_shell("pgrep tmux || " .. require("config").terminal .. " -e tmux -2 -u")
-awful.spawn.with_shell("if [[ $(ps faux | grep -c obsidian) -eq 0 ]]; then obsidian; fi")
 awful.spawn.with_shell("pgrep zen || zen")
 awful.spawn.with_shell("pgrep slack || slack")
