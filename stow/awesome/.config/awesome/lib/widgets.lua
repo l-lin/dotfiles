@@ -172,7 +172,7 @@ local function systray()
   local wibox = require("wibox")
 
   local w = wibox.widget.systray()
-  w:set_base_size(26)
+  w:set_base_size(23)
 
   local systray_with_padding = wibox.container.margin(w)
   systray_with_padding:set_top(6)
