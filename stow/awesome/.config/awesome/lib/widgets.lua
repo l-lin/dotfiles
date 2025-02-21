@@ -1,8 +1,3 @@
-local client = client
-
-local awful = require("awful")
-local gears = require("gears")
-
 local lain = require("lain")
 -- Global variables that are set by Lain.
 _G.bat_now = bat_now
@@ -15,37 +10,10 @@ local markup = lain.util.markup
 local theme = require("theme.default")
 local net = require("lib.net")
 
-local config = require("config")
-
-local function taglist()
-  return gears.table.join(
-    awful.button({}, 1, function(t)
-      t:view_only()
-    end),
-    awful.button({ config.modkey }, 1, function(t)
-      if client.focus then
-        client.focus:move_to_tag(t)
-      end
-    end),
-    awful.button({}, 3, awful.tag.viewtoggle),
-    awful.button({ config.modkey }, 3, function(t)
-      if client.focus then
-        client.focus:toggle_tag(t)
-      end
-    end),
-    awful.button({}, 4, function(t)
-      awful.tag.viewnext(t.screen)
-    end),
-    awful.button({}, 5, function(t)
-      awful.tag.viewprev(t.screen)
-    end)
-  )
-end
-
 local function download_speed()
   return net({
     settings = function ()
-      widget:set_markup(" 󰅢  " .. net_now.received .. "K/s ")
+      widget:set_markup("󰅢  " .. net_now.received .. "K/s")
     end
   })
 end
@@ -53,7 +21,7 @@ end
 local function upload_speed()
   return net({
     settings = function ()
-      widget:set_markup(" 󰅧  " .. net_now.sent .. "K/s ")
+      widget:set_markup("󰅧  " .. net_now.sent .. "K/s")
     end
   })
 end
@@ -74,7 +42,7 @@ local function volume()
         end
       end
 
-      widget:set_markup(icon .. volume_now.level .. "% ")
+      widget:set_markup(icon .. volume_now.level .. "%")
     end
   })
 end
@@ -82,7 +50,7 @@ end
 local function mem()
   return lain.widget.mem({
     settings = function()
-      local display = "   " .. mem_now.perc .. "% "
+      local display = "  " .. mem_now.perc .. "%"
       if mem_now.perc > 80 then
         widget:set_markup(markup.fontfg(theme.font, theme.fg_urgent, display))
       elseif mem_now.perc > 50 then
@@ -97,7 +65,7 @@ end
 local function cpu()
   return lain.widget.sysload({
     settings = function()
-      local display = "   " .. load_1
+      local display = "  " .. load_1
 
       local load_num = tonumber(load_1)
       if not load_num then
@@ -119,7 +87,7 @@ end
 local function temperature()
   return lain.widget.temp({
     settings = function()
-      local display = "  " .. coretemp_now .. "°C "
+      local display = " " .. coretemp_now .. "°C"
 
       local temp_num = tonumber(coretemp_now)
       if not temp_num then
@@ -161,7 +129,7 @@ local function bat()
       if bat_now.status == "Charging" then
         icon = " " .. icon
       end
-      local display = icon .. bat_now.perc .. "% "
+      local display = icon .. bat_now.perc .. "%"
 
       widget:set_markup(display)
     end
@@ -180,7 +148,6 @@ local function systray()
 end
 
 local M = {}
-M.taglist = taglist()
 M.download_speed = download_speed()
 M.upload_speed = upload_speed()
 M.volume = volume()
