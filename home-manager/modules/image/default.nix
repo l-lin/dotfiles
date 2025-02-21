@@ -6,8 +6,6 @@
   imports = fileExplorer.allSubdirs ./.;
 
   home.packages = with pkgs; [
-    # Powerful yet simple to use screenshot software: https://github.com/flameshot-org/flameshot
-    flameshot
     # The GNU Image Manipulation Program: https://www.gimp.org/
     gimp
     # A command line image viewer for tiling window managers: https://sr.ht/~exec64/imv/
