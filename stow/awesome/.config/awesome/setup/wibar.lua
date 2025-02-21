@@ -24,7 +24,7 @@ local function setup(s)
     -- Middle widgets
     {
       layout = wibox.layout.flex.horizontal,
-      wibox.widget.systray(),
+      widgets.systray,
     },
     -- Right widgets
     {

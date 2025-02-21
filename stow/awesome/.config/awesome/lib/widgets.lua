@@ -168,6 +168,17 @@ local function bat()
   })
 end
 
+local function systray()
+  local wibox = require("wibox")
+
+  local w = wibox.widget.systray()
+  w:set_base_size(26)
+
+  local systray_with_padding = wibox.container.margin(w)
+  systray_with_padding:set_top(5)
+  return systray_with_padding
+end
+
 local M = {}
 M.taglist = taglist()
 M.download_speed = download_speed()
@@ -177,4 +188,5 @@ M.mem = mem()
 M.cpu = cpu()
 M.temperature = temperature()
 M.bat = bat()
+M.systray = systray()
 return M
