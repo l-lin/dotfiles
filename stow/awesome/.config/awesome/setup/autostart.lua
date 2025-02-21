@@ -13,9 +13,13 @@ awful.spawn.with_shell("pgrep xscreensaver || xscreensaver -nosplash")
 awful.spawn.with_shell("pgrep flameshot || flameshot")
 -- Night screen light.
 awful.spawn.with_shell("pgrep redshift || redshift")
--- Suspend notifications by default.
-require("naughty").suspend()
+-- Start ssh-agent (might be best to use the env variable $SSH_AUTH_SOCK, but
+-- it's returning the gpg-agent socket instead... So hardcoding it, since I'm
+-- the only user).
+awful.spawn.with_shell("pgrep ssh-agent || ssh-agent -D -a /run/user/1000/ssh-agent.socket")
 -- Start applications if not started
 awful.spawn.with_shell("pgrep tmux || " .. require("config").terminal .. " -e tmux -2 -u")
 awful.spawn.with_shell("pgrep zen || zen")
 awful.spawn.with_shell("pgrep slack || slack")
+-- Suspend notifications by default.
+require("naughty").suspend()
