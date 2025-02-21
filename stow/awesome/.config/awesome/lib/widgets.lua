@@ -175,7 +175,7 @@ local function systray()
   w:set_base_size(26)
 
   local systray_with_padding = wibox.container.margin(w)
-  systray_with_padding:set_top(5)
+  systray_with_padding:set_top(6)
   return systray_with_padding
 end
 
