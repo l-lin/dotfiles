@@ -40,4 +40,15 @@ theme.awesome_icon = theme_assets.awesome_icon(theme.menu_height, theme.bg_focus
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.
 theme.icon_theme = nil
 
+theme.systray_icon_spacing = dpi(8)
+theme.systray_icon_base_size = dpi(16)
+theme.systray_margin_top = dpi(6)
+
+theme.taglist_margin_top = dpi(6)
+theme.taglist_margin_bottom = dpi(4)
+theme.taglist_margin_left = dpi(8)
+theme.taglist_margin_right = dpi(4)
+
+theme.big_space_width = dpi(15)
+
 return theme

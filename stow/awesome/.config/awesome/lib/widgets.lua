@@ -7,8 +7,9 @@ _G.mem_now = mem_now
 _G.volume_now = volume_now
 
 local markup = lain.util.markup
-local theme = require("theme.default")
 local net = require("lib.net")
+
+local theme = require("theme.default")
 
 local function download_speed()
   return net({
@@ -140,10 +141,10 @@ local function systray()
   local wibox = require("wibox")
 
   local w = wibox.widget.systray()
-  w:set_base_size(23)
+  w:set_base_size(theme.systray_icon_base_size)
 
   local systray_with_padding = wibox.container.margin(w)
-  systray_with_padding:set_top(6)
+  systray_with_padding:set_top(theme.systray_margin_top)
   return systray_with_padding
 end
 

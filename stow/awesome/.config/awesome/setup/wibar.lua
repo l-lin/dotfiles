@@ -3,10 +3,9 @@ local client = client
 local awful = require("awful")
 local widgets = require("lib.widgets")
 local wibox = require("wibox")
-local xresources = require("beautiful.xresources")
-local dpi = xresources.apply_dpi
 local gears = require("gears")
 
+local theme = require("theme.default")
 local config = require("config")
 
 local function taglist_buttons()
@@ -41,15 +40,15 @@ local function taglist_widget(s)
 		buttons = taglist_buttons(),
 		widget_template = {
 			widget = wibox.container.margin,
-			top = dpi(6),
-			bottom = dpi(4),
+			top = theme.taglist_margin_top,
+			bottom = theme.taglist_margin_bottom,
 			{
 				widget = wibox.container.background,
 				id = "background_role",
 				{
 					widget = wibox.container.margin,
-					left = dpi(8),
-					right = dpi(4),
+					left = theme.taglist_margin_left,
+					right = theme.taglist_margin_right,
 					{ id = "text_role", widget = wibox.widget.textbox },
 				},
 			},
@@ -59,7 +58,7 @@ end
 
 local function setup(s)
 	local big_space = wibox.widget.textbox()
-	big_space.forced_width = dpi(15)
+	big_space.forced_width = theme.big_space_width
 	local space = wibox.widget.textbox(" ")
 
 	s.mywibox = awful.wibar({ position = "top", screen = s })
