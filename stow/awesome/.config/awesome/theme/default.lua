@@ -18,7 +18,9 @@ theme.fg_normal     = "#DCD7BA"
 theme.fg_focus      = theme.bg_normal
 theme.fg_urgent     = "#C34043"
 theme.fg_warning    = "#FFA066"
-theme.fg_minimize   = theme.fg_normal
+theme.fg_minimize   = "#717C7C"
+
+theme.taglist_fg_empty = "#717C7C"
 
 theme.useless_gap   = dpi(0)
 theme.border_width  = dpi(2)
