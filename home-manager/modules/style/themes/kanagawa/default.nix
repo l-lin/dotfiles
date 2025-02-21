@@ -26,6 +26,8 @@ in {
     };
   };
 
+  home.file.".wallpaper".source = ../../../image/wallpaper/pictures/cat.jpg;
+
   gtk = {
     iconTheme = {
       # An icon theme for the Kanagawa colour palette: https://github.com/Fausto-Korpsvart/Kanagawa-GKT-Theme

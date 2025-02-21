@@ -34,8 +34,6 @@ theme.border_marked = theme.bg_urgent
 theme.menu_height = dpi(15)
 theme.menu_width  = dpi(100)
 
-theme.wallpaper = os.getenv("HOME") .. "/.wallpaper"
-
 theme.awesome_icon = theme_assets.awesome_icon(theme.menu_height, theme.bg_focus, theme.fg_focus)
 
 -- Define the icon theme for application icons. If not set then the icons

@@ -46,6 +46,8 @@ in {
     };
   };
 
+  home.file.".wallpaper".source = ../../../image/wallpaper/pictures/sky.jpg;
+
   gtk = {
     iconTheme = {
       # Pixel perfect icon theme for Linux: https://github.com/PapirusDevelopmentTeam/papirus-icon-theme
