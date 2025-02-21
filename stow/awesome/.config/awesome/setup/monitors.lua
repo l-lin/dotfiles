@@ -1,5 +1,7 @@
+--
 -- Single monitor for everything, so I'm focus on a single monitor and not be
 -- distracted with the laptop monitor.
+--
 
 -- Mappings between the monitor IDs in /sys/class/drm/card1-* and the one used by xrandr.
 -- Hardcoding because `xrandr` command is slow (~500ms).
