@@ -49,7 +49,7 @@ local function taglist_widget(s)
 				{
 					widget = wibox.container.margin,
 					left = dpi(8),
-					right = dpi(8),
+					right = dpi(4),
 					{ id = "text_role", widget = wibox.widget.textbox },
 				},
 			},

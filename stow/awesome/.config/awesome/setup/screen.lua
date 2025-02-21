@@ -6,7 +6,11 @@ require("menubar").utils.terminal = config.terminal
 
 awful.screen.connect_for_each_screen(function(s)
   -- Each screen has its own tag table.
-  awful.tag(config.tags, s, awful.layout.layouts[1])
+  local names = { " ", " ", " ", " ", " " }
+
+  local layout = awful.layout.suit
+  local layouts = { layout.tile, layout.tile, layout.tile, layout.tile, layout.floating }
+  awful.tag(names, s, layouts)
 
   -- Create a promptbox for each screen
   s.mypromptbox = awful.widget.prompt()
