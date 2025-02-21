@@ -93,7 +93,7 @@ local function setup(s)
 			space,
 			widgets.temperature.widget,
 			space,
-			wibox.widget.textclock(" 󰃭 %Y-%m-%d %H:%M "),
+			wibox.widget.textclock("󰃭 %Y-%m-%d %H:%M"),
 			space,
 			widgets.bat.widget,
 			big_space,
