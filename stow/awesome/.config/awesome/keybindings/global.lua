@@ -15,21 +15,33 @@ local function globalkeys()
 		awful.key({ config.modkey, "Control" }, "r", awesome.restart, { description = "reload awesome", group = "awesome" }),
 		--awful.key({ config.modkey, "Control" }, "q", awesome.quit, { description = "quit awesome", group = "awesome" }),
 
+    -- System
+    awful.key({ config.modkey }, "w", function() awful.spawn("xscreensaver-command -lock") end, { description = "lockscreen", group = "system" }),
+    awful.key({ config.modkey, "Shift" }, "w", function() awful.spawn.with_shell("xscreensaver-command -lock & systemctl suspend") end, { description = "suspend computer", group = "system" }),
+
+    -- Notifications
+    awful.key({ config.modkey }, "v", function() naughty.toggle() end, { description = "toggle notifications", group = "system" }),
+    awful.key({ config.modkey, "Control" }, "v", function() naughty.destroy_all_notifications() end, { description = "destroy notifications", group = "system" }),
+
     -- Tags
 		awful.key({ config.modkey }, "Left", awful.tag.viewprev, { description = "view previous", group = "tag" }),
 		awful.key({ config.modkey }, "Right", awful.tag.viewnext, { description = "view next", group = "tag" }),
 		awful.key({ config.modkey }, "Escape", awful.tag.history.restore, { description = "go back", group = "tag" }),
+
 		-- Layout
 		awful.key({ config.modkey, "Control" }, "Left", function() awful.tag.incmwfact(-0.05) end, { description = "decrease width factor", group = "layout" }),
 		awful.key({ config.modkey, "Control" }, "Down", function() awful.client.incwfact(-0.1) end, { description = "decrease height factor", group = "layout" }),
 		awful.key({ config.modkey, "Control" }, "Up", function() awful.client.incwfact(0.1) end, { description = "increase height factor", group = "layout" }),
 		awful.key({ config.modkey, "Control" }, "Right", function() awful.tag.incmwfact(0.05) end, { description = "increase width factor", group = "layout" }),
 
-		-- Standard program
-		awful.key({ config.modkey }, "t", function() awful.spawn(config.terminal .. " -e tmux -2 -u") end, { description = "open a terminal", group = "launcher" }),
-		awful.key({ config.modkey }, "a", function() awful.spawn(config.terminal .. " -e pulsemixer") end, { description = "audio mix", group = "launcher" }),
-		awful.key({ config.modkey }, "e", function() awful.spawn(config.terminal .. " -e yazi") end, { description = "file manager", group = "launcher" }),
-		awful.key({ config.modkey, "Shift" }, "e", function() awful.spawn("nautilus") end, { description = "file manager", group = "launcher" }),
+    -- Applications
+		awful.key({ config.modkey }, "t", function() awful.spawn(config.terminal .. " -e tmux -2 -u") end, { description = "open a terminal", group = "application" }),
+		awful.key({ config.modkey }, "a", function() awful.spawn(config.terminal .. " -e pulsemixer") end, { description = "audio mix", group = "application" }),
+		awful.key({ config.modkey }, "e", function() awful.spawn(config.terminal .. " -e yazi") end, { description = "file manager", group = "application" }),
+		awful.key({ config.modkey, "Shift" }, "e", function() awful.spawn("nautilus") end, { description = "file manager", group = "application" }),
+    awful.key({ config.modkey }, "c", function() awful.spawn(config.terminal .. " -e numbat --intro-banner off") end, { description = "open calculator", group = "application" }),
+    awful.key({ config.modkey }, "o", function() awful.spawn.with_shell("pgrep slack || slack") end, { description = "slack", group = "application" }),
+    awful.key({ config.modkey, "Shift" }, "o", function() awful.spawn("gcolor3") end, { description = "open color picker", group = "application" }),
 
 		-- Prompt
 		awful.key({ config.modkey }, "r", function() awful.screen.focused().mypromptbox:run() end, { description = "run prompt", group = "launcher" }),
@@ -42,41 +54,22 @@ local function globalkeys()
     -- Screenshot
     awful.key({ config.modkey }, "s", function () awful.spawn("flameshot gui") end, { description = "take screenshot", group = "hotkeys" }),
 
-    -- Notifications
-    awful.key({ config.modkey }, "v", function() naughty.toggle() end, { description = "toggle notifications", group = "hotkeys" }),
-    awful.key({ config.modkey, "Control" }, "v", function() naughty.destroy_all_notifications() end, { description = "destroy notifications", group = "hotkeys" }),
-
-    -- TODO: is it useful?
-    awful.key(
-      { config.modkey }, "x",
-      function()
-        awful.prompt.run({
-          prompt = "Run Lua code: ",
-          textbox = awful.screen.focused().mypromptbox.widget,
-          exe_callback = awful.util.eval,
-          history_path = awful.util.get_cache_dir() .. "/history_eval",
-        })
-      end,
-      { description = "lua execute prompt", group = "awesome" }
-    ),
-
     -- Sound control
     -- Not sure I don't need to use the terminal here...
     awful.key({ config.modkey }, "a", function() awful.spawn("pulsemixer") end, { description = "open audio control", group = "hotkeys" }),
     awful.key({ config.modkey, "Shift" }, "m", function() awful.spawn(config.terminal .. " -e ncmpcpp --screen visualizer") end, { description = "open mpd visualizer", group = "hotkeys" }),
     awful.key({ config.modkey, "Shift" }, "n", function() awful.spawn("mpc -q next") end, { description = "next mpd song", group = "hotkeys" }),
     awful.key({ config.modkey, "Shift" }, "p", function() awful.spawn("mpc -q toggle") end, { description = "toggle mpd play/pause", group = "hotkeys" }),
+    awful.key({ }, "XF86AudioNext", function() awful.spawn("mpc -q next") end, { description = "next mpd song", group = "hotkeys" }),
+    awful.key({ }, "XF86AudioPrev", function() awful.spawn("mpc -q prev") end, { description = "previous mpd song", group = "hotkeys" }),
+    awful.key({ }, "XF86AudioPlay", function() awful.spawn("mpc -q toggle") end, { description = "toggle mpd play/pause", group = "hotkeys" }),
+    awful.key({ config.modkey, "Shift" }, "p", function() awful.spawn("mpc -q toggle") end, { description = "toggle mpd play/pause", group = "hotkeys" }),
     awful.key({ config.modkey }, "m", function() awful.spawn("spotify") end, { description = "open spotify", group = "hotkeys" }),
     awful.key({ config.modkey }, "n", function() awful.spawn("spotify-next") end, { description = "next spotify song", group = "hotkeys" }),
     awful.key({ config.modkey }, "p", function() awful.spawn("spotify-toggle") end, { description = "toggle spotify play/pause", group = "hotkeys" }),
     awful.key({ }, "XF86AudioRaiseVolume", function () awful.spawn.with_line_callback("pamixer -i 5", { exit = widgets.volume.update }) end, { description = "sound +5%", group = "hotkeys" }),
     awful.key({ }, "XF86AudioLowerVolume", function () awful.spawn.with_line_callback("pamixer -d 5", { exit = widgets.volume.update }) end, { description = "sound -5%", group = "hotkeys" }),
-    awful.key({ }, "XF86AudioMute", function () awful.spawn.with_line_callback("pamixer -t", { exit = widgets.volume.update }) end, { description = "mute sound", group = "hotkeys" }),
-
-    -- Applications
-    awful.key({ config.modkey }, "w", function() awful.spawn("xscreensaver-command -lock") end, { description = "lockscreen", group = "tag" }),
-    awful.key({ config.modkey }, "c", function() awful.spawn(config.terminal .. " -e numbat --intro-banner off") end, { description = "open calculator", group = "hotkeys" }),
-    awful.key({ config.modkey, "Shift" }, "o", function() awful.spawn("gcolor3") end, { description = "open color picker", group = "hotkeys" })
+    awful.key({ }, "XF86AudioMute", function () awful.spawn.with_line_callback("pamixer -t", { exit = widgets.volume.update }) end, { description = "mute sound", group = "hotkeys" })
 	)
 
 	-- Bind all key numbers to tags.
