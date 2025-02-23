@@ -13,8 +13,9 @@ local function globalkeys()
     -- awesome
     awful.key({ config.modkey, "Control" }, "s", require("awful.hotkeys_popup").show_help, { description = "show help", group = "awesome" }),
     awful.key({ config.modkey, "Control" }, "r", awesome.restart, { description = "reload awesome", group = "awesome" }),
-    awful.key({ config.modkey, "Control" }, "m", function() require("setup.monitors") end, { description = "setup monitors", group = "awesome" }),
-    --awful.key({ config.modkey, "Control" }, "q", awesome.quit, { description = "quit awesome", group = "awesome" }),
+    awful.key({ config.modkey, "Control" }, "q", awesome.quit, { description = "quit awesome", group = "awesome" }),
+    awful.key({ config.modkey, "Control" }, "m", require("lib.monitors").setup_single_monitor, { description = "setup a single monitor", group = "awesome" }),
+    awful.key({ config.modkey, "Control" }, "n", require("lib.monitors").setup_two_monitors, { description = "setup multiple monitors", group = "awesome" }),
 
     -- System
     awful.key({ config.modkey }, "w", function() awful.spawn("xscreensaver-command -lock") end, { description = "lockscreen", group = "system" }),

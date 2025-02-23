@@ -1,8 +1,3 @@
---
--- Single monitor for everything, so I'm focus on a single monitor and not be
--- distracted with the laptop monitor.
---
-
 local awesome = awesome
 
 -- Mappings between the monitor IDs in /sys/class/drm/card1-* and the one used by xrandr.
@@ -88,9 +83,20 @@ local function is_displayed(drm_id)
 	return 'On\n' == value
 end
 
----Setup monitors to have a single monitor.
----@param connected_monitors table the list of connected monitors
-local function setup_monitors(connected_monitors)
+---Single monitor for everything, so I'm focus on a single monitor and not be
+---distracted with the laptop monitor.
+local function setup_single_monitor()
+  local ok, connected_monitors = get_connected_monitors()
+  if not ok then
+    local naughty = require("naughty")
+    naughty.notify({
+      preset = naughty.config.presets.critical,
+      title = "Failed to setup monitors",
+      text = "Could not execute xrandr",
+    })
+    return
+  end
+
   local has_external_monitor, drm_id, xrandr_id = get_external_monitor(connected_monitors)
 	if has_external_monitor then
 		-- If the external monitor is not displayed, then we should display it before
@@ -105,20 +111,36 @@ local function setup_monitors(connected_monitors)
 		-- Re-enable Laptop monitor.
 		os.execute("xrandr --output " .. laptop_monitor_xrandr_id .. " --auto")
 	end
+
+  awesome.restart()
 end
 
--- ----------------------------------------------------------------------------
+---Setup two monitors, just in case, for some specific situations, like
+---presenting stuff.
+local function setup_two_monitors()
+  local ok, connected_monitors = get_connected_monitors()
+  if not ok then
+    local naughty = require("naughty")
+    naughty.notify({
+      preset = naughty.config.presets.critical,
+      title = "Failed to setup monitors",
+      text = "Could not execute xrandr",
+    })
+    return
+  end
 
-local ok, connected_monitors = get_connected_monitors()
-if not ok then
-	local naughty = require("naughty")
-	naughty.notify({
-		preset = naughty.config.presets.critical,
-		title = "Failed to setup monitors",
-		text = "Could not execute xrandr",
-	})
-	return
+  -- Re-enable Laptop monitor if it was off.
+  os.execute("xrandr --output " .. laptop_monitor_xrandr_id .. " --auto")
+  local has_external_monitor, _, xrandr_id = get_external_monitor(connected_monitors)
+	if has_external_monitor then
+    os.execute("xrandr --output " .. xrandr_id .. " --auto --right-of " .. laptop_monitor_xrandr_id)
+  end
+
+  awesome.restart()
 end
 
-setup_monitors(connected_monitors)
-awesome.restart()
+
+local M = {}
+M.setup_single_monitor = setup_single_monitor
+M.setup_two_monitors = setup_two_monitors
+return M
