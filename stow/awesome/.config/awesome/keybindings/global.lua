@@ -37,12 +37,12 @@ local function globalkeys()
 
     -- Applications
     awful.key({ config.modkey }, "t", function() awful.spawn(config.terminal .. " -e tmux -2 -u") end, { description = "open a terminal", group = "application" }),
-    awful.key({ config.modkey }, "a", function() awful.spawn(config.terminal .. " -e pulsemixer") end, { description = "audio mix", group = "application" }),
-    awful.key({ config.modkey }, "e", function() awful.spawn(config.terminal .. " -e yazi") end, { description = "file manager", group = "application" }),
-    awful.key({ config.modkey, "Shift" }, "e", function() awful.spawn("nautilus") end, { description = "file manager", group = "application" }),
-    awful.key({ config.modkey }, "c", function() awful.spawn(config.terminal .. " -e numbat --intro-banner off") end, { description = "open calculator", group = "application" }),
+    awful.key({ config.modkey }, "a", function() awful.spawn(config.terminal .. " -e pulsemixer", { floating = true }) end, { description = "audio mix", group = "application" }),
+    awful.key({ config.modkey }, "e", function() awful.spawn(config.terminal .. " -e yazi", { floating = true }) end, { description = "file manager", group = "application" }),
+    awful.key({ config.modkey, "Shift" }, "e", function() awful.spawn("nautilus", { floating = true }) end, { description = "file manager", group = "application" }),
+    awful.key({ config.modkey }, "c", function() awful.spawn(config.terminal .. " -e numbat --intro-banner off", { floating = true }) end, { description = "open calculator", group = "application" }),
     awful.key({ config.modkey }, "o", function() awful.spawn.with_shell("pgrep slack || slack") end, { description = "slack", group = "application" }),
-    awful.key({ config.modkey, "Shift" }, "o", function() awful.spawn("gcolor3") end, { description = "open color picker", group = "application" }),
+    awful.key({ config.modkey, "Shift" }, "o", function() awful.spawn("gcolor3", { floating = true }) end, { description = "open color picker", group = "application" }),
 
     -- Prompt
     awful.key({ config.modkey }, "r", function() awful.screen.focused().mypromptbox:run() end, { description = "run prompt", group = "launcher" }),
@@ -57,8 +57,8 @@ local function globalkeys()
 
     -- Sound control
     -- Not sure I don't need to use the terminal here...
-    awful.key({ config.modkey }, "a", function() awful.spawn("pulsemixer") end, { description = "open audio control", group = "hotkeys" }),
-    awful.key({ config.modkey, "Shift" }, "m", function() awful.spawn(config.terminal .. " -e ncmpcpp --screen visualizer") end, { description = "open mpd visualizer", group = "hotkeys" }),
+    awful.key({ config.modkey }, "a", function() awful.spawn("pulsemixer", { floating = true }) end, { description = "open audio control", group = "hotkeys" }),
+    awful.key({ config.modkey, "Shift" }, "m", function() awful.spawn(config.terminal .. " -e ncmpcpp --screen visualizer", { floating = true }) end, { description = "open mpd visualizer", group = "hotkeys" }),
     awful.key({ config.modkey, "Shift" }, "n", function() awful.spawn("mpc -q next") end, { description = "next mpd song", group = "hotkeys" }),
     awful.key({ config.modkey, "Shift" }, "p", function() awful.spawn("mpc -q toggle") end, { description = "toggle mpd play/pause", group = "hotkeys" }),
     awful.key({ }, "XF86AudioNext", function() awful.spawn("mpc -q next") end, { description = "next mpd song", group = "hotkeys" }),
