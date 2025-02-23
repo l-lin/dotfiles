@@ -2,12 +2,12 @@ local awesome, client, root = awesome, client, root
 
 local awful = require("awful")
 local gears = require("gears")
-local naughty = require("naughty")
 
 local config = require("config")
 
 local function globalkeys()
   local widgets = require("lib.widgets")
+  local notifications = require("lib.notifications")
 
   local keys = gears.table.join(
     -- awesome
@@ -22,8 +22,8 @@ local function globalkeys()
     awful.key({ config.modkey, "Shift" }, "w", function() awful.spawn.with_shell("xscreensaver-command -lock & systemctl suspend") end, { description = "suspend computer", group = "system" }),
 
     -- Notifications
-    awful.key({ config.modkey }, "v", function() naughty.toggle() end, { description = "toggle notifications", group = "system" }),
-    awful.key({ config.modkey, "Control" }, "v", function() naughty.destroy_all_notifications() end, { description = "destroy notifications", group = "system" }),
+    awful.key({ config.modkey }, "v", notifications.toggle, { description = "toggle notifications", group = "system" }),
+    awful.key({ config.modkey, "Control" }, "v", notifications.destroy_all_notifications, { description = "destroy notifications", group = "system" }),
 
     -- Tags
     awful.key({ config.modkey }, "Left", awful.tag.viewprev, { description = "view previous", group = "tag" }),

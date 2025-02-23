@@ -1,4 +1,7 @@
 local lain = require("lain")
+local wibox = require("wibox")
+local naughty = require("naughty")
+
 -- Global variables that are set by Lain.
 _G.bat_now = bat_now
 _G.coretemp_now = coretemp_now
@@ -137,9 +140,21 @@ local function bat()
   })
 end
 
-local function systray()
-  local wibox = require("wibox")
+local function notification_status()
+  local w = { widget = wibox.widget.textbox() }
+  function w.update()
+    if naughty.is_suspended() then
+      w.widget:set_markup("󰂛 ")
+    else
+      w.widget:set_markup(markup.fontfg(theme.font, theme.fg_warning, "󰂞 "))
+    end
+  end
+  w.update()
 
+  return w
+end
+
+local function systray()
   local w = wibox.widget.systray()
   w:set_base_size(theme.systray_icon_base_size)
 
@@ -151,6 +166,7 @@ end
 local M = {}
 M.download_speed = download_speed()
 M.upload_speed = upload_speed()
+M.notification_status = notification_status()
 M.volume = volume()
 M.mem = mem()
 M.cpu = cpu()

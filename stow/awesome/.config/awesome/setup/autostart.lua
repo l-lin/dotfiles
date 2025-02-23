@@ -22,4 +22,4 @@ awful.spawn.with_shell("pgrep tmux || " .. require("config").terminal .. " -e tm
 awful.spawn.with_shell("pgrep zen || zen")
 require("setup.touchpad")
 -- Suspend notifications by default.
-require("naughty").suspend()
+require("lib.notifications").suspend()
