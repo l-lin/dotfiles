@@ -17,7 +17,7 @@ local function exists(file)
 end
 
 local function extract_project_name(project_url)
-  return project_url:match("([^/]+)$")
+  return string.gsub(project_url:match("([^/]+)$"), ".lua", "")
 end
 
 local function clone_if_not_exists(plugin_url)
