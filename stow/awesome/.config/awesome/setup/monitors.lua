@@ -3,6 +3,8 @@
 -- distracted with the laptop monitor.
 --
 
+local awesome = awesome
+
 -- Mappings between the monitor IDs in /sys/class/drm/card1-* and the one used by xrandr.
 -- Hardcoding because `xrandr` command is slow (~500ms).
 --
@@ -119,3 +121,4 @@ if not ok then
 end
 
 setup_monitors(connected_monitors)
+awesome.restart()

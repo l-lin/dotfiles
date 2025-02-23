@@ -2,7 +2,6 @@
 -- when there are errors.
 require("setup.errors")
 require("setup.theme")
-require("setup.monitors")
 
 require("lib/git").clone_if_not_exists("https://github.com/lcpz/lain")
 
