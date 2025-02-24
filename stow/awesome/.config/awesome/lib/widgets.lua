@@ -54,7 +54,7 @@ end
 local function mem()
   return lain.widget.mem({
     settings = function()
-      local display = "  " .. mem_now.perc .. "%"
+      local display = " " .. mem_now.perc .. "%"
       if mem_now.perc > 80 then
         widget:set_markup(markup.fontfg(theme.font, theme.fg_urgent, display))
       elseif mem_now.perc > 50 then
@@ -69,7 +69,7 @@ end
 local function cpu()
   return lain.widget.sysload({
     settings = function()
-      local display = "  " .. load_1
+      local display = " " .. load_1
 
       local load_num = tonumber(load_1)
       if not load_num then
