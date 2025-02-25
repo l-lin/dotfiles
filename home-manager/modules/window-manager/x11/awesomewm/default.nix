@@ -20,4 +20,8 @@ M.modkey = "Mod4"
 M.terminal = "${userSettings.term}"
 return M
   '';
+  xdg.configFile."awesome" = {
+    source = ./.config/awesome;
+    recursive = true;
+  };
 }
