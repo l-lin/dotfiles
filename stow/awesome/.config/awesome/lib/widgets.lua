@@ -91,7 +91,7 @@ end
 local function temperature()
   return lain.widget.temp({
     settings = function()
-      local display = " " .. coretemp_now .. "°C"
+      local display = " " .. coretemp_now .. "°"
 
       local temp_num = tonumber(coretemp_now)
       if not temp_num then
