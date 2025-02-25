@@ -8,14 +8,15 @@ local config = require("config")
 local function globalkeys()
   local widgets = require("lib.widgets")
   local naughty = require("naughty")
+  local monitors = require("lib.monitors")
 
   local keys = gears.table.join(
     -- awesome
     awful.key({ config.modkey, "Control" }, "s", require("awful.hotkeys_popup").show_help, { description = "show help", group = "awesome" }),
     awful.key({ config.modkey, "Control" }, "r", awesome.restart, { description = "reload awesome", group = "awesome" }),
     -- awful.key({ config.modkey, "Control" }, "q", awesome.quit, { description = "quit awesome", group = "awesome" }),
-    awful.key({ config.modkey, "Control" }, "m", require("lib.monitors").setup_single_monitor, { description = "setup a single monitor", group = "awesome" }),
-    awful.key({ config.modkey, "Control", "Shift" }, "m", require("lib.monitors").setup_two_monitors, { description = "setup multiple monitors", group = "awesome" }),
+    awful.key({ config.modkey, "Control" }, "m", monitors.setup_single_monitor, { description = "setup a single monitor", group = "awesome" }),
+    awful.key({ config.modkey, "Control", "Shift" }, "m", monitors.setup_two_monitors, { description = "setup multiple monitors", group = "awesome" }),
 
     -- System
     awful.key({ config.modkey }, "w", function() awful.spawn("xscreensaver-command -lock") end, { description = "lockscreen", group = "system" }),

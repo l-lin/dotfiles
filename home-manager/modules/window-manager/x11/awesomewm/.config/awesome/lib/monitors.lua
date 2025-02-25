@@ -6,13 +6,13 @@ local awesome = awesome
 -- Keys are the IDs from the drm you can fetch with: ls -1 -d /sys/class/drm/card1-*
 -- Values are the IDs used by xrandr you can fetch with: xrandr | grep " connected " | awk '{ print$1 }'.
 local monitor_mappings = {
-	["DP-1"] = "DP-1",
-	["DP-2"] = "DP-2",
-	["DP-3"] = "DP-3",
-	["DP-4"] = "DP-4",
-	["HDMI-A-1"] = "HDMI-1",
-	["eDP-1"] = "eDP-1",
-	["eDP-2"] = "eDP-2",
+  ["DP-1"] = "DP-1",
+  ["DP-2"] = "DP-2",
+  ["DP-3"] = "DP-3",
+  ["DP-4"] = "DP-4",
+  ["HDMI-A-1"] = "HDMI-1",
+  ["eDP-1"] = "eDP-1",
+  ["eDP-2"] = "eDP-2",
 }
 local card = "card1"
 local drm_directory = "/sys/class/drm/"
@@ -21,39 +21,39 @@ local laptop_monitor_xrandr_id = "eDP-1"
 ---@param monitor_directory string the path to the monitor directory
 ---@return boolean is_connected true if the monitor is connected, false otherwise
 local function is_connected(monitor_directory)
-	local status = io.open(monitor_directory .. '/status', 'r')
+  local status = io.open(monitor_directory .. '/status', 'r')
   if not status then
     return false
   end
-	local value = status:read('*all')
+  local value = status:read('*all')
 
-	return 'connected\n' == value
+  return 'connected\n' == value
 end
 
 ---Get the connected monitors from xrandr command.
 ---@return boolean ok true if the xrandr command was executed correctly
 ---@return table connected_monitors the list of connected_monitors
 local function get_connected_monitors()
-	local result = {}
-	local monitor_directories = io.popen("ls -1 -d " .. drm_directory .. card .. "-*")
+  local result = {}
+  local monitor_directories = io.popen("ls -1 -d " .. drm_directory .. card .. "-*")
   if not monitor_directories then
     return false, result
   end
 
-	while true do
-		local monitor_directory = monitor_directories:read("*line")
-		if not monitor_directory then
-			break
-		end
-		if is_connected(monitor_directory) then
+  while true do
+    local monitor_directory = monitor_directories:read("*line")
+    if not monitor_directory then
+      break
+    end
+    if is_connected(monitor_directory) then
       -- Using % so that `-` is treated as a literal hyphen.
       local drm_id = string.gsub(monitor_directory, drm_directory .. card .. "%-", "")
-			result[drm_id] = monitor_mappings[drm_id]
-		end
-	end
+      result[drm_id] = monitor_mappings[drm_id]
+    end
+  end
   monitor_directories:close()
 
-	return true, result
+  return true, result
 end
 
 ---Get the first external monitor, if there is one connected.
@@ -74,13 +74,13 @@ end
 ---@param drm_id string the monitor drm id
 ---@return boolean is_displayed true if it is displayed, false otherwise
 local function is_displayed(drm_id)
-	local status = io.open(drm_directory .. card .. '-' .. drm_id .. '/dpms', 'r')
+  local status = io.open(drm_directory .. card .. '-' .. drm_id .. '/dpms', 'r')
   if not status then
     return false
   end
-	local value = status:read('*all')
+  local value = status:read('*all')
 
-	return 'On\n' == value
+  return 'On\n' == value
 end
 
 ---Single monitor for everything, so I'm focus on a single monitor and not be
@@ -98,19 +98,19 @@ local function setup_single_monitor()
   end
 
   local has_external_monitor, drm_id, xrandr_id = get_external_monitor(connected_monitors)
-	if has_external_monitor then
-		-- If the external monitor is not displayed, then we should display it before
-		-- disabling the laptop monitor.
-		if not is_displayed(drm_id) then
-			os.execute("xrandr --output " .. xrandr_id .. " --auto")
-		end
+  if has_external_monitor then
+    -- If the external monitor is not displayed, then we should display it before
+    -- disabling the laptop monitor.
+    if not is_displayed(drm_id) then
+      os.execute("xrandr --output " .. xrandr_id .. " --auto --same-as " .. laptop_monitor_xrandr_id)
+    end
 
-		-- Disable Laptop monitor, so that I can focus on a single monitor.
-		os.execute("xrandr --output " .. laptop_monitor_xrandr_id .. " --off")
-	else
-		-- Re-enable Laptop monitor.
-		os.execute("xrandr --output " .. laptop_monitor_xrandr_id .. " --auto")
-	end
+    -- Disable Laptop monitor, so that I can focus on a single monitor.
+    os.execute("xrandr --output " .. laptop_monitor_xrandr_id .. " --off")
+  else
+    -- Re-enable Laptop monitor.
+    os.execute("xrandr --output " .. laptop_monitor_xrandr_id .. " --auto")
+  end
 
   awesome.restart()
 end
@@ -132,7 +132,7 @@ local function setup_two_monitors()
   -- Re-enable Laptop monitor if it was off.
   os.execute("xrandr --output " .. laptop_monitor_xrandr_id .. " --auto")
   local has_external_monitor, _, xrandr_id = get_external_monitor(connected_monitors)
-	if has_external_monitor then
+  if has_external_monitor then
     os.execute("xrandr --output " .. xrandr_id .. " --auto --right-of " .. laptop_monitor_xrandr_id)
   end
 
