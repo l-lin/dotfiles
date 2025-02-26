@@ -24,8 +24,14 @@ window-padding-x = 8
 window-padding-y = 8
 
 # `false` will make windows without native decorations, i.e. titlebar and borders.
-# src: https://ghostty.org/docs/config/reference#window-decoration
+# src:
+# - https://ghostty.org/docs/config/reference#window-decoration
+# - https://github.com/ghostty-org/ghostty/issues/2023
 window-decoration = false
+gtk-custom-css = ./no-border.css
+
+# No need for notification when copying text.
+app-notifications = no-clipboard-copy
 
 # No need to display the mouse.
 mouse-hide-while-typing = true

@@ -49,6 +49,6 @@ theme.taglist_margin_bottom = dpi(4)
 theme.taglist_margin_left = dpi(8)
 theme.taglist_margin_right = dpi(4)
 
-theme.big_space_width = dpi(15)
+theme.big_space_width = dpi(12)
 
 return theme

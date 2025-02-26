@@ -23,8 +23,11 @@ in {
     package = config.lib.nixGL.wrap pkgs.ghostty;
   };
 
-  # Symlink ~/.config/ghostty/config
-  xdg.configFile."ghostty/config".source = ./.config/ghostty/config;
+  # Symlink ~/.config/ghostty/
+  xdg.configFile."ghostty" = {
+    source = ./.config/ghostty;
+    recursive = true;
+  };
   # Not using stylix because I want to use Ghostty default fonts instead.
   # I could not manage to find the same font as Ghostty...
   # Moreover, it seems the palette chosen for Ghostty is not quite right.
