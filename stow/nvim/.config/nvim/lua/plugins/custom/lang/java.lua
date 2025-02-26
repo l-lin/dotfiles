@@ -219,6 +219,9 @@ local function attach_keymaps(bufnr)
   vim.keymap.set("n", "<F33>", jdtls.compile, { buffer = bufnr, noremap = true, silent = true, desc = "Compile (Ctrl+F9)" })
   vim.keymap.set("n", "<M-C-O>", jdtls.organize_imports, { buffer = bufnr, noremap = true, silent = true, desc = "Organize imports (Ctrl+Alt+o)" })
 
+  vim.keymap.set("n", "]E", function() vim.fn.search('^Caused by:', 'W') end, { noremap = true, silent = true, desc = "Find next Java exception" })
+  vim.keymap.set("n", "[E", function() vim.fn.search('^Caused by:', 'bW') end, { noremap = true, silent = true, desc = "Find previous Java exception" })
+
   local wk = require("which-key")
   wk.add({
     {
