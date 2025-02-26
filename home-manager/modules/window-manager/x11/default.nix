@@ -21,6 +21,8 @@
   # src: https://unix.stackexchange.com/a/422556
 
   home.packages = with pkgs; [
+    # Lightweight color picker for X11: https://github.com/Soft/xcolor
+    xcolor
     # Resize and Rotate for X window manager: https://wiki.archlinux.org/title/Xrandr
     xorg.xrandr
     # Command-line program for getting and setting the contents of the X selection: http://www.kfish.org/software/xsel

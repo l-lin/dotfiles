@@ -51,7 +51,7 @@ local function globalkeys()
     awful.key({ config.modkey, "Shift" }, "e", function() awful.spawn("nautilus", { floating = true }) end, { description = "file manager", group = "application" }),
     awful.key({ config.modkey }, "c", function() awful.spawn(config.terminal .. " -e numbat --intro-banner off", { floating = true }) end, { description = "open calculator", group = "application" }),
     awful.key({ config.modkey }, "o", function() awful.spawn.with_shell("pgrep slack || slack") end, { description = "slack", group = "application" }),
-    awful.key({ config.modkey, "Shift" }, "o", function() awful.spawn("gcolor3", { floating = true }) end, { description = "open color picker", group = "application" }),
+    awful.key({ config.modkey, "Shift" }, "o", function() awful.spawn("xcolor -s", { floating = true }) end, { description = "open color picker", group = "application" }),
 
     -- Prompt
     awful.key({ config.modkey }, "r", function() awful.screen.focused().mypromptbox:run() end, { description = "run prompt", group = "launcher" }),
