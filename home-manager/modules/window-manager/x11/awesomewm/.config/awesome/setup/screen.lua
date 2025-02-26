@@ -9,7 +9,7 @@ awful.screen.connect_for_each_screen(function(s)
   local names = { " ", " ", " ", " ", " " }
 
   local layout = awful.layout.suit
-  local layouts = { layout.tile, layout.tile, layout.tile, layout.tile, layout.floating }
+  local layouts = { layout.tile, layout.tile, layout.tile, layout.tile, layout.tile }
   awful.tag(names, s, layouts)
 
   -- Create a promptbox for each screen
