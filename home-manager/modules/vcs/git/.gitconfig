@@ -47,8 +47,11 @@
 [color]
   # activate color for all commands
   ui = auto
+[column]
+  # display branches in column
+  ui = auto
 [commit]
-  # display the pull/merge request url
+  # display the pull/merge request url + changes
   verbose = true
 [credential]
   helper = cache
@@ -59,7 +62,10 @@
   # side-by-side = true
 # diff with meaningful prefix and word-diff will find a letter as a word
 [diff]
+  # better diff
+  # src: https://blog.gitbutler.com/how-git-core-devs-configure-git/#better-diff
   algorithm = histogram
+  colorMoved = true
   mnemonicprefix = true
   wordRegex = .
 [fetch]
@@ -97,16 +103,18 @@
   autoSetupRemote = true
 [rebase]
   # automatically stash any local changes before rebasing
-  autostash = true
+  autoStash = true
+  autoSquash = true
   # makes multiple stacked branches rebase at a time easier
   # see https://andrewlock.net/working-with-stacked-branches-in-git-is-easier-with-update-refs/
   updateRefs = true
 [rerere]
   # remember previous conflict resolutions
   enabled = true
+  autoupdate = true
 [tag]
-  # sort by most recently used
-  sort = taggerdate
+  # sort by version instead of alphanumeric
+  sort = version:refname
 [maintenance]
   auto = false
   strategy = incremental
