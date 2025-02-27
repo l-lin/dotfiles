@@ -5,7 +5,7 @@ local widgets = require("lib.widgets")
 local wibox = require("wibox")
 local gears = require("gears")
 
-local theme = require("theme.default")
+local theme = require("theme")
 local config = require("config")
 
 local function taglist_buttons()

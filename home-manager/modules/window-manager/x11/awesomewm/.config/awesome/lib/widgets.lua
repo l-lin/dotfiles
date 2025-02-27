@@ -12,7 +12,7 @@ _G.volume_now = volume_now
 local markup = lain.util.markup
 local net = require("lib.net")
 
-local theme = require("theme.default")
+local theme = require("theme")
 
 local function download_speed()
   return net({
