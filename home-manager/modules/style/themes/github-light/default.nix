@@ -46,7 +46,7 @@ in {
     };
   };
 
-  home.file.".wallpaper".source = ../../../image/wallpaper/pictures/sky.jpg;
+  home.file.".wallpaper".source = ../../../image/wallpaper/pictures/sky.png;
 
   gtk = {
     iconTheme = {
