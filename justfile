@@ -123,11 +123,6 @@ import-keys:
 import-secrets:
   ./scripts/import-secrets.sh {{NIX_PROFILE}}
 
-# reload pyprland configuration
-reload-pyprland:
-  just info "Reloading pyprland configuration..."
-  pypr reload
-
 # install navi cheatsheets if not present
 install-cheatsheets:
   cheats=('github.com/l-lin/cheats' 'github.com/l-lin/work-cheats') \
@@ -158,8 +153,7 @@ change-theme to:
   just info "Changing theme to '{{to}}'..."
   sed -i 's~theme = "\(.*\)"~theme = "{{to}}"~' flake.nix
   just update-home
-  tmux source "${XDG_CONFIG_HOME}/tmux/tmux.conf"
-  #pkill wpaperd && wpaperd -d
+  just reload-apps
 
 # switch polarity from dark to light or vice versa
 switch-polarity:
@@ -173,6 +167,28 @@ switch-polarity:
 [private]
 get-current-theme:
   grep 'theme = ' flake.nix | sed 's~theme = "\(.*\)"; #.*~\1~' | sed 's/ //g'
+
+[private]
+reload-pyprland:
+  just info "Reloading pyprland configuration..."
+  pypr reload
+
+[private]
+reload-apps:
+  just info "Reloading tmux"
+  tmux source "${XDG_CONFIG_HOME}/tmux/tmux.conf"
+  if awesome-client >/dev/null 2>&1; then \
+    just reload-awesome; \
+  fi
+
+[private]
+reload-awesome:
+  just info "Reloading awesome"
+  echo 'awesome.restart()' | awesome-client 2>/dev/null || true
+  just info "Reloading Slack"
+  pgrep -x slack > /dev/null && (pkill slack && slack >/dev/null 2>&1&) || true
+  just info "Reloading obsidian"
+  pgrep -x electron > /dev/null && (pkill electron && obsidian >/dev/null 2>&1&) || true
 
 # ------------------------------------------------------------------------
 
