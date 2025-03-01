@@ -61,6 +61,17 @@ play = [
 	{ run = 'mpv --force-window %*', orphan = true, for = "windows" },
 	{ run = '''mediainfo "$1"; echo "Press enter to exit"; read _''', block = true, desc = "Show media info", for = "unix" },
 ]
+# NOTE: START MODIFICATION
+edit-image = [
+	{ run = 'gimp "$@"', desc = "Edit image", for = "linux" },
+]
+open-image = [
+	{ run = 'imv "$@"', desc = "Open image", for = "linux" },
+]
+open-pdf = [
+	{ run = 'zathura "$@"', desc = "Open PDF", for = "linux" },
+]
+# NOTE: END MODIFICATION
 
 [open]
 rules = [
