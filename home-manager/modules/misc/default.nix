@@ -82,7 +82,8 @@
     # A tool for managing the installation of multiple software packages in the same run-time directory tree: https://www.gnu.org/software/stow/
     stow
     # A log file highlighter: https://github.com/bensadeh/tailspin
-    tailspin
+    # NOTE: Integeration test error while building it...
+    #tailspin
     # Command to produce a depth indented directory listing: https://oldmanprogrammer.net/source.php?dir=projects/tree
     tree
     # An extraction utility for archives compressed in .zip format: http://www.info-zip.org/

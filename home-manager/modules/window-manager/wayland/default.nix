@@ -20,7 +20,7 @@
 
   # Modern wallpaper daemon for Wayland.
   # src: https://github.com/danyspin97/wpaperd
-  programs.wpaperd = {
+  services.wpaperd = {
     enable = true;
     settings = {
       any = {
