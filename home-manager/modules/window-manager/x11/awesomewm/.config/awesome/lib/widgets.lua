@@ -77,9 +77,9 @@ local function cpu()
         return
       end
 
-      if load_num > 13 then
+      if load_num > 6 then
         widget:set_markup(markup.fontfg(theme.font, theme.fg_urgent, display))
-      elseif load_num > 8 then
+      elseif load_num > 4 then
         widget:set_markup(markup.fontfg(theme.font, theme.fg_warning, display))
       else
         widget:set_markup(markup.fontfg(theme.font, theme.fg_normal, display))
