@@ -2,17 +2,9 @@
 # Wallpaper.
 #
 
-{ config, ... }: {
-  # Modern wallpaper daemon for Wayland.
-  # src: https://github.com/danyspin97/wpaperd
-  programs.wpaperd = {
-    enable = true;
-    settings = {
-      any = {
-        duration = "1h";
-        mode = "center";
-        path = "${config.xdg.userDirs.pictures}/wallpapers/${config.theme.polarity}/";
-      };
-    };
+{
+  home.file."Pictures" = {
+    source = ./Pictures;
+    recursive = true;
   };
 }

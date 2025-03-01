@@ -3,11 +3,10 @@
 # src: https://github.com/rebelot/kanagawa.nvim
 #
 
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 let
   polarity = "dark";
 in {
-
   theme = {
     inherit polarity;
     nvimColorScheme = "kanagawa";
@@ -17,7 +16,7 @@ in {
   stylix = {
     inherit polarity;
     # stylix needs a background image when gnome is enable.
-    image = ../../../image/wallpaper/pictures/cat.jpg;
+    image = "${config.home.homeDirectory}/Pictures/${polarity}.jpg";
     cursor = {
       # Material Based Cursor Theme: https://github.com/ful1e5/Bibata_Cursor
       name = "Bibata-Modern-Ice";
@@ -25,8 +24,6 @@ in {
       package = pkgs.bibata-cursors;
     };
   };
-
-  home.file.".wallpaper".source = ../../../image/wallpaper/pictures/cat.jpg;
 
   gtk = {
     iconTheme = {

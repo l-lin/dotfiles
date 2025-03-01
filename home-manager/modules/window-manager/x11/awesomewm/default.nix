@@ -21,6 +21,7 @@ in {
 local M = {}
 M.modkey = "Mod4"
 M.terminal = "${userSettings.term}"
+M.polarity = "${config.theme.polarity}"
 return M
   '';
   xdg.configFile."awesome" = {

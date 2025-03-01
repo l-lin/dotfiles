@@ -3,7 +3,7 @@
 # src: https://github.com/yorickpeterse/nvim-grey
 #
 
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 let
   polarity = "light";
 in {
@@ -17,7 +17,7 @@ in {
   stylix = {
     inherit polarity;
     # stylix needs a background image when gnome is enable.
-    image = ../../../image/wallpaper/pictures/sky.png;
+    image = "${config.home.homeDirectory}/Pictures/${polarity}.jpg";
     cursor = {
       # Material Based Cursor Theme: https://github.com/ful1e5/Bibata_Cursor
       name = "Bibata-Modern-Classic";
@@ -25,8 +25,6 @@ in {
       package = pkgs.bibata-cursors;
     };
   };
-
-  home.file.".wallpaper".source = ../../../image/wallpaper/pictures/sky.png;
 
   gtk = {
     iconTheme = {
