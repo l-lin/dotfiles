@@ -83,13 +83,18 @@ local function globalkeys()
   )
 
   -- Bind all key numbers to tags.
-  -- Be careful: we use keycodes to make it work on any keyboard layout.
-  -- This should map on the top row of your keyboard, usually 1 to 9.
-  for i = 1, 9 do
+  local tag_keys = {
+    [1] = 10, -- #1 + 9 = 10 (keycode for 1)
+    [2] = 11, -- #2 + 9 = 11 (keycode for 2)
+    [3] = 12, -- #3 + 9 = 12 (keycode for 3)
+    [4] = 18, -- keycode for 9
+    [5] = 19  -- keycode for 0
+  }
+  for i = 1, 5 do
     keys = gears.table.join(
       keys,
       -- View tag only.
-      awful.key({ config.modkey }, "#" .. i + 9, function()
+      awful.key({ config.modkey }, "#" .. tag_keys[i], function()
         local screen = awful.screen.focused()
         local tag = screen.tags[i]
         if tag then
@@ -98,7 +103,7 @@ local function globalkeys()
       end, { description = "view tag #" .. i, group = "tag" }),
 
       -- Move client to tag.
-      awful.key({ config.modkey, "Shift" }, "#" .. i + 9, function()
+      awful.key({ config.modkey, "Shift" }, "#" .. tag_keys[i], function()
         if client.focus then
           local tag = client.focus.screen.tags[i]
           if tag then
