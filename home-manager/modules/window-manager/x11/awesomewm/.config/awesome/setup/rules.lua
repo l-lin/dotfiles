@@ -61,5 +61,5 @@ awful.rules.rules = {
   { rule = { class = "obsidian" }, properties = { tag = " " } },
   { rule = { class = "Zen" }, properties = { tag = " " } },
   { rule = { class = "Slack" }, properties = { tag = " " } },
-  { rule = { class = "Spotify" }, properties = { tag = " " } },
+  { rule = { class = "Spotify" }, properties = { tag = " " } },
 }
