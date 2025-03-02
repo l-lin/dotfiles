@@ -1,22 +1,12 @@
 return {
   -- Emoji source for blink.nvim.
   {
-    "saghen/blink.cmp",
-    dependencies = {
-      "moyiz/blink-emoji.nvim",
+    "allaman/emoji.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    cmd = { "Emoji" },
+    keys = {
+      { "<leader>se", "<cmd>Emoji<cr>", noremap = true, silent = true, desc = "Emoji" },
+      { "<M-;>", mode = "i", "<cmd>Emoji<cr>", desc = "Emoji" },
     },
-    opts = {
-      sources = {
-        default = { "emoji" },
-        providers = {
-          emoji = {
-            module = "blink-emoji",
-            name = "Emoji",
-            score_offset = 15, -- Tune by preference
-            opts = { insert = true }, -- Insert emoji (default) or complete its name
-          }
-        }
-      }
-    }
-  }
+  },
 }
