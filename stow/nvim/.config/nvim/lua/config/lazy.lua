@@ -56,6 +56,7 @@ require("lazy").setup({
     { import = "plugins" },
     --{ import = "plugins.extras.coding.codeium" },
     --{ import = "plugins.extras.coding.leetcode" },
+    { import = "plugins.extras.coding.sonarlint" },
     { import = "plugins.extras.coding.yanky" },
     --{ import = "plugins.extras.editor.image" },
     { import = "plugins.extras.editor.emoji" },

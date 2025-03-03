@@ -1,7 +1,5 @@
 return {
   -- linter
-  -- WARN: For some reason, sonarlint has heavy performance impact on the code action (> 5 minutes for the popup to appear)...
-  -- Too lazy to investigate for now...
   {
     "sonarlint",
     url = "https://gitlab.com/schrieveslaach/sonarlint.nvim",
