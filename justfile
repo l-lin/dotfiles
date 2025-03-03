@@ -177,7 +177,7 @@ reload-pyprland:
 reload-apps:
   just info "Reloading tmux"
   tmux source "${XDG_CONFIG_HOME}/tmux/tmux.conf"
-  if awesome-client >/dev/null 2>&1; then \
+  if type awesome-client >/dev/null 2>&1; then \
     just reload-awesome; \
   fi
 
