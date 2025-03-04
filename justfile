@@ -188,7 +188,7 @@ reload-awesome:
   just info "Reloading Slack"
   pgrep -x slack > /dev/null && (pkill slack && slack >/dev/null 2>&1&) || true
   just info "Reloading obsidian"
-  pgrep -x electron > /dev/null && (pkill electron && obsidian >/dev/null 2>&1&) || true
+  pgrep electron > /dev/null && (pkill electron && obsidian >/dev/null 2>&1&) || true
 
 # ------------------------------------------------------------------------
 
