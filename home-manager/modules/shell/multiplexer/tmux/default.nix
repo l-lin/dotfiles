@@ -4,7 +4,10 @@
 # src: https://github.com/tmux/tmux/wiki
 #
 
-{ pkgs, userSettings, ...}: {
+{ config, pkgs, userSettings, ...}:
+let
+  palette = config.lib.stylix.colors.withHashtag;
+in {
   programs.tmux = {
     enable = true;
     # Cannot set the shell directly in the tmux.conf file as the binary is not in /bin folder.
@@ -48,8 +51,8 @@
   xdg.configFile."tmux/colorscheme.conf".text = ''
 # Colorscheme (must be set before other plugins)
 set -g @plugin 'l-lin/tmux-colorscheme'
-set -g @tmux-colorscheme '${userSettings.theme}'
-set -g @tmux-colorscheme-show-pomodoro true
+set -g @tmux-colorscheme 'home-manager'
+set -g @tmux-colorscheme-show-pomodoro false
 set -g @tmux-colorscheme-show-upload-speed false
 set -g @tmux-colorscheme-show-download-speed false
 set -g @tmux-colorscheme-show-prefix-highlight true
@@ -60,6 +63,26 @@ set -g @tmux-colorscheme-show-ram false
 set -g @tmux-colorscheme-show-date false
   '';
   xdg.configFile."zsh/functions/switch-tmux-window".source = ./.config/zsh/functions/switch-tmux-window;
+  xdg.configFile."tmux/tpm.conf".source = ./.config/tmux/tpm.conf;
+  xdg.configFile."tmux/plugins/tmux-colorscheme/home-manager.tmuxtheme".text = with palette; ''
+theme_bg='${base00-hex}'
+theme_fg='${base05-hex}'
+theme_black='${base04-hex}'
+theme_red='${base08-hex}'
+theme_green='${base0B-hex}'
+theme_yellow='${base0A-hex}'
+theme_blue='${base0D-hex}'
+theme_magenta='${base0E-hex}'
+theme_cyan='${base0C-hex}'
+theme_white='${base05-hex}'
+theme_gray='${base04-hex}'
+theme_accent='${base0D-hex}'
+theme_accent_bg='${base0D-hex}'
+theme_accent_fg='${base01-hex}'
+theme_alt_bg='${base01-hex}'
+theme_search_match_bg='${base0D-hex}'
+theme_search_match_fg='${base00-hex}'
+  '';
 
   home.packages = with pkgs; [
     # Tmux end-of-line is behaving like VIM, i.e. taking the trailing newline.
