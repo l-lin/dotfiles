@@ -20,7 +20,7 @@ local function globalkeys()
 
     -- System
     awful.key({ config.modkey }, "w", function() awful.spawn("xscreensaver-command -lock") end, { description = "lockscreen", group = "system" }),
-    awful.key({ config.modkey, "Shift" }, "w", function() awful.spawn.with_shell("xscreensaver-command -lock & systemctl suspend") end, { description = "suspend computer", group = "system" }),
+    awful.key({ config.modkey, "Control" }, "w", function() awful.spawn.with_shell("xscreensaver-command -lock & systemctl suspend") end, { description = "suspend computer", group = "system" }),
 
     -- Notifications
     awful.key(
