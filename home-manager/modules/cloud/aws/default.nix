@@ -7,7 +7,6 @@
   home.packages = with pkgs; [
     # Unified tool to manage your AWS services: https://aws.amazon.com/cli/
     awscli2
-
     # Credential helper for the Docker daemon that makes it easier to use ECR: https://github.com/awslabs/amazon-ecr-credential-helper
     amazon-ecr-credential-helper
 
