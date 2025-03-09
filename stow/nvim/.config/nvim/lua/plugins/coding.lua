@@ -41,6 +41,13 @@ return {
         desc = "Diagnostic (Alt+6)",
       },
     },
+    opts = {
+      pickers = {
+        -- No need to be in insert mode for those pickers.
+        buffers = { initial_mode = "normal" },
+        git_status = { initial_mode = "normal" }
+      }
+    }
   },
 
   -- autocompletion engine
