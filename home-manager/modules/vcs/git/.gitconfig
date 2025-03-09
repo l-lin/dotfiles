@@ -60,6 +60,8 @@
 [delta]
   #syntax-theme = catppuccin-mocha
   line-numbers = true
+  # use n and N to move between diff sections
+  navigate = true
   # side-by-side = true
 # diff with meaningful prefix and word-diff will find a letter as a word
 [diff]
@@ -89,9 +91,14 @@
 [init]
   defaultBranch = main
 [interactive]
-  diffFilter = delta --color-only
+  diffFilter = delta --color-only --features=interactive
 [log]
   date = iso
+[pager]
+  blame  = delta
+  diff   = delta
+  reflog = delta
+  show   = delta
 [pretty]
   # reflog, with relative date (but for commits, not reflog entries!):
   reflog = %Cred%h%Creset - %Cblue%gd%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)<%an>%Creset
