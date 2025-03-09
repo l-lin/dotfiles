@@ -45,7 +45,7 @@ return {
     }
   },
 
-  -- dashboard
+  -- collection of QoL plugins for neovim
   {
     "folke/snacks.nvim",
     opts = {
@@ -56,6 +56,17 @@ return {
           { icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1 },
           { section = "startup" },
         },
+      },
+      picker = {
+        previewers = {
+          diff = {
+            builtin = false,
+            cmd = { "delta" }
+          },
+          git = {
+            builtin = false,
+          }
+        }
       },
     },
   },
