@@ -42,10 +42,8 @@ return {
   {
     "tpope/vim-fugitive",
     keys = {
-      { "<A-0>", toggle_fugitive, desc = "git status (Alt+0)" },
       -- { "<leader>gb", "<cmd>G blame<cr>", desc = "git blame" },
       { "<leader>gc", "<cmd>G commit<cr>", desc = "git commit" },
-      { "<leader>gd", "<cmd>G difftool<cr>", desc = "git difftool" },
       { "<leader>gF", "<cmd>G push --force-with-lease<cr>", desc = "git push --force-with-lease" },
       -- useful for creating new PR/MR where the url is displayed in the git push message
       { "<leader>gO", "<cmd>G -p push<cr>", desc = "git push and display git message" },
