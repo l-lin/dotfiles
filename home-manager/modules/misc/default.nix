@@ -69,6 +69,8 @@
     ouch
     # Stores, retrieves, generates, and synchronizes passwords securely: https://www.passwordstore.org/
     pass-wayland
+    # Daemon for managing long running shell commands: https://github.com/Nukesor/pueue
+    pueue
     # Pretty ping: https://github.com/denilsonsa/prettyping
     prettyping
     # Modern replacement for top: https://github.com/dalance/procs
