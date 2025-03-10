@@ -1,4 +1,0 @@
-# Custom keybinding to open jira in CLI.
-"${ZSH_CUSTOM}" path:plugins/jira kind:defer
-
-# vim: ft=config
