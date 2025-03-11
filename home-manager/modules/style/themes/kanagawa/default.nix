@@ -10,7 +10,20 @@ in {
   theme = {
     inherit polarity;
     nvimColorScheme = "kanagawa";
-    nvimColorSchemePluginLua = "{ 'rebelot/kanagawa.nvim' }";
+    nvimColorSchemePluginLua = ''
+{
+  "rebelot/kanagawa.nvim",
+  opts = {
+    keywordStyle = { bold = true, italic = false },
+    overrides = function(colors)
+      local theme = colors.theme
+      return {
+        SnacksPickerMatch = { link = "Search" }
+      }
+    end
+  }
+}
+    '';
   };
 
   stylix = {
