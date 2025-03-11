@@ -45,7 +45,7 @@ return {
     }
   },
 
-  -- collection of QoL plugins for neovim
+  -- dashboard
   {
     "folke/snacks.nvim",
     opts = {
@@ -57,17 +57,17 @@ return {
           { section = "startup" },
         },
       },
-      picker = {
-        previewers = {
-          diff = {
-            builtin = false,
-            cmd = { "delta" }
-          },
-          git = {
-            builtin = false,
-          }
+      lazygit = {
+        win = {
+          width = 0,
+          height = 0
         }
       },
+      notifier = {
+        enabled = true,
+        -- Place notifications from top to bottom.
+        top_down = false,
+      }
     },
   },
 

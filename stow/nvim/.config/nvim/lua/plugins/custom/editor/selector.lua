@@ -1,4 +1,4 @@
----Get the text selected in visual mode, to be used for example in the Telescope opts `default_text`.
+---Get the text selected in visual mode, to be used for example in the pickers.
 ---@return string: the selected text from visual mode
 local function get_selected_text()
   vim.cmd('noau normal! "vy"')

@@ -26,8 +26,8 @@ vim.o.shiftwidth = vim.o.tabstop
 vim.o.textwidth = 80
 
 -- lazyvim config
--- use telescope
-vim.g.lazyvim_picker = "telescope"
+-- use snacks.picker
+vim.g.lazyvim_picker = "snacks"
 -- disable animations, let's go fast!
 vim.g.snacks_animate = false
 
