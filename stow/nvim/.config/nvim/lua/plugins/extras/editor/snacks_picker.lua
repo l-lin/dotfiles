@@ -59,7 +59,7 @@ local snacks_picker_opts = {
   -- Default layout to use.
   layout = "vertical",
   formatters = {
-    file = { filename_first = true, truncate = 150 }
+    file = { truncate = 150 }
   },
   previewers = {
     diff = {
