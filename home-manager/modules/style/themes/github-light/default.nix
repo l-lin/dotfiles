@@ -15,6 +15,17 @@ in {
 {
   "projekt0n/github-nvim-theme",
   opts = {
+    options = {
+      styles = {
+        keywords = "bold",
+      },
+    },
+    groups = {
+      github_light_high_contrast = {
+        NonText = { fg = "palette.gray" },
+        SnacksPickerMatch = { link = "Search" }
+      }
+    },
     specs = {
       github_light_high_contrast = {
         bg0 = "#EFF1F5",
@@ -24,6 +35,9 @@ in {
           inset = "#FFFFFF",
           overlay = "#FFFFFF",
         },
+        syntax = {
+          keyword = "black"
+        }
       },
     },
   },
