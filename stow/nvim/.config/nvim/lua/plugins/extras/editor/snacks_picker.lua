@@ -50,6 +50,7 @@ local snacks_picker_opts = {
       }
     },
     select = {
+      cycle = true,
       layout = {
         width = 0.9
       }
@@ -195,12 +196,7 @@ return {
         function()
           Snacks.picker.buffers({
             focus = "list",
-            finder = "buffers",
-            format = "buffer",
-            hidden = false,
-            unloaded = true,
             current = false,
-            sort_lastused = true,
             win = {
               input = {
                 keys = {
