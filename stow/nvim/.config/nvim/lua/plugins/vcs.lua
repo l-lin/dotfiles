@@ -26,7 +26,7 @@ return {
             win = {
               list = {
                 keys = {
-                  ["<space>"] = { "git_stage", mode = { "n", "i" } },
+                  ["<space>"] = "git_stage",
                 }
               },
             },
