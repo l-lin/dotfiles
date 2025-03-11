@@ -21,6 +21,14 @@ local function switch_grep_files(picker)
   end
 end
 
+---Edit the file typed on the prompt.
+---@param picker snacks.Picker the current picker
+local function edit_file(picker)
+  local prompt = picker.input.filter.pattern
+  picker:close()
+  vim.api.nvim_command("edit! " .. prompt)
+end
+
 local snacks_picker_opts = {
   layouts = {
     vertical = {
@@ -62,12 +70,14 @@ local snacks_picker_opts = {
   sources = {
     files = {
       actions = {
+        edit_file = edit_file,
         switch_grep_files = switch_grep_files,
       },
       win = {
         input = {
           keys = {
             ["<a-k>"] = { "switch_grep_files", desc = "Switch to grep", mode = { "i", "v" } },
+            ["<c-o>"] = { "edit_file", desc = "Edit file", mode = { "i", "v" } },
           },
         },
       },
@@ -151,10 +161,7 @@ return {
       {
         "<C-t>",
         function()
-          Snacks.picker.files({
-            focus = "list",
-            pattern = subject.find_subject()
-          })
+          Snacks.picker.files({ pattern = subject.find_subject() })
         end,
         desc = "Find associated test file (Ctrl+t)",
         noremap = true,
@@ -237,32 +244,6 @@ return {
         noremap = true,
         desc = "Find TODO (Alt+2)"
       },
-    },
-  },
-
-  -- better diagnostics list and others
-  {
-    "folke/trouble.nvim",
-    optional = true,
-    specs = {
-      "folke/snacks.nvim",
-      opts = function(_, opts)
-        return vim.tbl_deep_extend("force", opts or {}, {
-          picker = {
-            actions = require("trouble.sources.snacks").actions,
-            win = {
-              input = {
-                keys = {
-                  ["<c-t>"] = {
-                    "trouble_open",
-                    mode = { "n", "i" },
-                  },
-                },
-              },
-            },
-          },
-        })
-      end,
     },
   },
 
