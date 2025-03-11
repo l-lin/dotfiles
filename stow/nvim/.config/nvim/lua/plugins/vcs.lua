@@ -1,22 +1,3 @@
--- From: https://github.com/tpope/vim-fugitive/issues/1274#issuecomment-1748183602
-local toggle_fugitive = function()
-  local winids = vim.api.nvim_list_wins()
-  for _, id in pairs(winids) do
-    local status = pcall(vim.api.nvim_win_get_var, id, "fugitive_status")
-    if status then
-      vim.api.nvim_win_close(id, false)
-      return
-    end
-  end
-  vim.cmd("Git")
-
-  -- directly goes to the first changed file line, which is located at line 6!
-  local line_count = vim.api.nvim_buf_line_count(0)
-  if line_count >= 6 then
-    vim.api.nvim_win_set_cursor(0, {6, 0})
-  end
-end
-
 return {
   -- #######################
   -- override default config
@@ -31,44 +12,31 @@ return {
     },
   },
 
-
-
-
-  -- #######################
-  -- add new plugins
-  -- #######################
-
-  -- git integration
+  -- use snacks.picker for git status
   {
-    "tpope/vim-fugitive",
+    "folke/snacks.nvim",
     keys = {
-      -- { "<leader>gb", "<cmd>G blame<cr>", desc = "git blame" },
-      { "<leader>gc", "<cmd>G commit<cr>", desc = "git commit" },
-      { "<leader>gF", "<cmd>G push --force-with-lease<cr>", desc = "git push --force-with-lease" },
-      -- useful for creating new PR/MR where the url is displayed in the git push message
-      { "<leader>gO", "<cmd>G -p push<cr>", desc = "git push and display git message" },
-      { "<leader>gp", "<cmd>G pull<cr>", desc = "git pull" },
-      { "<leader>gP", "<cmd>G push<cr>", desc = "git push" },
-      { "<leader>gs", toggle_fugitive, desc = "git status (Alt+0)" },
-    },
-  },
-
-  -- nice view for git diff
-  {
-    "sindrets/diffview.nvim",
-    cmd = { "DiffviewOpen", "DiffviewFileHistory", "DiffviewToggleFiles", "DiffviewFocusFiles" },
-    keys = {
-      { "<leader>gL", "<cmd>DiffviewFileHistory<cr>", noremap = true, silent = true, desc = "Check full project git history" },
-      { "<A-9>", "<cmd>DiffviewFileHistory %<cr>", noremap = true, silent = true, desc = "Check current file git history (Alt+9)" },
-      { "<A-8>", "<cmd>DiffviewToggleFiles<cr>", noremap = true, silent = true, desc = "Toggle diffview files (Alt+8)" },
-      { "<leader>go", "<cmd>DiffviewOpen<cr>", noremap = true, silent = true, desc = "Git status with Diffview" },
-
-      { "<leader>m", "", desc = "+git mr/pr", mode = { "n", "v" } },
-      { "<leader>mm", "<cmd>DiffviewOpen origin/HEAD...HEAD --imply-local<cr>", noremap = true, silent = true, desc = "Review MR/PR (Diffview)" },
-      { "<leader>mC", "<cmd>DiffviewFileHistory --range=origin/HEAD...HEAD --right-only --no-merges<cr>", noremap = true, silent = true, desc = "Review MR/PR commit by commit (Diffview)" },
-      { "<leader>mx", "<cmd>DiffviewClose<cr>", noremap = true, silent = true, desc = "Close review (Diffview)" },
-    },
-    dependencies = { "nvim-lua/plenary.nvim" },
-    opts = {},
+      { "<leader>gb", function() Snacks.picker.git_log_line({ focus = "list" }) end, desc = "Git Blame Line" },
+      {
+        "<leader>gs",
+        function()
+          Snacks.picker.git_status({
+            layout = "sidebar",
+            focus = "list",
+            win = {
+              list = {
+                keys = {
+                  ["<space>"] = { "git_stage", mode = { "n", "i" } },
+                }
+              },
+            },
+          })
+        end,
+        desc = "Git Status"
+      },
+      { "<leader>gl", function() Snacks.picker.git_log({ cwd = LazyVim.root.git(), focus = "list" }) end, desc = "Git Log" },
+      { "<leader>gL", function() Snacks.picker.git_log({ focus = "list" }) end, desc = "Git Log (cwd)" },
+      { "<A-9>", function() Snacks.picker.git_log({ current_file = true, focus = "list" }) end, noremap = true, silent = true, desc = "Check current file git history (Alt+9)" },
+    }
   },
 }
