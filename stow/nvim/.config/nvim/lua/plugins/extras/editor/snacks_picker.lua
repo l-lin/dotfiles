@@ -100,21 +100,23 @@ local snacks_picker_opts = {
       keys = {
         ["<A-l>"] = { "focus_list", mode = { "i", "n" } },
         ["<A-w>"] = { "focus_preview", mode = { "i", "n" } },
+        ["<A-q>"] = { "qflist", mode = { "i", "n" } },
       }
     },
     list = {
       keys = {
-        ["a"] = { "focus_input", mode = { "i", "n" } },
-        ["<A-l>"] = { "focus_list", mode = { "i", "n" } },
-        ["<A-w>"] = { "focus_preview", mode = { "i", "n" } },
+        ["a"] = "focus_input",
+        ["<A-l>"] = "focus_list",
+        ["<A-w>"] = "focus_preview",
+        ["<A-q>"] = "qflist",
         ["<C-c>"] = "close",
       }
     },
     preview = {
       keys = {
-        ["a"] = { "focus_input", mode = { "i", "n" } },
-        ["<A-l>"] = { "focus_list", mode = { "i", "n" } },
-        ["<A-w>"] = { "focus_preview", mode = { "i", "n" } },
+        ["a"] = "focus_input",
+        ["<A-l>"] = "focus_list",
+        ["<A-w>"] = "focus_preview",
       }
     }
   },
@@ -202,7 +204,7 @@ return {
             win = {
               input = {
                 keys = {
-                  ["<c-x>"] = "bufdelete",
+                  ["<c-x>"] = { "bufdelete", mode = { "i", "n" } },
                 },
               },
               list = {
