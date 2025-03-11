@@ -161,33 +161,4 @@ return {
       -- end
     end,
   },
-
-  -- fuzzy finding anything anywhere
-  {
-    "nvim-telescope/telescope.nvim",
-    keys = {
-      {
-        "<leader>dd",
-        "<cmd>Telescope dap configurations<cr>",
-        noremap = true,
-        silent = true,
-        desc = "Telescope DAP configuration (Alt+Shift+F10)",
-      },
-      {
-        "<M-S-F10>",
-        "<cmd>Telescope dap configurations<cr>",
-        noremap = true,
-        silent = true,
-        desc = "Telescope DAP configuration (Alt+Shift+F10)",
-      },
-    },
-    dependencies = {
-      "nvim-telescope/telescope-dap.nvim",
-      config = function()
-        LazyVim.on_load("telescope.nvim", function()
-          require("telescope").load_extension("dap")
-        end)
-      end,
-    },
-  },
 }

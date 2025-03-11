@@ -29,27 +29,6 @@ return {
   -- override default config
   -- #######################
 
-  -- fuzzy finding anything anywhere
-  {
-    "nvim-telescope/telescope.nvim",
-    keys = {
-      {
-        "<M-6>",
-        "<cmd>Telescope diagnostics<cr>",
-        noremap = true,
-        silent = true,
-        desc = "Diagnostic (Alt+6)",
-      },
-    },
-    opts = {
-      pickers = {
-        -- No need to be in insert mode for those pickers.
-        buffers = { initial_mode = "normal" },
-        git_status = { initial_mode = "normal" }
-      }
-    }
-  },
-
   -- autocompletion engine
   {
     "saghen/blink.cmp",
