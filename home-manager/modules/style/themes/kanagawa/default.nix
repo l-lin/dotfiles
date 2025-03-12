@@ -15,12 +15,6 @@ in {
   "rebelot/kanagawa.nvim",
   opts = {
     keywordStyle = { bold = true, italic = false },
-    overrides = function(colors)
-      local theme = colors.theme
-      return {
-        SnacksPickerMatch = { link = "Search" }
-      }
-    end
   }
 }
     '';
