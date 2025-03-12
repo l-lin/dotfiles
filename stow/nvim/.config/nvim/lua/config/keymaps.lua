@@ -82,8 +82,3 @@ map({ "n", "v" }, "<M-C-L>", function() require("lazyvim.util").format({ force =
 -- remove trailing whitespace when it's an open parenthesis
 map("n", "J", remove_trailing_whitespace, { noremap = true, silent = true, desc = "Join line without whitespace if it's an open parenthesis" })
 
--- lazygit
-if vim.fn.executable("lazygit") == 1 then
-  map("n", "<A-0>", function() Snacks.lazygit( { cwd = LazyVim.root.git() }) end, { desc = "Lazygit (Root Dir)" })
-end
-
