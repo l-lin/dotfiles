@@ -77,8 +77,8 @@ local snacks_picker_opts = {
       win = {
         input = {
           keys = {
-            ["<a-k>"] = { "switch_grep_files", desc = "Switch to grep", mode = { "i", "v" } },
-            ["<c-o>"] = { "edit_file", desc = "Edit file", mode = { "i", "v" } },
+            ["<A-k>"] = { "switch_grep_files", desc = "Switch to grep", mode = { "i", "v" } },
+            ["<C-o>"] = { "edit_file", desc = "Edit file", mode = { "i", "v" } },
           },
         },
       },
@@ -90,7 +90,7 @@ local snacks_picker_opts = {
       win = {
         input = {
           keys = {
-            ["<a-k>"] = { "switch_grep_files", desc = "Switch to grep", mode = { "i", "v" } },
+            ["<A-k>"] = { "switch_grep_files", desc = "Switch to grep", mode = { "i", "v" } },
           },
         },
       },
@@ -102,6 +102,8 @@ local snacks_picker_opts = {
         ["<A-l>"] = { "focus_list", mode = { "i", "n" } },
         ["<A-w>"] = { "focus_preview", mode = { "i", "n" } },
         ["<A-q>"] = { "qflist", mode = { "i", "n" } },
+        ["<C-j>"] = { "", mode = { "i", "v" } },
+        ["<C-k>"] = { "focus_list", mode = { "i", "v" } },
       }
     },
     list = {
@@ -111,6 +113,8 @@ local snacks_picker_opts = {
         ["<A-w>"] = "focus_preview",
         ["<A-q>"] = "qflist",
         ["<C-c>"] = "close",
+        ["<C-k>"] = "focus_preview",
+        ["<C-j>"] = "focus_input",
       }
     },
     preview = {
@@ -118,6 +122,8 @@ local snacks_picker_opts = {
         ["a"] = "focus_input",
         ["<A-l>"] = "focus_list",
         ["<A-w>"] = "focus_preview",
+        ["<C-j>"] = "focus_list",
+        ["<C-k>"] = "",
       }
     }
   },
