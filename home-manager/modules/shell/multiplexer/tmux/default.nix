@@ -52,7 +52,7 @@ in {
 # Colorscheme (must be set before other plugins)
 set -g @plugin 'l-lin/tmux-colorscheme'
 set -g @tmux-colorscheme 'home-manager'
-set -g @tmux-colorscheme-show-pomodoro false
+set -g @tmux-colorscheme-show-pomodoro true
 set -g @tmux-colorscheme-show-upload-speed false
 set -g @tmux-colorscheme-show-download-speed false
 set -g @tmux-colorscheme-show-prefix-highlight true
