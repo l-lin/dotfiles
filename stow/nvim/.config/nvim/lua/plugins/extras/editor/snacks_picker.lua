@@ -4,7 +4,7 @@ local subject = require("plugins.custom.coding.subject")
 ---Swap files and grep.
 ---src: https://github.com/folke/snacks.nvim/discussions/499
 ---@param picker snacks.Picker the current picker
-local function switch_grep_files(picker)
+local switch_grep_files = function(picker)
   -- switch b/w grep and files picker
   local snacks = require("snacks")
   local cwd = picker.input.filter.cwd
@@ -23,11 +23,16 @@ end
 
 ---Edit the file typed on the prompt.
 ---@param picker snacks.Picker the current picker
-local function edit_file(picker)
+local edit_file = function(picker)
   local prompt = picker.input.filter.pattern
   picker:close()
   vim.api.nvim_command("edit! " .. prompt)
 end
+
+local nav_keys_select = {
+  input = { keys = { ["<C-j>"] = { "focus_list", mode = { "i", "v" } }, ["<C-k>"] = { "", mode = { "i", "v" } } } },
+  list = { keys = { ["<C-j>"] = "", ["<C-k>"] = "focus_input" } },
+}
 
 local snacks_picker_opts = {
   layouts = {
@@ -36,14 +41,13 @@ local snacks_picker_opts = {
       cycle = true,
       layout = {
         backdrop = false,
-        width = 0.9,
-        min_width = 80,
+        border = "rounded",
+        box = "vertical",
         height = 0.9,
         min_height = 30,
-        box = "vertical",
-        border = "rounded",
         title = "{title} {live} {flags}",
         title_pos = "center",
+        width = 0.9,
         { win = "preview", title = "{preview}", height = 0.8, border = "bottom" },
         { win = "list", border = "none" },
         { win = "input", height = 1, border = "top" },
@@ -95,6 +99,9 @@ local snacks_picker_opts = {
         },
       },
     },
+    select = {
+      win = nav_keys_select
+    }
   },
   win = {
     input = {
@@ -207,15 +214,25 @@ return {
               input = {
                 keys = {
                   ["<c-x>"] = { "bufdelete", mode = { "i", "n" } },
+                  ["<C-j>"] = { "focus_list", mode = { "i", "v" } },
+                  ["<C-k>"] = { "focus_preview", mode = { "i", "v" } },
                 },
               },
               list = {
                 keys = {
-                  ["d"] = "bufdelete"
+                  ["d"] = "bufdelete",
+                  ["<C-j>"] = "",
+                  ["<C-k>"] = "focus_input",
                 }
               },
+              preview = {
+                keys = {
+                  ["<C-j>"] = "focus_input",
+                  ["<C-k>"] = "",
+                },
+              },
             },
-            layout = "select"
+            layout = "ivy_split"
           })
         end,
         noremap = true,
@@ -263,7 +280,8 @@ return {
             layout = {
               preset = "dropdown",
               preview = false
-            }
+            },
+            win = nav_keys_select
           })
         end,
         desc = "Goto Symbol (Ctrl+F12)"
