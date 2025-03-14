@@ -30,8 +30,18 @@ local edit_file = function(picker)
 end
 
 local nav_keys_select = {
-  input = { keys = { ["<C-j>"] = { "focus_list", mode = { "i", "v" } }, ["<C-k>"] = { "", mode = { "i", "v" } } } },
-  list = { keys = { ["<C-j>"] = "", ["<C-k>"] = "focus_input" } },
+  input = {
+    keys = {
+      ["<C-j>"] = { "focus_list", mode = { "i", "v" } },
+      ["<C-k>"] = { "", mode = { "i", "v" } },
+    },
+  },
+  list = {
+    keys = {
+      ["<C-j>"] = "",
+      ["<C-k>"] = "focus_input"
+    },
+  },
 }
 
 local snacks_picker_opts = {
@@ -53,15 +63,11 @@ local snacks_picker_opts = {
         { win = "input", height = 1, border = "top" },
       }
     },
-    select = {
-      cycle = true,
-      layout = {
-        width = 0.9
-      }
-    },
+    select = { cycle = true },
   },
   -- Default layout to use.
   layout = "vertical",
+  focus = "list",
   formatters = {
     file = { truncate = 150 }
   },
@@ -83,6 +89,11 @@ local snacks_picker_opts = {
           keys = {
             ["<A-k>"] = { "switch_grep_files", desc = "Switch to grep", mode = { "i", "v" } },
             ["<C-o>"] = { "edit_file", desc = "Edit file", mode = { "i", "v" } },
+          },
+        },
+        list = {
+          keys = {
+            ["<C-o>"] = "edit_file",
           },
         },
       },
@@ -155,7 +166,7 @@ return {
     keys = {
       {
         "<C-g>",
-        function() Snacks.picker.files() end,
+        function() Snacks.picker.files({ focus = "input" }) end,
         mode = "n",
         noremap = true,
         silent = true,
@@ -163,12 +174,7 @@ return {
       },
       {
         "<C-g>",
-        function()
-          Snacks.picker.files({
-            focus = "list",
-            pattern = selector.get_selected_text()
-          })
-        end,
+        function() Snacks.picker.files({ pattern = selector.get_selected_text() }) end,
         mode = "v",
         noremap = true,
         silent = true,
@@ -176,16 +182,14 @@ return {
       },
       {
         "<C-t>",
-        function()
-          Snacks.picker.files({ pattern = subject.find_subject() })
-        end,
+        function() Snacks.picker.files({ pattern = subject.find_subject() }) end,
         desc = "Find associated test file (Ctrl+t)",
         noremap = true,
         silent = true,
       },
       {
         "<M-f>",
-        function () Snacks.picker.grep() end,
+        function () Snacks.picker.grep({ focus = "input" }) end,
         mode = "n",
         noremap = true,
         silent = true,
@@ -194,10 +198,7 @@ return {
       {
         "<M-f>",
         function()
-          Snacks.picker.grep({
-            focus = "list",
-            search = selector.get_selected_text()
-          })
+          Snacks.picker.grep({ search = selector.get_selected_text() })
         end,
         mode = "v",
         noremap = true,
@@ -208,7 +209,6 @@ return {
         "<C-e>",
         function()
           Snacks.picker.buffers({
-            focus = "list",
             current = false,
             win = {
               input = {
@@ -243,13 +243,13 @@ return {
       {
         "<M-6>",
         function()
-          Snacks.picker.diagnostics({ focus = "list" })
+          Snacks.picker.diagnostics()
         end,
         noremap = true,
         silent = true,
         desc = "Diagnostic (Alt+6)"
       },
-      { "<leader>su", function() Snacks.picker.undo({ focus = "list" }) end, noremap = true, silent = true, desc = "Undo" },
+      { "<leader>su", function() Snacks.picker.undo() end, noremap = true, silent = true, desc = "Undo" },
     }
   },
 
@@ -257,14 +257,7 @@ return {
   {
     "folke/todo-comments.nvim",
     keys = {
-      {
-        "<M-2>",
-        function()
-          Snacks.picker.todo_comments({ focus = "list", })
-        end,
-        noremap = true,
-        desc = "Find TODO (Alt+2)"
-      },
+      { "<M-2>", function() Snacks.picker.todo_comments() end, noremap = true, desc = "Find TODO (Alt+2)" },
     },
   },
 
@@ -276,7 +269,6 @@ return {
       {
         "<F36>", function ()
         require("aerial").snacks_picker({
-            focus = "list",
             layout = {
               preset = "dropdown",
               preview = false
@@ -296,20 +288,20 @@ return {
       local keys = require("lazyvim.plugins.lsp.keymaps").get()
       keys[#keys + 1] = {
         "<C-b>",
-        function() Snacks.picker.lsp_definitions({ focus = "list" }) end,
+        function() Snacks.picker.lsp_definitions() end,
         noremap = true,
         silent = true,
         desc = "Goto definition (Ctrl+b)",
       }
       keys[#keys + 1] = {
         "<M-&>",
-        function() Snacks.picker.lsp_references({ focus = "list" }) end,
+        function() Snacks.picker.lsp_references() end,
         noremap = true,
         desc = "LSP references (Ctrl+Shift+7)",
       }
       keys[#keys + 1] = {
         "<M-C-B>",
-        function() Snacks.picker.lsp_implementations({ focus = "list" }) end,
+        function() Snacks.picker.lsp_implementations() end,
         "Goto implementation (Ctrl+Alt+b)",
       }
     end
