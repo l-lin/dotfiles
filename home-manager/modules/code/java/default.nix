@@ -7,6 +7,8 @@
   home.packages = with pkgs; [
     # Build automation tool (used primarily for Java projects): https://maven.apache.org/
     maven
+    # The Apache Maven Daemon: https://maven.apache.org/
+    mvnd
   ];
 
   programs.java = with pkgs; {
