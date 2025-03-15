@@ -9,10 +9,12 @@ end
 
 ---Add or remove the test suffix to the given filepath.
 ---Examples:
----- src/foobar.go      => src/foobar_test.go
----- src/foobar_test.go => src/foobar.go
----- src/foobar.ts      => src/foobar.test.ts
----- src/foobar.test.ts => src/foobar.ts
+---- src/foobar.go            => src/foobar_test.go
+---- src/foobar_test.go       => src/foobar.go
+---- src/foobar.ts            => src/foobar.test.ts
+---- src/foobar.test.ts       => src/foobar.ts
+---- src/main/Foobar.java     => src/main/FoobarTest.java
+---- src/main/FoobarTest.java => src/main/Foobar.java
 ---@param filepath string the filepath to add or remove the test suffix
 ---@param test_suffix string the test suffix, e.g. "_test" or ".test" depending on the programming language
 ---@return string converted_filename new filepath with/without the test suffix
@@ -84,6 +86,41 @@ local function sanitize_for_ts(filepath)
 end
 
 -- ############################################################################
+-- JAVA
+-- ############################################################################
+
+---Sanitize the file to search for Java files.
+---@param filepath string the filepath to look for the test or implementation file
+---@return string sanitized_filepath new filepath with/without the test suffix
+local function sanitize_for_java(filepath)
+  local parts = {}
+  for part in filepath:gmatch("([^/]+)") do
+    table.insert(parts, part)
+  end
+
+  local test_suffix = "Test"
+
+  -- Find the index of "src" in the path
+  local src_index = nil
+  for i, part in ipairs(parts) do
+    if part == "src" then
+      src_index = i
+      break
+    end
+  end
+
+  if src_index and src_index < #parts then
+    if is_test(filepath, test_suffix) then
+      parts[src_index + 1] = "main"
+    else
+      parts[src_index + 1] = "test"
+    end
+  end
+
+  return add_or_remove_test_suffix(table.concat(parts, "/"), test_suffix)
+end
+
+-- ############################################################################
 
 ---Find the associate test or implementation file depending on the current
 ---opened file in the current buffer.
@@ -103,6 +140,10 @@ local function find_subject()
 
   if filetype == "typescript" or filetype == "typescriptreact" then
     return sanitize_for_ts(relative_filepath)
+  end
+
+  if filetype == "java" then
+    return sanitize_for_java(relative_filepath)
   end
 
   return add_or_remove_test_suffix(relative_filepath, "_test")

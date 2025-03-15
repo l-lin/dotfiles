@@ -15,7 +15,7 @@ local function attach_keymaps(bufnr)
   local jdtls = require("jdtls")
   local jdtls_test = require("jdtls.tests")
 
-  vim.keymap.set("n", "<C-T>", jdtls_test.goto_subjects, { buffer = bufnr, noremap = true, silent = true, desc = "Find associated test or class file (Ctrl+t)" })
+  -- vim.keymap.set("n", "<C-T>", jdtls_test.goto_subjects, { buffer = bufnr, noremap = true, silent = true, desc = "Find associated test or class file (Ctrl+t)" })
   vim.keymap.set("n", "<M-S-F9>", function()
     jdtls.pick_test(jdtls_test_opts)
   end, { buffer = bufnr, noremap = true, silent = true, desc = "Run specific test (Alt+Shift+F9)" })
@@ -34,6 +34,7 @@ local function attach_keymaps(bufnr)
       { "<leader>tg", jdtls_test.generate, desc = "Generate test" },
       { "<leader>tn", function() jdtls.test_nearest_method(jdtls_test_opts) end, desc = "Run nearest test (Shift+F9)" },
       { "<leader>ts", function() jdtls.pick_test(jdtls_test_opts) end, desc = "Run specific test (Alt+Shift+F9)" },
+      { "gS", require("jdtls.tests").goto_subjects, desc = "Goto Subjects" },
     },
   })
 end
