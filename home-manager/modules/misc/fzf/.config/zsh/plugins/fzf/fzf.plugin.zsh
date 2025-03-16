@@ -42,25 +42,29 @@ fi
 
 {
 
-# CTRL-T - Paste the selected file path(s) into the command line
+__fzfcmd() {
+  [ -n "${TMUX_PANE-}" ] && { [ "${FZF_TMUX:-0}" != 0 ] || [ -n "${FZF_TMUX_OPTS-}" ]; } &&
+    echo "fzf-tmux ${FZF_TMUX_OPTS:--d${FZF_TMUX_HEIGHT:-40%}} -- " || echo "fzf"
+}
+
+#
+# CTRL-G - Paste the selected file path(s) into the command line
+#
 __fsel() {
+  # The env variable is FZF_CTRL_T_COMMAND because it's set by other things,
+  # like home-manager.
   local cmd="${FZF_CTRL_T_COMMAND:-"command find -L . -mindepth 1 \\( -path '*/.*' -o -fstype 'sysfs' -o -fstype 'devfs' -o -fstype 'devtmpfs' -o -fstype 'proc' \\) -prune \
     -o -type f -print \
     -o -type d -print \
     -o -type l -print 2> /dev/null | cut -b3-"}"
   setopt localoptions pipefail no_aliases 2> /dev/null
   local item
-  eval "$cmd" | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --reverse --scheme=path --bind=ctrl-z:ignore ${FZF_DEFAULT_OPTS-} ${FZF_CTRL_T_OPTS-}" $(__fzfcmd) -m "$@" | while read item; do
+  eval "$cmd" | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --scheme=path --bind=ctrl-z:ignore ${FZF_DEFAULT_OPTS-} ${FZF_CTRL_T_OPTS-}" $(__fzfcmd) -m "$@" | while read item; do
     echo -n "${(q)item} "
   done
   local ret=$?
   echo
   return $ret
-}
-
-__fzfcmd() {
-  [ -n "${TMUX_PANE-}" ] && { [ "${FZF_TMUX:-0}" != 0 ] || [ -n "${FZF_TMUX_OPTS-}" ]; } &&
-    echo "fzf-tmux ${FZF_TMUX_OPTS:--d${FZF_TMUX_HEIGHT:-40%}} -- " || echo "fzf"
 }
 
 fzf-file-widget() {
@@ -74,12 +78,14 @@ bindkey -M emacs '^G' fzf-file-widget
 bindkey -M vicmd '^G' fzf-file-widget
 bindkey -M viins '^G' fzf-file-widget
 
+#
 # ALT-C - cd into the selected directory
+#
 fzf-cd-widget() {
   local cmd="${FZF_ALT_C_COMMAND:-"command find -L . -mindepth 1 \\( -path '*/.*' -o -fstype 'sysfs' -o -fstype 'devfs' -o -fstype 'devtmpfs' -o -fstype 'proc' \\) -prune \
     -o -type d -print 2> /dev/null | cut -b3-"}"
   setopt localoptions pipefail no_aliases 2> /dev/null
-  local dir="$(eval "$cmd" | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --reverse --scheme=path --bind=ctrl-z:ignore ${FZF_DEFAULT_OPTS-} ${FZF_ALT_C_OPTS-}" $(__fzfcmd) +m)"
+  local dir="$(eval "$cmd" | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --scheme=path --bind=ctrl-z:ignore ${FZF_DEFAULT_OPTS-} ${FZF_ALT_C_OPTS-}" $(__fzfcmd) +m)"
   if [[ -z "$dir" ]]; then
     zle redisplay
     return 0
@@ -97,28 +103,44 @@ bindkey -M emacs '\ec' fzf-cd-widget
 bindkey -M vicmd '\ec' fzf-cd-widget
 bindkey -M viins '\ec' fzf-cd-widget
 
-# CTRL-R - Paste the selected command from history into the command line
-fzf-history-widget() {
-  local selected num
-  setopt localoptions noglobsubst noposixbuiltins pipefail no_aliases 2> /dev/null
-  selected="$(fc -rl 1 | awk '{ cmd=$0; sub(/^[ \t]*[0-9]+\**[ \t]+/, "", cmd); if (!seen[cmd]++) print $0 }' |
-    FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} ${FZF_DEFAULT_OPTS-} -n2..,.. --scheme=history --bind=ctrl-r:toggle-sort,ctrl-z:ignore ${FZF_CTRL_R_OPTS-} --query=${(qqq)LBUFFER} +m" $(__fzfcmd))"
-  local ret=$?
-  if [ -n "$selected" ]; then
-    num=$(awk '{print $1}' <<< "$selected")
-    if [[ "$num" =~ '^[1-9][0-9]*\*?$' ]]; then
-      zle vi-fetch-history -n ${num%\*}
-    else # selected is a custom query, not from history
-      LBUFFER="$selected"
-    fi
+#
+# ALT-F - Grep file content
+#
+__fsel_grep() {
+  local cmd="${FZF_ALT_F_COMMAND:-"rg --column --line-number --no-heading --color=always --smart-case "}"
+  setopt localoptions pipefail no_aliases 2> /dev/null
+
+  local selected
+  selected=$(eval "$cmd ''" | \
+    FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --scheme=path --ansi \
+      --disabled --query '' \
+      --bind=ctrl-z:ignore \
+      --bind 'change:reload:sleep 0.1; $cmd {q} || true' \
+      --delimiter : \
+      --with-nth 1,2,3 \
+      --preview 'bat --color=always {1} --highlight-line {2} 2>/dev/null || cat {1}' \
+      --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
+      ${FZF_DEFAULT_OPTS-} ${FZF_ALT_F_OPTS-}" $(__fzfcmd) | \
+    awk -F':' '{print $1}')
+
+  # Check if a selection was made
+  if [[ -n "$selected" ]]; then
+    echo -n "$selected"
+    return 0
   fi
+  return 1
+}
+
+fzf-grep-widget() {
+  LBUFFER="${LBUFFER}$(__fsel_grep)"
+  local ret=$?
   zle reset-prompt
   return $ret
 }
-# zle     -N            fzf-history-widget
-# bindkey -M emacs '^R' fzf-history-widget
-# bindkey -M vicmd '^R' fzf-history-widget
-# bindkey -M viins '^R' fzf-history-widget
+zle     -N            fzf-grep-widget
+bindkey -M emacs '\ef' fzf-grep-widget
+bindkey -M vicmd '\ef' fzf-grep-widget
+bindkey -M viins '\ef' fzf-grep-widget
 
 } always {
   eval $__fzf_key_bindings_options

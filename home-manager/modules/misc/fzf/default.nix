@@ -8,8 +8,7 @@
     enable = true;
 
     defaultOptions = [
-      "--bind='?:toggle-preview'"
-      "--bind='alt-p:toggle-preview-wrap'"
+      "--bind='alt-p:toggle-preview'"
       "--bind='ctrl-d:half-page-down'"
       "--bind='ctrl-u:half-page-up'"
       "--bind='ctrl-f:preview-half-page-down'"
@@ -17,12 +16,12 @@
       "--bind='ctrl-k:preview-up'"
       "--bind='ctrl-b:preview-half-page-up'"
       "--preview-window='up:65%:border-bottom'"
-      "--layout=reverse"
+      "--layout=default"
       "--tiebreak=chunk"
       "--cycle"
       "--no-scrollbar"
       "--prompt='󰍉 '"
-      "--header='?: toggle preview | A-p: toggle preview wrap'"
+      "--header='A-p: toggle preview'"
     ];
 
     # Find file with CTRL-G (set in fzf.plugins.zsh).
