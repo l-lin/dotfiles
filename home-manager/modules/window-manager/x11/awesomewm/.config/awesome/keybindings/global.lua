@@ -87,10 +87,11 @@ local function globalkeys()
     [1] = 10, -- #1 + 9 = 10 (keycode for 1)
     [2] = 11, -- #2 + 9 = 11 (keycode for 2)
     [3] = 12, -- #3 + 9 = 12 (keycode for 3)
-    [4] = 18, -- keycode for 9
-    [5] = 19  -- keycode for 0
+    [4] = 17, -- keycode for 8
+    [5] = 18, -- keycode for 9
+    [6] = 19  -- keycode for 0
   }
-  for i = 1, 5 do
+  for i = 1, 6 do
     keys = gears.table.join(
       keys,
       -- View tag only.

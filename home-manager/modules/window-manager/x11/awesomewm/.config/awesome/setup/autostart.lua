@@ -20,6 +20,7 @@ awful.spawn.with_shell("pgrep ssh-agent || ssh-agent -D -a /run/user/1000/ssh-ag
 -- Start applications if not started
 awful.spawn.with_shell("pgrep tmux || " .. require("config").terminal .. " -e tmux -2 -u")
 awful.spawn.with_shell("pgrep zen || zen")
+awful.spawn.with_shell("pgrep thunderbird || thunderbird")
 
 -- Start daemon for queue long running tasks.
 --awful.spawn.with_shell("pgrep pueued || pueued -d")

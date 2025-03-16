@@ -60,6 +60,7 @@ awful.rules.rules = {
   -- Pin application on specific tags.
   { rule = { class = "obsidian" }, properties = { tag = " " } },
   { rule = { class = "Zen" }, properties = { tag = " " } },
+  { rule = { class = "thunderbird" }, properties = { tag = "󰻧 " } },
   { rule = { class = "Slack" }, properties = { tag = " " } },
   { rule = { class = "Spotify" }, properties = { tag = " " } },
 }
