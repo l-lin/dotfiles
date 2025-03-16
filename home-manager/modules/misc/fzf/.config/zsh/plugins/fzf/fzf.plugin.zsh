@@ -11,7 +11,7 @@
 # - $FZF_CTRL_R_OPTS
 # - $FZF_ALT_C_COMMAND
 # - $FZF_ALT_C_OPTS
-# Copied and adapter to change the following:
+# Copied and adapted to change the following:
 # - fzf-file-widget keymap changed to ctrl-g
 # - remove fzf-history-widget ctrl-r keymap (replaced by atuin)
 
