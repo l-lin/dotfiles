@@ -1,5 +1,7 @@
 #
 # 🌀 Experience tranquillity while browsing the web without people tracking you!
+# Zen mod to install:
+# - [no gap](https://zen-browser.app/mods/bfcc400a-4ecb-4752-bfd2-a68f116a2722/)
 # src: https://zen-browser.app/
 #
 
