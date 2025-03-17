@@ -1,43 +1,33 @@
 #!/usr/bin/env zsh
 #
-# navi: interactive cheatsheet tool
+# Interactive cheatsheet tool.
+# Updated the script to not perform any replacement (not using it),
+# and use Tmux popup instead.
 # src: https://github.com/denisidoro/navi/
 #
+
+[[ -o interactive ]] || return 0
 
 if ! type navi >/dev/null 2>&1; then
   return
 fi
 
-_navi_call() {
-  local result="$(navi "$@" </dev/tty)"
-  printf "%s" "$result"
+_navi_cmd() {
+  [ -n "${TMUX_PANE-}" ] &&
+    echo "tmux popup -w ${NAVI_TMUX_WIDTH:-90%} -h ${NAVI_TMUX_HEIGHT:-90%} -E "
+}
+
+_navi_sel() {
+  local cmd="navi --print | head -c -1 | tmux load-buffer -b tmp - ; tmux paste-buffer -p -b tmp -d"
+
+  eval "$(_navi_cmd) \"$cmd\""
 }
 
 _navi_widget() {
-  local -r input="${LBUFFER}"
-  local -r last_command="$(echo "${input}" | navi fn widget::last_command)"
-  local replacement="$last_command"
-
-  if [ -z "$last_command" ]; then
-      replacement="$(_navi_call --print)"
-  elif [ "$LASTWIDGET" = "_navi_widget" ] && [ "$input" = "$previous_output" ]; then
-      replacement="$(_navi_call --print --query "$last_command")"
-  else
-      replacement="$(_navi_call --print --best-match --query "$last_command")"
-  fi
-
-  if [ -n "$replacement" ]; then
-      local -r find="${last_command}_NAVIEND"
-      previous_output="${input}_NAVIEND"
-      previous_output="${previous_output//$find/$replacement}"
-  else
-      previous_output="$input"
-  fi
-
-  zle kill-whole-line
-  LBUFFER="${previous_output}"
-  region_highlight=("P0 100 bold")
-  zle redisplay
+  LBUFFER="${LBUFFER}$(_navi_sel)"
+  local ret=$?
+  zle reset-prompt
+  return $ret
 }
 
 zle -N _navi_widget
