@@ -88,12 +88,12 @@ local snacks_picker_opts = {
         input = {
           keys = {
             ["<A-k>"] = { "switch_grep_files", desc = "Switch to grep", mode = { "i", "v" } },
-            ["<C-o>"] = { "edit_file", desc = "Edit file", mode = { "i", "v" } },
+            ["<C-s>"] = { "edit_file", desc = "Edit file", mode = { "i", "v" } },
           },
         },
         list = {
           keys = {
-            ["<C-o>"] = "edit_file",
+            ["<C-s>"] = "edit_file",
           },
         },
       },
