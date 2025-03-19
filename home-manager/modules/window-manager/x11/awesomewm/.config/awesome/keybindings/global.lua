@@ -73,7 +73,6 @@ local function globalkeys()
     awful.key({ }, "XF86AudioNext", function() awful.spawn("mpc -q next") end, { description = "next mpd song", group = "hotkeys" }),
     awful.key({ }, "XF86AudioPrev", function() awful.spawn("mpc -q prev") end, { description = "previous mpd song", group = "hotkeys" }),
     awful.key({ }, "XF86AudioPlay", function() awful.spawn("mpc -q toggle") end, { description = "toggle mpd play/pause", group = "hotkeys" }),
-    awful.key({ config.modkey, "Shift" }, "p", function() awful.spawn("mpc -q toggle") end, { description = "toggle mpd play/pause", group = "hotkeys" }),
     awful.key({ config.modkey }, "m", function() awful.spawn("spotify") end, { description = "open spotify", group = "hotkeys" }),
     awful.key({ config.modkey }, "n", function() awful.spawn("spotify-next") end, { description = "next spotify song", group = "hotkeys" }),
     awful.key({ config.modkey }, "p", function() awful.spawn("spotify-toggle") end, { description = "toggle spotify play/pause", group = "hotkeys" }),
