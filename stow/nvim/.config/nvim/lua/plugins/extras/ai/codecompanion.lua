@@ -91,7 +91,7 @@ return {
       },
     },
     init = function()
-      require("plugins.custom.ai.codecompanion_noice").init()
+      require("plugins.custom.ai.codecompanion-noice").init()
       -- Expand 'cc' into 'CodeCompanion' in the command line
       vim.cmd([[cab cc CodeCompanion]])
     end,
