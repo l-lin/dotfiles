@@ -5,5 +5,10 @@
 
 {
   # Enabling using `programs` instead of `home.packages` so stylix can parameterized its colorscheme.
-  programs.btop.enable = true;
+  programs.btop = {
+    enable = true;
+    settings = {
+      vim_keys = true;
+    };
+  };
 }
