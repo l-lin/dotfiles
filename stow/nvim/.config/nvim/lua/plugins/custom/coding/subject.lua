@@ -1,10 +1,23 @@
+---@class snacks.picker.custom.FileType
+---@field is_test boolean true if it's a test file, false otherwise
+---@field test_suffix string the test suffix, empty string if it's not a test file
+
 ---Check if the given filepath is a test or implementation file.
 ---@param filepath string the filepath to check
----@param test_suffix string the test suffix, e.g. "_test" or ".test" depending on the programming language
----@return boolean is_test true if it's an test file, false otherwise
-local function is_test(filepath, test_suffix)
+---@param test_suffixes string|string[] the test suffix, e.g. "_test" or ".test" depending on the programming language
+---@return snacks.picker.custom.FileType
+local function resolve_file_type(filepath, test_suffixes)
   local filename = filepath:match("([^/]+)$")
-  return filename:match(test_suffix) ~= nil
+  if type(test_suffixes) == "table" then
+    for _, test_suffix in ipairs(test_suffixes) do
+      if filename:match(test_suffix) then
+        return { is_test = true, test_suffix = test_suffix }
+      end
+    end
+    return { is_test = false, test_suffix = "" }
+  end
+
+  return { is_test = filename:match(test_suffixes) ~= nil, test_suffix = test_suffixes }
 end
 
 ---Add or remove the test suffix to the given filepath.
@@ -15,13 +28,14 @@ end
 ---- src/foobar.test.ts       => src/foobar.ts
 ---- src/main/Foobar.java     => src/main/FoobarTest.java
 ---- src/main/FoobarTest.java => src/main/Foobar.java
+---- src/main/FoobarIT.java   => src/main/Foobar.java
 ---@param filepath string the filepath to add or remove the test suffix
 ---@param test_suffix string the test suffix, e.g. "_test" or ".test" depending on the programming language
 ---@return string converted_filename new filepath with/without the test suffix
 local function add_or_remove_test_suffix(filepath, test_suffix)
   local name, extension = filepath:match("(.+)%.(.+)")
 
-  if is_test(filepath, test_suffix) then
+  if resolve_file_type(filepath, test_suffix).is_test then
     return name:gsub(test_suffix, "") .. "." .. extension
   end
 
@@ -48,7 +62,7 @@ local function sanitize_for_ruby(filepath)
   -- engines/engine_name/app/path/to/file.rb <=> engines/engine_name/test/path/to/file_test.rb
   -- engines/engine_name/lib/path/to/file.rb <=> engines/engine_name/test/lib/path/to/file_test.rb
   if #parts > 2 and parts[1] == "engines" then
-    if is_test(filepath, test_suffix) then
+    if resolve_file_type(filepath, test_suffix).is_test then
       if #parts > 3 and parts[4] == "lib" then -- engines/engine_name/test/lib/path/to/file_test.rb => engines/engine_name/lib/path/to/file.rb
         table.remove(parts, 3)
       else -- engines/engine_name/test/path/to/file_test.rb => engines/engine_name/app/path/to/file.rb
@@ -64,7 +78,7 @@ local function sanitize_for_ruby(filepath)
   else
     -- Using the default ruby bundler path convention:
     -- lib/path/to/file.rb => test/path/to/file_test.rb
-    if is_test(filepath, test_suffix) then
+    if resolve_file_type(filepath, test_suffix).is_test then
       parts[1] = "lib"
     else
       parts[1] = "test"
@@ -98,7 +112,7 @@ local function sanitize_for_java(filepath)
     table.insert(parts, part)
   end
 
-  local test_suffix = "Test"
+  local test_suffixes = { "Test", "IT" }
 
   -- Find the index of "src" in the path
   local src_index = nil
@@ -110,14 +124,16 @@ local function sanitize_for_java(filepath)
   end
 
   if src_index and src_index < #parts then
-    if is_test(filepath, test_suffix) then
+    local file_type = resolve_file_type(filepath, test_suffixes)
+    if file_type.is_test then
       parts[src_index + 1] = "main"
+      return add_or_remove_test_suffix(table.concat(parts, "/"), file_type.test_suffix)
     else
       parts[src_index + 1] = "test"
     end
   end
 
-  return add_or_remove_test_suffix(table.concat(parts, "/"), test_suffix)
+  return add_or_remove_test_suffix(table.concat(parts, "/"), "Test")
 end
 
 -- ############################################################################
