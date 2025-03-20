@@ -65,7 +65,7 @@ require("lazy").setup({
     { import = "plugins.extras.editor.emoji" },
     { import = "plugins.extras.editor.global-note" },
     { import = "plugins.extras.editor.mini-files" },
-    { import = "plugins.extras.editor.snacks_picker" },
+    { import = "plugins.extras.editor.snacks-picker" },
     -- { import = "plugins.extras.editor.telescope" },
     --{ import = "plugins.extras.lang.adoc" },
     { import = "plugins.extras.lang.java" },
