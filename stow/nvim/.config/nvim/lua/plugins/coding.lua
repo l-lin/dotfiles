@@ -1,3 +1,4 @@
+local completion = require "blink.cmp.completion"
 local function find_sub_module()
   local relative_filepath = vim.fn.expand("%:.")
   local _, extension = relative_filepath:match("(.+)%.(.+)$")
@@ -35,7 +36,7 @@ return {
     opts = {
       keymap = {
         preset = "enter",
-        ['<C-e>'] = { 'select_and_accept' },
+        ["<C-e>"] = { "select_and_accept" },
       },
     },
   },
