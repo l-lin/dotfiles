@@ -172,13 +172,7 @@ local function create_init_options()
   vim.list_extend(bundles, require("plugins.custom.lang.java-dap").create_bundles() or {})
   vim.list_extend(bundles, require("plugins.custom.lang.java-test").create_bundles() or {})
 
-  local extendedClientCapabilities = require("jdtls").extendedClientCapabilities
-  extendedClientCapabilities.onCompletionItemSelectedCommand = "editor.action.triggerParameterHints"
-
-  return {
-    bundles = bundles,
-    extendedClientCapabilities = extendedClientCapabilities
-  }
+  return { bundles = bundles }
 end
 
 ---Create the capabilities used in JDTLS.
