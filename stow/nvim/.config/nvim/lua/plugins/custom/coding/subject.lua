@@ -1,11 +1,11 @@
----@class snacks.picker.custom.FileType
+---@class custom.subject.FileType
 ---@field is_test boolean true if it's a test file, false otherwise
 ---@field test_suffix string the test suffix, empty string if it's not a test file
 
 ---Check if the given filepath is a test or implementation file.
 ---@param filepath string the filepath to check
 ---@param test_suffixes string|string[] the test suffix, e.g. "_test" or ".test" depending on the programming language
----@return snacks.picker.custom.FileType
+---@return custom.subject.FileType
 local function resolve_file_type(filepath, test_suffixes)
   local filename = filepath:match("([^/]+)$")
   if type(test_suffixes) == "table" then
@@ -42,6 +42,19 @@ local function add_or_remove_test_suffix(filepath, test_suffix)
   return name .. test_suffix .. "." .. extension
 end
 
+---Check if the given file is exists.
+---@param filename string the filename
+---@return boolean exists true if the file exists, false otherwise
+local function file_exists(filename)
+  local f = io.open(filename, "r")
+  if f ~= nil then
+    io.close(f)
+    print(filename .. " exists")
+    return true
+  end
+  print(filename .. " does not exist")
+  return false
+end
 
 -- ############################################################################
 -- RUBY
@@ -114,7 +127,7 @@ local function sanitize_for_java(filepath)
 
   local test_suffixes = { "Test", "IT" }
 
-  -- Find the index of "src" in the path
+  -- Find the index of "src" in the path.
   local src_index = nil
   for i, part in ipairs(parts) do
     if part == "src" then
@@ -133,7 +146,22 @@ local function sanitize_for_java(filepath)
     end
   end
 
-  return add_or_remove_test_suffix(table.concat(parts, "/"), "Test")
+  local it_file = add_or_remove_test_suffix(table.concat(parts, "/"), "IT")
+  local test_file = add_or_remove_test_suffix(table.concat(parts, "/"), "Test")
+  local cwd = vim.fn.getcwd()
+  -- IT file exist.
+  if vim.fn.filereadable(cwd .. "/" .. it_file) == 1 then
+    -- Both IT & Test files exist.
+    if vim.fn.filereadable(cwd .. "/" .. test_file) == 1 then
+      -- Suggest src/test/some/pkg/Foobar.java without suffix.
+      -- The fuzzy will display both IT & Test files.
+      return add_or_remove_test_suffix(table.concat(parts, "/"), "")
+    end
+
+    return it_file
+  end
+
+  return test_file
 end
 
 -- ############################################################################
