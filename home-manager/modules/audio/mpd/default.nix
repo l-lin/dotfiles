@@ -30,10 +30,10 @@ auto_update     "yes"
 
 # Make it work with PipeWire.
 # src: https://nixos.wiki/wiki/MPD#PipeWire
-audio_output {
-  type "pipewire"
-  name "PipeWire"
-}
+# audio_output {
+#   type "pipewire"
+#   name "PipeWire"
+# }
 
 # Make it work with PulseAudio.
 audio_output {
