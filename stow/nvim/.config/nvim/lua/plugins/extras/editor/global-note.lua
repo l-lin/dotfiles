@@ -170,8 +170,8 @@ return {
     "backdround/global-note.nvim",
     cmd = { "GlobalNote" },
     keys = {
-      { "<leader>cn", note_picker, noremap = true, silent = true, desc = "Open project notes" },
-      { "<leader>cN", "<cmd>GlobalNote<cr>", noremap = true, silent = true, desc = "Open global notes" },
+      { "<leader>fn", note_picker, noremap = true, silent = true, desc = "Open project notes" },
+      { "<leader>fN", "<cmd>GlobalNote<cr>", noremap = true, silent = true, desc = "Open global notes" },
     },
     opts = {
       filename = "global.md",
