@@ -160,7 +160,10 @@ return {
   {
     "folke/snacks.nvim",
     opts = {
-      matcher = { frecency = true },
+      matcher = {
+        fuzzy = true,
+        cwd_bonus = true,
+      },
       picker = snacks_picker_opts,
     },
     keys = {
