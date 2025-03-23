@@ -38,7 +38,7 @@ end
 
 ---Open the file on the current buffer, not on the floating window.
 ---@param window_id integer Window handle, or 0 for current window
-local open_file_under_cursor = function(window_id)
+local function open_file_under_cursor(window_id)
   local word = vim.fn.expand("<cfile>")
   -- Check if the word is a valid file path.
   if vim.fn.filereadable(word) == 1 then
@@ -53,8 +53,8 @@ local open_file_under_cursor = function(window_id)
 end
 
 ---Add keymaps to:
----- close the floating window with "q"
----- open the file under cursor with "gf" so I don't have to change the workspace
+---- Close the floating window with "q".
+---- Open the file under cursor in its original workspace with "gf".
 ---@param buffer_id integer|boolean `0` or `true` for current buffer.
 ---@param window_id integer Window handle, or 0 for current window
 local function post_open(buffer_id, window_id)

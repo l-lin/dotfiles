@@ -33,7 +33,7 @@ return {
     opts = {
       strategies = {
         chat = {
-          adapter = "deepseek",
+          adapter = "gemma3",
           keymaps = {
             close = {
               modes = { n = "q" },
@@ -44,7 +44,7 @@ return {
           },
         },
         inline = {
-          adapter = "deepseek",
+          adapter = "qwen2_5_coder",
           keymaps = {
             accept_change = {
               modes = { n = "ga" },
@@ -62,29 +62,55 @@ return {
           return require("codecompanion.adapters").extend("ollama", {
             name = "codellama",
             schema = {
-              model = {
-                default = "codellama:7b-instruct-q2_K",
-              },
+              model = { default = "codellama:7b-instruct-q2_K" },
             },
           })
         end,
-        deepseek = function()
+        deepseek_r1 = function()
           return require("codecompanion.adapters").extend("ollama", {
             name = "deepseek",
             schema = {
-              model = {
-                default = "deepseek-r1:1.5b",
-              },
+              model = { default = "deepseek-r1:1.5b" },
             },
           })
         end,
-        qwen = function()
+        gemma3 = function()
           return require("codecompanion.adapters").extend("ollama", {
-            name = "qwen",
+            name = "gemma3",
             schema = {
-              model = {
-                default = "qwen2.5:1.5b",
-              },
+              model = { default = "gemma3:1b" },
+            },
+          })
+        end,
+        phi3 = function()
+          return require("codecompanion.adapters").extend("ollama", {
+            name = "phi3",
+            schema = {
+              model = { default = "phi3:3.8b-mini-4k-instruct-q4_0" },
+            },
+          })
+        end,
+        phi3_5 = function()
+          return require("codecompanion.adapters").extend("ollama", {
+            name = "phi3_5",
+            schema = {
+              model = { default = "phi3.5:3.8b-mini-instruct-q4_0" },
+            },
+          })
+        end,
+        qwen2_5 = function()
+          return require("codecompanion.adapters").extend("ollama", {
+            name = "qwen2_5",
+            schema = {
+              model = { default = "qwen2.5:1.5b" },
+            },
+          })
+        end,
+        qwen2_5_coder = function()
+          return require("codecompanion.adapters").extend("ollama", {
+            name = "qwen2_5_coder",
+            schema = {
+              model = { default = "qwen2.5-coder:1.5b" },
             },
           })
         end,
