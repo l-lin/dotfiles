@@ -1,6 +1,11 @@
----@return string root_directory containing the notes
-local function get_root_directory()
+---@return string project_notes_directory containing the project notes
+local function get_notes_directory()
   return os.getenv("HOME") .. "/perso/notes/2-areas/project-notes"
+end
+
+---@return string daily_notes_directory containing the daily notes
+local function get_daily_notes_directory()
+  return os.getenv("HOME") .. "/perso/notes/5-rituals/daily"
 end
 
 ---@return string project_name project name, e.g. "dotfiles"
@@ -33,7 +38,7 @@ end
 
 ---@return string project_directory containing the project notes
 local function get_project_directory()
-  return get_root_directory() .. "/" .. get_project_name()
+  return get_notes_directory() .. "/" .. get_project_name()
 end
 
 ---Open the file on the current buffer, not on the floating window.
@@ -70,21 +75,44 @@ local function post_open(buffer_id, window_id)
   end, { buffer = buffer_id })
 end
 
----Open the note in floating window.
----@param filename string the file to open
-local function open_note(filename)
-  local global_note = require("global-note")
-  global_note.setup({
+local function daily_note_filename()
+  return tostring(os.date("%Y-%m-%d")) .. ".md"
+end
+
+---@return GlobalNote_UserConfig global_opts the global note default options
+local function global_opts()
+  return {
+    filename = "global.md",
+    directory = get_notes_directory,
+    command_name = "GlobalNote",
+    post_open = post_open,
     additional_presets = {
-      project_note = {
-        command_name = "ProjectNote",
-        directory = get_project_directory,
-        filename = filename,
+      daily_note = {
+        command_name = "DailyNote",
+        directory = get_daily_notes_directory,
+        filename = daily_note_filename,
         post_open = post_open,
-        title = filename,
+        title = daily_note_filename,
       },
     },
-  })
+  }
+end
+
+---Open the note in floating window.
+---@param filename string the file to open
+---@param directory string the directory that contains the file
+local function open_note(filename, directory)
+  local global_note = require("global-note")
+  local opts = global_opts()
+  opts.additional_presets = {
+    project_note = {
+      directory = directory,
+      filename = filename,
+      post_open = post_open,
+      title = filename,
+    },
+  }
+  global_note.setup(opts)
   global_note.toggle_note("project_note")
 end
 
@@ -146,7 +174,7 @@ local function note_picker()
       confirm = function(picker, item)
         picker:close()
         if item then
-          open_note(item.text)
+          open_note(item.text, get_project_directory())
         end
       end,
       create_note = function(picker)
@@ -157,7 +185,7 @@ local function note_picker()
           if not input:match("%.%w+$") then
             input = input .. ".md"
           end
-          open_note(input)
+          open_note(input, get_project_directory())
         end
       end,
     },
@@ -170,14 +198,10 @@ return {
     "backdround/global-note.nvim",
     cmd = { "GlobalNote" },
     keys = {
+      { "<leader>fd", "<cmd>DailyNote<cr>", noremap = true, silent = true, desc = "Open daily notes" },
       { "<leader>fn", note_picker, noremap = true, silent = true, desc = "Open project notes" },
       { "<leader>fN", "<cmd>GlobalNote<cr>", noremap = true, silent = true, desc = "Open global notes" },
     },
-    opts = {
-      filename = "global.md",
-      directory = get_root_directory(),
-      command_name = "GlobalNote",
-      post_open = post_open,
-    },
+    opts = global_opts(),
   },
 }
