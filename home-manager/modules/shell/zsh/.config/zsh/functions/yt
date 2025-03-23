@@ -1,0 +1,122 @@
+#!/usr/bin/env bash
+#
+# Local youtube server.
+# src: https://github.com/christian-fei/my-yt
+#
+
+set -eo pipefail
+
+data_dir=${XDG_DATA_HOME:-${HOME}/.local/share}/my-yt
+container_name=yt
+
+blue='\e[1;30;44m'
+orange='\e[1;30;43m'
+red='\e[1;30;41m'
+escape='\e[0m'
+
+info() {
+  echo -e "${blue} I ${escape} ${1}"
+}
+warn() {
+  >&2 echo -e "${orange} W ${escape} ${1}"
+}
+error() {
+  >&2 echo -e "${red} E ${escape} ${1}"
+}
+
+check_pre_requisites() {
+  if ! type docker >/dev/null 2>&1; then
+    error 'Docker is not installed'
+  fi
+}
+
+start_yt() {
+  check_pre_requisites
+
+  if [ "$(docker ps -q -f name=${container_name})" ]; then
+    info "Container ${container_name} is already running."
+    return
+  fi
+
+  docker run \
+    -d --rm \
+    -p 3000:3000 \
+    --name "${container_name}" \
+    -v "${data_dir}:/app/data" \
+    christianfei/my-yt:latest
+  open http://localhost:3000
+}
+
+stop_yt() {
+  info "Stopping container ${container_name}"
+  docker stop "${container_name}"
+}
+
+toggle() {
+  if [ "$(docker ps -q -f name=${container_name})" ]; then
+    stop_yt
+  else
+    start_yt
+  fi
+}
+
+show_help() {
+  cat << EOF
+Local youtube server.
+
+Usage: ${0##*/} {flags} {args}
+
+Examples:
+    # Start local youtube server.
+    ${0##*/} start
+    # Stop local youtube server.
+    ${0##*/} stop
+    # Toggle start/stop youtube server.
+    ${0##*/}
+
+Available commands:
+    start                 Start local server
+    stop                  Stop local server
+
+Flags:
+    -h, --help            Display help
+EOF
+}
+
+main() {
+  # Flags in bash tutorial here: /usr/share/doc/util-linux/examples/getopt-parse.bash
+  TEMP=$(getopt -o 'hn:v' --long 'help,name:,v' -n "${0##*/}" -- "$@")
+  eval set -- "$TEMP"
+  unset TEMP
+  while true; do
+    case "${1}" in
+      '-h'|'--help')
+        show_help
+        exit
+        ;;
+      '--')
+        shift
+        break
+        ;;
+      *)
+        break
+        ;;
+    esac
+
+    shift
+  done
+
+  case "${1}" in
+    'start')
+      start_yt
+      ;;
+    'stop')
+      stop_yt
+      ;;
+    *)
+      toggle
+      ;;
+  esac
+}
+
+main "$@"
