@@ -30,7 +30,7 @@ bind L forward
 unbind <A-p>
 
 " Use Tridactyl smooth scrolling
-set smoothscroll true
+" set smoothscroll true
 
 set profiledir ${config.home.homeDirectory}/${vendorPath}/${profileName}
   '';
