@@ -23,8 +23,9 @@ in {
     groups = {
       github_light_high_contrast = {
         NonText = { fg = "palette.gray" },
-        SnacksPickerMatch = { link = "Search" }
-      }
+        SnacksPickerMatch = { link = "Search" },
+        TreesitterContext = { bg = "#E6E6E6" },
+      },
     },
     specs = {
       github_light_high_contrast = {
@@ -36,8 +37,8 @@ in {
           overlay = "#FFFFFF",
         },
         syntax = {
-          keyword = "black"
-        }
+          keyword = "black",
+        },
       },
     },
   },
