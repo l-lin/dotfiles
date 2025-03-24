@@ -12,9 +12,6 @@
     git-lfs
   ];
 
-  # Symlink to ~/.gitconfig
-  home.file.".gitconfig".source = ./.gitconfig;
-
   # Symlink to ~/.config/git
   xdg.configFile."git/ignore".source = ./.config/git/ignore;
   xdg.configFile."git/hooks" = {
