@@ -32,7 +32,7 @@ end
 local nav_keys_select = {
   input = {
     keys = {
-      ["<C-j>"] = { "focus_list", mode = { "i", "v" } },
+      ["<C-j>"] = { "focus_list", mode = { "i", "n" } },
       ["<C-k>"] = { "", mode = { "i", "v" } },
     },
   },
@@ -121,7 +121,7 @@ local snacks_picker_opts = {
         ["<A-w>"] = { "focus_preview", mode = { "i", "n" } },
         ["<A-q>"] = { "qflist", mode = { "i", "n" } },
         ["<C-j>"] = { "", mode = { "i", "v" } },
-        ["<C-k>"] = { "focus_list", mode = { "i", "v" } },
+        ["<C-k>"] = { "focus_list", mode = { "i", "n" } },
       }
     },
     list = {
@@ -217,8 +217,8 @@ return {
               input = {
                 keys = {
                   ["<c-x>"] = { "bufdelete", mode = { "i", "n" } },
-                  ["<C-j>"] = { "focus_list", mode = { "i", "v" } },
-                  ["<C-k>"] = { "focus_preview", mode = { "i", "v" } },
+                  ["<C-j>"] = { "focus_list", mode = { "i", "n" } },
+                  ["<C-k>"] = { "focus_preview", mode = { "i", "n" } },
                 },
               },
               list = {
