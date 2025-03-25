@@ -82,3 +82,40 @@ map({ "n", "v" }, "<M-C-L>", function() require("lazyvim.util").format({ force =
 -- remove trailing whitespace when it's an open parenthesis
 map("n", "J", remove_trailing_whitespace, { noremap = true, silent = true, desc = "Join line without whitespace if it's an open parenthesis" })
 
+-- Toggle executable permission on current file.
+map("n", "<leader>fx", function()
+  local file = vim.fn.expand("%")
+  local perms = vim.fn.getfperm(file)
+  local is_executable = string.match(perms, "x", -1) ~= nil
+  local escaped_file = vim.fn.shellescape(file)
+  if is_executable then
+    vim.cmd("silent !chmod -x " .. escaped_file)
+    vim.notify("Removed executable permission", vim.log.levels.INFO)
+  else
+    vim.cmd("silent !chmod +x " .. escaped_file)
+    vim.notify("Added executable permission", vim.log.levels.INFO)
+  end
+end, { desc = "Toggle executable permission" })
+
+-- If this is a bash script, make it executable, and execute it in a tmux pane on the right
+map("n", "<leader>eb", function()
+  local filename = vim.fn.expand("%")
+  local first_line = vim.fn.getline(1)
+  -- Check if the bash script is valid by checking if it contains a shebang.
+  if string.match(first_line, "^#!/") then
+    -- Properly escape the file name for shell commands
+    local escaped_file = vim.fn.shellescape(filename)
+    -- Make the file executable
+    vim.cmd("silent !chmod +x " .. escaped_file)
+
+    -- Execute the script on a tmux pane on the right.
+    vim.cmd(
+      "silent !tmux split-window -h -l 60 'bash -c \"./"
+        .. escaped_file
+        .. "; echo; echo Press any key to exit...; read -n 1; exit\"'"
+    )
+  else
+    vim.cmd("echo 'Not a script. Shebang line not found.'")
+  end
+end, { desc = "Bash script" })
+
