@@ -6,6 +6,21 @@ return {
   -- override default config
   -- #######################
 
+  -- Plugin to improve viewing Markdown files in Neovim.
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    opts = {
+      checkbox = {
+        enabled = true,
+        right_pad = 0,
+      },
+      heading = {
+        enabled = true,
+        icons = { "󰎤 ", "󰎧 ", "󰎪 ", "󰎭 ", "󰎱 ", "󰎳 " },
+      },
+    }
+  },
+
   {
     "mfussenegger/nvim-lint",
     opts = {
