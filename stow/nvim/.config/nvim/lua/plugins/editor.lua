@@ -6,6 +6,7 @@ return {
   -- Not using flash, moving with basic vim motions.
   { "folke/flash.nvim", enabled = false },
 
+
   -- #######################
   -- override default config
   -- #######################
@@ -13,6 +14,7 @@ return {
   -- file explorer
   {
     "nvim-neo-tree/neo-tree.nvim",
+    enabled = false,
     opts = {
       close_if_last_window = true,
       enable_git_status = false,
