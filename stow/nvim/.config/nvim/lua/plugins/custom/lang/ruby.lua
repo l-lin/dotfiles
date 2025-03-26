@@ -1,4 +1,9 @@
----Execute file on a tmux pane on the right.
+---@class custom.RubyExecutionConfig
+---@field cmd string the command to run
+---@field use_interactive_shell boolean true to run the command in interactive shell
+---@field include_line_number boolean true to include the current line number in the command to run
+
+---Execute file on a new tmux pane below.
 ---@param config custom.RubyExecutionConfig the configuration to use for executing ruby file
 local function execute_file(config)
   local filename = vim.fn.expand("%:.")
@@ -10,7 +15,7 @@ local function execute_file(config)
     end
 
     local bash_additional_flags = ""
-    if config.is_interactive then
+    if config.use_interactive_shell then
       bash_additional_flags = "-i "
     end
 
@@ -21,7 +26,7 @@ local function execute_file(config)
         .. bash_additional_flags
         .. '-c "'
         .. command_to_run
-        .. "; echo; echo Press any key to exit...; read -n 1; exit\"'"
+        .. "; echo; echo Press q to exit...; while true; do read -n 1 key; if [[ \\$key == \"q\" ]]; then exit; fi; done\"'"
     )
   else
     vim.notify("Not a Ruby file.", vim.log.levels.WARN)

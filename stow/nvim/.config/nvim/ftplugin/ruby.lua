@@ -6,7 +6,7 @@ vim.keymap.set(
   function()
     ruby.execute_file({
       cmd = "ruby",
-      is_interactive = false,
+      use_interactive_shell = false,
       include_line_number = false,
     })
   end,
@@ -18,7 +18,7 @@ vim.keymap.set(
   function()
     ruby.execute_file({
       cmd = "rails t",
-      is_interactive = true,
+      use_interactive_shell = true,
       include_line_number = false,
     })
   end,
@@ -30,7 +30,7 @@ vim.keymap.set(
   function()
     ruby.execute_file({
       cmd = "rails t",
-      is_interactive = true,
+      use_interactive_shell = true,
       include_line_number = true,
     })
   end,
@@ -42,7 +42,7 @@ vim.keymap.set(
   function()
     ruby.execute_file({
       cmd = "rails t",
-      is_interactive = true,
+      use_interactive_shell = true,
       include_line_number = true,
     })
   end,
