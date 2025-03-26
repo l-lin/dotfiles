@@ -108,11 +108,11 @@ map("n", "<leader>eb", function()
     -- Make the file executable
     vim.cmd("silent !chmod +x " .. escaped_file)
 
-    -- Execute the script on a tmux pane on the right.
+    -- Execute the script on a new tmux pane below.
     vim.cmd(
-      "silent !tmux split-window -h -l 60 'bash -c \"./"
+      "silent !tmux split-window -v -l 20 'bash -c \"./"
         .. escaped_file
-        .. "; echo; echo Press any key to exit...; read -n 1; exit\"'"
+        .. "; echo; echo Press q to exit...; while true; do read -n 1 key; if [[ \\$key == \"q\" ]]; then exit; fi; done\"'"
     )
   else
     vim.cmd("echo 'Not a script. Shebang line not found.'")
