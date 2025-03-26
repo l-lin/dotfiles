@@ -9,8 +9,6 @@ local awful = require("awful")
 awful.spawn("setxkbmap -layout us -option ctrl:nocaps -variant altgr-intl")
 -- Set screen locker.
 awful.spawn.with_shell("pgrep xscreensaver || xscreensaver -nosplash")
--- Screenshot tool must be started in background in order to be used.
-awful.spawn.with_shell("pgrep flameshot || flameshot")
 -- Night screen light.
 awful.spawn.with_shell("pgrep redshift || redshift")
 -- Start ssh-agent (might be best to use the env variable $SSH_AUTH_SOCK, but

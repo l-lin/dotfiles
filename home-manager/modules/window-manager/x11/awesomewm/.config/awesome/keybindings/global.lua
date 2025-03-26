@@ -62,7 +62,7 @@ local function globalkeys()
     awful.key({ }, "XF86MonBrightnessDown", function () awful.spawn("brightnessctl set 10%-") end, { description = "Brightness -10%", group = "hotkeys" }),
 
     -- Screenshot
-    awful.key({ config.modkey }, "s", function () awful.spawn("flameshot gui") end, { description = "take screenshot", group = "hotkeys" }),
+    awful.key({ config.modkey }, "s", require("lib.flameshot").execute_flameshot, { description = "take screenshot", group = "hotkeys" }),
 
     -- Sound control
     -- Not sure I don't need to use the terminal here...
