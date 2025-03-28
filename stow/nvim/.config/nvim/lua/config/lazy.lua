@@ -15,6 +15,7 @@ require("lazy").setup({
 
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
 
+    { import = "lazyvim.plugins.extras.ai.copilot" },
     { import = "lazyvim.plugins.extras.ai.copilot-chat" },
     --{ import = "lazyvim.plugins.extras.ai.codeium" },
     { import = "lazyvim.plugins.extras.coding.yanky" },
@@ -56,6 +57,7 @@ require("lazy").setup({
 
     { import = "plugins" },
     { import = "plugins.extras.ai.codecompanion" },
+    { import = "plugins.extras.ai.copilot" },
     { import = "plugins.extras.ai.copilot-chat" },
     --{ import = "plugins.extras.ai.codeium" },
     --{ import = "plugins.extras.coding.leetcode" },

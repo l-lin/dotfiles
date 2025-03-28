@@ -1,4 +1,7 @@
 return {
+  -- #######################
+  -- override default config
+  -- #######################
   {
     "CopilotC-Nvim/CopilotChat.nvim",
     opts = {
