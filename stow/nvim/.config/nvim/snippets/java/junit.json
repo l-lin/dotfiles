@@ -198,7 +198,7 @@
       "  var actual = assertThrows(IllegalArgumentException.class, executable, desc);",
       "",
       "  // THEN",
-      "  assertThat(actual).extracting(Exception::getMessage).isEqualTo(expectedErrorMessage);",
+      "  assertThat(actual).as(desc).extracting(Exception::getMessage).isEqualTo(expectedErrorMessage);",
       "}",
       "",
       "private static Stream<Arguments> invalidArgumentsProvider() {",
