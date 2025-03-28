@@ -56,3 +56,7 @@ server exited unexpectedly
 .envrc
 .direnv
 shell.nix
+
+# Aider specific #
+##################
+.aider*
