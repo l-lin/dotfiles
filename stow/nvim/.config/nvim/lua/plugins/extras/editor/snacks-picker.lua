@@ -58,7 +58,7 @@ local snacks_picker_opts = {
         title = "{title} {live} {flags}",
         title_pos = "center",
         width = 0.9,
-        { win = "preview", title = "{preview}", height = 0.8, border = "bottom" },
+        { win = "preview", title = "{preview}", height = 0.6, border = "bottom" },
         { win = "list", border = "none" },
         { win = "input", height = 1, border = "top" },
       }
