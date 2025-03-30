@@ -113,38 +113,6 @@ return {
         end,
       },
       prompt_library = {
-        ["Code Expert"] = {
-          strategy = "chat",
-          description = "Get some special advice from an LLM",
-          opts = {
-            modes = { "v" },
-            short_name = "code_expert",
-            auto_submit = false,
-            stop_context_insertion = true,
-            user_prompt = true,
-          },
-          prompts = {
-            {
-              role = "system",
-              content = function(context)
-                return "I want you to act as a senior "
-                  .. context.filetype
-                  .. " developer. I will ask you specific questions and I want you to return concise explanations and codeblock examples."
-              end,
-            },
-            {
-              role = "user",
-              content = function(context)
-                local text = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
-
-                return "I have the following code:\n\n```" .. context.filetype .. "\n" .. text .. "\n```\n\n"
-              end,
-              opts = {
-                contains_code = true,
-              },
-            },
-          },
-        },
         ["English Improver"] = {
           strategy = "chat",
           description = "Improve English wording and grammar",
@@ -158,7 +126,7 @@ return {
           prompts = {
             {
               role = "system",
-              content = "I want you to act as an English language expert. Your task is to improve the wording and grammar of the provided text while maintaining its original meaning.",
+              content = "Act as an English language expert. Your task is to improve the wording and grammar of the provided text while preserving its original meaning.",
             },
             {
               role = "user",
