@@ -1,5 +1,6 @@
 export OPENROUTER_API_KEY="$(sops -d --extract "['openrouter-key']" ~/.config/dotfiles/secrets/sops/api-keys.yaml)"
 export ANTHROPIC_API_KEY="$(sops -d --extract "['anthropic-key']" ~/.config/dotfiles/secrets/sops/api-keys.yaml)"
 export GEMINI_API_KEY="$(sops -d --extract "['gemini-key']" ~/.config/dotfiles/secrets/sops/api-keys.yaml)"
+export GOOGLE_API_KEY="$(sops -d --extract "['gemini-key']" ~/.config/dotfiles/secrets/sops/api-keys.yaml)"
 
 # vim: ft=zsh

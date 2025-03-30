@@ -1,3 +1,0 @@
-export OPENROUTER_API_KEY="$(sops -d --extract "['homebrew-github-api-token']" ~/.config/dotfiles/secrets/sops/work.yaml)"
-
-# vim: ft=zsh
