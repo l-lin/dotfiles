@@ -7,13 +7,6 @@ return {
     cmd = "Copilot",
     keys = {
       {
-        "<leader>ao",
-        "<cmd>Copilot toggle<cr>",
-        silent = true,
-        mode = "n",
-        desc = "Toggle (Copilot)",
-      },
-      {
         "<leader>ad",
         "<cmd>Copilot disable<cr>",
         silent = true,
