@@ -35,9 +35,6 @@ return {
         chat = {
           adapter = "gemma3",
           keymaps = {
-            close = {
-              modes = { n = "q" },
-            },
             stop = {
               modes = { n = "<C-c>" },
             },

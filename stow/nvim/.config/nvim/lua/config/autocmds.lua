@@ -19,6 +19,8 @@ vim.api.nvim_create_autocmd("FileType", {
     "dbout",
     -- leetcode
     "leetcode.nvim",
+    -- codecompanion / ai
+    "codecompanion",
   },
   callback = function(event)
     vim.bo[event.buf].buflisted = false
