@@ -92,6 +92,8 @@
     unzip
     # Modern watch command: https://github.com/sachaos/viddy
     viddy
+    # Command line tool to process CSV files directly from the shell: https://github.com/medialab/xan
+    xan
     # Compressor/archiver for creating and modifying zipfiles: http://www.info-zip.org/
     zip
   ];
