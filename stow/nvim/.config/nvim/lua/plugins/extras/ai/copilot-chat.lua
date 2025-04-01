@@ -5,6 +5,7 @@ return {
   {
     "CopilotC-Nvim/CopilotChat.nvim",
     opts = {
+      model = "claude-3.7-sonnet",
       prompts = {
         EnhanceGrammar = {
           prompt = "Modify the following text to improve grammar and spelling, just output the final text in English without additional quotes around it.",
@@ -19,6 +20,11 @@ return {
           prompt = "Take all variable and function names, and provide only a list with suggestions with improved naming.",
         },
       },
+      mappings = {
+        accept_diff = {
+          normal = 'ga',
+        }
+      }
     },
   },
 }

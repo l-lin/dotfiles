@@ -33,7 +33,7 @@ return {
     opts = {
       strategies = {
         chat = {
-          adapter = "gemma3",
+          adapter = "copilot_claude_sonnet_3_7",
           keymaps = {
             stop = {
               modes = { n = "<C-c>" },
@@ -41,7 +41,7 @@ return {
           },
         },
         inline = {
-          adapter = "qwen2_5_coder",
+          adapter = "copilot_claude_sonnet_3_7",
           keymaps = {
             accept_change = {
               modes = { n = "ga" },
@@ -55,6 +55,16 @@ return {
         },
       },
       adapters = {
+        -- GITHUB COPILOT
+        copilot_claude_sonnet_3_7 = function()
+          return require("codecompanion.adapters").extend("copilot", {
+            name = "copilot_claude_sonnet_3_7",
+            schema = {
+              model = { default = "claude-3.7-sonnet" },
+            },
+          })
+        end,
+        -- OLLAMA
         codellama = function()
           return require("codecompanion.adapters").extend("ollama", {
             name = "codellama",
@@ -114,14 +124,14 @@ return {
       },
       prompt_library = {
         ["English Improver"] = {
-          strategy = "chat",
+          strategy = "inline",
           description = "Improve English wording and grammar",
           opts = {
             modes = { "v" },
             short_name = "improve_english",
             auto_submit = false,
             stop_context_insertion = true,
-            user_prompt = true,
+            user_prompt = false,
           },
           prompts = {
             {
@@ -134,6 +144,35 @@ return {
                 local text = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
 
                 return "Please improve the following text:\n\n" .. text .. "\n\n"
+              end,
+            },
+          },
+        },
+        ["Suggest better names"] = {
+          strategy = "chat",
+          description = "Suggest better name",
+          opts = {
+            modes = { "v" },
+            short_name = "suggest_better_name",
+            auto_submit = true,
+            stop_context_insertion = true,
+            user_prompt = false,
+          },
+          prompts = {
+            {
+              role = "user",
+              content = function(context)
+                local text = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
+
+                return string.format(
+                  [[Take all variable and function names, and provide only a list with suggestions with improved naming.:
+```%s
+%s
+```
+]],
+                  context.filetype,
+                  text
+                )
               end,
             },
           },

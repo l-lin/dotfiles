@@ -42,20 +42,6 @@ local function add_or_remove_test_suffix(filepath, test_suffix)
   return name .. test_suffix .. "." .. extension
 end
 
----Check if the given file is exists.
----@param filename string the filename
----@return boolean exists true if the file exists, false otherwise
-local function file_exists(filename)
-  local f = io.open(filename, "r")
-  if f ~= nil then
-    io.close(f)
-    print(filename .. " exists")
-    return true
-  end
-  print(filename .. " does not exist")
-  return false
-end
-
 -- ############################################################################
 -- RUBY
 -- ############################################################################
