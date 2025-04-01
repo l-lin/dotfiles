@@ -21,7 +21,6 @@
 - :ghost: terminal emulator: [ghostty](https://ghostty.org/)
 - :shell: shell: [zsh](https://www.zsh.org/)
 - :memo: text editor: [neovim](https://neovim.io/)
-- :speech_balloon: notification: [dunst](https://dunst-project.org/)
 - :globe_with_meridians: browser: [zen](https://zen-browser.app/)
 - :abc: fonts: [nerd fonts](https://github.com/ryanoasis/nerd-fonts)
 - :art: color scheme: [kanagawa](https://github.com/rebelot/kanagawa.nvim)
