@@ -117,11 +117,14 @@ cd dotfiles
 just import-keys import-secrets
 just install-home-standalone
 just update-home
-reboot
 
 # Add navi cheatsheets.
 unleash-the-keys
 just install-cheatsheets
+
+# Synchronize atuin
+atuin login -u l-lin
+atuin sync
 
 # Fix dotfiles git remote to use ssh.
 wd dotfiles
