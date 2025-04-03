@@ -88,7 +88,7 @@
 
     # ---- SYSTEM SETTINGS ---- #
     systemSettings = {
-      system = "x86_64-linux"; # system arch
+      system = "aarch64-darwin"; # system arch
       hostname = "nixos"; # hostname
       timezone = "Europe/Paris"; # select timezone
       locale = "en_US.UTF-8"; # select locale
@@ -98,7 +98,7 @@
     };
     # ----- USER SETTINGS ----- #
     userSettings = {
-      username = "l-lin";
+      username = "louis.lin";
       name = "Louis LIN";
       email = "lin.louis@pm.me";
 

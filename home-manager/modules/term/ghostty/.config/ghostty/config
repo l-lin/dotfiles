@@ -37,6 +37,13 @@ app-notifications = no-clipboard-copy
 mouse-hide-while-typing = true
 
 #
+# MacOS
+#
+
+# Make left option behaves like Alt.
+macos-option-as-alt = left
+
+#
 # Keybindings
 #
 

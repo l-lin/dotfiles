@@ -5,17 +5,18 @@
 { fileExplorer, pkgs, ... }: {
   imports = fileExplorer.allSubdirs ./.;
 
+  # TODO: Install Linux package only if Linux.
   home.packages = with pkgs; [
     # Show battery status and other ACPI information: https://sourceforge.net/projects/acpiclient/
-    acpi
+    #acpi
     # Code search-and-replace tool: https://github.com/dalance/amber
     amber
     # A CLI utility for displaying current network utilization: https://github.com/imsnif/bandwhich
-    bandwhich
+    #bandwhich
     # A menu-driven bash script for the management of removable media with udisks: https://github.com/jamielinux/bashmount
-    bashmount
+    #bashmount
     # Read and control device brightness: https://github.com/Hummer12007/brightnessctl
-    brightnessctl
+    #brightnessctl
     # Client for cheat.sh: https://github.com/chubin/cheat.sh
     cht-sh
     # Syntax highlighting for diff: https://www.colordiff.org/
@@ -56,11 +57,11 @@
     # Kill all processes matching a pattern.
     killall
     # Send desktop notifications: https://gitlab.gnome.org/GNOME/libnotify
-    libnotify
+    #libnotify
     # Tools for reading hardware sensors: https://hwmon.wiki.kernel.org/lm_sensors
-    lm_sensors
+    #lm_sensors
     # A set of tools for controlling the network subsystem in Linux: http://net-tools.sourceforge.net/
-    nettools
+    #nettools
     # Yet another nix cli helper: https://github.com/viperML/nh
     nh
     # High precision scientific calculator with full support for physical units: https://numbat.dev/
@@ -68,7 +69,7 @@
     # A command-line utility for easily compressing and decompressing files and directories: https://github.com/ouch-org/ouch
     ouch
     # Stores, retrieves, generates, and synchronizes passwords securely: https://www.passwordstore.org/
-    pass-wayland
+    #pass-wayland
     # Daemon for managing long running shell commands: https://github.com/Nukesor/pueue
     pueue
     # Pretty ping: https://github.com/denilsonsa/prettyping

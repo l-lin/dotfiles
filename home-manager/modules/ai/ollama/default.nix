@@ -5,7 +5,8 @@
 
 { pkgs, ... }: {
   services.ollama = {
-    acceleration = "rocm";
+    # Only useful for Linux.
+    #acceleration = "rocm";
     enable = true;
   };
   home.packages = with pkgs; [

@@ -9,16 +9,17 @@
 #
 
 {
-  xdg = {
-    userDirs = {
-      enable = true;
-      # Create XDG Dirs
-      createDirectories = true;
-    };
-
-    # Let home-manager manage ~/.config/mimeapps.list.
-    # Useful to set the default web browser for example.
-    # HACK: DISABLED because I'm currently using native install of Zen browser.
-    #mimeApps.enable = true;
-  };
+  # TODO: Install only on Linux.
+#  xdg = {
+#    userDirs = {
+#      enable = true;
+#      # Create XDG Dirs
+#      createDirectories = true;
+#    };
+#
+#    # Let home-manager manage ~/.config/mimeapps.list.
+#    # Useful to set the default web browser for example.
+#    # HACK: DISABLED because I'm currently using native install of Zen browser.
+#    #mimeApps.enable = true;
+#  };
 }

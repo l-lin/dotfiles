@@ -87,17 +87,24 @@ unlock_bw
 bw sync
 
 # Import personal SSH key.
-
 email="lin.louis@pm.me"
-username="l-lin"
+username="louis.lin"
 ssh_key_filename="${username}"
 import_ssh_keys "${username}" "${ssh_key_filename}"
 create_git_allowed_signers "${username}" "${ssh_key_filename}" "${email}"
 import_sops_age_key "${username}" "${ssh_key_filename}"
 
-# Import work SSH key.
+# Import SSH key for work related secrets.
 email="louis.lin@doctolib.com"
 username="doctolib"
+ssh_key_filename="doctolib"
+import_ssh_keys "${username}" "${ssh_key_filename}"
+create_git_allowed_signers "${username}" "${ssh_key_filename}" "${email}"
+import_sops_age_key "${username}" "${ssh_key_filename}"
+
+# Import work SSH key dedicated to the machine.
+email="louis.lin@doctolib.com"
+username="doctolib/macos"
 ssh_key_filename="id_ed25519_$(hostname | sed 's/-/_/')"
 import_ssh_keys "${username}" "${ssh_key_filename}"
 create_git_allowed_signers "${username}" "${ssh_key_filename}" "${email}"

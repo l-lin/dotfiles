@@ -55,7 +55,7 @@ cd ~/.config
 git clone https://github.com/l-lin/dotfiles
 cd dotfiles
 
-# Install.
+# Install everything.
 just import-keys import-secrets
 just update-nixos
 just update-home
@@ -73,8 +73,9 @@ git remote remove origin && git remote add origin git@github.com:l-lin/dotfiles 
 #### :penguin: Ubuntu
 
 ```bash
-# install curl to install nix: https://zero-to-nix.com/start/install
+# Install curl: https://zero-to-nix.com/start/install.
 sudo apt install curl
+# Install Nix.
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 
 # Clone dotfiles.
@@ -83,7 +84,36 @@ cd ~/.config
 git clone https://github.com/l-lin/dotfiles
 cd dotfiles
 
-# Install.
+# Install everything.
+just import-keys import-secrets
+just install-home-standalone
+just update-home
+reboot
+
+# Add navi cheatsheets.
+unleash-the-keys
+just install-cheatsheets
+
+# Fix dotfiles git remote to use ssh.
+wd dotfiles
+git remote remove origin && git remote add origin git@github.com:l-lin/dotfiles && git fetch
+```
+
+#### :apple: MacOS
+
+```bash
+# Install homebrew: https://brew.sh/.
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# Install Nix.
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+
+# Clone dotfiles.
+nix-shell -p git just
+cd ~/.config
+git clone https://github.com/l-lin/dotfiles
+cd dotfiles
+
+# Install everything.
 just import-keys import-secrets
 just install-home-standalone
 just update-home

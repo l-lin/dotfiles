@@ -37,6 +37,10 @@
 .springBeans
 .sts4-cache
 
+# MacOS #
+#########
+.DS_Store
+
 # Specific #
 ############
 .tool-versions

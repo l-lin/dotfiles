@@ -2,7 +2,7 @@ set quiet
 set shell := ["bash", "-c"]
 
 NIXOS_HARDWARE_CONFIGURATION_FILE := './nixos/hardware-configuration.nix'
-NIX_PROFILE := 'l-lin'
+NIX_PROFILE := 'louis.lin'
 NIX_HOST := 'nixos'
 THEMES_FOLDER := './home-manager/modules/style/themes'
 
@@ -127,9 +127,9 @@ import-secrets:
 install-cheatsheets:
   cheats=('github.com/l-lin/cheats' 'github.com/l-lin/work-cheats') \
     && for c in ${cheats[@]}; do \
-      host=$(echo ${c} | cut --delimiter '/' --fields 1) \
-      && owner=$(echo ${c} | cut --delimiter '/' --fields 2) \
-      && repo=$(echo ${c} | cut --delimiter '/' --fields 3) \
+      host=$(echo ${c} | awk -F'/' '{print $1}') \
+      && owner=$(echo ${c} | awk -F'/' '{print $2}') \
+      && repo=$(echo ${c} | awk -F'/' '{print $3}') \
       && just install-cheatsheet ${host} ${owner} ${repo}; \
     done
 

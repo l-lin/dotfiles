@@ -5,8 +5,8 @@
 
 set -euo pipefail
 
-username=${1:-l-lin}
-ssh_config_file="${HOME}/.ssh/configtest"
+username=${1:-louis.lin}
+ssh_config_file="${HOME}/.ssh/config"
 ssh_config_exists=$([ -f "${ssh_config_file}" ] && echo true || echo false)
 secrets_repo='git@github.com:l-lin/secrets.git'
 secrets_target_folder="${HOME}/.config/dotfiles/secrets"

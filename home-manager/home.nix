@@ -5,12 +5,15 @@
 # Exhaustive list of options: https://mynixos.com/home-manager/options
 #
 
-{ userSettings, ... }: {
+{ userSettings, systemSettings, ... }:
+let
+  homeDirectory = if (systemSettings.system == "x86_64-linux") then "/home/" else "/Users/";
+in {
   imports = [ ./modules ];
 
   home = {
     username = userSettings.username;
-    homeDirectory = "/home/"+userSettings.username;
+    homeDirectory = homeDirectory+userSettings.username;
   };
 
   # Enable home-manager

@@ -43,7 +43,7 @@ return {
             configs.fuzzy_ls = {
               default_config = {
                 cmd = {
-                  vim.fn.expand(vim.fn.stdpath("data") .. "/lazy/fuzzy_ruby_server/bin/fuzzy_x86_64-unknown-linux-gnu"),
+                  vim.fn.expand(vim.fn.stdpath("data") .. "/lazy/fuzzy_ruby_server/bin/fuzzy_darwin-arm64"),
                 },
                 filetypes = { "ruby" },
                 root_dir = function(fname)

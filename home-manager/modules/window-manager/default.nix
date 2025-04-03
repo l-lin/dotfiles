@@ -9,7 +9,7 @@
 {
   imports = [
     # TODO: Keeping Gnome Wayland, in case I have some issue with X WM...
-    ./wayland
-    ./x11
+    #./wayland
+    #./x11
   ];
 }

@@ -32,20 +32,21 @@ in {
     };
   };
 
-  gtk = {
-    iconTheme = {
-      # An icon theme for the Kanagawa colour palette: https://github.com/Fausto-Korpsvart/Kanagawa-GKT-Theme
-      name = "Kanagawa";
-      package = pkgs.kanagawa-icon-theme;
-    };
-    theme = {
-      # Soothing pastel theme for GTK: https://github.com/catppuccin/gtk
-      name = "catppuccin-mocha-blue-compact";
-      # https://github.com/NixOS/nixpkgs/blob/nixos-24.05/pkgs/data/themes/catppuccin-gtk/default.nix
-      package = pkgs.catppuccin-gtk.override {
-        size = "compact";
-        variant = "mocha";
-      };
-    };
-  };
+  # TODO: Install Linux package only if Linux.
+#  gtk = {
+#    iconTheme = {
+#      # An icon theme for the Kanagawa colour palette: https://github.com/Fausto-Korpsvart/Kanagawa-GKT-Theme
+#      name = "Kanagawa";
+#      package = pkgs.kanagawa-icon-theme;
+#    };
+#    theme = {
+#      # Soothing pastel theme for GTK: https://github.com/catppuccin/gtk
+#      name = "catppuccin-mocha-blue-compact";
+#      # https://github.com/NixOS/nixpkgs/blob/nixos-24.05/pkgs/data/themes/catppuccin-gtk/default.nix
+#      package = pkgs.catppuccin-gtk.override {
+#        size = "compact";
+#        variant = "mocha";
+#      };
+#    };
+#  };
 }

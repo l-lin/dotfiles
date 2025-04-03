@@ -3,25 +3,33 @@
 # src: https://ghostty.org/
 #
 
-{ config, nixgl, pkgs, ... }:
+{ config, ... }:
 let
   palette = config.lib.stylix.colors.withHashtag;
 in {
+  #############################################################################
+  # TODO: Install only on Linux.
+  #
   # To access the GPU, programs need access to OpenGL and Vulkan libraries.
   # While this works transparently on NixOS, it does not on other Linux systems.
   # A solution is provided by NixGL, which can be integrated into Home Manager.
   # src: https://nix-community.github.io/home-manager/index.xhtml#sec-usage-gpu-non-nixos
-  nixGL.packages = nixgl.packages;
-  nixGL.defaultWrapper = "mesa";
-  nixGL.offloadWrapper = "intel";
+  #nixGL.packages = nixgl.packages;
+  #nixGL.defaultWrapper = "mesa";
+  #nixGL.offloadWrapper = "intel";
 
-  programs.ghostty = {
-    enable = true;
-    enableZshIntegration = true;
+  # Cannot install ghostty from home-manager. Broken package in home-manager
+  # unfortunately. And it seems it will be ever possible to install ghostty from
+  # home-manager for MacOs...
+  # src: https://github.com/NixOS/nixpkgs/issues/388984
+  #programs.ghostty = {
+  #  enable = true;
+  #  enableZshIntegration = true;
 
-    # Use the wrapped Ghostty that uses NixGL.
-    package = config.lib.nixGL.wrap pkgs.ghostty;
-  };
+  #  # Use the wrapped Ghostty that uses NixGL.
+  #  #package = config.lib.nixGL.wrap pkgs.ghostty;
+  #};
+  #############################################################################
 
   # Symlink ~/.config/ghostty/
   xdg.configFile."ghostty" = {
