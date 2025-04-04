@@ -6,10 +6,8 @@
 # and a keyboard—and are often written and created using a widget toolkit.
 #
 
-{
+{ userSettings, ... }: {
   imports = [
-    # TODO: Keeping Gnome Wayland, in case I have some issue with X WM...
-    #./wayland
-    #./x11
+    (./. + "/${userSettings.wmType}")
   ];
 }

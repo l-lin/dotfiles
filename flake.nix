@@ -110,7 +110,8 @@
       term = "ghostty"; # default terminal emulator
       theme = "kanagawa"; # colorscheme to use
       shell = "zsh"; # shell to use
-      wm = "awesomewm"; # selected window manager
+      wm = "aerospace"; # selected window manager
+      wmType = "quartz"; # selected window compositor
     };
 
     # shared utility libraries
