@@ -43,8 +43,8 @@ alias ddgr="BROWSER=w3m ddgr -n 5"
 alias top="procs --watch --sortd cpu"
 alias watch="viddy"
 # Prevent recursive change on root directory
-alias chmod="chmod --preserve-root"
-alias chown="chown --preserve-root"
+#alias chmod="chmod --preserve-root"
+#alias chown="chown --preserve-root"
 # copy with a progress bar.
 alias cpv="rsync -apoghb --backup-dir=/tmp -e /dev/null --inplace --info=progress2 --"
 # Compute space disk
