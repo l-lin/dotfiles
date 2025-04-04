@@ -167,6 +167,8 @@ For MacOS:
   - System settings > Dock settings
 - hide top bar
   - System settings > Control center > Automatically hide and show the menu bar
+- display scroll back only when scrolling
+  - System settings > Appearance > Scroll bar behavior > Show scroll bar
 
 ---
 
