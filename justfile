@@ -151,7 +151,7 @@ change-theme to:
     && just error "Unsupported theme '{{to}}', expecting one of '${supported_themes% }'!" >/dev/stderr && exit 1; \
   fi
   just info "Changing theme to '{{to}}'..."
-  sed -i 's~theme = "\(.*\)"~theme = "{{to}}"~' flake.nix
+  sed -i '' 's~theme = "\(.*\)"~theme = "{{to}}"~' flake.nix
   just update-home
   just reload-apps
 
