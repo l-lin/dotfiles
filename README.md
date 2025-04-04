@@ -1,6 +1,7 @@
 # Dotfiles
 
-:snowflake: NixOS
+<summary>:snowflake: NixOS</summary>
+<details>
 
 - :bento: window manager: [hyprland](https://github.com/hyprwm/Hyprland)
 - :ghost: terminal emulator: [ghostty](https://ghostty.org/)
@@ -15,16 +16,33 @@
 - :file_folder: file manager: [yazi](https://yazi-rs.github.io/) / [thunar](https://gitlab.xfce.org/xfce/thunar)
 - :rocket: application launcher: [rofi](https://github.com/lbonn/rofi)
 
-:penguin: Ubuntu
+</details>
 
-- :bento: window manager: [gnome](https://www.gnome.org/) with [pop!_os shell](https://github.com/pop-os/shell)
+<summary>:penguin: Ubuntu</summary>
+<details>
+
+- :bento: window manager: [awesomewm](https://awesomewm.org/)
 - :ghost: terminal emulator: [ghostty](https://ghostty.org/)
 - :shell: shell: [zsh](https://www.zsh.org/)
 - :memo: text editor: [neovim](https://neovim.io/)
 - :globe_with_meridians: browser: [zen](https://zen-browser.app/)
-- :abc: fonts: [nerd fonts](https://github.com/ryanoasis/nerd-fonts)
 - :art: color scheme: [kanagawa](https://github.com/rebelot/kanagawa.nvim)
 - :file_folder: file manager: [yazi](https://yazi-rs.github.io/) / [thunar](https://gitlab.xfce.org/xfce/thunar)
+
+</details>
+
+<summary>:apple: MacOS</summary>
+<details>
+
+- :bento: window manager: [aerospace](https://github.com/nikitabobko/AeroSpace)
+- :ghost: terminal emulator: [ghostty](https://ghostty.org/)
+- :shell: shell: [zsh](https://www.zsh.org/)
+- :memo: text editor: [neovim](https://neovim.io/)
+- :globe_with_meridians: browser: [zen](https://zen-browser.app/)
+- :art: color scheme: [kanagawa](https://github.com/rebelot/kanagawa.nvim)
+- :file_folder: file manager: [yazi](https://yazi-rs.github.io/) / [thunar](https://gitlab.xfce.org/xfce/thunar)
+
+</details>
 
 ## Getting started
 
@@ -45,8 +63,10 @@ $ nix-shell -p tree --run 'tree -d -L 1'
 ```
 
 ### Fresh installation
+#### Installation per distribution
 
-#### :snowflake: NixOS
+<summary>:snowflake: NixOS</summary>
+<details>
 
 ```bash
 # Clone dotfiles.
@@ -60,17 +80,12 @@ just import-keys import-secrets
 just update-nixos
 just update-home
 reboot
-
-# Add navi cheatsheets.
-unleash-the-keys
-just install-cheatsheets
-
-# Fix dotfiles git remote to use ssh.
-wd dotfiles
-git remote remove origin && git remote add origin git@github.com:l-lin/dotfiles && git fetch
 ```
 
-#### :penguin: Ubuntu
+</details>
+
+<summary>:penguin: Ubuntu</summary>
+<details>
 
 ```bash
 # Install curl: https://zero-to-nix.com/start/install.
@@ -89,17 +104,12 @@ just import-keys import-secrets
 just install-home-standalone
 just update-home
 reboot
-
-# Add navi cheatsheets.
-unleash-the-keys
-just install-cheatsheets
-
-# Fix dotfiles git remote to use ssh.
-wd dotfiles
-git remote remove origin && git remote add origin git@github.com:l-lin/dotfiles && git fetch
 ```
 
-#### :apple: MacOS
+</details>
+
+<summary>:apple: MacOS</summary>
+<details>
 
 ```bash
 # Install homebrew: https://brew.sh/.
@@ -118,6 +128,15 @@ just import-keys import-secrets
 just install-home-standalone
 just update-home
 
+# Install ghostty
+open https://ghostty.org/download
+```
+
+</details>
+
+#### Things to do after installation
+
+```bash
 # Add navi cheatsheets.
 unleash-the-keys
 just install-cheatsheets
@@ -129,6 +148,12 @@ atuin sync
 # Fix dotfiles git remote to use ssh.
 wd dotfiles
 git remote remove origin && git remote add origin git@github.com:l-lin/dotfiles && git fetch
+
+# Clone your notes.
+git clone --recurse-submodules git@github:l-lin/notes "${HOME}/perso/notes"
+
+# Install zen browser.
+open https://zen-browser.app/download/
 ```
 
 ---
