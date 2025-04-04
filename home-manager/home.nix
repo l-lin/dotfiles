@@ -8,6 +8,8 @@
 { userSettings, systemSettings, ... }:
 let
   homeDirectory = if (systemSettings.system == "x86_64-linux") then "/home/" else "/Users/";
+  copyCmd = if (systemSettings.system == "x86_64-linux") then "xsel -b" else "pbcopy";
+  pasteCmd = if (systemSettings.system == "x86_64-linux") then "xsel -b" else "pbpaste";
 in {
   imports = [ ./modules ];
 
@@ -24,6 +26,8 @@ in {
     VISUAL = userSettings.editor;
     BROWSER = userSettings.browser;
     PAGER = userSettings.pager;
+    COPY_TO_CLIPBOARD = copyCmd;
+    PASTE_TO_CLIPBOARD = pasteCmd;
 
     # No need to not set the `TERM` env variable here.
     # Tmux will fill it automatically with its conf file.

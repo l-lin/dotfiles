@@ -35,7 +35,7 @@ in {
           set -g @extrakto_popup_size '60%'
           set -g @extrakto_copy_key 'tab'
           set -g @extrakto_insert_key 'enter'
-          set -g @extrakto_clip_tool 'xclip -selection clipboard'
+          set -g @extrakto_clip_tool '$COPY_TO_CLIPBOARD'
           set -g @extrakto_fzf_tool "${fzfExtrakto}/bin/fzf.zsh"
         '';
       }
