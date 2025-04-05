@@ -28,7 +28,8 @@ local map = vim.keymap.set
 
 -- buffer
 -- Same behavior as browsers (muscle memory).
-map("n", "<F28>", "<cmd>bd<CR>", { noremap = true, silent = true, desc = "Close current buffer (Ctrl+F4)" })
+-- No Ctrl+F4 in MacOS...
+--map("n", "<F28>", "<cmd>bd<CR>", { noremap = true, silent = true, desc = "Close current buffer (Ctrl+F4)" })
 
 -- yank file path / name
 map("n", "<leader>yf", "<cmd>let @+=expand('%:.')<CR>", { noremap = true, desc = "Copy current buffer relative path to clipboard" })
