@@ -204,6 +204,12 @@ reload-awesome:
   just info "Reloading obsidian"
   pgrep electron > /dev/null && (pkill electron && obsidian >/dev/null 2>&1&) || true
 
+configure-gh:
+  just info "Authenticating with Github CLI"
+  gh auth login
+  just info "Add Copilot extension"
+  gh extension install github/gh-copilot
+
 # ------------------------------------------------------------------------
 
 # NOTE: When using user.js, it's not possible to use firefox sync, so I need to install them manually.

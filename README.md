@@ -153,8 +153,7 @@ git remote remove origin && git remote add origin git@github.com:l-lin/dotfiles 
 # Clone your notes.
 git clone --recurse-submodules git@github:l-lin/notes "${HOME}/perso/notes"
 
-# Install zen browser.
-open https://zen-browser.app/download/
+just configure-gh
 ```
 
 ---
