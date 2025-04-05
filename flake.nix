@@ -122,6 +122,12 @@
 
     # shared utility libraries
     fileExplorer = import ./scripts/file-explorer.nix { inherit lib; };
+
+    specialArgs =
+      inputs
+      // {
+        inherit fileExplorer inputs nixgl outputs secrets systemSettings userSettings;
+      };
   in {
     # Your custom packages.
     # Accessible through 'nix build', 'nix shell', etc
@@ -131,14 +137,7 @@
     # Available through 'nixos-rebuild --flake .'
     nixosConfigurations = {
       "${systemSettings.hostname}" = nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          # pass config variables from above
-          inherit fileExplorer;
-          inherit systemSettings;
-          inherit userSettings;
-          inherit inputs;
-          inherit secrets;
-        };
+        inherit specialArgs;
         modules = [./nixos/configuration.nix];
       };
     };
@@ -146,14 +145,8 @@
     # Nix-darwin configuration entrypoint.
     darwinConfigurations = {
         "${systemSettings.hostname}" = nix-darwin.lib.darwinSystem {
+          inherit specialArgs;
           system = systemSettings.system;
-          specialArgs = {
-            inherit fileExplorer;
-            inherit systemSettings;
-            inherit userSettings;
-            inherit inputs;
-            inherit secrets;
-          };
           modules = [./nix-darwin/configuration.nix];
         };
       };
@@ -163,15 +156,7 @@
     homeConfigurations = {
       "${userSettings.username}" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.${systemSettings.system}; # Home-manager requires 'pkgs' instance
-        extraSpecialArgs = {
-          # pass config variables from above
-          inherit fileExplorer;
-          inherit inputs outputs;
-          inherit nixgl;
-          inherit secrets;
-          inherit systemSettings;
-          inherit userSettings;
-        };
+        extraSpecialArgs = specialArgs;
         modules = [./home-manager/home.nix];
       };
     };
