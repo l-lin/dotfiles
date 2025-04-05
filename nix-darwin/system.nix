@@ -66,6 +66,11 @@
         Sound = false;
       };
 
+      universalaccess = {
+        # Disable transparency in the menu bar and elsewhere.
+        reduceTransparency = true;
+      };
+
       # Customize settings that not supported by nix-darwin directly
       # Incomplete list of macOS `defaults` commands :
       #   https://github.com/yannbertrand/macos-defaults
