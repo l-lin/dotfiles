@@ -37,6 +37,7 @@
         _FXShowPosixPathInTitle = true; # show full path in finder title
         AppleShowAllExtensions = true; # show all file extensions
         FXEnableExtensionChangeWarning = false; # disable warning when changing file extension
+        FXRemoveOldTrashItems = true; # remove items in the trash after 30 days
         QuitMenuItem = true; # enable quit menu item
         ShowPathbar = true; # show path bar
         ShowStatusBar = true; # show status bar
@@ -52,32 +53,64 @@
         TrackpadThreeFingerDrag = true;
       };
 
+      controlcenter = {
+        # Show a battery percentage in menu bar.
+        BatteryShowPercentage = true;
+        # Show a bluetooth control in menu bar.
+        Bluetooth = false;
+        # Show a Screen Brightness control in menu bar.
+        Display = false;
+        # Show a Focus control in menu bar.
+        FocusModes = false;
+        # Show a sound control in menu bar.
+        Sound = false;
+      };
+
       # Customize settings that not supported by nix-darwin directly
       # Incomplete list of macOS `defaults` commands :
       #   https://github.com/yannbertrand/macos-defaults
       NSGlobalDomain = {
         # `defaults read NSGlobalDomain "xxx"`
-        "com.apple.swipescrolldirection" = true; # enable natural scrolling(default to true)
-        "com.apple.sound.beep.feedback" = 0; # disable beep sound when pressing volume up/down key
-        AppleInterfaceStyle = "Dark"; # dark mode
-        AppleKeyboardUIMode = 3; # Mode 3 enables full keyboard control.
-        ApplePressAndHoldEnabled = true; # enable press and hold
-        AppleShowScrollBars = "WhenScrolling"; # only show scroll bar when scrolling
+
+        # Enable natural scrolling (default to true)
+        "com.apple.swipescrolldirection" = true;
+        # Disable beep sound when pressing volume up/down key.
+        "com.apple.sound.beep.feedback" = 0;
+
+        # Set to ‘Dark’ to enable dark mode, or leave unset for normal mode.
+        AppleInterfaceStyle = "Dark";
+        # Mode 3 enables full keyboard control.
+        AppleKeyboardUIMode = 3;
+        # Enable press and hold (annoying pop-up when navigating in nvim).
+        # src: https://apple.stackexchange.com/q/332769
+        ApplePressAndHoldEnabled = false;
+        # Jump to the spot that’s clicked on the scroll bar.
+        AppleScrollerPagingBehavior = true;
+        # Whether to always show hidden files.
+        AppleShowAllFiles = true;
+        # Only show scroll bar when scrolling.
+        AppleShowScrollBars = "WhenScrolling";
 
         # If you press and hold certain keyboard keys when in a text area, the key’s character begins to repeat.
-        # This is very useful for vim users, they use `hjkl` to move cursor.
-        # sets how long it takes before it starts repeating.
-        InitialKeyRepeat = 15; # normal minimum is 15 (225 ms), maximum is 120 (1800 ms)
-        # sets how fast it repeats once it starts. 
-        KeyRepeat = 3; # normal minimum is 2 (30 ms), maximum is 120 (1800 ms)
+        # Sets how long it takes before it starts repeating.
+        # Normal minimum is 15 (225 ms), maximum is 120 (1800 ms)
+        InitialKeyRepeat = 15;
+        # Sets how fast it repeats once it starts.
+        # Normal minimum is 2 (30 ms), maximum is 120 (1800 ms).
+        KeyRepeat = 3;
 
         NSAutomaticCapitalizationEnabled = false; # disable auto capitalization
         NSAutomaticDashSubstitutionEnabled = false; # disable auto dash substitution
         NSAutomaticPeriodSubstitutionEnabled = false; # disable auto period substitution
         NSAutomaticQuoteSubstitutionEnabled = false; # disable auto quote substitution
         NSAutomaticSpellingCorrectionEnabled = false; # disable auto spelling correction
+        NSAutomaticWindowAnimationsEnabled = false; # whether to animate opening and closing of windows and popovers
+        NSDocumentSaveNewDocumentsToCloud = false; # whether to save new documents to iCloud by default
         NSNavPanelExpandedStateForSaveMode = true; # expand save panel by default
         NSNavPanelExpandedStateForSaveMode2 = true;
+        # Sets the size of the finder sidebar icons: 1 (small), 2 (medium) or 3 (large).
+        NSTableViewDefaultSizeMode = 1;
+        NSWindowShouldDragOnGesture = true; # whether to enable moving window by holding anywhere on it like on Linux
       };
 
       # Customize settings that not supported by nix-darwin directly
