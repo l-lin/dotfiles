@@ -8,6 +8,12 @@
     # src: https://nixos-and-flakes.thiscute.world/nixos-with-flakes/downgrade-or-upgrade-packages
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    # Nix-darwin
+    nix-darwin = {
+      url = "github:lnl7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Home manager
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -58,6 +64,7 @@
   outputs = {
     self,
     home-manager,
+    nix-darwin,
     nixgl,
     nixpkgs,
     secrets,
@@ -89,7 +96,7 @@
     # ---- SYSTEM SETTINGS ---- #
     systemSettings = {
       system = "aarch64-darwin"; # system arch
-      hostname = "nixos"; # hostname
+      hostname = "MACM-ML2PCQ1JXG"; # hostname
       timezone = "Europe/Paris"; # select timezone
       locale = "en_US.UTF-8"; # select locale
       bootMode = "uefi"; # uefi or bios
@@ -135,6 +142,21 @@
         modules = [./nixos/configuration.nix];
       };
     };
+
+    # Nix-darwin configuration entrypoint.
+    darwinConfigurations = {
+        "${systemSettings.hostname}" = nix-darwin.lib.darwinSystem {
+          system = systemSettings.system;
+          specialArgs = {
+            inherit fileExplorer;
+            inherit systemSettings;
+            inherit userSettings;
+            inherit inputs;
+            inherit secrets;
+          };
+          modules = [./nix-darwin/configuration.nix];
+        };
+      };
 
     # Standalone home-manager configuration entrypoint
     # Available through 'home-manager -b backup --flake .'

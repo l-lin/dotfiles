@@ -3,7 +3,7 @@ set shell := ["bash", "-c"]
 
 NIXOS_HARDWARE_CONFIGURATION_FILE := './nixos/hardware-configuration.nix'
 NIX_PROFILE := 'louis.lin'
-NIX_HOST := 'nixos'
+NIX_HOST := 'MACM-ML2PCQ1JXG'
 THEMES_FOLDER := './home-manager/modules/style/themes'
 
 DEFAULT_THEME_DARK := 'kanagawa'
@@ -87,6 +87,20 @@ show-home-news:
 clean-home:
   just warn "Cleaning up home-manager garbage..."
   nix-collect-garbage -d
+
+# NIX-DARWIN --------------------------------------------------------------------------
+
+install-nix-darwin:
+  if ! type darwin-rebuild >/dev/null 2>&1; then \
+    just info "Installing darwin-rebuild" \
+    && nix run nix-darwin/master#darwin-rebuild \
+      --extra-experimental-features 'nix-command flakes' \
+      -- switch --flake '.#{{NIX_HOST}}'; \
+  fi
+
+update-nix-darwin: install-nix-darwin
+  just info "Applying nix-darwin configuration"
+  darwin-rebuild switch --flake '.#{{NIX_HOST}}'
 
 # STOW --------------------------------------------------------------------------
 

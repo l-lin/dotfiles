@@ -126,6 +126,7 @@ cd dotfiles
 # Install everything.
 just import-keys import-secrets
 just install-home-standalone
+just update-nix-darwin
 just update-home
 
 # Install ghostty
@@ -370,4 +371,4 @@ Most of the documentation you will search are the following:
 - https://gitlab.com/hmajid2301/dotfiles
 - https://gitlab.com/usmcamp0811/dotfiles
 - https://gitlab.com/librephoenix/nixos-config
-
+- https://github.com/ryan4yin/nix-darwin-kickstarter
