@@ -204,6 +204,7 @@ reload-awesome:
   just info "Reloading obsidian"
   pgrep electron > /dev/null && (pkill electron && obsidian >/dev/null 2>&1&) || true
 
+# configure Github CLI
 configure-gh:
   just info "Authenticating with Github CLI"
   gh auth login

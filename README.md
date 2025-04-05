@@ -153,6 +153,7 @@ git remote remove origin && git remote add origin git@github.com:l-lin/dotfiles 
 # Clone your notes.
 git clone --recurse-submodules git@github:l-lin/notes "${HOME}/perso/notes"
 
+# Configure Github CLI.
 just configure-gh
 ```
 
