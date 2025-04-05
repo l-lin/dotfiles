@@ -338,6 +338,12 @@ Most of the documentation you will search are the following:
 - [Nix cookbook and survival guide](https://nix4noobs.com/)
 - [Practical Nix flake anatomy](https://vtimofeenko.com/posts/practical-nix-flake-anatomy-a-guided-tour-of-flake.nix/)
 
+#### nix-darwin
+
+- [Nix-Darwin dev handbook](https://dev.jmgilman.com/environment/tools/nix/nix-darwin/)
+- [Switching to nix-darwin and flakes](https://evantravers.com/articles/2024/02/06/switching-to-nix-darwin-and-flakes/)
+- [Package management on macOS with nix-darwin](https://davi.sh/blog/2024/01/nix-darwin/)
+
 ### Interesting topics
 
 - [Smaller stdenv for shells](https://discourse.nixos.org/t/smaller-stdenv-for-shells/28970)

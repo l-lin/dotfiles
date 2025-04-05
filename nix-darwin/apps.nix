@@ -35,32 +35,24 @@
     ];
 
     # `brew install`
-    brews = [
-      # "wget" # download tool
-      # "curl" # no not install curl via nixpkgs, it's not working well on macOS!
-      # "aria2" # download tool
-      # "httpie" # http client
-    ];
+    # To get the list of installed apps with brew: `brew list`
+    brews = [];
 
     # `brew install --cask`
+    # To get the list of installed apps with brew casks: `brew list --casks`
     casks = [
-      # "firefox"
-      # "google-chrome"
-      # "visual-studio-code"
-      #
-      # # IM & audio & remote desktop & meeting
-      # "telegram"
-      # "discord"
-      #
+      # 🌀 Experience tranquillity while browsing the web without people tracking you: https://zen-browser.app/
+      "zen-browser"
+
+      # i3-like tiling window manager for macOS: https://github.com/nikitabobko/AeroSpace
+      "aerospace"
+
       # "anki"
       # "iina" # video player
       # "raycast" # (HotKey: alt/option + space)search, caculate and run scripts(with many plugins)
-      # "stats" # beautiful system monitor
-      # "eudic" # 欧路词典
-      #
-      # # Development
-      # "insomnia" # REST client
-      # "wireshark" # network analyzer
+
+      # macOS system monitor in your menu bar: https://github.com/exelban/stats
+      "stats"
     ];
   };
 }
