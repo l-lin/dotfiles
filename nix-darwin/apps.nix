@@ -33,11 +33,15 @@
 
     taps = [
       "homebrew-zathura/zathura"
+      # Tap for JankyBorders.
+      "FelixKratz/formulae"
     ];
 
     # `brew install`
     # To get the list of installed apps with brew: `brew list`
     brews = [
+      # A lightweight window border system for macOS: https://github.com/FelixKratz/JankyBorders
+      "borders"
       # A highly customizable and functional PDF viewer: https://git.pwmt.org/pwmt/zathura/
       "zathura"
     ];
@@ -47,16 +51,14 @@
     casks = [
       # i3-like tiling window manager for macOS: https://github.com/nikitabobko/AeroSpace
       "aerospace"
-
       # 👻 Ghostty is a fast, feature-rich, and cross-platform terminal emulator that uses platform-native UI and GPU acceleration: https://ghostty.org/
       "ghostty"
-
       # macOS system monitor in your menu bar: https://github.com/exelban/stats
       "stats"
-
       # Knowledge base that works on top of a local folder of plain text Markdown files: https://obsidian.md/
       "obsidian"
-
+      # Team communication and collaboration software: https://slack.com/
+      "slack"
       # 🌀 Experience tranquillity while browsing the web without people tracking you: https://zen-browser.app/
       "zen-browser"
 
