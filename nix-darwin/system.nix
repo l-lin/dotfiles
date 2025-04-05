@@ -140,20 +140,17 @@
       };
     };
 
-    # keyboard settings is not very useful on macOS
-    # the most important thing is to remap option key to alt key globally,
-    # but it's not supported by macOS yet.
+    # Remap keys to fit my muscle memory!
     keyboard = {
-      enableKeyMapping = true; # enable key mapping so that we can use `option` as `control`
+      enableKeyMapping = true;
 
-      remapCapsLockToControl = false; # remap caps lock to control, useful for emac users
-      remapCapsLockToEscape  = true; # remap caps lock to escape, useful for vim users
+      remapCapsLockToControl = true; # remap caps lock to control
+      remapCapsLockToEscape  = false; # remap caps lock to escape
 
       # swap left command and left alt
       # so it matches common keyboard layout: `ctrl | command | alt`
-      #
-      # disabled, caused only problems!
-      swapLeftCommandAndLeftAlt = false;
+      # which is the common layout for other keyboards...
+      swapLeftCommandAndLeftAlt = true;
     };
   };
 
