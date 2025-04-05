@@ -128,9 +128,6 @@ just import-keys import-secrets
 just install-home-standalone
 just update-nix-darwin
 just update-home
-
-# Install ghostty
-open https://ghostty.org/download
 ```
 
 </details>

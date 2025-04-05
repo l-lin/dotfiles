@@ -45,21 +45,24 @@
     # `brew install --cask`
     # To get the list of installed apps with brew casks: `brew list --casks`
     casks = [
-      # 🌀 Experience tranquillity while browsing the web without people tracking you: https://zen-browser.app/
-      "zen-browser"
-
       # i3-like tiling window manager for macOS: https://github.com/nikitabobko/AeroSpace
       "aerospace"
 
-      # "anki"
-      # "iina" # video player
-      # "raycast" # (HotKey: alt/option + space)search, caculate and run scripts(with many plugins)
+      # 👻 Ghostty is a fast, feature-rich, and cross-platform terminal emulator that uses platform-native UI and GPU acceleration: https://ghostty.org/
+      "ghostty"
 
       # macOS system monitor in your menu bar: https://github.com/exelban/stats
       "stats"
 
       # Knowledge base that works on top of a local folder of plain text Markdown files: https://obsidian.md/
       "obsidian"
+
+      # 🌀 Experience tranquillity while browsing the web without people tracking you: https://zen-browser.app/
+      "zen-browser"
+
+      # "anki"
+      # "iina" # video player
+      # "raycast" # (HotKey: alt/option + space)search, caculate and run scripts(with many plugins)
     ];
   };
 }
