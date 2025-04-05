@@ -157,20 +157,6 @@ git clone --recurse-submodules git@github:l-lin/notes "${HOME}/perso/notes"
 open https://zen-browser.app/download/
 ```
 
-For MacOS:
-
-- change Capslock to Ctrl
-  - System settings > keyboard shortcuts > Keyboard modifier keys
-- switch alt/option with cmd (same behavior with PC)
-- enable tap for click
-  - System settings > Trackpad
-- hide dock + remove tiled windows margin
-  - System settings > Dock settings
-- hide top bar
-  - System settings > Control center > Automatically hide and show the menu bar
-- display scroll back only when scrolling
-  - System settings > Appearance > Scroll bar behavior > Show scroll bar
-
 ---
 
 ## Notes to my future self
