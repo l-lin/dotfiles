@@ -123,7 +123,7 @@ remove-symlinks folder:
 [private]
 init-directories:
   cd stow \
-  && for folder in $(find . -mindepth 2 -type d -printf '%P\n' | cut -d '/' -f 2-); do \
+  && find . -mindepth 2 -type d | sed 's|^\./||' | grep '/' | while read folder; do \
     mkdir -p "${HOME}/${folder}"; \
   done
 
