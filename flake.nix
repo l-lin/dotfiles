@@ -105,7 +105,6 @@
       browser = "zen"; # default browser
       fileManager = "yazi"; # TUI file manager (lf or yazi)
       editor = "nvim"; # default editor
-      messaging = "slack"; # default messaging tool
       pager = "less"; # default pager
       term = "ghostty"; # default terminal emulator
       theme = "kanagawa"; # colorscheme to use

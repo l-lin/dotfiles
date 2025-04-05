@@ -2,6 +2,9 @@
 # Modules to install and configure at user level.
 #
 
-{ fileExplorer, ... }: {
-  imports = fileExplorer.allSubdirs ./.;
+{ systemSettings, ... }: {
+  imports = [
+    ./share
+    ./${systemSettings.system}
+  ];
 }

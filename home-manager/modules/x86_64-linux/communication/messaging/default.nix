@@ -1,0 +1,7 @@
+#
+# Messaging tools.
+#
+
+{
+  imports = [ ./slack ];
+}
