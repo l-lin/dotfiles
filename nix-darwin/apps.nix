@@ -32,11 +32,15 @@
     };
 
     taps = [
+      "homebrew-zathura/zathura"
     ];
 
     # `brew install`
     # To get the list of installed apps with brew: `brew list`
-    brews = [];
+    brews = [
+      # A highly customizable and functional PDF viewer: https://git.pwmt.org/pwmt/zathura/
+      "zathura"
+    ];
 
     # `brew install --cask`
     # To get the list of installed apps with brew casks: `brew list --casks`
