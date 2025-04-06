@@ -59,6 +59,8 @@
       "stats"
       # Knowledge base that works on top of a local folder of plain text Markdown files: https://obsidian.md/
       "obsidian"
+      # Open-source colour picker app for macOS: https://superhighfives.com/pika
+      "pika"
       # Team communication and collaboration software: https://slack.com/
       "slack"
       # 🌀 Experience tranquillity while browsing the web without people tracking you: https://zen-browser.app/
