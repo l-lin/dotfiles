@@ -27,8 +27,14 @@
     onActivation = {
       autoUpdate = true; # Fetch the newest stable branch of Homebrew's git repo
       upgrade = true; # Upgrade outdated casks, formulae, and App Store apps
-      # 'zap': uninstalls all formulae(and related files) not listed in the generated Brewfile
-      #cleanup = "zap";
+      # - "none" (the default): formulae not present in the generated Brewfile are left installed.
+      # - "uninstall": nix-darwin invokes brew bundle [install] with the --cleanup flag.
+      #   - This uninstalls all formulae not listed in generated Brewfile, i.e., brew uninstall is run for those formulae.
+      # - "zap": nix-darwin invokes brew bundle [install] with the --cleanup --zap flags.
+      #   - This uninstalls all formulae not listed in the generated Brewfile, and if the formula is a cask, removes all files associated with that cask.
+      #   - In other words, brew uninstall --zap is run for all those formulae.
+      # Do not cleanup, because some formulae are automatically installed by company dev tools.
+      cleanup = "none";
     };
 
     taps = [

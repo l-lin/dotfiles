@@ -81,6 +81,8 @@
         "com.apple.swipescrolldirection" = true;
         # Disable beep sound when pressing volume up/down key.
         "com.apple.sound.beep.feedback" = 0;
+        # Use F1, F2, etc. keys as standard function keys.
+        "com.apple.keyboard.fnState" = true;
 
         # Set to ‘Dark’ to enable dark mode, or leave unset for normal mode.
         AppleInterfaceStyle = "Dark";
@@ -209,26 +211,4 @@
 
   # Set your time zone.
   time.timeZone = systemSettings.timezone;
-
-  # Fonts
-  # fonts = {
-  #   packages = with pkgs; [
-  #     # icon fonts
-  #     material-design-icons
-  #     font-awesome
-  #
-  #     # nerdfonts
-  #     # https://github.com/NixOS/nixpkgs/blob/nixos-24.05/pkgs/data/fonts/nerdfonts/shas.nix
-  #     (nerdfonts.override {
-  #       fonts = [
-  #         # symbols icon only
-  #         "NerdFontsSymbolsOnly"
-  #         # Characters
-  #         "FiraCode"
-  #         "JetBrainsMono"
-  #         "Iosevka"
-  #       ];
-  #     })
-  #   ];
-  # };
 }
