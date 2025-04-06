@@ -45,8 +45,6 @@
     killall
     # Yet another nix cli helper: https://github.com/viperML/nh
     nh
-    # High precision scientific calculator with full support for physical units: https://numbat.dev/
-    numbat
     # A command-line utility for easily compressing and decompressing files and directories: https://github.com/ouch-org/ouch
     ouch
     # Daemon for managing long running shell commands: https://github.com/Nukesor/pueue

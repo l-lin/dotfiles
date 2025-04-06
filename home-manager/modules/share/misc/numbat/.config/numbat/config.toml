@@ -1,0 +1,2 @@
+# Controls the welcome message. Can be "long", "short", or "off".
+intro-banner = "off"

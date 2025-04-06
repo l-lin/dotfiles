@@ -143,10 +143,12 @@ automatically-unhide-macos-hidden-apps = false
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#mode
     cmd-shift-semicolon = 'mode service'
-    cmd-t = 'exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh'
 
+    # Applications
+    cmd-t = 'exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c tmux -2 -u'
     cmd-e = 'exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c yazi'
     cmd-shift-e = 'exec-and-forget open /Users/louis.lin'
+    cmd-shift-c = 'exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c numbat'
 
 # 'service' binding mode declaration.
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
