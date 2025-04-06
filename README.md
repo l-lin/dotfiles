@@ -159,6 +159,8 @@ For macOS:
 - Remove keyboard shortcut for dictation (default shortcut is making me popup a notification every now and then).
   - System settings > Keyboard > Dictation
 - Install Tridactyl native by executing `:nativeinstall` in your browser.
+- Change screenshot keymap to `cmd-s` and `cmd-shift-s`.
+  - System settings > Keyboard shortcut > Screenshot
 
 ---
 
