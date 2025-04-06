@@ -154,6 +154,12 @@ git clone --recurse-submodules git@github:l-lin/notes "${HOME}/perso/notes"
 just configure-gh
 ```
 
+For macOS:
+
+- Remove keyboard shortcut for dictation (default shortcut is making me popup a notification every now and then).
+  - System settings > Keyboard > Dictation
+- Install Tridactyl native by executing `:nativeinstall` in your browser.
+
 ---
 
 ## Notes to my future self

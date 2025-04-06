@@ -3,15 +3,9 @@
 # src: https://tridactyl.xyz/
 #
 
-{ config, userSettings, ... }:
-let
-  vendorPath = if userSettings.browser == "floorp" then
-    ".floorp"
-  else
-    ".mozilla/firefox";
-  profileName = userSettings.username;
-in {
+{ userSettings, ... }: {
   # Symlink to ~/.config/tridactyl/tridactylrc
+  # Need to install tridactyl-native in order to use ~/.config/tridactyl/.tridactylrc
   # Default keymaps: https://github.com/tridactyl/tridactyl/blob/8e4525a758dbf23c59af64f9ae3a5dacb633cb23/src/lib/config.ts#L132
   # To find what keymap is bind to, press :bindshow <your_keymap>
   xdg.configFile."tridactyl/tridactylrc".text = ''
@@ -31,7 +25,5 @@ unbind <A-p>
 
 " Use Tridactyl smooth scrolling
 " set smoothscroll true
-
-set profiledir ${config.home.homeDirectory}/${vendorPath}/${profileName}
   '';
 }
