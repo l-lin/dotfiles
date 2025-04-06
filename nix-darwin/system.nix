@@ -195,7 +195,14 @@
 
   # Create /etc/zshrc that loads the nix-darwin environment.
   # this is required if you want to use darwin's default shell - zsh
-  programs.zsh.enable = true;
+  programs.zsh = {
+    enable = true;
+    # No need for completion, let me configure them myself.
+    enableBashCompletion = false;
+    enableCompletion = false;
+    # Skip system wide compinit, let ourself do it for faster startup time!
+    enableGlobalCompInit = false;
+  };
   environment.shells = [
     pkgs.zsh
   ];
