@@ -59,10 +59,20 @@ add_ssh_key() {
 
   info "Adding ssh key $ssh_key_filepath to ssh-agent."
   if [[ $ssh_key_filename == '${userSettings.username}' ]]; then
-    # Fetch passphrase from bitwarden, then add ssh key to ssh-agent.
-    SSH_ASKPASS=parrot \
-      ssh-add $ssh_key_filepath \
-      <<< "$(bw list items --search ssh@${userSettings.username} | jq -r '.[].fields[].value')"
+    local passphrase=$(bw list items --search ssh@${userSettings.username} | jq -r '.[].fields[].value')
+
+    # SSH_ASKPASS does not work on macOS, so use expect instead.
+    if [[ "$(uname)" == "Darwin" ]]; then
+      expect << EOF
+spawn ssh-add "$ssh_key_filepath"
+expect "Enter passphrase"
+send "$passphrase\r"
+expect eof
+EOF
+    else
+      SSH_ASKPASS=parrot \
+        ssh-add "$ssh_key_filepath" <<< "$passphrase"
+    fi
   else
     ssh-add $ssh_key_filepath
   fi

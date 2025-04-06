@@ -132,7 +132,7 @@ import_all "${email}" "${username}" "${ssh_key_filename}"
 # Import SSH key for work related secrets.
 email="louis.lin@doctolib.com"
 username="doctolib"
-ssh_key_filename="${username}"
+ssh_key_filename="work"
 import_all "${email}" "${username}" "${ssh_key_filename}"
 
 # Import work SSH key dedicated to the machine.
