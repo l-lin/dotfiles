@@ -55,8 +55,6 @@
       "aerospace"
       # 👻 Ghostty is a fast, feature-rich, and cross-platform terminal emulator that uses platform-native UI and GPU acceleration: https://ghostty.org/
       "ghostty"
-      # macOS system monitor in your menu bar: https://github.com/exelban/stats
-      "stats"
       # Knowledge base that works on top of a local folder of plain text Markdown files: https://obsidian.md/
       "obsidian"
       # Open-source colour picker app for macOS: https://superhighfives.com/pika
@@ -65,12 +63,10 @@
       "slack"
       # Music streaming service: https://www.spotify.com/https://www.spotify.com/
       "spotify"
+      # macOS system monitor in your menu bar: https://github.com/exelban/stats
+      "stats"
       # 🌀 Experience tranquillity while browsing the web without people tracking you: https://zen-browser.app/
       "zen-browser"
-
-      # "anki"
-      # "iina" # video player
-      # "raycast" # (HotKey: alt/option + space)search, caculate and run scripts(with many plugins)
     ];
   };
 }
