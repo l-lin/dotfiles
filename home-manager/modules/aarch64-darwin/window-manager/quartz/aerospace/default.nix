@@ -6,4 +6,7 @@
 
 { fileExplorer, ... }: {
   imports = fileExplorer.allSubdirs ./.;
+
+  # Symlink to ~/.config/aerospace/aerospace.toml.
+  xdg.configFile."aerospace/aerospace.toml".source = ./.config/aerospace/aerospace.toml;
 }
