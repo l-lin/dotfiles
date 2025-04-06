@@ -154,15 +154,6 @@ return {
     },
   },
 
-  -- code outline window
-  {
-    "stevearc/aerial.nvim",
-    optional = true,
-    keys = {
-      { "<F36>", "<cmd>Telescope aerial<cr>", desc = "Goto Symbol (Ctrl+F12)" },
-    },
-  },
-
   -- LSP
   {
     "neovim/nvim-lspconfig",

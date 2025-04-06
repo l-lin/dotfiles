@@ -73,15 +73,6 @@ return {
     },
   },
 
-  -- code outline window
-  {
-    "stevearc/aerial.nvim",
-    optional = true,
-    keys = {
-      { "<A-7>", "<cmd>AerialToggle<cr>", desc = "Aerial Symbols (Alt+7)" },
-    },
-  },
-
   -- #######################
   -- add new plugins
   -- #######################

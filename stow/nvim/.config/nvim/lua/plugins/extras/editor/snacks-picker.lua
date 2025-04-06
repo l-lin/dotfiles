@@ -264,26 +264,6 @@ return {
     },
   },
 
-  -- code outline window
-  {
-    "stevearc/aerial.nvim",
-    optional = true,
-    keys = {
-      {
-        "<F36>", function ()
-        require("aerial").snacks_picker({
-            layout = {
-              preset = "dropdown",
-              preview = false
-            },
-            win = nav_keys_select
-          })
-        end,
-        desc = "Goto Symbol (Ctrl+F12)"
-      },
-    },
-  },
-
   -- easily config neovim lsp
   {
     "neovim/nvim-lspconfig",

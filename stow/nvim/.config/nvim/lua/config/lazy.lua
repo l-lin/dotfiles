@@ -19,7 +19,6 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.ai.copilot-chat" },
     --{ import = "lazyvim.plugins.extras.ai.codeium" },
     { import = "lazyvim.plugins.extras.coding.yanky" },
-    { import = "lazyvim.plugins.extras.editor.aerial" },
     { import = "lazyvim.plugins.extras.editor.harpoon2" },
     { import = "lazyvim.plugins.extras.editor.mini-files" },
     --{ import = "lazyvim.plugins.extras.editor.overseer" },
