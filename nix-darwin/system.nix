@@ -25,11 +25,12 @@
         autohide = true;
         show-recents = false;
 
-        # customize Hot Corners
-        wvous-tl-corner = 2; # top-left - Mission Control
-        wvous-tr-corner = 13; # top-right - Lock Screen
-        wvous-bl-corner = 3; # bottom-left - Application Windows
-        wvous-br-corner = 4; # bottom-right - Desktop
+        # Disable Hot Corners, no need for them.
+        # src: https://nix-darwin.github.io/nix-darwin/manual/index.html#opt-system.defaults.dock.wvous-bl-corner
+        wvous-tl-corner = 1;
+        wvous-tr-corner = 1;
+        wvous-bl-corner = 1;
+        wvous-br-corner = 1;
       };
 
       # Customize finder.
