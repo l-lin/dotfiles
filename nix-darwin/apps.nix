@@ -63,6 +63,8 @@
       "pika"
       # Team communication and collaboration software: https://slack.com/
       "slack"
+      # Music streaming service: https://www.spotify.com/https://www.spotify.com/
+      "spotify"
       # 🌀 Experience tranquillity while browsing the web without people tracking you: https://zen-browser.app/
       "zen-browser"
 
