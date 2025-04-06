@@ -150,6 +150,9 @@ automatically-unhide-macos-hidden-apps = false
     cmd-shift-e = 'exec-and-forget open /Users/louis.lin'
     cmd-shift-c = 'exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c numbat'
 
+    # Color picker
+    # cmd-shift-o: configured directly in pika
+
 # 'service' binding mode declaration.
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
 [mode.service.binding]
