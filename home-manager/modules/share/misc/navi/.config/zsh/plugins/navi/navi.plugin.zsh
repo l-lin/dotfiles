@@ -18,7 +18,7 @@ _navi_cmd() {
 }
 
 _navi_sel() {
-  local cmd="navi --print | head -c -1 | tmux load-buffer -b tmp - ; tmux paste-buffer -p -b tmp -d"
+  local cmd="navi --print | perl -pe 'chomp if eof' | tmux load-buffer -b tmp - ; tmux paste-buffer -p -b tmp -d"
 
   eval "$(_navi_cmd) \"$cmd\""
 }
