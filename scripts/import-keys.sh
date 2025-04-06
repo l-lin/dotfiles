@@ -8,7 +8,7 @@ set -euo pipefail
 BW_SESSION=""
 
 ssh_dir="${HOME}/.ssh"
-sops_dir="${HOME}/.config/sops"
+sops_dir="${XDG_CONFIG_HOME:-${HOME}/.config}/sops"
 
 # colors for logging
 blue="\e[1;30;44m"
@@ -83,6 +83,43 @@ unlock_bw() {
   export BW_SESSION
 }
 
+import_all() {
+  local email=${1}
+  local username=${2}
+  local ssh_key_filename="${3}"
+
+  import_ssh_keys "${username}" "${ssh_key_filename}"
+  create_git_allowed_signers "${username}" "${ssh_key_filename}" "${email}"
+  import_sops_age_key "${username}" "${ssh_key_filename}"
+}
+
+# When decrypting a file with the corresponding identity, SOPS will look for a text file name keys.txt
+# located in a sops subdirectory of your user configuration directory.
+# On Linux, this would be $XDG_CONFIG_HOME/sops/age/keys.
+# If $XDG_CONFIG_HOME is not set $HOME/.config/sops/age/keys.txt is used instead.
+# On macOS, this would be $HOME/Library/Application Support/sops/age/keys.
+#
+# For some reason I don't understand, sometimes, it's looking at the official path
+# $HOME/Library/Application Support/sops/age/keys.txt, and some other times
+# it's looking at $XDG_CONFIG_HOME/sops/age/keys.txt...
+# So creating the keys in both location will cover all use cases.
+#
+# src: https://github.com/getsops/sops?tab=readme-ov-file#encrypting-using-age
+import_sops_age_key_for_darwin() {
+  if [[ "${OSTYPE}" == "darwin"* ]]; then
+    local age_key="${sops_dir}/age/keys.txt"
+    local darwin_sops_dir="${HOME}/Library/Application Support/sops"
+    local darwin_age_key="${darwin_sops_dir}/age/keys.txt"
+
+    info "Creating dir ${darwin_sops_dir}/age/..."
+    mkdir -p "${darwin_sops_dir}/age"
+    chmod 700 "${darwin_sops_dir}/age"
+
+    info "Creating symlink SOPS age key for macOS from ${age_key} to ${darwin_age_key}..."
+    ln -s "${age_key}" "${darwin_age_key}"
+  fi
+}
+
 unlock_bw
 bw sync
 
@@ -90,25 +127,21 @@ bw sync
 email="lin.louis@pm.me"
 username="louis.lin"
 ssh_key_filename="${username}"
-import_ssh_keys "${username}" "${ssh_key_filename}"
-create_git_allowed_signers "${username}" "${ssh_key_filename}" "${email}"
-import_sops_age_key "${username}" "${ssh_key_filename}"
+import_all "${email}" "${username}" "${ssh_key_filename}"
 
 # Import SSH key for work related secrets.
 email="louis.lin@doctolib.com"
 username="doctolib"
-ssh_key_filename="doctolib"
-import_ssh_keys "${username}" "${ssh_key_filename}"
-create_git_allowed_signers "${username}" "${ssh_key_filename}" "${email}"
-import_sops_age_key "${username}" "${ssh_key_filename}"
+ssh_key_filename="${username}"
+import_all "${email}" "${username}" "${ssh_key_filename}"
 
 # Import work SSH key dedicated to the machine.
 email="louis.lin@doctolib.com"
 username="doctolib/macos"
 ssh_key_filename="id_ed25519_$(hostname | sed 's/-/_/')"
-import_ssh_keys "${username}" "${ssh_key_filename}"
-create_git_allowed_signers "${username}" "${ssh_key_filename}" "${email}"
-import_sops_age_key "${username}" "${ssh_key_filename}"
+import_all "${email}" "${username}" "${ssh_key_filename}"
+
+import_sops_age_key_for_darwin
 
 bw lock
 
