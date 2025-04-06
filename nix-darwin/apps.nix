@@ -33,15 +33,11 @@
 
     taps = [
       "homebrew-zathura/zathura"
-      # Tap for JankyBorders.
-      "FelixKratz/formulae"
     ];
 
     # `brew install`
     # To get the list of installed apps with brew: `brew list`
     brews = [
-      # A lightweight window border system for macOS: https://github.com/FelixKratz/JankyBorders
-      "borders"
       # A highly customizable and functional PDF viewer: https://git.pwmt.org/pwmt/zathura/
       "zathura"
     ];
