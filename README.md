@@ -152,6 +152,9 @@ git clone --recurse-submodules git@github:l-lin/notes "${HOME}/perso/notes"
 
 # Configure Github CLI.
 just configure-gh
+
+# Configure jira CLI.
+jira init
 ```
 
 For macOS:
