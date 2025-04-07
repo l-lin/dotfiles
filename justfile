@@ -4,7 +4,7 @@ set shell := ["bash", "-c"]
 NIXOS_HARDWARE_CONFIGURATION_FILE := './nixos/hardware-configuration.nix'
 NIX_PROFILE := 'louis.lin'
 NIX_HOST := 'MACM-ML2PCQ1JXG'
-THEMES_FOLDER := './home-manager/modules/style/themes'
+THEMES_FOLDER := './home-manager/modules/share/style/themes'
 
 DEFAULT_THEME_DARK := 'kanagawa'
 DEFAULT_THEME_LIGHT := 'github-light'
