@@ -86,7 +86,8 @@
         "com.apple.keyboard.fnState" = true;
 
         # Set to ‘Dark’ to enable dark mode, or leave unset for normal mode.
-        AppleInterfaceStyle = "Dark";
+        # /!\ It does not automatically change the theme...
+        #AppleInterfaceStyle = null;
         # Mode 3 enables full keyboard control.
         AppleKeyboardUIMode = 3;
         # Enable press and hold (annoying pop-up when navigating in nvim).

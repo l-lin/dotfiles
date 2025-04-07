@@ -137,7 +137,7 @@ init-directories:
     mkdir -p "${HOME}/${folder}"; \
   done
 
-# --------------------------------------------------------------------------
+# INSTALLATION / CONFIGURATION --------------------------------------------------------------------------
 
 # import SSH keys, SOPS age key and create git allowed signers
 import-keys:
@@ -168,6 +168,15 @@ install-cheatsheet host owner repo:
       git clone "git@{{host}}:{{owner}}/{{repo}}" "${folder_name}"; \
     fi
 
+# configure Github CLI
+configure-gh:
+  just info "Authenticating with Github CLI"
+  gh auth login
+  just info "Add Copilot extension"
+  gh extension install github/gh-copilot
+
+# THEME --------------------------------------------------------------------------
+
 # change theme
 change-theme to:
   if [[ ! -d "{{THEMES_FOLDER}}/{{to}}" ]]; then \
@@ -183,9 +192,11 @@ change-theme to:
 switch-polarity:
   current_theme=$(just get-current-theme) && \
   if [[ "{{DEFAULT_THEME_LIGHT}}" == "${current_theme}" ]]; then \
-    just change-theme '{{DEFAULT_THEME_DARK}}'; \
+    just change-theme '{{DEFAULT_THEME_DARK}}' \
+    && just change-macos-polarity true; \
   else \
-    just change-theme '{{DEFAULT_THEME_LIGHT}}'; \
+    just change-theme '{{DEFAULT_THEME_LIGHT}}' \
+    && just change-macos-polarity false; \
   fi
 
 [private]
@@ -214,12 +225,17 @@ reload-awesome:
   just info "Reloading obsidian"
   pgrep electron > /dev/null && (pkill electron && obsidian >/dev/null 2>&1&) || true
 
-# configure Github CLI
-configure-gh:
-  just info "Authenticating with Github CLI"
-  gh auth login
-  just info "Add Copilot extension"
-  gh extension install github/gh-copilot
+# Switch polarity in macOS by calling osascript.
+# src:
+# - https://norday.tech/posts/2020/switch-dark-mode-os/
+# - https://apple.stackexchange.com/a/443362 for changing wallpaper
+[private]
+change-macos-polarity is_dark:
+  if type osascript >/dev/null 2>&1; then \
+    just info "Changing macOS polarity" \
+    && osascript -l JavaScript -e "Application('System Events').appearancePreferences.darkMode = {{is_dark}}" > /dev/null \
+    && osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"${HOME}/Pictures/wallpaper.jpg\" as POSIX file"; \
+  fi
 
 # ------------------------------------------------------------------------
 
