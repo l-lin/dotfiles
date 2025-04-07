@@ -90,6 +90,7 @@ clean-home:
 
 # NIX-DARWIN --------------------------------------------------------------------------
 
+# install nix darwin if not already installed
 install-nix-darwin:
   if ! type darwin-rebuild >/dev/null 2>&1; then \
     just info "Installing darwin-rebuild" \
@@ -98,9 +99,18 @@ install-nix-darwin:
       -- switch --flake '.#{{NIX_HOST}}'; \
   fi
 
-update-nix-darwin: install-nix-darwin
+# apply nix-darwin configuration
+update-nix-darwin: install-nix-darwin add-keyboard-layout
   just info "Applying nix-darwin configuration"
   darwin-rebuild switch --flake '.#{{NIX_HOST}}'
+
+# add us-altgr-intl keyboard layout to macos
+add-keyboard-layout:
+  just info "Add us-altgr-intl keyboard layout"
+  sudo rm -rf "/Library/Keyboard Layouts/us-altgr-intl.keylayout" \
+    && sudo ln -s \
+      "${XDG_CONFIG_HOME:-${HOME}/.config}/dotfiles/home-manager/modules/aarch64-darwin/keyboard-layout/us-altgr-intl.keylayout" \
+      "/Library/Keyboard Layouts/us-altgr-intl.keylayout"
 
 # STOW --------------------------------------------------------------------------
 

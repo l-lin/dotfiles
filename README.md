@@ -164,6 +164,8 @@ For macOS:
 - Install Tridactyl native by executing `:nativeinstall` in your browser.
 - Change screenshot keymap to `cmd-s` and `cmd-shift-s`.
   - System settings > Keyboard shortcut > Screenshot
+- Change keyboard layout (may require a reboot).
+  - System settings > Keyboard > Text input > Edit > + > Other > us-altgr-intl
 
 ---
 
