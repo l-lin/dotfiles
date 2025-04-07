@@ -145,7 +145,7 @@ automatically-unhide-macos-hidden-apps = false
     cmd-shift-semicolon = 'mode service'
 
     # Applications
-    cmd-t = 'exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c tmux -2 -u'
+    cmd-shift-t = 'exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c tmux -2 -u'
     cmd-e = 'exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c yazi'
     cmd-shift-e = 'exec-and-forget open /Users/louis.lin'
     cmd-shift-c = 'exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c numbat'
