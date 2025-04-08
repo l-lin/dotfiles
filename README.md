@@ -163,14 +163,16 @@ just configure-colima
 For macOS:
 
 - Remove keyboard shortcut for dictation (default shortcut is making me popup a notification every now and then).
-  - System settings > Keyboard > Dictation
-- Install Tridactyl native by executing `:nativeinstall` in your browser.
+  - `System settings > Keyboard > Dictation`
+- Remove `Ctrl+FX` keyboard shortcuts (otherwise, they won't be usable in nvim).
+  - `System settings > Keyboard > Keyboard shortcut > Keyboard: disable all`
 - Change screenshot keymap to `cmd-s` and `cmd-shift-s`.
-  - System settings > Keyboard shortcut > Screenshot
+  - `System settings > Keyboard shortcut > Screenshot`
+- Install Tridactyl native by executing `:nativeinstall` in your browser.
 - Change keyboard layout (may require a reboot).
-  - System settings > Keyboard > Text input > Edit > + > Other > us-altgr-intl
+  - `System settings > Keyboard > Text input > Edit`: Click on `+`, select `Other` and then `us-altgr-intl`
 - Add ghostty to control the computer so that `osascript` can send keystrokes for reloading ghostty configuration.
-  - System settings > Privacy & security > Accessibility > Add ghostty
+  - `System settings > Privacy & security > Accessibility`: add ghostty
 
 ---
 
