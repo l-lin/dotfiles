@@ -10,24 +10,6 @@ in {
   programs.fzf = {
     enable = true;
 
-    defaultOptions = [
-      "--bind='alt-p:toggle-preview'"
-      "--bind='ctrl-d:half-page-down'"
-      "--bind='ctrl-u:half-page-up'"
-      "--bind='ctrl-f:preview-half-page-down'"
-      "--bind='ctrl-j:preview-down'"
-      "--bind='ctrl-k:preview-up'"
-      "--bind='ctrl-b:preview-half-page-up'"
-      "--preview-window='up:65%:border-bottom'"
-      "--layout=default"
-      "--tiebreak=chunk"
-      "--cycle"
-      "--no-scrollbar"
-      "--prompt='󰍉 '"
-      "--header='A-p: toggle preview'"
-      "--color=$(cat ${config.xdg.dataHome}/fzf/colorscheme)"
-    ];
-
     # Find file with CTRL-G (set in fzf.plugins.zsh).
     # FZF_ALT_C_COMMAND
     fileWidgetCommand = "fd --type f --hidden --exclude .git";
@@ -49,11 +31,29 @@ in {
     recursive = true;
   };
 
-  # Symlink to ~/.local/share/fzf/colorscheme.
-  # Putting FZF colors in a file, then have FZF_DEFAULT_OPTS to read this file,
-  # so that when I'm switching the theme, fzf will use the new colors automatically.
-  # Using stylix colors: https://github.com/danth/stylix/blob/master/modules/fzf/hm.nix
-  xdg.dataFile."fzf/colorscheme".text = with palette; ''
-bg:${base00-hex},bg+:${base01-hex},fg:${base04-hex},fg+:${base06-hex},header:#${base0D-hex},hl:${base0D-hex},hl+:${base0D-hex},info:${base0A-hex},marker:${base0C-hex},pointer:${base0A-hex},prompt:${base0A-hex},spinner:${base0C-hex}
+  # Symlink to ~/.config/zsh/zprofile.d/.zprofile.fzf.
+  # Using colors defined in stylix: https://github.com/danth/stylix/blob/master/modules/fzf/hm.nix
+  # Home-manager env variables are sourced only once. So to have the colors
+  # updated, I have to execute `tmux kill-server`, which is not nice.
+  # src: https://github.com/nix-community/home-manager/issues/3999
+  xdg.configFile."zsh/zprofile.d/.zprofile.fzf".text = with palette; ''
+export FZF_DEFAULT_OPTS="\
+  --bind='alt-p:toggle-preview' \
+  --bind='ctrl-d:half-page-down' \
+  --bind='ctrl-u:half-page-up' \
+  --bind='ctrl-f:preview-half-page-down' \
+  --bind='ctrl-j:preview-down' \
+  --bind='ctrl-k:preview-up' \
+  --bind='ctrl-b:preview-half-page-up' \
+  --preview-window='up:65%:border-bottom' \
+  --layout=default \
+  --tiebreak=chunk \
+  --cycle \
+  --no-scrollbar \
+  --prompt='󰍉 ' \
+  --header='A-p: toggle preview' \
+  --color bg:${base00-hex},bg+:${base01-hex},fg:${base04-hex},fg+:${base06-hex},\
+header:${base0D-hex},hl:${base0D-hex},hl+:${base0D-hex},info:${base0A-hex},\
+marker:${base0C-hex},pointer:${base0A-hex},prompt:${base0A-hex},spinner:${base0C-hex}"
   '';
 }

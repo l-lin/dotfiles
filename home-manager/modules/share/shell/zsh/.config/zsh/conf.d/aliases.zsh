@@ -35,8 +35,6 @@ alias ra="rake"
 # git
 alias g="git"
 alias lg="lazygit"
-# zsh
-alias rhm="refresh-zsh-hm-session-vars"
 
 # --------------------------------------------------------
 # Default options
