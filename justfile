@@ -175,6 +175,15 @@ configure-gh:
   just info "Add Copilot extension"
   gh extension install github/gh-copilot
 
+# src: https://golang.testcontainers.org/system_requirements/using_colima/
+# configure colima to work with testcontainers
+configure-colima:
+  just info "Creating symbolink link from Docker socket"
+  sudo ln -sf $HOME/.colima/default/docker.sock /var/run/docker.sock
+  just info "Restarting colima"
+  colima stop
+  colima start --network-address
+
 # THEME --------------------------------------------------------------------------
 
 # change theme

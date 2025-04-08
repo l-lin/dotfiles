@@ -155,6 +155,9 @@ just configure-gh
 
 # Configure jira CLI.
 jira init
+
+# Configure colima to work with testcontainers
+just configure-colima
 ```
 
 For macOS:
