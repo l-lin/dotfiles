@@ -17,12 +17,20 @@ return {
         desc = "Toggle CodeCompanionChat",
       },
       {
+        "<leader>an",
+        "<cmd>CodeCompanionChat<cr>",
+        silent = true,
+        mode = "n",
+        noremap = true,
+        desc = "New CodeCompanionChat",
+      },
+      {
         "<leader>ac",
         "<cmd>CodeCompanionActions<cr>",
         silent = true,
         mode = { "n", "v" },
         noremap = true,
-        desc = "Toggle CodeCompanionChat",
+        desc = "Toggle CodeCompanionActions",
       },
     },
     config = true,
@@ -183,6 +191,7 @@ return {
       require("plugins.custom.ai.codecompanion-noice").init()
       -- Expand 'cc' into 'CodeCompanion' in the command line
       vim.cmd([[cab cc CodeCompanion]])
+      vim.cmd([[cab ccc CodeCompanionChat]])
     end,
   },
 }
