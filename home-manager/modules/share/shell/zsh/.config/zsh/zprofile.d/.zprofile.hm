@@ -1,5 +1,0 @@
-# HACK: Force re-sourcing the hm session variables to take into account the changes brought when switching polarity.
-# Not ideal, as it would source twice the env variables... But I still don't understand how __HM_SESS_VARS_SOURCED works exactly between each zsh sessions...
-[[ -r ${HOME}/.nix-profile/etc/profile.d/hm-session-vars.sh ]] && unset __HM_SESS_VARS_SOURCED && source ${HOME}/.nix-profile/etc/profile.d/hm-session-vars.sh
-
-# vim: ft=zsh

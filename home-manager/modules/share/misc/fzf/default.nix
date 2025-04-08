@@ -3,7 +3,10 @@
 # src: https://github.com/junegunn/fzf
 #
 
-{
+{ config, ... }:
+let
+  palette = config.lib.stylix.colors.withHashtag;
+in {
   programs.fzf = {
     enable = true;
 
@@ -22,6 +25,7 @@
       "--no-scrollbar"
       "--prompt='󰍉 '"
       "--header='A-p: toggle preview'"
+      "--color=$(cat ${config.xdg.dataHome}/fzf/colorscheme)"
     ];
 
     # Find file with CTRL-G (set in fzf.plugins.zsh).
@@ -44,4 +48,12 @@
     source = ./.config/zsh/plugins/fzf;
     recursive = true;
   };
+
+  # Symlink to ~/.local/share/fzf/colorscheme.
+  # Putting FZF colors in a file, then have FZF_DEFAULT_OPTS to read this file,
+  # so that when I'm switching the theme, fzf will use the new colors automatically.
+  # Using stylix colors: https://github.com/danth/stylix/blob/master/modules/fzf/hm.nix
+  xdg.dataFile."fzf/colorscheme".text = with palette; ''
+bg:${base00-hex},bg+:${base01-hex},fg:${base04-hex},fg+:${base06-hex},header:#${base0D-hex},hl:${base0D-hex},hl+:${base0D-hex},info:${base0A-hex},marker:${base0C-hex},pointer:${base0A-hex},prompt:${base0A-hex},spinner:${base0C-hex}
+  '';
 }

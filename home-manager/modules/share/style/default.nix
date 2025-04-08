@@ -74,7 +74,8 @@
       # WARN: Do not enable gtk! Otherwise, you might no longer login in your Ubuntu GUI...
       bat.enable = true;
       btop.enable = true;
-      fzf.enable = true;
+      # Define my own color to set in another env variable, or file?
+      fzf.enable = false;
       gnome.enable = true;
       lazygit.enable = true;
       kitty.enable = true;
