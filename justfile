@@ -243,7 +243,8 @@ change-macos-polarity is_dark:
   if type osascript >/dev/null 2>&1; then \
     just info "Changing macOS polarity" \
     && osascript -l JavaScript -e "Application('System Events').appearancePreferences.darkMode = {{is_dark}}" > /dev/null \
-    && osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"${HOME}/Pictures/wallpaper.jpg\" as POSIX file"; \
+    && osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"${HOME}/Pictures/wallpaper.jpg\" as POSIX file" \
+    && osascript -e 'tell application "System Events" to keystroke "," using {command down, shift down}'; \
   fi
 
 # ------------------------------------------------------------------------

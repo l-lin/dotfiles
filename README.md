@@ -169,6 +169,8 @@ For macOS:
   - System settings > Keyboard shortcut > Screenshot
 - Change keyboard layout (may require a reboot).
   - System settings > Keyboard > Text input > Edit > + > Other > us-altgr-intl
+- Add ghostty to control the computer so that `osascript` can send keystrokes for reloading ghostty configuration.
+  - System settings > Privacy & security > Accessibility > Add ghostty
 
 ---
 
