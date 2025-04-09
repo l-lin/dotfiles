@@ -201,7 +201,7 @@ automatically-unhide-macos-hidden-apps = false
     run = 'move-node-to-workspace 4'
 
 [[on-window-detected]]
-    if.app-name-regex-substring = 'com.spotify.client'
+    if.app-id = 'com.spotify.client'
     run = 'move-node-to-workspace 9'
 
 [[on-window-detected]]
