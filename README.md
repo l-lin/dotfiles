@@ -173,6 +173,8 @@ For macOS:
   - `System settings > Keyboard > Text input > Edit`: Click on `+`, select `Other` and then `us-altgr-intl`
 - Add ghostty to control the computer so that `osascript` can send keystrokes for reloading ghostty configuration.
   - `System settings > Privacy & security > Accessibility`: add ghostty
+- Remove sound effects.
+  - `System settings` > Sound > Sound effects`
 
 ---
 
