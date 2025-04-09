@@ -42,6 +42,11 @@ fi
 
 {
 
+__refresh_fzf_default_opts() {
+  # Re-source the FZF_DEFAULT_OPTS so that fzf has the latest options & colors.
+  [[ -r "${ZDOTDIR:-${HOME}/.config/zsh}/zprofile.d/.zprofile.fzf" ]] && source "${ZDOTDIR:-${HOME}/.config/zsh}/zprofile.d/.zprofile.fzf"
+}
+
 __fzfcmd() {
   [ -n "${TMUX_PANE-}" ] && { [ "${FZF_TMUX:-0}" != 0 ] || [ -n "${FZF_TMUX_OPTS-}" ]; } &&
     echo "fzf-tmux ${FZF_TMUX_OPTS:--d${FZF_TMUX_HEIGHT:-40%}} -- " || echo "fzf"
@@ -68,6 +73,7 @@ __fsel() {
 }
 
 fzf-file-widget() {
+  __refresh_fzf_default_opts
   LBUFFER="${LBUFFER}$(__fsel)"
   local ret=$?
   zle reset-prompt
@@ -132,6 +138,7 @@ __fsel_grep() {
 }
 
 fzf-grep-widget() {
+  __refresh_fzf_default_opts
   LBUFFER="${LBUFFER}$(__fsel_grep)"
   local ret=$?
   zle reset-prompt

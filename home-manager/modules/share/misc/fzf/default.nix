@@ -30,7 +30,6 @@ in {
     source = ./.config/zsh/plugins/fzf;
     recursive = true;
   };
-  xdg.configFile."zsh/functions/refresh-fzf-opts".source = ./.config/zsh/functions/refresh-fzf-opts;
 
   # Symlink to ~/.config/zsh/zprofile.d/.zprofile.fzf.
   # Using colors defined in stylix: https://github.com/danth/stylix/blob/master/modules/fzf/hm.nix
