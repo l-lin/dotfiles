@@ -25,6 +25,7 @@ in {
         NonText = { fg = "palette.gray" },
         SnacksPickerMatch = { link = "Search" },
         TreesitterContext = { bg = "#E6E6E6" },
+        RenderMarkdownCodeInline = { bg = "#E6E6E6" },
       },
     },
     specs = {
