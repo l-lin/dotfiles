@@ -3,6 +3,6 @@
 # src: https://bitwarden.com/
 #
 
-{ pkgs, ... }: {
-  home.packages = with pkgs; [ bitwarden-cli ];
+{ pkgs-bitwarden-cli, ... }: {
+  home.packages = with pkgs-bitwarden-cli; [ bitwarden-cli ];
 }

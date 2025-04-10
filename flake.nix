@@ -8,6 +8,9 @@
     # src: https://nixos-and-flakes.thiscute.world/nixos-with-flakes/downgrade-or-upgrade-packages
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    # TODO: Latest bitwarden-cli is broken on master.
+    nixpkgs-bitwarden-cli.url = "github:nixos/nixpkgs/c7835750e4d7bdd0ce746912ecff358b6fe7d08b";
+
     # Nix-darwin
     nix-darwin = {
       url = "github:lnl7/nix-darwin";
@@ -67,6 +70,7 @@
     nix-darwin,
     nixgl,
     nixpkgs,
+    nixpkgs-bitwarden-cli,
     secrets,
     ...
   } @ inputs: # <- this `@inputs` will expose the block of code below, to the inputs that you set above.
@@ -126,6 +130,7 @@
     specialArgs =
       inputs
       // {
+        pkgs-bitwarden-cli = import nixpkgs-bitwarden-cli { system = systemSettings.system; };
         inherit fileExplorer inputs nixgl outputs secrets systemSettings userSettings;
       };
   in {

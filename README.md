@@ -160,7 +160,8 @@ jira init
 just configure-colima
 ```
 
-For macOS:
+<summary>For macOS</summary>
+<details>
 
 - Remove keyboard shortcut for dictation (default shortcut is making me popup a notification every now and then).
   - `System settings > Keyboard > Dictation`
@@ -175,6 +176,8 @@ For macOS:
   - `System settings > Privacy & security > Accessibility`: add ghostty
 - Remove sound effects.
   - `System settings` > Sound > Sound effects`
+
+</details>
 
 ---
 
