@@ -55,6 +55,8 @@
       "aerospace"
       # 👻 Ghostty is a fast, feature-rich, and cross-platform terminal emulator that uses platform-native UI and GPU acceleration: https://ghostty.org/
       "ghostty"
+      # Free cross-platform office suite, fresh version: https://www.libreoffice.org/
+      "libreoffice"
       # Knowledge base that works on top of a local folder of plain text Markdown files: https://obsidian.md/
       "obsidian"
       # Open-source colour picker app for macOS: https://superhighfives.com/pika
