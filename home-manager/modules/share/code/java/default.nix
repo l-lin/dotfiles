@@ -22,7 +22,10 @@
     JDTLS_JVM_ARGS = "-javaagent:$HOME/.local/share/nvim/mason/packages/jdtls/lombok.jar";
     # Better font rendering on Java desktop apps.
     # src: https://wiki.nixos.org/wiki/Java
-    _JAVA_OPTIONS = "-Dawt.useSystemAAFontSettings=lcd";
+    #
+    # Make macOS M4 works on Java 21.
+    # src: https://github.com/corretto/corretto-21/issues/85#issuecomment-2537411974
+    _JAVA_OPTIONS = "-Dawt.useSystemAAFontSettings=lcd -XX:UseSVE=0";
   };
 
   # Symlink ~/.local/share/eclipse/java-code-style.xml
