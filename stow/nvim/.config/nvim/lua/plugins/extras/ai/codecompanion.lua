@@ -85,7 +85,7 @@ return {
           return require("codecompanion.adapters").extend("ollama", {
             name = "deepseek",
             schema = {
-              model = { default = "deepseek-r1:1.5b" },
+              model = { default = "deepseek-r1:7b" },
             },
           })
         end,
@@ -93,7 +93,7 @@ return {
           return require("codecompanion.adapters").extend("ollama", {
             name = "gemma3",
             schema = {
-              model = { default = "gemma3:1b" },
+              model = { default = "gemma3:4b" },
             },
           })
         end,
@@ -117,7 +117,7 @@ return {
           return require("codecompanion.adapters").extend("ollama", {
             name = "qwen2_5",
             schema = {
-              model = { default = "qwen2.5:1.5b" },
+              model = { default = "qwen2.5:7b" },
             },
           })
         end,
@@ -125,7 +125,7 @@ return {
           return require("codecompanion.adapters").extend("ollama", {
             name = "qwen2_5_coder",
             schema = {
-              model = { default = "qwen2.5-coder:1.5b" },
+              model = { default = "qwen2.5-coder:7b" },
             },
           })
         end,
