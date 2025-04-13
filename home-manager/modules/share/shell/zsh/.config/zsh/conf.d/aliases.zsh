@@ -39,7 +39,6 @@ alias lg="lazygit"
 # --------------------------------------------------------
 # Default options
 # --------------------------------------------------------
-alias ddgr="BROWSER=w3m ddgr -n 5"
 alias top="procs --watch --sortd cpu"
 alias watch="viddy"
 # Prevent recursive change on root directory
