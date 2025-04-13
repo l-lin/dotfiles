@@ -119,3 +119,8 @@ map("n", "<leader>eb", function()
   end
 end, { desc = "Bash script" })
 
+-- Remove floating terminal keyamps (I use Tmux, no need for embedded terminal).
+vim.keymap.del("n", "<leader>fT")
+vim.keymap.del("n", "<leader>ft")
+vim.keymap.del("n", "<c-/>")
+vim.keymap.del("n", "<c-_>")
