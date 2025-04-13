@@ -24,7 +24,8 @@ in {
   home.sessionVariables = {
     EDITOR = userSettings.editor;
     VISUAL = userSettings.editor;
-    BROWSER = userSettings.browser;
+    # Let the browser set itself as default.
+    #BROWSER = userSettings.browser;
     PAGER = userSettings.pager;
     COPY_TO_CLIPBOARD = copyCmd;
     PASTE_FROM_CLIPBOARD = pasteCmd;
