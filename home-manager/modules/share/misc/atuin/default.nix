@@ -56,6 +56,12 @@ keymap_cursor = { emacs = "blink-block", vim_insert = "blink-bar", vim_normal = 
 ## Users with motion sensitivity can find the live-updating timestamps distracting.
 prefers_reduced_motion = true
 
+## The history filter allows you to exclude commands from history tracking.
+history_filter = [
+  "^ddgr",
+  "^export "
+]
+
 [theme]
 name = "custom"
   '';
