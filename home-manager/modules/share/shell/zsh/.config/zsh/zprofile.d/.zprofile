@@ -14,6 +14,8 @@ export ZAQ_PREFIXES=(
   'git commit( [^ ]##)# -[^ -]#m'
   'git stash save( [^ ]##)#'
   'ddgr( [^ ]##)#'
+  'gh copilot explain( [^ ]##)#'
+  'gh copilot suggest( [^ ]##)#'
 )
 
 # --------------------------------------------------------
