@@ -44,6 +44,8 @@
     # `brew install`
     # To get the list of installed apps with brew: `brew list`
     brews = [
+      # Elegant Lua unit testing: https://lunarmodules.github.io/busted/
+      "busted"
       # A highly customizable and functional PDF viewer: https://git.pwmt.org/pwmt/zathura/
       "zathura"
     ];
