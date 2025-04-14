@@ -111,6 +111,16 @@ return {
   {
     "dhruvasagar/vim-table-mode",
     ft = "markdown",
+    dependencies = {
+      {
+        "folke/which-key.nvim",
+        opts = {
+          spec = {
+            { "<leader>m", group = "markdown" },
+          },
+        },
+      },
+    },
     keys = {
       { "<leader>tm", false },
       {
