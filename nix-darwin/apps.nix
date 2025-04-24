@@ -46,6 +46,8 @@
     brews = [
       # Elegant Lua unit testing: https://lunarmodules.github.io/busted/
       "busted"
+      # Interpreter for PostScript and PDF: https://www.ghostscript.com/
+      "ghostscript"
       # A highly customizable and functional PDF viewer: https://git.pwmt.org/pwmt/zathura/
       "zathura"
     ];
