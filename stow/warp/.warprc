@@ -1,10 +1,10 @@
 boot:~/work/doctoboot
 dotfiles:~/.config/dotfiles
-kubetailrb:~/perso/kubetailrb
 kube:~/work/kube
+kubetailrb:~/perso/kubetailrb
 lazy:~/perso/LazyVim
 mobile:~/work/doctolib-mobile-apps
-monolith:~/work/doctolib
+monolith:~/work/monolith
 navi:~/.local/share/navi/cheats/l-lin__cheats
 notes:~/perso/notes
 pcc:~/work/preventive-continuous-care
