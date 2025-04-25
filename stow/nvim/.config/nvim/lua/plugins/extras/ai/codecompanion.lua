@@ -49,7 +49,7 @@ return {
           },
         },
         inline = {
-          adapter = "copilot_claude_sonnet_3_7",
+          adapter = "copilot_o3_mini",
           keymaps = {
             accept_change = {
               modes = { n = "ga" },
@@ -69,6 +69,14 @@ return {
             name = "copilot_claude_sonnet_3_7",
             schema = {
               model = { default = "claude-3.7-sonnet" },
+            },
+          })
+        end,
+        copilot_o3_mini = function()
+          return require("codecompanion.adapters").extend("copilot", {
+            name = "copilot_o3_mini",
+            schema = {
+              model = { default = "o3-mini" },
             },
           })
         end,
@@ -140,6 +148,9 @@ return {
             auto_submit = false,
             stop_context_insertion = true,
             user_prompt = false,
+            adapter = {
+              name = "copilot",
+            },
           },
           prompts = {
             {
