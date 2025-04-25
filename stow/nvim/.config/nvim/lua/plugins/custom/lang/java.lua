@@ -5,7 +5,7 @@ local root_markers = { ".git", "mvnw", "gradlew" }
 local home = os.getenv("HOME")
 
 -- Path to java binary to use when starting up the LS server.
-local java_path = home .. "/.nix-profile/bin/java"
+local java_path = home .. "/.local/share/mise/shims/java"
 
 ---List of Java runtimes, which can be useful if you're starting jdtls with a
 ---Java version that's different from the one the project uses.

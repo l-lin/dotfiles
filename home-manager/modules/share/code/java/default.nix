@@ -11,12 +11,6 @@
     mvnd
   ];
 
-  programs.java = with pkgs; {
-    # Ensure JAVA_HOME is set.
-    enable = true;
-    package = jdk21;
-  };
-
   home.sessionVariables = {
     MAVEN_OPTS = "-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss";
     JDTLS_JVM_ARGS = "-javaagent:$HOME/.local/share/nvim/mason/packages/jdtls/lombok.jar";
