@@ -57,6 +57,10 @@
     casks = [
       # i3-like tiling window manager for macOS: https://github.com/nikitabobko/AeroSpace
       "aerospace"
+      # Tools for building Android applications: https://developer.android.com/studio/
+      "android-studio"
+      # Web debugging Proxy application: https://www.charlesproxy.com/
+      "charles"
       # 👻 Ghostty is a fast, feature-rich, and cross-platform terminal emulator that uses platform-native UI and GPU acceleration: https://ghostty.org/
       "ghostty"
       # Free and open-source image editor: https://www.gimp.org/
