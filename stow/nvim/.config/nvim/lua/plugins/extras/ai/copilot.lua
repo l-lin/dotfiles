@@ -1,4 +1,3 @@
-
 return {
   -- #######################
   -- override default config
@@ -31,5 +30,34 @@ return {
       -- Disable copilot by default, only enable when needed.
       vim.cmd("silent! Copilot disable")
     end,
+    opts = {
+      suggestion = { enabled = false },
+      panel = { enabled = false },
+    },
+  },
+
+  -- #######################
+  -- add new plugins
+  -- #######################
+
+  -- ⚙️ Configurable GitHub Copilot blink.cmp source for Neovim.
+  -- Give more suggestions than blink-cmp-copilot
+  {
+    "giuxtaposition/blink-cmp-copilot",
+    enabled = false,
+  },
+  {
+    "saghen/blink.cmp",
+    optional = true,
+    dependencies = { "fang2hou/blink-copilot" },
+    opts = {
+      sources = {
+        providers = {
+          copilot = {
+            module = "blink-copilot",
+          },
+        },
+      },
+    },
   },
 }
