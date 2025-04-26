@@ -67,6 +67,7 @@ local snacks_picker_opts = {
   },
   -- Default layout to use.
   layout = "vertical",
+  -- Default focus to use (input, list or preview).
   focus = "list",
   formatters = {
     file = { truncate = 150 }
@@ -80,6 +81,7 @@ local snacks_picker_opts = {
   },
   sources = {
     files = {
+      focus = "input",
       actions = {
         edit_file = edit_file,
         switch_grep_files = switch_grep_files,
