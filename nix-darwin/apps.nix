@@ -59,6 +59,8 @@
       "aerospace"
       # Tools for building Android applications: https://developer.android.com/studio/
       "android-studio"
+      # Web security testing toolkit: https://portswigger.net/burp/
+      "burp-suite"
       # Web debugging Proxy application: https://www.charlesproxy.com/
       "charles"
       # 👻 Ghostty is a fast, feature-rich, and cross-platform terminal emulator that uses platform-native UI and GPU acceleration: https://ghostty.org/
