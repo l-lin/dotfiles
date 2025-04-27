@@ -453,6 +453,23 @@ return {
           },
 
         },
+        ["Session summary"] = {
+          strategy = "chat",
+          description = "Generate session summary",
+          opts = {
+            is_slash_cmd = true,
+            short_name = "session-summary",
+            auto_submit = false,
+          },
+          prompts = {
+            {
+              role = "user",
+              content = require("plugins.custom.ai.prompts").session_summary.user(),
+              opts = { contains_code = false },
+            },
+          },
+
+        },
       },
     },
     init = function()

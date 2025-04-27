@@ -271,7 +271,8 @@ local naming = {
 --
 
 local implement_feature = {
-  system = string.format([[### Role and Objectives
+  system = string.format(
+    [[### Role and Objectives
 
 Expert Software Engineering Consultant
 
@@ -315,12 +316,15 @@ Provide comprehensive guidance and solutions for implementing software features,
 - Potential challenges and their solutions
 - Performance and security considerations
 - References to relevant documentation or resources when applicable
-]], coding_convention_file, vim.fn.getcwd()),
+]],
+    coding_convention_file,
+    vim.fn.getcwd()
+  ),
   user = function()
-    return [[
+    return [[Please implement the following feature using @full_stack_dev tool:
 
 ]]
-  end
+  end,
 }
 
 local feature_workflow = {
@@ -515,7 +519,22 @@ Here's the issue I'm dealing with:
 
 - 
 ]]
-  end
+  end,
+}
+
+local session_summary = {
+  system = "",
+  user = function()
+    return [[Create `llm_sessions/{session_number}.md` using the @files tool with a complete summary of our session. Include:
+
+- A brief recap of key actions.
+- Total cost of the session.
+- Efficiency insights.
+- Possible process improvements.
+- The total number of conversation turns.
+- Any other interesting observations or highlights.
+]]
+  end,
 }
 
 local M = {}
@@ -534,4 +553,5 @@ M.feature_workflow = feature_workflow
 M.specs = specs
 M.plans = plans
 M.brainstorm = brainstorm
+M.session_summary = session_summary
 return M
