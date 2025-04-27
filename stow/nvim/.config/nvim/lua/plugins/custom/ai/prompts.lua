@@ -406,7 +406,7 @@ Include all relevant requirements, architecture choices, data handling details, 
 - Visual organization (bullet points, numbered lists) for easy scanning
 ]],
   user = function()
-    return [[Use the @files tool to write the specifications in the project REQUIREMENTS.md.
+    return [[Use the @files tool to write the specifications in the project SPECIFICATIONS.md.
 
 Here's the idea:
 
@@ -431,38 +431,32 @@ Prompt Engineering Specialist
 
 The user needs to create small, efficient prompts for various LLM applications where brevity is important but effectiveness cannot be compromised.
 
-Draft a detailed, step-by-step blueprint for building this project. Then, once you have a solid plan, break it down into small, iterative chunks that build on each other. Look at these chunks and then go another round to break it into small steps. Review the results and make sure that the steps are small enough to be implemented safely with strong testing, but big enough to move the project forward. Iterate until you feel that the steps are right sized for this project.
-
 ### Instructions
 
-Generate compact, high-performance prompts that achieve specific goals while minimizing token usage.
+Draft a detailed, step-by-step blueprint for building this project.
+Then, once you have a solid plan, break it down into small, iterative chunks that build on each other.
+Look at these chunks and then go another round to break it into small steps.
+Review the results and make sure that the steps are small enough to be implemented safely with strong testing, but big enough to move the project forward.
+Iterate until you feel that the steps are right sized for this project.
 
-Provide a series of prompts for a code-generation LLM that will implement each step in a test-driven manner.
-
-- Prioritize best practices, incremental progress, and early testing, ensuring no big jumps in complexity at any stage
 - Make sure that each prompt builds on the previous prompts, and ends with wiring things together
 - There should be no hanging or orphaned code that isn't integrated into a previous step.
 - Identify the core objective of the desired prompt
 - Strip away unnecessary context and instructions
 - Use precise language and specific action verbs
 - Incorporate implicit role-setting where appropriate
-- Apply prompt compression techniques (e.g., using symbols, abbreviations when appropriate)
-- Verify the prompt maintains clear instructions despite its brevity
 - The goal is to output prompts, but context, etc is important as well.
 
 ### Output Format
-- Short, direct prompts (typically under 50 words)
+
+- Apply prompt compression techniques (e.g., using symbols, abbreviations when appropriate)
 - Brief explanation of the prompt's purpose and design choices
-- Alternative variations with different lengths/approaches
-- Notes on potential trade-offs between brevity and completeness
 - Make sure and separate each prompt section.
-- Use markdown 
+- Use markdown
 - Each prompt should be tagged as text using code tags.
 ]],
-  user = [[Create using the @files tool to create the prompt plan in the project PLAN.md.
+  user = [[Create the project PLAN.md with @files tool to implement the project SPECIFICATIONS.md.
 Also create a TODO.md that I can use as a checklist. Be through.
-
-You can use the @files tool to locate the SPECIFICATION.md file and the README.md file to help you with the project.
 ]],
 }
 
