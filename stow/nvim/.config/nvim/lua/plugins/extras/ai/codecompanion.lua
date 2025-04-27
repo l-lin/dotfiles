@@ -1,5 +1,3 @@
-local coding_convention_file = vim.env.HOME .. "/.config/ai/conventions/code.md"
-
 return {
   -- A code repository indexing tool to supercharge your LLM experience.
   {
@@ -155,6 +153,10 @@ return {
       -- src: https://codecompanion.olimorris.dev/configuration/prompt-library.html
       --
       prompt_library = {
+        --
+        -- LANGUAGE
+        --
+
         ["English Improver"] = {
           strategy = "inline",
           description = "Improve English wording and grammar",
@@ -169,24 +171,22 @@ return {
           prompts = {
             {
               role = "system",
-              content = require("plugins.custom.ai.prompts").english,
+              content = require("plugins.custom.ai.prompts").english.system,
             },
             {
               role = "user",
               content = function(context)
                 local text = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
-                return string.format(
-                  [[Please improve the following text:
-```
-%s
-```
-]],
-                  text
-                )
+                return require("plugins.custom.ai.prompts").english.user(text)
               end,
             },
           },
         },
+
+        --
+        -- CODE
+        --
+
         ["Review"] = {
           strategy = "chat",
           description = "Review the provided code snippet.",
@@ -200,7 +200,7 @@ return {
           prompts = {
             {
               role = "system",
-              content = require("plugins.custom.ai.prompts").review,
+              content = require("plugins.custom.ai.prompts").review.system,
               opts = { visible = false },
             },
             {
@@ -211,16 +211,7 @@ return {
                   context.end_line,
                   { show_line_numbers = true }
                 )
-                return string.format(
-                  [[Please review the following code and provide suggestions for improvement then refactor the following code to improve its clarity and readability:
-
-```%s
-%s
-```
-]],
-                  context.filetype,
-                  code
-                )
+                return require("plugins.custom.ai.prompts").review.user(context.filetype, code)
               end,
               opts = { contains_code = true },
             },
@@ -239,23 +230,14 @@ return {
           prompts = {
             {
               role = "system",
-              content = require("plugins.custom.ai.prompts").refactor,
+              content = require("plugins.custom.ai.prompts").refactor.system,
               opts = { visible = false },
             },
             {
               role = "user",
               content = function(context)
                 local code = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
-
-                return string.format(
-                  [[Please refactor the following code to improve its clarity and readability:
-```%s
-%s
-```
-]],
-                  context.filetype,
-                  code
-                )
+                return require("plugins.custom.ai.prompts").refactor.user(context.filetype, code)
               end,
               opts = { contains_code = true },
             },
@@ -274,7 +256,7 @@ return {
           prompts = {
             {
               role = "system",
-              content = require("plugins.custom.ai.prompts").review,
+              content = require("plugins.custom.ai.prompts").naming.system,
               opts = { visible = false },
             },
             {
@@ -285,16 +267,7 @@ return {
                   context.end_line,
                   { show_line_numbers = true }
                 )
-
-                return string.format(
-                  [[Take all variable and function names, and provide only a list with suggestions with improved naming.:
-```%s
-%s
-```
-]],
-                  context.filetype,
-                  code
-                )
+                return require("plugins.custom.ai.prompts").naming.user(context.filetype, code)
               end,
             },
           },
@@ -313,32 +286,49 @@ return {
           prompts = {
             {
               role = "system",
-              content = require("plugins.custom.ai.prompts").java_test,
+              content = require("plugins.custom.ai.prompts").java_tests.system,
               opts = { visible = false },
             },
             {
               role = "user",
               content = function(context)
                 local code = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
-
-                return string.format(
-                  [[Please generate Java unit tests for this code from #buffer:
-
-```%s
-%s
-```
-
-Use the @files tool to create or edit the test file in the file `%s/%s`.
-]],
-                  context.filetype,
-                  code,
-                  vim.fn.getcwd(),
-                  require("plugins.custom.coding.subject").find_subject()
-                )
+                return require("plugins.custom.ai.prompts").java_tests.user(code)
               end,
               opts = { contains_code = true },
             },
           },
+        },
+        ["Implement Feature"] = {
+          strategy = "chat",
+          description = "Implement a feature.",
+          opts = {
+            is_slash_cmd = false,
+            modes = { "n" },
+            short_name = "impl",
+            auto_submit = false,
+            user_prompt = false,
+            stop_context_insertion = true,
+          },
+          references = {
+            {
+              type = "file",
+              path = require("plugins.custom.ai.prompts").coding_convention_file,
+            },
+          },
+          prompts = {
+            {
+              role = "system",
+              content = require("plugins.custom.ai.prompts").implement_feature.system,
+              opts = { visible = false },
+            },
+            {
+              role = "user",
+              content = require("plugins.custom.ai.prompts").implement_feature.user(),
+              opts = { contains_code = false },
+            },
+          },
+
         },
         ["Feature workflow"] = {
           strategy = "workflow",
@@ -347,54 +337,23 @@ Use the @files tool to create or edit the test file in the file `%s/%s`.
           references = {
             {
               type = "file",
-              path = coding_convention_file,
+              path = require("plugins.custom.ai.prompts").coding_convention_file,
             },
           },
           prompts = {
             {
               {
                 role = "system",
-                content = function()
-                  return [[You carefully provide accurate, factual, thoughtful, nuanced answers, and are brilliant at reasoning.
-If you think there might not be a correct answer, you say so.
-Always spend a few sentences explaining background context, assumptions, and step-by-step thinking BEFORE you try to answer a question.
-Don't be verbose in your answers, but do provide details and examples where it might help the explanation.
-You are an expert software engineer.]]
-                end,
+                content = require("plugins.custom.ai.prompts").feature_workflow.system,
                 opts = { visible = false },
               },
               {
                 role = "user",
                 content = function()
                   vim.g.codecompanion_auto_tool_mode = true
-                  return string.format(
-                    [[### Requirements
-#### General overview
-
-TODO
-
-#### Coding convention
-
-Please follow the coding convention at: %s.
-
-### Steps to Follow
-
-You are required to write code following the instructions provided above and test the correctness. Follow these steps exactly:
-
-1. Ask up to 3 questions you need to clarify the requirements
-2. Once you are ready, use the @full_stack_dev tool to implement the requirements
-  - Create/update/delete files only on the project directory %s
-  - Be sure to follow the coding conventions when implementing the requirements
-3. Then use the @cmd_runner tool to run the test suite with `<test_cmd>` (do this after you have updated the code)
-
-Ensure no deviations from these steps.]],
-                    coding_convention_file,
-                    vim.fn.getcwd()
-                  )
+                  return require("plugins.custom.ai.prompts").feature_workflow.user()
                 end,
-                opts = {
-                  auto_submit = false,
-                },
+                opts = { auto_submit = false },
               },
             },
             {
@@ -412,6 +371,87 @@ Ensure no deviations from these steps.]],
               },
             },
           },
+        },
+
+        --
+        -- PROJECT
+        --
+
+        ["Write specifications"] = {
+          strategy = "chat",
+          description = "Chat with the LLM to brainstorm ideas and write specifications.",
+          opts = {
+            is_slash_cmd = false,
+            modes = { "n" },
+            short_name = "specs",
+            auto_submit = false,
+            user_prompt = false,
+            stop_context_insertion = true,
+            ignore_system_prompt = true,
+          },
+          prompts = {
+            {
+              role = "system",
+              content = require("plugins.custom.ai.prompts").specs.system,
+              opts = { visible = false },
+            },
+            {
+              role = "user",
+              content = require("plugins.custom.ai.prompts").specs.user,
+              opts = { contains_code = false },
+            },
+          },
+        },
+        ["Write Prompt Plans"] = {
+          strategy = "chat",
+          description = "Write the prompt plans and todo.",
+          opts = {
+            is_slash_cmd = false,
+            modes = { "n" },
+            short_name = "plans",
+            auto_submit = false,
+            user_prompt = false,
+            stop_context_insertion = true,
+            ignore_system_prompt = true,
+          },
+          prompts = {
+            {
+              role = "system",
+              content = require("plugins.custom.ai.prompts").plans.system,
+              opts = { visible = false },
+            },
+            {
+              role = "user",
+              content = require("plugins.custom.ai.prompts").plans.user,
+              opts = { contains_code = false },
+            },
+          },
+        },
+        ["Brainstorm"] = {
+          strategy = "chat",
+          description = "Brainstorm ideas for your project.",
+          opts = {
+            is_slash_cmd = true,
+            modes = { "n" },
+            short_name = "brainstorm",
+            auto_submit = false,
+            user_prompt = false,
+            stop_context_insertion = true,
+            ignore_system_prompt = true,
+          },
+          prompts = {
+            {
+              role = "system",
+              content = require("plugins.custom.ai.prompts").brainstorm.system,
+              opts = { visible = false },
+            },
+            {
+              role = "user",
+              content = require("plugins.custom.ai.prompts").brainstorm.user(),
+              opts = { contains_code = false },
+            },
+          },
+
         },
       },
     },
