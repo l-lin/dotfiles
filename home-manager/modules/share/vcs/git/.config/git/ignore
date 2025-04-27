@@ -61,9 +61,10 @@ server exited unexpectedly
 .direnv
 shell.nix
 
-# Aider specific #
-##################
+# AI specific #
+###############
 .aider*
+repomix-output.xml
 
 # Mise #
 ########
