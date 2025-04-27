@@ -1,3 +1,5 @@
+local coding_convention_file = vim.env.HOME .. "/.config/ai/conventions/code.md"
+
 return {
   -- A code repository indexing tool to supercharge your LLM experience.
   {
@@ -167,14 +169,20 @@ return {
           prompts = {
             {
               role = "system",
-              content = "Act as an English language expert. Your task is to improve the wording and grammar of the provided text while preserving its original meaning.",
+              content = require("plugins.custom.ai.prompts").english,
             },
             {
               role = "user",
               content = function(context)
                 local text = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
-
-                return "Please improve the following text:\n\n" .. text .. "\n\n"
+                return string.format(
+                  [[Please improve the following text:
+```
+%s
+```
+]],
+                  text
+                )
               end,
             },
           },
@@ -192,37 +200,27 @@ return {
           prompts = {
             {
               role = "system",
-              content = [[Your task is to review the provided code snippet, focusing specifically on its readability and maintainability.
-Identify any issues related to:
-- Naming conventions that are unclear, misleading or doesn't follow conventions for the language being used.
-- The presence of unnecessary comments, or the lack of necessary ones.
-- Overly complex expressions that could benefit from simplification.
-- High nesting levels that make the code difficult to follow.
-- The use of excessively long names for variables or functions.
-- Any inconsistencies in naming, formatting, or overall coding style.
-- Repetitive code patterns that could be more efficiently handled through abstraction or optimization.
-
-Your feedback must be concise, directly addressing each identified issue with:
-- A clear description of the problem.
-- A concrete suggestion for how to improve or correct the issue.
-  
-Format your feedback as follows:
-- Explain the high-level issue or problem briefly.
-- Provide a specific suggestion for improvement.
- 
-If the code snippet has no readability issues, simply confirm that the code is clear and well-written as is.]],
+              content = require("plugins.custom.ai.prompts").review,
               opts = { visible = false },
             },
             {
               role = "user",
               content = function(context)
-                local code = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
+                local code = require("codecompanion.helpers.actions").get_code(
+                  context.start_line,
+                  context.end_line,
+                  { show_line_numbers = true }
+                )
+                return string.format(
+                  [[Please review the following code and provide suggestions for improvement then refactor the following code to improve its clarity and readability:
 
-                return "Please review the following code and provide suggestions for improvement then refactor the following code to improve its clarity and readability:\n\n```"
-                  .. context.filetype
-                  .. "\n"
-                  .. code
-                  .. "\n```\n\n"
+```%s
+%s
+```
+]],
+                  context.filetype,
+                  code
+                )
               end,
               opts = { contains_code = true },
             },
@@ -241,15 +239,7 @@ If the code snippet has no readability issues, simply confirm that the code is c
           prompts = {
             {
               role = "system",
-              content = [[Your task is to refactor the provided code snippet, focusing specifically on its readability and maintainability.
-Identify any issues related to:
-- Naming conventions that are unclear, misleading or doesn't follow conventions for the language being used.
-- The presence of unnecessary comments, or the lack of necessary ones.
-- Overly complex expressions that could benefit from simplification.
-- High nesting levels that make the code difficult to follow.
-- The use of excessively long names for variables or functions.
-- Any inconsistencies in naming, formatting, or overall coding style.
-- Repetitive code patterns that could be more efficiently handled through abstraction or optimization.]],
+              content = require("plugins.custom.ai.prompts").refactor,
               opts = { visible = false },
             },
             {
@@ -257,11 +247,15 @@ Identify any issues related to:
               content = function(context)
                 local code = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
 
-                return "Please refactor the following code to improve its clarity and readability:\n\n```"
-                  .. context.filetype
-                  .. "\n"
-                  .. code
-                  .. "\n```\n\n"
+                return string.format(
+                  [[Please refactor the following code to improve its clarity and readability:
+```%s
+%s
+```
+]],
+                  context.filetype,
+                  code
+                )
               end,
               opts = { contains_code = true },
             },
@@ -279,9 +273,18 @@ Identify any issues related to:
           },
           prompts = {
             {
+              role = "system",
+              content = require("plugins.custom.ai.prompts").review,
+              opts = { visible = false },
+            },
+            {
               role = "user",
               content = function(context)
-                local text = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
+                local code = require("codecompanion.helpers.actions").get_code(
+                  context.start_line,
+                  context.end_line,
+                  { show_line_numbers = true }
+                )
 
                 return string.format(
                   [[Take all variable and function names, and provide only a list with suggestions with improved naming.:
@@ -290,7 +293,7 @@ Identify any issues related to:
 ```
 ]],
                   context.filetype,
-                  text
+                  code
                 )
               end,
             },
@@ -310,70 +313,7 @@ Identify any issues related to:
           prompts = {
             {
               role = "system",
-              content = [[## Role
-
-Java Unit Test Generator
-
-## Competencies
-
-- Java programming expertise
-- JUnit Jupiter framework knowledge
-- AssertJ assertion library proficiency
-- Behavior-Driven Development (BDD) testing methodology
-- Clean code and test design principles
-
-## Context
-
-You need to write unit tests for Java methods/classes following a specific BDD convention using JUnit Jupiter and AssertJ.
-
-## Task
-
-Generate comprehensive unit tests that follow the BDD style with the "Given-When-Then" pattern, properly structured with JUnit Jupiter annotations and AssertJ assertions.
-
-## Process
-
-- Analyze the Java code provided by the user
-- Identify test scenarios based on the code's functionality
-- Create test methods using the BDD pattern
-- Structure each test with clear GIVEN, WHEN, THEN sections
-- Use descriptive test method names that reflect the scenario
-- Add appropriate DisplayName annotations with the BDD pattern
-- Implement test setup with meaningful variable names
-- Use AssertJ assertions for verification
-- Ensure tests are isolated and focused on a single behavior
-- Prefer using `BDDMockito` over `Mockito` for mocks
-- If some files are needed to implement the test, ask the user to include them in the context
-
-## Output Format
-
-- Complete JUnit Jupiter test methods with proper annotations
-- DisplayName annotation using the multi-line string format with the Given-When-Then pattern
-- Clear section comments (// GIVEN, // WHEN, // THEN)
-- Descriptive method and variable names
-- AssertJ assertions for verification
-- Helper methods prefixed with "given_" for test setup and "then_" for test assertions where appropriate
-
-## Example
-
-```java
-@Test
-@DisplayName("""
-  Given some input,
-   when performing action,
-   then expect result to be equal to be correct.
-""")
-void someTest() {
-    // GIVEN
-    var input = given_someInput();
-
-    // WHEN
-    var actual = input.doSomeAction();
-
-    // THEN
-    var expected = expected();
-    assertThat(actual).isEqualTo(expected);
-}
-```]],
+              content = require("plugins.custom.ai.prompts").java_test,
               opts = { visible = false },
             },
             {
@@ -382,16 +322,14 @@ void someTest() {
                 local code = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
 
                 return string.format(
-                  [[Please generate Java unit tests for this code from #buffer %d:
+                  [[Please generate Java unit tests for this code from #buffer:
 
 ```%s
 %s
 ```
 
 Use the @files tool to create or edit the test file in the file `%s/%s`.
-
 ]],
-                  context.bufnr,
                   context.filetype,
                   code,
                   vim.fn.getcwd(),
@@ -399,6 +337,79 @@ Use the @files tool to create or edit the test file in the file `%s/%s`.
                 )
               end,
               opts = { contains_code = true },
+            },
+          },
+        },
+        ["Feature workflow"] = {
+          strategy = "workflow",
+          description = "Use a workflow to guide an LLM in writing code to implement a feature",
+          opts = { short_name = "fw" },
+          references = {
+            {
+              type = "file",
+              path = coding_convention_file,
+            },
+          },
+          prompts = {
+            {
+              {
+                role = "system",
+                content = function()
+                  return [[You carefully provide accurate, factual, thoughtful, nuanced answers, and are brilliant at reasoning.
+If you think there might not be a correct answer, you say so.
+Always spend a few sentences explaining background context, assumptions, and step-by-step thinking BEFORE you try to answer a question.
+Don't be verbose in your answers, but do provide details and examples where it might help the explanation.
+You are an expert software engineer.]]
+                end,
+                opts = { visible = false },
+              },
+              {
+                role = "user",
+                content = function()
+                  vim.g.codecompanion_auto_tool_mode = true
+                  return string.format(
+                    [[### Requirements
+#### General overview
+
+TODO
+
+#### Coding convention
+
+Please follow the coding convention at: %s.
+
+### Steps to Follow
+
+You are required to write code following the instructions provided above and test the correctness. Follow these steps exactly:
+
+1. Ask up to 3 questions you need to clarify the requirements
+2. Once you are ready, use the @full_stack_dev tool to implement the requirements
+  - Create/update/delete files only on the project directory %s
+  - Be sure to follow the coding conventions when implementing the requirements
+3. Then use the @cmd_runner tool to run the test suite with `<test_cmd>` (do this after you have updated the code)
+
+Ensure no deviations from these steps.]],
+                    coding_convention_file,
+                    vim.fn.getcwd()
+                  )
+                end,
+                opts = {
+                  auto_submit = false,
+                },
+              },
+            },
+            {
+              {
+                role = "user",
+                content = "Great. Now let's consider your code. I'd like you to check it carefully for correctness, style, and efficiency, and give constructive criticism for how to improve it.",
+                opts = { auto_submit = true },
+              },
+            },
+            {
+              {
+                role = "user",
+                content = "Thanks. Now let's revise the code based on the feedback, without additional explanations.",
+                opts = { auto_submit = true },
+              },
             },
           },
         },
