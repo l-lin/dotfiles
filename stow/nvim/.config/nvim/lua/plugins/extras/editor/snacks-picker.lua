@@ -39,7 +39,7 @@ local nav_keys_select = {
   list = {
     keys = {
       ["<C-j>"] = "",
-      ["<C-k>"] = "focus_input"
+      ["<C-k>"] = "focus_input",
     },
   },
 }
@@ -113,7 +113,8 @@ local snacks_picker_opts = {
       },
     },
     select = {
-      win = nav_keys_select
+      win = nav_keys_select,
+      focus = "input",
     }
   },
   win = {
