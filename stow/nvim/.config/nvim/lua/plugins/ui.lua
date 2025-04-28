@@ -110,7 +110,7 @@ return {
       spec = {
         { "<leader>y", group = "yank" },
       },
-      preset = "modern",
+      preset = "helix",
     },
   },
 
