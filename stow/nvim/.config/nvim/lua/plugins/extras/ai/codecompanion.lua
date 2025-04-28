@@ -1,3 +1,11 @@
+
+-- Starting index from 30 so that all my custom prompts are at the bottom.
+local idx = 30
+local function index()
+  idx = idx + 1
+  return idx
+end
+
 return {
   -- A code repository indexing tool to supercharge your LLM experience.
   {
@@ -157,12 +165,14 @@ return {
         -- LANGUAGE
         --
 
-        ["English Improver"] = {
+        ["inline@improve-english"] = {
           strategy = "inline",
           description = "Improve English wording and grammar",
           opts = {
+            index = index(),
             modes = { "v" },
-            short_name = "improve_english",
+            ignore_system_prompt = true,
+            short_name = "inline-improve-english",
             auto_submit = false,
             stop_context_insertion = true,
             user_prompt = false,
@@ -171,13 +181,40 @@ return {
           prompts = {
             {
               role = "system",
-              content = require("plugins.custom.ai.prompts").english.system,
+              content = require("plugins.custom.ai.prompts").improve_english.system,
             },
             {
               role = "user",
               content = function(context)
                 local text = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
-                return require("plugins.custom.ai.prompts").english.user(text)
+                return require("plugins.custom.ai.prompts").improve_english.user(text)
+              end,
+            },
+          },
+        },
+        ["chat@improve-english"] = {
+          strategy = "chat",
+          description = "Improve English wording and grammar",
+          opts = {
+            index = index(),
+            modes = { "n", "v" },
+            ignore_system_prompt = true,
+            short_name = "chat-improve-english",
+            auto_submit = false,
+            stop_context_insertion = true,
+            user_prompt = false,
+            adapter = { name = "copilot" },
+          },
+          prompts = {
+            {
+              role = "system",
+              content = require("plugins.custom.ai.prompts").improve_english.system,
+            },
+            {
+              role = "user",
+              content = function(context)
+                local text = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
+                return require("plugins.custom.ai.prompts").improve_english.user(text)
               end,
             },
           },
@@ -187,12 +224,13 @@ return {
         -- CODE
         --
 
-        ["Review"] = {
+        ["chat@review"] = {
           strategy = "chat",
           description = "Review the provided code snippet.",
           opts = {
+            index = index(),
             modes = { "v" },
-            short_name = "review",
+            short_name = "chat-review",
             auto_submit = true,
             user_prompt = false,
             stop_context_insertion = true,
@@ -217,12 +255,13 @@ return {
             },
           },
         },
-        ["Refactor"] = {
+        ["inline@refactor"] = {
           strategy = "inline",
           description = "Refactor the provided code snippet.",
           opts = {
+            index = index(),
             modes = { "v" },
-            short_name = "refactor",
+            short_name = "inline-refactor",
             auto_submit = true,
             user_prompt = false,
             stop_context_insertion = true,
@@ -243,12 +282,13 @@ return {
             },
           },
         },
-        ["Naming"] = {
+        ["chat@suggest-better-name"] = {
           strategy = "chat",
           description = "Suggest better name",
           opts = {
+            index = index(),
             modes = { "v" },
-            short_name = "suggest_better_name",
+            short_name = "chat-naming",
             auto_submit = true,
             stop_context_insertion = true,
             user_prompt = false,
@@ -256,7 +296,7 @@ return {
           prompts = {
             {
               role = "system",
-              content = require("plugins.custom.ai.prompts").naming.system,
+              content = require("plugins.custom.ai.prompts").suggest_better_name.system,
               opts = { visible = false },
             },
             {
@@ -267,18 +307,19 @@ return {
                   context.end_line,
                   { show_line_numbers = true }
                 )
-                return require("plugins.custom.ai.prompts").naming.user(context.filetype, code)
+                return require("plugins.custom.ai.prompts").suggest_better_name.user(context.filetype, code)
               end,
             },
           },
         },
-        ["Java Unit Tests"] = {
+        ["chat@implement-java-unit-tests"] = {
           strategy = "chat",
-          description = "Generate Java unit tests for the selected code",
+          description = "Implement Java unit tests for the selected code.",
           opts = {
+            index = index(),
             is_slash_cmd = false,
             modes = { "v" },
-            short_name = "java-tests",
+            short_name = "chat-implement-java-unit-tests",
             auto_submit = false,
             user_prompt = false,
             stop_context_insertion = true,
@@ -286,26 +327,27 @@ return {
           prompts = {
             {
               role = "system",
-              content = require("plugins.custom.ai.prompts").java_tests.system,
+              content = require("plugins.custom.ai.prompts").implement_java_tests.system,
               opts = { visible = false },
             },
             {
               role = "user",
               content = function(context)
                 local code = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
-                return require("plugins.custom.ai.prompts").java_tests.user(code)
+                return require("plugins.custom.ai.prompts").implement_java_tests.user(code)
               end,
               opts = { contains_code = true },
             },
           },
         },
-        ["Implement Feature"] = {
+        ["chat@implement"] = {
           strategy = "chat",
-          description = "Implement a feature.",
+          description = "Implement a feature or a bugfix.",
           opts = {
+            index = index(),
             is_slash_cmd = false,
             modes = { "n" },
-            short_name = "impl",
+            short_name = "chat-implement",
             auto_submit = false,
             user_prompt = false,
             stop_context_insertion = true,
@@ -319,21 +361,24 @@ return {
           prompts = {
             {
               role = "system",
-              content = require("plugins.custom.ai.prompts").implement_feature.system,
+              content = require("plugins.custom.ai.prompts").implement.system,
               opts = { visible = false },
             },
             {
               role = "user",
-              content = require("plugins.custom.ai.prompts").implement_feature.user(),
+              content = require("plugins.custom.ai.prompts").implement.user(),
               opts = { contains_code = false },
             },
           },
 
         },
-        ["Feature workflow"] = {
+        ["workflow@implement"] = {
           strategy = "workflow",
-          description = "Use a workflow to guide an LLM in writing code to implement a feature",
-          opts = { short_name = "fw" },
+          description = "Use a workflow to guide an LLM in writing code to implement a feature or a bugfix",
+          opts = {
+            index = index(),
+            short_name = "workflow-implement",
+          },
           references = {
             {
               type = "file",
@@ -344,14 +389,14 @@ return {
             {
               {
                 role = "system",
-                content = require("plugins.custom.ai.prompts").feature_workflow.system,
+                content = require("plugins.custom.ai.prompts").implement_workflow.system,
                 opts = { visible = false },
               },
               {
                 role = "user",
                 content = function()
                   vim.g.codecompanion_auto_tool_mode = true
-                  return require("plugins.custom.ai.prompts").feature_workflow.user()
+                  return require("plugins.custom.ai.prompts").implement_workflow.user()
                 end,
                 opts = { auto_submit = false },
               },
@@ -377,13 +422,14 @@ return {
         -- PROJECT
         --
 
-        ["Write specifications"] = {
+        ["chat@write-specifications"] = {
           strategy = "chat",
           description = "Chat with the LLM to brainstorm ideas and write specifications.",
           opts = {
+            index = index(),
             is_slash_cmd = false,
             modes = { "n" },
-            short_name = "specs",
+            short_name = "chat-write-specifications",
             auto_submit = false,
             user_prompt = false,
             stop_context_insertion = true,
@@ -392,20 +438,21 @@ return {
           prompts = {
             {
               role = "system",
-              content = require("plugins.custom.ai.prompts").specs.system,
+              content = require("plugins.custom.ai.prompts").write_specifications.system,
               opts = { visible = false },
             },
             {
               role = "user",
-              content = require("plugins.custom.ai.prompts").specs.user,
+              content = require("plugins.custom.ai.prompts").write_specifications.user,
               opts = { contains_code = false },
             },
           },
         },
-        ["Write Prompt Plans"] = {
+        ["chat@write-prompt-plans"] = {
           strategy = "chat",
           description = "Write the prompt plans and todo.",
           opts = {
+            index = index(),
             is_slash_cmd = false,
             modes = { "n" },
             short_name = "plans",
@@ -417,20 +464,21 @@ return {
           prompts = {
             {
               role = "system",
-              content = require("plugins.custom.ai.prompts").plans.system,
+              content = require("plugins.custom.ai.prompts").write_prompt_plans.system,
               opts = { visible = false },
             },
             {
               role = "user",
-              content = require("plugins.custom.ai.prompts").plans.user,
+              content = require("plugins.custom.ai.prompts").write_prompt_plans.user,
               opts = { contains_code = false },
             },
           },
         },
-        ["Brainstorm"] = {
+        ["chat@brainstorm"] = {
           strategy = "chat",
           description = "Brainstorm ideas for your project.",
           opts = {
+            index = index(),
             is_slash_cmd = true,
             modes = { "n" },
             short_name = "brainstorm",
@@ -442,29 +490,30 @@ return {
           prompts = {
             {
               role = "system",
-              content = require("plugins.custom.ai.prompts").brainstorm.system,
+              content = require("plugins.custom.ai.prompts").write_brainstorm.system,
               opts = { visible = false },
             },
             {
               role = "user",
-              content = require("plugins.custom.ai.prompts").brainstorm.user(),
+              content = require("plugins.custom.ai.prompts").write_brainstorm.user(),
               opts = { contains_code = false },
             },
           },
 
         },
-        ["Session summary"] = {
+        ["chat@generate-session-summary"] = {
           strategy = "chat",
           description = "Generate session summary",
           opts = {
+            index = index(),
             is_slash_cmd = true,
-            short_name = "session-summary",
+            short_name = "scession-summary",
             auto_submit = false,
           },
           prompts = {
             {
               role = "user",
-              content = require("plugins.custom.ai.prompts").session_summary.user(),
+              content = require("plugins.custom.ai.prompts").generate_session_summary.user(),
               opts = { contains_code = false },
             },
           },

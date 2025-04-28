@@ -39,7 +39,7 @@ When presenting code changes:
 -- LANGUAGE
 --
 
-local english = {
+local improve_english = {
   system = [[### Role and Objectives
 Act as an English language expert.
 
@@ -63,7 +63,7 @@ Your task is to enhance the wording and grammar of the given text while maintain
 -- CODE
 --
 
-local java_tests = {
+local implement_java_tests = {
   system = [[
 ### Role and objectives
 
@@ -103,6 +103,7 @@ Generate comprehensive unit tests that follow the BDD style with the "Given-When
 - AssertJ assertions for verification
 - Helper methods prefixed with `given_` for test setup and `then_` for test assertions where appropriate
 - Prefer using `BDDMockito` over `Mockito` for mocks
+- Use type inference `var` whenever possible
 
 ### Example
 
@@ -251,7 +252,7 @@ OR
   end,
 }
 
-local naming = {
+local suggest_better_name = {
   system = review.system,
   user = function(filetype, code)
     return string.format(
@@ -270,7 +271,7 @@ local naming = {
 -- AGENT
 --
 
-local implement_feature = {
+local implement = {
   system = string.format(
     [[### Role and Objectives
 
@@ -327,8 +328,8 @@ Provide comprehensive guidance and solutions for implementing software features,
   end,
 }
 
-local feature_workflow = {
-  system = implement_feature.system,
+local implement_workflow = {
+  system = implement.system,
   user = function()
     return [[### Requirements
 
@@ -354,7 +355,7 @@ Ensure no deviations from these steps.]]
 -- - https://harper.blog/2025/02/16/my-llm-codegen-workflow-atm/
 --
 
-local specs = {
+local write_specifications = {
   system = [[
 ### Role and Objectives
 
@@ -419,7 +420,7 @@ Here's the idea:
   end,
 }
 
-local plans = {
+local write_prompt_plans = {
   system = [[### Role and Objectives
 Prompt Engineering Specialist
 
@@ -464,7 +465,7 @@ Also create a TODO.md that I can use as a checklist. Be through.
 ]],
 }
 
-local brainstorm = {
+local write_brainstorm = {
   system = [[### Role and Objectives
 
 Elite Software Engineering Collaborator
@@ -522,7 +523,7 @@ Here's the issue I'm dealing with:
   end,
 }
 
-local session_summary = {
+local generate_session_summary = {
   system = "",
   user = function()
     return [[Create `llm_sessions/{session_number}.md` using the @files tool with a complete summary of our session. Include:
@@ -540,18 +541,18 @@ local session_summary = {
 local M = {}
 M.coding_convention_file = coding_convention_file
 -- language
-M.english = english
+M.improve_english = improve_english
 -- code
-M.java_tests = java_tests
+M.implement_java_tests = implement_java_tests
 M.refactor = refactor
 M.review = review
-M.naming = naming
+M.suggest_better_name = suggest_better_name
 -- agent
-M.implement_feature = implement_feature
-M.feature_workflow = feature_workflow
+M.implement = implement
+M.implement_workflow = implement_workflow
 -- project
-M.specs = specs
-M.plans = plans
-M.brainstorm = brainstorm
-M.session_summary = session_summary
+M.write_specifications = write_specifications
+M.write_prompt_plans = write_prompt_plans
+M.write_brainstorm = write_brainstorm
+M.generate_session_summary = generate_session_summary
 return M
