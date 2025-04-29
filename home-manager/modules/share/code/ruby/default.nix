@@ -13,6 +13,6 @@
     RUBYGEMS_GEMDEPS = "-";
   };
 
-  # Symlink ~/.config/zsh/zprofile.d/
-  xdg.configFile."zsh/zprofile.d/.zprofile.ruby".source = ./.config/zsh/zprofile.d/.zprofile.ruby;
+  # Symlink ~/.config/zsh/secrets/.secrets.ruby.
+  xdg.configFile."zsh/secrets/.secrets.ruby".source = ./.config/zsh/secrets/.secrets.ruby;
 }

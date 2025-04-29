@@ -9,7 +9,7 @@
 
 # Set prompt theme
 typeset -ga ZSH_THEME
-zstyle -a ':zephyr:plugin:prompt' theme ZSH_THEME ||
+zstyle -a ':zephyr:plugin:prompt' theme ZSH_THEME
 ZSH_THEME=(p10k lean)
 
 # Manually set your prompt ask powerlevel10k may not work well with post_zshrc.

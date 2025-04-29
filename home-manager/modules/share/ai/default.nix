@@ -10,6 +10,6 @@
     vectorcode
   ];
 
-  # Symlink ~/.config/zsh/functions/aider-convention-scraper.
-  xdg.configFile."zsh/zprofile.d/.zprofile.ai".source = ./.config/zsh/zprofile.d/.zprofile.ai;
+  # Symlink ~/.config/zsh/secrets/.secrets.ai.
+  xdg.configFile."zsh/secrets/.secrets.ai".source = ./.config/zsh/secrets/.secrets.ai;
 }
