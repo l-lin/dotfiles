@@ -16,7 +16,7 @@ mise() {
   local command
   command="${1:-}"
   if [ "$#" = 0 ]; then
-    command /Users/louis.lin/.nix-profile/bin/mise
+    command ${HOME}/.nix-profile/bin/mise
     return
   fi
   shift
@@ -25,16 +25,16 @@ mise() {
   deactivate|shell|sh)
     # if argv doesn't contains -h,--help
     if [[ ! " $@ " =~ " --help " ]] && [[ ! " $@ " =~ " -h " ]]; then
-      eval "$(command /Users/louis.lin/.nix-profile/bin/mise "$command" "$@")"
+      eval "$(command ${HOME}/.nix-profile/bin/mise "$command" "$@")"
       return $?
     fi
     ;;
   esac
-  command /Users/louis.lin/.nix-profile/bin/mise "$command" "$@"
+  command ${HOME}/.nix-profile/bin/mise "$command" "$@"
 }
 
 _mise_hook() {
-  eval "$(/Users/louis.lin/.nix-profile/bin/mise hook-env -s zsh)";
+  eval "$(${HOME}/.nix-profile/bin/mise hook-env -s zsh)";
 }
 typeset -ag precmd_functions;
 if [[ -z "${precmd_functions[(r)_mise_hook]+1}" ]]; then
@@ -51,7 +51,7 @@ if [ -z "${_mise_cmd_not_found:-}" ]; then
     [ -n "$(declare -f command_not_found_handler)" ] && eval "${$(declare -f command_not_found_handler)/command_not_found_handler/_command_not_found_handler}"
 
     function command_not_found_handler() {
-        if [[ "$1" != "mise" && "$1" != "mise-"* ]] && /Users/louis.lin/.nix-profile/bin/mise hook-not-found -s zsh -- "$1"; then
+        if [[ "$1" != "mise" && "$1" != "mise-"* ]] && ${HOME}/.nix-profile/bin/mise hook-not-found -s zsh -- "$1"; then
           _mise_hook
           "$@"
         elif [ -n "$(declare -f _command_not_found_handler)" ]; then
