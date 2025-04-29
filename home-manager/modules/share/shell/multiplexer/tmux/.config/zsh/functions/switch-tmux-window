@@ -16,4 +16,4 @@ eval "${cmd}" \
     --preview 'tmux capture-pane -ep -t {1}:{3}' \
     --bind "ctrl-d:execute-silent(tmux kill-window -t {1}:{3})+reload(${cmd})" \
     --bind "ctrl-x:execute-silent(tmux kill-session -t {1})+reload(${cmd})" \
-    --bind 'enter:execute-silent(tmux switch-client -t {1}:{3})+abort' \
+    --bind 'enter:execute-silent(tmux switch-client -t {1}:{3})+abort'
