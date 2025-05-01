@@ -62,7 +62,6 @@ set -g @tmux-colorscheme-show-cpu-temp false
 set -g @tmux-colorscheme-show-ram false
 set -g @tmux-colorscheme-show-date false
   '';
-  xdg.configFile."zsh/functions/switch-tmux-window".source = ./.config/zsh/functions/switch-tmux-window;
   xdg.configFile."tmux/tpm.conf".source = ./.config/tmux/tpm.conf;
   xdg.dataFile."tmux/tmux-colorscheme/home-manager.tmuxtheme".text = with palette; ''
 theme_bg='${base00-hex}'
