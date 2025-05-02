@@ -7,12 +7,6 @@ local function index()
 end
 
 return {
-  -- A code repository indexing tool to supercharge your LLM experience.
-  {
-    "Davidyz/VectorCode",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    cmd = "VectorCode",
-  },
 
   --  ✨ AI-powered coding, seamlessly in Neovim.
   {
@@ -53,6 +47,8 @@ return {
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
+      -- A code repository indexing tool to supercharge your LLM experience.
+      { "Davidyz/VectorCode" },
     },
     opts = {
       strategies = {
@@ -518,6 +514,16 @@ return {
             },
           },
 
+        },
+      },
+
+      --
+      -- Extensions that add functionalities to the plugin.
+      -- src: https://codecompanion.olimorris.dev/configuration/extensions.html
+      --
+      extensions = {
+        vectorcode = {
+          opts = { add_tools = true, add_slash_command = true },
         },
       },
     },
