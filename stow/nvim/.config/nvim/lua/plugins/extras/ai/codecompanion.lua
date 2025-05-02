@@ -1,4 +1,3 @@
-
 -- Starting index from 30 so that all my custom prompts are at the bottom.
 local idx = 30
 local function index()
@@ -7,6 +6,19 @@ local function index()
 end
 
 return {
+  -- A powerful Neovim plugin for managing MCP (Model Context Protocol) servers: https://github.com/ravitemer/mcphub.nvim#installation
+  {
+    "ravitemer/mcphub.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    cmd = "MCPHub",
+    keys = {
+      { "<leader>am", "<cmd>MCPHub<cr>", silent = true, mode = "n", noremap = true, desc = "Toggle MCPHub" },
+    },
+    build = "bundled_build.lua",
+    opts = {
+      use_bundled_binary = true,
+    },
+  },
 
   --  ✨ AI-powered coding, seamlessly in Neovim.
   {
@@ -366,7 +378,6 @@ return {
               opts = { contains_code = false },
             },
           },
-
         },
         ["workflow@implement"] = {
           strategy = "workflow",
@@ -495,7 +506,6 @@ return {
               opts = { contains_code = false },
             },
           },
-
         },
         ["chat@generate-session-summary"] = {
           strategy = "chat",
@@ -513,7 +523,6 @@ return {
               opts = { contains_code = false },
             },
           },
-
         },
       },
 
@@ -524,6 +533,14 @@ return {
       extensions = {
         vectorcode = {
           opts = { add_tools = true, add_slash_command = true },
+        },
+        mcphub = {
+          callback = "mcphub.extensions.codecompanion",
+          opts = {
+            show_result_in_chat = true,
+            make_vars = true,
+            make_slash_commands = true,
+          },
         },
       },
     },

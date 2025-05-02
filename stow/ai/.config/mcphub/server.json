@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "github.com/modelcontextprotocol/servers/tree/main/src/time": {
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "mcp/time"]
+    }
+  },
+  "nativeMCPServers": {
+    "neovim": {
+      "disabled_tools": []
+    }
+  }
+}
+
