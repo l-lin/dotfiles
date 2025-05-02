@@ -1,4 +1,3 @@
-local completion = require "blink.cmp.completion"
 local function find_sub_module()
   local relative_filepath = vim.fn.expand("%:.")
   local _, extension = relative_filepath:match("(.+)%.(.+)$")
@@ -69,5 +68,17 @@ return {
     "windwp/nvim-autopairs",
     event = "InsertEnter",
     opts = {},
+  },
+
+  -- split and join arguments
+  {
+    "echasnovski/mini.splitjoin",
+    version = "*",
+    event = "LazyFile",
+    opts = {
+      mappings = {
+        toggle = "gS",
+      },
+    },
   },
 }
