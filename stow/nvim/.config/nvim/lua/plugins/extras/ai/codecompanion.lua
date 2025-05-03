@@ -65,7 +65,7 @@ return {
     opts = {
       strategies = {
         chat = {
-          adapter = "copilot_o3_mini",
+          adapter = "copilot_custom",
           keymaps = {
             -- Changing `q` to `C-c` so that `q` just close the window.
             stop = {
@@ -74,8 +74,16 @@ return {
               description = "Stop Request",
             },
           },
+          roles = {
+            ---@type string|fun(adapter: CodeCompanion.Adapter): string
+            llm = function(adapter)
+              return "🤖 " .. adapter.formatted_name
+            end,
+            ---@type string
+            user = "👤 " .. os.getenv("USER"),
+          }
         },
-        inline = { adapter = "copilot" },
+        inline = { adapter = "copilot_claude_sonnet_3_7" },
       },
       display = {
         chat = {
@@ -89,17 +97,9 @@ return {
       --
       adapters = {
         -- GITHUB COPILOT
-        copilot_claude_sonnet_3_5 = function()
+        copilot_custom = function()
           return require("codecompanion.adapters").extend("copilot", {
-            name = "copilot_claude_sonnet_3_5",
-            schema = {
-              model = { default = "claude-3.5-sonnet" },
-            },
-          })
-        end,
-        copilot_o3_mini = function()
-          return require("codecompanion.adapters").extend("copilot", {
-            name = "copilot_o3_mini",
+            name = "copilot_custom",
             schema = {
               model = { default = "o3-mini" },
               temperature = { default = 0.2 },
