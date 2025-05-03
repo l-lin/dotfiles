@@ -20,6 +20,7 @@
       };
       settings = {
         trusted_config_paths = ["~/work" "~/perso"];
+        idiomatic_version_file_enable_tools = ["java"  "node"];
       };
     };
   };
