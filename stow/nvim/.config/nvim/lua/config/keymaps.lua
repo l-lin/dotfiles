@@ -71,7 +71,7 @@ end, {})
 
 -- diagnostics (same behavior as IntelliJ)
 map("n", "<F25>", vim.diagnostic.open_float, { desc = "Line Diagnostics (Ctrl+F1)" })
-map("n", "<F2>", vim.diagnostic.goto_next, { desc = "Next diagnostic (F2)" })
+map("n", "<F2>", function () vim.diagnostic.jump({ count = 1 }) end, { desc = "Next diagnostic (F2)" })
 
 -- do not include white space characters when using $ in visual mode, see https://vi.stackexchange.com/q/12607/15292
 map("x", "$", "g_")
