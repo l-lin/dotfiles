@@ -35,7 +35,7 @@ return {
   {
     "folke/snacks.nvim",
     keys = {
-      { "<leader>gb", function() Snacks.picker.git_log_line() end, desc = "Git Blame Line" },
+      { "<leader>gb", function() Snacks.picker.git_log_line({ current_line = true, current_file = true, follow = true }) end, desc = "Git Blame Line" },
       {
         "<leader>gs",
         function()
@@ -54,7 +54,7 @@ return {
       },
       { "<leader>gl", function() Snacks.picker.git_log({ cwd = LazyVim.root.git() }) end, desc = "Git Log" },
       { "<leader>gL", function() Snacks.picker.git_log() end, desc = "Git Log (cwd)" },
-      { "<A-9>", function() Snacks.picker.git_log({ current_file = true }) end, noremap = true, silent = true, desc = "Check current file git history (Alt+9)" },
+      { "<A-9>", function() Snacks.picker.git_log({ current_file = true, follow = true }) end, noremap = true, silent = true, desc = "Check current file git history (Alt+9)" },
     }
   },
 
