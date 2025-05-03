@@ -101,7 +101,7 @@ return {
           return require("codecompanion.adapters").extend("copilot", {
             name = "copilot_custom",
             schema = {
-              model = { default = "o3-mini" },
+              model = { default = "claude-3.7-sonnet" },
               temperature = { default = 0.2 },
               max_tokens = { default = 50000 },
             },
