@@ -14,8 +14,19 @@
         "run",
         "-i",
         "--rm",
-        "--env-file", "/Users/louis.lin/work/preventive-continuous-care/.env",
+        "--env-file", "/Users/louis.lin/.local/share/jira/.env",
         "ghcr.io/sooperset/mcp-atlassian:latest"
+      ]
+    },
+    "git": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "--mount", "type=bind,src=/Users/louis.lin/perso,dst=/Users/louis/lin/perso",
+        "--mount", "type=bind,src=/Users/louis.lin/work,dst=/Users/louis/lin/work",
+        "mcp/git"
       ]
     }
   },
