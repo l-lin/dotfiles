@@ -102,6 +102,8 @@ return {
             name = "copilot_o3_mini",
             schema = {
               model = { default = "o3-mini" },
+              temperature = { default = 0.2 },
+              max_tokens = { default = 50000 },
             },
           })
         end,
@@ -513,7 +515,7 @@ return {
           opts = {
             index = index(),
             is_slash_cmd = true,
-            short_name = "scession-summary",
+            short_name = "session-summary",
             auto_submit = false,
           },
           prompts = {
@@ -532,7 +534,7 @@ return {
       --
       extensions = {
         vectorcode = {
-          opts = { add_tools = true, add_slash_command = true },
+          opts = { add_tools = true },
         },
         mcphub = {
           callback = "mcphub.extensions.codecompanion",

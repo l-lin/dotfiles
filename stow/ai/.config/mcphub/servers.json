@@ -1,0 +1,27 @@
+{
+  "mcpServers": {
+    "github.com/modelcontextprotocol/servers/tree/main/src/time": {
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "mcp/time"]
+    },
+    "github.com/upstash/context7-mcp": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
+    "mcp-atlassian": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "--env-file", "/Users/louis.lin/work/preventive-continuous-care/.env",
+        "ghcr.io/sooperset/mcp-atlassian:latest"
+      ]
+    }
+  },
+  "nativeMCPServers": {
+    "neovim": {
+      "disabled_tools": []
+    }
+  }
+}
