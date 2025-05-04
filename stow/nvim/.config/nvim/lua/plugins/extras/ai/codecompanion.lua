@@ -30,6 +30,7 @@ return {
       "CodeCompanionActions",
     },
     keys = {
+      { "<leader>a", "", desc = "+ai", mode = { "n", "v" } },
       {
         "<leader>at",
         "<cmd>CodeCompanionChat toggle<cr>",
@@ -61,6 +62,8 @@ return {
       "nvim-treesitter/nvim-treesitter",
       -- A code repository indexing tool to supercharge your LLM experience.
       { "Davidyz/VectorCode" },
+      -- 📄 Utility extension to get all project files for your AI assistant
+      { "banjo/contextfiles.nvim", dev = true },
     },
     opts = {
       strategies = {
@@ -247,12 +250,8 @@ return {
           },
           prompts = {
             {
-              role = "system",
-              content = require("plugins.custom.ai.prompts").review.system,
-              opts = { visible = false },
-            },
-            {
               role = "user",
+              opts = { contains_code = true },
               content = function(context)
                 local code = require("codecompanion.helpers.actions").get_code(
                   context.start_line,
@@ -261,7 +260,6 @@ return {
                 )
                 return require("plugins.custom.ai.prompts").review.user(context.filetype, code)
               end,
-              opts = { contains_code = true },
             },
           },
         },
@@ -279,16 +277,16 @@ return {
           prompts = {
             {
               role = "system",
-              content = require("plugins.custom.ai.prompts").refactor.system,
               opts = { visible = false },
+              content = require("plugins.custom.ai.prompts").refactor.system,
             },
             {
               role = "user",
+              opts = { contains_code = true },
               content = function(context)
                 local code = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
                 return require("plugins.custom.ai.prompts").refactor.user(context.filetype, code)
               end,
-              opts = { contains_code = true },
             },
           },
         },
@@ -306,8 +304,8 @@ return {
           prompts = {
             {
               role = "system",
-              content = require("plugins.custom.ai.prompts").suggest_better_name.system,
               opts = { visible = false },
+              content = require("plugins.custom.ai.prompts").suggest_better_name.system,
             },
             {
               role = "user",
@@ -337,16 +335,16 @@ return {
           prompts = {
             {
               role = "system",
-              content = require("plugins.custom.ai.prompts").implement_java_tests.system,
               opts = { visible = false },
+              content = require("plugins.custom.ai.prompts").implement_java_tests.system,
             },
             {
               role = "user",
+              opts = { contains_code = true },
               content = function(context)
                 local code = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
                 return require("plugins.custom.ai.prompts").implement_java_tests.user(code)
               end,
-              opts = { contains_code = true },
             },
           },
         },
@@ -371,13 +369,13 @@ return {
           prompts = {
             {
               role = "system",
-              content = require("plugins.custom.ai.prompts").implement.system,
               opts = { visible = false },
+              content = require("plugins.custom.ai.prompts").implement.system,
             },
             {
               role = "user",
-              content = require("plugins.custom.ai.prompts").implement.user(),
               opts = { contains_code = false },
+              content = require("plugins.custom.ai.prompts").implement.user(),
             },
           },
         },
@@ -398,30 +396,30 @@ return {
             {
               {
                 role = "system",
-                content = require("plugins.custom.ai.prompts").implement_workflow.system,
                 opts = { visible = false },
+                content = require("plugins.custom.ai.prompts").implement_workflow.system,
               },
               {
                 role = "user",
+                opts = { auto_submit = false },
                 content = function()
                   vim.g.codecompanion_auto_tool_mode = true
                   return require("plugins.custom.ai.prompts").implement_workflow.user()
                 end,
-                opts = { auto_submit = false },
               },
             },
             {
               {
                 role = "user",
+                opts = { auto_submit = true },
                 content = "Great. Now let's consider your code. I'd like you to check it carefully for correctness, style, and efficiency, and give constructive criticism for how to improve it.",
-                opts = { auto_submit = true },
               },
             },
             {
               {
                 role = "user",
-                content = "Thanks. Now let's revise the code based on the feedback, without additional explanations.",
                 opts = { auto_submit = true },
+                content = "Thanks. Now let's revise the code based on the feedback, without additional explanations.",
               },
             },
           },
@@ -447,13 +445,13 @@ return {
           prompts = {
             {
               role = "system",
-              content = require("plugins.custom.ai.prompts").write_specifications.system,
               opts = { visible = false },
+              content = require("plugins.custom.ai.prompts").write_specifications.system,
             },
             {
               role = "user",
-              content = require("plugins.custom.ai.prompts").write_specifications.user,
               opts = { contains_code = false },
+              content = require("plugins.custom.ai.prompts").write_specifications.user,
             },
           },
         },
@@ -473,13 +471,13 @@ return {
           prompts = {
             {
               role = "system",
-              content = require("plugins.custom.ai.prompts").write_prompt_plans.system,
               opts = { visible = false },
+              content = require("plugins.custom.ai.prompts").write_prompt_plans.system,
             },
             {
               role = "user",
-              content = require("plugins.custom.ai.prompts").write_prompt_plans.user,
               opts = { contains_code = false },
+              content = require("plugins.custom.ai.prompts").write_prompt_plans.user,
             },
           },
         },
@@ -499,13 +497,13 @@ return {
           prompts = {
             {
               role = "system",
-              content = require("plugins.custom.ai.prompts").write_brainstorm.system,
               opts = { visible = false },
+              content = require("plugins.custom.ai.prompts").write_brainstorm.system,
             },
             {
               role = "user",
-              content = require("plugins.custom.ai.prompts").write_brainstorm.user(),
               opts = { contains_code = false },
+              content = require("plugins.custom.ai.prompts").write_brainstorm.user(),
             },
           },
         },
@@ -521,8 +519,8 @@ return {
           prompts = {
             {
               role = "user",
-              content = require("plugins.custom.ai.prompts").generate_session_summary.user(),
               opts = { contains_code = false },
+              content = require("plugins.custom.ai.prompts").generate_session_summary.user(),
             },
           },
         },
@@ -544,6 +542,9 @@ return {
             make_slash_commands = true,
           },
         },
+        contextfiles = {
+          opts = {},
+        }
       },
     },
     init = function()
