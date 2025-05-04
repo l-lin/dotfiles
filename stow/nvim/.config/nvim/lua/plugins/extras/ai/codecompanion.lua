@@ -90,8 +90,16 @@ return {
       },
       display = {
         chat = {
-          start_in_insert_mode = true,
+          intro_message = "Press ? for options.",
+          start_in_insert_mode = false,
         },
+      },
+      opts = {
+        -- HACK:: When changing the adapter, it's overriding the system prompt
+        -- if the system_prompt is a function, and I do not want to update my
+        -- system prompt.
+        -- See https://github.com/olimorris/codecompanion.nvim/blob/8dc896af23c1e086aee13fe7c850eab365ad337e/lua/codecompanion/strategies/chat/keymaps.lua#L500-L506.
+        system_prompt = require("plugins.custom.ai.prompts").default_system_prompt,
       },
 
       --
@@ -106,6 +114,16 @@ return {
             schema = {
               model = { default = "claude-3.7-sonnet" },
               temperature = { default = 0.2 },
+              max_tokens = { default = 50000 },
+            },
+          })
+        end,
+        copilot_brainstorm = function()
+          return require("codecompanion.adapters").extend("copilot", {
+            name = "copilot_brainstorm",
+            schema = {
+              model = { default = "claude-3.7-sonnet-thought" },
+              temperature = { default = 0.3 },
               max_tokens = { default = 50000 },
             },
           })
@@ -412,11 +430,16 @@ return {
           opts = {
             index = index(),
             short_name = "workflow-implement",
+            adapter = { name = "copilot" },
           },
           references = {
             {
               type = "file",
               path = require("plugins.custom.ai.prompts").coding_convention_file,
+            },
+            {
+              type = "file",
+              path = require("plugins.custom.ai.prompts").specs_file,
             },
           },
           prompts = {
@@ -437,16 +460,16 @@ return {
             },
             {
               {
+                name = "Repeat until LLM has finished the task",
                 role = "user",
                 opts = { auto_submit = true },
-                content = "Great. Now let's consider your code. I'd like you to check it carefully for correctness, style, and efficiency, and give constructive criticism for how to improve it.",
-              },
-            },
-            {
-              {
-                role = "user",
-                opts = { auto_submit = true },
-                content = "Thanks. Now let's revise the code based on the feedback, without additional explanations.",
+                ---@param chat CodeCompanion.Chat
+                repeat_until = function(chat)
+                  local last_content = chat.messages[#chat.messages].content
+
+                  return last_content and string.find(last_content, require("plugins.custom.ai.prompts").finish_keyword) ~= nil
+                end,
+                content = "Please proceed.",
               },
             },
           },
@@ -500,7 +523,7 @@ return {
           references = {
             {
               type = "file",
-              path = "SPECS.md",
+              path = require("plugins.custom.ai.prompts").specs_file,
             },
           },
           prompts = {
@@ -528,7 +551,7 @@ return {
             user_prompt = false,
             stop_context_insertion = true,
             ignore_system_prompt = true,
-            adapter = { name = "copilot" },
+            adapter = { name = "copilot_brainstorm" },
           },
           prompts = {
             {
@@ -558,6 +581,46 @@ return {
               role = "user",
               opts = { contains_code = false },
               content = require("plugins.custom.ai.prompts").generate_session_summary.user(),
+            },
+          },
+        },
+        ["workflow@investigate"] = {
+          strategy = "workflow",
+          description = "Use a workflow to guide an LLM investigating the repository",
+          opts = {
+            index = index(),
+            short_name = "workflow-investigate",
+            adapter = { name = "copilot" },
+          },
+          prompts = {
+            {
+              {
+                role = "system",
+                opts = { visible = false },
+                content = require("plugins.custom.ai.prompts").investigate_workflow.system,
+              },
+              {
+                role = "user",
+                opts = { auto_submit = false },
+                content = function()
+                  vim.g.codecompanion_auto_tool_mode = true
+                  return require("plugins.custom.ai.prompts").investigate_workflow.user()
+                end,
+              },
+            },
+            {
+              {
+                name = "Repeat until LLM has finished the task",
+                role = "user",
+                opts = { auto_submit = true },
+                ---@param chat CodeCompanion.Chat
+                repeat_until = function(chat)
+                  local last_content = chat.messages[#chat.messages].content
+
+                  return last_content and string.find(last_content, require("plugins.custom.ai.prompts").finish_keyword) ~= nil
+                end,
+                content = "Please proceed.",
+              },
             },
           },
         },
