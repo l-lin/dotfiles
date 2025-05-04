@@ -37,7 +37,7 @@ return {
         silent = true,
         mode = { "n", "v" },
         noremap = true,
-        desc = "Toggle CodeCompanionChat",
+        desc = "CodeCompanionChat Toggle",
       },
       {
         "<leader>an",
@@ -45,7 +45,7 @@ return {
         silent = true,
         mode = { "n", "v" },
         noremap = true,
-        desc = "New CodeCompanionChat",
+        desc = "CodeCompanionChat New",
       },
       {
         "<leader>ac",
@@ -53,7 +53,7 @@ return {
         silent = true,
         mode = { "n", "v" },
         noremap = true,
-        desc = "Toggle CodeCompanionActions",
+        desc = "CodeCompanionActions",
       },
     },
     config = true,
@@ -237,6 +237,33 @@ return {
         -- CODE
         --
 
+        ["chat@code"] = {
+          strategy = "chat",
+          description = "Create new Chat buffer with code convention.",
+          opts = {
+            index = index(),
+            modes = { "n", "v" },
+            short_name = "chat-code",
+            auto_submit = false,
+            user_prompt = false,
+            stop_context_insertion = true,
+          },
+          references = {
+            {
+              type = "file",
+              path = require("plugins.custom.ai.prompts").coding_convention_file,
+            },
+          },
+          prompts = {
+            {
+              role = "user",
+              content = function(context)
+                local code = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
+                return require("plugins.custom.ai.prompts").chat_with_code_convention.user(context.filetype, code)
+              end,
+            },
+          },
+        },
         ["chat@review"] = {
           strategy = "chat",
           description = "Review the provided code snippet.",
@@ -441,6 +468,7 @@ return {
             user_prompt = false,
             stop_context_insertion = true,
             ignore_system_prompt = true,
+            adapter = { name = "copilot" },
           },
           prompts = {
             {
@@ -467,6 +495,13 @@ return {
             user_prompt = false,
             stop_context_insertion = true,
             ignore_system_prompt = true,
+            adapter = { name = "copilot" },
+          },
+          references = {
+            {
+              type = "file",
+              path = "SPECS.md",
+            },
           },
           prompts = {
             {
@@ -493,6 +528,7 @@ return {
             user_prompt = false,
             stop_context_insertion = true,
             ignore_system_prompt = true,
+            adapter = { name = "copilot" },
           },
           prompts = {
             {
@@ -515,6 +551,7 @@ return {
             is_slash_cmd = true,
             short_name = "session-summary",
             auto_submit = false,
+            adapter = { name = "copilot" },
           },
           prompts = {
             {

@@ -10,6 +10,18 @@
 - Keep the codebase very clean and organized
 - Avoid writing scripts in files if possible, especially if the script is likely only to be run once
 - Avoid having files over 200-300 lines of code. Refactor at that point
+- Constants Over Magic Numbers
+  - Replace hard-coded values with named constants
+  - Use descriptive constant names that explain the value's purpose
+  - Keep constants at the top of the file or in a dedicated constants file
+- Meaningful Names
+  - Variables, functions, and classes should reveal their purpose
+  - Names should explain why something exists and how it's used
+  - Avoid abbreviations unless they're universally understood
+- Smart Comments
+  - Don't comment on what the code does - make the code self-documenting
+  - Use comments to explain why something is done a certain way
+  - Document APIs, complex algorithms, and non-obvious side effects
 
 ## Coding workflow preferences
 
