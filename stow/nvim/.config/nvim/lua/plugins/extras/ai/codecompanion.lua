@@ -112,8 +112,8 @@ return {
           return require("codecompanion.adapters").extend("copilot", {
             name = "copilot_custom",
             schema = {
-              model = { default = "claude-3.7-sonnet" },
-              temperature = { default = 0.2 },
+              model = { default = "gemini-2.5-pro" },
+              temperature = { default = 0 },
               max_tokens = { default = 50000 },
             },
           })
@@ -123,7 +123,7 @@ return {
             name = "copilot_brainstorm",
             schema = {
               model = { default = "claude-3.7-sonnet-thought" },
-              temperature = { default = 0.3 },
+              temperature = { default = 0.2 },
               max_tokens = { default = 50000 },
             },
           })
@@ -584,43 +584,30 @@ return {
             },
           },
         },
-        ["workflow@investigate"] = {
-          strategy = "workflow",
+        ["chat@investigate"] = {
+          strategy = "chat",
           description = "Use a workflow to guide an LLM investigating the repository",
           opts = {
             index = index(),
             short_name = "workflow-investigate",
-            adapter = { name = "copilot" },
+            auto_submit = false,
+            user_prompt = false,
+            stop_context_insertion = true,
+            ignore_system_prompt = true,
           },
           prompts = {
             {
-              {
-                role = "system",
-                opts = { visible = false },
-                content = require("plugins.custom.ai.prompts").investigate_workflow.system,
-              },
-              {
-                role = "user",
-                opts = { auto_submit = false },
-                content = function()
-                  vim.g.codecompanion_auto_tool_mode = true
-                  return require("plugins.custom.ai.prompts").investigate_workflow.user()
-                end,
-              },
+              role = "system",
+              opts = { visible = false },
+              content = require("plugins.custom.ai.prompts").investigate.system,
             },
             {
-              {
-                name = "Repeat until LLM has finished the task",
-                role = "user",
-                opts = { auto_submit = true },
-                ---@param chat CodeCompanion.Chat
-                repeat_until = function(chat)
-                  local last_content = chat.messages[#chat.messages].content
-
-                  return last_content and string.find(last_content, require("plugins.custom.ai.prompts").finish_keyword) ~= nil
-                end,
-                content = "Please proceed.",
-              },
+              role = "user",
+              opts = { auto_submit = false },
+              content = function()
+                vim.g.codecompanion_auto_tool_mode = true
+                return require("plugins.custom.ai.prompts").investigate.user()
+              end,
             },
           },
         },

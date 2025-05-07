@@ -599,7 +599,7 @@ local generate_session_summary = {
   end,
 }
 
-local investigate_workflow = {
+local investigate = {
   system = [[<ROLE_AND_OBJECTIVES>
 Code Investigation Specialist
 <COMPETENCIES>
@@ -632,22 +632,14 @@ Search through the provided codebase to find relevant files and code snippets th
 </OUTPUT_FORMAT>
   ]],
   user = function ()
-    return string.format([[### Instructions
+    return [[### Instructions
 
 Your instructions here
 
 ### Steps to Follow
 
-You can use tools to analyse the code repository, individual files and configuration, run tests and commands, but NOT change any of the code.
-You will analyse the code until you have answered the question asked.
-
-Things you can do:
-1. Look at the code in the #buffer as that is usually the starting point of the investigation.
-2. Use the @cmd_runner and @mcp tools to look at the respository structure, and other useful commands. 
-3. Use the @files tool to read necessary files
-4. Once you think you have finished the investigation, say exactly "%s"!
-
-We'll repeat this cycle until you have found a reasonable answer to the question. Ensure that you under no circumstances edit any of the files.]], finish_keyword)
+You can use @vectorcode, @cmd_runner, @files and @mcp tools to analyse the code repository, individual files and configuration and run commands, but DO NOT change any of the code.
+You will analyse the code until you have answered the question asked.]]
   end
 }
 
@@ -672,5 +664,5 @@ M.write_specifications = write_specifications
 M.write_prompt_plans = write_prompt_plans
 M.write_brainstorm = write_brainstorm
 M.generate_session_summary = generate_session_summary
-M.investigate_workflow = investigate_workflow
+M.investigate = investigate
 return M
