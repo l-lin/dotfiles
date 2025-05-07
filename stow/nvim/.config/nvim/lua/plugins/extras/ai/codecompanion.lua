@@ -63,7 +63,7 @@ return {
       -- A code repository indexing tool to supercharge your LLM experience.
       { "Davidyz/VectorCode" },
       -- 📄 Utility extension to get all project files for your AI assistant
-      { "banjo/contextfiles.nvim", dev = true },
+      { "banjo/contextfiles.nvim" },
     },
     opts = {
       strategies = {
