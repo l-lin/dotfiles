@@ -31,7 +31,7 @@ return {
 
   -- LSP/DAP/Linter manager
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     opts = {
       ensure_installed = { "sonarlint-language-server" },
     },

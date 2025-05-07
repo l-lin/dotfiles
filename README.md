@@ -268,7 +268,7 @@ Only time will tell.
 
 I'm using a symlink to the `${XDG_CONFIG_HOME}/nvim` folder, so LazyVim works
 without much issue, i.e. it will download the plugins, but I can't say the same
-about plugins that use downloaded binaries, e.g. LSP servers installed by [mason.nvim](https://github.com/williamboman/mason.nvim).
+about plugins that use downloaded binaries, e.g. LSP servers installed by [mason.nvim](https://github.com/mason-org/mason.nvim).
 
 I installed and configured [nix-ld](https://github.com/Mic92/nix-ld), so most binaries
 should work without any problem. If not please check below on how to configure it.

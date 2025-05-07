@@ -89,7 +89,7 @@ local function with_border(border_style)
       end,
     },
     {
-      "williamboman/mason.nvim",
+      "mason-org/mason.nvim",
       optional = true;
       opts = {
         ui = {

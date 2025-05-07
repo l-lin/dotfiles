@@ -37,7 +37,7 @@ return {
     "mfussenegger/nvim-dap",
     dependencies = {
       {
-        "williamboman/mason.nvim",
+        "mason-org/mason.nvim",
         opts = {
           registries = mason_registries,
           ensure_installed = { "java-debug-adapter", "java-test" },
@@ -66,7 +66,7 @@ return {
     ft = { "java" },
     dependencies = {
       {
-        "williamboman/mason.nvim",
+        "mason-org/mason.nvim",
         opts = {
           registries = mason_registries,
           ensure_installed = { "jdtls", "lombok-nightly" },
