@@ -72,6 +72,7 @@ return {
         enabled = true,
         icons = { "󰎤 ", "󰎧 ", "󰎪 ", "󰎭 ", "󰎱 ", "󰎳 " },
       },
+      code = { border = "thin" },
     }
   },
 
