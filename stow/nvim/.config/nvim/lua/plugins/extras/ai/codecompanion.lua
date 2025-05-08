@@ -64,6 +64,8 @@ return {
       { "Davidyz/VectorCode" },
       -- 📄 Utility extension to get all project files for your AI assistant
       { "banjo/contextfiles.nvim" },
+      -- History chat management
+      { "ravitemer/codecompanion-history.nvim" },
     },
     opts = {
       strategies = {
@@ -653,6 +655,13 @@ return {
         },
         contextfiles = {
           opts = {},
+        },
+        history = {
+          enabled = true,
+          opts = {
+            deleted_on_clearing_chat = true,
+            picker = "default",
+          }
         }
       },
     },
