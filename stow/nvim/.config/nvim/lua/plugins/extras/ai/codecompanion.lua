@@ -112,9 +112,9 @@ return {
           return require("codecompanion.adapters").extend("copilot", {
             name = "copilot_custom",
             schema = {
-              model = { default = "gemini-2.5-pro" },
+              model = { default = "gpt-4o" },
               temperature = { default = 0 },
-              max_tokens = { default = 50000 },
+              max_tokens = { default = 60000 },
             },
           })
         end,
@@ -124,7 +124,7 @@ return {
             schema = {
               model = { default = "claude-3.7-sonnet-thought" },
               temperature = { default = 0.2 },
-              max_tokens = { default = 50000 },
+              max_tokens = { default = 60000 },
             },
           })
         end,
@@ -294,6 +294,11 @@ return {
             stop_context_insertion = true,
           },
           prompts = {
+            {
+              role = "system",
+              opts = { visible = false },
+              content = require("plugins.custom.ai.prompts").review.system,
+            },
             {
               role = "user",
               opts = { contains_code = true },
@@ -475,6 +480,23 @@ return {
           },
         },
 
+        ["chat@write-git-commit"] = {
+          strategy = "chat",
+          description = "Generate a commit message",
+          opts = {
+            index = index(),
+            is_slash_cmd = true,
+            short_name = "commit",
+            auto_submit = true,
+          },
+          prompts = {
+            {
+              role = "user",
+              opts = { contains_code = true },
+              content = require("plugins.custom.ai.prompts").write_git_commit.user(),
+            },
+          },
+        },
         --
         -- PROJECT
         --

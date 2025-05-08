@@ -311,6 +311,33 @@ local suggest_better_name = {
   end,
 }
 
+local write_git_commit = {
+  system = "",
+  user = function()
+    return string.format(
+      [[You are an expert at following the Conventional Commit specification.
+
+The commit scope should contain the ticket id that can be extracted from the git branch name '%s'.
+
+Examples of getting the tiket id from the branch name:
+
+- P3C-123/do_some_stuff => P3C-123
+- P3C-123-do_some_stuff  => P3C-123
+- P3C-123_do_some_stuff => P3C-123
+- feat/P3C-123/do_some_stuff => P3C-123
+
+Given the git diff listed below, please generate a commit message for me:
+
+```diff
+%s
+```
+]],
+      vim.fn.system("git rev-parse --abbrev-ref HEAD"),
+      vim.fn.system("git diff --no-ext-diff --staged")
+    )
+  end,
+}
+
 --
 -- AGENT
 --
@@ -444,6 +471,7 @@ Include all relevant requirements, architecture choices, data handling details, 
 - Brief explanation of the thinking behind each idea
 - Questions to prompt further exploration
 - Visual organization (bullet points, numbered lists) for easy scanning
+- Avoid using H1, H2 or H3 headers in your responses as these are reserved for the user.
 </OUTPUT_FORMAT>]],
   user = function()
     return string.format([[Use the @files tool to write the specifications in the project %s.
@@ -656,6 +684,7 @@ M.implement_java_tests = implement_java_tests
 M.refactor = refactor
 M.review = review
 M.suggest_better_name = suggest_better_name
+M.write_git_commit = write_git_commit
 -- agent
 M.implement = implement
 M.implement_workflow = implement_workflow
