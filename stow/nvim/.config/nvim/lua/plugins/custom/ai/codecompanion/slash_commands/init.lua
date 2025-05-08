@@ -6,4 +6,5 @@ return {
   ["specifications"] = require("plugins.custom.ai.codecompanion.slash_commands.specifications"),
   ["session-summary"] = require("plugins.custom.ai.codecompanion.slash_commands.session-summary"),
   ["swe"] = require("plugins.custom.ai.codecompanion.slash_commands.swe"),
+  ["thinking"] = require("plugins.custom.ai.codecompanion.slash_commands.thinking"),
 }
