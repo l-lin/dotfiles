@@ -37,9 +37,7 @@
       cleanup = "none";
     };
 
-    taps = [
-      "homebrew-zathura/zathura"
-    ];
+    taps = [];
 
     # `brew install`
     # To get the list of installed apps with brew: `brew list`
@@ -48,8 +46,6 @@
       "busted"
       # Interpreter for PostScript and PDF: https://www.ghostscript.com/
       "ghostscript"
-      # A highly customizable and functional PDF viewer: https://git.pwmt.org/pwmt/zathura/
-      "zathura"
     ];
 
     # `brew install --cask`
