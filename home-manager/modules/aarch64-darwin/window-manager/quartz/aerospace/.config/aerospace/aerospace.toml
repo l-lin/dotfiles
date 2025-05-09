@@ -198,7 +198,7 @@ automatically-unhide-macos-hidden-apps = false
 
 [[on-window-detected]]
     if.app-id = 'com.google.Chrome'
-    run = 'move-node-to-workspace 0'
+    run = 'move-node-to-workspace 4'
 
 [[on-window-detected]]
     if.app-id = 'com.spotify.client'
@@ -206,7 +206,7 @@ automatically-unhide-macos-hidden-apps = false
 
 [[on-window-detected]]
     if.app-name-regex-substring = 'slack'
-    run = 'move-node-to-workspace 4'
+    run = 'move-node-to-workspace 0'
 
 [[on-window-detected]]
     if.app-name-regex-substring = 'finder'
