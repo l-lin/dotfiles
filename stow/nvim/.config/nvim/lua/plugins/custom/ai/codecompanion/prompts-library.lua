@@ -171,36 +171,4 @@ return {
       },
     },
   },
-
-  --
-  -- PROJECT
-  --
-
-  ["brainstorm@chat"] = {
-    strategy = "chat",
-    description = "Brainstorm ideas for your project.",
-    opts = {
-      index = index(),
-      is_slash_cmd = true,
-      modes = { "n" },
-      short_name = "brainstorm",
-      auto_submit = false,
-      user_prompt = false,
-      stop_context_insertion = true,
-      ignore_system_prompt = true,
-      adapter = { name = "copilot_brainstorm" },
-    },
-    prompts = {
-      {
-        role = "system",
-        opts = { visible = false },
-        content = require("plugins.custom.ai.prompts.brainstorm").system(),
-      },
-      {
-        role = "user",
-        opts = { contains_code = false },
-        content = require("plugins.custom.ai.prompts.brainstorm").user(),
-      },
-    },
-  },
 }

@@ -13,7 +13,7 @@ return {
     },
   },
 
-  --  ✨ AI-powered coding, seamlessly in Neovim.
+  -- ✨ AI-powered coding, seamlessly in Neovim.
   {
     "olimorris/codecompanion.nvim",
     cmd = {
