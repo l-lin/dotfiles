@@ -1,4 +1,5 @@
 return {
+  ["agent"] = require("plugins.custom.ai.codecompanion.slash-commands.agent"),
   ["code-convention"] = require("plugins.custom.ai.codecompanion.slash-commands.code-convention"),
   ["english-enhancer"] = require("plugins.custom.ai.codecompanion.slash-commands.english-enhancer"),
   ["git-commit"] = require("plugins.custom.ai.codecompanion.slash-commands.git-commit"),
