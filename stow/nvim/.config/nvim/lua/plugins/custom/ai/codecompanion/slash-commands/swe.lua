@@ -9,7 +9,7 @@ return {
       "system-prompt",
       "<role>swe</role>"
     )
-    require("plugins.custom.ai.codecompanion.slash_commands.code-convention").callback(chat)
+    require("plugins.custom.ai.codecompanion.slash-commands.code-convention").callback(chat)
   end,
 }
 

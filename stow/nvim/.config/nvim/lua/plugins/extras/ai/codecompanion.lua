@@ -88,7 +88,7 @@ return {
             ---@type string
             user = "👤 " .. os.getenv("USER"),
           },
-          slash_commands = require("plugins.custom.ai.codecompanion.slash_commands"),
+          slash_commands = require("plugins.custom.ai.codecompanion.slash-commands"),
         },
         inline = { adapter = "copilot_claude_sonnet_3_7" },
       },
