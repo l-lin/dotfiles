@@ -134,7 +134,6 @@ return {
         history = {
           enabled = true,
           opts = {
-            deleted_on_clearing_chat = true,
             picker = "snacks",
           }
         }
