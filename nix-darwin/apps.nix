@@ -69,8 +69,6 @@
       "obsidian"
       # Open-source colour picker app for macOS: https://superhighfives.com/pika
       "pika"
-      # Team communication and collaboration software: https://slack.com/
-      "slack"
       # Music streaming service: https://www.spotify.com/https://www.spotify.com/
       "spotify"
       # macOS system monitor in your menu bar: https://github.com/exelban/stats
