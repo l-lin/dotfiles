@@ -145,6 +145,8 @@
           _FXSortFoldersFirst = true;
           # When performing a search, search the current folder by default
           FXDefaultSearchScope = "SCcf";
+          # Show the pathbar in the Finder
+          ShowPathbar = true;
         };
         "com.apple.desktopservices" = {
           # Avoid creating .DS_Store files on network or USB volumes
