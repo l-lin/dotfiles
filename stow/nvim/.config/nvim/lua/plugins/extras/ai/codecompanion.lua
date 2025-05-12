@@ -89,6 +89,14 @@ return {
             user = "👤 " .. os.getenv("USER"),
           },
           slash_commands = require("plugins.custom.ai.codecompanion.slash-commands"),
+          tools = {
+            opts = {
+              -- Send any errors to the LLM automatically
+              auto_submit_errors = true,
+              -- Send any successful output to the LLM automatically
+              auto_submit_success = true,
+            }
+          },
         },
         inline = { adapter = "copilot_claude_sonnet_3_7" },
       },
