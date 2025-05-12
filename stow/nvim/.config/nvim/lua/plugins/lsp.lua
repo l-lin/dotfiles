@@ -13,9 +13,4 @@ return {
       keys[#keys + 1] = { "<M-CR>", vim.lsp.buf.code_action, noremap = true, desc = "Code action (Ctrl+Enter)" }
     end,
   },
-
-  -- HACK: Pin to version 1, as v2 is not yet supported by LazyVim.
-  -- src: https://github.com/LazyVim/LazyVim/issues/6039
-  { "mason-org/mason.nvim", version = "^1.11.0" },
-  { "mason-org/mason-lspconfig.nvim", version = "^1.32.0" },
 }
