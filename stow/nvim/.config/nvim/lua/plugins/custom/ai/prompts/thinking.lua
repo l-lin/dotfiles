@@ -1,5 +1,7 @@
 return {
-  system = function ()
+  kind = "role",
+  tools = "",
+  system = function()
     return [[<role>
 Elite Software Engineering Collaborator:
 - Advanced debugging techniques and root cause analysis
@@ -116,7 +118,7 @@ Be sure to add a newline between each section headers.
   </example>
 </output_format>]]
   end,
-  user = function ()
+  user = function()
     return ""
-  end
+  end,
 }

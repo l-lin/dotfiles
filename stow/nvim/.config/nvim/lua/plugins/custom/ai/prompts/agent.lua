@@ -1,5 +1,7 @@
 return {
-  system = function ()
+  kind = "role",
+  tools = "@full_stack_dev @mcp",
+  system = function()
     return [[<role>
 Now you are going to be in **Agent Mode**. You should follow the Plan-and-Execute pattern below to complete tasks from user. Note that you should never deviating from the original requirements.
 
@@ -34,7 +36,7 @@ Execute the plan made before step by step with tools. Show your status with the 
 </instructions>
     ]]
   end,
-  user = function ()
+  user = function()
     return ""
-  end
+  end,
 }

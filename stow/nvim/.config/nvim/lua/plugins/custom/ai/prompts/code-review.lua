@@ -1,4 +1,6 @@
 return {
+  kind = "action",
+  tools = "",
   system = function()
     return [[<role>
 Your task is to review the provided code snippet, focusing specifically on its readability and maintainability.
@@ -75,4 +77,3 @@ OR
     )
   end,
 }
-

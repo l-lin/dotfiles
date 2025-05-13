@@ -1,6 +1,8 @@
 local specs_file = "SPECS.md"
 
 return {
+  kind = "role",
+  tools = "@files",
   system = function ()
     return [[<role>
 Project Owner

@@ -1,4 +1,6 @@
 return {
+  kind = "role",
+  tools = "@files @cmd_runner @vectorcode @mcp",
   system = function()
     return [[<role>
 Code Investigation Specialist

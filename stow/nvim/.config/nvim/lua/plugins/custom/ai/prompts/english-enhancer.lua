@@ -1,4 +1,6 @@
 return {
+  kind = "role",
+  tools = "",
   system = function()
     return [[<role>
 Act as an English language expert.

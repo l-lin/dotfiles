@@ -1,4 +1,6 @@
 return {
+  kind = "action",
+  tools = "",
   system = function()
     return [[<role>
 Your task is to refactor the provided code snippet, focusing specifically on its readability and maintainability.

@@ -1,4 +1,6 @@
 return {
+  kind = "role",
+  tools = "@full_stack_dev",
   system = function()
     return string.format(
       [[<role>

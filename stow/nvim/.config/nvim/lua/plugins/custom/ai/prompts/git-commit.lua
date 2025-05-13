@@ -1,4 +1,6 @@
 return {
+  kind = "action",
+  tools = "@cmd_runner",
   system = function()
     return string.format([[<role>
 You are an expert at following the Conventional Commit specification.
