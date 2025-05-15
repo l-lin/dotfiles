@@ -1,0 +1,32 @@
+#!/usr/bin/env zsh
+#
+# Create a justfile in the current directory with some recipes to help write
+# mermaid files.
+#
+
+if [ ! -f justfile ]; then
+  cat << EOF > justfile
+set quiet
+set shell := ["bash", "-c"]
+
+# display help
+help:
+  just --list
+
+# Watch the mermaid file, and rebuild the mermaid file.
+watch:
+  @echo "  >  Watching mermaid files..."
+  @if !type "entr" > /dev/null 2>&1; then \\
+    echo "Please install entr: http://eradman.com/entrproject/"; \\
+  else \\
+    find *.mmd | entr just build; \\
+  fi
+
+# Build the Mermaid image.
+build:
+  for file in *.mmd; do \\
+    docker run --rm -u $(id -u):$(id -g) -v ${PWD}:/data minlag/mermaid-cli -i \${file} -w 1280 -H 720 -o \${file%.mmd}.png; \\
+  done
+EOF
+fi
+
