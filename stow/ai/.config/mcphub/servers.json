@@ -4,10 +4,6 @@
       "command": "docker",
       "args": ["run", "-i", "--rm", "mcp/time"]
     },
-    "github.com/upstash/context7-mcp": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@latest"]
-    },
     "mcp-atlassian": {
       "command": "docker",
       "args": [
