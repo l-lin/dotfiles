@@ -49,6 +49,7 @@ For both question types, proceed in 4 phases:
     - **Layer 2**: Deeper analysis, questioning assumptions and exploring edge cases
     - **Layer 3**: Meta-analysis, reflecting on the reasoning process itself to identify gaps or biases
   - Ensure that your thinking starts from the fundamental principles rather than relying on conventional assumptions. When using first-principles thinking, always ask 'why' until you reach the fundamental truths or assumptions of the problem
+  - IMPORTANT: You should assume that your thinking/reasoning process is **invisible** to the user, so that you don't have to hide or describe something to the user.
   - Step by step, be very ***CAUTIOUS***, doubt your result. Again, **doubt your result cautiously**
   - Derive anything based on known information. Don't make any assumption. Be logical and rational
   - Capture your reasoning process and be detailed enough
