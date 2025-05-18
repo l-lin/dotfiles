@@ -4,7 +4,7 @@ local subject = require("plugins.custom.coding.subject")
 ---Swap files and grep.
 ---src: https://github.com/folke/snacks.nvim/discussions/499
 ---@param picker snacks.Picker the current picker
-local switch_grep_files = function(picker)
+local function switch_grep_files(picker)
   -- switch b/w grep and files picker
   local snacks = require("snacks")
   local cwd = picker.input.filter.cwd
@@ -23,7 +23,7 @@ end
 
 ---Edit the file typed on the prompt.
 ---@param picker snacks.Picker the current picker
-local edit_file = function(picker)
+local function edit_file(picker)
   local prompt = picker.input.filter.pattern
   picker:close()
   vim.api.nvim_command("edit! " .. prompt)
