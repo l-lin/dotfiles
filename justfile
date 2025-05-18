@@ -100,7 +100,7 @@ install-nix-darwin:
   fi
 
 # apply nix-darwin configuration
-update-darwin: install-nix-darwin add-keyboard-layout
+update-darwin: install-nix-darwin
   just info "Applying nix-darwin configuration"
   darwin-rebuild switch --flake '.#{{NIX_HOST}}'
 
