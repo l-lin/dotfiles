@@ -17,6 +17,8 @@
         "pipx:vectorcode[lsp,mcp]" = "latest";
         # Specification for CLI: https://usage.jdx.dev/.
         usage = "2.0.7";
+        # An extremely fast Python package and project manager, written in Rust: https://docs.astral.sh/uv/
+        uv = "0.7.8";
       };
       settings = {
         trusted_config_paths = ["~/work" "~/perso"];
