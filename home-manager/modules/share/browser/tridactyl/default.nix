@@ -18,6 +18,7 @@ bind K tabprev
 bind J tabnext
 bind H back
 bind L forward
+bind <C-e> fillcmdline tab
 
 " UNBINDS
 " With zen browser, this keymap is used to open web panel, and I don't often pin tabs.
