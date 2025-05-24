@@ -76,7 +76,7 @@
       btop.enable = true;
       # Define my own color to set in another env variable, or file?
       fzf.enable = false;
-      gnome.enable = true;
+      gnome.enable = false;
       lazygit.enable = true;
       kitty.enable = true;
       kitty.variant256Colors = true;
