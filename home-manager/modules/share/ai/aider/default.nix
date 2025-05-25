@@ -72,6 +72,10 @@ analytics: true
 #################
 # Other settings:
 
+## Always read files
+read:
+  - ${config.xdg.configHome}/ai/conventions/code.md
+
 ## Use VI editing mode in the terminal (default: False)
 vim: true
 
