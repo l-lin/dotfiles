@@ -63,7 +63,7 @@ require("lazy").setup({
     --{ import = "plugins.extras.coding.leetcode" },
     -- { import = "plugins.extras.coding.sonarlint" },
     { import = "plugins.extras.coding.yanky" },
-    --{ import = "plugins.extras.editor.image" },
+    { import = "plugins.extras.editor.image" },
     { import = "plugins.extras.editor.emoji" },
     { import = "plugins.extras.editor.global-note" },
     { import = "plugins.extras.editor.mini-files" },

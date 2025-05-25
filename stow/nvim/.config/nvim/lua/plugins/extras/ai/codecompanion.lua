@@ -13,6 +13,21 @@ return {
     },
   },
 
+  -- Embed images into any markup language, like LaTeX, Markdown or Typst
+  {
+    "HakonHarnes/img-clip.nvim",
+    optional = true,
+    opts = {
+      filetypes = {
+        codecompanion = {
+          prompt_for_file_name = false,
+          template = "[Image]($FILE_PATH)",
+          use_absolute_path = true,
+        },
+      },
+    },
+  },
+
   -- ✨ AI-powered coding, seamlessly in Neovim.
   {
     "olimorris/codecompanion.nvim",

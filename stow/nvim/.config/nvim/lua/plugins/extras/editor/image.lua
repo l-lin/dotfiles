@@ -2,6 +2,7 @@ return {
   {
     "3rd/image.nvim",
     ft = { "markdown" },
+    enabled = false,
     opts = {
       backend = "kitty",
       integrations = {
@@ -26,5 +27,12 @@ return {
       tmux_show_only_in_active_window = true, -- auto show/hide images in the correct Tmux window (needs visual-activity off)
       hijack_file_patterns = { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.avif" }, -- render image files as images when opened
     },
+  },
+
+  -- Embed images into any markup language, like LaTeX, Markdown or Typst
+  {
+    "HakonHarnes/img-clip.nvim",
+    cmd = { "PasteImage" },
+    keys = { "<leader>p", "<cmd>PasteImage<cr>", desc = "Paste image from system clipboard" },
   },
 }
