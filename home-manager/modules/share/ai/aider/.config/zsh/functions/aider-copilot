@@ -8,8 +8,6 @@
 # script from: https://github.com/Aider-AI/aider/issues/2227#issuecomment-2884719517
 #
 
-set -euo pipefail
-
 # Path to the apps.json file (adjust if needed)
 CONFIG_PATH="${XDG_CONFIG_HOME}/github-copilot/apps.json"
 
@@ -38,4 +36,4 @@ fi
 export OPENAI_API_KEY="$COPILOT_TOKEN"
 
 # Launch aider with the environment variable set
-exec aider "$@"
+aider "$@"
