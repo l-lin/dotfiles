@@ -15,4 +15,6 @@
       ${builtins.readFile ./scripts/aws-bw.sh}
     '')
   ];
+
+  home.file.".aws/credentials".source = ./.aws/credentials;
 }
