@@ -11,8 +11,9 @@ let
 in {
   home.packages = with pkgs; [ aider-chat ];
 
-  # Symlink ~/.config/zsh/functions/aider-convention-scraper.
+  # Symlink ~/.config/zsh/functions/.
   xdg.configFile."zsh/functions/aider-convention-scraper".source = ./.config/zsh/functions/aider-convention-scraper;
+  xdg.configFile."zsh/functions/aider-copilot".source = ./.config/zsh/functions/aider-copilot;
 
   # src: https://aider.chat/docs/config/aider_conf.html
   home.file.".aider.conf.yml".text = with palette; ''
@@ -20,7 +21,7 @@ in {
 # Main model:
 
 ## Specify the model to use for the main chat
-model: copilot/claude-3.7-sonnet
+model: copilot/claude-sonnet-4
 
 #################
 # Model settings:
@@ -55,6 +56,12 @@ assistant-output-color: "${base0D-hex}"
 
 ## Set the markdown code theme (default: default, other options include monokai, solarized-dark, solarized-light, or a Pygments builtin style, see https://pygments.org/styles for available themes)
 code-theme: ${codeTheme}
+
+###############
+# Git settings:
+
+## Enable/disable auto commit of LLM changes (default: True)
+auto-commits: false
 
 ############
 # Analytics:
