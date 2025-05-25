@@ -10,7 +10,7 @@ return {
     ft = "ruby",
     opts = {
       spec = {
-        { "<leader>e", group = "execute" },
+        { "<leader>m", group = "execute" },
         { "<leader>t", group = "test" },
       },
     },

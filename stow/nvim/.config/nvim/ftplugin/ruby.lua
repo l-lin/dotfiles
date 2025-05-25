@@ -2,7 +2,7 @@ local ruby = require("plugins.custom.lang.ruby")
 
 vim.keymap.set(
   "n",
-  "<leader>er",
+  "<leader>mr",
   function()
     ruby.execute_file({
       cmd = "ruby",

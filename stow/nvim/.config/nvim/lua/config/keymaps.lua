@@ -98,7 +98,7 @@ map("n", "<leader>fx", function()
 end, { desc = "Toggle executable permission" })
 
 -- If this is a bash script, make it executable, and execute it in a tmux pane on the right
-map("n", "<leader>eb", function()
+map("n", "<leader>mb", function()
   local filename = vim.fn.expand("%")
   local first_line = vim.fn.getline(1)
   -- Check if the bash script is valid by checking if it contains a shebang.
