@@ -35,6 +35,8 @@ alias ra="rake"
 # git
 alias g="git"
 alias lg="lazygit"
+# ai
+alias ai="aiderc"
 
 # --------------------------------------------------------
 # Default options

@@ -13,7 +13,7 @@ in {
 
   # Symlink ~/.config/zsh/functions/.
   xdg.configFile."zsh/functions/aider-convention-scraper".source = ./.config/zsh/functions/aider-convention-scraper;
-  xdg.configFile."zsh/functions/aider-copilot".source = ./.config/zsh/functions/aider-copilot;
+  xdg.configFile."zsh/functions/aiderc".source = ./.config/zsh/functions/aiderc;
 
   # src: https://aider.chat/docs/config/aider_conf.html
   home.file.".aider.conf.yml".text = with palette; ''
