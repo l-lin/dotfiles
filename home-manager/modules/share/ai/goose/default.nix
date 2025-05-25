@@ -6,6 +6,7 @@
 { config, pkgs, ... }: {
   home.packages = with pkgs; [ goose-cli ];
  
+  xdg.configFile."goose/config.yaml".source = ./.config/goose/config.yaml;
   xdg.configFile."goose/.goosehint".text = ''
 Follow the code convention in ${config.xdg.configHome}/ai/conventions/code.md.
 '';

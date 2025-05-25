@@ -1,0 +1,44 @@
+GOOSE_MODEL: gpt-4o
+GOOSE_CLI_THEME: ansi
+GOOSE_PROVIDER: github_copilot
+extensions:
+  developer:
+    bundled: null
+    display_name: Developer
+    enabled: true
+    name: developer
+    timeout: 300
+    type: builtin
+  knowledgegraphextension:
+    args:
+    - run
+    - -i
+    - --name
+    - goose-memory
+    - -v
+    - goose-memory:/app/dist
+    - --rm
+    - mcp/memory  
+    bundled: null
+    cmd: docker
+    description: null
+    enabled: true
+    env_keys: []
+    envs: {}
+    name: Knowledge Graph Extension
+    timeout: 300
+    type: stdio
+  memory:
+    bundled: null
+    display_name: Memory
+    enabled: true
+    name: memory
+    timeout: 300
+    type: builtin
+  tutorial:
+    bundled: null
+    display_name: Tutorial
+    enabled: true
+    name: tutorial
+    timeout: 300
+    type: builtin
