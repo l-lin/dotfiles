@@ -1,18 +1,24 @@
 {
-  "mcpServers": {
-    "github.com/modelcontextprotocol/servers/tree/main/src/time": {
-      "command": "docker",
-      "args": ["run", "-i", "--rm", "mcp/time"]
+  "nativeMCPServers": {
+    "mcphub": {
+      "disabled": true
     },
+    "neovim": {
+      "disabled_tools": []
+    }
+  },
+  "mcpServers": {
     "mcp-atlassian": {
       "command": "docker",
       "args": [
         "run",
         "-i",
         "--rm",
-        "--env-file", "/Users/louis.lin/.local/share/jira/.env",
+        "--env-file",
+        "/Users/louis.lin/.local/share/jira/.env",
         "ghcr.io/sooperset/mcp-atlassian:latest"
-      ]
+      ],
+      "disabled": true
     },
     "git": {
       "command": "docker",
@@ -20,15 +26,33 @@
         "run",
         "--rm",
         "-i",
-        "--mount", "type=bind,src=/Users/louis.lin/perso,dst=/Users/louis/lin/perso",
-        "--mount", "type=bind,src=/Users/louis.lin/work,dst=/Users/louis/lin/work",
+        "--mount",
+        "type=bind,src=/Users/louis.lin/perso,dst=/Users/louis.lin/perso",
+        "--mount",
+        "type=bind,src=/Users/louis.lin/work,dst=/Users/louis.lin/work",
         "mcp/git"
+      ],
+      "disabled": true
+    },
+    "github.com/modelcontextprotocol/servers/tree/main/src/time": {
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "mcp/time"],
+      "disabled": true
+    },
+    "memory": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "-v",
+        "claude-memory:/app/dist",
+        "--rm",
+        "mcp/memory"
       ]
-    }
-  },
-  "nativeMCPServers": {
-    "neovim": {
-      "disabled_tools": []
+    },
+    "sequentialthinking": {
+      "command": "docker",
+      "args": ["run", "--rm", "-i", "mcp/sequentialthinking"]
     }
   }
 }
