@@ -3,6 +3,9 @@
 #
 
 {
-  imports = [ ./window-manager ];
+  imports = [
+    ./image
+    ./window-manager
+  ];
 }
 
