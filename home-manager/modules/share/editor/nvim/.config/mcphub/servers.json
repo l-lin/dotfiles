@@ -13,6 +13,8 @@
       "args": [
         "run",
         "-i",
+        "--name",
+        "mcp-atlassian",
         "--rm",
         "--env-file",
         "/Users/louis.lin/.local/share/jira/.env",
@@ -26,6 +28,8 @@
         "run",
         "--rm",
         "-i",
+        "--name",
+        "mcp-git",
         "--mount",
         "type=bind,src=/Users/louis.lin/perso,dst=/Users/louis.lin/perso",
         "--mount",
@@ -36,7 +40,7 @@
     },
     "github.com/modelcontextprotocol/servers/tree/main/src/time": {
       "command": "docker",
-      "args": ["run", "-i", "--rm", "mcp/time"],
+      "args": ["run", "-i", "--rm", "--name", "mcp-time", "mcp/time"],
       "disabled": true
     },
     "memory": {
@@ -44,15 +48,25 @@
       "args": [
         "run",
         "-i",
+        "--name",
+        "mcp-memory",
         "-v",
-        "claude-memory:/app/dist",
+        "mcp-memory:/app/dist",
         "--rm",
         "mcp/memory"
       ]
     },
     "sequentialthinking": {
       "command": "docker",
-      "args": ["run", "--rm", "-i", "mcp/sequentialthinking"]
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "--name",
+        "mcp-sequentialthinking",
+        "--rm",
+        "mcp/sequentialthinking"
+      ]
     }
   }
 }
