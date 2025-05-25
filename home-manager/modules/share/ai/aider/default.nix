@@ -45,6 +45,9 @@ show-model-warnings: false
 ## Set the color for user input (default: #00cc00)
 user-input-color: "${base05-hex}"
 
+## Set the color for tool output (default: None)
+tool-output-color: "${base07-hex}"
+
 ## Set the color for tool error messages (default: #FF2222)
 tool-error-color: "${base08-hex}"
 
