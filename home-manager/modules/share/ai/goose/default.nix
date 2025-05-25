@@ -3,6 +3,10 @@
 # src: https://github.com/block/goose
 #
 
-{ pkgs, ... }: {
+{ config, pkgs, ... }: {
   home.packages = with pkgs; [ goose-cli ];
+ 
+  xdg.configFile."goose/.goosehint".text = ''
+Follow the code convention in ${config.xdg.configHome}/ai/conventions/code.md.
+'';
 }
