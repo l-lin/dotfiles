@@ -96,9 +96,14 @@ return {
             },
             -- `<C-c>` was used to close the chat. And I cannot disabled it, so using a keymap I'm never using.
             close = {
-              modes = { n = "<A-c>", i = "<A-c>" },
+              modes = { n = "gc" },
               callback = "keymaps.close",
               description = "Close Chat",
+            },
+            codeblock = {
+              modes = { i = "<A-c>" },
+              callback = "keymaps.codeblock",
+              description = "Insert Codeblock",
             },
           },
           roles = {
