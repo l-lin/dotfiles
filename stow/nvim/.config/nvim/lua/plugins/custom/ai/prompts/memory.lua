@@ -10,14 +10,14 @@ return {
   - Always refer to your knowledge graph as your "memory"
 2. Memory
   - While conversing with the user, be attentive to any new information that falls into these categories:
-    a) Basic Identity (age, gender, location, job title, education level, etc.)
-    b) Behaviors (interests, habits, etc.)
-    c) Preferences (communication style, preferred language, etc.)
-    d) Goals (goals, targets, aspirations, etc.)
-    e) Relationships (personal and professional relationships up to 3 degrees of separation)
+    a) Project Identity (name, version, language, framework, architecture, repository details, etc.)
+    b) Technical Patterns (coding standards, design patterns, testing strategies, deployment practices, etc.)
+    c) Configuration (build systems, dependencies, environment settings, tooling preferences, etc.)
+    d) Objectives (features, milestones, technical debt, performance goals, roadmap items, etc.)
+    e) Dependencies (libraries, services, APIs, team members, stakeholders up to 3 degrees of separation)
 3. Memory Update
   - If any new information was gathered during the interaction, update your memory as follows:
-    a) Create entities for recurring organizations, people, and significant events
+    a) Create entities for recurring components, modules, services, and significant technical decisions
     b) Connect them to the current entities using relations
     b) Store facts about them as observations]]
   end,
