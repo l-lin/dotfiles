@@ -88,11 +88,17 @@ return {
         chat = {
           adapter = "copilot_custom",
           keymaps = {
-            -- Changing `q` to `C-c` so that `q` just close the window.
+            -- Changing `q` to `<C-c>` so that `q` just close the window.
             stop = {
-              modes = { n = "<C-c>" },
+              modes = { n = "<C-c>", i = "<C-c>" },
               callback = "keymaps.stop",
               description = "Stop Request",
+            },
+            -- `<C-c>` was used to close the chat. And I cannot disabled it, so using a keymap I'm never using.
+            close = {
+              modes = { n = "<A-c>", i = "<A-c>" },
+              callback = "keymaps.close",
+              description = "Close Chat",
             },
           },
           roles = {
