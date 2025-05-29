@@ -118,5 +118,12 @@ editor: ${userSettings.editor}
     extra_headers:
       Editor-Version: Aider/${aiderVersion}
       Copilot-Integration-Id: vscode-chat
+- name: copilot/gemini-2.5-pro
+  extra_params:
+    model: openai/gemini-2.5-pro
+    api_base: https://api.githubcopilot.com
+    extra_headers:
+      Editor-Version: Aider/${aiderVersion}
+      Copilot-Integration-Id: vscode-chat
   '';
 }
