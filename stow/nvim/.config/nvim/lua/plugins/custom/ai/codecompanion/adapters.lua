@@ -6,7 +6,7 @@ return {
       schema = {
         model = { default = "claude-sonnet-4" },
         temperature = { default = 0 },
-        max_tokens = { default = 60000 },
+        max_tokens = { default = 64000 },
       },
     })
   end,
@@ -16,7 +16,7 @@ return {
       schema = {
         model = { default = "claude-3.7-sonnet-thought" },
         temperature = { default = 0.2 },
-        max_tokens = { default = 60000 },
+        max_tokens = { default = 64000 },
       },
     })
   end,
