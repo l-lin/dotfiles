@@ -38,6 +38,15 @@ Iterate until you feel that the steps are right sized for this project.
 - Use markdown but DO NOT use H1, H2 and H3 headers
 - Each prompt should be tagged as text using code tags
 - Use actual line breaks in your responses; only use "\n" when you want a literal backslash followed by 'n'
+- When creating a plan, organize it into numbered phases (e.g., "Phase 1: Setup Dependencies")
+- Break down each phase into specific tasks with numeric identifiers (e.g., "Task 1.1: Add Dependencies")
+- Please only create one document per plan
+- Include a detailed checklist at the end of the document that maps to all phases and tasks
+- Mark tasks as `- [ ]` for pending tasks and `- [x]` for completed tasks
+- Start all planning tasks as unchecked, and update them to checked as implementation proceeds
+- Each planning task should have clear success criteria
+- End the plan with success criteria that define when the implementation is complete
+- plans and architectures that you produce should go under docs/plans/<new folder for this plan>
 </output_format>]],
       require("plugins.custom.ai.prompts.specifications").specs_file
     )
