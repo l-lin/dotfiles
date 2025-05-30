@@ -124,7 +124,7 @@ return {
             }
           },
         },
-        inline = { adapter = "copilot_claude_sonnet_3_7" },
+        inline = { adapter = "copilot" },
       },
       display = {
         chat = {
