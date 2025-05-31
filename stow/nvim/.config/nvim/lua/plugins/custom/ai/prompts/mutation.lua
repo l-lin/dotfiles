@@ -54,7 +54,7 @@ local prompts = {
 }
 
 return {
-  kind = "action",
+  kind = "random",
   tool = "",
   system = function() return "" end,
   user = function ()

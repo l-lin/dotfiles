@@ -8,11 +8,13 @@ local function slash_command_from(prompt_name, prompt)
     ---@param chat CodeCompanion.Chat
     callback = function(chat)
       chat:replace_vars_and_tools({ content = prompt.tools })
-      chat:add_reference(
-        { content = prompt.system(), role = "system" },
-        "system-prompt",
-        "<role>" .. prompt_name .. "</role>"
-      )
+      if prompt.kind == "role" or prompt.kind == "action" then
+        chat:add_reference(
+          { content = prompt.system(), role = "system" },
+          "system-prompt",
+          string.format("<%s>%s</%s>", prompt.kind, prompt_name, prompt.kind)
+        )
+      end
       chat:add_buf_message({ content = prompt.user(), role = "user" })
     end,
   }
