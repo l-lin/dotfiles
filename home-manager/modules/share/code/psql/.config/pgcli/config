@@ -17,7 +17,7 @@ always_use_single_connection = False
 # this is set to True, then the end of the statements must have a semi-colon.
 # If this is set to False then sql statements can't be split into multiple
 # lines. End of line (return) is considered as the end of the statement.
-multi_line = False
+multi_line = True
 
 # If multi_line_mode is set to "psql", in multi-line mode, [Enter] will execute
 # the current input if the input ends in a semicolon.
@@ -151,7 +151,7 @@ row_limit = 1000
 # Leave unset to disable truncation. Example: "max_field_width = "
 # Be aware that formatting might get slow with values larger than 500 and tables with
 # lots of records.
-max_field_width = 500
+max_field_width =
 
 # Skip intro on startup and goodbye on exit
 less_chatty = False
@@ -186,7 +186,7 @@ multiline_continuation_char = ''
 null_string = '<null>'
 
 # manage pager on startup
-enable_pager = True
+enable_pager = False
 
 # Use keyring to automatically save and load password in a secure manner
 keyring = True
