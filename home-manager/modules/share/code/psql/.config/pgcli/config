@@ -48,7 +48,7 @@ destructive_statements_require_transaction = False
 expand = False
 
 # Enables auto expand mode, which is similar to `\x auto` in psql.
-auto_expand = True
+auto_expand = False
 
 # Auto-retry queries on connection failures and other operational errors. If
 # False, will prompt to rerun the failed query instead of auto-retrying.
