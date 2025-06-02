@@ -1,4 +1,4 @@
-GOOSE_MODEL: gpt-4o
+GOOSE_MODEL: claude-sonnet-4
 GOOSE_CLI_THEME: ansi
 GOOSE_PROVIDER: github_copilot
 extensions:
