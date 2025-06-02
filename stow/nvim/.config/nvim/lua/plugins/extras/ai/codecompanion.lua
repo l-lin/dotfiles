@@ -121,7 +121,14 @@ return {
               auto_submit_errors = true,
               -- Send any successful output to the LLM automatically
               auto_submit_success = true,
-            }
+            },
+          },
+          variables = {
+            ["buffer"] = {
+              opts = {
+                default_params = "pin",
+              },
+            },
           },
         },
         inline = { adapter = "copilot" },
@@ -169,8 +176,8 @@ return {
           enabled = true,
           opts = {
             picker = "snacks",
-          }
-        }
+          },
+        },
       },
     },
     init = function()
