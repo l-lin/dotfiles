@@ -11,6 +11,7 @@
       # Dev tools to install globally.
       tools = {
         node = "20.18.3";
+        "npm:@anthropic-ai/claude-code" = "latest";
         # pipx is a tool for running Python CLIs in isolated virtualenvs: https://pipx.pypa.io
         pipx = "1.7.1";
         # A code repository indexing tool to supercharge your LLM experience: https://github.com/Davidyz/VectorCode

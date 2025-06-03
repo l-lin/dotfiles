@@ -37,6 +37,7 @@ alias g="git"
 alias lg="lazygit"
 # ai
 alias ai="aiderc"
+alias cl="claude"
 
 # --------------------------------------------------------
 # Default options
