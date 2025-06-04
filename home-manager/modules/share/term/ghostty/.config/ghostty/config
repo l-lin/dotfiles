@@ -110,6 +110,7 @@ keybind = shift+right=unbind
 keybind = shift+page_down=unbind
 keybind = shift+down=unbind
 keybind = shift+home=unbind
+keybind = shift+enter=unbind
 
 # Set keybindings.
 keybind = ctrl+shift+v=paste_from_clipboard
