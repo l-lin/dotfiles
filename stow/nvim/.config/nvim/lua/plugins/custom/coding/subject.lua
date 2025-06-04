@@ -102,10 +102,10 @@ end
 -- JAVA
 -- ############################################################################
 
----Sanitize the file to search for Java files.
+---Sanitize the file to search for Java / Kotlin files.
 ---@param filepath string the filepath to look for the test or implementation file
 ---@return string sanitized_filepath new filepath with/without the test suffix
-local function sanitize_for_java(filepath)
+local function sanitize_for_java_or_kotlin(filepath)
   local parts = {}
   for part in filepath:gmatch("([^/]+)") do
     table.insert(parts, part)
@@ -172,8 +172,8 @@ local function find_subject()
     return sanitize_for_ts(relative_filepath)
   end
 
-  if filetype == "java" then
-    return sanitize_for_java(relative_filepath)
+  if filetype == "java" or filetype == "kotlin" then
+    return sanitize_for_java_or_kotlin(relative_filepath)
   end
 
   return add_or_remove_test_suffix(relative_filepath, "_test")
