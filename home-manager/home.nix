@@ -30,6 +30,10 @@ in {
     COPY_TO_CLIPBOARD = copyCmd;
     PASTE_FROM_CLIPBOARD = pasteCmd;
 
+    # Make nh works with Determinate Nix.
+    # src: https://github.com/nix-community/nh/issues/305
+    NH_NO_CHECKS = 1;
+
     # No need to not set the `TERM` env variable here.
     # Tmux will fill it automatically with its conf file.
     # Kitty will also do it automatically.
