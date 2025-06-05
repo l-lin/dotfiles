@@ -38,11 +38,11 @@ start_yt() {
 
   docker run \
     -d --rm \
-    -p 3000:3000 \
+    -p 4000:3000 \
     --name "${container_name}" \
     -v "${data_dir}:/app/data" \
     christianfei/my-yt:latest
-  open http://localhost:3000&
+  open http://localhost:4000&
 }
 
 stop_yt() {
