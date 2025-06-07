@@ -50,10 +50,6 @@ return {
 }
   '';
 
-  xdg.configFile."ai" = {
-    source = ./.config/ai;
-    recursive = true;
-  };
   xdg.configFile."mcphub" = {
     source = ./.config/mcphub;
     recursive = true;
