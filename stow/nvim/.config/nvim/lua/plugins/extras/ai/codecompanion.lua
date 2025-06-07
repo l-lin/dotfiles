@@ -76,8 +76,6 @@ return {
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
-      -- A code repository indexing tool to supercharge your LLM experience.
-      { "Davidyz/VectorCode" },
       -- 📄 Utility extension to get all project files for your AI assistant
       { "banjo/contextfiles.nvim" },
       -- History chat management
@@ -158,9 +156,6 @@ return {
       -- src: https://codecompanion.olimorris.dev/configuration/extensions.html
       --
       extensions = {
-        vectorcode = {
-          opts = { add_tools = true },
-        },
         mcphub = {
           callback = "mcphub.extensions.codecompanion",
           opts = {

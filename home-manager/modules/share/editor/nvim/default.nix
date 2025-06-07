@@ -58,8 +58,4 @@ return {
     source = ./.config/mcphub;
     recursive = true;
   };
-  xdg.configFile."vectorcode" = {
-    source = ./.config/vectorcode;
-    recursive = true;
-  };
 }
