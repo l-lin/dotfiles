@@ -120,6 +120,10 @@ return {
               -- Send any successful output to the LLM automatically
               auto_submit_success = true,
             },
+            plan = {
+              callback = require("plugins.custom.ai.codecompanion.tools.plan"),
+              description = 'Manage an internal todo list',
+            },
           },
           variables = {
             ["buffer"] = {
