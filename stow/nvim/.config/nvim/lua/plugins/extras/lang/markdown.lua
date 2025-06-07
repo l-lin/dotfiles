@@ -67,13 +67,19 @@ return {
       checkbox = {
         enabled = true,
         right_pad = 0,
+        checked = { icon = "󰱒 ", highlight = "RenderMarkdownTodo", scope_highlight = "@markup.strikethrough" },
+        unchecked = { icon = "󰄱 ", highlight = "RenderMarkdownUnchecked", scope_highlight = nil },
+        custom = {
+          skipped = { raw = "[-]", rendered = "✘ ", highlight = "RenderMarkdownError", scope_highlight = "@markup.strikethrough" },
+          postponed = { raw = "[>]", rendered = "󰥔 ", highlight = "RenderMarkdownChecked", scope_highlight = nil },
+        },
       },
       heading = {
         enabled = true,
         icons = { "󰎤 ", "󰎧 ", "󰎪 ", "󰎭 ", "󰎱 ", "󰎳 " },
       },
       code = { border = "thin" },
-    }
+    },
   },
 
   {
