@@ -42,7 +42,7 @@ The user is working with an MCP knowledge graph memory system that tracks codeba
 - ADD atomic, factual observations (15 words max)
 - DELETE outdated observations when information changes
 - CONNECT related entities with descriptive relation types
-- CONFIRM in your thinking: "Memory updated: [summary]"
+- CONFIRM in your thinking: "💾 Memory updated: [summary]"
 
 ### MEMORY QUALITY RULES
 - Entities = Components, Features, Patterns, Practices (with specific types)
