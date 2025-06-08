@@ -94,6 +94,13 @@ local function global_opts()
         post_open = post_open,
         title = daily_note_filename,
       },
+      project_note = {
+        command_name = "ProjectNote",
+        directory = get_project_directory,
+        filename = get_project_name() .. ".md",
+        post_open = post_open,
+        title = get_project_name,
+      },
     },
   }
 end
@@ -199,7 +206,8 @@ return {
     cmd = { "GlobalNote" },
     keys = {
       { "<leader>fd", "<cmd>DailyNote<cr>", noremap = true, silent = true, desc = "Open daily notes" },
-      { "<leader>fn", note_picker, noremap = true, silent = true, desc = "Open project notes" },
+      { "<leader>fP", note_picker, noremap = true, silent = true, desc = "Open project notes" },
+      { "<leader>fn", "<cmd>ProjectNote<cr>", noremap = true, silent = true, desc = "Open project note" },
       { "<leader>fN", "<cmd>GlobalNote<cr>", noremap = true, silent = true, desc = "Open global notes" },
     },
     opts = global_opts(),
