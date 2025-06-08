@@ -199,6 +199,25 @@ local function note_picker()
   })
 end
 
+-- I frequently open global, project, or daily notes across multiple projects.
+-- As a result, opening the same file can trigger a swap file error.
+-- I don't need this safety feature, just allow me to edit these files!
+local function disable_swap_for_dirs()
+  local patterns = {
+    get_project_directory(),
+    get_daily_notes_directory()
+  }
+
+  for _, pattern in ipairs(patterns) do
+    vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
+      pattern = pattern,
+      callback = function()
+        vim.opt_local.swapfile = false
+      end,
+    })
+  end
+end
+
 return {
   -- Opens global note in a floating window.
   {
@@ -211,5 +230,8 @@ return {
       { "<leader>fN", "<cmd>GlobalNote<cr>", noremap = true, silent = true, desc = "Open global notes" },
     },
     opts = global_opts(),
+    init = function ()
+      disable_swap_for_dirs()
+    end
   },
 }
