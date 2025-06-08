@@ -16,6 +16,7 @@ export ZAQ_PREFIXES=(
   'ddgr( [^ ]##)#'
   'gh copilot explain( [^ ]##)#'
   'gh copilot suggest( [^ ]##)#'
+  'claude -p( [^ ]##)#'
 )
 
 # --------------------------------------------------------
