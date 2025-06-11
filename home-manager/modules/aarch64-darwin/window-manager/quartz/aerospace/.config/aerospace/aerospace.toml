@@ -108,8 +108,8 @@ automatically-unhide-macos-hidden-apps = false
     cmd-shift-l = 'focus right --boundaries-action wrap-around-the-workspace'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#focus-monitor
-    ctrl-shift-h = 'focus-monitor left --wrap-around'
-    ctrl-shift-l = 'focus-monitor right --wrap-around'
+    cmd-alt-h = 'focus-monitor left --wrap-around'
+    cmd-alt-l = 'focus-monitor right --wrap-around'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#move
     cmd-ctrl-h = 'move left'
