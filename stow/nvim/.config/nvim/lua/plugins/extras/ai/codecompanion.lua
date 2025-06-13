@@ -125,13 +125,6 @@ return {
               description = 'Manage an internal todo list',
             },
           },
-          variables = {
-            ["buffer"] = {
-              opts = {
-                default_params = "pin",
-              },
-            },
-          },
         },
         inline = { adapter = "copilot" },
       },
