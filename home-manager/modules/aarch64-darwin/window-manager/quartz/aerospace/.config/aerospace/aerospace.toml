@@ -197,11 +197,11 @@ automatically-unhide-macos-hidden-apps = false
     run = 'move-node-to-workspace 2'
 
 [[on-window-detected]]
-    if.app-id = 'app.zen-browser.zen'
+    if.app-id = 'com.google.Chrome'
     run = 'move-node-to-workspace 3'
 
 [[on-window-detected]]
-    if.app-id = 'com.google.Chrome'
+    if.app-id = 'app.zen-browser.zen'
     run = 'move-node-to-workspace 4'
 
 [[on-window-detected]]
