@@ -9,18 +9,12 @@
   },
   "mcpServers": {
     "mcp-atlassian": {
-      "command": "docker",
+      "command": "npx",
       "args": [
-        "run",
-        "-i",
-        "--name",
-        "mcp-atlassian",
-        "--rm",
-        "--env-file",
-        "/Users/louis.lin/.local/share/jira/.env",
-        "ghcr.io/sooperset/mcp-atlassian:latest"
-      ],
-      "disabled": true
+        "-y",
+        "mcp-remote",
+        "https://mcp.atlassian.com/v1/sse"
+      ]
     },
     "memory": {
       "command": "docker",
