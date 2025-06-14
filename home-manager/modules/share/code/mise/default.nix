@@ -11,7 +11,7 @@
       # Dev tools to install globally.
       tools = {
         node = "20.18.3";
-        "npm:@anthropic-ai/claude-code" = "1.0.17";
+        "npm:@anthropic-ai/claude-code" = "1.0.24";
         # pipx is a tool for running Python CLIs in isolated virtualenvs: https://pipx.pypa.io
         pipx = "1.7.1";
         # Specification for CLI: https://usage.jdx.dev/.
