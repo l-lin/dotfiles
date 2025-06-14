@@ -252,10 +252,12 @@ xdg.configFile."waybar/colorscheme.css".text = ''
 '';
 ```
 
-I know you will think there's no consistency, sometimes I'm using Nix to configure
-applications, sometimes, I use symlink... I wonder if I should just use Nix / home-manager
-to handle all the package installation stuff and symlink the configuration files...
-Only time will tell.
+#### Exceptions
+
+Use `stow` for the following instead:
+
+- NeoVim configuration files
+- configuration files that can be written at runtime by tools
 
 ### LazyVim configuration
 
@@ -314,6 +316,27 @@ refresh-zsh-completions
 ```
 
 Then, open a new terminal session, and you are good to go!
+
+### Application installations
+
+Install the application with home-manager whenever you can.
+
+If you're unlucky, and it's not available in [nixpkgs](https://github.com/NixOS/nixpkgs/),
+then, you will have to create your own flake (You will struggle...).
+
+See [pkgs directory](./pkgs/) for some examples.
+
+#### Exceptions
+
+If you're on macOS, there is another way to install: via [homebrew](./nix-darwin/apps.nix).
+
+You might want to install with the latter if:
+
+- you need Spotlight to launch your application
+- you want your macOS to acknowledge your application (e.g. be executed by another process)
+- you want the latest version of the application
+
+That will make your life a bit less coherent, but hey, it's already a mess!
 
 ---
 
