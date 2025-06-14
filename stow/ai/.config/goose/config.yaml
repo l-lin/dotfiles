@@ -1,6 +1,5 @@
-GOOSE_MODEL: claude-sonnet-4
-GOOSE_CLI_THEME: ansi
 GOOSE_PROVIDER: github_copilot
+GOOSE_CLI_THEME: ansi
 extensions:
   developer:
     bundled: null
@@ -18,7 +17,7 @@ extensions:
     - -v
     - goose-memory:/app/dist
     - --rm
-    - mcp/memory  
+    - mcp/memory
     bundled: null
     cmd: docker
     description: null
@@ -38,7 +37,9 @@ extensions:
   tutorial:
     bundled: null
     display_name: Tutorial
-    enabled: true
+    enabled: false
     name: tutorial
     timeout: 300
     type: builtin
+GOOSE_MODEL: claude-sonnet-4
+GOOSE_MODE: chat
