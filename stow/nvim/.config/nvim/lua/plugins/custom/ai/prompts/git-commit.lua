@@ -8,7 +8,7 @@ You are an expert at following the Conventional Commit specification.
 <instructions>
 The commit scope should contain the ticket id that can be extracted from the git branch name '%s'.
 <example>
-Examples of getting the tiket id from the branch name:
+Examples of getting the ticket id from the branch name:
 
 - P3C-123/do_some_stuff => P3C-123
 - P3C-123-do_some_stuff  => P3C-123
