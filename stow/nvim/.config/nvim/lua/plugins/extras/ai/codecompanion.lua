@@ -107,13 +107,14 @@ return {
           roles = {
             ---@type string|fun(adapter: CodeCompanion.Adapter): string
             llm = function(adapter)
-              return "🤖 " .. adapter.formatted_name
+              return adapter.formatted_name
             end,
             ---@type string
-            user = "👤 " .. os.getenv("USER"),
+            user = "" .. os.getenv("USER"),
           },
           slash_commands = require("plugins.custom.ai.codecompanion.slash-commands"),
           tools = {
+            default_tools = { "insert_edit_into_file" },
             opts = {
               -- Send any errors to the LLM automatically
               auto_submit_errors = true,
@@ -122,7 +123,7 @@ return {
             },
             plan = {
               callback = require("plugins.custom.ai.codecompanion.tools.plan"),
-              description = 'Manage an internal todo list',
+              description = "Manage an internal todo list",
             },
           },
         },
@@ -178,5 +179,47 @@ return {
       vim.cmd([[cab cc CodeCompanion]])
       vim.cmd([[cab ccc CodeCompanionChat]])
     end,
+  },
+
+  -- Hide the XML tag in the context section.
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    opts = {
+      overrides = {
+        filetype = {
+          codecompanion = {
+            heading = {
+              icons = { "󰎤 ", "   ", "󰎪 ", "󰎭 ", "󰎱 ", "󰎳 " },
+              custom = {
+                codecompanion_input = {
+                  pattern = "^## " .. os.getenv("USER") .. "$",
+                  icon = " ",
+                },
+              },
+            },
+            html = {
+              tag = {
+                buf = {
+                  icon = "󰌹 ",
+                  highlight = "Comment",
+                },
+                image = {
+                  icon = "󰥶 ",
+                  highlight = "Comment",
+                },
+                file = {
+                  icon = "󰨸 ",
+                  highlight = "Comment",
+                },
+                url = {
+                  icon = " ",
+                  highlight = "Comment",
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   },
 }
