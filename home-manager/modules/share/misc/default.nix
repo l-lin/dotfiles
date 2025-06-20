@@ -7,7 +7,7 @@
 
   home.packages = with pkgs; [
     # Code search-and-replace tool: https://github.com/dalance/amber
-    amber
+    #amber
     # Client for cheat.sh: https://github.com/chubin/cheat.sh
     cht-sh
     # Syntax highlighting for diff: https://www.colordiff.org/
@@ -15,7 +15,7 @@
     # Scan Nix files for dead code: https://github.com/astro/deadnix
     deadnix
     # Search DuckDuckGo from the terminal: https://github.com/jarun/ddgr
-    ddgr
+    #ddgr
     # Syntax-highlighting for git: https://github.com/dandavison/delta
     delta
     # Disk Usage/Free Utility: https://github.com/muesli/duf/
@@ -36,9 +36,11 @@
     file
  
     # Enhance shell: https://github.com/charmbracelet/gum
-    gum
+    #gum
+    # Command line tool that performs HTTP requests defined in a simple plain text format: https://hurl.dev/
+    #hurl
     # Benchmarking tool: https://github.com/sharkdp/hyperfine
-    hyperfine
+    #hyperfine
     # Decode and encode JWT: https://github.com/mike-engel/jwt-cli
     jwt-cli
     # Kill all processes matching a pattern.
@@ -48,7 +50,7 @@
     # A command-line utility for easily compressing and decompressing files and directories: https://github.com/ouch-org/ouch
     ouch
     # Daemon for managing long running shell commands: https://github.com/Nukesor/pueue
-    pueue
+    #pueue
     # Pretty ping: https://github.com/denilsonsa/prettyping
     prettyping
     # Modern replacement for top: https://github.com/dalance/procs
