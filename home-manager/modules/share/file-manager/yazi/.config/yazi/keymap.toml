@@ -7,6 +7,11 @@ run  = 'shell "$SHELL" --block --confirm'
 desc = "Open shell here"
 
 [[manager.prepend_keymap]]
+on = [ "g", "a" ]
+run = "cd ~/archive"
+desc = "Go to archives"
+
+[[manager.prepend_keymap]]
 on = [ "g", "q" ]
 run = "cd ~/archive/archive-perso-administrative-docs/le_citadin-e42/lmnp/2023-09-locataire-qi_fang/quittances_loyers/"
 desc = "Go Le Citadin"
