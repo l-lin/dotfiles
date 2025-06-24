@@ -12,9 +12,9 @@
       tools = {
         node = "20.18.3";
         # Agentic coding tool that lives in your terminal: https://github.com/anthropics/claude-code
-        "npm:@anthropic-ai/claude-code" = "1.0.24";
+        "npm:@anthropic-ai/claude-code" = "1.0.33";
         # A CLI tool for analyzing Claude Code usage from local JSONL files: https://github.com/ryoppippi/ccusage
-        "npm:ccusage" = "0.8.0";
+        "npm:ccusage" = "15.2.0";
         # pipx is a tool for running Python CLIs in isolated virtualenvs: https://pipx.pypa.io
         pipx = "1.7.1";
         # Specification for CLI: https://usage.jdx.dev/.
