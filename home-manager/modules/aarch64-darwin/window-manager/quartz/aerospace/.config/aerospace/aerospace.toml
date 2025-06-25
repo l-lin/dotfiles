@@ -151,8 +151,13 @@ automatically-unhide-macos-hidden-apps = false
     # Applications
     cmd-shift-t = 'exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c tmux -2 -u'
     cmd-e = 'exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c yazi'
-    cmd-shift-e = 'exec-and-forget open /Users/louis.lin'
+    cmd-shift-e = 'exec-and-forget open ${HOME}'
     cmd-shift-c = 'exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c numbat'
+
+    # Music
+    cmd-shift-m = 'exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c ncmpcpp --screen visualizer'
+    cmd-shift-n = 'exec-and-forget ${HOME}/.nix-profile/bin/mpc -q next'
+    cmd-shift-p = 'exec-and-forget ${HOME}/.nix-profile/bin/mpc -q toggle'
 
     # Color picker
     # cmd-shift-o: configured directly in pika

@@ -326,6 +326,8 @@ then, you will have to create your own flake (You will struggle...).
 
 See [pkgs directory](./pkgs/) for some examples.
 
+Otherwise, if you want the latest version, you use [mise](./home-manager/modules/share/code/mise/default.nix).
+
 #### Exceptions
 
 If you're on macOS, there is another way to install: via [homebrew](./nix-darwin/apps.nix).
