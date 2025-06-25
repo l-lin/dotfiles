@@ -204,8 +204,9 @@ end
 -- I don't need this safety feature, just allow me to edit these files!
 local function disable_swap_for_dirs()
   local patterns = {
-    get_project_directory(),
-    get_daily_notes_directory()
+    get_notes_directory() .. "/*",
+    get_project_directory() .. "/*",
+    get_daily_notes_directory() .. "/*",
   }
 
   for _, pattern in ipairs(patterns) do
