@@ -203,12 +203,24 @@ return {
                   icon = "󰌹 ",
                   highlight = "Comment",
                 },
+                file = {
+                  icon = "󰨸 ",
+                  highlight = "Comment",
+                },
+                group = {
+                  icon = "󰡉 ",
+                  highlight = "Comment",
+                },
                 image = {
                   icon = "󰥶 ",
                   highlight = "Comment",
                 },
-                file = {
-                  icon = "󰨸 ",
+                role = {
+                  icon = "󱢙 ",
+                  highlight = "Comment",
+                },
+                tool = {
+                  icon = " ",
                   highlight = "Comment",
                 },
                 url = {
