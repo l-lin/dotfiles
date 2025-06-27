@@ -13,4 +13,6 @@
     # src: https://docs.anthropic.com/en/docs/claude-code/settings#environment-variables
     CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
   };
+
+  xdg.configFile."mise/conf.d/claude-code.toml".source = ./.config/mise/conf.d/claude-code.toml;
 }

@@ -9,20 +9,14 @@
     # src: https://mise.jdx.dev/configuration.html#global-config-config-mise-config-toml
     globalConfig = {
       # Dev tools to install globally.
+      # To know the version, you can use the command `mise ls-remote <tool>`.
+      # NOTE: Each tool must register themselves by creating a
+      # $XDG_CONFIG_HOME/mise/conf.d/<tool>.toml file.
       tools = {
-        node = "20.18.3";
-        # Agentic coding tool that lives in your terminal: https://github.com/anthropics/claude-code
-        "npm:@anthropic-ai/claude-code" = "1.0.35";
-        # A CLI tool for analyzing Claude Code usage from local JSONL files: https://github.com/ryoppippi/ccusage
-        "npm:ccusage" = "15.2.0";
-        # pipx is a tool for running Python CLIs in isolated virtualenvs: https://pipx.pypa.io
-        pipx = "1.7.1";
-        # Specification for CLI: https://usage.jdx.dev/.
-        usage = "2.0.7";
-        # An extremely fast Python package and project manager, written in Rust: https://docs.astral.sh/uv/
-        uv = "0.7.8";
       };
       settings = {
+        # Enable experimental if you want to use the golang backend to install 3rd party tools.
+        experimental = true;
         trusted_config_paths = ["~/work" "~/perso"];
         idiomatic_version_file_enable_tools = ["java"  "node"];
       };
