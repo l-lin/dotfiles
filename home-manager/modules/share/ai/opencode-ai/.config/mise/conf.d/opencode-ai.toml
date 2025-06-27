@@ -1,0 +1,2 @@
+[tools]
+"go:github.com/opencode-ai/opencode" = "latest"

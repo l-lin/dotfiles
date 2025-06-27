@@ -1,0 +1,4 @@
+[tools]
+"npm:opencode-ai" = "latest"
+# A powerful AI coding agent. Built for the terminal: https://github.com/opencode-ai/opencode
+# "go:github.com/opencode-ai/opencode" = "latest";
