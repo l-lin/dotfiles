@@ -102,7 +102,7 @@ install-nix-darwin:
 # apply nix-darwin configuration
 update-darwin: install-nix-darwin
   just info "Applying nix-darwin configuration"
-  darwin-rebuild switch --flake '.#{{NIX_HOST}}'
+  sudo darwin-rebuild switch --flake '.#{{NIX_HOST}}'
 
 # add us-altgr-intl keyboard layout to macos
 add-keyboard-layout:
