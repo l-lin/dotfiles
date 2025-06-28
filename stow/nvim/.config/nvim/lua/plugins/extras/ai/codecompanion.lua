@@ -107,7 +107,11 @@ return {
           roles = {
             ---@type string|fun(adapter: CodeCompanion.Adapter): string
             llm = function(adapter)
-              return adapter.formatted_name
+              local model_name = adapter.model.name or ""
+              if model_name ~= "" then
+                model_name = " (" .. model_name .. ")"
+              end
+              return adapter.formatted_name .. model_name
             end,
             ---@type string
             user = "" .. os.getenv("USER"),
@@ -171,6 +175,7 @@ return {
             picker = "snacks",
           },
         },
+        ["chat-edit-live"] = {},
       },
     },
     init = function()
