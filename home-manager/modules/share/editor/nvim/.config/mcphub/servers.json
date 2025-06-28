@@ -21,8 +21,6 @@
       "args": [
         "run",
         "-i",
-        "--name",
-        "agent-memory",
         "-v",
         "agent-memory:/app/dist",
         "--rm",
@@ -35,11 +33,13 @@
         "run",
         "--rm",
         "-i",
-        "--name",
-        "agent-sequentialthinking",
         "--rm",
         "mcp/sequentialthinking"
       ]
+    },
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp"
     }
   }
 }
