@@ -34,6 +34,7 @@ alias bu="bundle"
 alias ra="rake"
 # git
 alias g="git"
+alias gw="git worktree"
 alias lg="lazygit"
 # ai
 alias ai="aiderc"

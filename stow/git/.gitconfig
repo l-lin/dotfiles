@@ -8,6 +8,8 @@
   path = ~/perso/.gitconfig
 [includeIf "gitdir:~/.config/"]
   path = ~/perso/.gitconfig
+[includeIf "gitdir:~/.claude/"]
+  path = ~/perso/.gitconfig
 
 [includeIf "gitdir:~/work/"]
   path = ~/work/.gitconfig
