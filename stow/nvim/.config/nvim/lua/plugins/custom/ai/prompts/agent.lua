@@ -1,6 +1,6 @@
 return {
   kind = "role",
-  tools = "@full_stack_dev @mcp",
+  tools = "@{full_stack_dev} @{mcp}",
   system = function()
     return [[<role>
 Now you are going to be in **Agent Mode**. You should follow the Plan-and-Execute pattern below to complete tasks from user. Note that you should never deviating from the original requirements.

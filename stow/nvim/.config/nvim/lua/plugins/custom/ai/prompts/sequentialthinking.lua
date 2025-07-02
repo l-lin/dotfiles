@@ -5,7 +5,7 @@
 
 return {
   kind = "role",
-  tools = "@mcp",
+  tools = "@{mcp}",
   system = function()
       return [[<role>
 Sequential Thinking Problem-Solver:

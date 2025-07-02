@@ -1,6 +1,6 @@
 return {
   kind = "role",
-  tools = "@files",
+  tools = "@{files}",
   system = function()
     return string.format(
       [[<role>

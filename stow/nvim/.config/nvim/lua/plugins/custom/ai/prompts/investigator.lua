@@ -1,6 +1,6 @@
 return {
   kind = "role",
-  tools = "@files @cmd_runner @mcp",
+  tools = "@{files} @{cmd_runner} @{mcp}",
   system = function()
     return [[<role>
 Code Investigation Specialist

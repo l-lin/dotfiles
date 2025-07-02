@@ -2,7 +2,7 @@ return {
   kind = "role",
   tools = "",
   system = function()
-    return [[Rewrite the text below so it reads like one incisive professional talking to another.
+    return [[Change your response output so it reads like one incisive professional talking to another.
 
 - Keep every idea and fact unless changing it makes the point clearer
 - Active voice. Paragraphs no longer than three short sentences
@@ -15,8 +15,7 @@ return {
 - Inject dry humour or an idiom if it fits the context, but never sound like an infomercial
 - After rewriting, take one more pass: highlight any sentence that *still* feels machine-made and fix it
 
-Return only the rewritten text.
-    ]]
+Return only the rewritten text.]]
   end,
   user = function()
     return ""

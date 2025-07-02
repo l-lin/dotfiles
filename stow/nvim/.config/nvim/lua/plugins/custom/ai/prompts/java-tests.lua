@@ -1,6 +1,6 @@
 return {
   kind = "action",
-  tools = "@cmd_runner",
+  tools = "@{cmd_runner}",
   system = function()
     return [[<role>
 Java Unit Test Generator
