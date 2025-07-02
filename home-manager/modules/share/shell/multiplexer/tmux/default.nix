@@ -32,7 +32,8 @@ in {
           set -g @extrakto_fzf_unset_default_opts true
           set -g @extrakto_editor '${userSettings.editor}'
           set -g @extrakto_split_direction 'p'
-          set -g @extrakto_popup_size '60%'
+          set -g @extrakto_popup_size '50%'
+          set -g @extrakto_popup_position 'C,0'
           set -g @extrakto_copy_key 'alt-y'
           set -g @extrakto_insert_key 'enter'
           set -g @extrakto_clip_tool '$COPY_TO_CLIPBOARD'
