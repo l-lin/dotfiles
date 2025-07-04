@@ -1,22 +1,22 @@
 "$schema" = "https://yazi-rs.github.io/schemas/keymap.json"
 
 # https://yazi-rs.github.io/docs/tips#dropping-to-shell
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on   = [ "<C-s>" ]
 run  = 'shell "$SHELL" --block --confirm'
 desc = "Open shell here"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = [ "g", "a" ]
 run = "cd ~/archive"
 desc = "Go to archives"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = [ "g", "q" ]
 run = "cd ~/archive/archive-perso-administrative-docs/le_citadin-e42/lmnp/2023-09-locataire-qi_fang/quittances_loyers/"
 desc = "Go Le Citadin"
 
-[[manager.prepend_keymap]]
+[[mgr.prepend_keymap]]
 on = [ "g", "Q" ]
 run = "cd ~/archive/archive-perso-administrative-docs/saint_antoine/e105/lmnp/2022-locataire-lijuan_zhu/quittances_loyers/"
 desc = "Go Saint-Antoine"
