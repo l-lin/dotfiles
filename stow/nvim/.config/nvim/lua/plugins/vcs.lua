@@ -13,7 +13,7 @@ local toggle_fugitive = function()
   -- directly goes to the first changed file line, which is located at line 6!
   local line_count = vim.api.nvim_buf_line_count(0)
   if line_count >= 6 then
-    vim.api.nvim_win_set_cursor(0, {6, 0})
+    vim.api.nvim_win_set_cursor(0, { 6, 0 })
   end
 end
 
@@ -25,10 +25,22 @@ return {
   -- git modifications explorer/handler
   {
     "lewis6991/gitsigns.nvim",
+    optional = true,
     keys = {
       { "<M-C-G>", "<cmd>Gitsigns preview_hunk_inline<cr>", desc = "Preview Hunk inline (Ctrl+Alt+g)" },
       { "<M-C-Z>", "<cmd>Gitsigns reset_hunk<cr>", mode = { "n", "v" }, desc = "Reset hunk (Ctrl+Alt+z)" },
     },
+  },
+  {
+    "echasnovski/mini.diff",
+    optional = true,
+    keys = {
+      { "<M-C-G>", function() require("mini.diff").toggle_overlay(0) end, desc = "Preview Hunk inline (Ctrl+Alt+g)" },
+    },
+    init = function()
+      -- Not sure why, but I cannot configure it at `keys` level...
+      vim.keymap.set("n", "<M-C-Z>", function() return MiniDiff.operator("reset") .. "gh" end, { expr = true, remap = true })
+    end,
   },
 
   -- use snacks.picker for git status
@@ -45,12 +57,12 @@ return {
               list = {
                 keys = {
                   ["<space>"] = "git_stage",
-                }
+                },
               },
             },
           })
         end,
-        desc = "Git Status"
+        desc = "Git Status",
       },
       { "<leader>gl", function() Snacks.picker.git_log({ cwd = LazyVim.root.git() }) end, desc = "Git Log" },
       { "<leader>gL", function() Snacks.picker.git_log() end, desc = "Git Log (cwd)" },
