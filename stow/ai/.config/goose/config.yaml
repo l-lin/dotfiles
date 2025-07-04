@@ -1,5 +1,7 @@
-GOOSE_PROVIDER: github_copilot
 GOOSE_CLI_THEME: ansi
+GOOSE_MODE: approve
+GOOSE_PROVIDER: anthropic
+ANTHROPIC_HOST: https://api.anthropic.com
 extensions:
   developer:
     bundled: null
@@ -41,5 +43,4 @@ extensions:
     name: tutorial
     timeout: 300
     type: builtin
-GOOSE_MODEL: claude-sonnet-4
-GOOSE_MODE: chat
+GOOSE_MODEL: claude-sonnet-4-latest
