@@ -13,6 +13,7 @@ alias ldo="lazydocker"
 # make
 alias j="just"
 alias m="make"
+alias mi="mise"
 # ops
 alias ap="ansible-playbook"
 alias h="helm"
