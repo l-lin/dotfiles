@@ -67,6 +67,7 @@ shell.nix
 repomix-output.xml
 settings.local.json
 CLAUDE.local.md
+.opencode
 
 # Mise #
 ########

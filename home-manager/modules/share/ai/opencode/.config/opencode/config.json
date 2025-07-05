@@ -36,16 +36,22 @@
       "command": [
         "docker",
         "run",
+        "--rm",
         "-i",
         "-v",
         "mcp-memory:/app/dist",
-        "--rm",
         "mcp/memory"
       ]
     },
-    "atlassian": {
+    "sequentialthinking": {
       "type": "local",
-      "command": ["npx", "-y", "mcp-remote", "https://mcp.atlassian.com/v1/sse"]
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "-i",
+        "mcp/sequentialthinking"
+      ]
     }
   }
 }
