@@ -6,6 +6,7 @@
 { config, pkgs, userSettings, ... }:
 let
   palette = config.lib.stylix.colors.withHashtag;
+  aiderVersion = "0.84.0";
   codeTheme = if (config.theme.polarity == "dark") then "github-dark" else "solarized-light";
 in {
   home.packages = with pkgs; [ aider-chat ];
