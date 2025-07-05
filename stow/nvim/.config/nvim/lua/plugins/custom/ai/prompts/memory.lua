@@ -1,3 +1,4 @@
+--
 -- System prompt for using MCP knowledge Graph Memory.
 -- src:
 -- - https://github.com/modelcontextprotocol/servers/tree/main/src/memory#system-prompt
