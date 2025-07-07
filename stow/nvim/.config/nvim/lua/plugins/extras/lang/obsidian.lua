@@ -1,5 +1,5 @@
 return {
-  "epwalsh/obsidian.nvim",
+  "obsidian-nvim/obsidian.nvim",
   version = "*",  -- recommended, use latest release instead of latest commit
   lazy = true,
   event = {
@@ -30,7 +30,9 @@ return {
     },
 
     completion = {
-      nvim_cmp = true,
+      nvim_cmp = false,
+      -- Enables completion using blink.cmp
+      blink = true,
       -- Trigger completion at 2 chars.
       min_chars = 2,
     },
@@ -41,13 +43,13 @@ return {
     new_notes_location = "notes_subdir",
 
     picker = {
-      -- Set your preferred picker. Can be one of 'telescope.nvim', 'fzf-lua', or 'mini.pick'.
-      name = "telescope.nvim",
+      -- Set your preferred picker. Can be one of 'telescope.nvim', 'fzf-lua', 'mini.pick' or 'snacks.pick'.
+      name = "snacks.pick",
       -- Optional, configure key mappings for the picker. These are the defaults.
       -- Not all pickers support all mappings.
       mappings = {
         -- Create a new note from your query.
-        new = "<C-x>",
+        new = "<C-s>",
         -- Insert a link to the selected note.
         insert_link = "<C-l>",
       },
