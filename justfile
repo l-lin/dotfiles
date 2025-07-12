@@ -94,7 +94,7 @@ clean-home:
 install-nix-darwin:
   if ! type darwin-rebuild >/dev/null 2>&1; then \
     just info "Installing darwin-rebuild" \
-    && nix run nix-darwin/master#darwin-rebuild \
+    && sudo nix run nix-darwin/master#darwin-rebuild \
       --extra-experimental-features 'nix-command flakes' \
       -- switch --flake '.#{{NIX_HOST}}'; \
   fi
