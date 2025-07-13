@@ -4,8 +4,11 @@
   "keybinds": {
     "input_submit": "ctrl+s",
     "input_newline": "enter",
+    "messages_copy": "<leader>y,alt+y",
     "messages_half_page_up": "ctrl+u",
     "messages_half_page_down": "ctrl+d",
+    "messages_previous": "ctrl+p",
+    "messages_next": "ctrl+n",
     "switch_mode": "shift+tab"
   },
   "autoshare": false,
