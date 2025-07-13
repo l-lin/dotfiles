@@ -37,10 +37,6 @@
       cleanup = "none";
     };
 
-    taps = [
-      "codingmoh/open-codex"
-    ];
-
     # `brew install`
     # To get the list of installed apps with brew: `brew list`
     brews = [
@@ -50,8 +46,6 @@
       "busted"
       # Interpreter for PostScript and PDF: https://www.ghostscript.com/
       "ghostscript"
-      # Fully open-source command-line AI assistant inspired by OpenAI Codex, supporting local language models: https://github.com/codingmoh/open-codex/
-      "open-codex"
     ];
 
     # `brew install --cask`
