@@ -1,0 +1,24 @@
+{
+  "includeCoAuthoredBy": false,
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Bash(pwd)",
+      "Bash(tmux:*)",
+      "Bash(rg:*)",
+      "Bash(ls:*)",
+      "Edit",
+      "MultiEdit",
+      "Read",
+      "Write",
+      "mcp__atlassian__getJiraIssue",
+      "mcp__context7__*",
+      "mcp__memory__*",
+      "mcp__sequentialthinking__*"
+    ],
+    "deny": []
+  },
+  "env": {
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+  }
+}

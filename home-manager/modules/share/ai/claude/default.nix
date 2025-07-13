@@ -4,15 +4,12 @@
 #
 
 {
-  # Installing via mise, in order to have latest version, as the CLI is
-  # releasing every day...
-  # home.packages = with pkgs; [ claude-code ];
-
-  home.sessionVariables = {
-    # Equivalent of setting DISABLE_AUTOUPDATER, DISABLE_BUG_COMMAND, DISABLE_ERROR_REPORTING, and DISABLE_TELEMETRY
-    # src: https://docs.anthropic.com/en/docs/claude-code/settings#environment-variables
-    CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = "1";
-  };
-
   xdg.configFile."mise/conf.d/claude-code.toml".source = ./.config/mise/conf.d/claude-code.toml;
+
+  home.file.".claude/CLAUDE.md".source = ../.config/ai/conventions/code.md;
+  home.file.".claude/settings.json".source = ./.claude/settings.json;
+  home.file.".claude/commands" = {
+    source = ../.config/ai/commands;
+    recursive = true;
+  };
 }
