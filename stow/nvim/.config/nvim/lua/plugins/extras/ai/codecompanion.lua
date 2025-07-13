@@ -81,103 +81,110 @@ return {
       -- History chat management
       { "ravitemer/codecompanion-history.nvim" },
     },
-    opts = {
-      strategies = {
-        chat = {
-          adapter = "copilot_custom",
-          keymaps = {
-            -- Changing `q` to `<C-c>` so that `q` just close the window.
-            stop = {
-              modes = { n = "<C-c>", i = "<C-c>" },
-              callback = "keymaps.stop",
-              description = "Stop Request",
+    opts = function ()
+      -- Open CodeCompanion in full screen/buffer, to provide the same
+      -- experience as the other TUI tools.
+      -- src: https://github.com/olimorris/codecompanion.nvim/discussions/1828
+      local layout = vim.env.CC_LAYOUT_OVERRIDE or "vertical"
+      return {
+        strategies = {
+          chat = {
+            adapter = "copilot_custom",
+            keymaps = {
+              -- Changing `q` to `<C-c>` so that `q` just close the window.
+              stop = {
+                modes = { n = "<C-c>", i = "<C-c>" },
+                callback = "keymaps.stop",
+                description = "Stop Request",
+              },
+              -- `<C-c>` was used to close the chat. And I cannot disabled it, so using a keymap I'm never using.
+              close = {
+                modes = { n = "gc" },
+                callback = "keymaps.close",
+                description = "Close Chat",
+              },
+              codeblock = {
+                modes = { i = "<A-c>" },
+                callback = "keymaps.codeblock",
+                description = "Insert Codeblock",
+              },
             },
-            -- `<C-c>` was used to close the chat. And I cannot disabled it, so using a keymap I'm never using.
-            close = {
-              modes = { n = "gc" },
-              callback = "keymaps.close",
-              description = "Close Chat",
+            roles = {
+              ---@type string|fun(adapter: CodeCompanion.Adapter): string
+              llm = function(adapter)
+                local model_name = adapter.model.name or ""
+                if model_name ~= "" then
+                  model_name = " (" .. model_name .. ")"
+                end
+                return adapter.formatted_name .. model_name
+              end,
+              ---@type string
+              user = "" .. os.getenv("USER"),
             },
-            codeblock = {
-              modes = { i = "<A-c>" },
-              callback = "keymaps.codeblock",
-              description = "Insert Codeblock",
+            slash_commands = require("plugins.custom.ai.codecompanion.slash-commands"),
+            tools = {
+              default_tools = { "insert_edit_into_file" },
+              opts = {
+                -- Send any errors to the LLM automatically
+                auto_submit_errors = true,
+                -- Send any successful output to the LLM automatically
+                auto_submit_success = true,
+              },
+              plan = {
+                callback = require("plugins.custom.ai.codecompanion.tools.plan"),
+                description = "Manage an internal todo list",
+              },
             },
           },
-          roles = {
-            ---@type string|fun(adapter: CodeCompanion.Adapter): string
-            llm = function(adapter)
-              local model_name = adapter.model.name or ""
-              if model_name ~= "" then
-                model_name = " (" .. model_name .. ")"
-              end
-              return adapter.formatted_name .. model_name
-            end,
-            ---@type string
-            user = "" .. os.getenv("USER"),
+          inline = { adapter = "copilot" },
+        },
+        display = {
+          chat = {
+            intro_message = "Press ? for options.",
+            start_in_insert_mode = false,
+            window = { layout = layout }
           },
-          slash_commands = require("plugins.custom.ai.codecompanion.slash-commands"),
-          tools = {
-            default_tools = { "insert_edit_into_file" },
+        },
+        opts = { system_prompt = require("plugins.custom.ai.prompts.system-prompt").get() },
+
+        --
+        -- An adapter is what connects Neovim to an LLM. It's the interface that allows data to be sent, received and processed and there are a multitude of ways to customize them.
+        -- src: https://codecompanion.olimorris.dev/configuration/adapters.html
+        --
+        adapters = require("plugins.custom.ai.codecompanion.adapters"),
+
+        --
+        -- Custom prompts to add to the Action Palette.
+        -- src: https://codecompanion.olimorris.dev/configuration/prompt-library.html
+        --
+        prompt_library = require("plugins.custom.ai.codecompanion.prompts-library"),
+
+        --
+        -- Extensions that add functionalities to the plugin.
+        -- src: https://codecompanion.olimorris.dev/configuration/extensions.html
+        --
+        extensions = {
+          mcphub = {
+            callback = "mcphub.extensions.codecompanion",
             opts = {
-              -- Send any errors to the LLM automatically
-              auto_submit_errors = true,
-              -- Send any successful output to the LLM automatically
-              auto_submit_success = true,
-            },
-            plan = {
-              callback = require("plugins.custom.ai.codecompanion.tools.plan"),
-              description = "Manage an internal todo list",
+              show_result_in_chat = true,
+              make_vars = true,
+              make_slash_commands = true,
             },
           },
-        },
-        inline = { adapter = "copilot" },
-      },
-      display = {
-        chat = {
-          intro_message = "Press ? for options.",
-          start_in_insert_mode = false,
-        },
-      },
-      opts = { system_prompt = require("plugins.custom.ai.prompts.system-prompt").get() },
-
-      --
-      -- An adapter is what connects Neovim to an LLM. It's the interface that allows data to be sent, received and processed and there are a multitude of ways to customize them.
-      -- src: https://codecompanion.olimorris.dev/configuration/adapters.html
-      --
-      adapters = require("plugins.custom.ai.codecompanion.adapters"),
-
-      --
-      -- Custom prompts to add to the Action Palette.
-      -- src: https://codecompanion.olimorris.dev/configuration/prompt-library.html
-      --
-      prompt_library = require("plugins.custom.ai.codecompanion.prompts-library"),
-
-      --
-      -- Extensions that add functionalities to the plugin.
-      -- src: https://codecompanion.olimorris.dev/configuration/extensions.html
-      --
-      extensions = {
-        mcphub = {
-          callback = "mcphub.extensions.codecompanion",
-          opts = {
-            show_result_in_chat = true,
-            make_vars = true,
-            make_slash_commands = true,
+          contextfiles = {
+            opts = {},
           },
-        },
-        contextfiles = {
-          opts = {},
-        },
-        history = {
-          enabled = true,
-          opts = {
-            picker = "snacks",
+          history = {
+            enabled = true,
+            opts = {
+              picker = "snacks",
+            },
           },
+          ["chat-edit-live"] = {},
         },
-        ["chat-edit-live"] = {},
-      },
-    },
+      }
+    end,
     init = function()
       require("plugins.custom.ai.codecompanion.noice").init()
       -- Expand 'cc' into 'CodeCompanion' in the command line
