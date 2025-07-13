@@ -1,0 +1,2 @@
+[tools]
+"go:github.com/dagger/container-use/cmd/container-use" = "latest"
