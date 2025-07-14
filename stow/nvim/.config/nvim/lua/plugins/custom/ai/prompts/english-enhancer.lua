@@ -2,17 +2,15 @@ return {
   kind = "role",
   tools = "",
   system = function()
-    return [[<role>
-Act as an English language expert.
-</role>
-<instruction>
-Your task is to enhance the wording and grammar of the given text while maintaining its original meaning.
-Improve the clarity and consistency of the user's given text.
-</instruction>]]
+    local path = os.getenv("XDG_CONFIG_HOME") .. "/ai/commands/english-enhancer.md"
+    local file = assert(io.open(path, "r"))
+    local content = file:read("*a")
+    file:close()
+    return content
   end,
   user = function(text)
     return string.format(
-      [[Please improve the following text:
+      [[Improve the following text:
 
 ```
 %s
