@@ -1,27 +1,44 @@
-*lua.txt*                                                                    Lua
+*lua.txt*                                                  Lua cheatsheet
 
-src: TJ DeVries https://www.youtube.com/watch?v=CuWfgiwI73Q
+Lua Quick Reference Guide
+===============================================================================
 
-You can also do `:help lua`.
+This file provides a concise reference for Lua syntax and features.
 
-================================================================================
-VARIABLES                                                        *lua-variables*
+SOURCES~
+    https://www.lua.org/manual/5.1/manual.html
+    https://learnxinyminutes.com/docs/lua/
+    https://devhints.io/lua
+    https://www.youtube.com/watch?v=CuWfgiwI73Q
 
+TABLE OF CONTENTS~
+    1. |lua-variables|         Variables & Data Types
+    2. |lua-tables|            Tables (Lists & Maps)
+    3. |lua-functions|         Functions
+    4. |lua-control-flow|      Control Flow
+       |lua-if-else|           If/Else
+       |lua-loops|             Loops
+    5. |lua-modules|           Modules
+    6. |lua-metatable|         Metatables
+
+===============================================================================
+VARIABLES & DATA TYPES                                         *lua-variables*
+
+Basic variable types in Lua:
 >lua
     local number = 5
-
     local str = "hello, world"
     local another_str = 'also works'
     local multi_line = [[ This is
       multi line and literal ]]
-
     local truth, lies = true, false
-
     local nothing = nil
 <
 
-Effectively, Lua's only data structure is table.
-It's the same structure used for lists and maps.
+===============================================================================
+TABLES (LISTS & MAPS)                                            *lua-tables*
+
+Tables are Lua's only data structure, used for both lists and maps.
 
 >lua
     -- as list
@@ -35,20 +52,23 @@ It's the same structure used for lists and maps.
       ["an expression"] = "also works",
       [function() end] = true,
     }
-    print("literal key: ", m[literal_key])
+    print("literal key: ", m.literal_key)
     print("an expression: ", m["an expression"])
     -- prints nothing because they are different functions
-    print("function: " m[function() end])
+    print("function: ", m[function() end])
 <
 
-================================================================================
-FUNCTIONS                                                        *lua-functions*
+===============================================================================
+FUNCTIONS                                                    *lua-functions*
+
+Functions can be declared in several ways and can return multiple values.
 
 >lua
     -- how to declare a new function
     local function hello(name)
       print("Hello!", name)
     end
+
     -- or like this
     local greet = function(name)
       -- .. is string concatenation
@@ -70,50 +90,26 @@ FUNCTIONS                                                        *lua-functions*
       end
       return unpack(arguments)
     end
-    -- will print:
-    -- 1 hello
-    -- 2 world
-    -- 3 !
-    -- 1: hello world!
     print("1:", variable_arguments("hello", "world", "!"))
-    -- will print:
-    -- 1 hello
-    -- 2 world
-    -- 3 !
-    -- 2: hello <lost>
-    -- It's because it's only using "one" slot here, so the rest is discarded.
     print("2:", variable_arguments("hello", "world", "!"), "<lost>")
 
-    -- colon functions
+    -- colon functions (method syntax)
     local MyTable = {}
     function MyTable:something(...) end
-    -- syntaxic sugar as
+    -- syntactic sugar for:
     function MyTable.something(self, ...) end
 <
 
-================================================================================
-CONTROL FLOW                                                  *lua-control-flow*
+===============================================================================
+CONTROL FLOW                                               *lua-control-flow*
 
+Conditional and loop constructs.
+
+-------------------------------------------------------------------------------
+IF / ELSE                                                      *lua-if-else*
 >lua
-    -- loop over list
-    local arr = { "foo", "bar" }
-    for index = 1, #arr do
-      print(index, arr[index])
-    end
-    for index, value in ipairs(arr) do
-      print(index, value)
-    end
-
-    -- loop over map
-    local m = { foo: "bar", another_field: 123 }
-    for key, value in pairs(m) do
-      print(key, value)
-    end
-<
-
->lua
-    local foobar(flag)
-      if (flag) then
+    local function foobar(flag)
+      if flag then
         print("This is true")
       else
         print("This is false")
@@ -131,10 +127,29 @@ CONTROL FLOW                                                  *lua-control-flow*
     foobar({})
 <
 
-================================================================================
-MODULES                                                            *lua-modules*
+-------------------------------------------------------------------------------
+LOOPS                                                          *lua-loops*
+>lua
+    -- loop over list
+    local arr = { "foo", "bar" }
+    for index = 1, #arr do
+      print(index, arr[index])
+    end
+    for index, value in ipairs(arr) do
+      print(index, value)
+    end
 
-There's isn't anything special about modules. Modules are just files.
+    -- loop over map
+    local m = { foo = "bar", another_field = 123 }
+    for key, value in pairs(m) do
+      print(key, value)
+    end
+<
+
+===============================================================================
+MODULES                                                        *lua-modules*
+
+Modules are just files that return a table.
 
 >lua
     -- foo.lua
@@ -146,26 +161,27 @@ There's isn't anything special about modules. Modules are just files.
     local foo = require("foo")
     foo.cool_function()
 <
-================================================================================
-METATABLE                                                        *lua-metatable*
+
+===============================================================================
+METATABLES                                                    *lua-metatable*
+
+Metatables allow you to change the behavior of tables (operator overloading, etc).
 
 >lua
     -- redefine add operation on table
     local vector_mt = {}
     vector_mt.__add = function(left, right)
       return setmetatable({
-        left[1] + right[1]
-        left[2] + right[2]
-        left[3] + right[3]
+        left[1] + right[1],
+        left[2] + right[2],
+        left[3] + right[3],
       }, vector_mt)
     end
     local v1 = setmetatable({ 3, 1, 5 }, vector_mt)
     local v2 = setmetatable({ -3, 2, 2 }, vector_mt)
     local v3 = v1 + v2
-    -- prints: 0 3 7
-    print(v3[1], v3[2], v3[3])
-    -- prints { 0, 6, 14 }
-    print(v3 + v3)
+    print(v3[1], v3[2], v3[3]) -- 0 3 7
+    print(v3 + v3) -- { 0, 6, 14 }
 
     -- redefine index operation
     local fib_mt = {
@@ -184,4 +200,4 @@ METATABLE                                                        *lua-metatable*
     -- `__call(self, ...)`
 <
 
-vim:tw=78:ts=8:noet:ft=help:norl:
+vim:ft=help:tw=78:ts=4:noet:norl:
