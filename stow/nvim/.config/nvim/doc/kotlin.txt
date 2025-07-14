@@ -1,0 +1,677 @@
+*kotlin.txt*                                                  Kotlin cheatsheet
+
+Kotlin Quick Reference Guide
+===============================================================================
+
+This file provides a concise reference for Kotlin syntax and features.
+
+SOURCES~
+    https://github.com/alidehkhodaei/kotlin-cheat-sheet
+    https://devhints.io/kotlin
+    https://quickref.me/kotlin.html
+
+TABLE OF CONTENTS~
+    1. |kotlin-data-types|         Data Types
+    2. |kotlin-data-conversion|   Data Conversion
+    3. |kotlin-string-interpolation| String Interpolation
+    4. |kotlin-bitwise-operators| Bitwise Operators
+    5. |kotlin-control-flow|      Control Flow
+        |kotlin-if-else|         If/Else
+        |kotlin-when|            When
+        |kotlin-for|             For Loops & Ranges
+        |kotlin-while|           While/Do-While
+        |kotlin-exception|       Exception Handling
+    6. |kotlin-nothing|          Nothing Type
+    7. |kotlin-functions|        Functions
+        |kotlin-function-declaration|   Function Declaration
+        |kotlin-function-default-named| Default & Named Arguments
+        |kotlin-function-return-type|   Return Types
+        |kotlin-function-unit|          Unit-returning Functions
+        |kotlin-function-local|         Local Functions
+        |kotlin-function-generic|       Generic Functions
+        |kotlin-function-lambda|        Lambda Expressions
+        |kotlin-function-extension|     Extension Functions & Properties
+    8. |kotlin-classes|          Classes & Objects
+        |kotlin-class|           Class
+        |kotlin-property-method| Properties & Methods
+        |kotlin-getter-setter|   Getters & Setters
+        |kotlin-visibility|      Visibility Modifiers
+        |kotlin-lateinit|        Lateinit
+        |kotlin-inheritance|     Inheritance
+        |kotlin-interface-abstract| Interface & Abstract
+        |kotlin-data-class|      Data Class
+        |kotlin-nested-inner|   Nested & Inner Class
+        |kotlin-typealias|      Typealias
+        |kotlin-enum|           Enum
+        |kotlin-sealed|         Sealed Class
+        |kotlin-generic|        Generic Class
+        |kotlin-delegation|     Delegation
+        |kotlin-delegated-properties| Delegated Properties
+    9. |kotlin-collections|      Collections
+        |kotlin-array|          Array
+        |kotlin-list|           List
+        |kotlin-map|            Map
+        |kotlin-set|            Set
+   10. |kotlin-other|           Other Topics
+        |kotlin-destructuring|  Destructuring Declarations
+        |kotlin-reflection|     Reflection
+        |kotlin-annotations|    Annotations
+        |kotlin-packages-imports| Packages & Imports
+        |kotlin-null-safety|    Null Safety
+        |kotlin-equality|       Equality
+        |kotlin-comparable|     Comparable
+        |kotlin-regex|          Regex
+
+===============================================================================
+DATA TYPES                                                   *kotlin-data-types*
+
+Primitive and basic types in Kotlin:
+>kotlin
+    val booleanVar: Boolean = true
+    val byteVar: Byte = 127
+    val shortVar: Short = 32767
+    val intVar: Int = 2147483647
+    val longVar: Long = 9223372036854775807L
+    val floatVar: Float = 3.14f
+    val doubleVar: Double = 3.14159265358979323846
+    val charVar: Char = 'A'
+    val stringVar: String = "Hello, world!"
+<
+
+===============================================================================
+DATA CONVERSION                                         *kotlin-data-conversion*
+
+Convert between types:
+>kotlin
+    val str: String = "123"
+    val num: Int = str.toInt() // String to Int
+
+    val dbl: Double = 123.45
+    val int: Int = dbl.toInt() // Double to Int
+
+    val lng: Long = 9876543210
+    val flt: Float = lng.toFloat() // Long to Float
+
+    val bol: Boolean = true
+    val strBol: String = bol.toString() // Boolean to String
+
+    val char: Char = 'A'
+    val intChar: Int = char.code // Char to Int (use .code)
+
+    val byte: Byte = 127
+    val short: Short = byte.toShort() // Byte to Short
+<
+
+===============================================================================
+STRING INTERPOLATION                               *kotlin-string-interpolation*
+
+Embed variables in strings:
+>kotlin
+    val name = "Ali"
+    val result = "My name is $name"
+<
+
+===============================================================================
+BITWISE OPERATORS                                     *kotlin-bitwise-operators*
+
+Bitwise operations:
+>kotlin
+    val k = 0b1010
+    val l = 0b1100
+    println(k and l) // 8 (0b1000)
+    println(k or l)  // 14 (0b1110)
+    println(k xor l) // 6 (0b0110)
+<
+
+===============================================================================
+CONTROL FLOW                                               *kotlin-control-flow*
+
+Conditional and loop constructs.
+
+-------------------------------------------------------------------------------
+IF / ELSE                                                      *kotlin-if-else*
+>kotlin
+    if (condition) {
+        // Code if true
+    } else {
+        // Code if false
+    }
+<
+
+-------------------------------------------------------------------------------
+WHEN                                                              *kotlin-when*
+>kotlin
+    when (value) {
+        condition1 -> // ...
+        condition2 -> // ...
+        else -> // ...
+    }
+
+    // As expression
+    val seasonFirstMonth = when(season) {
+        "summer" -> 6
+        "winter" -> 12
+        "automn" -> 9
+        "spring" -> 3
+        else -> error("There is only 4 seasons")
+    }
+
+    // Ternary-like
+    val max = if (a > b) a else b
+<
+
+-------------------------------------------------------------------------------
+FOR LOOPS & RANGES                                                 *kotlin-for*
+>kotlin
+    for (item in collection) {
+        // ...
+    }
+    for (i in 1..10) {
+        if (i == 5) break
+        if (i % 2 == 0) continue
+        // ...
+    }
+
+    // Ranges
+    for(i in 0..3) print(i)
+    for(i in 0 until 3) print(i)
+    for(i in 2..8 step 2) print(i)
+    for(i in 3 downTo 0) print(i)
+    for(c in 'a'..'d') print(c)
+
+    // Range in if
+    if (x in 1..5) print("x is in range from 1 to 5")
+<
+
+-------------------------------------------------------------------------------
+WHILE / DO-WHILE                                                 *kotlin-while*
+>kotlin
+    while (condition) {
+        // ...
+    }
+    do {
+        // ...
+    } while (condition)
+<
+
+-------------------------------------------------------------------------------
+EXCEPTION HANDLING                                           *kotlin-exception*
+>kotlin
+    try {
+        // ...
+    } catch (e: SomeException) {
+        // ...
+    } finally {
+        // ...
+    }
+<
+
+===============================================================================
+NOTHING                                                         *kotlin-nothing*
+
+The `Nothing` type marks code locations that can never be reached (e.g.,
+functions that always throw):
+>kotlin
+    fun fail(message: String): Nothing {
+        throw IllegalArgumentException(message)
+    }
+<
+
+===============================================================================
+FUNCTIONS                                                    *kotlin-functions*
+
+-------------------------------------------------------------------------------
+FUNCTION DECLARATION                              *kotlin-function-declaration*
+
+Functions are declared with the `fun` keyword.
+>kotlin
+    fun sayHello() {
+        println("Hello!")
+    }
+    fun greet(name: String) {
+        println("Hello, $name!")
+    }
+<
+
+-------------------------------------------------------------------------------
+DEFAULT AND NAMED ARGUMENTS                     *kotlin-function-default-named*
+
+Functions can have default values and named arguments.
+>kotlin
+    fun greet(name: String = "World", greeting: String = "Hello") {
+        println("$greeting, $name!")
+    }
+    fun main() {
+        greet() // Hello, World!
+        greet(greeting = "Hi", name = "Ali") // Hi, Ali!
+        greet(name = "Reza") // Hello, Reza!
+    }
+<
+
+-------------------------------------------------------------------------------
+RETURN TYPES                                      *kotlin-function-return-type*
+
+Specify return types after the parameter list.
+>kotlin
+    fun add(a: Int, b: Int): Int {
+        return a + b
+    }
+    fun multiply(a: Int, b: Int) = a * b
+<
+
+-------------------------------------------------------------------------------
+UNIT-RETURNING FUNCTIONS                                 *kotlin-function-unit*
+
+Functions returning `Unit` (like `void` in other languages).
+>kotlin
+    fun printHello(): Unit {
+        print("Hello")
+    }
+<
+
+-------------------------------------------------------------------------------
+LOCAL FUNCTIONS                                         *kotlin-function-local*
+
+Functions can be declared inside other functions.
+>kotlin
+    fun main() {
+        fun printMessage(message: String) {
+            println("Message: $message")
+        }
+        printMessage("Hello, world!")
+    }
+<
+
+-------------------------------------------------------------------------------
+GENERIC FUNCTIONS                                     *kotlin-function-generic*
+
+Functions can be generic.
+>kotlin
+    fun <T> function(item: T) {
+        // ...
+    }
+<
+
+-------------------------------------------------------------------------------
+LAMBDA EXPRESSIONS                                     *kotlin-function-lambda*
+
+Anonymous functions (lambdas) can be assigned to variables.
+>kotlin
+    val sum = { a: Int, b: Int -> a + b }
+    val square: (Int) -> Int = { it * it }
+<
+
+-------------------------------------------------------------------------------
+EXTENSION FUNCTIONS & PROPERTIES                    *kotlin-function-extension*
+
+Add new functions or properties to existing types.
+>kotlin
+    fun String.reverse(): String {
+        return this.reversed()
+    }
+
+    val String.firstChar: Char
+        get() = this[0]
+
+    fun main() {
+        val str = "Ali"
+        println(str.reverse())  // ilA
+        println(str.firstChar)  // A
+    }
+<
+
+===============================================================================
+CLASSES                                                         *kotlin-classes*
+
+
+-------------------------------------------------------------------------------
+CLASSES AND OBJECTS                                              *kotlin-class*
+
+A class is a blueprint for creating objects. An object is an instance of a class.
+>kotlin
+    class Person(val name: String, var age: Int) // class
+    val person = Person("Ali", 24) // object
+<
+
+-------------------------------------------------------------------------------
+PROPERTIES AND METHODS                                 *kotlin-property-method*
+
+Properties are variables that are part of a class/object. Methods are
+functions that are part of a class/object.
+>kotlin
+    class Person(val name: String) {
+        var age = 0 // property
+        fun sayHello() { // method
+            println("Hello, my name is $name")
+        }
+    }
+    val person = Person("Ali")
+    person.age = 24
+    person.sayHello()
+<
+
+-------------------------------------------------------------------------------
+GETTERS AND SETTERS                                      *kotlin-getter-setter*
+
+Getters and setters are accessors used to retrieve and modify the value of a variable.
+>kotlin
+    class Person {
+        var name: String = ""
+            get() = field.uppercase()
+            set(value) {
+                field = "Name: $value"
+            }
+        var age = 24 // has default getter and setter
+        val username = "Ali" // has default getter
+    }
+<
+
+-------------------------------------------------------------------------------
+VISIBILITY MODIFIERS                                        *kotlin-visibility*
+
+- private: restricts visibility to the same class.
+- protected: restricts visibility to the same class and its subclasses.
+- internal: restricts visibility to the same module.
+- public: allows visibility from anywhere.
+
+-------------------------------------------------------------------------------
+LATEINIT                                                      *kotlin-lateinit*
+
+`lateinit` is used for variables that will be initialized later.
+>kotlin
+    lateinit var myLateInitVar: String
+    myLateInitVar = "Hello World"
+    println(myLateInitVar)
+<
+
+-------------------------------------------------------------------------------
+INHERITANCE                                                *kotlin-inheritance*
+>kotlin
+    open class Animal(val name: String) {
+        open fun makeSound() {
+            println("Animal sound")
+        }
+    }
+    class Dog(name: String): Animal(name) {
+        override fun makeSound() {
+            println("Woof!")
+        }
+    }
+<
+
+-------------------------------------------------------------------------------
+INTERFACE AND ABSTRACT                              *kotlin-interface-abstract*
+>kotlin
+    interface Vehicle {
+        fun start()
+        fun stop()
+        val name: String
+    }
+    abstract class Animal {
+        abstract fun makeSound()
+        open fun move() {
+            println("Moving...")
+        }
+    }
+<
+
+-------------------------------------------------------------------------------
+DATA CLASS                                                  *kotlin-data-class*
+>kotlin
+    data class Person(val name: String, var age: Int)
+    val person = Person("Ali", 24)
+<
+
+-------------------------------------------------------------------------------
+NESTED AND INNER CLASS                                    *kotlin-nested-inner*
+>kotlin
+    class Outer {
+        private val outerProperty = "Outer property"
+        class Nested {
+            fun foo() { /* can't access outerProperty */ }
+        }
+        inner class Inner {
+            fun bar() {
+                println(outerProperty) // can access outerProperty
+            }
+        }
+    }
+<
+
+-------------------------------------------------------------------------------
+TYPEALIAS                                                    *kotlin-typealias*
+
+>kotlin
+    typealias NumberPredicate = (Int) -> Boolean
+    typealias NumberMapper = (Int) -> String
+    val numbers = listOf(1, 2, 3, 4, 5)
+    val even: NumberPredicate = { number -> number % 2 == 0 }
+    val mapper: NumberMapper = { number -> "Number is $number" }
+    numbers.filter(even).map(mapper)
+<
+
+-------------------------------------------------------------------------------
+ENUM                                                              *kotlin-enum*
+
+>kotlin
+    enum class Color {
+        RED, GREEN, BLUE
+    }
+<
+
+-------------------------------------------------------------------------------
+SEALED CLASS                                                    *kotlin-sealed*
+
+>kotlin
+    sealed class Shape
+    class Circle: Shape()
+<
+
+-------------------------------------------------------------------------------
+GENERIC CLASS                                                  *kotlin-generic*
+>kotlin
+    class Box<T>(t: T) {
+        var value = t
+    }
+<
+
+-------------------------------------------------------------------------------
+DELEGATION                                                  *kotlin-delegation*
+>kotlin
+    interface Base {
+        fun print()
+    }
+
+    class BaseImpl(val x: Int) : Base {
+        override fun print() { print(x) }
+    }
+
+    class Derived(b: Base) : Base by b
+
+    fun main() {
+        val b = BaseImpl(10)
+        Derived(b).print()
+    }
+<
+
+
+-------------------------------------------------------------------------------
+DELEGATED PROPERTIES                              *kotlin-delegated-properties*
+
+>kotlin
+    val myLazyVar: String by lazy {
+        "Hello World"
+    }
+    println(myLazyVar)
+<
+
+===============================================================================
+COLLECTIONS                                                 *kotlin-collections*
+
+
+-------------------------------------------------------------------------------
+ARRAY                                                            *kotlin-array*
+
+>kotlin
+    val numbers = arrayOf(1, 2, 3, 4, 5)
+    val names = arrayOf("Alice", "Bob", "Charlie", "Dave")
+    val array = arrayOfNulls<Int>(10)
+    val array2 = Array<Int>(7) { i -> i*i }
+    val filledArray = IntArray(5) { index -> index * 2 }
+    val firstNumber = numbers[0]
+    val lastNumber = numbers[numbers.size - 1]
+    numbers[0] = 10
+    numbers.sort()
+    names.reverse()
+<
+
+-------------------------------------------------------------------------------
+LIST                                                              *kotlin-list*
+>kotlin
+    val list = listOf(1, 2, 3, 4, 5)
+    val list2 = mutableListOf(1, 2, 3, 4, 5)
+    val numbers = mutableListOf(1, 2, 3)
+    numbers.add(4)
+    numbers.remove(3)
+    numbers[1]
+<
+
+-------------------------------------------------------------------------------
+MAP                                                                *kotlin-map*
+>kotlin
+    val map = mapOf(1 to "one", 2 to "two", 3 to "three")
+    val numbers = mutableMapOf("one" to 1, "two" to 2, "three" to 3)
+    numbers.put("four", 4)
+    numbers.remove("two")
+    numbers.containsKey("two")
+<
+
+-------------------------------------------------------------------------------
+SET                                                                *kotlin-set*
+>kotlin
+    val set = setOf(1, 2, 3, 4, 5)
+    val set2 = mutableSetOf(1, 2, 3, 4, 5)
+    val numbers = mutableSetOf(1, 2, 3)
+    numbers.add(4)
+    numbers.remove(3)
+    numbers.contains(1)
+<
+
+===============================================================================
+OTHER TOPICS                                                     *kotlin-other*
+
+-------------------------------------------------------------------------------
+DESTRUCTURING DECLARATIONS                               *kotlin-destructuring*
+
+>kotlin
+    val person = Person("Ali",24)
+    val (name, age) = person
+<
+
+-------------------------------------------------------------------------------
+REFLECTION                                                  *kotlin-reflection*
+
+>kotlin
+    val stringClass = String::class.java
+    val fields = stringClass.declaredFields
+    for (field in fields) println(field.name)
+    val methods = stringClass.declaredMethods
+    for (method in methods) println(method.name)
+<
+
+-------------------------------------------------------------------------------
+ANNOTATIONS                                                *kotlin-annotations*
+
+>kotlin
+    @Deprecated("Use newMethod() instead", ReplaceWith("newMethod()"))
+    fun oldMethod() {
+        // ...
+    }
+<
+
+-------------------------------------------------------------------------------
+PACKAGES AND IMPORTS                                  *kotlin-packages-imports*
+
+>kotlin
+    package com.example.models
+
+    class Person(val name: String, val age: Int)
+<
+
+>kotlin
+    import com.example.models.Person
+
+    fun main() {
+        val person = Person("Ali", 24)
+        println("Name: ${person.name}, Age: ${person.age}")
+    }
+<
+
+-------------------------------------------------------------------------------
+NULL SAFETY                                                *kotlin-null-safety*
+
+>kotlin
+    var nullableStr: String? = null
+    var nonNullStr: String = "Hello"
+    println(nullableStr?.length)
+    val len = nullableStr?.length ?: -1
+    println(len)
+    // println(nullableStr!!.length) // throws if null
+<
+
+-------------------------------------------------------------------------------
+EQUALITY                                                      *kotlin-equality*
+
+>kotlin
+    data class Person(val name:String,val age:Int)
+    val person1=Person("Ali",24)
+    val person2=Person("Reza",27)
+    var person3=Person("Ali",24)
+    print(person1==person2) // false
+    print(person1!=person2) // true
+    print(person1===person2) // false
+    print(person1==person3) // true
+    print(person1===person3) // false
+    print(person1!==person3) // true
+    person3=person1
+    print(person1===person3) // true
+<
+
+-------------------------------------------------------------------------------
+COMPARABLE                                                  *kotlin-comparable*
+>kotlin
+    data class Person(val name: String, val age: Int) : Comparable<Person> {
+        override fun compareTo(other: Person): Int {
+            return this.age.compareTo(other.age)
+        }
+    }
+
+    val person1 = Person("Ali", 24)
+    val person2 = Person("Reza", 30)
+
+    if (person1 < person2) {
+        println("${person1.name} is younger than ${person2.name}")
+    } else {
+        println("${person1.name} is older than ${person2.name}")
+    }
+
+    val people = listOf(
+        Person("Ali", 24),
+        Person("Reza", 40),
+        Person("Shabnam", 23)
+    )
+
+    val sortedPeople = people.sorted()
+    println(sortedPeople)
+<
+
+-------------------------------------------------------------------------------
+REGEX                                                            *kotlin-regex*
+
+>kotlin
+    val phoneNumber = "9112233445"
+    val regex = Regex("^\\d{10}$")
+    println(regex.matches(phoneNumber)) // true
+<
+
+vim:ft=help:tw=78:ts=4:noet:norl:
