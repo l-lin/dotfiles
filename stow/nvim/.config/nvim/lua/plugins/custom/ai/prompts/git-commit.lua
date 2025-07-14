@@ -2,24 +2,11 @@ return {
   kind = "action",
   tools = "@{cmd_runner}",
   system = function()
-    return string.format([[<role>
-You are an expert at following the Conventional Commit specification.
-</role>
-<instructions>
-The commit scope should contain the ticket id that can be extracted from the git branch name '%s'.
-<example>
-Examples of getting the ticket id from the branch name:
-
-- P3C-123/do_some_stuff => P3C-123
-- P3C-123-do_some_stuff  => P3C-123
-- P3C-123_do_some_stuff => P3C-123
-- feat/P3C-123/do_some_stuff => P3C-123
-</example>
-
-After generating commit message, ask the user to validate or to update the message.
-Then stage diffs and commit them.
-</instructions>
-  ]], vim.fn.system("git rev-parse --abbrev-ref HEAD"))
+    local path = os.getenv("XDG_CONFIG_HOME") .. "/ai/commands/git-commit.md"
+    local file = assert(io.open(path, "r"))
+    local content = file:read("*a")
+    file:close()
+    return content
   end,
   user = function()
     return string.format(

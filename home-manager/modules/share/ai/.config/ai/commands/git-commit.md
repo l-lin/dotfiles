@@ -1,5 +1,7 @@
 **Purpose**: Git commit
 
+---
+
 <instructions>
 
 ## Objective
