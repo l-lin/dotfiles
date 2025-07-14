@@ -104,9 +104,21 @@ return {
                 description = "Close Chat",
               },
               codeblock = {
-                modes = { i = "<A-c>" },
+                modes = { i = "<M-c>" },
                 callback = "keymaps.codeblock",
                 description = "Insert Codeblock",
+              },
+              -- `gx` was used to clear the chat, but sometimes it contains url,
+              -- so let me use the default `gx` to be redirected to the url.
+              clear = {
+                modes = { n = "<M-x>" },
+                callback = "keymaps.clear",
+                description = "Clear Chat",
+              },
+              yank_code = {
+                modes = { n = "<M-y>", },
+                callback = "keymaps.yank_code",
+                description = "Yank Code",
               },
             },
             roles = {
@@ -177,6 +189,7 @@ return {
           },
           history = {
             enabled = true,
+            expiration_days = 14,
             opts = {
               picker = "snacks",
             },
@@ -229,6 +242,10 @@ return {
                 },
                 role = {
                   icon = "󱢙 ",
+                  highlight = "Comment",
+                },
+                summary = {
+                  icon = " ",
                   highlight = "Comment",
                 },
                 tool = {
