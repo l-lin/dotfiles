@@ -9,7 +9,7 @@
   home.file.".claude/CLAUDE.md".source = ../.config/ai/conventions/code.md;
   home.file.".claude/settings.json".source = ./.claude/settings.json;
   home.file.".claude/commands" = {
-    source = ../.config/ai/commands;
+    source = ../.config/ai/prompts;
     recursive = true;
   };
 }
