@@ -1,6 +1,6 @@
 return {
   kind = "action",
-  tools = "",
+  tools = "@{cmd_runner}",
   system = function()
     return [[<role>
 Your task is to review the provided code snippet, focusing specifically on its readability and maintainability.
@@ -66,7 +66,7 @@ OR
   end,
   user = function(filetype, code)
     return string.format(
-      [[Please review the following code and provide suggestions for improvement then refactor the following code to improve its clarity and readability:
+      [[Please review the following code and provide suggestions for improvement:
 
 ```%s
 %s
