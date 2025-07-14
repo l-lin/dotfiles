@@ -32,7 +32,7 @@ return {
   {
     "echasnovski/mini.files",
     keys = {
-      { "<A-1>", "<leader>fm", desc = "Open mini.files (directory of current file) (Alt+1)", remap = true },
+      { "<M-1>", "<leader>fm", desc = "Open mini.files (directory of current file) (Alt+1)", remap = true },
       {
         "<leader>fh",
         function()

@@ -25,20 +25,20 @@ return {
         desc = "Accept NeoCodeium suggestion",
       },
       {
-        "<A-a>",
+        "<M-a>",
         "<cmd>lua require('neocodeium').accept_line()<cr>",
         mode = "i",
         silent = true,
         desc = "Accept NeoCodeium line suggestion",
       },
       {
-        "<A-e>",
+        "<M-e>",
         "<cmd>lua require('neocodeium').cycle_or_complete()<cr>",
         mode = "i",
         silent = true,
         desc = "Cycle NeoCodeium suggestion",
       },
-      { "<A-c>", "<cmd>lua require('neocodeium').clear()<cr>", mode = "i", silent = true, desc = "Clear NeoCodeium" },
+      { "<M-c>", "<cmd>lua require('neocodeium').clear()<cr>", mode = "i", silent = true, desc = "Clear NeoCodeium" },
     },
     config = function()
       local neocodeium = require("neocodeium")

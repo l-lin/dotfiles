@@ -100,7 +100,7 @@ return {
     opts = {
       spec = {
         {
-          "<A-l>",
+          "<M-l>",
           convert_or_toggle_task,
           desc = "Convert bullet to a task or insert new task bullet or toggle task",
           mode = { "n", "i" },

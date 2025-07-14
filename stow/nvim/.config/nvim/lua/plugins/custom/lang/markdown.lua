@@ -1,5 +1,5 @@
 local function add_codeblock_keymap()
-  vim.keymap.set("i", "<A-c>", function()
+  vim.keymap.set("i", "<M-c>", function()
     local bufnr = vim.api.nvim_get_current_buf()
     local cursor_pos = vim.api.nvim_win_get_cursor(0)
     local line = cursor_pos[1]

@@ -85,8 +85,8 @@ return {
       vim.cmd([[
         let g:VM_theme = "paper"
         let g:VM_maps = {}
-        let g:VM_maps["Find Under"] = "<A-h>"
-        let g:VM_maps["Find Subword Under"] = "<A-h>"
+        let g:VM_maps["Find Under"] = "<M-h>"
+        let g:VM_maps["Find Subword Under"] = "<M-h>"
       ]])
     end,
   },

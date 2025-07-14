@@ -89,7 +89,7 @@ local snacks_picker_opts = {
       win = {
         input = {
           keys = {
-            ["<A-k>"] = { "switch_grep_files", desc = "Switch to grep", mode = { "i", "v" } },
+            ["<M-k>"] = { "switch_grep_files", desc = "Switch to grep", mode = { "i", "v" } },
             ["<C-s>"] = { "edit_file", desc = "Edit file", mode = { "i", "v" } },
           },
         },
@@ -107,7 +107,7 @@ local snacks_picker_opts = {
       win = {
         input = {
           keys = {
-            ["<A-k>"] = { "switch_grep_files", desc = "Switch to grep", mode = { "i", "v" } },
+            ["<M-k>"] = { "switch_grep_files", desc = "Switch to grep", mode = { "i", "v" } },
           },
         },
       },
@@ -120,9 +120,9 @@ local snacks_picker_opts = {
   win = {
     input = {
       keys = {
-        ["<A-l>"] = { "focus_list", mode = { "i", "n" } },
-        ["<A-w>"] = { "focus_preview", mode = { "i", "n" } },
-        ["<A-q>"] = { "qflist", mode = { "i", "n" } },
+        ["<M-l>"] = { "focus_list", mode = { "i", "n" } },
+        ["<M-w>"] = { "focus_preview", mode = { "i", "n" } },
+        ["<M-q>"] = { "qflist", mode = { "i", "n" } },
         ["<C-j>"] = { "", mode = { "i", "v" } },
         ["<C-k>"] = { "focus_list", mode = { "i", "n" } },
       }
@@ -130,9 +130,9 @@ local snacks_picker_opts = {
     list = {
       keys = {
         ["a"] = "focus_input",
-        ["<A-l>"] = "focus_list",
-        ["<A-w>"] = "focus_preview",
-        ["<A-q>"] = "qflist",
+        ["<M-l>"] = "focus_list",
+        ["<M-w>"] = "focus_preview",
+        ["<M-q>"] = "qflist",
         ["<C-c>"] = "close",
         ["<C-k>"] = "focus_preview",
         ["<C-j>"] = "focus_input",
@@ -141,8 +141,8 @@ local snacks_picker_opts = {
     preview = {
       keys = {
         ["a"] = "focus_input",
-        ["<A-l>"] = "focus_list",
-        ["<A-w>"] = "focus_preview",
+        ["<M-l>"] = "focus_list",
+        ["<M-w>"] = "focus_preview",
         ["<C-j>"] = "focus_list",
         ["<C-k>"] = "",
       }

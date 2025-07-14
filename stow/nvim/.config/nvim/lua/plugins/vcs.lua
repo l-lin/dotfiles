@@ -66,7 +66,7 @@ return {
       },
       { "<leader>gl", function() Snacks.picker.git_log({ cwd = LazyVim.root.git() }) end, desc = "Git Log" },
       { "<leader>gL", function() Snacks.picker.git_log() end, desc = "Git Log (cwd)" },
-      { "<A-9>", function() Snacks.picker.git_log({ current_file = true, follow = true }) end, noremap = true, silent = true, desc = "Check current file git history (Alt+9)" },
+      { "<M-9>", function() Snacks.picker.git_log({ current_file = true, follow = true }) end, noremap = true, silent = true, desc = "Check current file git history (Alt+9)" },
     }
   },
 
@@ -80,7 +80,7 @@ return {
      { "<leader>gO", "<cmd>G -p push<cr>", desc = "git push and display git message" },
      { "<leader>gp", "<cmd>G pull<cr>", desc = "git pull" },
      { "<leader>gP", "<cmd>G push<cr>", desc = "git push" },
-     { "<A-0>", toggle_fugitive, desc = "git status (Alt+0)" },
+     { "<M-0>", toggle_fugitive, desc = "git status (Alt+0)" },
    },
  },
 }
