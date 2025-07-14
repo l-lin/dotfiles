@@ -102,6 +102,7 @@ Convert between types:
 
     val char: Char = 'A'
     val intChar: Int = char.code // Char to Int (use .code)
+    // Conversion of Char to Number is deprecated. Use Char.code property instead.
 
     val byte: Byte = 127
     val short: Short = byte.toShort() // Byte to Short
@@ -123,9 +124,9 @@ Bitwise operations:
 >kotlin
     val k = 0b1010
     val l = 0b1100
-    println(k and l) // 8 (0b1000)
-    println(k or l)  // 14 (0b1110)
-    println(k xor l) // 6 (0b0110)
+    println(k and l) // Prints "8" (0b1000)
+    println(k or l)  // Prints "14" (0b1110)
+    println(k xor l) // Prints "6" (0b0110)
 <
 
 ===============================================================================
@@ -137,9 +138,9 @@ Conditional and loop constructs.
 IF / ELSE                                                      *kotlin-if-else*
 >kotlin
     if (condition) {
-        // Code if true
+        // Code to execute if condition is true
     } else {
-        // Code if false
+        // Code to execute if condition is false
     }
 <
 
@@ -147,9 +148,9 @@ IF / ELSE                                                      *kotlin-if-else*
 WHEN                                                              *kotlin-when*
 >kotlin
     when (value) {
-        condition1 -> // ...
-        condition2 -> // ...
-        else -> // ...
+        condition1 -> // Code to execute if value matches condition1
+        condition2 -> // Code to execute if value matches condition2
+        else -> // Code to execute if value does not match any condition
     }
 
     // As expression
@@ -162,40 +163,52 @@ WHEN                                                              *kotlin-when*
     }
 
     // Ternary-like
-    val max = if (a > b) a else b
+    val max = if (a > b) a else b // Similar to ternary operator
 <
 
 -------------------------------------------------------------------------------
 FOR LOOPS & RANGES                                                 *kotlin-for*
 >kotlin
     for (item in collection) {
-        // ...
+        // Code to execute for each item in collection
     }
     for (i in 1..10) {
-        if (i == 5) break
-        if (i % 2 == 0) continue
-        // ...
+        if (i == 5) break // Exit loop when i is equal to 5
+        if (i % 2 == 0) continue // Skip even numbers and continue to the next iteration
+        // Code to execute for each odd number between 1 and 10
     }
 
     // Ranges
-    for(i in 0..3) print(i)
-    for(i in 0 until 3) print(i)
-    for(i in 2..8 step 2) print(i)
-    for(i in 3 downTo 0) print(i)
-    for(c in 'a'..'d') print(c)
+    for(i in 0..3) {             
+        print(i)
+    }
+    for(i in 0 until 3) {       
+        print(i)
+    }
+    for(i in 2..8 step 2) {     
+        print(i)
+    }
+    for (i in 3 downTo 0) {     
+        print(i)
+    }
+    for (c in 'a'..'d') {   
+        print(c)
+    }
 
     // Range in if
-    if (x in 1..5) print("x is in range from 1 to 5")
+    if (x in 1..5) {           
+        print("x is in range from 1 to 5")
+    }
 <
 
 -------------------------------------------------------------------------------
 WHILE / DO-WHILE                                                 *kotlin-while*
 >kotlin
     while (condition) {
-        // ...
+        // Code to execute as long as condition is true
     }
     do {
-        // ...
+        // Code to execute at least once
     } while (condition)
 <
 
@@ -203,11 +216,11 @@ WHILE / DO-WHILE                                                 *kotlin-while*
 EXCEPTION HANDLING                                           *kotlin-exception*
 >kotlin
     try {
-        // ...
+        // some code
     } catch (e: SomeException) {
-        // ...
+        // handler
     } finally {
-        // ...
+        // optional finally block
     }
 <
 
@@ -219,6 +232,7 @@ functions that always throw):
 >kotlin
     fun fail(message: String): Nothing {
         throw IllegalArgumentException(message)
+        // This function never returns
     }
 <
 
@@ -232,9 +246,11 @@ Functions are declared with the `fun` keyword.
 >kotlin
     fun sayHello() {
         println("Hello!")
+        // Prints Hello!
     }
     fun greet(name: String) {
         println("Hello, $name!")
+        // Prints Hello, <name>!
     }
 <
 
@@ -245,11 +261,17 @@ Functions can have default values and named arguments.
 >kotlin
     fun greet(name: String = "World", greeting: String = "Hello") {
         println("$greeting, $name!")
+        // Prints greeting and name
     }
     fun main() {
-        greet() // Hello, World!
-        greet(greeting = "Hi", name = "Ali") // Hi, Ali!
-        greet(name = "Reza") // Hello, Reza!
+        // calling function with default arguments
+        greet() // output: Hello, World!
+    
+        // calling function with named arguments
+        greet(greeting = "Hi", name = "Ali") // output: Hi, Ali!
+    
+        // calling function with some named arguments
+        greet(name = "Reza") // output: Hello, Reza!
     }
 <
 
@@ -260,8 +282,10 @@ Specify return types after the parameter list.
 >kotlin
     fun add(a: Int, b: Int): Int {
         return a + b
+        // Returns the sum
     }
     fun multiply(a: Int, b: Int) = a * b
+    // Returns the product
 <
 
 -------------------------------------------------------------------------------
@@ -271,6 +295,7 @@ Functions returning `Unit` (like `void` in other languages).
 >kotlin
     fun printHello(): Unit {
         print("Hello")
+        // Prints Hello
     }
 <
 
@@ -282,7 +307,9 @@ Functions can be declared inside other functions.
     fun main() {
         fun printMessage(message: String) {
             println("Message: $message")
+            // Prints the message
         }
+    
         printMessage("Hello, world!")
     }
 <
@@ -303,6 +330,9 @@ LAMBDA EXPRESSIONS                                     *kotlin-function-lambda*
 Anonymous functions (lambdas) can be assigned to variables.
 >kotlin
     val sum = { a: Int, b: Int -> a + b }
+    // Lambda that adds two numbers
+    val sum = { a: Int, b: Int -> a + b }
+    // Lambda that squares a number
     val square: (Int) -> Int = { it * it }
 <
 
@@ -320,8 +350,8 @@ Add new functions or properties to existing types.
 
     fun main() {
         val str = "Ali"
-        println(str.reverse())  // ilA
-        println(str.firstChar)  // A
+        println(str.reverse())  // Prints "ilA"
+        println(str.firstChar)  // Prints "A"
     }
 <
 
@@ -338,6 +368,7 @@ Taking Functions as Parameters
         return operation(x, y)
     }
     fun sum(x: Int, y: Int) = x + y
+    // Function to sum two numbers
     fun main() {
         val sumResult = calculate(1, 7, ::sum)
         val mulResult = calculate(1, 7) { a, b -> a * b }
@@ -349,8 +380,10 @@ Returning Functions
 >kotlin
     fun operation(): (Int) -> Int {
         return ::square
+        // Returns a function
     }
     fun square(x: Int) = x * x
+    // Squares a number
     fun main() {
         val func = operation()
         println(func(7))
@@ -365,6 +398,7 @@ Operator overloading in Kotlin allows you to define and use custom operators for
     data class Point(val x: Int, val y: Int) {
         operator fun plus(other: Point): Point {
             return Point(x + other.x, y + other.y)
+            // Overloads the + operator
         }
     }
     fun main() {
@@ -385,11 +419,12 @@ the same type to a function.
     fun printNumbers(vararg numbers: Int) {
         for (number in numbers) {
             println(number)
+            // Prints each number
         }
     }
     fun main() {
-        printNumbers(1, 2, 3)
-        printNumbers(4, 5, 6, 7, 8)
+        printNumbers(1, 2, 3) // prints 1, 2, 3
+        printNumbers(4, 5, 6, 7, 8) // prints 4, 5, 6, 7, 8
     }
 <
 
@@ -400,6 +435,7 @@ Infix in Kotlin allows you to define functions that can be called using infix
 notation (i.e., without using parentheses and the dot notation).
 >kotlin
     infix fun Int.times(str: String) = str.repeat(this)
+
     fun main() {
         val str = 5 times "Hello "
         println(str) // Output: "Hello Hello Hello Hello Hello "
@@ -525,8 +561,14 @@ LATEINIT                                                      *kotlin-lateinit*
 `lateinit` is used for variables that will be initialized later.
 >kotlin
     lateinit var myLateInitVar: String
+    // The variable is not initialized yet, so trying to access it will throw an exception
+    // println(myLateInitVar) // This line would throw a "lateinit property has not been initialized" exception
+
+    // Sometime later, the variable is initialized
     myLateInitVar = "Hello World"
-    println(myLateInitVar)
+
+    // Now we can access the variable without an exception
+    println(myLateInitVar) // Prints "Hello World"
 <
 
 -------------------------------------------------------------------------------
@@ -572,9 +614,13 @@ NESTED AND INNER CLASS                                    *kotlin-nested-inner*
 >kotlin
     class Outer {
         private val outerProperty = "Outer property"
+
         class Nested {
-            fun foo() { /* can't access outerProperty */ }
+            fun foo() {
+                // can't access outerProperty
+            }
         }
+    
         inner class Inner {
             fun bar() {
                 println(outerProperty) // can access outerProperty
@@ -659,14 +705,25 @@ ARRAY                                                            *kotlin-array*
 
 >kotlin
     val numbers = arrayOf(1, 2, 3, 4, 5)
-    val names = arrayOf("Alice", "Bob", "Charlie", "Dave")
-    val array = arrayOfNulls<Int>(10)
-    val array2 = Array<Int>(7) { i -> i*i }
-    val filledArray = IntArray(5) { index -> index * 2 }
-    val firstNumber = numbers[0]
-    val lastNumber = numbers[numbers.size - 1]
     numbers[0] = 10
+    // Declare an array of integers
+    val numbers = arrayOf(1, 2, 3, 4, 5)
+    // Declare an array of strings
+    val names = arrayOf("Alice", "Bob", "Charlie", "Dave")
+    // Declare an array of a specific size
+    val array = arrayOfNulls<Int>(10)
+    // Declare an array of integers with a specified size and initial value
+    val array2 = Array<Int>(7) { i -> i*i }
+    val filledArray = IntArray(5) { index -> index * 2 } // Other type: BooleanArray, ShortArray, DoubleArray and etc.
+    // Access an element at a specific index
+    val firstNumber = numbers[0]
+    // Access the last element of an array
+    val lastNumber = numbers[numbers.size - 1]
+    // Modify an element at a specific index
+    numbers[0] = 10
+    // Sort the array
     numbers.sort()
+    // Reverse the array
     names.reverse()
 <
 
@@ -674,32 +731,35 @@ ARRAY                                                            *kotlin-array*
 LIST                                                              *kotlin-list*
 >kotlin
     val list = listOf(1, 2, 3, 4, 5)
-    val list2 = mutableListOf(1, 2, 3, 4, 5)
-    val numbers = mutableListOf(1, 2, 3)
     numbers.add(4)
     numbers.remove(3)
     numbers[1]
+val list2 = mutableListOf(1, 2, 3, 4, 5)
+val numbers = mutableListOf(1, 2, 3)
+numbers.add(4) // Adds the specified element to the end of the list
+numbers.remove(3) // Removes the first occurrence of the specified element from the list
+numbers[1] // Returns the element at the specified index in the list
 <
 
 -------------------------------------------------------------------------------
 MAP                                                                *kotlin-map*
 >kotlin
     val map = mapOf(1 to "one", 2 to "two", 3 to "three")
-    val numbers = mutableMapOf("one" to 1, "two" to 2, "three" to 3)
-    numbers.put("four", 4)
-    numbers.remove("two")
-    numbers.containsKey("two")
+	val numbers = mutableMapOf("one" to 1, "two" to 2, "three" to 3)
+	numbers.put("four", 4) // Associates the specified value with the specified key in the map
+	numbers.remove("two") // Removes the mapping for the specified key from the map if it is present
+	numbers.containsKey("two") // Returns true if the map contains the specified key
 <
 
 -------------------------------------------------------------------------------
 SET                                                                *kotlin-set*
 >kotlin
     val set = setOf(1, 2, 3, 4, 5)
-    val set2 = mutableSetOf(1, 2, 3, 4, 5)
-    val numbers = mutableSetOf(1, 2, 3)
-    numbers.add(4)
-    numbers.remove(3)
-    numbers.contains(1)
+	val set2 = mutableSetOf(1, 2, 3, 4, 5)
+	val numbers = mutableSetOf(1, 2, 3)
+	numbers.add(4) // Adds the specified element to the set if it is not already present
+	numbers.remove(3) // Removes the specified element from the set if it is present
+	numbers.contains(1) //  Returns true if the set contains the specified element
 <
 
 ===============================================================================
@@ -710,7 +770,7 @@ DESTRUCTURING DECLARATIONS                               *kotlin-destructuring*
 
 >kotlin
     val person = Person("Ali",24)
-    val (name, age) = person
+    val (name, age) = person // Destructuring declaration
 <
 
 -------------------------------------------------------------------------------
@@ -718,10 +778,18 @@ REFLECTION                                                  *kotlin-reflection*
 
 >kotlin
     val stringClass = String::class.java
+    // Obtain a Class object for the String class
+    val stringClass = String::class.java
+    // Get the fields of the String class and print their names
     val fields = stringClass.declaredFields
-    for (field in fields) println(field.name)
+    for (field in fields) {
+        println(field.name)
+    }
+    // Get the methods of the String class and print their names
     val methods = stringClass.declaredMethods
-    for (method in methods) println(method.name)
+    for (method in methods) {
+        println(method.name)
+    }
 <
 
 -------------------------------------------------------------------------------
@@ -758,29 +826,51 @@ NULL SAFETY                                                *kotlin-null-safety*
 >kotlin
     var nullableStr: String? = null
     var nonNullStr: String = "Hello"
-    println(nullableStr?.length)
+    
+    // safe call operator
+    println(nullableStr?.length) // prints null
+    
+    // elvis operator
     val len = nullableStr?.length ?: -1
-    println(len)
-    // println(nullableStr!!.length) // throws if null
+    println(len) // prints -1
+    
+    // not-null assertion operator
+    // throws null pointer exceptions because nullableStr is null
+    // println(nullableStr!!.length)
+    
+    // this would not compile because nonNullStr is not nullable
+    // nonNullStr = null
 <
 
 -------------------------------------------------------------------------------
 EQUALITY                                                      *kotlin-equality*
 
+
+In Kotlin there are two types of equality:
+
+- Structural equality (`==` - a check for equals())
+- Referential equality (`===` - two references point to the same object)
+
 >kotlin
     data class Person(val name:String,val age:Int)
+
     val person1=Person("Ali",24)
     val person2=Person("Reza",27)
     var person3=Person("Ali",24)
-    print(person1==person2) // false
-    print(person1!=person2) // true
-    print(person1===person2) // false
-    print(person1==person3) // true
-    print(person1===person3) // false
-    print(person1!==person3) // true
-    person3=person1
-    print(person1===person3) // true
+
+    print(person1 == person2) // false
+    print(person1 != person2) // true
+    print(person1 === person2) // false
+    print(person1 == person3) // true
+    print(person1 === person3) // false
+    print(person1 !== person3) // true
 <
+
+- The `==` operator in Kotlin is equivalent to calling the `equals()` method.
+- Data classes generate an `equals()` method based on their properties, but
+  regular classes do not.
+- To compare objects for equality based on their contents, you need to
+  override the `equals()` method for regular classes.
 
 -------------------------------------------------------------------------------
 COMPARABLE                                                  *kotlin-comparable*
@@ -794,6 +884,7 @@ COMPARABLE                                                  *kotlin-comparable*
     val person1 = Person("Ali", 24)
     val person2 = Person("Reza", 30)
 
+	// you can directly use the `<` and `>` operators
     if (person1 < person2) {
         println("${person1.name} is younger than ${person2.name}")
     } else {
@@ -806,12 +897,46 @@ COMPARABLE                                                  *kotlin-comparable*
         Person("Shabnam", 23)
     )
 
+	// When you use the sorted() or sort() function to sort a list of objects,
+	// Kotlin uses the compareTo() method of the objects to determine their
+	// natural order. If the objects in the list do not implement the
+	// Comparable interface, you will get a compile-time error.
     val sortedPeople = people.sorted()
-    println(sortedPeople)
+    println(sortedPeople) // [Person(name=Shabnam, age=23), Person(name=Ali, age=24), Person(name=Reza, age=40)]
 <
 
 -------------------------------------------------------------------------------
 REGEX                                                            *kotlin-regex*
+
+Regex, short for regular expression, is a sequence of characters that forms a
+pattern used to match and manipulate text.
+
+Regex Basics:
+
+- `.`     Matches any character except newline.
+- `^`     Matches the start of a string, or start of line in multi-line pattern.
+- `\A`    Matches the start of a string.
+- `$`     Matches the end of a string, or end of line in multi-line pattern.
+- `\Z`    Matches the end of a string.
+- `\b`    Matches a word boundary.
+- `\B`    Matches a position that is not a word boundary.
+- `\d`    Matches a digit (0-9).
+- `\D`    Matches a non-digit.
+- `\w`    Matches a word character (letter, digit, or underscore).
+- `\W`    Matches a non-word character.
+- `\s`    Matches a whitespace character (space, tab, newline, etc.).
+- `\S`    Matches a non-whitespace character.
+- `()`    Groups
+- `[]`    Matches any character inside the square brackets.
+- `[^]`   Matches any character not inside the square brackets.
+- `*`     Matches 0 or more of the preceding element.
+- `+`     Matches 1 or more of the preceding element.
+- `?`     Matches 0 or 1 of the preceding element.
+- `{n}`   Matches exactly n occurrences of the preceding element.
+- `{n,}`  Matches n or more occurrences of the preceding element.
+- `{n,m}` Matches between n and m occurrences of the preceding element.
+
+Kotlin provides several functions for working with regular expressions, including: matches, find, findAll, replace, split and etc.
 
 >kotlin
     val phoneNumber = "9112233445"
