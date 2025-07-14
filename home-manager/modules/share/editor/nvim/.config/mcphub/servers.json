@@ -31,6 +31,11 @@
     "context7": {
       "type": "http",
       "url": "https://mcp.context7.com/mcp"
+    },
+    "container-use": {
+      "type": "local",
+      "command": "container-use",
+      "args": ["stdio"]
     }
   }
 }
