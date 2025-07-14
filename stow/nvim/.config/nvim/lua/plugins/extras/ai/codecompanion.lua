@@ -224,6 +224,10 @@ return {
             },
             html = {
               tag = {
+                action = {
+                  icon = " ",
+                  highlight = "Comment",
+                },
                 buf = {
                   icon = "󰌹 ",
                   highlight = "Comment",
