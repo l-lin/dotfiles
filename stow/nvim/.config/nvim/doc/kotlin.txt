@@ -11,56 +11,61 @@ SOURCES~
     https://quickref.me/kotlin.html
 
 TABLE OF CONTENTS~
-    1. |kotlin-data-types|         Data Types
-    2. |kotlin-data-conversion|   Data Conversion
-    3. |kotlin-string-interpolation| String Interpolation
-    4. |kotlin-bitwise-operators| Bitwise Operators
-    5. |kotlin-control-flow|      Control Flow
-        |kotlin-if-else|         If/Else
-        |kotlin-when|            When
-        |kotlin-for|             For Loops & Ranges
-        |kotlin-while|           While/Do-While
-        |kotlin-exception|       Exception Handling
-    6. |kotlin-nothing|          Nothing Type
-    7. |kotlin-functions|        Functions
-        |kotlin-function-declaration|   Function Declaration
-        |kotlin-function-default-named| Default & Named Arguments
-        |kotlin-function-return-type|   Return Types
-        |kotlin-function-unit|          Unit-returning Functions
-        |kotlin-function-local|         Local Functions
-        |kotlin-function-generic|       Generic Functions
-        |kotlin-function-lambda|        Lambda Expressions
-        |kotlin-function-extension|     Extension Functions & Properties
-    8. |kotlin-classes|          Classes & Objects
-        |kotlin-class|           Class
-        |kotlin-property-method| Properties & Methods
-        |kotlin-getter-setter|   Getters & Setters
-        |kotlin-visibility|      Visibility Modifiers
-        |kotlin-lateinit|        Lateinit
-        |kotlin-inheritance|     Inheritance
-        |kotlin-interface-abstract| Interface & Abstract
-        |kotlin-data-class|      Data Class
-        |kotlin-nested-inner|   Nested & Inner Class
-        |kotlin-typealias|      Typealias
-        |kotlin-enum|           Enum
-        |kotlin-sealed|         Sealed Class
-        |kotlin-generic|        Generic Class
-        |kotlin-delegation|     Delegation
-        |kotlin-delegated-properties| Delegated Properties
-    9. |kotlin-collections|      Collections
-        |kotlin-array|          Array
-        |kotlin-list|           List
-        |kotlin-map|            Map
-        |kotlin-set|            Set
-   10. |kotlin-other|           Other Topics
-        |kotlin-destructuring|  Destructuring Declarations
-        |kotlin-reflection|     Reflection
-        |kotlin-annotations|    Annotations
-        |kotlin-packages-imports| Packages & Imports
-        |kotlin-null-safety|    Null Safety
-        |kotlin-equality|       Equality
-        |kotlin-comparable|     Comparable
-        |kotlin-regex|          Regex
+    1.  |kotlin-data-types|               Data Types
+    2.  |kotlin-data-conversion|          Data Conversion
+    3.  |kotlin-string-interpolation|     String Interpolation
+    4.  |kotlin-bitwise-operators|        Bitwise Operators
+    5.  |kotlin-control-flow|             Control Flow
+        |kotlin-if-else|                    If/Else
+        |kotlin-when|                       When
+        |kotlin-for|                        For Loops & Ranges
+        |kotlin-while|                      While/Do-While
+        |kotlin-exception|                  Exception Handling
+    6.  |kotlin-nothing|                  Nothing Type
+    7.  |kotlin-functions|                Functions
+        |kotlin-function-declaration|       Function Declaration
+        |kotlin-function-default-named|     Default & Named Arguments
+        |kotlin-function-return-type|       Return Types
+        |kotlin-function-unit|              Unit-returning Functions
+        |kotlin-function-local|             Local Functions
+        |kotlin-function-generic|           Generic Functions
+        |kotlin-function-lambda|            Lambda Expressions
+        |kotlin-function-extension|         Extension Functions & Properties
+        |kotlin-function-higher-order|      Higher-Order Functions
+        |kotlin-function-operator|          Operator Overloading
+        |kotlin-function-varargs|           Varargs
+        |kotlin-function-infix|             Infix Notation
+        |kotlin-function-scope|             Scope Functions
+    8.  |kotlin-classes|                  Classes & Objects
+        |kotlin-class|                      Class
+        |kotlin-property-method|            Properties & Methods
+        |kotlin-getter-setter|              Getters & Setters
+        |kotlin-visibility|                 Visibility Modifiers
+        |kotlin-lateinit|                   Lateinit
+        |kotlin-inheritance|                Inheritance
+        |kotlin-interface-abstract|         Interface & Abstract
+        |kotlin-data-class|                 Data Class
+        |kotlin-nested-inner|               Nested & Inner Class
+        |kotlin-typealias|                  Typealias
+        |kotlin-enum|                       Enum
+        |kotlin-sealed|                     Sealed Class
+        |kotlin-generic|                    Generic Class
+        |kotlin-delegation|                 Delegation
+        |kotlin-delegated-properties|       Delegated Properties
+    9.  |kotlin-collections|              Collections
+        |kotlin-array|                      Array
+        |kotlin-list|                       List
+        |kotlin-map|                        Map
+        |kotlin-set|                        Set
+   10.  |kotlin-other|                    Other Topics
+        |kotlin-destructuring|              Destructuring Declarations
+        |kotlin-reflection|                 Reflection
+        |kotlin-annotations|                Annotations
+        |kotlin-packages-imports|           Packages & Imports
+        |kotlin-null-safety|                Null Safety
+        |kotlin-equality|                   Equality
+        |kotlin-comparable|                 Comparable
+        |kotlin-regex|                      Regex
 
 ===============================================================================
 DATA TYPES                                                   *kotlin-data-types*
@@ -320,9 +325,149 @@ Add new functions or properties to existing types.
     }
 <
 
-===============================================================================
-CLASSES                                                         *kotlin-classes*
+-------------------------------------------------------------------------------
+HIGHER-ORDER FUNCTIONS                           *kotlin-function-higher-order*
 
+A higher-order function is a function that takes another function as parameter
+and/or returns a function.
+
+Taking Functions as Parameters
+
+>kotlin
+    fun calculate(x: Int, y: Int, operation: (Int, Int) -> Int): Int {
+        return operation(x, y)
+    }
+    fun sum(x: Int, y: Int) = x + y
+    fun main() {
+        val sumResult = calculate(1, 7, ::sum)
+        val mulResult = calculate(1, 7) { a, b -> a * b }
+    }
+<
+
+Returning Functions
+
+>kotlin
+    fun operation(): (Int) -> Int {
+        return ::square
+    }
+    fun square(x: Int) = x * x
+    fun main() {
+        val func = operation()
+        println(func(7))
+    }
+<
+
+-------------------------------------------------------------------------------
+OPERATOR OVERLOADING                                 *kotlin-function-operator*
+
+Operator overloading in Kotlin allows you to define and use custom operators for your own classes and types.
+>kotlin
+    data class Point(val x: Int, val y: Int) {
+        operator fun plus(other: Point): Point {
+            return Point(x + other.x, y + other.y)
+        }
+    }
+    fun main() {
+        val p1 = Point(1, 2)
+        val p2 = Point(3, 4)
+        val p3 = p1 + p2 // using the overloaded '+' operator
+        println(p3) // Output: Point(x=4, y=6)
+    }
+<
+
+-------------------------------------------------------------------------------
+VARARGS (VARIABLE NUMBER OF ARGUMENTS)                *kotlin-function-varargs*
+
+Varargs is a feature that allows you to pass a variable number of arguments of
+the same type to a function.
+
+>kotlin
+    fun printNumbers(vararg numbers: Int) {
+        for (number in numbers) {
+            println(number)
+        }
+    }
+    fun main() {
+        printNumbers(1, 2, 3)
+        printNumbers(4, 5, 6, 7, 8)
+    }
+<
+
+-------------------------------------------------------------------------------
+INFIX NOTATION                                          *kotlin-function-infix*
+
+Infix in Kotlin allows you to define functions that can be called using infix
+notation (i.e., without using parentheses and the dot notation).
+>kotlin
+    infix fun Int.times(str: String) = str.repeat(this)
+    fun main() {
+        val str = 5 times "Hello "
+        println(str) // Output: "Hello Hello Hello Hello Hello "
+    }
+<
+
+-------------------------------------------------------------------------------
+SCOPE FUNCTIONS                                         *kotlin-function-scope*
+
+Kotlin provides several scope functions: let, run, with, apply, also.
+
+`let` can be used for scoping and null-checks. When called on an object, let
+executes the given block of code and returns the result of its last
+expression. The object is accessible inside the block by the reference it (by
+default) or a custom name.
+
+>kotlin
+    val message: String? = "Hello"
+    message?.let {
+        print(it.toUpperCase())
+    }
+<
+
+Like `let`, `run` is another scoping function from the standard library.
+Basically, it does the same: executes a code block and returns its result. The
+difference is that inside run the object is accessed by this. This is useful
+when you want to call the object's methods rather than pass it as an argument.
+
+>kotlin
+    val message: String? = "Hello"
+    message?.run {
+        print(this.toUpperCase())
+    }
+<
+
+`with` is a non-extension function that can access members of its argument
+concisely: you can omit the instance name when referring to its members.
+
+>kotlin
+    val person = Person("Ali", 24)
+    val message = with(person) {
+        "My name is $name and I'm $age years old."
+    }
+<
+
+`apply` executes a block of code on an object and returns the object itself.
+Inside the block, the object is referenced by this. This function is handy for
+initializing objects.
+
+>kotlin
+    val person = Person("Ali", 24)
+    person.apply {
+        name = "Ali"
+        age = 24
+    }
+<
+
+`also` works like apply: it executes a given block and returns the object
+called. Inside the block, the object is referenced by it, so it's easier to
+pass it as an argument. This function is handy for embedding additional
+actions, such as logging in call chains.
+
+>kotlin
+    val message: String? = "Hello"
+    message?.also {
+        print(it.toUpperCase())
+    }
+<
 
 -------------------------------------------------------------------------------
 CLASSES AND OBJECTS                                              *kotlin-class*
