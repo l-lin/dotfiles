@@ -116,9 +116,14 @@ return {
                 description = "Clear Chat",
               },
               yank_code = {
-                modes = { n = "<M-y>", },
+                modes = { n = "<M-y>" },
                 callback = "keymaps.yank_code",
                 description = "Yank Code",
+              },
+              auto_tool_mode = {
+                modes = { n = "<S-Tab>" },
+                callback = "keymaps.auto_tool_mode",
+                description = "Toggle automatic tool mode",
               },
             },
             roles = {
