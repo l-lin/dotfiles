@@ -1,5 +1,8 @@
 {
-  "keyMappings": "# Insert your preferred key mappings here.\nmap J nextTab\nmap K previousTab\nmap <c-d> scrollPageDown\nmap <c-u> scrollPageUp\nmap <c-e> Vomnibar.activateTabSelection\nmap ;y LinkHints.activateModeToCopyLinkUrl\nmap <c-6> visitPreviousTab",
+  "keyMappings": "# Insert your preferred key mappings here.\nmap J nextTab\nmap K previousTab\nmap <c-d> scrollPageDown\nmap <c-u> scrollPageUp\nmap <c-e> Vomnibar.activateTabSelection\nmap ;y LinkHints.activateModeToCopyLinkUrl\nmap <c-6> visitPreviousTab\nmap ;; LinkHints.activateMode action=focus",
+  "filterLinkHints": true,
+  "linkHintNumbers": "01234789",
+  "grabBackFocus": true,
   "settingsVersion": "2.3",
   "exclusionRules": []
 }
