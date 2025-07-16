@@ -1,13 +1,16 @@
 #
-# A powerful AI coding agent. Built for the terminal: 
+# A powerful AI coding agent. Built for the terminal.
 # src: https://github.com/opencode-ai/opencode
-# WARNING: Not the same as https://opencode.ai/! They share the same binary name
-# though... So use one or the other, not both at the same time!
+# WARNING: Not the same as https://opencode.ai/! They share the same binary name though...
 #
 
 { pkgs, ... }: {
   xdg.configFile."mise/conf.d/opencode-ai.toml".source = ./.config/mise/conf.d/opencode-ai.toml;
   xdg.configFile."opencode/.opencode.json".source = ./.config/opencode/.opencode.json;
+  xdg.configFile."opencode/commands" = {
+    source = ../.config/ai/prompts;
+    recursive = true;
+  };
 
   home.packages = with pkgs; [
     (writeShellScriptBin "opencode-ai" ''
