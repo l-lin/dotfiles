@@ -23,7 +23,7 @@ Input: "$ARGUMENTS"
 
 - If provided: Address the specific Kotlin topic or question
 - If empty: Ask what Kotlin concept the learner wants to explore
-  </input_handling>
+</input_handling>
 
 <instruction>
 1. Start with a brief, clear explanation of the concept
