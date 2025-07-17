@@ -29,7 +29,7 @@
 ---@field user function the user prompt to pre-fill
 
 ---@return l-lin.Prompt[] prompts all the prompts found in the directory `/nvim/lua/plugins/custom/ai/prompts/`
-local function all_prompts()
+local function global_prompts()
   local prompts = {}
   local current_dir = os.getenv("XDG_CONFIG_HOME") .. "/nvim/lua/plugins/custom/ai/prompts/"
   local stdout = io.popen("ls " .. current_dir)
@@ -55,6 +55,43 @@ local function all_prompts()
   return prompts
 end
 
+---@return l-lin.Prompt[] project_prompts all the prompts found in the current project
+local function project_prompts()
+  local prompts = {}
+
+  -- No need to find the root directory based on a root marker (e.g. a `.git`
+  -- directory), as I'm always opening codecompanion from the project root
+  -- directory.
+  local current_dir = vim.fn.getcwd()
+  local project_commands_dir = current_dir .. "/.ai/commands/"
+
+  if vim.fn.isdirectory(project_commands_dir) == 0 then
+    return prompts
+  end
+
+  local prompt_files = vim.fn.glob(project_commands_dir .. "*.md", false, true)
+
+  for _, file_path in ipairs(prompt_files) do
+    local filename_without_ext = vim.fn.fnamemodify(file_path, ":t:r")
+
+    local file = assert(io.open(file_path, "r"))
+    local content = file:read("*a")
+    file:close()
+
+    local prompt = {
+      name = filename_without_ext,
+      kind = "action",
+      tools = "",
+      system = function() return content end,
+      user = function() return "" end,
+    }
+    table.insert(prompts, prompt)
+  end
+
+  return prompts
+end
+
 local M = {}
-M.all_prompts = all_prompts
+M.global_prompts = global_prompts
+M.project_prompts = project_prompts
 return M

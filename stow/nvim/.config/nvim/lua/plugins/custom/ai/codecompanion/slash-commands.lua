@@ -20,14 +20,21 @@ local function slash_command_from(prompt_name, prompt)
   }
 end
 
+
 local function all_slash_commands()
   local roles = {}
-  local prompts = require("plugins.custom.ai.prompts").all_prompts()
-  for _, prompt in pairs(prompts) do
+
+  local prompts_module = require("plugins.custom.ai.prompts")
+  local all_prompts = {}
+  vim.list_extend(all_prompts, prompts_module.global_prompts() or {})
+  vim.list_extend(all_prompts, prompts_module.project_prompts() or {})
+
+  for _, prompt in pairs(all_prompts) do
     if prompt then
       roles[prompt.kind .. ":" .. prompt.name] = slash_command_from(prompt.name, prompt)
     end
   end
+
   return roles
 end
 
