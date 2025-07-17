@@ -12,6 +12,7 @@
     "switch_mode": "shift+tab"
   },
   "autoshare": false,
+  "share": "disabled",
   "autoupdate": false,
   "instructions": [".cursor/rules/*.md"],
   "mcp": {
