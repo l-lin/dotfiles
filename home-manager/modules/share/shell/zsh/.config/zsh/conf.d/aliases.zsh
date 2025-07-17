@@ -13,7 +13,6 @@ alias ldo="lazydocker"
 # make
 alias j="just"
 alias m="make"
-alias mi="mise"
 # ops
 alias ap="ansible-playbook"
 alias h="helm"
@@ -39,7 +38,6 @@ alias gw="git worktree"
 alias lg="lazygit"
 # ai
 alias ai='CC_LAYOUT_OVERRIDE=buffer nvim +"CodeCompanionChat Toggle"'
-alias cl="claude"
 
 # --------------------------------------------------------
 # Default options
