@@ -1,6 +1,7 @@
 --
 -- Plan codecompanion tool to behave like claude-code todo.
 -- Shamelessly copied and adapted from https://github.com/toupeira/dotfiles/blob/6906be0d5a11a159e3d9aed9ff7f5c9947f85252/vim/codecompanion/strategies/chat/agents/tools/plan.lua
+-- Works best with claude-sonnet-4 model.
 --
 
 -- Store separate tasks for each chat buffer
