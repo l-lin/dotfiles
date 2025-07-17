@@ -8,13 +8,59 @@
     "messages_half_page_up": "ctrl+u",
     "messages_half_page_down": "ctrl+d",
     "messages_previous": "ctrl+p",
-    "messages_next": "ctrl+n",
-    "switch_mode": "shift+tab"
+    "messages_next": "ctrl+n"
   },
   "autoshare": false,
   "share": "disabled",
   "autoupdate": false,
   "instructions": [".cursor/rules/*.md"],
+  "mode": {
+    "brainstorm": {
+      "model": "github-copilot/gpt-4.1",
+      "prompt": "{file:../ai/prompts/brainstorm.md}",
+      "tools": {
+        "read": true,
+        "grep": true,
+        "glob": true,
+        "webfetch": true,
+        "bash": false,
+        "write": false
+      }
+    },
+    "humanizer": {
+      "model": "github-copilot/gpt-4.1",
+      "prompt": "{file:../ai/prompts/humanizer.md}",
+      "tools": {
+        "read": true,
+        "grep": true,
+        "glob": true,
+        "bash": false,
+        "write": false
+      }
+    },
+    "mentor": {
+      "model": "github-copilot/claude-sonnet-4",
+      "prompt": "{file:../ai/prompts/mentor.md}",
+      "tools": {
+        "read": true,
+        "grep": true,
+        "glob": true,
+        "bash": false,
+        "write": false
+      }
+    },
+    "kotlin-mentor": {
+      "model": "github-copilot/claude-sonnet-4",
+      "prompt": "{file:../ai/prompts/kotlin-mentor.md}",
+      "tools": {
+        "read": true,
+        "grep": true,
+        "glob": true,
+        "bash": false,
+        "write": false
+      }
+    }
+  },
   "mcp": {
     "memory": {
       "type": "local",
