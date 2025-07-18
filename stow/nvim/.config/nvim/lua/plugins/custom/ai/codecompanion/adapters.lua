@@ -6,17 +6,7 @@ return {
       schema = {
         model = { default = "gpt-4.1" },
         temperature = { default = 0 },
-        max_tokens = { default = 64000 },
-      },
-    })
-  end,
-  copilot_brainstorm = function()
-    return require("codecompanion.adapters").extend("copilot", {
-      name = "copilot_brainstorm",
-      schema = {
-        model = { default = "claude-3.7-sonnet-thought" },
-        temperature = { default = 0.2 },
-        max_tokens = { default = 64000 },
+        max_tokens = { default = 200000 },
       },
     })
   end,
