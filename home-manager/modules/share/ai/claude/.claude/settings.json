@@ -12,7 +12,6 @@
       "Read",
       "Write",
       "mcp__atlassian__getJiraIssue",
-      "mcp__container-use__*",
       "mcp__context7__*",
       "mcp__memory__*",
       "mcp__sequentialthinking__*"

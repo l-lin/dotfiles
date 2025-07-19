@@ -78,11 +78,6 @@
     "sequentialthinking": {
       "type": "local",
       "command": ["docker", "run", "--rm", "-i", "mcp/sequentialthinking"]
-    },
-    "container-use": {
-      "type": "local",
-      "command": ["container-use", "stdio"],
-      "enabled": true
     }
   }
 }
