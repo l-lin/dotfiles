@@ -141,18 +141,20 @@ return {
             slash_commands = require("plugins.custom.ai.codecompanion.slash-commands"),
             tools = {
               opts = {
-                -- Send any errors to the LLM automatically
+                -- Send any errors to the LLM automatically.
                 auto_submit_errors = true,
-                -- Send any successful output to the LLM automatically
+                -- Send any successful output to the LLM automatically.
                 auto_submit_success = true,
-                -- automatically add tools to chat buffer
-                default_tools = { "file_search", "grep_search", "read_file" },
               },
               plan = {
                 callback = require("plugins.custom.ai.codecompanion.tools.plan"),
                 description = "Manage an internal todo list",
               },
+              -- For read only, no need for request approval.
               file_search = {
+                opts = { requires_approval = false },
+              },
+              get_changed_files = {
                 opts = { requires_approval = false },
               },
               grep_search = {
