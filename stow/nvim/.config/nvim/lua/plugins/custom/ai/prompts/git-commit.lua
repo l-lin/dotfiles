@@ -1,6 +1,6 @@
 return {
   kind = "action",
-  tools = "@{cmd_runner}",
+  tools = "@{cmd_runner} @{get_changed_files}",
   system = function()
     local path = os.getenv("XDG_CONFIG_HOME") .. "/ai/prompts/git-commit.md"
     local file = assert(io.open(path, "r"))
@@ -9,14 +9,6 @@ return {
     return content
   end,
   user = function()
-    return string.format(
-      [[Given the git diff listed below, please generate a commit message for me:
-
-```diff
-%s
-```
-]],
-      vim.fn.system("git diff --no-ext-diff --staged")
-    )
+    return "Generate a git commit message"
   end,
 }
