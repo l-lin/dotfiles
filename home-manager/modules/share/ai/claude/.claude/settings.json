@@ -11,7 +11,10 @@
       "MultiEdit",
       "Read",
       "Write",
+      "WebFetch",
+
       "mcp__atlassian__getJiraIssue",
+      "mcp__atlassian__getConfluencePage",
       "mcp__context7__*",
       "mcp__memory__*",
       "mcp__sequentialthinking__*"
