@@ -30,36 +30,19 @@
     },
     "humanizer": {
       "model": "github-copilot/gpt-4.1",
-      "prompt": "{file:../ai/prompts/humanizer.md}",
-      "tools": {
-        "read": true,
-        "grep": true,
-        "glob": true,
-        "bash": false,
-        "write": false
-      }
+      "prompt": "{file:../ai/prompts/humanizer.md}"
     },
     "mentor": {
       "model": "github-copilot/claude-sonnet-4",
-      "prompt": "{file:../ai/prompts/mentor.md}",
-      "tools": {
-        "read": true,
-        "grep": true,
-        "glob": true,
-        "bash": false,
-        "write": false
-      }
+      "prompt": "{file:../ai/prompts/mentor.md}"
     },
     "kotlin-mentor": {
       "model": "github-copilot/claude-sonnet-4",
-      "prompt": "{file:../ai/prompts/kotlin-mentor.md}",
-      "tools": {
-        "read": true,
-        "grep": true,
-        "glob": true,
-        "bash": false,
-        "write": false
-      }
+      "prompt": "{file:../ai/prompts/kotlin-mentor.md}"
+    },
+    "researcher": {
+      "model": "github-copilot/claude-sonnet-4",
+      "prompt": "{file:../ai/prompts/researcher.md}"
     }
   },
   "mcp": {
