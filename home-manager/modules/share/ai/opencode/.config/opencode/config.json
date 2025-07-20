@@ -61,6 +61,10 @@
     "sequentialthinking": {
       "type": "local",
       "command": ["docker", "run", "--rm", "-i", "mcp/sequentialthinking"]
+    },
+    "fetch": {
+      "type": "local",
+      "command": ["docker", "run", "-i", "--rm", "mcp/fetch"]
     }
   }
 }
