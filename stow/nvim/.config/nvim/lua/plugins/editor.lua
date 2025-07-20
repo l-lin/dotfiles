@@ -72,22 +72,4 @@ return {
       { "<M-3>", "<cmd>Trouble qflist toggle focus=true<cr>", desc = "Toggle Trouble (Alt+3)" },
     },
   },
-
-  -- #######################
-  -- add new plugins
-  -- #######################
-
-  -- multiple cursors
-  {
-    "mg979/vim-visual-multi",
-    event = "ModeChanged",
-    init = function()
-      vim.cmd([[
-        let g:VM_theme = "paper"
-        let g:VM_maps = {}
-        let g:VM_maps["Find Under"] = "<M-h>"
-        let g:VM_maps["Find Subword Under"] = "<M-h>"
-      ]])
-    end,
-  },
 }
