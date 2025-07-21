@@ -36,6 +36,7 @@ in {
           set -g @extrakto_popup_position 'C,0'
           set -g @extrakto_copy_key 'alt-y'
           set -g @extrakto_insert_key 'enter'
+          set -g @extrakto_grab_area 'window recent'
           set -g @extrakto_clip_tool '$COPY_TO_CLIPBOARD'
           set -g @extrakto_fzf_tool "${fzfExtrakto}/bin/fzf.zsh"
         '';
