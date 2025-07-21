@@ -30,6 +30,10 @@
     "fetch": {
       "command": "docker",
       "args": ["run", "-i", "--rm", "mcp/fetch"]
+    },
+    "atlassian": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.atlassian.com/v1/sse"]
     }
   }
 }
