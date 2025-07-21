@@ -146,7 +146,7 @@ return {
                 -- Send any successful output to the LLM automatically.
                 auto_submit_success = true,
                 -- Automatically add tools to chat buffer.
-                default_tools = { "files" },
+                -- default_tools = { "files" },
               },
               plan = {
                 callback = require("plugins.custom.ai.codecompanion.tools.plan"),
