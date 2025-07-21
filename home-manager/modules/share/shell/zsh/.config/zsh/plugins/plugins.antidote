@@ -65,9 +65,6 @@ mattmc3/zephyr path:plugins/confd
 # Suggestion commands based on command history.
 # /!\ Must not defer, otherwise it will throw the "increase FUNCNEST" error.
 zsh-users/zsh-autosuggestions
-# Add syntax highlighting.
-# /!\ Must not defer, otherwise it will throw the "increase FUNCNEST" error.
-zsh-users/zsh-syntax-highlighting
 
 #
 # Enhance ZSH

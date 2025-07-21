@@ -23,11 +23,10 @@ source ${ANTIDOTE_HOME}/mattmc3/antidote/antidote.zsh
 if [[ ! -r ${ANTIDOTE_STATIC_FILE} ]]; then
   # Ensure `plugins.antidote` is always first!
   cat ${ZDOTDIR}/plugins/plugins.antidote > ${ANTIDOTE_BUNDLE_FILE}
-  for zplugin in ${ZDOTDIR}/plugins/**/*.antidote; do
-    if [[ ${zplugin##*/} != ${ANTIDOTE_BUNDLE_FILE##*/} ]]; then
-      cat ${zplugin} >> ${ANTIDOTE_BUNDLE_FILE}
-    fi
+  for zplugin in ${ZDOTDIR}/plugins/*/*.antidote; do
+    cat ${zplugin} >> ${ANTIDOTE_BUNDLE_FILE}
   done
+  cat ${ZDOTDIR}/plugins/last-plugins.antidote >> ${ANTIDOTE_BUNDLE_FILE}
   unset zplugin
   antidote bundle < ${ANTIDOTE_BUNDLE_FILE} > ${ANTIDOTE_STATIC_FILE}
 fi

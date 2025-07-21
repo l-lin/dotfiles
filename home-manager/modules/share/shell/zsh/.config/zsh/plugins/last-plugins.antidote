@@ -1,0 +1,9 @@
+#
+# last-plugins.antidote - antidote last plugins to load
+#
+
+# Add syntax highlighting.
+# /!\ Must not defer, otherwise it will throw the "increase FUNCNEST" error.
+zsh-users/zsh-syntax-highlighting
+
+# vim: ft=config
