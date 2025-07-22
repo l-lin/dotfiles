@@ -1,6 +1,6 @@
 return {
   kind = "role",
-  tools = "@{files} @{web_search} @{fetch} #{buffer}",
+  tools = "@{files} @{web_search} @{fetch_webpage} #{buffer}",
   system = function()
     local path = os.getenv("XDG_CONFIG_HOME") .. "/ai/prompts/researcher.md"
     local file = assert(io.open(path, "r"))
