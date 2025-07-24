@@ -19,32 +19,4 @@ return {
       },
     },
   },
-
-  -- #######################
-  -- add new plugins
-  -- #######################
-
-  -- smart yank history in completion
-  {
-    "saghen/blink.cmp",
-    optional = true,
-    dependencies = { "marcoSven/blink-cmp-yanky" },
-    opts = {
-      sources = {
-        default = { "yank" },
-        providers = {
-          yank = {
-            name = "yank",
-            module = "blink-yanky",
-            opts = {
-              minLength = 5,
-              onlyCurrentFiletype = true,
-              trigger_characters = { '"' },
-              kind_icon = "󰅍",
-            },
-          },
-        },
-      },
-    },
-  },
 }
