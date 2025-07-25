@@ -184,6 +184,18 @@ configure-colima:
   colima stop
   colima start --network-address
 
+# update all tools
+update:
+  if type mise >/dev/null 2>&1; then \
+    just info "Updating tools installed from mise" \
+    && mise up; \
+  fi
+  if type brew >/dev/null 2>&1; then \
+    just info "Updating tools installed from homebrew" \
+    && brew upgrade; \
+  fi
+  just update-flake && just update-home
+
 # THEME --------------------------------------------------------------------------
 
 # change theme
