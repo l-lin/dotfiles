@@ -148,6 +148,20 @@ return {
                 -- Automatically add tools to chat buffer.
                 -- default_tools = { "files" },
               },
+              groups = {
+                files_ro = {
+                  description = "Tools related to reading and finding files",
+                  tools = {
+                    "file_search",
+                    "get_changed_files",
+                    "grep_search",
+                    "read_file",
+                  },
+                  opts = {
+                    collapse_tools = true,
+                  },
+                },
+              },
               plan = {
                 callback = require("plugins.custom.ai.codecompanion.tools.plan"),
                 description = "Manage an internal todo list",
