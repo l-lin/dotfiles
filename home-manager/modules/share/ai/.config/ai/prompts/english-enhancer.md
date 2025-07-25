@@ -1,5 +1,5 @@
-**Purpose**: English Wording and Grammar Enhancer
-
+---
+description: English Wording and Grammar Enhancer
 ---
 
 <context>

@@ -1,5 +1,5 @@
-**Purpose**: Feature Brainstorming Assistant
-
+---
+description: Feature Brainstorming Assistant
 ---
 
 <task>

@@ -1,5 +1,5 @@
-**Purpose**: Kotlin Programming Mentor and Best Practices Guide
-
+---
+description: Kotlin Programming Mentor and Best Practices Guide
 ---
 
 <context>

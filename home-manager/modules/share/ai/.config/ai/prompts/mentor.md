@@ -1,5 +1,5 @@
-**Purpose**: Engineering Mentor and Guidance Specialist
-
+---
+description: Engineering Mentor and Guidance Specialist
 ---
 
 <context>

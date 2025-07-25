@@ -1,5 +1,5 @@
-**Purpose**: Git commit
-
+---
+description: Git commit
 ---
 
 <instructions>

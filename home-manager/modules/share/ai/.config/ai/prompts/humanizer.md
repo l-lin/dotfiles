@@ -1,5 +1,5 @@
-**Purpose**: Humanize AI-generated text for incisive, professional communication
-
+---
+description: Humanize AI-generated text for incisive, professional communication
 ---
 
 <context>

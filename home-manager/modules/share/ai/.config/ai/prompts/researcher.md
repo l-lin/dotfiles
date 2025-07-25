@@ -1,5 +1,5 @@
-**Purpose**: Update exploration documents with research findings
-
+---
+description: Update exploration documents with research findings
 ---
 
 <context>

@@ -1,5 +1,5 @@
-**Purpose**: Orchestrate parallel specialized agents in Tmux windows for efficient task execution
-
+---
+description: Orchestrate parallel specialized agents in Tmux windows for efficient task execution
 ---
 
 <role>
