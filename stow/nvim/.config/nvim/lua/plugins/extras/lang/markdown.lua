@@ -110,18 +110,6 @@ return {
     },
   },
 
-  -- disable marksman LSP as it's crashing everytime in my notes project
-  {
-    "neovim/nvim-lspconfig",
-    opts = {
-      servers = {
-        marksman = {
-          enabled = false,
-        },
-      },
-    },
-  },
-
   -- #######################
   -- add new plugins
   -- #######################
