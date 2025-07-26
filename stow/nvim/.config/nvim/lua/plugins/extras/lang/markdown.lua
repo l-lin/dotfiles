@@ -110,6 +110,18 @@ return {
     },
   },
 
+  -- disable marksman LSP as it's crashing everytime in my notes project
+  {
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        marksman = {
+          enabled = false,
+        },
+      },
+    },
+  },
+
   -- #######################
   -- add new plugins
   -- #######################
@@ -126,6 +138,28 @@ return {
         noremap = true,
         silent = true,
         desc = "Toggle Markdown table",
+      },
+    },
+  },
+
+  -- add wiki-links
+  {
+    "saghen/blink.cmp",
+    optional = true,
+    dependencies = {
+      "l-lin/blink-cmp-wiki-links",
+      dev = true
+    },
+    opts = {
+      sources = {
+        default = { "wiki_links" },
+        providers = {
+          wiki_links = {
+            name = "wiki_links",
+            module = "blink-cmp-wiki-links",
+            score_offset = 85,
+          },
+        },
       },
     },
   },
