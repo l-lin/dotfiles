@@ -8,14 +8,9 @@
 #
 
 # Set prompt theme
-typeset -ga ZSH_THEME
-zstyle -a ':zephyr:plugin:prompt' theme ZSH_THEME
-ZSH_THEME=(p10k lean)
-
-# Manually set your prompt ask powerlevel10k may not work well with post_zshrc.
 setopt prompt_subst transient_rprompt
-autoload -Uz promptinit && promptinit
-prompt "$ZSH_THEME[@]"
+
+[[ ! -f "${ZDOTDIR}/themes/lean.p10k.zsh" ]] || source "${ZDOTDIR}/themes/lean.p10k.zsh"
 
 # Define p10k function to add a custom prompt segment.
 function prompt_remote_context() {
