@@ -1,7 +1,9 @@
 return {
-  -- Emoji source for blink.nvim.
+  --
+  -- A plugin sda a to search for and insert emojis/kaomojis, with auto-completion support, right from Neovim 😀
+  --
   {
-    "allaman/emoji.nvim",
+    "l-lin/emoji.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
     cmd = { "Emoji" },
     keys = {
