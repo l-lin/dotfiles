@@ -1,6 +1,10 @@
+--
 -- Autocmds are automatically loaded on the VeryLazy event
 -- Default autocmds that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/autocmds.lua
 -- Add any additional autocmds here
+--
+
+-- Close buffer with `q`.
 vim.api.nvim_create_autocmd("FileType", {
   group = vim.api.nvim_create_augroup("close_with_q", { clear = true }),
   pattern = {
@@ -28,7 +32,7 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
--- Consider Jenkinsfile as groovy files
+-- Consider Jenkinsfile as groovy files.
 vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
   pattern = "Jenkinsfile",
   callback = function()
@@ -36,11 +40,25 @@ vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
   end,
 })
 
--- Consider bats test files as shell files
+-- Consider bats test files as shell files.
 vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
   pattern = "*.bats",
   callback = function()
     vim.bo.filetype = "sh"
+  end,
+})
+
+-- Set text width everywhere except in my notes project.
+vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {
+  callback = function()
+    local current_file = vim.fn.expand("%:p")
+    local notes_dir = vim.fn.expand("~/perso/notes")
+
+    if string.find(current_file, notes_dir, 1, true) == 1 then
+      vim.bo.textwidth = 0
+    else
+      vim.bo.textwidth = 80
+    end
   end,
 })
 

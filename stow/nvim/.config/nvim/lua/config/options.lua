@@ -22,9 +22,6 @@ vim.g.autoformat = false
 vim.o.tabstop = 2
 vim.o.shiftwidth = vim.o.tabstop
 
--- do not have long lines
-vim.o.textwidth = 80
-
 -- lazyvim config
 -- use snacks.picker
 vim.g.lazyvim_picker = "snacks"
