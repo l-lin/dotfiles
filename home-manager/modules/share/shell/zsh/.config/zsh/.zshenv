@@ -22,6 +22,11 @@
 # order of operations: .zshenv -> .zprofile -> .zshrc -> .zlogin -> .zlogout
 # src: https://apple.stackexchange.com/a/388623
 #
+# To benchmark your zsh startup, you can use the following:
+# - zsh native zprof: zsh -c "zmodload zsh/zprof; source ~/.config/zsh/.zshrc; zprof"
+# - custom function: `timesh`
+# - more advance tool https://github.com/romkatv/zsh-bench: `zsh-bench`
+#
 
 #
 # .zshenv - Zsh environment file, loaded always.
