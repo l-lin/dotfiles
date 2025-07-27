@@ -66,4 +66,4 @@ skywind3000/z.lua kind:defer
 #
 
 # Benchmark for interactive Zsh.
-romkatv/zsh-bench kind:path
+#romkatv/zsh-bench kind:path
