@@ -38,11 +38,39 @@ return {
         desc = "Open today's note",
       },
       {
-        "<leader>oT",
+        "<leader>oo",
         "<cmd>Obsidian tomorrow<cr>",
         mode = "n",
         noremap = true,
         desc = "Open tomorrow's note",
+      },
+      {
+        "<leader>on",
+        "<cmd>Obsidian new<cr>",
+        mode = "n",
+        noremap = true,
+        desc = "Create note",
+      },
+      {
+        "<leader>oN",
+        "<cmd>Obsidian new_from_template<cr>",
+        mode = "n",
+        noremap = true,
+        desc = "Create note using a template",
+      },
+      {
+        "<leader>or",
+        "<cmd>Obsidian rename<cr>",
+        mode = "n",
+        noremap = true,
+        desc = "Rename note",
+      },
+      {
+        "<leader>oT",
+        "<cmd>Obsidian template<cr>",
+        mode = "n",
+        noremap = true,
+        desc = "Apply template",
       },
     },
     opts = {
@@ -67,6 +95,9 @@ return {
       templates = {
         folder = "0-meta/templates",
         substitutions = {
+          today = function()
+            return os.date("%Y-%m-%d", os.time())
+          end,
           yesterday = function()
             return os.date("%Y-%m-%d", os.time() - 86400)
           end,
@@ -125,7 +156,9 @@ return {
 
       ui = {
         -- In conflict with render-markdown.nvim.
-        enable = false,
+        bullets = {},
+        checkboxes = {},
+        external_link_icon = {},
         hl_groups = {
           ObsidianTodo = { link = "Normal" },
           ObsidianDone = { link = "Normal" },
@@ -138,8 +171,7 @@ return {
         },
       },
 
-      -- Optional, boolean or a function that takes a filename and returns a boolean.
-      -- `true` indicates that you don't want obsidian.nvim to manage frontmatter.
+      -- I don't want automatic frontmatter format.
       disable_frontmatter = true,
     },
   },
