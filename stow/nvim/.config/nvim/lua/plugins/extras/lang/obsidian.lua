@@ -57,7 +57,7 @@ return {
       },
 
       daily_notes = {
-        folder = "5-rituals/daily/2024",
+        folder = "5-rituals/daily",
         date_format = "%Y-%m-%d",
         default_tags = { "journal/daily" },
         template = "template-daily-nvim.md",
@@ -124,6 +124,8 @@ return {
       },
 
       ui = {
+        -- In conflict with render-markdown.nvim.
+        enable = false,
         hl_groups = {
           ObsidianTodo = { link = "Normal" },
           ObsidianDone = { link = "Normal" },

@@ -242,6 +242,7 @@ return {
   -- Hide the XML tag in the context section.
   {
     "MeanderingProgrammer/render-markdown.nvim",
+    optional = true,
     opts = {
       overrides = {
         filetype = {
