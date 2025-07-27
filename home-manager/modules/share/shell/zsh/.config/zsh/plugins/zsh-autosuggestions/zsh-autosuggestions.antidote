@@ -1,6 +1,5 @@
 # Suggestion commands based on command history.
-# /!\ Must not defer, otherwise it will throw the "increase FUNCNEST" error.
-zsh-users/zsh-autosuggestions
+zsh-users/zsh-autosuggestions kind:defer
 # Configure zsh-autosuggestions
 "${ZSH_CUSTOM}" path:plugins/zsh-autosuggestions kind:defer
 
