@@ -1,3 +1,8 @@
+--
+-- Agentic mode, to simulate like the other TUI AI tools.
+-- src: https://github.com/olimorris/codecompanion.nvim/discussions/1879#discussioncomment-13891220
+--
+
 return {
   kind = "role",
   tools = "@{full_stack_dev} @{mcp} @{next_edit_suggestion}",
