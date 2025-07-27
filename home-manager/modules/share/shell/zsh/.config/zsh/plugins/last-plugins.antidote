@@ -3,6 +3,5 @@
 #
 
 # Add syntax highlighting.
-# /!\ Must not defer, otherwise it will throw the "increase FUNCNEST" error.
-zsh-users/zsh-syntax-highlighting
-"${ZSH_CUSTOM}" path:plugins/zsh-syntax-highlighting
+zsh-users/zsh-syntax-highlighting kind:defer
+"${ZSH_CUSTOM}" path:plugins/zsh-syntax-highlighting kind:defer
