@@ -146,10 +146,7 @@ return {
   {
     "saghen/blink.cmp",
     optional = true,
-    dependencies = {
-      "l-lin/blink-cmp-wiki-links",
-      dev = true
-    },
+    dependencies = { "l-lin/blink-cmp-wiki-links" },
     opts = {
       sources = {
         default = { "wiki_links" },
