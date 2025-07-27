@@ -19,15 +19,6 @@
 #
 
 #
-# Prompt
-#
-
-# Fast zsh prompt theme.
-# /!\ Must be called first!
-"${ZSH_CUSTOM}" path:plugins/p10k-instaprompt
-romkatv/powerlevel10k
-
-#
 # Environment
 #
 
@@ -54,7 +45,7 @@ mattmc3/zephyr path:plugins/completion
 # Override and fill in the gaps of the default keybinds.
 mattmc3/zephyr path:plugins/editor
 # Better vi mode.
-jeffreytse/zsh-vi-mode
+jeffreytse/zsh-vi-mode kind:defer
 
 #
 # Fish-like
@@ -62,9 +53,6 @@ jeffreytse/zsh-vi-mode
 
 # Use a Fish-like conf.d directory for sourcing configs.
 mattmc3/zephyr path:plugins/confd
-# Suggestion commands based on command history.
-# /!\ Must not defer, otherwise it will throw the "increase FUNCNEST" error.
-zsh-users/zsh-autosuggestions
 
 #
 # Enhance ZSH
@@ -72,14 +60,10 @@ zsh-users/zsh-autosuggestions
 
 # Access to most visited directories.
 skywind3000/z.lua kind:defer
-# Add quotes automatically to commands.
-ianthehenry/zsh-autoquoter kind:defer
 
 #
 # Benchmark
 #
 
 # Benchmark for interactive Zsh.
-#romkatv/zsh-bench kind:path
-
-# vim: ft=config
+romkatv/zsh-bench kind:path

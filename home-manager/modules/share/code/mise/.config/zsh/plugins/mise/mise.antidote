@@ -1,4 +1,2 @@
 # Activate mise: https://mise.jdx.dev/cli/activate.html.
 "${ZSH_CUSTOM}" path:plugins/mise kind:defer
-
-# vim: ft=config

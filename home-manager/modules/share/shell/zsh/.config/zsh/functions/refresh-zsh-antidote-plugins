@@ -10,8 +10,8 @@ fi
 [[ -f ${ANTIDOTE_STATIC_FILE} ]] && rm -rf ${ANTIDOTE_STATIC_FILE}
 [[ -f ${ANTIDOTE_BUNDLE_FILE} ]] && rm -rf ${ANTIDOTE_BUNDLE_FILE}
 
-# Ensure `plugins.antidote` is always first!
-cat ${ZDOTDIR}/plugins/plugins.antidote > ${ANTIDOTE_BUNDLE_FILE}
+cat ${ZDOTDIR}/plugins/first-plugins.antidote > ${ANTIDOTE_BUNDLE_FILE}
+cat ${ZDOTDIR}/plugins/plugins.antidote >> ${ANTIDOTE_BUNDLE_FILE}
 for zplugin in ${ZDOTDIR}/plugins/*/*.antidote; do
   cat ${zplugin} >> ${ANTIDOTE_BUNDLE_FILE}
 done

@@ -1,0 +1,4 @@
+# Add quotes automatically to commands.
+ianthehenry/zsh-autoquoter kind:defer
+# Configure zaq + append to zsh-syntax-highlighting
+"${ZSH_CUSTOM}" path:plugins/zsh-autoquoter kind:defer

@@ -4,5 +4,3 @@ mattmc3/zephyr path:plugins/prompt
 "${ZSH_CUSTOM}" path:plugins/prompt
 # Make the terminal more colorful.
 mattmc3/zephyr path:plugins/color
-
-# vim: ft=config

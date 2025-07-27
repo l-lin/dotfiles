@@ -1,4 +1,2 @@
 # Lazy load a Fish-like functions directory.
 "${ZSH_CUSTOM}" path:plugins/zfunctions
-
-# vim: ft=config

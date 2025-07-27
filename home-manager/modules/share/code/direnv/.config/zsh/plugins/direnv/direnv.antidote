@@ -1,3 +1,2 @@
+# A fast, persistent use_nix/use_flake implementation for direnv.
 "${ZSH_CUSTOM}" path:plugins/direnv kind:defer
-
-# vim: ft=config

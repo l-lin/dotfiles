@@ -1,0 +1,8 @@
+#
+# first-plugins.antidote - antidote first plugins to load
+#
+
+# Fast zsh prompt theme.
+# /!\ Must be called first!
+"${ZSH_CUSTOM}" path:plugins/p10k-instaprompt
+romkatv/powerlevel10k

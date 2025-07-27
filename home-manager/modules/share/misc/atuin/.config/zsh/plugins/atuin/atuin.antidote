@@ -1,3 +1,2 @@
+# Shell history & executable runbooks
 "${ZSH_CUSTOM}" path:plugins/atuin kind:defer
-
-# vim: ft=config

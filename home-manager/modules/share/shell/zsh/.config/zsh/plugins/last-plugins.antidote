@@ -5,5 +5,4 @@
 # Add syntax highlighting.
 # /!\ Must not defer, otherwise it will throw the "increase FUNCNEST" error.
 zsh-users/zsh-syntax-highlighting
-
-# vim: ft=config
+"${ZSH_CUSTOM}" path:plugins/zsh-syntax-highlighting
