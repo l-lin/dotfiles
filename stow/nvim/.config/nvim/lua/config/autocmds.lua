@@ -33,7 +33,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- Consider Jenkinsfile as groovy files.
-vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   pattern = "Jenkinsfile",
   callback = function()
     vim.bo.filetype = "groovy"
@@ -41,7 +41,7 @@ vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
 })
 
 -- Consider bats test files as shell files.
-vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
   pattern = "*.bats",
   callback = function()
     vim.bo.filetype = "sh"
@@ -56,9 +56,10 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {
 
     if string.find(current_file, notes_dir, 1, true) == 1 then
       vim.bo.textwidth = 0
+      vim.wo.wrap = true
     else
       vim.bo.textwidth = 80
+      vim.wo.wrap = false
     end
   end,
 })
-
