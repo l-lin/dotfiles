@@ -16,25 +16,9 @@
   "instructions": [".cursor/rules/*.md"],
   "layout": "stretch",
   "mode": {
-    "brainstorm": {
-      "model": "github-copilot/gpt-4.1",
-      "prompt": "{file:../ai/prompts/brainstorm.md}",
-      "tools": {
-        "read": true,
-        "grep": true,
-        "glob": true,
-        "webfetch": true,
-        "bash": false,
-        "write": false
-      }
-    },
     "humanizer": {
       "model": "github-copilot/gpt-4.1",
       "prompt": "{file:../ai/prompts/humanizer.md}"
-    },
-    "mentor": {
-      "model": "github-copilot/claude-sonnet-4",
-      "prompt": "{file:../ai/prompts/mentor.md}"
     },
     "kotlin-mentor": {
       "model": "github-copilot/claude-sonnet-4",
@@ -42,7 +26,7 @@
     },
     "researcher": {
       "model": "github-copilot/claude-sonnet-4",
-      "prompt": "{file:../ai/prompts/researcher.md}"
+      "prompt": "{file:../ai/agents/researcher-organizer.md}"
     }
   },
   "mcp": {
