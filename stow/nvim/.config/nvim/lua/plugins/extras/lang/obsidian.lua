@@ -74,6 +74,9 @@ return {
       },
     },
     opts = {
+      -- Too noisy because of https://github.com/obsidian-nvim/obsidian.nvim/blob/5186cba27b256daae5f824b2789e016161f0b20c/lua/obsidian/config.lua#L536-L536
+      log_level = vim.log.levels.ERROR,
+
       workspaces = {
         {
           name = "perso",
@@ -164,11 +167,24 @@ return {
         },
       },
 
+      -- Only need those checkboxes.
+      checkbox = {
+        order = { " ", "x", "-", ">" },
+      },
+
       ui = {
         -- In conflict with render-markdown.nvim.
         bullets = {},
-        checkboxes = {},
+        -- Use the same icons as render-markdown.nvim.
+        checkboxes = {
+          [" "] = { char = "󰄱" },
+          ["x"] = { char = "󰱒" },
+          ["-"] = { char = "✘" },
+          [">"] = { char = "󰥔" },
+        },
+        -- Use the one from render-markdown.nvim.
         external_link_icon = {},
+        -- Use the same colors as the theme, no need to hardcode the colors.
         hl_groups = {
           ObsidianTodo = { link = "Normal" },
           ObsidianDone = { link = "Normal" },
