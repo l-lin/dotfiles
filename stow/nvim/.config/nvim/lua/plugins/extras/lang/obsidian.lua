@@ -141,6 +141,16 @@ return {
       --  * "notes_subdir" - put new notes in the default notes subdirectory.
       new_notes_location = "notes_subdir",
 
+      -- Customize how note IDs are generated given an optional title.
+      ---@param title string|?
+      ---@return string
+      note_id_func = function(title)
+        if title ~= "" then
+          return title
+        end
+        return tostring(os.time())
+      end,
+
       picker = {
         -- Set your preferred picker. Can be one of 'telescope.nvim', 'fzf-lua', 'mini.pick' or 'snacks.pick'.
         name = "snacks.pick",
