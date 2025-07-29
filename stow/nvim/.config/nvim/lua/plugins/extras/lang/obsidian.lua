@@ -174,14 +174,8 @@ return {
 
       ui = {
         -- In conflict with render-markdown.nvim.
+        enable = false,
         bullets = {},
-        -- Use the same icons as render-markdown.nvim.
-        checkboxes = {
-          [" "] = { char = "󰄱" },
-          ["x"] = { char = "󰱒" },
-          ["-"] = { char = "✘" },
-          [">"] = { char = "󰥔" },
-        },
         -- Use the one from render-markdown.nvim.
         external_link_icon = {},
         -- Use the same colors as the theme, no need to hardcode the colors.
