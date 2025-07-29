@@ -38,6 +38,9 @@ alias gw="git worktree"
 alias lg="lazygit"
 # ai
 alias ai='CC_LAYOUT_OVERRIDE=buffer nvim +"CodeCompanionChat Toggle"'
+# mise
+alias mr="mise run"
+alias mw="mise watch"
 
 # --------------------------------------------------------
 # Default options
