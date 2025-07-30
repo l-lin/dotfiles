@@ -1,6 +1,6 @@
 return {
   {
-    "obsidian-nvim/obsidian.nvim",
+    "l-lin/obsidian.nvim",
     version = "*", -- recommended, use latest release instead of latest commit
     lazy = true,
     event = {
@@ -31,14 +31,14 @@ return {
         desc = "Open yesterday's note",
       },
       {
-        "<leader>ot",
+        "<leader>oo",
         "<cmd>Obsidian today<cr>",
         mode = "n",
         noremap = true,
         desc = "Open today's note",
       },
       {
-        "<leader>oo",
+        "<leader>ot",
         "<cmd>Obsidian tomorrow<cr>",
         mode = "n",
         noremap = true,
@@ -71,6 +71,13 @@ return {
         mode = "n",
         noremap = true,
         desc = "Apply template",
+      },
+      {
+        "<leader>of",
+        "<cmd>Obsidian follow_link<cr>",
+        mode = "n",
+        noremap = true,
+        desc = "Follow link",
       },
     },
     opts = {
