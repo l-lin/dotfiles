@@ -1,3 +1,17 @@
+---@module "obsidian.nvim"
+
+---Convert a title to a date.
+---Return current date if the title is not in the expected format.
+---@param note obsidian.Note the note to convert
+---@return integer current_date date in seconds since epoch
+local function id_to_date(note)
+  local year, month, day = note.id:match("^(%d+)-(%d+)-(%d+)$")
+  if not year or not month or not day then
+    return os.time()
+  end
+  return os.time({ year = year, month = month, day = day })
+end
+
 return {
   {
     "l-lin/obsidian.nvim",
@@ -105,31 +119,37 @@ return {
       templates = {
         folder = "0-meta/templates",
         substitutions = {
-          today = function()
-            return os.date("%Y-%m-%d", os.time())
+          ---@param ctx obsidian.TemplateContext
+          today = function(ctx)
+            return os.date("%Y-%m-%d", id_to_date(ctx.partial_note))
           end,
-          yesterday = function()
-            return os.date("%Y-%m-%d", os.time() - 86400)
+          ---@param ctx obsidian.TemplateContext
+          yesterday = function(ctx)
+            return os.date("%Y-%m-%d", id_to_date(ctx.partial_note) - 86400)
           end,
-          tomorrow = function()
-            return os.date("%Y-%m-%d", os.time() + 86400)
+          ---@param ctx obsidian.TemplateContext
+          tomorrow = function(ctx)
+            return os.date("%Y-%m-%d", id_to_date(ctx.partial_note) + 86400)
           end,
-          current_month = function()
-            return os.date("%Y-%m")
+          ---@param ctx obsidian.TemplateContext
+          current_month = function(ctx)
+            return os.date("%Y-%m", id_to_date(ctx.partial_note))
           end,
-          todo = function()
+          ---@param ctx obsidian.TemplateContext
+          todo = function(ctx)
+            local today = id_to_date(ctx.partial_note)
             local t = {}
-            if os.date("%u") ~= "6" and os.date("%u") ~= "7" then
+            if os.date("%u", today) ~= "6" and os.date("%u", today) ~= "7" then
               table.insert(t, "- [ ] deploy in production")
             end
-            if os.date("%u") == "3" then
-              table.insert(t, "- [ ] [[1o1 - " .. os.date("%Y-%m") .. "]]")
+            if os.date("%u", today) == "3" then
+              table.insert(t, "- [ ] [[1o1 - " .. os.date("%Y-%m", today) .. "]]")
             end
-            if os.date("%u") == "5" then
+            if os.date("%u", today) == "5" then
               table.insert(t, "- [ ] update [[career progress]] with `/project-checkpoint`")
               table.insert(t, "- [ ] [[workday]]: enter your time")
             end
-            if os.date("%u") == "7" then
+            if os.date("%u", today) == "7" then
               table.insert(t, "- [ ] weekly journal with `/weekly`")
               table.insert(t, "- [ ] update main quests")
             end
