@@ -1,0 +1,29 @@
+{
+  "$schema": "https://charm.land/crush.json",
+  "mcp": {
+    "memory": {
+      "type": "stdio",
+      "command": "docker",
+      "args": [
+        "docker",
+        "run",
+        "--rm",
+        "-i",
+        "-v",
+        "mcp-memory:/app/dist",
+        "mcp/memory"
+      ]
+    },
+    "sequentialthinking": {
+      "type": "stdio",
+      "command": "docker",
+      "args": [
+        "docker",
+        "run",
+        "--rm",
+        "-i",
+        "mcp/sequentialthinking"
+      ]
+    }
+  }
+}

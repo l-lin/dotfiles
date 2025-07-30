@@ -68,6 +68,7 @@ repomix-output.xml
 settings.local.json
 CLAUDE.local.md
 .opencode
+.crush
 
 # Mise #
 ########
