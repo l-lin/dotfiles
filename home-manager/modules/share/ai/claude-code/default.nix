@@ -12,4 +12,8 @@
     source = ../.config/ai/prompts;
     recursive = true;
   };
+  home.file.".claude/agents" = {
+    source = ../.config/ai/agents;
+    recursive = true;
+  };
 }
