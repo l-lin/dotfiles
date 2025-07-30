@@ -41,9 +41,11 @@
     # To get the list of installed apps with brew: `brew list`
     brews = [
       # Open-source, extensible AI agent that goes beyond code suggestions - install, execute, edit, and test with any LLM: https://github.com/block/goose
-      "block-goose-cli"
+      #"block-goose-cli"
       # Elegant Lua unit testing: https://lunarmodules.github.io/busted/
       "busted"
+      # Manage multiple AI terminal agents like Claude Code, Aider, Codex, OpenCode, and Amp: https://smtg-ai.github.io/claude-squad/
+      "claude-squad"
       # Interpreter for PostScript and PDF: https://www.ghostscript.com/
       "ghostscript"
     ];
