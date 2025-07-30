@@ -2,8 +2,13 @@
 # AI related stuff.
 #
 
-{ fileExplorer, ... }: {
-  imports = fileExplorer.allSubdirs ./.;
+{
+  imports = [
+    ./claude-code
+    ./crush
+    ./open-codex
+    ./opencode
+  ];
 
   # Symlink ~/.config/zsh/secrets/.secrets.ai.
   xdg.configFile."zsh/secrets/.secrets.ai".source = ./.config/zsh/secrets/.secrets.ai;
