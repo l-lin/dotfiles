@@ -26,7 +26,7 @@
     },
     "researcher": {
       "model": "github-copilot/claude-sonnet-4",
-      "prompt": "{file:../ai/agents/researcher-organizer.md}"
+      "prompt": "{file:../ai/agents/research-organizer.md}"
     }
   },
   "mcp": {
