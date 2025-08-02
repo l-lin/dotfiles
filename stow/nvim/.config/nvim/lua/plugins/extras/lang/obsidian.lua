@@ -93,6 +93,13 @@ return {
         noremap = true,
         desc = "Follow link",
       },
+      {
+        "<leader>oP",
+        require("plugins.custom.lang.obsidian.article_to_markdown").paste_url,
+        mode = "n",
+        noremap = true,
+        desc = "Generate note from URL in clipboard",
+      },
     },
     opts = {
       -- Too noisy because of https://github.com/obsidian-nvim/obsidian.nvim/blob/5186cba27b256daae5f824b2789e016161f0b20c/lua/obsidian/config.lua#L536-L536
@@ -101,7 +108,7 @@ return {
       workspaces = {
         {
           name = "perso",
-          path = "~/perso/notes",
+          path = vim.g.notes_dir,
           overrides = {
             notes_subdir = "6-triage",
           },

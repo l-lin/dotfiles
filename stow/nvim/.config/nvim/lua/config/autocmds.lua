@@ -52,7 +52,7 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
 vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {
   callback = function()
     local current_file = vim.fn.expand("%:p")
-    local notes_dir = vim.fn.expand("~/perso/notes")
+    local notes_dir = vim.fn.expand(vim.g.notes_dir)
 
     if string.find(current_file, notes_dir, 1, true) == 1 then
       vim.bo.textwidth = 0

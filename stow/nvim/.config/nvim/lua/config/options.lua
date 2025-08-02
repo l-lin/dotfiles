@@ -30,3 +30,6 @@ vim.g.snacks_animate = false
 
 -- add virtual column so that I don't go over it
 -- vim.opt.colorcolumn = "80"
+
+-- path to my notes directory
+vim.g.notes_dir = "~/perso/notes"

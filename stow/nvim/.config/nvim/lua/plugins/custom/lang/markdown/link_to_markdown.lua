@@ -208,7 +208,5 @@ local function paste_url()
 end
 
 local M = {}
-M.is_url = is_valid_url
-M.create_markdown_link = create_markdown_link
 M.paste_url = paste_url
 return M
