@@ -226,6 +226,143 @@ local function extract_readable_content(html_content)
   return html_content:match("<body[^>]*>(.-)</body>") or html_content
 end
 
+---Normalize various date formats to YYYY-MM-DD
+---@param date_str string the date string to normalize
+---@return string|nil normalized_date the normalized date or nil if parsing fails
+local function normalize_date(date_str)
+  if not date_str then
+    return nil
+  end
+
+  -- Clean the date string
+  date_str = date_str:gsub("^%s+", ""):gsub("%s+$", "")
+
+  -- ISO 8601 format (2023-12-25T10:30:00Z or 2023-12-25T10:30:00+00:00)
+  local year, month, day = date_str:match("(%d%d%d%d)%-(%d%d)%-(%d%d)T?")
+  if year and month and day then
+    return string.format("%04d-%02d-%02d", tonumber(year), tonumber(month), tonumber(day))
+  end
+
+  -- Format: December 25, 2023 or Dec 25, 2023
+  local month_names = {
+    january = "01",
+    jan = "01",
+    february = "02",
+    feb = "02",
+    march = "03",
+    mar = "03",
+    april = "04",
+    apr = "04",
+    may = "05",
+    june = "06",
+    jun = "06",
+    july = "07",
+    jul = "07",
+    august = "08",
+    aug = "08",
+    september = "09",
+    sep = "09",
+    october = "10",
+    oct = "10",
+    november = "11",
+    nov = "11",
+    december = "12",
+    dec = "12",
+  }
+
+  local month_name, day_num, year_num = date_str:lower():match("(%a+)%s+(%d+),%s*(%d%d%d%d)")
+  if month_name and day_num and year_num and month_names[month_name] then
+    return string.format("%04d-%s-%02d", tonumber(year_num), month_names[month_name], tonumber(day_num))
+  end
+
+  -- Format: 25/12/2023 or 12/25/2023 (ambiguous, assume MM/DD/YYYY for US sites)
+  local part1, part2, year_part = date_str:match("(%d+)/(%d+)/(%d%d%d%d)")
+  if part1 and part2 and year_part then
+    -- Assume MM/DD/YYYY if first part > 12, otherwise DD/MM/YYYY
+    local month_num, day_num
+    if tonumber(part1) > 12 then
+      day_num, month_num = part1, part2
+    else
+      month_num, day_num = part1, part2
+    end
+    return string.format("%04d-%02d-%02d", tonumber(year_part), tonumber(month_num), tonumber(day_num))
+  end
+
+  -- Format: 2023/12/25
+  year, month, day = date_str:match("(%d%d%d%d)/(%d+)/(%d+)")
+  if year and month and day then
+    return string.format("%04d-%02d-%02d", tonumber(year), tonumber(month), tonumber(day))
+  end
+
+  return nil
+end
+
+---Extract publication date from HTML content
+---@param html_content string the HTML content to extract date from
+---@param url string the URL being processed (for context-specific extraction)
+---@return string|nil date the extracted date in YYYY-MM-DD format or nil if not found
+local function extract_date(html_content, url)
+  if not html_content then
+    return nil
+  end
+
+  -- List of date patterns to try, in order of preference
+  local date_patterns = {
+    -- Meta tags
+    { pattern = '<meta[^>]*property="article:published_time"[^>]*content="([^"]+)"', priority = 1 },
+    { pattern = '<meta[^>]*name="publishdate"[^>]*content="([^"]+)"', priority = 1 },
+    { pattern = '<meta[^>]*name="publish-date"[^>]*content="([^"]+)"', priority = 1 },
+    { pattern = '<meta[^>]*name="date"[^>]*content="([^"]+)"', priority = 1 },
+    { pattern = '<meta[^>]*name="DC%.date"[^>]*content="([^"]+)"', priority = 1 },
+    { pattern = '<meta[^>]*name="publication-date"[^>]*content="([^"]+)"', priority = 1 },
+
+    -- JSON-LD structured data
+    { pattern = '"datePublished"%s*:%s*"([^"]+)"', priority = 2 },
+    { pattern = '"dateCreated"%s*:%s*"([^"]+)"', priority = 2 },
+    { pattern = '"uploadDate"%s*:%s*"([^"]+)"', priority = 2 },
+
+    -- Time elements
+    { pattern = '<time[^>]*datetime="([^"]+)"', priority = 3 },
+    { pattern = '<time[^>]*pubdate[^>]*datetime="([^"]+)"', priority = 2 },
+
+    -- Common class/id patterns
+    { pattern = '<[^>]*class="[^"]*date[^"]*"[^>]*>([^<]+)', priority = 4 },
+    { pattern = '<[^>]*class="[^"]*published[^"]*"[^>]*>([^<]+)', priority = 4 },
+    { pattern = '<[^>]*id="[^"]*date[^"]*"[^>]*>([^<]+)', priority = 4 },
+  }
+
+  -- YouTube-specific patterns
+  if url and is_youtube_url(url) then
+    table.insert(date_patterns, 1, { pattern = '"publishDate":"([^"]+)"', priority = 1 })
+    table.insert(date_patterns, 1, { pattern = '"uploadDate":"([^"]+)"', priority = 1 })
+  end
+
+  local found_dates = {}
+
+  -- Extract all potential dates
+  for _, pattern_info in ipairs(date_patterns) do
+    local date_str = html_content:match(pattern_info.pattern)
+    if date_str then
+      table.insert(found_dates, { date = date_str, priority = pattern_info.priority })
+    end
+  end
+
+  -- Sort by priority (lower number = higher priority)
+  table.sort(found_dates, function(a, b)
+    return a.priority < b.priority
+  end)
+
+  -- Try to parse the first valid date
+  for _, date_info in ipairs(found_dates) do
+    local normalized_date = normalize_date(date_info.date)
+    if normalized_date then
+      return normalized_date
+    end
+  end
+
+  return nil
+end
+
 -- Clean and normalize text content
 local function clean_text(text)
   if not text then
@@ -269,6 +406,9 @@ local function extract_metadata(html_content, url)
     metadata.title = metadata.title:gsub("%s*-%s*YouTube%s*$", "")
   end
 
+  -- Extract publication date
+  metadata.date = extract_date(html_content, url)
+
   return metadata
 end
 
@@ -289,6 +429,7 @@ local function parse_url(url)
   local result = {
     url = url,
     title = metadata.title,
+    date = metadata.date or os.date("%Y-%m-%d"),
     current_date = os.date("%Y-%m-%d"),
   }
 
@@ -366,7 +507,7 @@ tags:
 ---
 # {{title}}
 
-> [!quote] src: [{{title}}]({{url}}) - [[{{current_date}}]]
+> [!quote] src: [{{title}}]({{url}}) - [[{{date}}]]
 > <iframe frameborder="0" allowfullscreen src="https://youtube.com/embed/{{video_id}}?autoplay=0" width="100%" height="403"></iframe>
 ]=]
     else
@@ -378,7 +519,7 @@ tags:
 ---
 # {{title}}
 
-> [!quote] src: [{{title}}]({{url}}) - [[{{current_date}}]]
+> [!quote] src: [{{title}}]({{url}}) - [[{{date}}]]
 
 {{content}}
 ]=]
