@@ -10,7 +10,12 @@ return {
         checked = { icon = "󰱒 ", highlight = "RenderMarkdownTodo", scope_highlight = "@markup.strikethrough" },
         unchecked = { icon = "󰄱 ", highlight = "RenderMarkdownUnchecked", scope_highlight = nil },
         custom = {
-          skipped = { raw = "[-]", rendered = "✘ ", highlight = "RenderMarkdownError", scope_highlight = "@markup.strikethrough" },
+          skipped = {
+            raw = "[-]",
+            rendered = "✘ ",
+            highlight = "RenderMarkdownError",
+            scope_highlight = "@markup.strikethrough",
+          },
           postponed = { raw = "[>]", rendered = "󰥔 ", highlight = "RenderMarkdownChecked", scope_highlight = nil },
         },
       },
@@ -22,7 +27,7 @@ return {
         sign = false,
         width = "block",
         right_pad = 1,
-        border = "thin"
+        border = "thin",
       },
     },
     config = function(_, opts)
@@ -55,6 +60,13 @@ return {
           require("plugins.custom.lang.markdown").convert_or_toggle_task,
           desc = "Convert bullet to a task or insert new task bullet or toggle task",
           mode = { "n", "i" },
+          noremap = true,
+        },
+        {
+          "<leader>op",
+          require("plugins.custom.lang.markdown").paste_url,
+          desc = "Extract title and convert into markdown link",
+          mode = "n",
           noremap = true,
         },
       },

@@ -68,7 +68,22 @@ local function convert_or_toggle_task()
   vim.api.nvim_win_set_cursor(0, { row, 6 })
 end
 
+---Paste URL as markdown link
+local function paste_url()
+  local input = vim.fn.getreg('+')
+  local title = input
+  local link = require("plugins.custom.lang.markdown.link")
+  if link.is_url(input) then
+    title = link.create_markdown_link(input)
+  end
+
+  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+  vim.api.nvim_buf_set_text(0, row - 1, col, row - 1, col, { title })
+end
+
+
 local M = {}
 M.add_codeblock_keymap = add_codeblock_keymap
 M.convert_or_toggle_task = convert_or_toggle_task
+M.paste_url = paste_url
 return M
