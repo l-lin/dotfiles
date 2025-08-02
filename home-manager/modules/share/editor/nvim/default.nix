@@ -44,7 +44,7 @@ return {
     lazy = false,
     opts = {
       keywordStyle = { bold = true, italic = false },
-    }
+    },
   },
   {
     "projekt0n/github-nvim-theme",
@@ -65,8 +65,8 @@ return {
       },
       specs = {
         github_light_high_contrast = {
-          bg0 = "#EFF1F5",
-          bg1 = "#EFF1F5",
+          bg0 = "${base00-hex}",
+          bg1 = "${base00-hex}",
           canvas = {
             default = "#FFFFFF",
             inset = "#FFFFFF",
