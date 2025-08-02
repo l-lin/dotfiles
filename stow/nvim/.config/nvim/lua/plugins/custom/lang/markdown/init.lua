@@ -70,7 +70,7 @@ end
 
 ---Paste URL as markdown link
 local function paste_url()
-  local input = vim.fn.getreg('+')
+  local input = vim.fn.getreg("+")
   local title = input
   local link = require("plugins.custom.lang.markdown.link")
   if link.is_url(input) then
@@ -81,9 +81,41 @@ local function paste_url()
   vim.api.nvim_buf_set_text(0, row - 1, col, row - 1, col, { title })
 end
 
+---Add indent if first non-blank character is a dash
+local function smart_indent()
+  local line = vim.api.nvim_get_current_line()
+  local first_non_blank = line:match("^%s*(.)")
+
+  if first_non_blank == "-" then
+    local cursor_pos = vim.api.nvim_win_get_cursor(0)
+    local row, col = cursor_pos[1], cursor_pos[2]
+    vim.cmd("normal! >>")
+    -- Move cursor to maintain relative position after indentation
+    vim.api.nvim_win_set_cursor(0, { row, col + vim.bo.shiftwidth })
+  else
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Tab>", true, false, true), "n", false)
+  end
+end
+
+---De-indent if first non-blank character is a dash
+local function smart_dedent()
+  local line = vim.api.nvim_get_current_line()
+  local first_non_blank = line:match("^%s*(.)")
+
+  if first_non_blank == "-" then
+    local cursor_pos = vim.api.nvim_win_get_cursor(0)
+    local row, col = cursor_pos[1], cursor_pos[2]
+    vim.cmd("normal! <<")
+    -- Move cursor to maintain relative position after de-indentation
+    local new_col = math.max(0, col - vim.bo.shiftwidth)
+    vim.api.nvim_win_set_cursor(0, { row, new_col })
+  end
+end
 
 local M = {}
 M.add_codeblock_keymap = add_codeblock_keymap
 M.convert_or_toggle_task = convert_or_toggle_task
 M.paste_url = paste_url
+M.smart_indent = smart_indent
+M.smart_dedent = smart_dedent
 return M
