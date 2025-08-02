@@ -53,10 +53,28 @@ local function todo(ctx)
   return table.concat(t, "\n")
 end
 
+---Search for all pending todos using snacks.picker and ripgrep.
+---Finds all lines that match the pattern `- [ ]` (with optional indentation).
+local function search_pending_todos()
+  require("snacks").picker.grep({
+    search = "^\\s*- \\[ \\]",
+    glob = "**/*.md",
+    exclude = {
+      "node_modules",
+      ".git",
+      "0-meta",
+      "4-archives",
+      "5-rituals",
+      "6-triage",
+    },
+  })
+end
+
 local M = {}
 M.today = today
 M.yesterday = yesterday
 M.tomorrow = tomorrow
 M.current_month = current_month
 M.todo = todo
+M.search_pending_todos = search_pending_todos
 return M
