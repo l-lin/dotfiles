@@ -76,13 +76,6 @@ return {
           mode = { "n", "i", "v" },
           noremap = true,
         },
-        {
-          "<leader>op",
-          require("plugins.custom.lang.markdown.link_to_markdown").paste_url,
-          desc = "Extract title and convert into markdown link",
-          mode = "n",
-          noremap = true,
-        },
       },
     },
   },

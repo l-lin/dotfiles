@@ -94,6 +94,13 @@ return {
         desc = "Follow link",
       },
       {
+        "<leader>op",
+        require("plugins.custom.lang.obsidian.link_to_markdown").paste_url,
+        desc = "Extract title and convert into markdown link",
+        mode = "n",
+        noremap = true,
+      },
+      {
         "<leader>oP",
         require("plugins.custom.lang.obsidian.article_to_markdown").paste_url,
         mode = "n",
