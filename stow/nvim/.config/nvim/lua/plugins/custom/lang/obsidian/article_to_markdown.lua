@@ -1,10 +1,53 @@
-local USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+local USER_AGENT =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 
 ---Check if the input is a valid URL
 ---@param input_url string the URL to check
 ---@return boolean true if the input is a valid URL, false otherwise
 local function is_valid_url(input_url)
   return input_url and input_url:match("^https?://[%w%.%-]+") ~= nil
+end
+
+---Check if the URL is a YouTube video
+---@param url string the URL to check
+---@return boolean true if the URL is a YouTube video, false otherwise
+local function is_youtube_url(url)
+  return url
+    and (
+        url:match("^https?://[%w%.]*youtube%.com/watch%?v=")
+        or url:match("^https?://[%w%.]*youtu%.be/")
+        or url:match("^https?://[%w%.]*youtube%.com/.*[%?&]v=")
+      )
+      ~= nil
+end
+
+---Extract video ID from YouTube URL
+---@param url string the YouTube URL
+---@return string|nil video_id the extracted video ID or nil if not found
+local function extract_youtube_video_id(url)
+  if not url then
+    return nil
+  end
+
+  -- Handle youtube.com/watch?v=VIDEO_ID
+  local video_id = url:match("youtube%.com/watch%?v=([%w%-_]+)")
+  if video_id then
+    return video_id
+  end
+
+  -- Handle youtu.be/VIDEO_ID
+  video_id = url:match("youtu%.be/([%w%-_]+)")
+  if video_id then
+    return video_id
+  end
+
+  -- Handle other youtube.com formats with v= parameter
+  video_id = url:match("youtube%.com/.*[%?&]v=([%w%-_]+)")
+  if video_id then
+    return video_id
+  end
+
+  return nil
 end
 
 ---HTML to Markdown conversion rules
@@ -236,22 +279,36 @@ local function parse_url(url)
   end
 
   local metadata = extract_metadata(html_content)
-
-  local readable_content = extract_readable_content(html_content)
-  if not readable_content then
-    return nil, "Could not extract readable content"
-  end
-
-  local markdown_content = html_to_markdown(readable_content)
-
-  markdown_content = clean_text(markdown_content)
-
-  return {
+  local result = {
     url = url,
     title = metadata.title,
-    content = markdown_content,
     current_date = os.date("%Y-%m-%d"),
   }
+
+  -- Handle YouTube videos differently
+  if is_youtube_url(url) then
+    local video_id = extract_youtube_video_id(url)
+    if not video_id then
+      return nil, "Could not extract YouTube video ID"
+    end
+
+    result.is_youtube = true
+    result.video_id = video_id
+    result.content = "" -- No content needed for YouTube videos
+  else
+    local readable_content = extract_readable_content(html_content)
+    if not readable_content then
+      return nil, "Could not extract readable content"
+    end
+
+    local markdown_content = html_to_markdown(readable_content)
+    markdown_content = clean_text(markdown_content)
+
+    result.content = markdown_content
+    result.is_youtube = false
+  end
+
+  return result
 end
 
 ---Template rendering function (simplified)
@@ -291,8 +348,22 @@ end
 ---@param template string|nil optional template string to use for rendering
 ---@return string the generated markdown note
 local function convert_to_markdown_format(parsed_data, template)
-  template = template
-    or [=[
+  if not template then
+    if parsed_data.is_youtube then
+      template = [=[
+---
+date: {{current_date}}
+tags:
+  - article/video
+  - to-review
+---
+# {{title}}
+
+> [!quote] src: [{{title}}]({{url}}) - [[{{current_date}}]]
+> <iframe frameborder="0" allowfullscreen src="https://youtube.com/embed/{{video_id}}?autoplay=0" width="100%" height="403"></iframe>
+]=]
+    else
+      template = [=[
 ---
 date: {{current_date}}
 tags:
@@ -304,6 +375,8 @@ tags:
 
 {{content}}
 ]=]
+    end
+  end
   return render_template(template, parsed_data)
 end
 
