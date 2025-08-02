@@ -1,17 +1,16 @@
-local function add_codeblock_keymap()
-  vim.keymap.set("i", "<M-c>", function()
-    local bufnr = vim.api.nvim_get_current_buf()
-    local cursor_pos = vim.api.nvim_win_get_cursor(0)
-    local line = cursor_pos[1]
+---Insert codeblock at the current cursor position.
+local function insert_codeblock()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local cursor_pos = vim.api.nvim_win_get_cursor(0)
+  local line = cursor_pos[1]
 
-    local codeblock = {
-      "```",
-      "```",
-    }
+  local codeblock = {
+    "```",
+    "```",
+  }
 
-    vim.api.nvim_buf_set_lines(bufnr, line - 1, line, false, codeblock)
-    vim.api.nvim_win_set_cursor(0, { line, 3 })
-  end, { buffer = true, desc = "Add codeblock" })
+  vim.api.nvim_buf_set_lines(bufnr, line - 1, line, false, codeblock)
+  vim.api.nvim_win_set_cursor(0, { line, 3 })
 end
 
 ---Convert the current line into a task or toggle task status.
@@ -68,19 +67,6 @@ local function convert_or_toggle_task()
   vim.api.nvim_win_set_cursor(0, { row, 6 })
 end
 
----Paste URL as markdown link
-local function paste_url()
-  local input = vim.fn.getreg("+")
-  local title = input
-  local link = require("plugins.custom.lang.markdown.link")
-  if link.is_url(input) then
-    title = link.create_markdown_link(input)
-  end
-
-  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-  vim.api.nvim_buf_set_text(0, row - 1, col, row - 1, col, { title })
-end
-
 ---Add indent if first non-blank character is a dash
 local function smart_indent()
   local line = vim.api.nvim_get_current_line()
@@ -112,10 +98,10 @@ local function smart_dedent()
   end
 end
 
+
 local M = {}
-M.add_codeblock_keymap = add_codeblock_keymap
+M.insert_codeblock = insert_codeblock
 M.convert_or_toggle_task = convert_or_toggle_task
-M.paste_url = paste_url
 M.smart_indent = smart_indent
 M.smart_dedent = smart_dedent
 return M

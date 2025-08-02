@@ -63,13 +63,6 @@ return {
           noremap = true,
         },
         {
-          "<leader>op",
-          require("plugins.custom.lang.markdown").paste_url,
-          desc = "Extract title and convert into markdown link",
-          mode = "n",
-          noremap = true,
-        },
-        {
           "<Tab>",
           require("plugins.custom.lang.markdown").smart_indent,
           desc = "Indent bullet point",
@@ -81,6 +74,13 @@ return {
           require("plugins.custom.lang.markdown").smart_dedent,
           desc = "Dedent bullet point",
           mode = { "n", "i", "v" },
+          noremap = true,
+        },
+        {
+          "<leader>op",
+          require("plugins.custom.lang.markdown.link_to_markdown").paste_url,
+          desc = "Extract title and convert into markdown link",
+          mode = "n",
           noremap = true,
         },
       },
