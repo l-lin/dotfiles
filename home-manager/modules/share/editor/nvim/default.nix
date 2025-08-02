@@ -61,6 +61,7 @@ return {
           SnacksPickerMatch = { link = "Search" },
           TreesitterContext = { bg = "#E6E6E6" },
           RenderMarkdownCodeInline = { bg = "#E6E6E6" },
+          SnacksIndent = { fg = "#E6E6E6" },
         },
       },
       specs = {
