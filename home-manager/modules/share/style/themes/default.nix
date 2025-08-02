@@ -13,10 +13,6 @@
       type = types.str;
       description = "NeoVim color scheme.";
     };
-    nvimColorSchemePluginLua = mkOption {
-      type = types.str;
-      description = "NeoVim color scheme plugin in Lua.";
-    };
     polarity = mkOption {
       type = types.str;
       description = "Polarity of the theme (dark or light).";

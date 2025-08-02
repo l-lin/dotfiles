@@ -10,14 +10,6 @@ in {
   theme = {
     inherit polarity;
     nvimColorScheme = "kanagawa";
-    nvimColorSchemePluginLua = ''
-{
-  "rebelot/kanagawa.nvim",
-  opts = {
-    keywordStyle = { bold = true, italic = false },
-  }
-}
-    '';
   };
 
   stylix = {

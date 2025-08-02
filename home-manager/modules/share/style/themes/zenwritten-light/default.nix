@@ -11,12 +11,6 @@ in {
   theme = {
     inherit polarity;
     nvimColorScheme = "zenwritten";
-    nvimColorSchemePluginLua = ''
-{
-  "zenbones-theme/zenbones.nvim",
-  dependencies = "rktjmp/lush.nvim",
-}
-    '';
   };
 
   stylix = {

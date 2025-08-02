@@ -39,7 +39,49 @@ vim.g.colorscheme_faint = "${base04-hex}"
 vim.g.colorscheme_error = "${base08-hex}"
 
 return {
-  ${config.theme.nvimColorSchemePluginLua},
+  {
+    "rebelot/kanagawa.nvim",
+    lazy = false,
+    opts = {
+      keywordStyle = { bold = true, italic = false },
+    }
+  },
+  {
+    "projekt0n/github-nvim-theme",
+    lazy = false,
+    opts = {
+      options = {
+        styles = {
+          keywords = "bold",
+        },
+      },
+      groups = {
+        github_light_high_contrast = {
+          NonText = { fg = "palette.gray" },
+          SnacksPickerMatch = { link = "Search" },
+          TreesitterContext = { bg = "#E6E6E6" },
+          RenderMarkdownCodeInline = { bg = "#E6E6E6" },
+        },
+      },
+      specs = {
+        github_light_high_contrast = {
+          bg0 = "#EFF1F5",
+          bg1 = "#EFF1F5",
+          canvas = {
+            default = "#FFFFFF",
+            inset = "#FFFFFF",
+            overlay = "#FFFFFF",
+          },
+          syntax = {
+            keyword = "black",
+          },
+        },
+      },
+    },
+    config = function(_, opts)
+      require("github-theme").setup(opts)
+    end,
+  },
   -- setup colorscheme
   {
     "LazyVim/LazyVim",
