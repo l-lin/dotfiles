@@ -405,6 +405,7 @@ local function generate_note(url, target_directory)
     file:write(converted_note)
     file:close()
     print("Note saved to " .. note_file)
+    vim.cmd("vsplit " .. vim.fn.fnameescape(note_file))
   else
     error("Error saving note to file")
   end
