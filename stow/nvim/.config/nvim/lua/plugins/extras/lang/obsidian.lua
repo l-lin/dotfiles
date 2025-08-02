@@ -83,8 +83,15 @@ return {
       {
         "<leader>op",
         require("plugins.custom.lang.obsidian.link_to_markdown").paste_url,
-        desc = "Extract title and convert into markdown link",
+        desc = "Extract title and convert into markdown link (Alt+Shift+v)",
         mode = "n",
+        noremap = true,
+      },
+      {
+        "<M-S-v>",
+        require("plugins.custom.lang.obsidian.link_to_markdown").paste_url,
+        desc = "Extract title and convert into markdown link (Alt+Shift+v)",
+        mode = "i",
         noremap = true,
       },
       {
