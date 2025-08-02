@@ -158,10 +158,12 @@ return {
         },
       },
 
+      -- Disable completion, as I'm already using my blink-cmp-wiki-links.
+      -- The one from obsidian.nvim is not optimized for large vault.
       completion = {
         nvim_cmp = false,
         -- Enables completion using blink.cmp
-        blink = true,
+        blink = false,
         -- Trigger completion at 2 chars.
         min_chars = 2,
       },
@@ -220,6 +222,10 @@ return {
 
       -- I don't want automatic frontmatter format.
       disable_frontmatter = true,
+
+      -- For some reason, the footer is opening too many files, and I'm
+      -- receiving lots of warning messages...
+      footer = { enabled = false },
     },
   },
 }
