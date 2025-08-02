@@ -257,11 +257,18 @@ end
 
 ---Extract metadata from HTML using native pattern matching
 ---@param html_content string the HTML content to extract metadata from
+---@param url string the URL being processed (used for context-specific processing)
 ---@return table metadata a table containing extracted metadata
-local function extract_metadata(html_content)
+local function extract_metadata(html_content, url)
   local metadata = {}
   metadata.title = html_content:match("<title[^>]*>%s*(.-)%s*</title>") or "Untitled"
   metadata.title = clean_text(metadata.title)
+
+  -- Remove "- YouTube" suffix for YouTube videos
+  if url and is_youtube_url(url) then
+    metadata.title = metadata.title:gsub("%s*-%s*YouTube%s*$", "")
+  end
+
   return metadata
 end
 
@@ -278,7 +285,7 @@ local function parse_url(url)
     return nil, error_msg
   end
 
-  local metadata = extract_metadata(html_content)
+  local metadata = extract_metadata(html_content, url)
   local result = {
     url = url,
     title = metadata.title,
