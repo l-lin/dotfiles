@@ -1,14 +1,8 @@
 return {
-  -- I do not use the preview feature.
-  { "iamcco/markdown-preview.nvim", enabled = false },
-
-  -- #######################
-  -- override default config
-  -- #######################
-
   -- Plugin to improve viewing Markdown files in Neovim.
   {
     "MeanderingProgrammer/render-markdown.nvim",
+    ft = { "markdown", "norg", "rmd", "org", "codecompanion" },
     opts = {
       checkbox = {
         enabled = true,
@@ -24,19 +18,30 @@ return {
         enabled = true,
         icons = { "󰎤 ", "󰎧 ", "󰎪 ", "󰎭 ", "󰎱 ", "󰎳 " },
       },
-      code = { border = "thin" },
-    },
-  },
-
-  {
-    "mfussenegger/nvim-lint",
-    opts = {
-      linters_by_ft = {
-        -- Disable linter, let me freely write anything without hassle!
-        -- src: https://github.com/LazyVim/LazyVim/issues/2437
-        markdown = {},
+      code = {
+        sign = false,
+        width = "block",
+        right_pad = 1,
+        border = "thin"
       },
     },
+    config = function(_, opts)
+      require("render-markdown").setup(opts)
+      Snacks.toggle({
+        name = "Render Markdown",
+        get = function()
+          return require("render-markdown.state").enabled
+        end,
+        set = function(enabled)
+          local m = require("render-markdown")
+          if enabled then
+            m.enable()
+          else
+            m.disable()
+          end
+        end,
+      }):map("<leader>um")
+    end,
   },
 
   -- add keymaps to which-key
@@ -55,22 +60,6 @@ return {
       },
     },
   },
-
-  -- Disable LSP as it's always crashing in my notes project.
-  {
-    "neovim/nvim-lspconfig",
-    opts = {
-      servers = {
-        marksman = {
-          enabled = false,
-        },
-      },
-    },
-  },
-
-  -- #######################
-  -- add new plugins
-  -- #######################
 
   -- markdown table
   {
