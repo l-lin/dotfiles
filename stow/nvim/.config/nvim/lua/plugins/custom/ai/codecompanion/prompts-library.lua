@@ -41,37 +41,6 @@ return {
   -- CODE
   --
 
-  ["code-review@chat"] = {
-    strategy = "chat",
-    description = "Review the provided code snippet.",
-    opts = {
-      index = index(),
-      modes = { "v" },
-      short_name = "chat-review",
-      auto_submit = true,
-      user_prompt = false,
-      stop_context_insertion = true,
-    },
-    prompts = {
-      {
-        role = "system",
-        opts = { visible = false },
-        content = require("plugins.custom.ai.prompts.code-review").system(),
-      },
-      {
-        role = "user",
-        opts = { contains_code = true },
-        content = function(context)
-          local code = require("codecompanion.helpers.actions").get_code(
-            context.start_line,
-            context.end_line,
-            { show_line_numbers = true }
-          )
-          return require("plugins.custom.ai.prompts.code-review").user(context.filetype, code)
-        end,
-      },
-    },
-  },
   ["refactor@inline"] = {
     strategy = "inline",
     description = "Refactor the provided code snippet.",

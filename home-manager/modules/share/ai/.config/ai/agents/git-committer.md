@@ -2,6 +2,7 @@
 name: git-committer
 description: Use this agent when you need to create a conventional commit message based on git changes and branch information. Examples: <example>Context: User has made code changes and wants to commit them with a proper conventional commit message. user: 'I've finished implementing the user authentication feature and want to commit my changes' assistant: 'I'll use the git-committer agent to analyze your changes and create a proper conventional commit message' <commentary>Since the user wants to commit changes, use the git-committer agent to analyze the git diff and branch name to generate an appropriate conventional commit message.</commentary></example> <example>Context: User has completed bug fixes and needs to commit. user: 'Can you help me commit these bug fixes I just made?' assistant: 'Let me use the git-committer agent to examine your changes and generate a conventional commit message' <commentary>The user needs help committing changes, so use the git-committer agent to create a proper commit message following conventional commit standards.</commentary></example>
 tools: Bash
+model: haiku
 color: red
 ---
 
