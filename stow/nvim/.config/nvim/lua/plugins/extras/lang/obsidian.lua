@@ -138,6 +138,8 @@ return {
           yesterday = require("plugins.custom.lang.obsidian").yesterday,
           tomorrow = require("plugins.custom.lang.obsidian").tomorrow,
           current_month = require("plugins.custom.lang.obsidian").current_month,
+          previous_month = require("plugins.custom.lang.obsidian").previous_month,
+          next_month = require("plugins.custom.lang.obsidian").next_month,
           todo = require("plugins.custom.lang.obsidian").todo,
         },
       },

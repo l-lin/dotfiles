@@ -33,6 +33,34 @@ local function current_month(ctx)
 end
 
 ---@param ctx obsidian.TemplateContext
+local function previous_month(ctx)
+  local date = id_to_date(ctx.partial_note)
+  local year = tonumber(os.date("%Y", date))
+  local month = tonumber(os.date("%m", date))
+  month = month - 1
+  if month < 1 then
+    month = 12
+    year = year - 1
+  end
+  local prev_month_date = os.time({ year = year, month = month, day = 1 })
+  return os.date("%Y-%m", prev_month_date)
+end
+
+---@param ctx obsidian.TemplateContext
+local function next_month(ctx)
+  local date = id_to_date(ctx.partial_note)
+  local year = tonumber(os.date("%Y", date))
+  local month = tonumber(os.date("%m", date))
+  month = month + 1
+  if month > 12 then
+    month = 1
+    year = year + 1
+  end
+  local next_month_date = os.time({ year = year, month = month, day = 1 })
+  return os.date("%Y-%m", next_month_date)
+end
+
+---@param ctx obsidian.TemplateContext
 local function todo(ctx)
   local today_iso = id_to_date(ctx.partial_note)
   local t = {}
@@ -75,6 +103,8 @@ M.today = today
 M.yesterday = yesterday
 M.tomorrow = tomorrow
 M.current_month = current_month
+M.previous_month = previous_month
+M.next_month = next_month
 M.todo = todo
 M.search_pending_todos = search_pending_todos
 return M
