@@ -130,14 +130,13 @@ end
 ---Paste URL as markdown link at the current cursor position
 local function paste_url()
   local input = vim.fn.getreg("+")
-  local title = input
 
   local success, url_parser = pcall(require("helpers.url_parser").new, input)
   if success then
-    title = create_markdown_link(url_parser)
+    input = create_markdown_link(url_parser)
   end
 
-  require("helpers.insert_text").at_current_cursor(title)
+  require("helpers.insert_text").at_current_cursor(input)
 end
 
 local M = {}

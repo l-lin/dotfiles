@@ -1,3 +1,28 @@
+local VIDEO_TEMPLATE = [=[
+---
+date: {{current_date}}
+tags:
+  - article/video
+  - to-review
+---
+# {{title}}
+
+> [!quote] src: [{{title}}]({{url}}) - [[{{date}}]]
+> <iframe frameborder="0" allowfullscreen src="https://youtube.com/embed/{{video_id}}?autoplay=0" width="100%" height="403"></iframe>
+]=]
+local ARTICLE_TEMPLATE = [=[
+---
+date: {{current_date}}
+tags:
+  - article
+---
+# {{title}}
+
+> [!quote] src: [{{title}}]({{url}}) - [[{{date}}]]
+
+{{content}}
+]=]
+
 ---HTML to Markdown conversion rules
 ---@param html_content string the HTML content to convert
 ---@return string the converted Markdown content
@@ -351,13 +376,9 @@ local function parse_url(input_url)
   }
 
   -- Handle YouTube videos differently
-  if url_parser:is_youtube_url() then
-    local video_id = url_parser:extract_youtube_video_id()
-    if not video_id then
-      error("Could not extract YouTube video ID")
-    end
-
-    result.is_youtube = true
+  local video_id = url_parser:extract_youtube_video_id()
+  if video_id then
+    result.is_video = true
     result.video_id = video_id
     result.content = "" -- No content needed for YouTube videos
   else
@@ -370,7 +391,7 @@ local function parse_url(input_url)
     markdown_content = clean_text(markdown_content)
 
     result.content = markdown_content
-    result.is_youtube = false
+    result.is_video = false
   end
 
   return result
@@ -414,32 +435,10 @@ end
 ---@return string the generated markdown note
 local function convert_to_markdown_format(parsed_data, template)
   if not template then
-    if parsed_data.is_youtube then
-      template = [=[
----
-date: {{current_date}}
-tags:
-  - article/video
-  - to-review
----
-# {{title}}
-
-> [!quote] src: [{{title}}]({{url}}) - [[{{date}}]]
-> <iframe frameborder="0" allowfullscreen src="https://youtube.com/embed/{{video_id}}?autoplay=0" width="100%" height="403"></iframe>
-]=]
+    if parsed_data.is_video then
+      template = VIDEO_TEMPLATE
     else
-      template = [=[
----
-date: {{current_date}}
-tags:
-  - article
----
-# {{title}}
-
-> [!quote] src: [{{title}}]({{url}}) - [[{{date}}]]
-
-{{content}}
-]=]
+      template = ARTICLE_TEMPLATE
     end
   end
   return render_template(template, parsed_data)
