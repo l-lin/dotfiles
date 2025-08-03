@@ -96,48 +96,4 @@ return {
       },
     },
   },
-  ["swe@workflow"] = {
-    strategy = "workflow",
-    description = "Use a workflow to guide an LLM in writing code to implement a feature or a bugfix",
-    opts = {
-      index = index(),
-      short_name = "workflow-implement",
-      adapter = { name = "copilot" },
-    },
-    prompts = {
-      {
-        {
-          role = "system",
-          opts = { visible = false },
-          content = require("plugins.custom.ai.prompts.swe").system(),
-        },
-        {
-          role = "user",
-          opts = { auto_submit = false },
-          content = function()
-            vim.g.codecompanion_auto_tool_mode = true
-            return require("plugins.custom.ai.prompts.swe").user()
-          end,
-        },
-      },
-      {
-        {
-          name = "Repeat On Failure",
-          role = "user",
-          opts = { auto_submit = true },
-          -- Scope this prompt to the cmd_runner tool
-          condition = function()
-            return _G.codecompanion_current_tool == "cmd_runner"
-          end,
-          -- Repeat until the tests pass, as indicated by the testing flag
-          -- which the cmd_runner tool sets on the chat buffer
-          ---@param chat CodeCompanion.Chat
-          repeat_until = function(chat)
-            return chat.tools.flags.testing == true
-          end,
-          content = "The tests have failed. Can you edit the buffer and run the test suite again?",
-        },
-      },
-    },
-  },
 }
