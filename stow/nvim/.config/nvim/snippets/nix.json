@@ -23,5 +23,12 @@
       "}"
     ],
     "description": "Create new home-manager module."
+  },
+  "mise": {
+    "prefix": "mise",
+    "body": [
+      "xdg.configFile.\"mise/conf.d/${1}.toml\".source = ./.config/mise/conf.d/${1}.toml;"
+    ],
+    "description": "Add mise tool configuration file."
   }
 }
