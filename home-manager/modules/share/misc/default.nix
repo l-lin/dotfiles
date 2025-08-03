@@ -49,6 +49,8 @@
     nh
     # A command-line utility for easily compressing and decompressing files and directories: https://github.com/ouch-org/ouch
     ouch
+    # Process Interactive Kill: https://github.com/jacek-kurlit/pik
+    pik
     # Daemon for managing long running shell commands: https://github.com/Nukesor/pueue
     #pueue
     # Pretty ping: https://github.com/denilsonsa/prettyping
