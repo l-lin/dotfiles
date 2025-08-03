@@ -10,7 +10,7 @@ in {
 
   theme = {
     inherit polarity;
-    nvimColorScheme = "github_light_high_contrast";
+    nvimColorScheme = "github_light";
   };
 
   stylix = {

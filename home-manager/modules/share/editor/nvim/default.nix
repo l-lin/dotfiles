@@ -37,6 +37,8 @@ vim.o.bg = "${config.theme.polarity}"
 -- Global variables ftw! Too lazy to have something "smart" but complex...
 vim.g.colorscheme_faint = "${base04-hex}"
 vim.g.colorscheme_error = "${base08-hex}"
+vim.g.dark_colorscheme = "kanagawa"
+vim.g.light_colorscheme = "github_light"
 
 return {
   {
@@ -63,9 +65,28 @@ return {
           RenderMarkdownCodeInline = { bg = "#E6E6E6" },
           SnacksIndent = { fg = "#E6E6E6" },
         },
+        github_light = {
+          NonText = { fg = "palette.gray" },
+          SnacksPickerMatch = { link = "Search" },
+          TreesitterContext = { bg = "#E6E6E6" },
+          RenderMarkdownCodeInline = { bg = "#E6E6E6" },
+          SnacksIndent = { fg = "#E6E6E6" },
+        },
       },
       specs = {
         github_light_high_contrast = {
+          bg0 = "${base00-hex}",
+          bg1 = "${base00-hex}",
+          canvas = {
+            default = "#FFFFFF",
+            inset = "#FFFFFF",
+            overlay = "#FFFFFF",
+          },
+          syntax = {
+            keyword = "black",
+          },
+        },
+        github_light = {
           bg0 = "${base00-hex}",
           bg1 = "${base00-hex}",
           canvas = {
