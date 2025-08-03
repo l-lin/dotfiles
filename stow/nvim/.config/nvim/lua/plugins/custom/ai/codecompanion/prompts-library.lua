@@ -41,33 +41,6 @@ return {
   -- CODE
   --
 
-  ["refactor@inline"] = {
-    strategy = "inline",
-    description = "Refactor the provided code snippet.",
-    opts = {
-      index = index(),
-      modes = { "v" },
-      short_name = "inline-refactor",
-      auto_submit = true,
-      user_prompt = false,
-      stop_context_insertion = true,
-    },
-    prompts = {
-      {
-        role = "system",
-        opts = { visible = false },
-        content = require("plugins.custom.ai.prompts.refactor").system,
-      },
-      {
-        role = "user",
-        opts = { contains_code = true },
-        content = function(context)
-          local code = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
-          return require("plugins.custom.ai.prompts.refactor").user(context.filetype, code)
-        end,
-      },
-    },
-  },
   ["java-unit-tests@chat"] = {
     strategy = "chat",
     description = "Implement Java unit tests for the selected code.",
