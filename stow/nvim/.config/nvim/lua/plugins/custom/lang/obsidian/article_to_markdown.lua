@@ -1,6 +1,3 @@
-local USER_AGENT =
-  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-
 ---HTML to Markdown conversion rules
 ---@param html_content string the HTML content to convert
 ---@return string the converted Markdown content
@@ -71,50 +68,6 @@ local function html_to_markdown(html_content)
   markdown = markdown:gsub("%s+$", "")
 
   return markdown
-end
-
----Native HTTP fetch using curl command (most systems have curl)
----@param url string the URL to fetch
----@return string|nil html_content the content of the HTML or nil if failed
-local function fetch_html(url)
-  -- Use curl command for HTTP requests
-  local curl_cmd = string.format(
-    'curl -s -L -A "%s" -w "\\nHTTP_STATUS:%%{http_code}" "%s"',
-    USER_AGENT,
-    url:gsub('"', '\\"') -- escape quotes
-  )
-
-  local handle = io.popen(curl_cmd)
-  if not handle then
-    return nil
-  end
-
-  local response = handle:read("*a")
-  local success = handle:close()
-
-  if not success or not response then
-    return nil
-  end
-
-  -- Parse response - be more flexible with parsing
-  local content, status_code
-
-  -- Try to extract status and content type from response
-  local status_match = response:match("\nHTTP_STATUS:(%d+)")
-
-  if status_match then
-    status_code = status_match
-    content = response:gsub("\nHTTP_STATUS:%d+", "")
-  else
-    content = response
-    status_code = "200"
-  end
-
-  if status_code ~= "200" then
-    return nil
-  end
-
-  return content
 end
 
 ---Native HTML parser - extract content between balanced tags
@@ -372,12 +325,12 @@ local function parse_url(input_url)
     error("Invalid URL: " .. tostring(url_parser))
   end
 
-  local html_content = fetch_html(input_url)
-  if not html_content then
+  local response = require("helpers.http_client").new():get(input_url)
+  if not response or response.status_code >= 400 then
     error("Failed to fetch HTML content from URL")
   end
 
-  local metadata = extract_metadata(html_content, url_parser)
+  local metadata = extract_metadata(response.content, url_parser)
   local result = {
     url = input_url,
     title = metadata.title,
@@ -396,7 +349,7 @@ local function parse_url(input_url)
     result.video_id = video_id
     result.content = "" -- No content needed for YouTube videos
   else
-    local readable_content = extract_readable_content(html_content)
+    local readable_content = extract_readable_content(response.content)
     if not readable_content then
       error("Could not extract readable content")
     end

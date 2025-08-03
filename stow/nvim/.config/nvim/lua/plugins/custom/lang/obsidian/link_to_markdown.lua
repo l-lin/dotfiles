@@ -1,5 +1,3 @@
-local USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-
 ---Simple HTML title extraction using pattern matching
 ---@param html string the HTML content to extract the title from
 ---@return string|nil title the extracted title or nil if not found
@@ -18,28 +16,6 @@ local function extract_title_from_html(html)
   end
 
   return nil
-end
-
----Simple HTTP GET request using curl command
----@param input_url string the URL to fetch
----@return string|nil response the response body or nil if an error occurred
-local function http_get(input_url)
-  -- Use curl to fetch the URL
-  local curl_cmd = string.format('curl -s -L -H "User-Agent: %s" "%s"', USER_AGENT, input_url)
-  local handle = io.popen(curl_cmd)
-
-  if not handle then
-    return nil
-  end
-
-  local response = handle:read("*a")
-  local success = handle:close()
-
-  if not success then
-    return nil
-  end
-
-  return response
 end
 
 ---Check if content is HTML by looking for HTML tags
@@ -78,14 +54,14 @@ end
 ---@return string|nil title the page title or the final segment of the URL
 local function scrape(url_parser)
   -- Make HTTP request using curl
-  local response = http_get(url_parser.input_url)
+  local response = require("helpers.http_client").new():get(url_parser.input_url)
 
-  if not response then
+  if not response or response.status_code >= 400 then
     error("HTTP request failed")
   end
 
   -- Check if response is HTML
-  if not is_html_content(response) then
+  if not is_html_content(response.content) then
     local final_segment = url_parser:get_url_final_segment()
     if not final_segment then
       return url_parser.input_url
@@ -94,11 +70,11 @@ local function scrape(url_parser)
   end
 
   -- Extract title
-  local title = extract_title_from_html(response)
+  local title = extract_title_from_html(response.content)
 
   if title == nil or title == "" then
     -- Fallback: check for no-title attribute (simplified)
-    local no_title = response:match('<[tT][iI][tT][lL][eE][^>]*no%-title="([^"]*)"')
+    local no_title = response.content:match('<[tT][iI][tT][lL][eE][^>]*no%-title="([^"]*)"')
     if no_title and no_title ~= "" then
       return no_title
     end
