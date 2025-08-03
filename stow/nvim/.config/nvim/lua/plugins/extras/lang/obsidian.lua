@@ -117,7 +117,7 @@ return {
       },
       {
         "<leader>oS",
-        require("plugins.custom.lang.obsidian.url_summarizer").paste_url,
+        require("plugins.custom.lang.obsidian.article_summarizer").paste_url,
         desc = "Summarize artiche from URL in clipboard",
         mode = "n",
         noremap = true,
