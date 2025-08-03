@@ -1,55 +1,6 @@
 local USER_AGENT =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 
----Check if the input is a valid URL
----@param input_url string the URL to check
----@return boolean true if the input is a valid URL, false otherwise
-local function is_valid_url(input_url)
-  return input_url and input_url:match("^https?://[%w%.%-]+") ~= nil
-end
-
----Check if the URL is a YouTube video
----@param url string the URL to check
----@return boolean true if the URL is a YouTube video, false otherwise
-local function is_youtube_url(url)
-  return url
-    and (
-        url:match("^https?://[%w%.]*youtube%.com/watch%?v=")
-        or url:match("^https?://[%w%.]*youtu%.be/")
-        or url:match("^https?://[%w%.]*youtube%.com/.*[%?&]v=")
-      )
-      ~= nil
-end
-
----Extract video ID from YouTube URL
----@param url string the YouTube URL
----@return string|nil video_id the extracted video ID or nil if not found
-local function extract_youtube_video_id(url)
-  if not url then
-    return nil
-  end
-
-  -- Handle youtube.com/watch?v=VIDEO_ID
-  local video_id = url:match("youtube%.com/watch%?v=([%w%-_]+)")
-  if video_id then
-    return video_id
-  end
-
-  -- Handle youtu.be/VIDEO_ID
-  video_id = url:match("youtu%.be/([%w%-_]+)")
-  if video_id then
-    return video_id
-  end
-
-  -- Handle other youtube.com formats with v= parameter
-  video_id = url:match("youtube%.com/.*[%?&]v=([%w%-_]+)")
-  if video_id then
-    return video_id
-  end
-
-  return nil
-end
-
 ---HTML to Markdown conversion rules
 ---@param html_content string the HTML content to convert
 ---@return string the converted Markdown content
@@ -124,7 +75,7 @@ end
 
 ---Native HTTP fetch using curl command (most systems have curl)
 ---@param url string the URL to fetch
----@return string|nil, string|nil, string|nil html_content the content of the HTML
+---@return string|nil html_content the content of the HTML or nil if failed
 local function fetch_html(url)
   -- Use curl command for HTTP requests
   local curl_cmd = string.format(
@@ -135,14 +86,14 @@ local function fetch_html(url)
 
   local handle = io.popen(curl_cmd)
   if not handle then
-    return nil, "Failed to execute HTTP request"
+    return nil
   end
 
   local response = handle:read("*a")
   local success = handle:close()
 
   if not success or not response then
-    return nil, "Failed to fetch URL"
+    return nil
   end
 
   -- Parse response - be more flexible with parsing
@@ -160,10 +111,10 @@ local function fetch_html(url)
   end
 
   if status_code ~= "200" then
-    return nil, "HTTP error: " .. status_code
+    return nil
   end
 
-  return content, nil
+  return content
 end
 
 ---Native HTML parser - extract content between balanced tags
@@ -279,13 +230,13 @@ local function normalize_date(date_str)
   local part1, part2, year_part = date_str:match("(%d+)/(%d+)/(%d%d%d%d)")
   if part1 and part2 and year_part then
     -- Assume MM/DD/YYYY if first part > 12, otherwise DD/MM/YYYY
-    local month_num, day_num
+    local month_num, day_number
     if tonumber(part1) > 12 then
-      day_num, month_num = part1, part2
+      day_number, month_num = part1, part2
     else
-      month_num, day_num = part1, part2
+      month_num, day_number = part1, part2
     end
-    return string.format("%04d-%02d-%02d", tonumber(year_part), tonumber(month_num), tonumber(day_num))
+    return string.format("%04d-%02d-%02d", tonumber(year_part), tonumber(month_num), tonumber(day_number))
   end
 
   -- Format: 2023/12/25
@@ -299,9 +250,9 @@ end
 
 ---Extract publication date from HTML content
 ---@param html_content string the HTML content to extract date from
----@param url string the URL being processed (for context-specific extraction)
+---@param url_parser dotfiles.helpers.UrlParser the URL parser instance
 ---@return string|nil date the extracted date in YYYY-MM-DD format or nil if not found
-local function extract_date(html_content, url)
+local function extract_date(html_content, url_parser)
   if not html_content then
     return nil
   end
@@ -332,7 +283,7 @@ local function extract_date(html_content, url)
   }
 
   -- YouTube-specific patterns
-  if url and is_youtube_url(url) then
+  if url_parser:is_youtube_url() then
     table.insert(date_patterns, 1, { pattern = '"publishDate":"([^"]+)"', priority = 1 })
     table.insert(date_patterns, 1, { pattern = '"uploadDate":"([^"]+)"', priority = 1 })
   end
@@ -394,50 +345,51 @@ end
 
 ---Extract metadata from HTML using native pattern matching
 ---@param html_content string the HTML content to extract metadata from
----@param url string the URL being processed (used for context-specific processing)
+---@param url_parser dotfiles.helpers.UrlParser the URL parser instance
 ---@return table metadata a table containing extracted metadata
-local function extract_metadata(html_content, url)
+local function extract_metadata(html_content, url_parser)
   local metadata = {}
   metadata.title = html_content:match("<title[^>]*>%s*(.-)%s*</title>") or "Untitled"
   metadata.title = clean_text(metadata.title)
 
   -- Remove "- YouTube" suffix for YouTube videos
-  if url and is_youtube_url(url) then
+  if url_parser:is_youtube_url() then
     metadata.title = metadata.title:gsub("%s*-%s*YouTube%s*$", "")
   end
 
   -- Extract publication date
-  metadata.date = extract_date(html_content, url)
+  metadata.date = extract_date(html_content, url_parser)
 
   return metadata
 end
 
 ---Main parsing function
----@param url string the URL to parse
----@return table|nil, string|nil table containing parsed data or nil if parsing fails
-local function parse_url(url)
-  if not is_valid_url(url) then
-    return nil, "Invalid URL format"
+---@param input_url string the URL to parse
+---@return table table containing parsed data or nil if parsing fails
+local function parse_url(input_url)
+  local success, url_parser = pcall(require("helpers.url_parser").new, input_url)
+  if not success then
+    error("Invalid URL: " .. tostring(url_parser))
   end
 
-  local html_content, error_msg = fetch_html(url)
+  local html_content = fetch_html(input_url)
   if not html_content then
-    return nil, error_msg
+    error("Failed to fetch HTML content from URL")
   end
 
-  local metadata = extract_metadata(html_content, url)
+  local metadata = extract_metadata(html_content, url_parser)
   local result = {
-    url = url,
+    url = input_url,
     title = metadata.title,
     date = metadata.date or os.date("%Y-%m-%d"),
     current_date = os.date("%Y-%m-%d"),
   }
 
   -- Handle YouTube videos differently
-  if is_youtube_url(url) then
-    local video_id = extract_youtube_video_id(url)
+  if url_parser:is_youtube_url() then
+    local video_id = url_parser:extract_youtube_video_id()
     if not video_id then
-      return nil, "Could not extract YouTube video ID"
+      error("Could not extract YouTube video ID")
     end
 
     result.is_youtube = true
@@ -446,7 +398,7 @@ local function parse_url(url)
   else
     local readable_content = extract_readable_content(html_content)
     if not readable_content then
-      return nil, "Could not extract readable content"
+      error("Could not extract readable content")
     end
 
     local markdown_content = html_to_markdown(readable_content)
@@ -460,11 +412,11 @@ local function parse_url(url)
 end
 
 ---Template rendering function (simplified)
----@param template string the template string with placeholders
+---@param template string|nil the template string with placeholders
 ---@param data table a table containing data to fill in the template
 ---@return string the rendered template
 local function render_template(template, data)
-  if not template or not data then
+  if not template then
     return template or ""
   end
 
@@ -532,9 +484,9 @@ end
 ---@param url string the URL to generate a note from
 ---@param target_directory string the directory to save the note in
 local function generate_note(url, target_directory)
-  local parsed_data, error_msg = parse_url(url)
-  if not parsed_data then
-    print("Error parsing URL: " .. error_msg)
+  local success, parsed_data = pcall(parse_url, url)
+  if not success then
+    print("Error parsing URL: " .. tostring(parsed_data))
     return
   end
 

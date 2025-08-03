@@ -1,53 +1,5 @@
 local USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 
----Check if the input is a valid URL
----@param input_url string the URL to check
----@return boolean true if the input is a valid URL, false otherwise
-local function is_valid_url(input_url)
-  return input_url and input_url:match("^https?://[%w%.%-]+") ~= nil
-end
-
----Parse URL into components
----@param input_url string the URL to parse
----@return table|nil a table with protocol, host, port, and path or nil if parsing fails
-local function parse_url(input_url)
-  local protocol, host, port, path = input_url:match("^(https?)://([^:/]+):?(%d*)(.*)$")
-  if not protocol then
-    return nil
-  end
-
-  port = port ~= "" and tonumber(port) or (protocol == "https" and 443 or 80)
-  path = path ~= "" and path or "/"
-
-  return {
-    protocol = protocol,
-    host = host,
-    port = port,
-    path = path,
-  }
-end
-
----Extract the final segment from a URL path (for non-HTML content)
----@param input_url string the URL to extract the final segment from
----@return string the final segment of the URL path or "File" if not found
-local function get_url_final_segment(input_url)
-  local parsed = parse_url(input_url)
-  if not parsed or not parsed.path then
-    return "File"
-  end
-
-  local segments = {}
-  for segment in parsed.path:gmatch("[^/]+") do
-    table.insert(segments, segment)
-  end
-
-  if #segments > 0 then
-    return segments[#segments]
-  else
-    return "File"
-  end
-end
-
 ---Simple HTML title extraction using pattern matching
 ---@param html string the HTML content to extract the title from
 ---@return string|nil title the extracted title or nil if not found
@@ -70,24 +22,24 @@ end
 
 ---Simple HTTP GET request using curl command
 ---@param input_url string the URL to fetch
----@return string|nil, string|nil response the response body or nil if an error occurred
+---@return string|nil response the response body or nil if an error occurred
 local function http_get(input_url)
   -- Use curl to fetch the URL
   local curl_cmd = string.format('curl -s -L -H "User-Agent: %s" "%s"', USER_AGENT, input_url)
   local handle = io.popen(curl_cmd)
 
   if not handle then
-    return nil, "Failed to execute curl command"
+    return nil
   end
 
   local response = handle:read("*a")
   local success = handle:close()
 
   if not success then
-    return nil, "Curl command failed"
+    return nil
   end
 
-  return response, nil
+  return response
 end
 
 ---Check if content is HTML by looking for HTML tags
@@ -122,19 +74,23 @@ local function is_html_content(content)
 end
 
 ---Scrape the page title from a URL
----@param input_url string the URL to scrape
+---@param url_parser dotfiles.helpers.UrlParser the URL parser instance
 ---@return string|nil title the page title or the final segment of the URL
-local function scrape(input_url)
+local function scrape(url_parser)
   -- Make HTTP request using curl
-  local response, error_msg = http_get(input_url)
+  local response = http_get(url_parser.input_url)
 
   if not response then
-    error("HTTP request failed: " .. tostring(error_msg))
+    error("HTTP request failed")
   end
 
   -- Check if response is HTML
   if not is_html_content(response) then
-    return get_url_final_segment(input_url)
+    local final_segment = url_parser:get_url_final_segment()
+    if not final_segment then
+      return url_parser.input_url
+    end
+    return final_segment
   end
 
   -- Extract title
@@ -148,28 +104,28 @@ local function scrape(input_url)
     end
 
     -- Ultimate fallback: return URL
-    return input_url
+    return url_parser.input_url
   end
 
   return title
 end
 
 ---Get page title from URL
----@param input_url string the URL to fetch the title from
----@return string|nil title the page title or an error message
-local function get_page_title(input_url)
-  local success, result = pcall(scrape, input_url)
+---@param url_parser dotfiles.helpers.UrlParser the URL parser instance
+---@return string title the page title or fallback URL
+local function get_page_title(url_parser)
+  local success, result = pcall(scrape, url_parser)
 
   if success then
-    return result
+    return result or url_parser.input_url
   end
 
-  error("Error fetching title: " .. tostring(result))
-  return "Error fetching title"
+  -- Fallback to URL if scraping fails
+  return url_parser.input_url
 end
 
 ---Escape special characters for markdown (equivalent to escapeMarkdown in TypeScript)
----@parm text string the text to escape
+---@param text string the text to escape
 ---@return string escaped_text
 local function escape_markdown(text)
   if text == nil or text == "" then
@@ -186,13 +142,13 @@ local function escape_markdown(text)
 end
 
 ---Create a markdown link with title
----@param input_url string the URL to fetch the title from
+---@param url_parser dotfiles.helpers.UrlParser the URL parser instance
 ---@return string title markdown link with the title
-local function create_markdown_link(input_url)
-  local title = get_page_title(input_url)
+local function create_markdown_link(url_parser)
+  local title = get_page_title(url_parser)
   local escaped_title = escape_markdown(title)
 
-  return string.format("[%s](%s)", escaped_title, input_url)
+  return string.format("[%s](%s)", escaped_title, url_parser.input_url)
 end
 
 ---Calculate insert column position.
@@ -244,8 +200,10 @@ end
 local function paste_url()
   local input = vim.fn.getreg("+")
   local title = input
-  if is_valid_url(input) then
-    title = create_markdown_link(input)
+
+  local success, url_parser = pcall(require("helpers.url_parser").new, input)
+  if success then
+    title = create_markdown_link(url_parser)
   end
 
   insert_string_at_current_cursor(title)
