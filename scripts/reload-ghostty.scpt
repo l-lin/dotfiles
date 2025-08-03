@@ -1,4 +1,6 @@
 -- Use AeroSpace to navigate to each workspace and reload Ghostty
+-- Use this HACK until Ghostty 1.2.0 is installed.
+-- src: https://github.com/ghostty-org/ghostty/discussions/3643#discussioncomment-13899379
 set workspaces to {1, 2, 3, 4, 8, 9, 0}
 
 repeat with ws in workspaces
