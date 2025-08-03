@@ -83,14 +83,14 @@ return {
       {
         "<leader>op",
         require("plugins.custom.lang.obsidian.link_to_markdown").paste_url,
-        desc = "Extract title and convert into markdown link (Alt+Shift+v)",
+        desc = "Extract title from URL in clipboard and convert into markdown link (Alt+Shift+v)",
         mode = "n",
         noremap = true,
       },
       {
         "<M-S-v>",
         require("plugins.custom.lang.obsidian.link_to_markdown").paste_url,
-        desc = "Extract title and convert into markdown link (Alt+Shift+v)",
+        desc = "Extract title from URL in clipboard and convert into markdown link (Alt+Shift+v)",
         mode = "i",
         noremap = true,
       },
@@ -109,7 +109,7 @@ return {
         noremap = true,
       },
       {
-        "<leader>os",
+        "<leader>og",
         require("plugins.custom.lang.obsidian").search_pending_todos,
         desc = "Search pending todos",
         mode = "n",
@@ -118,7 +118,7 @@ return {
       {
         "<leader>oS",
         require("plugins.custom.lang.obsidian.article_summarizer").paste_url,
-        desc = "Summarize artiche from URL in clipboard",
+        desc = "Summarize article from URL in clipboard",
         mode = "n",
         noremap = true,
       },
