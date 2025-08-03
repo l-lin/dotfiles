@@ -91,7 +91,7 @@ local function search_pending_todos()
       "node_modules",
       ".git",
       "0-meta",
-      "4-archives",
+      "3-resources/technical-notes",
       "5-rituals",
       "6-triage",
     },
