@@ -34,7 +34,7 @@ return {
     "HakonHarnes/img-clip.nvim",
     cmd = { "PasteImage" },
     keys = {
-      { "<leader>mp", "<cmd>PasteImage<cr>", silent = true, noremap = true, desc = "Paste image from clipboard" }
+      { "<leader>oi", "<cmd>PasteImage<cr>", silent = true, noremap = true, desc = "Paste image from clipboard" }
     },
   },
 }

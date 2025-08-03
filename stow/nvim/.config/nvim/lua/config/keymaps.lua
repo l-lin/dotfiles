@@ -59,7 +59,7 @@ map("n", "]<tab>", "<cmd>tabnext<cr>", { noremap = true, desc = "Next Tab" })
 map("n", "[<tab>", "<cmd>tabprevious<cr>", { noremap = true, desc = "Previous Tab" })
 
 -- editing (same behavior as Intellij)
-map("n", "<C-y>", "dd", { noremap = true, desc = "Delete line" })
+-- map("n", "<C-y>", "dd", { noremap = true, desc = "Delete line" })
 
 -- special keymap to cut to black hole, so I don't lose what I yank to my register '+'
 map({ "n", "v" }, "<M-d>", '"_d', { noremap = true })
@@ -83,7 +83,7 @@ map({ "n", "v" }, "<M-C-L>", function() require("lazyvim.util").format({ force =
 map("n", "J", remove_trailing_whitespace, { noremap = true, silent = true, desc = "Join line without whitespace if it's an open parenthesis" })
 
 -- Toggle executable permission on current file.
-map("n", "<leader>fx", function()
+map("n", "<leader>fxx", function()
   local file = vim.fn.expand("%")
   local perms = vim.fn.getfperm(file)
   local is_executable = string.match(perms, "x", -1) ~= nil
@@ -98,7 +98,7 @@ map("n", "<leader>fx", function()
 end, { desc = "Toggle executable permission" })
 
 -- If this is a bash script, make it executable, and execute it in a tmux pane on the right
-map("n", "<leader>mb", function()
+map("n", "<leader>fxx", function()
   local filename = vim.fn.expand("%")
   local first_line = vim.fn.getline(1)
   -- Check if the bash script is valid by checking if it contains a shebang.
