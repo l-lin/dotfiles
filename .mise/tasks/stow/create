@@ -14,8 +14,8 @@ done
 for folder in $(find . -type d -maxdepth 1 2>/dev/null); do
   if [[ "${folder}" != '.' ]] && [[ "${folder}" != './.git' ]]; then
     app=$(echo "${folder}" | sed 's~./~~')
-    mise run info "Add symlinks for ${app}" 
-    stow --delete -t "${HOME}" "${app}" 
-    stow -t "${HOME}" "${app}";
-  fi 
+    echo "> Add symlinks for ${app}"
+    stow --delete -t "${HOME}" "${app}"
+    stow -t "${HOME}" "${app}"
+  fi
 done

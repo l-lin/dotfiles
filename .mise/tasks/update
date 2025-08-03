@@ -5,13 +5,13 @@
 
 set -eu
 
-if type mise >/dev/null 2>&1; then 
-  mise run info "Updating tools installed from mise" 
+if type mise >/dev/null 2>&1; then
+  echo "> Updating tools installed from mise"
   mise up
 fi
 
-if type brew >/dev/null 2>&1; then 
-  mise run info "Updating tools installed from homebrew" 
+if type brew >/dev/null 2>&1; then
+  echo "> Updating tools installed from homebrew"
   brew upgrade
 fi
 

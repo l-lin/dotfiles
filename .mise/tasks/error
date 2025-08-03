@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-#
-#MISE description="Log error to stderr"
-#
-
-echo -e "\e[1;30;41m I \e[0m ${1}" >&2

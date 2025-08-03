@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-#
-#MISE description="Log info to sdtout"
-#
-
-echo -e "\e[1;30;44m I \e[0m ${1}"

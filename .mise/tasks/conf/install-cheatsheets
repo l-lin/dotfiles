@@ -14,9 +14,9 @@ install-cheatsheet() {
   local folder_name="$(echo $(navi info cheats-path)/${cheatsheet_name})" 
 
   if [ -d ${folder_name} ]; then 
-    mise run info "Cheatsheet '${cheatsheet_name}' already exists, skipping..."
+    echo "> Cheatsheet '${cheatsheet_name}' already exists, skipping..."
   else
-    mise run info "Installing cheatsheet '${cheatsheet_name}'."
+    echo "> Installing cheatsheet '${cheatsheet_name}'."
     git clone "git@${host}:${owner}/${repo}" "${folder_name}"
   fi
 }

@@ -6,8 +6,8 @@
 
 set -eu
 
-mise run info "Creating symbolink link from Docker socket"
+echo "> Creating symbolink link from Docker socket"
 sudo ln -sf $HOME/.colima/default/docker.sock /var/run/docker.sock
-mise run info "Restarting colima"
+echo "> Restarting colima"
 colima stop
 colima start --network-address

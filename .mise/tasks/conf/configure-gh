@@ -5,7 +5,7 @@
 
 set -eu
 
-mise run info "Authenticating with Github CLI"
+echo "> Authenticating with Github CLI"
 gh auth login
-mise run info "Add Copilot extension"
+echo "> Add Copilot extension"
 gh extension install github/gh-copilot

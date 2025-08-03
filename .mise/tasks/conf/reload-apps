@@ -5,14 +5,14 @@
 
 set -eu
 
-mise run info "Reloading tmux"
+echo "> Reloading tmux"
 tmux source "${XDG_CONFIG_HOME}/tmux/tmux.conf"
 
 if type awesome-client >/dev/null 2>&1; then
-  mise run info "Reloading awesome"
+  echo "> Reloading awesome"
   echo 'awesome.restart()' | awesome-client 2>/dev/null || true
-  mise run info "Reloading Slack"
+  echo "> Reloading Slack"
   pgrep -x slack > /dev/null && (pkill slack && slack >/dev/null 2>&1&) || true
-  mise run info "Reloading obsidian"
+  echo "> Reloading obsidian"
   pgrep electron > /dev/null && (pkill electron && obsidian >/dev/null 2>&1&) || true
 fi

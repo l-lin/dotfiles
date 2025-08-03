@@ -10,11 +10,11 @@ THEMES_FOLDER='./home-manager/modules/share/style/themes'
 
 if [[ ! -d "${THEMES_FOLDER}/${usage_to}" ]]; then
   supported_themes=$(find ${THEMES_FOLDER} -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | tr '\n' ' ')
-  mise run error "Unsupported theme '${usage_to}', expecting one of '${supported_themes% }'!"
+  echo "> Unsupported theme '${usage_to}', expecting one of '${supported_themes% }'!" >&2
   exit 1;
 fi
 
-mise run info "Changing theme to '${usage_to}'..."
+echo "> Changing theme to '${usage_to}'..."
 sed -i '' "s~theme = \"\(.*\)\"~theme = \"${usage_to}\"~" flake.nix
 
 mise run home:update

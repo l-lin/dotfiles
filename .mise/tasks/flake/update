@@ -4,10 +4,10 @@
 #USAGE flag "-i --input <input>" help="Flake to update (default: all)" default="all"
 #
 
-if [[ "${input}" == "all" ]]; then 
-  mise run info "Updating Nix flake lock file..." 
+if [[ "${input}" == "all" ]]; then
+  echo "> Updating Nix flake lock file..."
   nix flake update
-else 
-  mise run info "Updating Nix flake ${input}..." 
+else
+  echo "> Updating Nix flake ${input}..."
   nix flake update ${input}
 fi

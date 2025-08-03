@@ -16,7 +16,7 @@ change_macos_polarity() {
   local is_dark="${1}"
 
   if type osascript >/dev/null 2>&1; then 
-    mise run info "Changing macOS polarity"
+    echo "> Changing macOS polarity"
     osascript -l JavaScript -e "Application('System Events').appearancePreferences.darkMode = ${is_dark}" > /dev/null
     osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"${HOME}/Pictures/wallpaper.jpg\" as POSIX file"
     osascript "${PWD}/scripts/reload-ghostty.scpt"
@@ -28,7 +28,7 @@ current_theme=$(grep 'theme = ' flake.nix | cut -d'"' -f2 | tr -d ' ')
 if [[ "${DEFAULT_THEME_LIGHT}" == "${current_theme}" ]]; then 
   mise run colorscheme:change "${DEFAULT_THEME_DARK}"
   change_macos_polarity true
-else 
+else
   mise run colorscheme:change "${DEFAULT_THEME_LIGHT}"
   change_macos_polarity false
 fi
