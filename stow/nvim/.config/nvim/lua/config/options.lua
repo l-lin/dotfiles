@@ -9,7 +9,7 @@ vim.opt.pumblend = 0
 --vim.opt.scrolloff = 7
 
 -- enable word wrap
--- vim.opt.wrap = true
+vim.opt.wrap = true
 
 -- set background
 -- commented because it's now set by home-manager
@@ -21,6 +21,9 @@ vim.g.autoformat = false
 -- set to 2 spaces
 vim.o.tabstop = 2
 vim.o.shiftwidth = vim.o.tabstop
+
+-- do not have long lines
+vim.o.textwidth = 80
 
 -- lazyvim config
 -- use snacks.picker
