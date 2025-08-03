@@ -34,16 +34,22 @@ local function html_to_markdown(html_content)
 
   -- Convert lists
   markdown = markdown:gsub("<ul.->(.-)</ul>", function(content)
-    return content:gsub("<li.->(.-)</li>", "- %1\n")
+    local list_content = content:gsub("<li.->(.-)</li>", "- %1\n")
+    -- Remove extra newlines between list items
+    list_content = list_content:gsub("\n\n+", "\n")
+    return list_content
   end)
 
   markdown = markdown:gsub("<ol.->(.-)</ol>", function(content)
     local counter = 1
-    return content:gsub("<li.->(.-)</li>", function(item)
+    local list_content = content:gsub("<li.->(.-)</li>", function(item)
       local result = counter .. ". " .. item .. "\n"
       counter = counter + 1
       return result
     end)
+    -- Remove extra newlines between list items
+    list_content = list_content:gsub("\n\n+", "\n")
+    return list_content
   end)
 
   -- Convert blockquotes
@@ -61,8 +67,10 @@ local function html_to_markdown(html_content)
   -- Clean up whitespace but preserve paragraph structure
   -- Replace multiple spaces with single space
   markdown = markdown:gsub("[ \t]+", " ")
-  -- Limit to max 2 consecutive newlines (preserve paragraph breaks)
+  -- Remove excessive newlines (more than 2 consecutive newlines)
   markdown = markdown:gsub("\n\n\n+", "\n\n")
+  -- Clean up newlines around list items and other elements
+  markdown = markdown:gsub("\n%s*\n%s*\n", "\n\n")
   -- Remove leading/trailing whitespace
   markdown = markdown:gsub("^%s+", "")
   markdown = markdown:gsub("%s+$", "")
@@ -285,6 +293,10 @@ local function clean_text(text)
     ["&lt;"] = "<",
     ["&gt;"] = ">",
     ["&quot;"] = '"',
+    ["&ldquo;"] = '"',
+    ["&rdquo;"] = '"',
+    ["&lsquo;"] = "'",
+    ["&rsquo;"] = "'",
     ["&#39;"] = "'",
     ["&nbsp;"] = " ",
   }
