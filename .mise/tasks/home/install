@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#
+#MISE description="install home-manager in standalone"
+#src: https://nix-community.github.io/home-manager/index.xhtml#sec-install-standalone
+#
+
+set -eu
+
+nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+nix-channel --update
+nix-shell '<home-manager>' -A install

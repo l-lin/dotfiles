@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+#
+#MISE description="Install nix darwin if not already installed"
+#
+
+set -eu
+
+if ! type darwin-rebuild >/dev/null 2>&1; then
+  sudo nix run nix-darwin/master#darwin-rebuild
+    --extra-experimental-features 'nix-command flakes'
+    -- switch --flake ".#$(hostname)";
+fi

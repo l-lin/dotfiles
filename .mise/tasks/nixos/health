@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+#
+#MISE description="Check NixOS configuration"
+#
+
+set -eu
+
+nix-shell -p nix-health --run nix-health

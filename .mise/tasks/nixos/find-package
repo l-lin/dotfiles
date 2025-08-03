@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#
+#MISE description="Find a Nix package"
+#USAGE arg "<package>" help="Package to search for"
+#
+
+nix search nixpkgs ${usage_package}

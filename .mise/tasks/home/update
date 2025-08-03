@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+#
+#MISE description="Apply home-manager configuration"
+#
+
+set -eu
+
+if type nh >/dev/null 2>&1; then \
+  nh home switch --backup-extension bak --configuration "$(whoami)" . -- --show-trace; \
+else \
+  home-manager switch -b bak --flake ".#$(whoami)"; \
+fi
+just create-symlinks

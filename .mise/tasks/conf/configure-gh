@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#
+#MISE description="Configure GitHub CLI"
+#
+
+set -eu
+
+mise run info "Authenticating with Github CLI"
+gh auth login
+mise run info "Add Copilot extension"
+gh extension install github/gh-copilot

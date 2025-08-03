@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+#
+#MISE description="Clean up nixos garbage"
+#
+
+set -eu
+
+sudo nix-collect-garbage -d
+sudo nixos-rebuild boot --flake ".#$(hostname)"

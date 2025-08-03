@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#
+#MISE description="Generate hardware-configuration"
+#
+
+set -eu
+
+NIXOS_HARDWARE_CONFIGURATION_FILE = "./nixos/hardware-configuration.nix"
+
+rm "${NIXOS_HARDWARE_CONFIGURATION_FILE}"
+nixos-generate-config --show-hardware-config > "${NIXOS_HARDWARE_CONFIGURATION_FILE}"

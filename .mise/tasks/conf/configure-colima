@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+#
+#MISE description="Configure colima to work with testcontainers"
+#src: https://golang.testcontainers.org/system_requirements/using_colima/
+#
+
+set -eu
+
+mise run info "Creating symbolink link from Docker socket"
+sudo ln -sf $HOME/.colima/default/docker.sock /var/run/docker.sock
+mise run info "Restarting colima"
+colima stop
+colima start --network-address

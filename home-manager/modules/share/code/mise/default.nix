@@ -23,6 +23,12 @@
     };
   };
 
+  home.sessionVariables = {
+    # print only stdout/stderr from tasks and nothing from mise
+    # src: https://mise.jdx.dev/configuration/settings.html#task_output
+    MISE_TASK_OUTPUT = "quiet";
+  };
+
   # Symlink ~/.config/zsh/
   xdg.configFile."zsh/completions/_mise".source = ./.config/zsh/completions/_mise;
   xdg.configFile."zsh/plugins/mise" = {

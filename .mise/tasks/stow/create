@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+#
+#MISE description="Add symlinks for files that need to be writeable"
+#
+
+set -eu
+
+cd stow
+# Initialize directories
+find . -mindepth 2 -type d | sed 's|^\./||' | grep '/' | while read folder; do
+  mkdir -p "${HOME}/${folder}"
+done
+
+for folder in $(find . -type d -maxdepth 1 2>/dev/null); do
+  if [[ "${folder}" != '.' ]] && [[ "${folder}" != './.git' ]]; then
+    app=$(echo "${folder}" | sed 's~./~~')
+    mise run info "Add symlinks for ${app}" 
+    stow --delete -t "${HOME}" "${app}" 
+    stow -t "${HOME}" "${app}";
+  fi 
+done

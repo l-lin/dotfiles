@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#
+#MISE description="Apply nix-darwin configuration"
+#MISE depends=["darwin:install"]
+#
+
+sudo darwin-rebuild switch --flake ".#$(hostname)"

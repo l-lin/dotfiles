@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+#
+#MISE description="Install navi cheatsheet if not present"
+#
+
+set -euo pipefail
+
+install-cheatsheet() {
+  local host="$1"
+  local owner="$2"
+  local repo="$3"
+
+  local cheatsheet_name="$(echo ${owner}__${repo})"
+  local folder_name="$(echo $(navi info cheats-path)/${cheatsheet_name})" 
+
+  if [ -d ${folder_name} ]; then 
+    mise run info "Cheatsheet '${cheatsheet_name}' already exists, skipping..."
+  else
+    mise run info "Installing cheatsheet '${cheatsheet_name}'."
+    git clone "git@${host}:${owner}/${repo}" "${folder_name}"
+  fi
+}
+
+cheats=('github.com/l-lin/cheats' 'github.com/l-lin/work-cheats')
+for c in ${cheats[@]}; do 
+  host=$(echo ${c} | awk -F'/' '{print $1}') 
+  owner=$(echo ${c} | awk -F'/' '{print $2}') 
+  repo=$(echo ${c} | awk -F'/' '{print $3}') 
+
+  install-cheatsheet ${host} ${owner} ${repo}
+done

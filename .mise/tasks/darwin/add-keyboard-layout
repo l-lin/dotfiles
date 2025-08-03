@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#
+#MISE description="Add us-altgr-intl keyboard layout to macos"
+#
+
+set -eu
+
+sudo rm -rf "/Library/Keyboard Layouts/us-altgr-intl.keylayout"
+sudo ln -s \
+    "${XDG_CONFIG_HOME:-${HOME}/.config}/dotfiles/home-manager/modules/aarch64-darwin/keyboard-layout/us-altgr-intl.keylayout" \
+    "/Library/Keyboard Layouts/us-altgr-intl.keylayout"

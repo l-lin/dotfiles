@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#
+#MISE description="Import SSH keys, SOPS age key and create git allowed signers"
+#
+
+nix-shell --command zsh -p bitwarden-cli jq ssh-to-age --run "./scripts/import-keys.sh $(whoami)"

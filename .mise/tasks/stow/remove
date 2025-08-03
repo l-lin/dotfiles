@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+#
+#MISE description="remove symlinks"
+#USAGE arg "<directory>" help="Directory to remove symlink"
+#
+
+set -eu
+
+cd stow
+stow --delete -t "${HOME}" "${usage_directory}"

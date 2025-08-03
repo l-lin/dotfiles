@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#
+#MISE description="Show home-manager news entries"
+#
+
+home-manager news --flake ".#$(whoami)"

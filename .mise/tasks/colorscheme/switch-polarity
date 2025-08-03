@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+#
+#MISE description="Switch polarity from dark to light or vice versa"
+#
+
+set -euo pipefail
+
+DEFAULT_THEME_DARK='kanagawa'
+DEFAULT_THEME_LIGHT='github-light'
+
+# Switch polarity in macOS by calling osascript.
+# src:
+# - https://norday.tech/posts/2020/switch-dark-mode-os/
+# - https://apple.stackexchange.com/a/443362 for changing wallpaper
+change_macos_polarity() {
+  local is_dark="${1}"
+
+  if type osascript >/dev/null 2>&1; then 
+    mise run info "Changing macOS polarity"
+    osascript -l JavaScript -e "Application('System Events').appearancePreferences.darkMode = ${is_dark}" > /dev/null
+    osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"${HOME}/Pictures/wallpaper.jpg\" as POSIX file"
+    osascript "${PWD}/scripts/reload-ghostty.scpt"
+  fi
+}
+
+current_theme=$(grep 'theme = ' flake.nix | cut -d'"' -f2 | tr -d ' ')
+
+if [[ "${DEFAULT_THEME_LIGHT}" == "${current_theme}" ]]; then 
+  mise run colorscheme:change "${DEFAULT_THEME_DARK}"
+  change_macos_polarity true
+else 
+  mise run colorscheme:change "${DEFAULT_THEME_LIGHT}"
+  change_macos_polarity false
+fi

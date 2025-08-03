@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+#
+#MISE description="Apply NixOS configuration"
+#MISE depends=["nix:generate-hardware-config"]
+#
+
+set -eu
+
+if type nh >/dev/null 2>&1; then
+  nh os switch --hostname "$(hostname)" --ask .
+else
+  sudo nixos-rebuild switch --flake ".#$(hostname)"
+fi
+mise run nixos:health

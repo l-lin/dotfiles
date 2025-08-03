@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+#
+#MISE description="Change colorscheme"
+#USAGE arg "<to>" help="Theme to switch to"
+#
+
+set -eu
+
+THEMES_FOLDER='./home-manager/modules/share/style/themes'
+
+if [[ ! -d "${THEMES_FOLDER}/${usage_to}" ]]; then
+  supported_themes=$(find ${THEMES_FOLDER} -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | tr '\n' ' ')
+  mise run error "Unsupported theme '${usage_to}', expecting one of '${supported_themes% }'!"
+  exit 1;
+fi
+
+mise run info "Changing theme to '${usage_to}'..."
+sed -i '' "s~theme = \"\(.*\)\"~theme = \"${usage_to}\"~" flake.nix
+
+mise run home:update
+mise run conf:reload-apps

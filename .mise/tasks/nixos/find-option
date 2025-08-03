@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#
+#MISE description="Find Nix option documentation"
+#USAGE arg "<option>" help="Nix option to search for"
+#
+
+nix-shell -p manix --run "manix '${usage_option}'"

@@ -1,5 +1,7 @@
-#!/usr/bin/env zsh
-#MISE: description=Run Lua tests
+#!/usr/bin/env bash
+#
+#MISE description="Run Lua tests"
+#
 
 busted --pattern=_spec \
   -m "stow/nvim/.config/nvim/lua/?.lua;stow/nvim/.config/nvim/lua/?/init.lua" \
