@@ -102,6 +102,13 @@ return {
         desc = "Generate note from URL in clipboard",
       },
       {
+        "<leader>om",
+        require("plugins.custom.lang.obsidian").open_current_monthly_note,
+        desc = "Open current monthly note",
+        mode = "n",
+        noremap = true,
+      },
+      {
         "<leader>os",
         require("plugins.custom.lang.obsidian").search_pending_todos,
         desc = "Search pending todos",

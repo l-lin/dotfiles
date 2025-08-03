@@ -98,6 +98,14 @@ local function search_pending_todos()
   })
 end
 
+---Open the current month's ritual note.
+local function open_current_monthly_note()
+  local year = os.date("%Y")
+  local month = os.date("%Y-%m")
+  local monthly_note_path = string.format("5-rituals/monthly/%s/%s.md", year, month)
+  vim.cmd("edit " .. vim.fn.expand(vim.g.notes_dir) .. "/" .. monthly_note_path)
+end
+
 local M = {}
 M.today = today
 M.yesterday = yesterday
@@ -107,4 +115,5 @@ M.previous_month = previous_month
 M.next_month = next_month
 M.todo = todo
 M.search_pending_todos = search_pending_todos
+M.open_current_monthly_note = open_current_monthly_note
 return M
