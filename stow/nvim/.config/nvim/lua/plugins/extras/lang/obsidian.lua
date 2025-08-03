@@ -2,15 +2,11 @@
 return {
   {
     "l-lin/obsidian.nvim",
-    version = "*", -- recommended, use latest release instead of latest commit
+    version = "*",
     lazy = true,
     event = {
-      -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
-      -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/**.md"
-      "BufReadPre "
-        .. vim.fn.expand("~")
-        .. "/perso/notes/**.md",
-      "BufNewFile " .. vim.fn.expand("~") .. "/perso/notes/**.md",
+      "BufReadPre " .. vim.fn.expand(vim.g.notes_dir) .. "/**.md",
+      "BufNewFile " .. vim.fn.expand(vim.g.notes_dir),
     },
     dependencies = {
       "nvim-lua/plenary.nvim",
@@ -127,7 +123,7 @@ return {
       },
       {
         "<leader>os",
-        function ()
+        function()
           require("plugins.custom.lang.obsidian.article_summarizer").paste_url(true)
         end,
         desc = "Short summarize article from URL in clipboard",
@@ -136,7 +132,7 @@ return {
       },
       {
         "<leader>oS",
-        function ()
+        function()
           require("plugins.custom.lang.obsidian.article_summarizer").paste_url(false)
         end,
         desc = "Summarize article from URL in clipboard",

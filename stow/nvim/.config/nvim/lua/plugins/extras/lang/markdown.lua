@@ -66,14 +66,14 @@ return {
           "<Tab>",
           require("plugins.custom.lang.markdown").smart_indent,
           desc = "Indent bullet point",
-          mode = { "n", "i", "v" },
+          mode = { "i", "v" }, -- do not set to normal mode, because C-i is also Tab...
           noremap = true,
         },
         {
           "<S-Tab>",
           require("plugins.custom.lang.markdown").smart_dedent,
           desc = "Dedent bullet point",
-          mode = { "n", "i", "v" },
+          mode = { "i", "v" }, -- do not set to normal mode, because C-i is also Tab...
           noremap = true,
         },
       },
