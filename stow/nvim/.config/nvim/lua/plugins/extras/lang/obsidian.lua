@@ -45,6 +45,7 @@ return {
         noremap = true,
         desc = "Open tomorrow's note",
       },
+
       {
         "<leader>on",
         "<cmd>Obsidian new<cr>",
@@ -59,6 +60,7 @@ return {
         noremap = true,
         desc = "Create note using a template",
       },
+
       {
         "<leader>or",
         "<cmd>Obsidian rename<cr>",
@@ -67,7 +69,7 @@ return {
         desc = "Rename note",
       },
       {
-        "<leader>oT",
+        "<leader>oa",
         "<cmd>Obsidian template<cr>",
         mode = "n",
         noremap = true,
@@ -80,6 +82,14 @@ return {
         noremap = true,
         desc = "Follow link",
       },
+      {
+        "<leader>oT",
+        "<cmd>Obsidian tags<cr>",
+        mode = "n",
+        noremap = true,
+        desc = "Search tags",
+      },
+
       {
         "<leader>op",
         require("plugins.custom.lang.obsidian.link_to_markdown").paste_url,
@@ -116,8 +126,19 @@ return {
         noremap = true,
       },
       {
+        "<leader>os",
+        function ()
+          require("plugins.custom.lang.obsidian.article_summarizer").paste_url(true)
+        end,
+        desc = "Short summarize article from URL in clipboard",
+        mode = "n",
+        noremap = true,
+      },
+      {
         "<leader>oS",
-        require("plugins.custom.lang.obsidian.article_summarizer").paste_url,
+        function ()
+          require("plugins.custom.lang.obsidian.article_summarizer").paste_url(false)
+        end,
         desc = "Summarize article from URL in clipboard",
         mode = "n",
         noremap = true,

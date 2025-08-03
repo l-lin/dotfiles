@@ -1,10 +1,13 @@
-local SUMMARY_PROMPT = "Fetch the content of the article %s, and return only the summary in a few sentences (max 3)"
+local SUMMARY_PROMPT = "Fetch the content of the article %s, and return only the summary"
+local LIGHT_SUMMARY_PROMPT = "Fetch the content of the article %s, and return only the summary in a few sentences (max 3)"
 
 ---Execute claude CLI with the given prompt
----@param prompt string the prompt to send to claude
+---@param light_summary boolean whether to use single line summary prompt
 ---@return string|nil result the output from claude CLI, error message if any
-local function call_claude_cli(prompt)
-  local claude_cmd = string.format('claude -p "%s"', prompt)
+local function summarize_url_with_claude_code(url, light_summary)
+  local prompt = light_summary and LIGHT_SUMMARY_PROMPT or SUMMARY_PROMPT
+
+  local claude_cmd = string.format('claude -p "%s"', string.format(prompt, url))
 
   local handle = io.popen(claude_cmd)
   if not handle then
@@ -22,27 +25,24 @@ local function call_claude_cli(prompt)
     return nil
   end
 
-  response = response:gsub("^%s+", ""):gsub("%s+$", "")
+  if light_summary then
+    -- Remove any leading or trailing whitespace for single line summaries
+    response = response:gsub("^%s+", ""):gsub("%s+$", "")
+  end
 
   return response
 end
 
----Summarize the content of a URL using claude CLI
----@param url string the URL to summarize
----@return string|nil summary the summary of the URL content, error message if any
-local function summarize_url(url)
-  return call_claude_cli(string.format(SUMMARY_PROMPT, url))
-end
-
 ---Paste URL summary at cursor position
-local function paste_url()
+---@param light_summary boolean whether to use single line summary
+local function paste_url(light_summary)
   local url = vim.fn.getreg("+")
   local success = pcall(require("helpers.url_parser").new, url)
   if not success then
     error("Failed to parse URL '" .. url .. "'")
   end
 
-  local summary = summarize_url(url)
+  local summary = summarize_url_with_claude_code(url, light_summary)
 
   if not summary then
     error("Failed to summarize URL '" .. url .. "'")

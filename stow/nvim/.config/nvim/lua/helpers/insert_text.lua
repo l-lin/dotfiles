@@ -38,11 +38,16 @@ local function at_current_cursor(text)
   local mode = vim.fn.mode()
   local insert_col = calculate_insert_col(col, line_len, mode)
 
-  vim.api.nvim_buf_set_text(buf, row, insert_col, row, insert_col, { text })
+  -- Split text by newlines for nvim_buf_set_text
+  local lines = vim.split(text, '\n', { plain = true })
+  vim.api.nvim_buf_set_text(buf, row, insert_col, row, insert_col, lines)
   if mode == 'i' then
     vim.cmd('startinsert')
   end
-  vim.api.nvim_win_set_cursor(0, { row + 1, insert_col + #text })
+  -- Position cursor at the end of the inserted text
+  local end_row = row + #lines - 1
+  local end_col = insert_col + #lines[#lines]
+  vim.api.nvim_win_set_cursor(0, { end_row + 1, end_col })
 end
 
 
