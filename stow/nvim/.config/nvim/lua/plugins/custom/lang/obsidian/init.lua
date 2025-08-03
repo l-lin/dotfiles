@@ -85,7 +85,7 @@ end
 ---Finds all lines that match the pattern `- [ ]` (with optional indentation).
 local function search_pending_todos()
   require("snacks").picker.grep({
-    search = "^\\s*- \\[ \\]",
+    search = "^\\s*- \\[ \\] ",
     glob = "**/*.md",
     exclude = {
       "node_modules",
