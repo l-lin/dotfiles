@@ -31,6 +31,7 @@ return {
   -- split and join arguments
   {
     "echasnovski/mini.splitjoin",
+    enabled = false,
     version = "*",
     event = "LazyFile",
     opts = {

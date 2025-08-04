@@ -83,6 +83,7 @@ return {
   -- markdown table
   {
     "dhruvasagar/vim-table-mode",
+    enabled = false,
     ft = "markdown",
     keys = {
       { "<leader>tm", false },
