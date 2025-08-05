@@ -64,6 +64,10 @@ return {
           TreesitterContext = { bg = "#E6E6E6" },
           RenderMarkdownCodeInline = { bg = "#E6E6E6" },
           SnacksIndent = { fg = "#E6E6E6" },
+          LspReferenceRead = { link = "TreesitterContext" },
+          LspReferenceWrite = { link = "TreesitterContext" },
+          LspReferenceText = { link = "TreesitterContext" },
+          LspReferenceTarget = { link = "TreesitterContext" },
         },
         github_light = {
           NonText = { fg = "palette.gray" },
@@ -73,6 +77,7 @@ return {
           SnacksIndent = { fg = "#E6E6E6" },
           LspReferenceRead = { link = "TreesitterContext" },
           LspReferenceWrite = { link = "TreesitterContext" },
+          LspReferenceTarget = { link = "TreesitterContext" },
         },
       },
       specs = {
