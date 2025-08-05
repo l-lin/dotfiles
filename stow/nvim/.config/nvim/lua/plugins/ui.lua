@@ -135,20 +135,21 @@ return {
 
   -- navigate between neovim and multiplexers
   {
-    "numToStr/Navigator.nvim",
-    keys = {
-      { "<C-h>", "<cmd>NavigatorLeft<cr>", mode = { "n", "t" }, silent = true, desc = "Navigate left" },
-      { "<C-l>", "<cmd>NavigatorRight<cr>", mode = { "n", "t" }, silent = true, desc = "Navigate right" },
-      { "<C-k>", "<cmd>NavigatorUp<cr>", mode = { "n", "t" }, silent = true, desc = "Navigate up" },
-      { "<C-j>", "<cmd>NavigatorDown<cr>", mode = { "n", "t" }, silent = true, desc = "Navigate down" },
-    },
+    "christoomey/vim-tmux-navigator",
     cmd = {
-      "NavigatorUp",
-      "NavigatorDown",
-      "NavigatorRight",
-      "NavigatorLeft",
+      "TmuxNavigateLeft",
+      "TmuxNavigateDown",
+      "TmuxNavigateUp",
+      "TmuxNavigateRight",
+      "TmuxNavigatePrevious",
+      "TmuxNavigatorProcessList",
     },
-    opts = {},
+    keys = {
+      { "<M-C-h>", "<cmd>TmuxNavigateLeft<cr>", mode = { "n" }, silent = true, desc = "Navigate left" },
+      { "<M-C-j>", "<cmd>TmuxNavigateDown<cr>", mode = { "n" }, silent = true, desc = "Navigate left" },
+      { "<M-C-k>", "<cmd>TmuxNavigateUp<cr>", mode = { "n" }, silent = true, desc = "Navigate left" },
+      { "<M-C-l>", "<cmd>TmuxNavigateRight<cr>", mode = { "n" }, silent = true, desc = "Navigate left" },
+    },
   },
 
   -- color highlighter

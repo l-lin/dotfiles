@@ -33,6 +33,11 @@ map("n", "<leader>yn", "<cmd>let @+=expand('%:t')<CR>", { noremap = true, desc =
 -- use default H and L to navigate
 vim.keymap.del("n", "<S-h>")
 vim.keymap.del("n", "<S-l>")
+-- remove those keymaps so that I use the <M-C-hjkl> instead
+vim.keymap.del("n", "<C-h>")
+vim.keymap.del("n", "<C-j>")
+vim.keymap.del("n", "<C-k>")
+vim.keymap.del("n", "<C-l>")
 
 -- navigation
 -- Always put cursor at middle of screen.
@@ -69,9 +74,6 @@ map("n", "<F2>", function () vim.diagnostic.jump({ count = 1 }) end, { desc = "N
 
 -- do not include white space characters when using $ in visual mode, see https://vi.stackexchange.com/q/12607/15292
 map("x", "$", "g_")
-
--- format
-map({ "n", "v" }, "<M-C-L>", function() require("lazyvim.util").format({ force = true }) end, { desc = "Format" })
 
 -- remove trailing whitespaces
 map("n", "gJ", remove_trailing_whitespaces, { noremap = true, silent = true, desc = "Join line without whitespace" })
