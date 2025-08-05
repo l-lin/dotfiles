@@ -123,3 +123,4 @@ vim.keymap.del("n", "<c-_>")
 
 -- Do not select the next search element, so that I can easily do `cgn`.
 map("n", "*", "*N", { noremap = true, silent = true })
+map("n", "#", "#N", { noremap = true, silent = true })
