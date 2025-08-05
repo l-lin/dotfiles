@@ -13,15 +13,9 @@ local function cursor_to_middle_of_screen(key)
   end
 end
 
----Remove the trailing whitespace when joining line if the last character is a
----open parenthesis.
-local function remove_trailing_whitespace()
-  local last_char = string.sub(vim.api.nvim_get_current_line(), -1, -1)
-  if last_char == "(" then
-    vim.api.nvim_command("norm! Jx")
-  else
-    vim.api.nvim_command("norm! J")
-  end
+---Join lines without trailing whitespaces
+local function remove_trailing_whitespaces()
+  vim.api.nvim_command("norm! JdiW")
 end
 
 local map = vim.keymap.set
@@ -79,8 +73,8 @@ map("x", "$", "g_")
 -- format
 map({ "n", "v" }, "<M-C-L>", function() require("lazyvim.util").format({ force = true }) end, { desc = "Format" })
 
--- remove trailing whitespace when it's an open parenthesis
-map("n", "J", remove_trailing_whitespace, { noremap = true, silent = true, desc = "Join line without whitespace if it's an open parenthesis" })
+-- remove trailing whitespaces
+map("n", "gJ", remove_trailing_whitespaces, { noremap = true, silent = true, desc = "Join line without whitespace" })
 
 -- Toggle executable permission on current file.
 map("n", "<leader>fxx", function()
