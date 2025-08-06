@@ -28,6 +28,11 @@ local function tomorrow(ctx)
 end
 
 ---@param ctx obsidian.TemplateContext
+local function next_week(ctx)
+  return os.date("%Y-%m-%d", id_to_date(ctx.partial_note) + 86400 * 7)
+end
+
+---@param ctx obsidian.TemplateContext
 local function current_month(ctx)
   return os.date("%Y-%m", id_to_date(ctx.partial_note))
 end
@@ -110,6 +115,7 @@ local M = {}
 M.today = today
 M.yesterday = yesterday
 M.tomorrow = tomorrow
+M.next_week = next_week
 M.current_month = current_month
 M.previous_month = previous_month
 M.next_month = next_month
