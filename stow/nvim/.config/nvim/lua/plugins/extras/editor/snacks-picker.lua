@@ -32,14 +32,14 @@ end
 local nav_keys_select = {
   input = {
     keys = {
-      ["<C-j>"] = { "focus_list", mode = { "i", "n" } },
-      ["<C-k>"] = { "", mode = { "i", "v" } },
+      ["<M-C-j>"] = { "focus_list", mode = { "i", "n" } },
+      ["<M-C-k>"] = { "", mode = { "i", "v" } },
     },
   },
   list = {
     keys = {
-      ["<C-j>"] = "",
-      ["<C-k>"] = "focus_input",
+      ["<M-C-j>"] = "",
+      ["<M-C-k>"] = "focus_input",
     },
   },
 }
@@ -123,8 +123,8 @@ local snacks_picker_opts = {
         ["<M-l>"] = { "focus_list", mode = { "i", "n" } },
         ["<M-w>"] = { "focus_preview", mode = { "i", "n" } },
         ["<M-q>"] = { "qflist", mode = { "i", "n" } },
-        ["<C-j>"] = { "", mode = { "i", "v" } },
-        ["<C-k>"] = { "focus_list", mode = { "i", "n" } },
+        ["<M-C-j>"] = { "", mode = { "i", "v" } },
+        ["<M-C-k>"] = { "focus_list", mode = { "i", "n" } },
       }
     },
     list = {
@@ -134,8 +134,8 @@ local snacks_picker_opts = {
         ["<M-w>"] = "focus_preview",
         ["<M-q>"] = "qflist",
         ["<C-c>"] = "close",
-        ["<C-k>"] = "focus_preview",
-        ["<C-j>"] = "focus_input",
+        ["<M-C-k>"] = "focus_preview",
+        ["<M-C-j>"] = "focus_input",
       }
     },
     preview = {
@@ -143,8 +143,8 @@ local snacks_picker_opts = {
         ["a"] = "focus_input",
         ["<M-l>"] = "focus_list",
         ["<M-w>"] = "focus_preview",
-        ["<C-j>"] = "focus_list",
-        ["<C-k>"] = "",
+        ["<M-C-j>"] = "focus_list",
+        ["<M-C-k>"] = "",
       }
     }
   },
