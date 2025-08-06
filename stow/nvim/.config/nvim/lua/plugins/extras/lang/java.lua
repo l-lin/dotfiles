@@ -40,7 +40,15 @@ return {
         "mason-org/mason.nvim",
         opts = {
           registries = mason_registries,
-          ensure_installed = { "java-debug-adapter", "java-test" },
+          ensure_installed = {
+            "java-debug-adapter",
+            -- Use 0.43.0! The 0.43.1 is broken and cannot find the java tests
+            -- with the following error:
+            -- ```
+            -- No LSP client found that supports resolving possible test cases. Did you add the JAR files of vscode-java-test to `config.init_options.bundles`?
+            -- ```
+            "java-test",
+          },
         },
       },
     },
