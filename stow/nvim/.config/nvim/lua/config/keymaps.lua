@@ -57,9 +57,6 @@ map("n", "N", "Nzzzv", { noremap = true })
 map("n", "]<tab>", "<cmd>tabnext<cr>", { noremap = true, desc = "Next Tab" })
 map("n", "[<tab>", "<cmd>tabprevious<cr>", { noremap = true, desc = "Previous Tab" })
 
--- editing (same behavior as Intellij)
--- map("n", "<C-y>", "dd", { noremap = true, desc = "Delete line" })
-
 -- special keymap to cut to black hole, so I don't lose what I yank to my register '+'
 map({ "n", "v" }, "<M-d>", '"_d', { noremap = true })
 
