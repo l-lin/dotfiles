@@ -76,7 +76,7 @@ map("x", "$", "g_")
 map("n", "gJ", remove_trailing_whitespaces, { noremap = true, silent = true, desc = "Join line without whitespace" })
 
 -- Toggle executable permission on current file.
-map("n", "<leader>fxx", function()
+map("n", "<leader>fxt", function()
   local file = vim.fn.expand("%")
   local perms = vim.fn.getfperm(file)
   local is_executable = string.match(perms, "x", -1) ~= nil
@@ -110,7 +110,7 @@ map("n", "<leader>fxx", function()
   else
     vim.cmd("echo 'Not a script. Shebang line not found.'")
   end
-end, { desc = "Bash script" })
+end, { desc = "Execute bash script" })
 
 -- Remove floating terminal keyamps (I use Tmux, no need for embedded terminal).
 vim.keymap.del("n", "<leader>fT")

@@ -125,6 +125,7 @@ return {
     opts = {
       spec = {
         { "<leader>y", group = "yank" },
+        { "<leader>fx", group = "execute" },
       },
       preset = "helix",
     },
