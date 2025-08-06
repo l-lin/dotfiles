@@ -1,3 +1,6 @@
+-- use custom keymaps
+vim.g.tmux_navigator_no_mappings = 0
+
 return {
   -- ###############
   -- disable plugins
