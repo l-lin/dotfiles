@@ -6,18 +6,26 @@
 " -----------------------------------------------------------------------
 " plugins
 " -----------------------------------------------------------------------
-" jump in file
-set easymotion
 " press `shift+j` on a line or selected block to join the lines together
 set ideajoin
+
 " project tree
 set NERDTree
+nnoremap <A-1> :NERDTreeToggle<CR>
+nnoremap <leader>e :NERDTreeToggle<CR>
+
 " highlight yank
 set highlightedyank
+
 " surround word
 set surround
+
 " delete and yank in different register
 set ReplaceWithRegister
+
+" display available keybindings in a popup
+set which-key
+set notimeout " or set timeoutlen=5000
 
 " -----------------------------------------------------------------------
 " config
@@ -39,17 +47,19 @@ set clipboard+=ideaput
 set number
 " show relative line numbers
 set relativenumber
+" IdeaVim development stuff
+set ideastrictmode
 
 " -----------------------------------------------------------------------
 " keymaps
 " -----------------------------------------------------------------------
 
 " EDITOR
-" open NERDTree
-nnoremap <A-1> :NERDTreeToggle<CR>
 " format code
 nnoremap <leader>cf :action ReformatCode<CR>
 nnoremap gq :action ReformatCode<CR>
+" rename
+nnoremap <leader>cr :action RenameElement<CR>
 " comment
 nnoremap gcc :action CommentByLineComment<CR>
 vnoremap gc :action CommentByLineComment<CR>
@@ -64,23 +74,32 @@ vnoremap > >gv
 " Always put cursor at middle of screen.
 nnoremap <C-d> <C-d>zz
 nnoremap <C-u> <C-u>zz
+" Do not select the next search element, so that I can easily do `cgn`.
+nnoremap * *N
+nnoremap # #N
+" Insert shortcuts in insert mode
+inoremap <A-S-a> <Esc>A
+inoremap <A-S-i> <Esc>I
+inoremap <A-o> <Esc>o
+inoremap <A-S-o> <Esc>O
 
 " VCS
 " keys from vim-gitgutter
 nmap ]h <Action>(VcsShowNextChangeMarker)
 nmap [h <Action>(VcsShowPrevChangeMarker)
 " view change under caret (Ctrl+Alt+g)
-nnoremap <leader>ghp :action VcsShowCurrentChangeMarker<CR>
+nnoremap <A-C-g> :action VcsShowCurrentChangeMarker<CR>
 " rollback changed lines (Ctrl+Alt+z)
-nnoremap <leader>ghr :action Vcs.RollbackChangedLines<CR>
+nnoremap <A-C-z> :action Vcs.RollbackChangedLines<CR>
 " show file history (Alt+9)
-nnoremap <leader>mf :action Vcs.ShowTabbedFileHistory<CR>
+nnoremap <leader>gl :action Vcs.ShowTabbedFileHistory<CR>
 
 " NAVIGATION
-nnoremap <C-k> <C-w>k<CR>
-nnoremap <C-j> <C-w>j<CR>
-nnoremap <C-h> <C-w>h<CR>
-nnoremap <C-l> <C-w>l<CR>
-
-" IdeaVim development stuff
-set ideastrictmode
+nnoremap <A-C-k> <C-w>k
+nnoremap <A-C-j> <C-w>j
+nnoremap <A-C-h> <C-w>h
+nnoremap <A-C-l> <C-w>l
+inoremap <A-C-k> <Esc><C-w>k
+inoremap <A-C-j> <Esc><C-w>j
+inoremap <A-C-h> <Esc><C-w>h
+inoremap <A-C-l> <Esc><C-w>l
