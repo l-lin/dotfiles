@@ -180,7 +180,7 @@ return {
         folder = "5-rituals/daily",
         date_format = "%Y-%m-%d",
         default_tags = { "journal/daily" },
-        template = "template-daily-nvim.md",
+        template = "template-daily.nvim.md",
         workdays_only = false,
       },
 
