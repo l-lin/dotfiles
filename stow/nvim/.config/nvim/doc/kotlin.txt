@@ -50,6 +50,7 @@ TABLE OF CONTENTS~
         |kotlin-enum|                       Enum
         |kotlin-sealed|                     Sealed Class
         |kotlin-generic|                    Generic Class
+        |kotlin-static-factory|             Static Factory Methods
         |kotlin-delegation|                 Delegation
         |kotlin-delegated-properties|       Delegated Properties
     9.  |kotlin-collections|              Collections
@@ -61,6 +62,7 @@ TABLE OF CONTENTS~
         |kotlin-destructuring|              Destructuring Declarations
         |kotlin-reflection|                 Reflection
         |kotlin-annotations|                Annotations
+        |kotlin-jvm-inline|                 @JvmInline
         |kotlin-packages-imports|           Packages & Imports
         |kotlin-null-safety|                Null Safety
         |kotlin-equality|                   Equality
@@ -667,6 +669,56 @@ GENERIC CLASS                                                  *kotlin-generic*
 <
 
 -------------------------------------------------------------------------------
+STATIC FACTORY METHODS                                 *kotlin-static-factory*
+
+Static factory methods are functions that return instances of a class instead
+of using constructors directly. In Kotlin, these are implemented as companion
+object functions or top-level functions.
+
+>kotlin
+    class Person private constructor(val name: String, val age: Int) {
+        companion object {
+            // Named factory methods with descriptive names
+            fun createAdult(name: String, age: Int): Person? {
+                return if (age >= 18) Person(name, age) else null
+            }
+            
+            fun createChild(name: String, age: Int): Person? {
+                return if (age < 18) Person(name, age) else null
+            }
+            
+            // Factory method for creating from string
+            fun fromString(data: String): Person? {
+                val parts = data.split(",")
+                return if (parts.size == 2) {
+                    val name = parts[0].trim()
+                    val age = parts[1].trim().toIntOrNull()
+                    if (age != null) Person(name, age) else null
+                } else null
+            }
+            
+            // Cached instances
+            private val unknownPerson = Person("Unknown", 0)
+            fun unknown(): Person = unknownPerson
+        }
+    }
+    
+    fun main() {
+        val adult = Person.createAdult("Alice", 25)
+        val child = Person.createChild("Bob", 12)
+        val parsed = Person.fromString("Charlie,30")
+        val unknown = Person.unknown()
+    }
+<
+
+Benefits of static factory methods:
+- Descriptive names (unlike constructors)
+- Can return null or different subtypes
+- Can cache and reuse instances
+- Don't have to create a new object each time
+- Can have multiple factory methods with the same parameter types
+
+-------------------------------------------------------------------------------
 DELEGATION                                                  *kotlin-delegation*
 >kotlin
     interface Base {
@@ -799,6 +851,32 @@ ANNOTATIONS                                                *kotlin-annotations*
     @Deprecated("Use newMethod() instead", ReplaceWith("newMethod()"))
     fun oldMethod() {
         // ...
+    }
+<
+
+-------------------------------------------------------------------------------
+@JVMINLINE                                                 *kotlin-jvm-inline*
+
+The `@JvmInline` annotation is used with value classes to create compile-time
+wrappers that are inlined for better performance while maintaining type safety.
+The wrapper is eliminated in JVM bytecode when possible.
+
+>kotlin
+    @JvmInline
+    value class UserId(val id: String) {
+        fun isValid(): Boolean = id.isNotEmpty()
+    }
+    
+    @JvmInline
+    value class Password(private val value: String) {
+        override fun toString(): String = "***"
+    }
+    
+    fun main() {
+        val userId = UserId("user123")
+        val password = Password("secret")
+        println(userId.isValid()) // true
+        println(password) // ***
     }
 <
 
