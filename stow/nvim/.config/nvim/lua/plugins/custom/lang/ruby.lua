@@ -1,10 +1,10 @@
----@class custom.RubyExecutionConfig
+---@class dotfiles.ruby.RubyExecutionConfig
 ---@field cmd string the command to run
 ---@field use_interactive_shell boolean true to run the command in interactive shell
 ---@field include_line_number boolean true to include the current line number in the command to run
 
 ---Execute file on a new tmux pane below.
----@param config custom.RubyExecutionConfig the configuration to use for executing ruby file
+---@param config dotfiles.ruby.RubyExecutionConfig the configuration to use for executing ruby file
 local function execute_file(config)
   local filename = vim.fn.expand("%:.")
   if string.match(filename, "%.rb$") then
