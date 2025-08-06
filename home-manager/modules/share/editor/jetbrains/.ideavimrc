@@ -63,8 +63,6 @@ nnoremap <leader>cr :action RenameElement<CR>
 " comment
 nnoremap gcc :action CommentByLineComment<CR>
 vnoremap gc :action CommentByLineComment<CR>
-" Acejump
-nnoremap <leader>nl :action AceAction<CR>
 " do not include white space characters when using $ in visual mode, see https://vi.stackexchange.com/q/12607/15292
 vnoremap $ g_
 " better indenting
@@ -82,6 +80,11 @@ inoremap <A-S-a> <Esc>A
 inoremap <A-S-i> <Esc>I
 inoremap <A-o> <Esc>o
 inoremap <A-S-o> <Esc>O
+inoremap <A-p> <Esc>p
+inoremap <A-S-p> <Esc>P
+
+" WINDOW
+nnoremap <leader>wo :action HideAllWindows<CR>
 
 " VCS
 " keys from vim-gitgutter
@@ -103,3 +106,7 @@ inoremap <A-C-k> <Esc><C-w>k
 inoremap <A-C-j> <Esc><C-w>j
 inoremap <A-C-h> <Esc><C-w>h
 inoremap <A-C-l> <Esc><C-w>l
+
+" RUN
+nnoremap <leader>ta :action Debug<CR>
+nnoremap <leader>tn :action Run<CR>
