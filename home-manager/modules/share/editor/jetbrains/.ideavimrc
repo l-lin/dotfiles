@@ -23,10 +23,6 @@ set surround
 " delete and yank in different register
 set ReplaceWithRegister
 
-" display available keybindings in a popup
-set which-key
-set notimeout " or set timeoutlen=5000
-
 " -----------------------------------------------------------------------
 " config
 " -----------------------------------------------------------------------
@@ -85,6 +81,7 @@ inoremap <A-S-p> <Esc>P
 
 " WINDOW
 nnoremap <leader>wo :action HideAllWindows<CR>
+nnoremap <A-e> :action RecentFiles<CR>
 
 " VCS
 " keys from vim-gitgutter
