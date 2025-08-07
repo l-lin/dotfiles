@@ -50,6 +50,7 @@ TABLE OF CONTENTS~
         |kotlin-enum|                       Enum
         |kotlin-sealed|                     Sealed Class
         |kotlin-generic|                    Generic Class
+        |kotlin-companion-object|          Companion Object
         |kotlin-static-factory|             Static Factory Methods
         |kotlin-delegation|                 Delegation
         |kotlin-delegated-properties|       Delegated Properties
@@ -575,73 +576,209 @@ LATEINIT                                                      *kotlin-lateinit*
 
 -------------------------------------------------------------------------------
 INHERITANCE                                                *kotlin-inheritance*
+
+Classes and methods are final by default in Kotlin. Use `open` to allow inheritance.
 >kotlin
-    open class Animal(val name: String) {
-        open fun makeSound() {
+    open class Animal(val name: String) {  // `open` allows this class to be inherited
+        open fun makeSound() {             // `open` allows this method to be overridden
             println("Animal sound")
         }
+        
+        fun sleep() {                      // Not open - cannot be overridden
+            println("Sleeping...")
+        }
     }
+    
     class Dog(name: String): Animal(name) {
-        override fun makeSound() {
+        override fun makeSound() {         // Must use `override` when overriding
             println("Woof!")
         }
+        
+        // sleep() cannot be overridden because it's not marked as `open`
     }
 <
 
 -------------------------------------------------------------------------------
 INTERFACE AND ABSTRACT                              *kotlin-interface-abstract*
+
+Interfaces define contracts that classes must implement. Abstract classes can have
+both abstract and concrete implementations.
 >kotlin
     interface Vehicle {
-        fun start()
-        fun stop()
-        val name: String
+        fun start()                        // Abstract by default - must be implemented
+        fun stop()                         // Abstract by default - must be implemented
+        val name: String                   // Abstract property - must be implemented
+        
+        fun honk() {                       // Default implementation - can be overridden
+            println("Beep beep!")
+        }
     }
+    
     abstract class Animal {
-        abstract fun makeSound()
-        open fun move() {
+        abstract fun makeSound()           // Must be implemented by subclasses
+        
+        open fun move() {                  // Has implementation - can be overridden
             println("Moving...")
         }
+        
+        fun breathe() {                    // Final implementation - cannot be overridden
+            println("Breathing...")
+        }
+    }
+    
+    class Car(override val name: String) : Vehicle {
+        override fun start() = println("Engine started")
+        override fun stop() = println("Engine stopped")
+        // honk() inherited with default implementation
     }
 <
 
 -------------------------------------------------------------------------------
 DATA CLASS                                                  *kotlin-data-class*
+
+Data classes automatically generate useful methods like equals(), hashCode(),
+toString(), copy(), and destructuring declarations.
 >kotlin
     data class Person(val name: String, var age: Int)
-    val person = Person("Ali", 24)
+    
+    val person1 = Person("Ali", 24)
+    val person2 = Person("Ali", 24)
+    val person3 = Person("Sara", 30)
+    
+    // toString() - automatically generated
+    println(person1) // Person(name=Ali, age=24)
+    
+    // equals() and hashCode() - automatically generated
+    println(person1 == person2) // true (same content)
+    println(person1 == person3) // false (different content)
+    
+    // copy() - create a copy with some properties changed
+    val olderPerson = person1.copy(age = 25)
+    println(olderPerson) // Person(name=Ali, age=25)
+    
+    // Destructuring declarations
+    val (name, age) = person1
+    println("Name: $name, Age: $age") // Name: Ali, Age: 24
+    
+    // componentN() functions - automatically generated
+    println(person1.component1()) // Ali (first property)
+    println(person1.component2()) // 24 (second property)
 <
+
+Requirements for data classes:
+- Primary constructor must have at least one parameter
+- All primary constructor parameters must be marked as val or var
+  - Cannot be abstract, open, sealed, or inner
+- May only implement interfaces (before Kotlin 1.1)
 
 -------------------------------------------------------------------------------
 NESTED AND INNER CLASS                                    *kotlin-nested-inner*
+
+Nested classes don't have access to outer class members. Inner classes do have
+access to outer class members through an implicit reference.
 >kotlin
     class Outer {
         private val outerProperty = "Outer property"
-
+        
+        // Nested class - no access to outer class members
         class Nested {
             fun foo() {
-                // can't access outerProperty
+                // Cannot access outerProperty - compilation error
+                println("I'm nested but independent")
             }
         }
-    
+        
+        // Inner class - has access to outer class members
         inner class Inner {
             fun bar() {
-                println(outerProperty) // can access outerProperty
+                println(outerProperty) // Can access outer class members
+                println("I can access: $outerProperty")
+            }
+            
+            fun getOuterReference(): Outer {
+                return this@Outer // Reference to outer class instance
             }
         }
+        
+        fun createInstances() {
+            val nested = Nested()        // No outer instance needed
+            val inner = Inner()          // Uses this outer instance
+            
+            nested.foo()
+            inner.bar()
+        }
+    }
+    
+    fun main() {
+        // Creating nested class instance - no outer instance required
+        val nested = Outer.Nested()
+        nested.foo()
+        
+        // Creating inner class instance - requires outer instance
+        val outer = Outer()
+        val inner = outer.Inner()
+        inner.bar()
+        
+        // Alternative syntax for inner class
+        val inner2 = Outer().Inner()
     }
 <
 
 -------------------------------------------------------------------------------
 TYPEALIAS                                                    *kotlin-typealias*
 
+Type aliases create alternative names for existing types, making code more readable
+and maintainable. They don't create new types - just alternative names.
 >kotlin
+    // Function type aliases
     typealias NumberPredicate = (Int) -> Boolean
     typealias NumberMapper = (Int) -> String
+    typealias EventHandler = (String) -> Unit
+    
     val numbers = listOf(1, 2, 3, 4, 5)
     val even: NumberPredicate = { number -> number % 2 == 0 }
     val mapper: NumberMapper = { number -> "Number is $number" }
-    numbers.filter(even).map(mapper)
+    
+    fun processNumbers(predicate: NumberPredicate, mapper: NumberMapper) {
+        numbers.filter(predicate).map(mapper).forEach(::println)
+    }
+    
+    // Class type aliases
+    typealias UserMap = Map<String, User>
+    typealias UserList = List<User>
+    typealias StringPair = Pair<String, String>
+    
+    data class User(val name: String, val email: String)
+    
+    fun getUsers(): UserList = listOf(
+        User("Alice", "alice@example.com"),
+        User("Bob", "bob@example.com")
+    )
+    
+    fun getUserMap(): UserMap = mapOf(
+        "alice" to User("Alice", "alice@example.com"),
+        "bob" to User("Bob", "bob@example.com")
+    )
+    
+    // Generic type aliases
+    typealias StringCallback<T> = (T) -> String
+    typealias Repository<T> = Map<String, T>
+    
+    val stringifyInt: StringCallback<Int> = { "Number: $it" }
+    val userRepo: Repository<User> = mapOf("1" to User("Alice", "alice@example.com"))
+    
+    // Nested class aliases
+    class Outer {
+        inner class Inner
+    }
+    typealias OuterInner = Outer.Inner
 <
+
+Benefits of type aliases:
+- Make complex generic types more readable
+- Provide meaningful names for function types
+- Help avoid repetition of long type declarations
+- Improve code documentation and maintainability
 
 -------------------------------------------------------------------------------
 ENUM                                                              *kotlin-enum*
@@ -655,16 +792,217 @@ ENUM                                                              *kotlin-enum*
 -------------------------------------------------------------------------------
 SEALED CLASS                                                    *kotlin-sealed*
 
+Sealed classes restrict inheritance to a known set of subclasses. All subclasses
+must be declared in the same file. Perfect for representing restricted class hierarchies.
 >kotlin
-    sealed class Shape
-    class Circle: Shape()
+    sealed class Result<out T>
+    data class Success<T>(val data: T) : Result<T>()
+    data class Error(val message: String) : Result<Nothing>()
+    object Loading : Result<Nothing>()
+    
+    // Usage with when expression - compiler ensures exhaustiveness
+    fun handleResult(result: Result<String>) = when (result) {
+        is Success -> println("Data: ${result.data}")
+        is Error -> println("Error: ${result.message}")
+        is Loading -> println("Loading...")
+        // No else needed - compiler knows all cases are covered
+    }
+    
+    // More complex example
+    sealed class Shape {
+        abstract fun area(): Double
+    }
+    
+    data class Circle(val radius: Double) : Shape() {
+        override fun area(): Double = Math.PI * radius * radius
+    }
+    
+    data class Rectangle(val width: Double, val height: Double) : Shape() {
+        override fun area(): Double = width * height
+    }
+    
+    object EmptyShape : Shape() {
+        override fun area(): Double = 0.0
+    }
+    
+    fun calculateArea(shape: Shape): Double = when (shape) {
+        is Circle -> shape.area()
+        is Rectangle -> shape.area()
+        is EmptyShape -> 0.0
+        // Compiler ensures all sealed subclasses are handled
+    }
+    
+    // Sealed interfaces (Kotlin 1.5+)
+    sealed interface UIEvent
+    data class Click(val x: Int, val y: Int) : UIEvent
+    data class Scroll(val delta: Int) : UIEvent
+    object Refresh : UIEvent
+    
+    fun handleUIEvent(event: UIEvent) = when (event) {
+        is Click -> println("Clicked at ${event.x}, ${event.y}")
+        is Scroll -> println("Scrolled by ${event.delta}")
+        is Refresh -> println("Refreshing...")
+    }
 <
+
+Key benefits of sealed classes:
+- Exhaustive when expressions - no need for else branch
+- Restricted inheritance - only known subclasses allowed
+- Type safety - compiler knows all possible subtypes
+- Perfect for state machines and result types
+- Can be used with data classes and objects
 
 -------------------------------------------------------------------------------
 GENERIC CLASS                                                  *kotlin-generic*
+
+Generic classes allow you to write classes that work with different types while
+maintaining type safety. Kotlin supports variance annotations (in, out) for safe
+type conversions.
 >kotlin
-    class Box<T>(t: T) {
-        var value = t
+    // Basic generic class
+    class Box<T>(initialValue: T) {
+        var value: T = initialValue
+        
+        fun get(): T = value
+        fun set(newValue: T) {
+            value = newValue
+        }
+    }
+    
+    // Multiple type parameters
+    class Pair<T, U>(val first: T, val second: U) {
+        fun swap(): Pair<U, T> = Pair(second, first)
+    }
+    
+    // Generic class with constraints
+    class NumberContainer<T : Number>(val number: T) {
+        fun getDoubleValue(): Double = number.toDouble()
+        fun isPositive(): Boolean = number.toDouble() > 0
+    }
+    
+    // Variance annotations
+    // Covariant (out) - can read T but not write
+    interface Producer<out T> {
+        fun produce(): T
+        // fun consume(item: T) // Not allowed - can't consume covariant type
+    }
+    
+    // Contravariant (in) - can write T but not read
+    interface Consumer<in T> {
+        fun consume(item: T)
+        // fun produce(): T // Not allowed - can't produce contravariant type
+    }
+    
+    // Invariant - can both read and write (default)
+    interface Storage<T> {
+        fun store(item: T)
+        fun retrieve(): T
+    }
+    
+    // Usage examples
+    fun main() {
+        val stringBox = Box("Hello")
+        val intBox = Box(42)
+        
+        println(stringBox.get()) // Hello
+        intBox.set(100)
+        println(intBox.get())    // 100
+        
+        val coordinates = Pair(10.5, 20.3)
+        val swapped = coordinates.swap() // Pair<Double, Double>
+        
+        val intContainer = NumberContainer(42)
+        val doubleContainer = NumberContainer(3.14)
+        println(intContainer.isPositive()) // true
+        
+        // Variance in action
+        val stringProducer: Producer<String> = object : Producer<String> {
+            override fun produce(): String = "Hello"
+        }
+        // This works due to covariance
+        val anyProducer: Producer<Any> = stringProducer
+    }
+    
+    // Generic constraints with multiple bounds
+    interface Drawable {
+        fun draw()
+    }
+    
+    interface Movable {
+        fun move(x: Int, y: Int)
+    }
+    
+    class GameEntity<T> where T : Drawable, T : Movable {
+        fun processEntity(entity: T) {
+            entity.draw()
+            entity.move(10, 20)
+        }
+    }
+<
+
+Key concepts:
+- Type parameters use angle brackets <T, U, V>
+- Constraints limit type parameters (T : Number, T : Comparable<T>)
+- out T (covariant) - can only produce T, enables safe upcasting
+- in T (contravariant) - can only consume T, enables safe downcasting
+- Multiple bounds use where clause
+- Star projection (*) represents unknown type
+<
+
+-------------------------------------------------------------------------------
+COMPANION OBJECT                                      *kotlin-companion-object*
+
+A companion object is a singleton object whose members can be accessed directly
+through the containing class name, similar to static members in other languages.
+Each class can have only one companion object.
+
+>kotlin
+    class MyClass {
+        companion object {
+            const val CONSTANT = "Hello"
+            var counter = 0
+            
+            fun create(): MyClass {
+                counter++
+                return MyClass()
+            }
+            
+            fun getInfo(): String = "Created $counter instances"
+        }
+    }
+    
+    fun main() {
+        println(MyClass.CONSTANT)  // Hello
+        val obj1 = MyClass.create()
+        val obj2 = MyClass.create()
+        println(MyClass.getInfo()) // Created 2 instances
+    }
+<
+
+Named companion objects:
+>kotlin
+    class MyClass {
+        companion object Factory {
+            fun create(): MyClass = MyClass()
+        }
+    }
+    
+    fun main() {
+        val obj = MyClass.create()        // Access through class
+        val obj2 = MyClass.Factory.create() // Access through companion name
+    }
+<
+
+Companion objects can implement interfaces:
+>kotlin
+    interface Factory<T> {
+        fun create(): T
+    }
+    
+    class Person(val name: String) {
+        companion object : Factory<Person> {
+            override fun create(): Person = Person("Default")
+        }
     }
 <
 
@@ -720,20 +1058,64 @@ Benefits of static factory methods:
 
 -------------------------------------------------------------------------------
 DELEGATION                                                  *kotlin-delegation*
+
+Class delegation allows a class to implement an interface by delegating to another
+object. The `by` keyword automatically implements interface methods by forwarding
+calls to the delegate object.
 >kotlin
     interface Base {
         fun print()
+        fun greet(name: String)
     }
 
     class BaseImpl(val x: Int) : Base {
-        override fun print() { print(x) }
+        override fun print() { println("BaseImpl: $x") }
+        override fun greet(name: String) { println("Hello, $name from BaseImpl") }
     }
 
-    class Derived(b: Base) : Base by b
+    // Derived delegates all Base methods to the provided instance
+    class Derived(b: Base) : Base by b {
+        // Can override specific methods if needed
+        override fun greet(name: String) {
+            println("Custom greeting from Derived")
+        }
+    }
+    
+    // Multiple delegation
+    interface Printer {
+        fun print()
+    }
+    
+    interface Logger {
+        fun log(message: String)
+    }
+    
+    class ConsolePrinter : Printer {
+        override fun print() { println("Printing to console") }
+    }
+    
+    class FileLogger : Logger {
+        override fun log(message: String) { println("Logging: $message to file") }
+    }
+    
+    class MultiService(
+        printer: Printer,
+        logger: Logger
+    ) : Printer by printer, Logger by logger {
+        fun doWork() {
+            print()
+            log("Work completed")
+        }
+    }
 
     fun main() {
-        val b = BaseImpl(10)
-        Derived(b).print()
+        val base = BaseImpl(42)
+        val derived = Derived(base)
+        derived.print()         // BaseImpl: 42 (delegated)
+        derived.greet("Alice")  // Custom greeting from Derived (overridden)
+        
+        val service = MultiService(ConsolePrinter(), FileLogger())
+        service.doWork()
     }
 <
 
@@ -741,11 +1123,88 @@ DELEGATION                                                  *kotlin-delegation*
 -------------------------------------------------------------------------------
 DELEGATED PROPERTIES                              *kotlin-delegated-properties*
 
+Delegated properties allow property access to be handled by another object (delegate).
+Kotlin provides built-in delegates like lazy, observable, and others.
 >kotlin
-    val myLazyVar: String by lazy {
-        "Hello World"
+    import kotlin.properties.Delegates
+    
+    class User {
+        // Lazy initialization - computed on first access
+        val expensiveProperty: String by lazy {
+            println("Computing expensive value...")
+            "Expensive result"
+        }
+        
+        // Observable property - notifies on changes
+        var name: String by Delegates.observable("Initial") { property, oldValue, newValue ->
+            println("${property.name} changed from $oldValue to $newValue")
+        }
+        
+        // Vetoable property - can reject changes
+        var age: Int by Delegates.vetoable(0) { property, oldValue, newValue ->
+            println("Trying to change ${property.name} from $oldValue to $newValue")
+            newValue >= 0 // Only allow non-negative ages
+        }
+        
+        // NotNull delegate - for late initialization
+        var lateInitProperty: String by Delegates.notNull()
     }
-    println(myLazyVar)
+    
+    // Custom delegate
+    class LoggingDelegate<T>(private var value: T) {
+        operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
+            println("Getting ${property.name} = $value")
+            return value
+        }
+        
+        operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
+            println("Setting ${property.name} = $value")
+            this.value = value
+        }
+    }
+    
+    class Example {
+        var customProperty: String by LoggingDelegate("initial")
+        
+        // Map delegation - properties backed by a map
+        private val map = mutableMapOf<String, Any?>()
+        var mapProperty: String by map
+        var anotherMapProperty: Int by map
+    }
+    
+    fun main() {
+        val user = User()
+        
+        // Lazy evaluation
+        println(user.expensiveProperty) // Computes and prints result
+        println(user.expensiveProperty) // Returns cached result
+        
+        // Observable property
+        user.name = "Alice"  // Prints change notification
+        user.name = "Bob"    // Prints change notification
+        
+        // Vetoable property
+        user.age = 25        // Allowed
+        user.age = -5        // Rejected, age remains 25
+        
+        // Custom delegate
+        val example = Example()
+        example.customProperty = "new value"  // Prints logging
+        println(example.customProperty)       // Prints logging
+        
+        // Map delegation
+        example.mapProperty = "hello"
+        example.anotherMapProperty = 42
+    }
+<
+
+Common delegated property patterns:
+- lazy: Thread-safe lazy initialization
+- observable: Notifies when property changes  
+- vetoable: Can prevent property changes
+- notNull: Late initialization for non-null properties
+- Map delegation: Properties backed by a map
+- Custom delegates: Implement getValue/setValue operators
 <
 
 ===============================================================================
@@ -825,10 +1284,80 @@ OTHER TOPICS                                                     *kotlin-other*
 -------------------------------------------------------------------------------
 DESTRUCTURING DECLARATIONS                               *kotlin-destructuring*
 
+Destructuring declarations allow you to unpack an object into multiple variables
+in a single statement. Works with data classes, collections, and custom classes
+that provide componentN() functions.
 >kotlin
-    val person = Person("Ali",24)
-    val (name, age) = person // Destructuring declaration
+    // Data class destructuring - automatic componentN() functions
+    data class Person(val name: String, val age: Int, val email: String)
+    
+    val person = Person("Alice", 25, "alice@example.com")
+    val (name, age, email) = person
+    println("Name: $name, Age: $age, Email: $email")
+    
+    // Partial destructuring - skip unwanted components with underscore
+    val (firstName, _, userEmail) = person  // Skip age
+    println("$firstName: $userEmail")
+    
+    // Collection destructuring
+    val coordinates = listOf(10, 20, 30)
+    val (x, y, z) = coordinates
+    println("Position: ($x, $y, $z)")
+    
+    // Pair and Triple destructuring
+    val pair = "key" to 42
+    val (key, value) = pair
+    println("$key = $value")
+    
+    val triple = Triple("first", "second", "third")
+    val (first, second, third) = triple
+    
+    // Map entries destructuring
+    val map = mapOf("apple" to 5, "banana" to 3, "orange" to 8)
+    for ((fruit, quantity) in map) {
+        println("$fruit: $quantity")
+    }
+    
+    // In lambdas
+    val pairs = listOf("a" to 1, "b" to 2, "c" to 3)
+    pairs.forEach { (letter, number) ->
+        println("$letter = $number")
+    }
+    
+    // Custom class with componentN() functions
+    class Point(val x: Int, val y: Int) {
+        operator fun component1() = x
+        operator fun component2() = y
+        // Can add more componentN() functions as needed
+    }
+    
+    val point = Point(100, 200)
+    val (px, py) = point
+    println("Point coordinates: ($px, $py)")
+    
+    // Destructuring in function returns
+    fun getNameAndAge(): Pair<String, Int> = "Bob" to 30
+    
+    val (userName, userAge) = getNameAndAge()
+    println("User: $userName, Age: $userAge")
+    
+    // Nested destructuring
+    data class Address(val street: String, val city: String)
+    data class User(val name: String, val address: Address)
+    
+    val user = User("Charlie", Address("123 Main St", "Springfield"))
+    val (name2, address) = user
+    val (street, city) = address
+    println("$name2 lives at $street, $city")
 <
+
+How destructuring works:
+- Data classes automatically generate component1(), component2(), etc.
+- Collections provide componentN() for indexed access
+- Pairs and Triples have built-in component functions
+- Custom classes can implement operator fun componentN()
+- Use underscore (_) to skip unwanted components
+- Works in for loops, lambdas, and function returns
 
 -------------------------------------------------------------------------------
 REFLECTION                                                  *kotlin-reflection*
@@ -906,24 +1435,111 @@ PACKAGES AND IMPORTS                                  *kotlin-packages-imports*
 -------------------------------------------------------------------------------
 NULL SAFETY                                                *kotlin-null-safety*
 
+Kotlin's null safety prevents null pointer exceptions at compile time by
+distinguishing between nullable and non-nullable types. The type system
+ensures null safety through various operators and checks.
 >kotlin
-    var nullableStr: String? = null
-    var nonNullStr: String = "Hello"
+    // Nullable vs Non-nullable types
+    var nullableStr: String? = null        // Can be null
+    var nonNullStr: String = "Hello"       // Cannot be null
+    val nullableInt: Int? = null
+    val nonNullInt: Int = 42
     
-    // safe call operator
-    println(nullableStr?.length) // prints null
+    // Safe call operator (?.) - returns null if receiver is null
+    println(nullableStr?.length)           // null (safe, no exception)
+    println(nullableStr?.uppercase())      // null (safe, no exception)
     
-    // elvis operator
+    // Chaining safe calls
+    data class Person(val name: String?)
+    data class Company(val ceo: Person?)
+    
+    val company: Company? = Company(Person("Alice"))
+    val ceoNameLength = company?.ceo?.name?.length  // Safe chain
+    println(ceoNameLength) // 5
+    
+    val emptyCompany: Company? = null
+    println(emptyCompany?.ceo?.name?.length) // null (no crash)
+    
+    // Elvis operator (?:) - provides default value for null
     val len = nullableStr?.length ?: -1
-    println(len) // prints -1
+    println(len) // -1
     
-    // not-null assertion operator
-    // throws null pointer exceptions because nullableStr is null
-    // println(nullableStr!!.length)
+    val name = nullableStr ?: "Default Name"
+    println(name) // Default Name
     
-    // this would not compile because nonNullStr is not nullable
-    // nonNullStr = null
+    // Elvis with early return
+    fun processString(str: String?): String {
+        val nonNullStr = str ?: return "Empty string provided"
+        return "Processed: $nonNullStr"
+    }
+    
+    println(processString(null))      // Empty string provided
+    println(processString("Hello"))   // Processed: Hello
+    
+    // Not-null assertion operator (!!) - converts nullable to non-null
+    // Use with caution - throws KotlinNullPointerException if null
+    val nullableValue: String? = "Not null"
+    val definitelyNotNull = nullableValue!! // Risky - only if you're sure
+    println(definitelyNotNull.length)
+    
+    // Safe casting with 'as?'
+    val obj: Any = "Hello"
+    val str: String? = obj as? String       // Safe cast
+    val int: Int? = obj as? Int            // null (safe, no exception)
+    println(str)  // Hello
+    println(int)  // null
+    
+    // Let function for null checks
+    nullableStr?.let { nonNullValue ->
+        println("String length: ${nonNullValue.length}")
+        println("Uppercase: ${nonNullValue.uppercase()}")
+        // This block only executes if nullableStr is not null
+    }
+    
+    // Collections and null safety
+    val nullableList: List<String>? = null
+    val listWithNulls: List<String?> = listOf("Hello", null, "World")
+    val nonNullList: List<String> = listOfNotNull("Hello", null, "World")
+    
+    println(nullableList?.size)            // null
+    println(listWithNulls.size)            // 3
+    println(nonNullList)                   // [Hello, World]
+    
+    // FilterNotNull for collections
+    val filtered = listWithNulls.filterNotNull()
+    println(filtered)  // [Hello, World]
+    
+    // Platform types (from Java) - use carefully
+    // String! means nullable or non-null (compiler can't determine)
+    
+    fun exampleChecks() {
+        val nullable: String? = null
+        
+        // Traditional null check
+        if (nullable != null) {
+            println(nullable.length) // Smart cast to String
+        }
+        
+        // Multiple null checks
+        if (nullable != null && nullable.isNotEmpty()) {
+            println("Non-empty string: $nullable")
+        }
+        
+        // When expression with null
+        when (nullable) {
+            null -> println("It's null")
+            else -> println("Length: ${nullable.length}")
+        }
+    }
 <
+
+Null safety operators summary:
+- ?: Type - nullable type annotation
+- ?. - safe call operator (returns null if receiver is null)
+- ?: - elvis operator (provides default value for null)
+- !! - not-null assertion (throws exception if null)
+- as? - safe cast operator (returns null if cast fails)
+- let { } - executes block only if receiver is not null
 
 -------------------------------------------------------------------------------
 EQUALITY                                                      *kotlin-equality*
