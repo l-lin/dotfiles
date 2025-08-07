@@ -26,4 +26,6 @@ _wd_browse_widget() {
 }
 
 zle -N _wd_browse_widget
-bindkey '^B' _wd_browse_widget
+# This is Alt+e in my terminal.
+# To know what is the keybinding, press ctrl+v, then press your keybinding.
+bindkey '^[e' _wd_browse_widget
