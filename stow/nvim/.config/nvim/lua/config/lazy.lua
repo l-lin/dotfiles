@@ -48,8 +48,8 @@ require("lazy").setup({
     -- { import = "lazyvim.plugins.extras.lsp.none-ls" },
     -- { import = "lazyvim.plugins.extras.test.core" },
     -- { import = "lazyvim.plugins.extras.util.dot" },
-    --{ import = "lazyvim.plugins.extras.util.octo" },
-    --{ import = "lazyvim.plugins.extras.util.project" },
+    -- { import = "lazyvim.plugins.extras.util.octo" },
+    -- { import = "lazyvim.plugins.extras.util.project" },
 
     -- #################################
     -- import/override with your plugins
@@ -59,17 +59,18 @@ require("lazy").setup({
     { import = "plugins.extras.ai.codecompanion" },
     { import = "plugins.extras.ai.copilot" },
     -- { import = "plugins.extras.ai.copilot-chat" },
-    --{ import = "plugins.extras.ai.codeium" },
-    --{ import = "plugins.extras.coding.leetcode" },
+    -- { import = "plugins.extras.ai.codeium" },
+    -- { import = "plugins.extras.coding.leetcode" },
     -- { import = "plugins.extras.coding.sonarlint" },
     { import = "plugins.extras.coding.yanky" },
     { import = "plugins.extras.editor.image" },
     { import = "plugins.extras.editor.emoji" },
     { import = "plugins.extras.editor.global-note" },
     { import = "plugins.extras.editor.mini-files" },
+    { import = "plugins.extras.editor.smartnumber" },
     { import = "plugins.extras.editor.snacks-picker" },
     -- { import = "plugins.extras.editor.telescope" },
-    --{ import = "plugins.extras.lang.adoc" },
+    -- { import = "plugins.extras.lang.adoc" },
     { import = "plugins.extras.lang.java" },
     -- { import = "plugins.extras.lang.just" },
     { import = "plugins.extras.lang.kotlin" },
@@ -82,8 +83,8 @@ require("lazy").setup({
     -- { import = "plugins.extras.test.neotest" },
     -- { import = "plugins.extras.ui.hlchunk" },
     { import = "plugins.extras.ui.snacks" },
-    --{ import = "plugins.extras.vcs.gitlab" },
-    --{ import = "plugins.extras.vcs.octo" },
+    -- { import = "plugins.extras.vcs.gitlab" },
+    -- { import = "plugins.extras.vcs.octo" },
   },
   defaults = {
     -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
