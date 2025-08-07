@@ -17,12 +17,6 @@ nnoremap <leader>e :NERDTreeToggle<CR>
 " highlight yank
 set highlightedyank
 
-" surround word
-set surround
-
-" delete and yank in different register
-set ReplaceWithRegister
-
 " -----------------------------------------------------------------------
 " config
 " -----------------------------------------------------------------------
@@ -82,11 +76,12 @@ inoremap <A-S-p> <Esc>P
 " WINDOW
 nnoremap <leader>wo :action HideAllWindows<CR>
 nnoremap <A-e> :action RecentFiles<CR>
+nnoremap <C-g> :action GotoFile<CR>
 
 " VCS
 " keys from vim-gitgutter
-nmap ]h <Action>(VcsShowNextChangeMarker)
-nmap [h <Action>(VcsShowPrevChangeMarker)
+nmap ]h :action VcsShowNextChangeMarker<CR>
+nmap [h :action VcsShowPrevChangeMarker<CR>
 " view change under caret (Ctrl+Alt+g)
 nnoremap <A-C-g> :action VcsShowCurrentChangeMarker<CR>
 " rollback changed lines (Ctrl+Alt+z)
@@ -103,6 +98,10 @@ inoremap <A-C-k> <Esc><C-w>k
 inoremap <A-C-j> <Esc><C-w>j
 inoremap <A-C-h> <Esc><C-w>h
 inoremap <A-C-l> <Esc><C-w>l
+nmap gd :action GotoDeclaration<CR>
+nmap <leader>ci :action GotoImplementation<CR>
+nmap <leader>ct :action GotoTypeDeclaration<CR>
+nmap <leader>cu :action ShowUsages<CR>
 
 " RUN
 nnoremap <leader>ta :action RunClass<CR>
