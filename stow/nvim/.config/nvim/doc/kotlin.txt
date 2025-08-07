@@ -781,17 +781,22 @@ ARRAY                                                            *kotlin-array*
 
 -------------------------------------------------------------------------------
 LIST                                                              *kotlin-list*
->kotlin
-    val list = listOf(1, 2, 3, 4, 5)
-    numbers.add(4)
-    numbers.remove(3)
-    numbers[1]
-val list2 = mutableListOf(1, 2, 3, 4, 5)
-val numbers = mutableListOf(1, 2, 3)
-numbers.add(4) // Adds the specified element to the end of the list
-numbers.remove(3) // Removes the first occurrence of the specified element from the list
-numbers[1] // Returns the element at the specified index in the list
-<
+  >kotlin
+      val list = listOf(1, 2, 3, 4, 5) // Immutable list
+      // list.add(4) // Error: Unresolved reference. Immutable lists cannot be modified
+      // list.remove(3) // Error: Unresolved reference. Immutable lists cannot be modified
+      val second = list[1] // Returns the element at index 1 (2)
+
+      val list2 = mutableListOf(1, 2, 3, 4, 5) // Mutable list
+      list2.add(6) // Adds 6 to the end
+      list2.remove(3) // Removes the first occurrence of 3
+      val value = list2[1] // Returns the element at index 1
+
+      val numbers = mutableListOf(1, 2, 3)
+      numbers.add(4) // Adds the specified element to the end of the list
+      numbers.remove(3) // Removes the first occurrence of the specified element from the list
+      val element = numbers[1] // Returns the element at the specified index in the list
+  <
 
 -------------------------------------------------------------------------------
 MAP                                                                *kotlin-map*
