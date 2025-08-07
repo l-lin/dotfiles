@@ -39,6 +39,11 @@ vim.keymap.del("n", "<C-j>")
 vim.keymap.del("n", "<C-k>")
 vim.keymap.del("n", "<C-l>")
 
+-- LSP
+map("n", "<leader>ci", vim.lsp.buf.implementation, { desc = "Goto implementation" })
+map("n", "<leader>ct", vim.lsp.buf.type_definition, { desc = "Goto Type definition" })
+map("n", "<leader>cu", vim.lsp.buf.references, { desc = "References / Usages" })
+
 -- navigation
 -- Always put cursor at middle of screen.
 map("n", "<C-d>", "<C-d>zz", { noremap = true })
