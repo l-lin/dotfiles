@@ -108,5 +108,7 @@ inoremap <A-C-h> <Esc><C-w>h
 inoremap <A-C-l> <Esc><C-w>l
 
 " RUN
-nnoremap <leader>ta :action Debug<CR>
-nnoremap <leader>tn :action Run<CR>
+nnoremap <leader>ta :action RunClass<CR>
+nnoremap <leader>td :action Debug<CR>
+nnoremap <leader>tn :action ContextRun<CR>
+nnoremap <leader>tr :action Rerun<CR>
