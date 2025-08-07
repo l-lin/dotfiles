@@ -203,16 +203,14 @@ return {
       },
       {
         "<M-f>",
-        function()
-          Snacks.picker.grep({ search = selector.get_selected_text() })
-        end,
+        function() Snacks.picker.grep({ search = selector.get_selected_text() }) end,
         mode = "v",
         noremap = true,
         silent = true,
         desc = "Find pattern in all files (Alt+f)",
       },
       {
-        "<C-e>",
+        "<M-e>",
         function()
           Snacks.picker.buffers({
             current = false,
