@@ -56,6 +56,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufNewFile" }, {
 
     if string.find(current_file, notes_dir, 1, true) == 1 then
       vim.bo.textwidth = 0
+      vim.wo.wrap = true
     else
       vim.bo.textwidth = 80
     end
