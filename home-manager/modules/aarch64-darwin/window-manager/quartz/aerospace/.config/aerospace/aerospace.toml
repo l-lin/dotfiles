@@ -214,7 +214,7 @@ automatically-unhide-macos-hidden-apps = false
     run = 'move-node-to-workspace 9'
 
 [[on-window-detected]]
-    if.app-name-regex-substring = 'slack'
+    if.app-name-regex-substring = 'com.jetbrains.intellij.ce'
     run = 'move-node-to-workspace 0'
 
 [[on-window-detected]]
