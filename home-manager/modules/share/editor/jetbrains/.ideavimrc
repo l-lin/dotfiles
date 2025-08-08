@@ -1,7 +1,12 @@
+"
 " see https://github.com/JetBrains/ideavim/wiki/set-commands
 " list of available actions can be fetched by executing `:actionlist` in
 " IntelliJ. They are also available here:
 " https://gist.github.com/zchee/9c78f91cc5ad771c1f5d
+"
+" Some inspiration:
+" - https://www.cyberwizard.io/posts/the-ultimate-ideavim-setup/
+"
 
 " -----------------------------------------------------------------------
 " plugins
@@ -39,17 +44,25 @@ set number
 set relativenumber
 " IdeaVim development stuff
 set ideastrictmode
+" highlight search results
+set hlsearch
+" start searching as I type
+set setincsearch
+" stop audible bell sound
+set visualbell
 
 " -----------------------------------------------------------------------
 " keymaps
 " -----------------------------------------------------------------------
 
+"
 " EDITOR
+"
 " format code
-nnoremap <leader>cf :action ReformatCode<CR>
+nmap <leader>cf :action ReformatCode<CR>
 nnoremap gq :action ReformatCode<CR>
 " rename
-nnoremap <leader>cr :action RenameElement<CR>
+nmap <leader>cr :action RenameElement<CR>
 " comment
 nnoremap gcc :action CommentByLineComment<CR>
 vnoremap gc :action CommentByLineComment<CR>
@@ -73,12 +86,23 @@ inoremap <A-S-o> <Esc>O
 inoremap <A-p> <Esc>p
 inoremap <A-S-p> <Esc>P
 
+"
 " WINDOW
-nnoremap <leader>wo :action HideAllWindows<CR>
+"
+nmap <leader>wo :action HideAllWindows<CR>
 nnoremap <A-e> :action RecentFiles<CR>
 nnoremap <C-g> :action GotoFile<CR>
 
+"
+" BUFFER
+"
+nmap <leader>bd :action CloseContent<CR>
+nnoremap ]b :tabnext<CR>
+nnoremap [b :tabprev<CR>
+
+"
 " VCS
+"
 " keys from vim-gitgutter
 nmap ]h :action VcsShowNextChangeMarker<CR>
 nmap [h :action VcsShowPrevChangeMarker<CR>
@@ -87,9 +111,11 @@ nnoremap <A-C-g> :action VcsShowCurrentChangeMarker<CR>
 " rollback changed lines (Ctrl+Alt+z)
 nnoremap <A-C-z> :action Vcs.RollbackChangedLines<CR>
 " show file history (Alt+9)
-nnoremap <leader>gl :action Vcs.ShowTabbedFileHistory<CR>
+nmap <leader>gl :action Vcs.ShowTabbedFileHistory<CR>
 
-" NAVIGATION
+"
+" BUFFER NAVIGATION
+"
 nnoremap <A-C-k> <C-w>k
 nnoremap <A-C-j> <C-w>j
 nnoremap <A-C-h> <C-w>h
@@ -98,13 +124,21 @@ inoremap <A-C-k> <Esc><C-w>k
 inoremap <A-C-j> <Esc><C-w>j
 inoremap <A-C-h> <Esc><C-w>h
 inoremap <A-C-l> <Esc><C-w>l
-nmap gd :action GotoDeclaration<CR>
+
+"
+" LSP
+"
+nnoremap gd :action GotoDeclaration<CR>
 nmap <leader>ci :action GotoImplementation<CR>
 nmap <leader>ct :action GotoTypeDeclaration<CR>
 nmap <leader>cu :action ShowUsages<CR>
+nmap ]e :action GotoNextError<CR>
+nmap [e :action GotoPreviousError<CR>
 
+"
 " RUN
-nnoremap <leader>ta :action RunClass<CR>
-nnoremap <leader>td :action Debug<CR>
-nnoremap <leader>tn :action ContextRun<CR>
-nnoremap <leader>tr :action Rerun<CR>
+"
+nmap <leader>ta :action RunClass<CR>
+nmap <leader>td :action Debug<CR>
+nmap <leader>tn :action ContextRun<CR>
+nmap <leader>tr :action Rerun<CR>
