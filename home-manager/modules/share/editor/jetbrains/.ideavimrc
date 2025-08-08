@@ -86,6 +86,9 @@ inoremap <A-S-o> <Esc>O
 inoremap <A-p> <Esc>p
 inoremap <A-S-p> <Esc>P
 inoremap <C-s> <Esc>:action SaveAll<CR>
+" Clear search.
+noremap <Esc> <Esc>:noh<CR>
+noremap  <Esc>:noh<CR>
 
 "
 " WINDOW
