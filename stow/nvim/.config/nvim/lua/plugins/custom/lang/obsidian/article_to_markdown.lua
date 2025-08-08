@@ -1,9 +1,7 @@
 local VIDEO_TEMPLATE = [=[
 ---
 date: {{current_date}}
-tags:
-  - article/video
-  - to-review
+tags: [article/video, to-review]
 ---
 # {{title}}
 
@@ -13,8 +11,7 @@ tags:
 local ARTICLE_TEMPLATE = [=[
 ---
 date: {{current_date}}
-tags:
-  - article
+tags: [article]
 ---
 # {{title}}
 
