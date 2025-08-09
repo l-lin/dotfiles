@@ -89,6 +89,8 @@ inoremap <C-s> <Esc>:action SaveAll<CR>
 " Clear search.
 noremap <Esc> <Esc>:noh<CR>
 noremap  <Esc>:noh<CR>
+" Toogle wrap
+nnoremap <leader>uw :set wrap!
 
 "
 " WINDOW
