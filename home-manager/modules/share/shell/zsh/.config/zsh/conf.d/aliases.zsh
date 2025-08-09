@@ -54,7 +54,7 @@ alias watch="viddy"
 alias cpv="rsync -apoghb --backup-dir=/tmp -e /dev/null --inplace --info=progress2 --"
 # Compute space disk
 alias df="duf"
-alias du="dust"
+alias du="${HOME}/.nix-profile/bin/dust"
 # Check used port
 alias usedports="netstat -taupen"
 alias who-use-that-port="lsof -i" # losf -i :8000
