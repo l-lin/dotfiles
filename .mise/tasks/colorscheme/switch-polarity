@@ -6,7 +6,7 @@
 set -euo pipefail
 
 DEFAULT_THEME_DARK='kanagawa'
-DEFAULT_THEME_LIGHT='github-light'
+DEFAULT_THEME_LIGHT='grey'
 
 # Switch polarity in macOS by calling osascript.
 # src:
