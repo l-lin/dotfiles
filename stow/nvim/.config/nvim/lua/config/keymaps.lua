@@ -127,11 +127,3 @@ vim.keymap.del("n", "<c-_>")
 map("n", "*", "*N", { noremap = true, silent = true })
 map("n", "#", "#N", { noremap = true, silent = true })
 
--- Force the colorscheme depending on the polarity.
-map("n", "<leader>uR", function ()
-  if vim.o.bg == "light" then
-    vim.cmd("colorscheme " .. vim.g.light_colorscheme)
-  else
-    vim.cmd("colorscheme " .. vim.g.dark_colorscheme)
-  end
-end, { desc = "Force change the colorscheme", noremap = true, silent = true })
