@@ -80,6 +80,8 @@ return {
       { "banjo/contextfiles.nvim" },
       -- History chat management
       { "ravitemer/codecompanion-history.nvim" },
+      -- Inline spinner for CodeCompanion in Neovim
+      { "franco-ruggeri/codecompanion-spinner.nvim" },
     },
     opts = function ()
       -- Open CodeCompanion in full screen/buffer, to provide the same
@@ -227,12 +229,11 @@ return {
               picker = "snacks",
             },
           },
-          ["chat-edit-live"] = {},
+          spinner = {},
         },
       }
     end,
     init = function()
-      require("plugins.custom.ai.codecompanion.noice").init()
       -- Expand 'cc' into 'CodeCompanion' in the command line
       vim.cmd([[cab cc CodeCompanion]])
       vim.cmd([[cab ccc CodeCompanionChat]])
