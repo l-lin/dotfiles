@@ -6,6 +6,7 @@ Kotlin Quick Reference Guide
 This file provides a concise reference for Kotlin syntax and features.
 
 SOURCES~
+    https://kotlinlang.org/docs/home.html
     https://github.com/alidehkhodaei/kotlin-cheat-sheet
     https://devhints.io/kotlin
     https://quickref.me/kotlin.html
@@ -13,16 +14,17 @@ SOURCES~
 TABLE OF CONTENTS~
     1.  |kotlin-data-types|               Data Types
     2.  |kotlin-data-conversion|          Data Conversion
-    3.  |kotlin-string-interpolation|     String Interpolation
-    4.  |kotlin-bitwise-operators|        Bitwise Operators
-    5.  |kotlin-control-flow|             Control Flow
+    3.  |kotlin-string-literals|          String Literals
+    4.  |kotlin-string-interpolation|     String Interpolation
+    5.  |kotlin-bitwise-operators|        Bitwise Operators
+    6.  |kotlin-control-flow|             Control Flow
         |kotlin-if-else|                    If/Else
         |kotlin-when|                       When
         |kotlin-for|                        For Loops & Ranges
         |kotlin-while|                      While/Do-While
         |kotlin-exception|                  Exception Handling
-    6.  |kotlin-nothing|                  Nothing Type
-    7.  |kotlin-functions|                Functions
+    7.  |kotlin-nothing|                  Nothing Type
+    8.  |kotlin-functions|                Functions
         |kotlin-function-declaration|       Function Declaration
         |kotlin-function-default-named|     Default & Named Arguments
         |kotlin-function-return-type|       Return Types
@@ -36,7 +38,7 @@ TABLE OF CONTENTS~
         |kotlin-function-varargs|           Varargs
         |kotlin-function-infix|             Infix Notation
         |kotlin-function-scope|             Scope Functions
-    8.  |kotlin-classes|                  Classes & Objects
+    9.  |kotlin-classes|                  Classes & Objects
         |kotlin-class|                      Class
         |kotlin-property-method|            Properties & Methods
         |kotlin-getter-setter|              Getters & Setters
@@ -54,12 +56,12 @@ TABLE OF CONTENTS~
         |kotlin-static-factory|             Static Factory Methods
         |kotlin-delegation|                 Delegation
         |kotlin-delegated-properties|       Delegated Properties
-    9.  |kotlin-collections|              Collections
+   10.  |kotlin-collections|              Collections
         |kotlin-array|                      Array
         |kotlin-list|                       List
         |kotlin-map|                        Map
         |kotlin-set|                        Set
-   10.  |kotlin-other|                    Other Topics
+   11.  |kotlin-other|                    Other Topics
         |kotlin-destructuring|              Destructuring Declarations
         |kotlin-reflection|                 Reflection
         |kotlin-annotations|                Annotations
@@ -110,6 +112,88 @@ Convert between types:
     val byte: Byte = 127
     val short: Short = byte.toShort() // Byte to Short
 <
+
+===============================================================================
+STRING LITERALS                                         *kotlin-string-literals*
+
+Different ways to define and work with string literals in Kotlin.
+
+Escaped strings (standard) use double quotes and support escape sequences:
+>kotlin
+    val greeting = "Hello\nWorld"        // Newline escape
+    val quote = "He said: \"Kotlin!\"" // Escaped double quotes
+    val path = "C:\\Users\\alice"     // Escaped backslashes
+    val dollar = "Price: \$9.99"        // Escaped dollar sign
+<
+
+Common escape sequences:
+    \n  newline
+    \t  tab
+    \\  backslash
+    \"  double quote
+    \r  carriage return
+    \b  backspace
+    \$  dollar sign (to avoid interpolation)
+
+Raw strings use triple quotes (""" ) and do not process escape sequences (except
+for interpolation). They can span multiple lines and preserve formatting:
+>kotlin
+    val json = """
+        {
+            "name": "Alice",
+            "age": 24
+        }
+    """
+<
+
+Trimming indentation / margins:
+>kotlin
+    val text = """
+        |First line
+        |Second line
+        |Third line
+    """.trimMargin()  // '|' is the default margin prefix
+
+    val poem = """
+        Roses are red,
+        Violets are blue.
+    """.trimIndent()  // Removes common minimal indent
+<
+
+Interpolation works in both kinds of strings:
+>kotlin
+    val price = 9.99
+    val s1 = "Price: $price"          // Uses variable directly
+    val s2 = "Total: ${price * 2}"    // Uses expression
+    val raw = """
+        Total = $price
+        Literal dollar: ${'$'}price
+    """
+<
+
+Building complex strings efficiently:
+>kotlin
+    val message = buildString {
+        append("User: ")
+        append("Alice")
+        append(" | Age: ")
+        append(24)
+    }
+<
+
+Useful string operations:
+>kotlin
+    val s = "Kotlin"
+    println(s.length)            // 6
+    println(s.uppercase())       // KOTLIN
+    println(s.lowercase())       // kotlin
+    println("lin" in s)          // true (substring check)
+    println(s.substring(0, 3))   // Kot
+    println(s.replace("lin", "LIN")) // KotLIN
+    for (c in s) print("$c ")   // K o t l i n
+<
+
+See also: |kotlin-string-interpolation|
 
 ===============================================================================
 STRING INTERPOLATION                               *kotlin-string-interpolation*
