@@ -1,5 +1,3 @@
-local neotree_commands = require("plugins.custom.editor.neotree")
-
 return {
   -- No need for grug-far, let's use quickfix list!
   { "MagicDuck/grug-far.nvim", enabled = false, },
@@ -27,8 +25,8 @@ return {
           ["s"] = "none",
           ["<C-v>"] = "open_vsplit",
           ["<C-x>"] = "open_split",
-          ["h"] = neotree_commands.focus_parent,
-          ["l"] = neotree_commands.focus_child,
+          ["h"] = require("plugins.custom.editor.neotree").focus_parent,
+          ["l"] = require("plugins.custom.editor.neotree").focus_child,
         },
       },
       filesystem = {
