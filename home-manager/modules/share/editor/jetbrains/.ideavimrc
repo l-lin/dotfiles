@@ -103,6 +103,7 @@ nnoremap <C-g> :action GotoFile<CR>
 " BUFFER
 "
 nmap <leader>bd :action CloseContent<CR>
+nmap <leader>bo :action UnsplitAll<CR>
 nnoremap ]b :tabnext<CR>
 nnoremap [b :tabprev<CR>
 
