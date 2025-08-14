@@ -98,8 +98,8 @@ automatically-unhide-macos-hidden-apps = false
     cmd-f = 'fullscreen'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#layout
-    cmd-slash = 'layout tiles horizontal vertical'
-    cmd-comma = 'layout accordion horizontal vertical'
+    cmd-slash = 'layout tiles accordion'
+    cmd-comma = 'layout tiling floating'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#focus
     cmd-shift-h = 'focus left --boundaries-action wrap-around-the-workspace'
@@ -150,6 +150,7 @@ automatically-unhide-macos-hidden-apps = false
 
     # Applications
     cmd-ctrl-t = 'exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c tmux -2 -u'
+    cmd-ctrl-o = 'exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c nvim'
     cmd-e = 'exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c yazi'
     cmd-shift-e = 'exec-and-forget open ${HOME}'
     cmd-shift-c = 'exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c numbat'
