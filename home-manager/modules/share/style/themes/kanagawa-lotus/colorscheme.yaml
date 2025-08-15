@@ -1,0 +1,18 @@
+scheme: "Kanagawa"
+author: "https://github.com/rebelot/kanagawa.nvim"
+base00: "#F2F2F2"   # Default background (lightest)
+base01: "#E6E6E6"   # Lighter background
+base02: "#E5D9C5"   # Selection background
+base03: "#A6A69C"   # Comments, line highlighting
+base04: "#6E6A5E"   # Dark foreground
+base05: "#363646"   # Default foreground
+base06: "#223249"   # Light foreground (not often used)
+base07: "#1A1A22"   # Light background (not often used)
+base08: "#C4331D"   # Red (variables, deleted)
+base09: "#FFA066"   # Orange (constants, attributes)
+base0A: "#D4B483"   # Yellow (classes, search)
+base0B: "#007872"   # Green (strings, inserted)
+base0C: "#7FB4CA"   # Cyan (support, regex)
+base0D: "#1561B8"   # Blue (functions, headings)
+base0E: "#A379BA"   # Magenta (keywords, changed)
+base0F: "#B4637A"   # Brown (deprecated)

@@ -1,17 +1,16 @@
 #
-# A light theme for NeoVim, with a light grey background 
-# src: https://github.com/yorickpeterse/nvim-grey
+# Dark colorscheme inspired by the colors of the famous painting by Katsushika Hokusai.
+# src: https://github.com/rebelot/kanagawa.nvim
 #
 
 { config, pkgs, ... }:
 let
-  polarity = "light";
+  polarity = "dark";
 in {
-
   theme = {
     inherit polarity;
-    nvimColorScheme = "grey";
-    nvimColorSchemePluginLua = "{ 'yorickpeterse/nvim-grey' }";
+    nvimColorScheme = "kanagawa-wave";
+    nvimColorSchemePluginLua = "{ 'rebelot/kanagawa.nvim' }";
   };
 
   stylix = {
@@ -20,7 +19,7 @@ in {
     image = "${config.home.homeDirectory}/Pictures/${polarity}.jpg";
     cursor = {
       # Material Based Cursor Theme: https://github.com/ful1e5/Bibata_Cursor
-      name = "Bibata-Modern-Classic";
+      name = "Bibata-Modern-Ice";
       size = 24;
       package = pkgs.bibata-cursors;
     };

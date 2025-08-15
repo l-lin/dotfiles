@@ -10,6 +10,57 @@ return {
   { "catppuccin/nvim", enabled = false },
   { "catppuccin", enabled = false },
 
+  {
+    "rebelot/kanagawa.nvim",
+    optional = true,
+    opts = {
+      keywordStyle = { bold = true, italic = false },
+      dimInactive = true,
+      colors = {
+        palette = {
+          lotusWhite0 = "#f2f2f2",
+          lotusWhite1 = "#f2f2f2",
+          lotusWhite2 = "#f2f2f2",
+          lotusWhite3 = "#f2f2f2",
+          lotusWhite4 = "#f2f2f2",
+          lotusWhite5 = "#f2f2f2",
+          lotusGreen = "#007872",
+          lotusInk1 = "#363646",
+          lotusInk2 = "#223249",
+          lotusBlue4 = "#1561b8"
+        },
+        theme = {
+          lotus = {
+            ui = {
+              bg_m3 = "#e6e6e6",
+            },
+          },
+          all = {
+            syn = {
+              constant = "none",
+              identifier = "none",
+              number = "none",
+              operator = "none",
+              preproc = "none",
+              punct = "none",
+              special2 = "none",
+              special3 = "none",
+            },
+          },
+        },
+      },
+      overrides = function(colors)
+        return {
+          Constant = { bold = true },
+          DiagnosticUnderlineError = { fg = colors.theme.diag.error },
+          DiagnosticUnderlineWarn = { fg = colors.theme.diag.warning },
+          DiagnosticUnderlineInfo = { fg = colors.theme.diag.info },
+          DiagnosticUnderlineHint = { fg = colors.theme.diag.hint },
+        }
+      end,
+    },
+  },
+
   -- Disable bufferline (topbar), let's use Telescope/fzf for everything!
   {
     "akinsho/bufferline.nvim",

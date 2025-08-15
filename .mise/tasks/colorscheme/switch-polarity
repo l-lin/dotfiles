@@ -5,7 +5,7 @@
 
 set -euo pipefail
 
-DEFAULT_THEME_DARK='kanagawa'
+DEFAULT_THEME_DARK='kanagawa-wave'
 DEFAULT_THEME_LIGHT='kanagawa-lotus'
 
 current_theme=$(grep 'theme = ' flake.nix | cut -d'"' -f2 | tr -d ' ')

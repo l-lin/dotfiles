@@ -2,35 +2,6 @@
 # Theme related stuff, like icons, cursors, ... using stylix to manage them.
 # src: https://github.com/danth/stylix
 #
-# Palette matching for kanagawa (colors differ depending on the theme):
-#
-# background = base00
-# foreground = base05
-#
-# [colors.normal]
-# black   =
-# red     = base08
-# green   = base0B
-# yellow  = base0A
-# blue    = base0D
-# magenta = base0E
-# cyan    = base0C
-# white   = base06
-#
-# [colors.bright]
-# black   = base04
-# red     =
-# green   =
-# yellow  =
-# blue    =
-# magenta =
-# cyan    =
-# white   = base05
-#
-# [colors.selection]
-# background =
-# foreground = base06
-#
 
 { inputs, pkgs, userSettings, ... }: {
   imports = [

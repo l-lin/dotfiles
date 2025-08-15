@@ -5,11 +5,12 @@
 
 { config, pkgs, ... }:
 let
-  polarity = "dark";
+  polarity = "light";
 in {
   theme = {
     inherit polarity;
-    nvimColorScheme = "kanagawa";
+    nvimColorScheme = "kanagawa-lotus";
+    nvimColorSchemePluginLua = "{ 'rebelot/kanagawa.nvim' }";
   };
 
   stylix = {
@@ -18,7 +19,7 @@ in {
     image = "${config.home.homeDirectory}/Pictures/${polarity}.jpg";
     cursor = {
       # Material Based Cursor Theme: https://github.com/ful1e5/Bibata_Cursor
-      name = "Bibata-Modern-Ice";
+      name = "Bibata-Modern-Classic";
       size = 24;
       package = pkgs.bibata-cursors;
     };
