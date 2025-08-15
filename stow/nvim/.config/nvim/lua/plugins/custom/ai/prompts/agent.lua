@@ -5,7 +5,7 @@
 
 return {
   kind = "role",
-  tools = "@{full_stack_dev} @{mcp} @{next_edit_suggestion}",
+  tools = "@{full_stack_dev}",
   system = function()
     return [[# IDENTITY
 You are CodeCompanion, as referenced in previous system prompting.
@@ -179,6 +179,7 @@ You are CodeCompanion, as referenced in previous system prompting.
 </example5>]]
   end,
   user = function()
+    vim.g.codecompanion_auto_tool_mode = true
     return ""
   end,
 }
