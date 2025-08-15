@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+#
+#MISE description="Switch polarity in macOS by calling osascript."
+#USAGE arg "<is_dark>" help="Theme to switch to"
+#
+#src:
+#- https://norday.tech/posts/2020/switch-dark-mode-os/
+#- https://apple.stackexchange.com/a/443362 for changing wallpaper
+#
+
+set -euo pipefail
+
+if type osascript >/dev/null 2>&1; then
+  echo "> Changing macOS polarity"
+  osascript -l JavaScript -e "Application('System Events').appearancePreferences.darkMode = ${1}" > /dev/null
+  osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"${HOME}/Pictures/wallpaper.jpg\" as POSIX file"
+  osascript "${PWD}/scripts/reload-ghostty.scpt"
+fi
