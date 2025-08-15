@@ -15,7 +15,6 @@ return {
     optional = true,
     opts = {
       keywordStyle = { bold = true, italic = false },
-      dimInactive = true,
       colors = {
         palette = {
           lotusWhite0 = "#f2f2f2",
