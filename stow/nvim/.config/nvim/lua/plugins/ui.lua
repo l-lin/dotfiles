@@ -22,7 +22,7 @@ return {
           lotusWhite1 = "#f2f2f2",
           lotusWhite2 = "#f2f2f2",
           lotusWhite3 = "#f2f2f2",
-          lotusWhite4 = "#f2f2f2",
+          lotusWhite4 = "#E6E6E6",
           lotusWhite5 = "#f2f2f2",
           lotusGreen = "#007872",
           lotusInk1 = "#363646",
