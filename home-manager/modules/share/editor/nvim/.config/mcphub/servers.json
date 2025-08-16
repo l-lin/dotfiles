@@ -23,14 +23,6 @@
       "command": "docker",
       "args": ["run", "--rm", "-i", "mcp/sequentialthinking"]
     },
-    "context7": {
-      "type": "http",
-      "url": "https://mcp.context7.com/mcp"
-    },
-    "fetch": {
-      "command": "docker",
-      "args": ["run", "-i", "--rm", "mcp/fetch"]
-    },
     "atlassian": {
       "command": "npx",
       "args": ["-y", "mcp-remote", "https://mcp.atlassian.com/v1/sse"]
