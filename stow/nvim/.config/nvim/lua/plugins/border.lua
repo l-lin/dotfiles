@@ -1,36 +1,6 @@
 local function with_border(border_style)
   return {
     {
-      "rebelot/kanagawa.nvim",
-      optional = true;
-      opts = {
-        colors = {
-          theme = {
-            all = {
-              ui = {
-                bg_gutter = "none",
-                float = {
-                  bg = "none",
-                },
-              },
-            },
-          },
-        },
-        overrides = function()
-          return {
-            NormalFloat = { bg = "none" },
-            FloatBorder = { bg = "none" },
-            LazyNormal = { bg = "none" },
-            MasonNormal = { bg = "none" },
-            HoverNormal = { bg = "none" },
-            HoverBorder = { bg = "none" },
-            SagaNormal = { bg = "none" },
-            SagaBorder = { bg = "none" },
-          }
-        end,
-      },
-    },
-    {
       "projekt0n/github-nvim-theme",
       optional = true;
       opts = {
