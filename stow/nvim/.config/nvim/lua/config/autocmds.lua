@@ -50,7 +50,7 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
 
 -- Set text width everywhere except in my notes project.
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufEnter" }, {
-  pattern = "markdown",
+  pattern = "*.md",
   callback = function()
     local current_file = vim.fn.expand("%:p")
     local notes_dir = vim.fn.expand(vim.g.notes_dir)
