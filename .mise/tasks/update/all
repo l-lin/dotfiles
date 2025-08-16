@@ -15,5 +15,7 @@ if type brew >/dev/null 2>&1; then
   brew upgrade
 fi
 
-mise run flake:update
-mise run home:update
+mise run update:mise
+mise run update:brew
+mise run update:flake
+mise run home:apply

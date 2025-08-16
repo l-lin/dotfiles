@@ -12,8 +12,8 @@ current_theme=$(grep 'theme = ' flake.nix | cut -d'"' -f2 | tr -d ' ')
 
 if [[ "${DEFAULT_THEME_LIGHT}" == "${current_theme}" ]]; then 
   mise run colorscheme:change "${DEFAULT_THEME_DARK}"
-  mise run colorscheme:change-macos-polarity true
+  mise run colorscheme:switch-macos-polarity true
 else
   mise run colorscheme:change "${DEFAULT_THEME_LIGHT}"
-  mise run colorscheme:change-macos-polarity false
+  mise run colorscheme:switch-macos-polarity false
 fi

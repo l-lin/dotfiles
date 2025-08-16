@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+#
+#MISE description="Update tools installed by mise"
+#
+
+set -eu
+
+if type mise >/dev/null 2>&1; then
+  echo "> Updating tools installed from mise"
+  mise up
+else
+  echo "> Mise is not installed" >&2
+fi
