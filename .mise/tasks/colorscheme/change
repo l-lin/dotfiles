@@ -17,5 +17,5 @@ fi
 echo "> Changing theme to '${usage_to}'..."
 sed -i '' "s~theme = \"\(.*\)\"~theme = \"${usage_to}\"~" flake.nix
 
-mise run home:update
+mise run home:apply
 mise run conf:reload-apps
