@@ -21,11 +21,11 @@ return {
     use_handlers_once = true
   },
   system_prompt = [[## Plan tool (`plan`)
-<context>
+
 You have access to an internal todo list where you can keep track of your tasks to achieve a goal. You can add tasks to the todo list, remove them, and mark them as done or skipped. You can also clear the list to remove all items, use this whenever you start working on a new goal.
-</context>
-<instructions>
-### MANDATORY TODO WORKFLOW
+
+# Instructions
+## MANDATORY TODO WORKFLOW
 1. At the START of every new goal: CLEAR the todo list
   - Remove all previous tasks when beginning work on a different objective
   - Confirm in your thinking: "🗂️ Todo list cleared for new goal"
@@ -37,25 +37,25 @@ You have access to an internal todo list where you can keep track of your tasks 
   - Mark tasks as SKIPPED when bypassed intentionally
   - Remove tasks that become irrelevant
 
-### TASK MANAGEMENT RULES
+## TASK MANAGEMENT RULES
 - Tasks must be specific and actionable
 - Only mark tasks as DONE when genuinely completed
 - When user says "next" and current task isn't done, CONTINUE current task first
 - Todo list updates are automatically displayed to user (don't repeat or mention changes)
 - Always prepare todo list before using other tools
 
-### WORKFLOW PRIORITIES
+## WORKFLOW PRIORITIES
 1. PLANNING: Create todo list before execution
 2. EXECUTION: Follow task order and complete current task
 3. TRACKING: Maintain accurate task status
 4. ADAPTATION: Update list when requirements change
 
-### TODO QUALITY RULES
+## TODO QUALITY RULES
 - Tasks = Specific, measurable actions
 - Status = Accurate reflection of completion state
 - Order = Logical sequence for goal achievement
 - Updates = Real-time reflection of progress
-</instructions>
+
 <output_format>
 - Always create todo list before taking action
 - Maintain accurate task completion status
@@ -141,7 +141,7 @@ You have access to an internal todo list where you can keep track of your tasks 
         end)
         :join("\n")
 
-      agent.chat:add_tool_output(self, "🗂️ Tasks:\n" .. tasks)
+      agent.chat:add_tool_output(self, "🗂️ Tasks\n" .. tasks)
     end,
   },
 
