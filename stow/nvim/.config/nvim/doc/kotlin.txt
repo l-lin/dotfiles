@@ -35,6 +35,7 @@ TABLE OF CONTENTS~
         |kotlin-function-extension|         Extension Functions & Properties
         |kotlin-function-higher-order|      Higher-Order Functions
         |kotlin-function-operator|          Operator Overloading
+        |kotlin-function-invoke|            Invoke Operator
         |kotlin-function-varargs|           Varargs
         |kotlin-function-infix|             Infix Notation
         |kotlin-function-scope|             Scope Functions
@@ -495,6 +496,103 @@ Operator overloading in Kotlin allows you to define and use custom operators for
         println(p3) // Output: Point(x=4, y=6)
     }
 <
+
+-------------------------------------------------------------------------------
+INVOKE OPERATOR                                         *kotlin-function-invoke*
+
+The invoke operator allows objects to be called as functions. By implementing
+the `operator fun invoke()` function, you can make instances of a class callable
+with parentheses syntax, enabling function-like behavior for objects.
+>kotlin
+    // Basic invoke operator
+    class Multiplier(val factor: Int) {
+        operator fun invoke(value: Int): Int {
+            return value * factor
+        }
+    }
+
+    fun main() {
+        val doubler = Multiplier(2)
+        println(doubler(5))  // Output: 10 - calls doubler.invoke(5)
+        println(doubler.invoke(5))  // Same as above, explicit call
+    }
+
+    // Multiple parameters
+    class Calculator {
+        operator fun invoke(a: Int, b: Int, operation: String): Int {
+            return when (operation) {
+                "+" -> a + b
+                "-" -> a - b
+                "*" -> a * b
+                "/" -> if (b != 0) a / b else 0
+                else -> 0
+            }
+        }
+    }
+
+    val calc = Calculator()
+    println(calc(10, 5, "+"))  // Output: 15
+    println(calc(10, 5, "*"))  // Output: 50
+
+    // Invoke with different return types
+    class Formatter {
+        operator fun invoke(name: String, age: Int): String {
+            return "Name: $name, Age: $age"
+        }
+
+        operator fun invoke(numbers: List<Int>): String {
+            return numbers.joinToString(", ")
+        }
+    }
+
+    val formatter = Formatter()
+    println(formatter("Alice", 30))        // Name: Alice, Age: 30
+    println(formatter(listOf(1, 2, 3, 4))) // 1, 2, 3, 4
+
+    // Lambda-like behavior with state
+    class Counter(private var count: Int = 0) {
+        operator fun invoke(): Int {
+            return ++count
+        }
+
+        operator fun invoke(increment: Int): Int {
+            count += increment
+            return count
+        }
+
+        fun reset() { count = 0 }
+    }
+
+    val counter = Counter()
+    println(counter())      // 1
+    println(counter())      // 2
+    println(counter(5))     // 7
+    counter.reset()
+    println(counter())      // 1
+
+    // Function types are implemented with invoke
+    val lambda: (Int) -> Int = { it * 2 }
+    println(lambda(4))      // 8 - uses invoke under the hood
+    println(lambda.invoke(4)) // Same as above
+
+    // Invoke with extension functions
+    class StringProcessor {
+        operator fun String.invoke(): String {
+            return this.uppercase().reversed()
+        }
+    }
+
+    with(StringProcessor()) {
+        println("hello"())  // OLLEH
+    }
+<
+
+Use cases for invoke operator:
+- Creating function-like objects with state
+- DSL (Domain Specific Language) builders
+- Factory functions with configuration
+- Callable wrappers around complex operations
+- Function objects that can be parameterized
 
 -------------------------------------------------------------------------------
 VARARGS (VARIABLE NUMBER OF ARGUMENTS)                *kotlin-function-varargs*
