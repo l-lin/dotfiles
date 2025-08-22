@@ -36,9 +36,9 @@ local function convert_or_toggle_task()
     return
   end
 
-  -- 3) If there's already "- [x] ", then convert to "- [ ] "
-  if line:match("^%s*[-*]%s+%[x%]%s+") then
-    local final_line = line:gsub("%[x%]", "[ ]", 1)
+  -- 3) If there's already "- [x] " (or anything inside the checkbox), then convert to "- [ ] "
+  if line:match("^%s*[-*]%s+%[.-%]%s+") then
+    local final_line = line:gsub("%[.-%]", "[ ]", 1)
     vim.api.nvim_set_current_line(final_line)
     return
   end
