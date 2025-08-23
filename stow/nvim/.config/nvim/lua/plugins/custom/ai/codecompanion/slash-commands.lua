@@ -9,7 +9,7 @@ local function slash_command_from(prompt_name, prompt)
     callback = function(chat)
       chat:replace_vars_and_tools({ content = prompt.tools })
       if prompt.kind == "role" or prompt.kind == "action" then
-        chat:add_reference(
+        chat:add_context(
           { content = prompt.system(), role = "system" },
           "system-prompt",
           string.format("<%s>%s</%s>", prompt.kind, prompt_name, prompt.kind)
