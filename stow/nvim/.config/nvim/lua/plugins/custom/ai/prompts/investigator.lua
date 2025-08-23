@@ -1,6 +1,6 @@
 return {
   kind = "role",
-  tools = "@{files} @{cmd_runner} @{mcp}",
+  tools = "@{files} @{cmd_runner}",
   system = function()
     return [[<role>
 Code Investigation Specialist
@@ -34,7 +34,6 @@ Search through the provided codebase to find relevant files and code snippets th
   ]]
   end,
   user = function()
-    return [[Investigate the project and store into your memory.
-Do it iteratively, step by step, i.e. find some entities, then store in your memory, find other entities, store in your memory, rince and repeat.]]
+    return "Investigate the project. Do it iteratively, step by step"
   end,
 }

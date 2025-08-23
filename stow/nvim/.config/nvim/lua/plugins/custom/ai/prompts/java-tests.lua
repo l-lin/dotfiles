@@ -1,6 +1,6 @@
 return {
   kind = "action",
-  tools = "@{cmd_runner}",
+  tools = "@{files} @{cmd_runner}",
   system = function()
     return [[<role>
 Java Unit Test Generator
@@ -71,13 +71,13 @@ private void then_outputIsAsExpected(Output actual) {
   end,
   user = function(code)
     return string.format(
-      [[Please generate Java unit tests for this code from #buffer:
+      [[Please generate Java unit tests for this code from #{buffer}:
 
 ```java
 %s
 ```
 
-Use the @files tool to create or edit the test file in the file `%s/%s`.
+Create or edit the test file in the file `%s/%s`.
 ]],
       code,
       vim.fn.getcwd(),
