@@ -30,18 +30,6 @@
     }
   },
   "mcp": {
-    "memory": {
-      "type": "local",
-      "command": [
-        "docker",
-        "run",
-        "--rm",
-        "-i",
-        "-v",
-        "mcp-memory:/app/dist",
-        "mcp/memory"
-      ]
-    },
     "sequentialthinking": {
       "type": "local",
       "command": ["docker", "run", "--rm", "-i", "mcp/sequentialthinking"]

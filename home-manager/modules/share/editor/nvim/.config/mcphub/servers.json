@@ -8,17 +8,6 @@
     }
   },
   "mcpServers": {
-    "memory": {
-      "command": "docker",
-      "args": [
-        "run",
-        "-i",
-        "-v",
-        "agent-memory:/app/dist",
-        "--rm",
-        "mcp/memory"
-      ]
-    },
     "sequentialthinking": {
       "command": "docker",
       "args": ["run", "--rm", "-i", "mcp/sequentialthinking"]
