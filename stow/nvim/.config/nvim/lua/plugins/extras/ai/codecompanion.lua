@@ -151,24 +151,6 @@ return {
                 -- default_tools = { "files" },
               },
               groups = {
-                agent = {
-                  description = "Agent mode",
-                  tools = {
-                    "cmd_runner",
-                    "create_file",
-                    "file_search",
-                    "get_changed_files",
-                    "grep_search",
-                    "insert_edit_into_file",
-                    "list_code_usages",
-                    "read_file",
-                    "search_web",
-                    "plan"
-                  },
-                  opts = {
-                    collapse_tools = true,
-                  },
-                },
                 files_ro = {
                   description = "Tools related to reading and finding files",
                   tools = {
