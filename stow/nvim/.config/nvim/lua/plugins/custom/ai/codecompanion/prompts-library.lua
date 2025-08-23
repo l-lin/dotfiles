@@ -69,4 +69,30 @@ return {
       },
     },
   },
+
+  ["edit"] = {
+    strategy = "chat",
+    description = "Edit the current buffer",
+    prompts = {
+      { role = "user", content = "@{insert_edit_into_file} #{buffer}\n\n" },
+    },
+    opts = {
+      auto_submit = false,
+      short_name = "edit",
+      is_slash_cmd = true,
+    },
+  },
+
+  ["develop"] = {
+    strategy = "chat",
+    description = "Edit with full tooling",
+    prompts = {
+      { role = "user", content = "@{full_stack_dev} #{buffer}\n\n" },
+    },
+    opts = {
+      auto_submit = false,
+      short_name = "dev",
+      is_slash_cmd = true,
+    },
+  },
 }
