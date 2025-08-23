@@ -1,4 +1,3 @@
-local java_configurer = require("plugins.custom.lang.java")
 -- Fetch Java related libraries from another registry (main mason registry does not have the java-test, lombok and spring-boot-tools).
 -- To install a specific version of a package installed by Mason:
 -- 1. edit .local/share/nvim/mason/registries/github/mason-org/mason-registry/registry.json
@@ -12,7 +11,7 @@ return {
   recommended = function()
     return LazyVim.extras.wants({
       ft = "java",
-      root = java_configurer.root_markers,
+      root = require("plugins.custom.lang.java").root_markers,
     })
   end,
 
@@ -81,6 +80,5 @@ return {
         },
       },
     },
-    config = java_configurer.jdtls_config,
   },
 }

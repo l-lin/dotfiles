@@ -1,4 +1,4 @@
-local java_cmds = vim.api.nvim_create_augroup('java_cmds', { clear = true })
+local java_cmds = vim.api.nvim_create_augroup("java_cmds", { clear = true })
 
 local root_markers = { ".git", "mvnw", "gradlew" }
 
@@ -132,10 +132,10 @@ local function create_settings()
         enabled = true,
       },
       inlayHints = {
-          enabled = true,
-          parameterNames = {
-             enabled = 'all' -- literals, all, none
-          }
+        enabled = true,
+        parameterNames = {
+          enabled = "all", -- literals, all, none
+        },
       },
       maven = {
         downloadSources = true,
@@ -181,9 +181,9 @@ local function create_capabilities()
   require("jdtls").extendedClientCapabilities.resolveAdditionalTextEditsSupport = true
   local has_blink, blink = pcall(require, "blink.cmp")
   return vim.tbl_deep_extend(
-      'force',
-      vim.lsp.protocol.make_client_capabilities(),
-      has_blink and blink.get_lsp_capabilities() or {}
+    "force",
+    vim.lsp.protocol.make_client_capabilities(),
+    has_blink and blink.get_lsp_capabilities() or {}
   )
 end
 
@@ -233,9 +233,9 @@ local function attach_keymaps(bufnr)
       mode = "v",
       buffer = bufnr,
       { "<leader>cx", group = "extract" },
-      { "<leader>cxm", [[<ESC><CMD>lua require('jdtls').extract_method(true)<CR>]], desc = "Extract Method", },
-      { "<leader>cxv", [[<ESC><CMD>lua require('jdtls').extract_variable_all(true)<CR>]], desc = "Extract Variable", },
-      { "<leader>cxc", [[<ESC><CMD>lua require('jdtls').extract_constant(true)<CR>]], desc = "Extract Constant", },
+      { "<leader>cxm", [[<ESC><CMD>lua require('jdtls').extract_method(true)<CR>]], desc = "Extract Method" },
+      { "<leader>cxv", [[<ESC><CMD>lua require('jdtls').extract_variable_all(true)<CR>]], desc = "Extract Variable" },
+      { "<leader>cxc", [[<ESC><CMD>lua require('jdtls').extract_constant(true)<CR>]], desc = "Extract Constant" },
     },
   })
 end
@@ -270,35 +270,19 @@ local function on_attach(client, bufnr)
   require("plugins.custom.lang.java-test").attach_keymaps(bufnr)
 end
 
----Attach jdtls for the proper filetypes (i.e. java).
-local function start_or_attach_jdtls()
-  vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "java" },
-    group = java_cmds,
-    desc = "Setup JDTLS",
-    callback = function()
-      require("jdtls").start_or_attach({
-        capabilities = create_capabilities(),
-        cmd = create_cmd(),
-        flags = { allow_incremental_sync = true },
-        init_options = create_init_options(),
-        on_attach = on_attach,
-        root_dir = get_root_dir(),
-        settings = create_settings(),
-      })
-    end,
-  })
-end
-
----Configure JDTLS server by starting the LSP server and attaching keymaps.
-local function jdtls_config()
-  if get_root_dir() == nil then
-    return
-  end
-  start_or_attach_jdtls()
+local function create_config()
+  return {
+    capabilities = create_capabilities(),
+    cmd = create_cmd(),
+    flags = { allow_incremental_sync = true },
+    init_options = create_init_options(),
+    on_attach = on_attach,
+    root_dir = get_root_dir(),
+    settings = create_settings(),
+  }
 end
 
 local M = {}
 M.root_markers = root_markers
-M.jdtls_config = jdtls_config
+M.create_config = create_config
 return M
