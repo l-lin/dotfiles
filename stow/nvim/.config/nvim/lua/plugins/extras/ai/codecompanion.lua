@@ -148,7 +148,7 @@ return {
                 -- Send any successful output to the LLM automatically.
                 auto_submit_success = true,
                 -- How long to wait for user input before timing out (milliseconds)
-                wait_timeout = 60000,
+                wait_timeout = 600000,
                 -- Automatically add tools to chat buffer.
                 -- default_tools = { "files" },
               },
