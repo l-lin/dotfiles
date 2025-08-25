@@ -111,6 +111,14 @@ local function open_current_monthly_note()
   vim.cmd("edit " .. vim.fn.expand(vim.g.notes_dir) .. "/" .. monthly_note_path)
 end
 
+---Sanitize selected text without the wiki links and yank to + register.
+local function sanitize_and_yank()
+  vim.cmd('normal! "+y')
+  local yanked_text = vim.fn.getreg("+")
+  local sanitized_text = yanked_text:gsub("%[%[(.-)%]%]", "%1")
+  vim.fn.setreg("+", sanitized_text)
+end
+
 local M = {}
 M.today = today
 M.yesterday = yesterday
@@ -122,4 +130,5 @@ M.next_month = next_month
 M.todo = todo
 M.search_pending_todos = search_pending_todos
 M.open_current_monthly_note = open_current_monthly_note
+M.sanitize_and_yank = sanitize_and_yank
 return M
