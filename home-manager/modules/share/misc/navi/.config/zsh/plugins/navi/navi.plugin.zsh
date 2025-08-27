@@ -14,7 +14,7 @@ fi
 
 _navi_cmd() {
   [ -n "${TMUX_PANE-}" ] &&
-    echo "tmux popup -w ${NAVI_TMUX_WIDTH:-90%} -h ${NAVI_TMUX_HEIGHT:-90%} -E "
+    echo "tmux popup -w ${NAVI_TMUX_WIDTH:-90%} -h ${NAVI_TMUX_HEIGHT:-90%} -d '#{pane_current_path}' -E "
 }
 
 _navi_sel() {
