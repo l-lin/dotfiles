@@ -163,7 +163,7 @@ return {
       },
 
       {
-        "<leader>oY",
+        "<leader>oy",
         require("plugins.custom.lang.obsidian").sanitize_and_yank,
         desc = "Yank selection without wiki links",
         mode = "v",
