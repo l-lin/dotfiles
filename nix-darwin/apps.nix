@@ -39,6 +39,7 @@
 
     taps = [
       "bgreenwell/doxx"
+       "xcodesorg/made"
     ];
 
     # `brew install`
@@ -50,6 +51,8 @@
       "doxx"
       # Interpreter for PostScript and PDF: https://www.ghostscript.com/
       "ghostscript"
+       # Install and switch between multiple versions of Xcode: https://github.com/XcodesOrg/xcodes
+       "xcodes"
     ];
 
     # `brew install --cask`
