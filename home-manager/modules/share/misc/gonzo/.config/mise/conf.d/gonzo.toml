@@ -1,0 +1,2 @@
+[tools]
+"go:github.com/control-theory/gonzo/cmd/gonzo" = "latest"
