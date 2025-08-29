@@ -73,3 +73,7 @@ CLAUDE.local.md
 # Mise #
 ########
 mise.local.toml
+
+# Git #
+#######
+.worktree
