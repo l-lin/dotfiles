@@ -33,10 +33,6 @@
     "sequentialthinking": {
       "type": "local",
       "command": ["docker", "run", "--rm", "-i", "mcp/sequentialthinking"]
-    },
-    "atlassian": {
-      "type": "local",
-      "command": ["npx", "-y", "mcp-remote", "https://mcp.atlassian.com/v1/sse"]
     }
   }
 }
