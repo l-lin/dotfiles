@@ -5,7 +5,7 @@ local function execute_all_tests_with_maven()
   local filename = vim.fn.expand('%:t')
   if string.match(filename, "%.kt$") then
     local tests = string.gsub(filename, "%.kt$", "")
-    local command_to_run = "./mvnw test -q -Dtest=" .. tests
+    local command_to_run = "./mvnw test -q -Dsurefire.failIfNoSpecifiedTests=false -Dtest=" .. tests
 
     local success_log = 'echo -e \\"\\e[1;30;42m SUCCESS \\e[0m\\"'
 
@@ -24,5 +24,5 @@ local function execute_all_tests_with_maven()
 end
 
 local M = {}
-M.execute_maven_tests = execute_all_tests_with_maven
+M.execute_all_tests_with_maven = execute_all_tests_with_maven
 return M
