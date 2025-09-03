@@ -122,10 +122,10 @@ return {
                 callback = "keymaps.yank_code",
                 description = "Yank Code",
               },
-              auto_tool_mode = {
+              yolo_mode = {
                 modes = { n = "<S-Tab>" },
-                callback = "keymaps.auto_tool_mode",
-                description = "Toggle automatic tool mode",
+                callback = "keymaps.yolo_mode",
+                description = "Toggle YOLO tool mode",
               },
             },
             roles = {
