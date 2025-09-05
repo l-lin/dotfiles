@@ -74,7 +74,7 @@ return {
  {
    "tpope/vim-fugitive",
    keys = {
-     { "<leader>gc", "<cmd>G commit<cr>", desc = "git commit" },
+     { "<leader>gc", "<cmd>G commit --no-verify<cr>", desc = "git commit" },
      { "<leader>gF", "<cmd>G push --force-with-lease<cr>", desc = "git push --force-with-lease" },
      -- useful for creating new PR/MR where the url is displayed in the git push message
      { "<leader>gO", "<cmd>G -p push<cr>", desc = "git push and display git message" },
