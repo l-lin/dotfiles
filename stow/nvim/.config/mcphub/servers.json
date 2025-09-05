@@ -1,0 +1,41 @@
+{
+  "mcpServers": {
+    "atlassian": {
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://mcp.atlassian.com/v1/sse"
+      ],
+      "command": "npx",
+      "disabled": true
+    },
+    "memory": {
+      "args": [
+        "run",
+        "-i",
+        "-v",
+        "agent-memory:/app/dist",
+        "--rm",
+        "mcp/memory"
+      ],
+      "command": "docker"
+    },
+    "sequentialthinking": {
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "mcp/sequentialthinking"
+      ],
+      "command": "docker"
+    }
+  },
+  "nativeMCPServers": {
+    "mcphub": {
+      "disabled": true
+    },
+    "neovim": {
+      "disabled_tools": []
+    }
+  }
+}

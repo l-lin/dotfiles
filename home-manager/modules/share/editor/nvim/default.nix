@@ -50,9 +50,4 @@ return {
   },
 }
   '';
-
-  xdg.configFile."mcphub" = {
-    source = ./.config/mcphub;
-    recursive = true;
-  };
 }
