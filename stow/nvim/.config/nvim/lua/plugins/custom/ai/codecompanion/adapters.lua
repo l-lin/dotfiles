@@ -1,10 +1,10 @@
 return {
   -- GITHUB COPILOT
-  copilot_custom = function()
+  copilot = function()
     return require("codecompanion.adapters").extend("copilot", {
       name = "copilot_custom",
       schema = {
-        model = { default = "gpt-4.1" },
+        model = { default = "claude-sonnet-4" },
         temperature = { default = 0 },
         max_tokens = { default = 200000 },
       },

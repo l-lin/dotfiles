@@ -20,7 +20,6 @@ local function slash_command_from(prompt_name, prompt)
   }
 end
 
-
 local function all_slash_commands()
   local roles = {}
 
@@ -38,8 +37,7 @@ local function all_slash_commands()
   return roles
 end
 
-local M = {
-}
+local M = {}
 for role_name, slash_command in pairs(all_slash_commands()) do
   M[role_name] = slash_command
 end

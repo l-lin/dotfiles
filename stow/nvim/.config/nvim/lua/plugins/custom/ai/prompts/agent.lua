@@ -5,7 +5,7 @@ return {
     return ""
   end,
   user = function ()
-    vim.g.codecompanion_auto_tool_mode = true
+    vim.g.codecompanion_yolo_mode = true
     return ""
   end
 }

@@ -91,7 +91,7 @@ return {
       return {
         strategies = {
           chat = {
-            adapter = "copilot_custom",
+            adapter = "copilot",
             keymaps = {
               -- Changing `q` to `<C-c>` so that `q` just close the window.
               stop = {
@@ -190,6 +190,7 @@ return {
         display = {
           chat = {
             intro_message = "Press ? for options.",
+            show_settings = false, -- Show LLM settings at the top of the chat buffer?
             start_in_insert_mode = false,
             window = { layout = layout },
           },
