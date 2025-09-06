@@ -95,7 +95,7 @@ automatically-unhide-macos-hidden-apps = false
     # end tell'
     # '''
 
-    cmd-f = 'fullscreen'
+    cmd-shift-f = 'fullscreen'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#layout
     cmd-slash = 'layout tiles accordion'
