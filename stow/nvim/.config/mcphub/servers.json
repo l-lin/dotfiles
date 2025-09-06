@@ -18,7 +18,8 @@
         "--rm",
         "mcp/memory"
       ],
-      "command": "docker"
+      "command": "docker",
+      "disabled": true
     },
     "sequentialthinking": {
       "args": [
@@ -27,7 +28,8 @@
         "-i",
         "mcp/sequentialthinking"
       ],
-      "command": "docker"
+      "command": "docker",
+      "disabled": true
     }
   },
   "nativeMCPServers": {
