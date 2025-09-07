@@ -262,42 +262,15 @@ return {
             },
             html = {
               tag = {
-                action = {
-                  icon = " ",
-                  highlight = "Comment",
-                },
-                buf = {
-                  icon = "󰌹 ",
-                  highlight = "Comment",
-                },
-                file = {
-                  icon = "󰨸 ",
-                  highlight = "Comment",
-                },
-                group = {
-                  icon = "󰡉 ",
-                  highlight = "Comment",
-                },
-                image = {
-                  icon = "󰥶 ",
-                  highlight = "Comment",
-                },
-                role = {
-                  icon = "󱢙 ",
-                  highlight = "Comment",
-                },
-                summary = {
-                  icon = " ",
-                  highlight = "Comment",
-                },
-                tool = {
-                  icon = " ",
-                  highlight = "Comment",
-                },
-                url = {
-                  icon = " ",
-                  highlight = "Comment",
-                },
+                action = { icon = " ", highlight = "Comment" },
+                buf = { icon = "󰌹 ", highlight = "Comment" },
+                file = { icon = "󰨸 ", highlight = "Comment" },
+                group = { icon = "󰡉 ", highlight = "Comment" },
+                image = { icon = "󰥶 ", highlight = "Comment" },
+                role = { icon = "󱢙 ", highlight = "Comment" },
+                summary = { icon = " ", highlight = "Comment" },
+                tool = { icon = " ", highlight = "Comment" },
+                url = { icon = " ", highlight = "Comment" },
               },
             },
           },
