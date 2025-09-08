@@ -33,3 +33,6 @@ vim.g.snacks_animate = false
 
 -- path to my notes directory
 vim.g.notes_dir = "~/perso/notes"
+
+-- set border
+vim.o.winborder = "rounded"
