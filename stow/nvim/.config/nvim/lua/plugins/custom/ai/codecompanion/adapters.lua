@@ -2,7 +2,6 @@ return {
   -- GITHUB COPILOT
   copilot = function()
     return require("codecompanion.adapters").extend("copilot", {
-      name = "copilot_custom",
       schema = {
         model = { default = "claude-sonnet-4" },
         temperature = { default = 0 },
