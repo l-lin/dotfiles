@@ -8,6 +8,8 @@
 
   home.file.".claude/CLAUDE.md".source = ../.config/ai/conventions/code.md;
   home.file.".claude/settings.json".source = ./.claude/settings.json;
+  home.file.".claude/mcp-atlassian.json".source = ./.claude/mcp-atlassian.json;
+  home.file.".claude/mcp-sequentialthinking.json".source = ./.claude/mcp-sequentialthinking.json;
   home.file.".claude/commands" = {
     source = ../.config/ai/prompts;
     recursive = true;
