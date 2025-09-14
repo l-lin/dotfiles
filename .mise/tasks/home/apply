@@ -10,4 +10,4 @@ if type nh >/dev/null 2>&1; then \
 else \
   home-manager switch -b bak --flake ".#$(whoami)"; \
 fi
-just create-symlinks
+mise run stow:create
