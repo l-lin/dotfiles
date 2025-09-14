@@ -1,9 +1,4 @@
 return {
-  -- I do not use DAP for Ruby projects.
-  { "suketa/nvim-dap-ruby", enabled = false },
-  -- I do not execute test from nvim.
-  { "olimorris/neotest-rspec", enabled = false },
-
   -- add keymaps to which-key
   {
     "folke/which-key.nvim",
@@ -16,9 +11,37 @@ return {
     },
   },
 
-  -- #######################
-  -- add new plugins
-  -- #######################
+  -- add syntax highlighting
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = { ensure_installed = { "ruby" } },
+  },
+
+  -- use LSP servers
+  {
+    "neovim/nvim-lspconfig",
+    opts = {
+      servers = {
+        ruby_lsp = {
+          enabled = true,
+          cmd = { "bundle", "exec", "ruby-lsp" },
+          -- use the LSP installs from Gemfile
+          mason = false,
+        },
+        -- INFO: rubocop is using some cache, so you might have to clear cache with the following
+        -- command if some config file are not found:
+        --   rm -rf $XDG_CACHE_HOME/501/rubocop_cache/
+        -- You can check which config files are used by executing the following command:
+        --   bundle exec rubocop --debug
+        rubocop = {
+          enabled = true,
+          cmd = { "bundle", "exec", "rubocop", "--lsp" },
+          -- use the LSP installs from Gemfile
+          mason = false,
+        },
+      },
+    },
+  },
 
   -- Alternative LSP server to ruby-lsp for navigation (no auto-completion).
   {

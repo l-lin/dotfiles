@@ -25,13 +25,13 @@ alias ns="nix-shell --command zsh -p"
 # editor
 alias v="nvim"
 # sudo
-alias sudo="sudo "
-alias _="sudo "
-alias please="sudo "
+alias sudo="sudo"
+alias _="sudo"
+alias please="sudo"
 # ruby
 alias ru="ruby"
-alias bu="bundle"
-alias ra="rake"
+alias be="bundle exec"
+alias ra="bundle exec rails"
 # git
 alias g="git"
 alias gw="git worktree"

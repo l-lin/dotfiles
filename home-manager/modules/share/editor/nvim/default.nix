@@ -16,7 +16,7 @@ in {
     viAlias = true;
     vimAlias = true;
 
-    withRuby = true;
+    withRuby = false;
     withNodeJs = true;
     withPython3 = true;
 

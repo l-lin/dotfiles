@@ -17,7 +17,7 @@ vim.keymap.set(
   "<leader>ta",
   function()
     ruby.execute_file({
-      cmd = "rails t",
+      cmd = "bundle exec rails t",
       use_interactive_shell = true,
       include_line_number = false,
     })
@@ -29,7 +29,7 @@ vim.keymap.set(
   "<M-S-F9>",
   function()
     ruby.execute_file({
-      cmd = "rails t",
+      cmd = "bundle exec rails t",
       use_interactive_shell = true,
       include_line_number = false,
     })
@@ -41,7 +41,7 @@ vim.keymap.set(
   "<leader>tn",
   function()
     ruby.execute_file({
-      cmd = "rails t",
+      cmd = "bundle exec rails t",
       use_interactive_shell = true,
       include_line_number = true,
     })
@@ -53,7 +53,7 @@ vim.keymap.set(
   "<F21>",
   function()
     ruby.execute_file({
-      cmd = "rails t",
+      cmd = "bundle exec rails t",
       use_interactive_shell = true,
       include_line_number = true,
     })

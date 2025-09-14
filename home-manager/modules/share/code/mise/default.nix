@@ -18,7 +18,9 @@
         # Enable experimental if you want to use the golang backend to install 3rd party tools.
         experimental = true;
         trusted_config_paths = ["~/work" "~/perso"];
-        idiomatic_version_file_enable_tools = ["java"  "node"];
+        # Tools can read the versions files used by other version managers
+        # for example, .nvmrc in the case of node's nvm.
+        idiomatic_version_file_enable_tools = ["java"  "node" "ruby"];
       };
     };
   };
