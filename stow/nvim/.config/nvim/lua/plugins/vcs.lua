@@ -32,7 +32,7 @@ return {
     },
   },
   {
-    "echasnovski/mini.diff",
+    "nvim-mini/mini.diff",
     optional = true,
     keys = {
       { "<M-C-G>", function() require("mini.diff").toggle_overlay(0) end, desc = "Preview Hunk inline (Ctrl+Alt+g)" },

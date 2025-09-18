@@ -30,7 +30,7 @@ return {
   -- #######################
 
   {
-    "echasnovski/mini.files",
+    "nvim-mini/mini.files",
     keys = {
       { "<M-1>", "<leader>fm", desc = "Open mini.files (directory of current file) (Alt+1)", remap = true },
       {

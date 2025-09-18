@@ -15,7 +15,7 @@ return {
   },
 
   -- autopairs - not quite as good as nvim-autopairs
-  { "echasnovski/mini.pairs", enabled = false },
+  { "nvim-mini/mini.pairs", enabled = false },
 
   -- #######################
   -- add new plugins
@@ -30,7 +30,7 @@ return {
 
   -- split and join arguments
   {
-    "echasnovski/mini.splitjoin",
+    "nvim-mini/mini.splitjoin",
     enabled = false,
     version = "*",
     event = "LazyFile",
