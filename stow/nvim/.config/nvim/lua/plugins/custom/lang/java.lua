@@ -24,24 +24,14 @@ end
 
 ---@return table cmd command to execute JDTLS
 local function create_cmd()
-  -- Points to $HOME/.local/share/nvim/mason/packages/jdtls/.
-  local jdtls_path = require("mason-registry").get_package("jdtls"):get_install_path()
+  -- Path to config depending on the platform: $HOME/.local/share/nvim/mason/share/jdtls/config
+  local platform_config = vim.fn.expand("$MASON/share/jdtls/config")
 
-  -- Path to config depending on the platform.
-  local platform_config = ""
-  if vim.fn.has("mac") == 1 then
-    platform_config = jdtls_path .. "/config_mac"
-  elseif vim.fn.has("unix") == 1 then
-    platform_config = jdtls_path .. "/config_linux"
-  elseif vim.fn.has("win32") == 1 then
-    platform_config = jdtls_path .. "/config_win"
-  end
+  -- Path to Lombok JAR: $HOME/.local/share/nvim/mason/share/lombok-nightly/lombok.jar
+  local lombok_jar = vim.fn.expand("$MASON/share/lombok-nightly/lombok.jar")
 
-  -- Path to Lombok JAR.
-  local lombok_path = require("mason-registry").get_package("lombok-nightly"):get_install_path() .. "/lombok.jar"
-
-  -- Path to launcher JAR.
-  local launcher_path = vim.fn.glob(jdtls_path .. "/plugins/org.eclipse.equinox.launcher.jar")
+  -- Path to launcher JAR: $HOME/.local/share/nvim/mason/share/jdtls/plugins/org.eclipse.equienox.launcher.jar
+  local launcher_path = vim.fn.glob("$MASON/share/jdtls/plugins/org.eclipse.equinox.launcher.jar")
 
   -- Use root folder name as the project name.
   local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
@@ -61,7 +51,7 @@ local function create_cmd()
     "java.base/java.util=ALL-UNNAMED",
     "--add-opens",
     "java.base/java.lang=ALL-UNNAMED",
-    "-javaagent:" .. lombok_path,
+    "-javaagent:" .. lombok_jar,
     "-jar",
     launcher_path,
     "-configuration",

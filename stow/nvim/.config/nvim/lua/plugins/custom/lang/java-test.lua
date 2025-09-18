@@ -45,13 +45,9 @@ local function create_bundles()
   if not mason_registry.has_package("java-test") then
     return
   end
-  local java_test_pkg = mason_registry.get_package("java-test")
 
   local bundles = {}
-  local java_test_path = java_test_pkg:get_install_path()
-  local jar_patterns = {
-    java_test_path .. "/extension/server/*.jar",
-  }
+  local jar_patterns = vim.fn.globpath("$MASON/share/java-test", "*.jar", true, true)
   for _, jar_pattern in ipairs(jar_patterns) do
     for _, bundle in ipairs(vim.split(vim.fn.glob(jar_pattern), "\n")) do
       table.insert(bundles, bundle)

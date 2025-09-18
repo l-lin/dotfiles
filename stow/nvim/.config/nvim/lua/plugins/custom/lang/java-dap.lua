@@ -17,14 +17,10 @@ local function create_bundles()
   if not mason_registry.has_package("java-debug-adapter") then
     return
   end
-  local java_debug_adapter_pkg = mason_registry.get_package("java-debug-adapter")
 
   local bundles = {}
   -- jdtls tools configuration for debugging support
-  local java_debug_adapter_path = java_debug_adapter_pkg:get_install_path()
-  local jar_patterns = {
-    java_debug_adapter_path .. "/extension/server/com.microsoft.java.debug.plugin-*.jar",
-  }
+  local jar_patterns = vim.fn.globpath("$MASON/share/java-debug-adapter", "*.jar", true, true)
   for _, jar_pattern in ipairs(jar_patterns) do
     for _, bundle in ipairs(vim.split(vim.fn.glob(jar_pattern), "\n")) do
       table.insert(bundles, bundle)

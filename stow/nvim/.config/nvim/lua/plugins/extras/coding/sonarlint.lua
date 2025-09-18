@@ -5,7 +5,7 @@ return {
     url = "https://gitlab.com/schrieveslaach/sonarlint.nvim",
     ft = { "go", "js", "java", "xml" },
     opts = function()
-      local sonarlint_path = require("mason-registry").get_package("sonarlint-language-server"):get_install_path()
+      local jars = vim.fn.globpath("$MASON/share/sonarlint-language-server", "*.jar", true, true)
       return {
         server = {
           cmd = {
@@ -13,10 +13,7 @@ return {
             -- Ensure that sonarlint-language-server uses stdio channel
             "-stdio",
             "-analyzers",
-            sonarlint_path .. "/extension/analyzers/sonargo.jar",
-            sonarlint_path .. "/extension/analyzers/sonarjava.jar",
-            sonarlint_path .. "/extension/analyzers/sonarjs.jar",
-            sonarlint_path .. "/extension/analyzers/sonarxml.jar",
+            jars
           },
         },
         filetypes = {
