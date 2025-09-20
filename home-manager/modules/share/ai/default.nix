@@ -5,9 +5,9 @@
 {
   imports = [
     ./claude-code
-    ./crush
+    #./crush
     ./dust
-    ./open-codex
+    #./open-codex
     ./opencode
   ];
 

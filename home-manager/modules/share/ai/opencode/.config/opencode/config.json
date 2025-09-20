@@ -16,13 +16,9 @@
   "instructions": [".cursor/rules/*.md"],
   "layout": "stretch",
   "mode": {
-    "humanizer": {
-      "model": "github-copilot/gpt-4.1",
-      "prompt": "{file:../ai/prompts/humanizer.md}"
-    },
-    "kotlin-mentor": {
+    "code-reviewer": {
       "model": "github-copilot/claude-sonnet-4",
-      "prompt": "{file:../ai/prompts/kotlin-mentor.md}"
+      "prompt": "{file:../ai/agents/code-reviewer.md}"
     },
     "researcher": {
       "model": "github-copilot/claude-sonnet-4",
