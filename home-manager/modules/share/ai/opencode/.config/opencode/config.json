@@ -11,7 +11,7 @@
   "autoshare": false,
   "share": "disabled",
   "autoupdate": false,
-  "instructions": [".cursor/rules/*.md"],
+  "instructions": [],
   "layout": "stretch",
   "mode": {
     "code-reviewer": {
