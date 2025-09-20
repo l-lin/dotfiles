@@ -3,4 +3,4 @@
 #MISE description="Clean up home-manager garbage"
 #
 
-nix-collect-garbage -d
+sudo nix-collect-garbage -d
