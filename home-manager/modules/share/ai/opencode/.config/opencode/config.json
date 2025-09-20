@@ -6,9 +6,7 @@
     "input_newline": "enter",
     "messages_copy": "<leader>y,alt+y",
     "messages_half_page_up": "ctrl+u",
-    "messages_half_page_down": "ctrl+d",
-    "messages_previous": "ctrl+p",
-    "messages_next": "ctrl+n"
+    "messages_half_page_down": "ctrl+d"
   },
   "autoshare": false,
   "share": "disabled",
