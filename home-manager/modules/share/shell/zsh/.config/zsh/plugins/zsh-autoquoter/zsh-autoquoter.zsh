@@ -11,6 +11,7 @@ export ZAQ_PREFIXES=(
   'gh copilot explain( [^ ]##)#'
   'gh copilot suggest( [^ ]##)#'
   'claude -p( [^ ]##)#'
+  'ask( [^ ]##)#'
 )
 
 if [[ -v ZSH_HIGHLIGHT_HIGHLIGHTERS ]]; then

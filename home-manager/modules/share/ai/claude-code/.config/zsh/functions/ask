@@ -1,0 +1,21 @@
+#!/usr/bin/env zsh
+#
+# Simple script that get quick answer from the command line.
+# It's using the `direct-answer-engine` system prompt to generate the short anwser.
+# inspired from: https://github.com/kagisearch/ask
+#
+
+red='\e[1;30;41m'
+escape='\e[0m'
+
+error() {
+  >&2 echo -e "${red} E ${escape} ${1}"
+}
+
+if !type -q claude &>/dev/null; then
+  error "claude-code not installed"
+  return
+fi
+
+claude -p "/direct-answer $@"
+return

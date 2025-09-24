@@ -5,6 +5,7 @@
 
 {
   xdg.configFile."mise/conf.d/claude-code.toml".source = ./.config/mise/conf.d/claude-code.toml;
+  xdg.configFile."zsh/functions/ask".source = ./.config/zsh/functions/ask;
 
   home.file.".claude/CLAUDE.md".source = ../.config/ai/conventions/code.md;
   home.file.".claude/settings.json".source = ./.claude/settings.json;
