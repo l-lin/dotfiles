@@ -85,7 +85,7 @@
   required = true
 [merge]
   renamelimit = 3000
-  tool = meld
+  tool = vimdiff
   conflictstyle = zdiff3
 [help]
   # commands will be autocorrect (rset -> reset)
