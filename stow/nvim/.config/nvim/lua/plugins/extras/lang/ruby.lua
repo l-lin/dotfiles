@@ -1,4 +1,10 @@
 return {
+  recommended = function()
+    return LazyVim.extras.wants({
+      ft = "ruby",
+      root = "Gemfile",
+    })
+  end,
   -- add keymaps to which-key
   {
     "folke/which-key.nvim",
@@ -50,42 +56,22 @@ return {
     opts = {
       servers = {
         fuzzy_ls = {
+          enabled = true,
+          filetypes = { "ruby" },
+          root_markers = { 'Gemfile', '.git' },
+          mason = false,
           init_options = {
-            allocationType = "tempdir",
-            indexGems = false,
-            reportDiagnostics = false,
+            -- possible values:
+            -- ram: use RAM (can be very high on big project)
+            -- tempdir: use mmap directory to store the indexes (e.g. /tmp/.tmpcCUkiK)
+            allocationType = "ram",
+            indexGems = true,
+            reportDiagnostics = true,
+          },
+          cmd = {
+            vim.fn.expand(vim.fn.stdpath("data") .. "/lazy/fuzzy_ruby_server/bin/fuzzy_darwin-arm64"),
           },
         },
-      },
-      setup = {
-        fuzzy_ls = function(_, opts)
-          local lspconfig = require("lspconfig")
-          local configs = require("lspconfig.configs")
-
-          if not configs.fuzzy_ls then
-            configs.fuzzy_ls = {
-              default_config = {
-                cmd = {
-                  vim.fn.expand(vim.fn.stdpath("data") .. "/lazy/fuzzy_ruby_server/bin/fuzzy_darwin-arm64"),
-                },
-                filetypes = { "ruby" },
-                root_dir = function(fname)
-                  return vim.fs.dirname(vim.fs.find(".git", { path = fname, upward = true })[1])
-                end,
-                settings = {},
-                init_options = {
-                  -- possible values:
-                  -- ram: use RAM (can be very high on big project)
-                  -- tempdir: use mmap directory to store the indexes (e.g. /tmp/.tmpcCUkiK)
-                  allocationType = "ram",
-                  indexGems = true,
-                  reportDiagnostics = true,
-                },
-              },
-            }
-          end
-          lspconfig.fuzzy_ls.setup(opts)
-        end,
       },
     },
   },
