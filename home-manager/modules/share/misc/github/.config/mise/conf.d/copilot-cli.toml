@@ -1,0 +1,3 @@
+[tools]
+# GitHub Copilot CLI brings the power of Copilot coding agent directly to your terminal: https://github.com/github/copilot-cli
+"npm:@github/copilot" = "latest"
