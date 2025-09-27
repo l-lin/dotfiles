@@ -15,7 +15,6 @@
 
       "mcp__atlassian__getJiraIssue",
       "mcp__atlassian__getConfluencePage",
-      "mcp__context7__*",
       "mcp__memory__*",
       "mcp__sequentialthinking__*"
     ],
@@ -26,7 +25,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "input=$(cat); echo \"🤖 $(echo \"$input\" | jq -r '.model.display_name') 📁 $(basename \"$(echo \"$input\" | jq -r '.workspace.current_dir')\")\"",
+    "command": "$HOME/.claude/cc_statusline.rb",
     "padding": 0
   }
 }
