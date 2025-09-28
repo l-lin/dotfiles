@@ -203,6 +203,7 @@ return {
           previous_month = require("plugins.custom.lang.obsidian").previous_month,
           next_month = require("plugins.custom.lang.obsidian").next_month,
           todo = require("plugins.custom.lang.obsidian").todo,
+          time_tracker = require("plugins.custom.lang.obsidian").time_tracker,
         },
       },
 

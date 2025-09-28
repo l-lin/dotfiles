@@ -119,6 +119,22 @@ local function sanitize_and_yank()
   vim.fn.setreg("+", sanitized_text)
 end
 
+---@param ctx obsidian.TemplateContext
+local function time_tracker(ctx)
+  local today_iso = id_to_date(ctx.partial_note)
+  if os.date("%u", today_iso) ~= "6" and os.date("%u", today_iso) ~= "7" then
+    return [[
+
+---
+## 🕐 Time tracker
+
+- administration: 
+- maintenance: 
+]]
+  end
+  return ""
+end
+
 local M = {}
 M.today = today
 M.yesterday = yesterday
@@ -131,4 +147,5 @@ M.todo = todo
 M.search_pending_todos = search_pending_todos
 M.open_current_monthly_note = open_current_monthly_note
 M.sanitize_and_yank = sanitize_and_yank
+M.time_tracker = time_tracker
 return M
