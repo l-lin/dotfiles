@@ -69,9 +69,6 @@ end
 local function todo(ctx)
   local today_iso = id_to_date(ctx.partial_note)
   local t = {}
-  if os.date("%u", today_iso) ~= "6" and os.date("%u", today_iso) ~= "7" then
-    table.insert(t, "- [ ] deploy in production")
-  end
   if os.date("%u", today_iso) == "3" then
     table.insert(t, "- [ ] [[1o1 - " .. os.date("%Y-%m", today_iso) .. "]]")
   end
