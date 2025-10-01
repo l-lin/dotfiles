@@ -126,8 +126,7 @@ local function time_tracker(ctx)
 ## 🕐 Time tracker
 
 - administration: 
-- maintenance: 
-]]
+- maintenance: ]]
   end
   return ""
 end
