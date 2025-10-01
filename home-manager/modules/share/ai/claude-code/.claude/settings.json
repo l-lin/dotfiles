@@ -8,11 +8,11 @@
       "Bash(rg:*)",
       "Bash(ls:*)",
       "Edit",
-      "MultiEdit",
       "Read",
       "Write",
       "WebFetch",
 
+      "mcp__atlassian__fetch",
       "mcp__atlassian__getJiraIssue",
       "mcp__atlassian__getConfluencePage",
       "mcp__datadog__get_datadog_metric",
