@@ -29,6 +29,10 @@ in {
       pkgs.vimPlugins.lazy-nvim
     ];
   };
+  home.sessionVariables = {
+    # Use nvim to read man pages.
+    MANPAGER = "nvim +Man!";
+  };
 
   # Symlink ~/.config/nvim
   xdg.configFile."nvim/lua/plugins/colorscheme.lua".text = with palette; ''
