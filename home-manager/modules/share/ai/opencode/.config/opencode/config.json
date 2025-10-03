@@ -13,16 +13,6 @@
   "autoupdate": false,
   "instructions": [],
   "layout": "stretch",
-  "mode": {
-    "code-reviewer": {
-      "model": "github-copilot/claude-sonnet-4",
-      "prompt": "{file:../ai/agents/code-reviewer.md}"
-    },
-    "researcher": {
-      "model": "github-copilot/claude-sonnet-4",
-      "prompt": "{file:../ai/agents/research-organizer.md}"
-    }
-  },
   "mcp": {
     "sequentialthinking": {
       "type": "local",
