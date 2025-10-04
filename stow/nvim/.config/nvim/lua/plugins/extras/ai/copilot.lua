@@ -4,6 +4,13 @@ return {
   -- #######################
   {
     "zbirenbaum/copilot.lua",
+    dependencies = {
+      -- Enable Copilot Next Edit Suggestions.
+      "copilotlsp-nvim/copilot-lsp",
+      init = function()
+        vim.g.copilot_nes_debounce = 300
+      end,
+    },
     cmd = "Copilot",
     keys = {
       {
@@ -25,7 +32,7 @@ return {
       markdown = false,
       help = false,
     },
-    copilot_model = "claude-sonnet-4.5",
+    copilot_model = "gpt-4.1",
     init = function()
       -- Disable copilot by default, only enable when needed.
       vim.cmd("silent! Copilot disable")
@@ -38,6 +45,14 @@ return {
           telemetry = {
             telemetryLevel = "off",
           },
+        },
+      },
+      nes = {
+        enabled = true,
+        keymap = {
+          accept_and_goto = "<C-e>",
+          accept = false,
+          dismiss = "<Esc>",
         },
       },
     },
