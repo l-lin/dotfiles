@@ -25,7 +25,7 @@ return {
       markdown = false,
       help = false,
     },
-    copilot_model = "claude-sonnet-4",
+    copilot_model = "claude-sonnet-4.5",
     init = function()
       -- Disable copilot by default, only enable when needed.
       vim.cmd("silent! Copilot disable")
@@ -39,7 +39,7 @@ return {
             telemetryLevel = "off",
           },
         },
-      }
+      },
     },
   },
 
