@@ -1,10 +1,8 @@
-local ruby = require("plugins.custom.lang.ruby")
-
 vim.keymap.set(
   "n",
   "<leader>fxr",
   function()
-    ruby.execute_file({
+    require("helpers.lang.ruby").execute_file({
       cmd = "ruby",
       use_interactive_shell = false,
       include_line_number = false,
@@ -16,7 +14,7 @@ vim.keymap.set(
   "n",
   "<leader>ta",
   function()
-    ruby.execute_file({
+    require("helpers.lang.ruby").execute_file({
       cmd = "bundle exec rails t",
       use_interactive_shell = true,
       include_line_number = false,
@@ -28,7 +26,7 @@ vim.keymap.set(
   "n",
   "<M-S-F9>",
   function()
-    ruby.execute_file({
+    require("helpers.lang.ruby").execute_file({
       cmd = "bundle exec rails t",
       use_interactive_shell = true,
       include_line_number = false,
@@ -40,7 +38,7 @@ vim.keymap.set(
   "n",
   "<leader>tn",
   function()
-    ruby.execute_file({
+    require("helpers.lang.ruby").execute_file({
       cmd = "bundle exec rails t",
       use_interactive_shell = true,
       include_line_number = true,
@@ -52,7 +50,7 @@ vim.keymap.set(
   "n",
   "<F21>",
   function()
-    ruby.execute_file({
+    require("helpers.lang.ruby").execute_file({
       cmd = "bundle exec rails t",
       use_interactive_shell = true,
       include_line_number = true,
