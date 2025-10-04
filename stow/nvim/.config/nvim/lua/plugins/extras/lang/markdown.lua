@@ -57,21 +57,21 @@ return {
       spec = {
         {
           "<M-l>",
-          require("plugins.custom.lang.markdown").convert_or_toggle_task,
+          require("helpers.lang.markdown").convert_or_toggle_task,
           desc = "Convert bullet to a task or insert new task bullet or toggle task",
           mode = { "n", "i" },
           noremap = true,
         },
         {
           "<Tab>",
-          require("plugins.custom.lang.markdown").smart_indent,
+          require("helpers.lang.markdown").smart_indent,
           desc = "Indent bullet point",
           mode = { "i", "v" }, -- do not set to normal mode, because C-i is also Tab...
           noremap = true,
         },
         {
           "<S-Tab>",
-          require("plugins.custom.lang.markdown").smart_dedent,
+          require("helpers.lang.markdown").smart_dedent,
           desc = "Dedent bullet point",
           mode = { "i", "v" }, -- do not set to normal mode, because C-i is also Tab...
           noremap = true,
