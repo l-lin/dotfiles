@@ -1,4 +1,4 @@
-local selector = require("plugins.custom.editor.selector")
+local selector = require("helpers.selector")
 local subject = require("helpers.coding.subject")
 
 ---Swap files and grep.
