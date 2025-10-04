@@ -32,7 +32,20 @@ return {
   {
     "nvim-mini/mini.files",
     keys = {
-      { "<M-1>", "<leader>fm", desc = "Open mini.files (directory of current file) (Alt+1)", remap = true },
+      {
+        "<M-1>",
+        function ()
+          local path = vim.api.nvim_buf_get_name(0)
+          -- If already in minifiles, then go directly to root directory
+          if path:match("^minifiles://") then
+            require("mini.files").open(vim.uv.cwd(), true)
+          else
+            require("mini.files").open(path, true)
+          end
+        end,
+        desc = "Open mini.files (directory of current file) (Alt+1)",
+        remap = true
+      },
       {
         "<leader>fh",
         function()
