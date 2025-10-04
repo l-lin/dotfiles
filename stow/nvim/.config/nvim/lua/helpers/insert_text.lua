@@ -24,7 +24,7 @@ end
 
 ---Insert a string at the current cursor position
 ---@param text string the text to insert
-local function at_current_cursor(text)
+local function insert_at_current_cursor(text)
   local buf = vim.api.nvim_get_current_buf()
   table.unpack = table.unpack or unpack -- 5.1 compatibility
   local row, col = table.unpack(vim.api.nvim_win_get_cursor(0))
@@ -52,5 +52,5 @@ end
 
 
 local M = {}
-M.at_current_cursor = at_current_cursor
+M.at_current_cursor = insert_at_current_cursor
 return M
