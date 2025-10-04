@@ -10,13 +10,13 @@ vim.opt_local.makeprg = "mvn-compile"
 vim.keymap.set(
   "n",
   "<leader>ta",
-  require("plugins.custom.lang.kotlin").execute_all_tests_with_maven,
+  require("helpers.lang.kotlin").execute_all_tests_with_maven,
   { buffer = true, desc = "Execute Maven tests in a new tmux pane below" }
 )
 vim.keymap.set(
   "n",
   "<leader>tn",
-  require("plugins.custom.lang.kotlin").execute_nearest_test_with_maven,
+  require("helpers.lang.kotlin").execute_nearest_test_with_maven,
   { buffer = true, desc = "Execute nearest Maven test in a new tmux pane below" }
 )
 vim.keymap.set("n", "<F33>", require("helpers.async").make, { silent = true, noremap = true, desc = "Compile (Ctrl+F9)" })
