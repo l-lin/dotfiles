@@ -1,6 +1,6 @@
 local selector = require("plugins.custom.editor.selector")
 local telescope_live_multigrep = require("plugins.custom.editor.telescope-live-multigrep")
-local subject = require("plugins.custom.coding.subject")
+local subject = require("helpers.coding.subject")
 
 local find_files = function(default_text)
   -- require("telescope.builtin").find_files({ default_text = default_text })

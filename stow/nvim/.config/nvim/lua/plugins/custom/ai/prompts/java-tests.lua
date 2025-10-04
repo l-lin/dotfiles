@@ -81,7 +81,7 @@ Create or edit the test file in the file `%s/%s`.
 ]],
       code,
       vim.fn.getcwd(),
-      require("plugins.custom.coding.subject").find_subject()
+      require("helpers.coding.subject").find_subject()
     )
   end,
 }

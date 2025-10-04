@@ -18,6 +18,43 @@ local function remove_trailing_whitespaces()
   vim.api.nvim_command("norm! JdiW")
 end
 
+---Toggle file executable permission.
+local function toggle_executable_permission()
+  local file = vim.fn.expand("%")
+  local perms = vim.fn.getfperm(file)
+  local is_executable = string.match(perms, "x", -1) ~= nil
+  local escaped_file = vim.fn.shellescape(file)
+  if is_executable then
+    vim.cmd("silent !chmod -x " .. escaped_file)
+    vim.notify("Removed executable permission", vim.log.levels.INFO)
+  else
+    vim.cmd("silent !chmod +x " .. escaped_file)
+    vim.notify("Added executable permission", vim.log.levels.INFO)
+  end
+end
+
+---Execute the buffer as bash script in tmux split-window.
+local function execute_bash_script()
+  local filename = vim.fn.expand("%")
+  local first_line = vim.fn.getline(1)
+  -- Check if the bash script is valid by checking if it contains a shebang.
+  if string.match(first_line, "^#!/") then
+    -- Properly escape the file name for shell commands
+    local escaped_file = vim.fn.shellescape(filename)
+    -- Make the file executable
+    vim.cmd("silent !chmod +x " .. escaped_file)
+
+    -- Execute the script on a new tmux pane below.
+    vim.cmd(
+      "silent !tmux split-window -v -l 20 'bash -c \"./"
+        .. escaped_file
+        .. "; echo; echo Press q to exit...; while true; do read -n 1 key; if [[ \\$key == \"q\" ]]; then exit; fi; done\"'"
+    )
+  else
+    vim.cmd("echo 'Not a script. Shebang line not found.'")
+  end
+end
+
 
 -- remove keymaps set globally by LazyVim
 -- use default H and L to navigate
@@ -84,41 +121,10 @@ map("x", "$", "g_")
 map("n", "gJ", remove_trailing_whitespaces, { noremap = true, silent = true, desc = "Join line without whitespace" })
 
 -- Toggle executable permission on current file.
-map("n", "<leader>fxt", function()
-  local file = vim.fn.expand("%")
-  local perms = vim.fn.getfperm(file)
-  local is_executable = string.match(perms, "x", -1) ~= nil
-  local escaped_file = vim.fn.shellescape(file)
-  if is_executable then
-    vim.cmd("silent !chmod -x " .. escaped_file)
-    vim.notify("Removed executable permission", vim.log.levels.INFO)
-  else
-    vim.cmd("silent !chmod +x " .. escaped_file)
-    vim.notify("Added executable permission", vim.log.levels.INFO)
-  end
-end, { desc = "Toggle executable permission" })
+map("n", "<leader>fxt", toggle_executable_permission, { desc = "Toggle executable permission" })
 
 -- If this is a bash script, make it executable, and execute it in a tmux pane on the right
-map("n", "<leader>fxx", function()
-  local filename = vim.fn.expand("%")
-  local first_line = vim.fn.getline(1)
-  -- Check if the bash script is valid by checking if it contains a shebang.
-  if string.match(first_line, "^#!/") then
-    -- Properly escape the file name for shell commands
-    local escaped_file = vim.fn.shellescape(filename)
-    -- Make the file executable
-    vim.cmd("silent !chmod +x " .. escaped_file)
-
-    -- Execute the script on a new tmux pane below.
-    vim.cmd(
-      "silent !tmux split-window -v -l 20 'bash -c \"./"
-        .. escaped_file
-        .. "; echo; echo Press q to exit...; while true; do read -n 1 key; if [[ \\$key == \"q\" ]]; then exit; fi; done\"'"
-    )
-  else
-    vim.cmd("echo 'Not a script. Shebang line not found.'")
-  end
-end, { desc = "Execute bash script" })
+map("n", "<leader>fxx", execute_bash_script, { desc = "Execute bash script" })
 
 -- Do not select the next search element, so that I can easily do `cgn`.
 map("n", "*", "*N", { noremap = true, silent = true })

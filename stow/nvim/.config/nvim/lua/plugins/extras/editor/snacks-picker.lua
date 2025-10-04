@@ -1,5 +1,5 @@
 local selector = require("plugins.custom.editor.selector")
-local subject = require("plugins.custom.coding.subject")
+local subject = require("helpers.coding.subject")
 
 ---Swap files and grep.
 ---src: https://github.com/folke/snacks.nvim/discussions/499
