@@ -11,7 +11,7 @@
     # Interactive jq: https://git.sr.ht/~gpanders/ijq
     ijq
     # Pager for JSON data: https://jless.io/
-    jless
+    #jless
     # Create JSON objects: https://github.com/jpmens/jo
     jo
     # Lightweight and flexible JSON processor: https://jqlang.github.io/jq/
