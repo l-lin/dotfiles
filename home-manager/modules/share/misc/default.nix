@@ -60,7 +60,7 @@
     # Fastest grep in the wild: https://github.com/BurntSushi/ripgrep
     ripgrep
     # Intuitive find & replace: https://github.com/chmln/sd
-    sd
+    #sd
     # CLI tool to insert spacers when command output stops: https://github.com/samwho/spacer
     spacer
     # A tool for managing the installation of multiple software packages in the same run-time directory tree: https://www.gnu.org/software/stow/
