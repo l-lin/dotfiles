@@ -4,7 +4,7 @@
 #
 
 { pkgs, ... }: {
-  home.packages = with pkgs; [ pgcli ];
+  home.packages = with pkgs; [ postgresql pgcli ];
 
   # Symlink to ~/.psqlrc
   home.file.".psqlrc".source = ./.psqlrc;
