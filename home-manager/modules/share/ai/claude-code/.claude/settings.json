@@ -2,11 +2,12 @@
   "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
+      "Bash(backlog:*)",
       "Bash(git:*)",
+      "Bash(ls:*)",
       "Bash(pwd)",
       "Bash(tmux:*)",
       "Bash(rg:*)",
-      "Bash(ls:*)",
       "Edit",
       "Read",
       "Write",

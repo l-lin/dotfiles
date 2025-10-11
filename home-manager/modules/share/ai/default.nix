@@ -4,6 +4,7 @@
 
 {
   imports = [
+    ./backlog.md
     ./claude-code
     #./crush
     ./dust
