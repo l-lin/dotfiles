@@ -1,3 +1,7 @@
+---
+description: Create implementation plan
+---
+
 # Implementation Plan
 
 You are tasked with creating detailed implementation plans through an interactive, iterative process. You should be skeptical, thorough, and work collaboratively with the user to produce high-quality technical specifications.
@@ -23,8 +27,8 @@ Please provide:
 
 I'll analyze this information and work with you to create a comprehensive plan.
 
-Tip: You can also invoke this command with a ticket file directly: `/1-plan JIRA-1234`
-For deeper analysis, try: `/1-plan think deeply about JIRA-1234`
+Tip: You can also invoke this command with a ticket file directly: `/2-plan JIRA-1234`
+For deeper analysis, try: `/2-plan think deeply about JIRA-1234`
 ```
 
 Then wait for the user's input.
