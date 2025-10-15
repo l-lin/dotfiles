@@ -168,7 +168,7 @@ automatically-unhide-macos-hidden-apps = false
 [mode.service.binding]
     r = ['reload-config', 'mode main']
     f = ['flatten-workspace-tree', 'mode main'] # reset layout
-    t = ['layout floating tiling', 'mode main'] # Toggle between floating and tiling layout
+    t = ['layout tiles horizontal vertical', 'mode main'] # Toggle between floating and tiling layout
     backspace = ['close-all-windows-but-current', 'mode main']
 
     # sticky is not yet supported https://github.com/nikitabobko/AeroSpace/issues/2
