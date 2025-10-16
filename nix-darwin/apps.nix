@@ -74,6 +74,8 @@
       #"jellyfin"
       # Free cross-platform office suite, fresh version: https://www.libreoffice.org/
       "libreoffice"
+      # MacOS menu bar app for launching iOS  and Android 🤖 emulators: https://github.com/okwasniewski/minisim
+      "minisim"
       # Knowledge base that works on top of a local folder of plain text Markdown files: https://obsidian.md/
       "obsidian"
       # Open-source colour picker app for macOS: https://superhighfives.com/pika
