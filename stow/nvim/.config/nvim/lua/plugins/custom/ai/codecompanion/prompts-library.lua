@@ -95,4 +95,25 @@ return {
       is_slash_cmd = true,
     },
   },
+
+  ["ask"] = {
+    strategy = "chat",
+    description = "General purpose query",
+    opts = {
+      auto_submit = false,
+      short_name = "ask",
+      is_slash_cmd = true,
+      adapter = {
+        name = "copilot",
+        model = "gpt-4.1",
+      },
+      ignore_system_prompt = true,
+    },
+    prompts = {
+      {
+        role = "user",
+        content = function() return "" end,
+      },
+    },
+  },
 }
