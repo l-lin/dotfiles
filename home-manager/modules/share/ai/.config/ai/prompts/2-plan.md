@@ -1,5 +1,6 @@
 ---
-description: Create implementation plan
+description: Create detailed implementation plans with thorough research and iteration
+model: opus
 ---
 
 # Implementation Plan
@@ -38,7 +39,7 @@ Then wait for the user's input.
 ### Step 1: Context Gathering & Initial Analysis
 
 1. **Read all mentioned files immediately and FULLY**:
-   - Ticket with Atlassian MCP server if enabled
+   - Ticket files (e.g., `thoughts/allison/tickets/eng_1234.md`)
    - Research documents
    - Related implementation plans
    - Any JSON/data files mentioned
@@ -103,8 +104,9 @@ After getting initial clarifications:
    - Use the right agent for each type of research:
 
    **For deeper investigation:**
-   - **@codebase-locator** - To find more specific files (e.g., "find all files that handle [specific component]")
-   - **@codebase-analyzer** - To understand implementation details (e.g., "analyze how [system] works")
+   - **codebase-locator** - To find more specific files (e.g., "find all files that handle [specific component]")
+   - **codebase-analyzer** - To understand implementation details (e.g., "analyze how [system] works")
+   - **codebase-pattern-finder** - To find similar features we can model after
 
    **For historical context:**
    - **@git-investigator** - To find any research, plans, or decisions about this area from git history and logs
@@ -236,6 +238,8 @@ After structure approval:
 - [ ] Performance is acceptable under load
 - [ ] Edge case handling verified manually
 - [ ] No regressions in related features
+
+**Implementation Note**: After completing this phase and all automated verification passes, pause here for manual confirmation from the human that the manual testing was successful before proceeding to the next phase.
 
 ---
 
