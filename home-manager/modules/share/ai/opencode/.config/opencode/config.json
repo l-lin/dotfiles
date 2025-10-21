@@ -2,11 +2,8 @@
   "$schema": "https://opencode.ai/config.json",
   "theme": "system",
   "keybinds": {
-    "input_submit": "ctrl+s",
-    "input_newline": "enter",
-    "messages_copy": "<leader>y,alt+y",
-    "messages_half_page_up": "ctrl+u",
-    "messages_half_page_down": "ctrl+d"
+    "input_submit": "enter,ctrl+s",
+    "messages_copy": "<leader>y,alt+y"
   },
   "autoshare": false,
   "share": "disabled",
