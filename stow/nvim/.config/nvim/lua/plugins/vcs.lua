@@ -83,4 +83,20 @@ return {
      { "<M-0>", toggle_fugitive, desc = "git status (Alt+0)" },
    },
  },
+
+  -- add keymaps to which-key
+  {
+    "folke/which-key.nvim",
+    opts = {
+      spec = {
+        {
+          "<M-)>",
+          function() Snacks.lazygit( { cwd = LazyVim.root.git() }) end,
+          desc = "LazyGit",
+          mode = { "n" },
+          noremap = true,
+        },
+      },
+    },
+  },
 }
