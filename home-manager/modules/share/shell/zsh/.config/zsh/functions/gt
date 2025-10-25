@@ -20,9 +20,11 @@ AHEAD_ICON=' '
 # Color codes
 GREEN=$'\e[0;32m'
 YELLOW=$'\e[0;33m'
+RED=$'\e[0;31m'
 RESET=$'\e[0m'
 
 res=""
+branch_part=""
 has_changes=false
 
 # Single git call to get multiple values
@@ -66,7 +68,7 @@ if [[ -n $BRANCH && $BRANCH != "(detached)" ]]; then
   if (( ${#BRANCH} > 32 )); then
     BRANCH="${BRANCH:0:12}…${BRANCH: -12}"
   fi
-  res+="${BRANCH_ICON}${BRANCH}"
+  branch_part+="${BRANCH_ICON}${BRANCH}"
 else
   # Not on a branch - check for tag or show commit
   TAG=$(git describe --tags --exact-match 2>/dev/null)
@@ -74,15 +76,15 @@ else
     if (( ${#TAG} > 32 )); then
       TAG="${TAG:0:12}…${TAG: -12}"
     fi
-    res+="#${TAG}"
+    branch_part+="#${TAG}"
   else
-    res+="@${SHORT_HEAD}"
+    branch_part+="@${SHORT_HEAD}"
   fi
 fi
 
 # Show remote branch if different
 if [[ -n $REMOTE_BRANCH && $REMOTE_BRANCH != *"$BRANCH"* ]]; then
-  res+=":${REMOTE_BRANCH##*/}"
+  branch_part+=":${REMOTE_BRANCH##*/}"
 fi
 
 # Check for "wip" in latest commit (still need separate call, but only one)
@@ -94,11 +96,11 @@ fi
 
 # Ahead/behind (already parsed from status)
 if (( BEHIND > 0 )); then
-  res+=" ${BEHIND_ICON}${BEHIND}"
+  res+=" ${RED}${BEHIND_ICON}${BEHIND}${RESET}"
 fi
 if (( AHEAD > 0 )); then
   [[ $BEHIND -eq 0 ]] && res+=" "
-  res+="${AHEAD_ICON}${AHEAD}"
+  res+="${GREEN}${AHEAD_ICON}${AHEAD}${RESET}"
 fi
 
 # Stashes (need separate call)
@@ -159,19 +161,19 @@ fi
 
 # Staged changes
 if (( STAGED > 0 )); then
-  res+=" ${STAGED_ICON}${STAGED}"
+  res+=" ${GREEN}${STAGED_ICON}${STAGED}${RESET}"
   has_changes=true
 fi
 
 # Unstaged changes
 if (( UNSTAGED > 0 )); then
-  res+=" ${UNSTAGED_ICON}${UNSTAGED}"
+  res+=" ${RED}${UNSTAGED_ICON}${UNSTAGED}${RESET}"
   has_changes=true
 fi
 
 # Untracked files
 if (( UNTRACKED_COUNT > 0 )); then
-  res+=" ${UNTRACKED_ICON}${UNTRACKED_COUNT}"
+  res+=" ${RED}${UNTRACKED_ICON}${UNTRACKED_COUNT}${RESET}"
   has_changes=true
 fi
 
@@ -181,9 +183,12 @@ if [[ $has_changes == true ]]; then
   echo
 fi
 
-# Apply color based on whether there are changes
+# Apply color to branch based on whether there are changes
 if [[ $has_changes == true ]]; then
-  echo "${YELLOW}${res}${RESET}"
+  branch_colored="${YELLOW}${branch_part}${RESET}"
 else
-  echo "${GREEN}${res}${RESET}"
+  branch_colored="${GREEN}${branch_part}${RESET}"
 fi
+
+# Combine branch with rest of the status
+echo "${branch_colored}${res}"
