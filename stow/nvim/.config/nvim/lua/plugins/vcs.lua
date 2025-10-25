@@ -77,7 +77,7 @@ return {
      { "<leader>gc", "<cmd>G commit --no-verify<cr>", desc = "git commit" },
      { "<leader>gF", "<cmd>G push --force-with-lease<cr>", desc = "git push --force-with-lease" },
      -- useful for creating new PR/MR where the url is displayed in the git push message
-     { "<leader>gO", "<cmd>G -p push<cr>", desc = "git push and display git message" },
+     -- { "<leader>gO", "<cmd>G -p push<cr>", desc = "git push and display git message" },
      { "<leader>gp", "<cmd>G pull<cr>", desc = "git pull" },
      { "<leader>gP", "<cmd>G push<cr>", desc = "git push" },
      { "<M-0>", toggle_fugitive, desc = "git status (Alt+0)" },
@@ -89,6 +89,20 @@ return {
     "folke/which-key.nvim",
     opts = {
       spec = {
+        {
+          "<leader>go",
+          "<cmd>!gh repo view --web<cr>",
+          desc = "Open Github repository in browser",
+          mode = { "n" },
+          noremap = true,
+        },
+        {
+          "<leader>gO",
+          "<cmd>!gh pr view --web<cr>",
+          desc = "Open Github pull request in browser",
+          mode = { "n" },
+          noremap = true,
+        },
         {
           "<M-)>",
           function() Snacks.lazygit( { cwd = LazyVim.root.git() }) end,
