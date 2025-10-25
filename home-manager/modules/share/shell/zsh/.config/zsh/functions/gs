@@ -1,0 +1,269 @@
+#!/usr/bin/env zsh
+#
+# Displays git status in the style of powerlevel10k's my_git_formatter()
+# Inspired from lean.p10k.zsh
+#
+
+# ============================================================================
+# Initialize Variables and Icons
+# ============================================================================
+initialize_variables() {
+  # Icons
+  BRANCH_ICON=' '
+  UNSTAGED_ICON=' '
+  UNTRACKED_ICON=' '
+  STAGED_ICON=' '
+  STASHED_ICON=' '
+  WIP_ICON='🚧'
+  BEHIND_ICON=' '
+  AHEAD_ICON=' '
+
+  # Color codes
+  RED=$'\e[0;31m'
+  GREEN=$'\e[0;32m'
+  YELLOW=$'\e[0;33m'
+  RESET=$'\e[0m'
+
+  # Configuration
+  MAX_STATUS_LINES=8
+
+  # Display variables
+  branch_part=""
+  res=""
+  has_changes=false
+}
+
+# ============================================================================
+# Git Repository Check
+# ============================================================================
+check_git_repo() {
+  # Single git call to get multiple values
+  # Format: is-inside-work-tree|git-dir|short-head|symbolic-ref
+  read -r is_repo git_dir short_head symbolic_ref <<< $(git rev-parse --is-inside-work-tree --git-dir --short=8 HEAD --symbolic-full-name HEAD 2>/dev/null | tr '\n' ' ')
+
+  if [[ $is_repo != "true" ]]; then
+    echo "Not in a git repository"
+    exit 1
+  fi
+}
+
+# ============================================================================
+# Parse Git Status
+# ============================================================================
+parse_git_status() {
+  # Get comprehensive status in one call
+  # porcelain v2 format provides branch info, ahead/behind, and file statuses
+  status_output=$(git status --porcelain=v2 --branch 2>/dev/null)
+
+  branch=""
+  remote_branch=""
+  ahead=0
+  behind=0
+
+  # Parse branch headers
+  while IFS= read -r line; do
+    if [[ $line == "# branch.oid"* ]]; then
+      continue
+    elif [[ $line == "# branch.head"* ]]; then
+      branch=${line#\# branch.head }
+    elif [[ $line == "# branch.upstream"* ]]; then
+      remote_branch=${line#\# branch.upstream }
+    elif [[ $line == "# branch.ab"* ]]; then
+      # Format: # branch.ab +<ahead> -<behind>
+      ahead_behind=${line#\# branch.ab }
+      ahead=${ahead_behind%%\ -*}
+      ahead=${ahead#+}
+      behind=${ahead_behind##*-}
+    fi
+  done <<< "$status_output"
+}
+
+# ============================================================================
+# Build Branch Display
+# ============================================================================
+build_branch_display() {
+  if [[ -n $branch && $branch != "(detached)" ]]; then
+    # If branch name is longer than 32 characters, truncate it
+    if (( ${#branch} > 32 )); then
+      branch="${branch:0:12}…${branch: -12}"
+    fi
+    branch_part="${BRANCH_ICON}${branch}"
+  else
+    # Not on a branch - check for tag or show commit
+    tag=$(git describe --tags --exact-match 2>/dev/null)
+    if [[ -n $tag ]]; then
+      if (( ${#tag} > 32 )); then
+        tag="${tag:0:12}…${tag: -12}"
+      fi
+      branch_part="#${tag}"
+    else
+      branch_part="@${short_head}"
+    fi
+  fi
+
+  # Show remote branch if different
+  if [[ -n $remote_branch && $remote_branch != *"$branch"* ]]; then
+    branch_part+=":${remote_branch##*/}"
+  fi
+}
+
+# ============================================================================
+# Check for WIP Commit
+# ============================================================================
+check_wip_commit() {
+  commit_msg=$(git log -1 --pretty=%s 2>/dev/null)
+  if [[ $commit_msg == *[Ww][Ii][Pp]* ]]; then
+    res+=" ${WIP_ICON}"
+    has_changes=true
+  fi
+}
+
+# ============================================================================
+# Add Ahead/Behind Indicators
+# ============================================================================
+add_ahead_behind() {
+  if (( behind > 0 )); then
+    res+=" ${RED}${BEHIND_ICON}${behind}${RESET}"
+  fi
+  if (( ahead > 0 )); then
+    [[ $behind -eq 0 ]] && res+=" "
+    res+=" ${GREEN}${AHEAD_ICON}${ahead}${RESET}"
+  fi
+}
+
+# ============================================================================
+# Add Stash Count
+# ============================================================================
+add_stash_count() {
+  stashes=$(git stash list 2>/dev/null | wc -l | tr -d ' ')
+  if (( stashes > 0 )); then
+    res+=" ${STASHED_ICON}${stashes}"
+  fi
+}
+
+# ============================================================================
+# Check Git Action (merge, rebase, etc.)
+# ============================================================================
+check_git_action() {
+  if [[ -f "$git_dir/MERGE_HEAD" ]]; then
+    res+=" merge"
+    has_changes=true
+  elif [[ -d "$git_dir/rebase-merge" ]] || [[ -d "$git_dir/rebase-apply" ]]; then
+    res+=" rebase"
+    has_changes=true
+  elif [[ -f "$git_dir/CHERRY_PICK_HEAD" ]]; then
+    res+=" cherry-pick"
+    has_changes=true
+  elif [[ -f "$git_dir/REVERT_HEAD" ]]; then
+    res+=" revert"
+    has_changes=true
+  fi
+}
+
+# ============================================================================
+# Count File Changes
+# ============================================================================
+count_file_changes() {
+  staged=0
+  unstaged=0
+  untracked_count=0
+  conflicted_count=0
+
+  while IFS= read -r line; do
+    if [[ $line == "1 "* ]] || [[ $line == "2 "* ]]; then
+      # Ordinary changed entries: "1 XY ..."
+      # X = staged status, Y = unstaged status
+      xy=${line:2:2}
+      x=${xy:0:1}
+      y=${xy:1:1}
+
+      if [[ $x != "." ]]; then
+        ((staged++))
+      fi
+      if [[ $y != "." ]]; then
+        ((unstaged++))
+      fi
+    elif [[ $line == "u "* ]]; then
+      # Unmerged entries (conflicts)
+      ((conflicted_count++))
+    elif [[ $line == "? "* ]]; then
+      # Untracked files
+      ((untracked_count++))
+    fi
+  done <<< "$status_output"
+}
+
+# ============================================================================
+# Add File Change Indicators
+# ============================================================================
+add_file_changes() {
+  # Display conflicts
+  if (( conflicted_count > 0 )); then
+    res+=" ~${conflicted_count}"
+    has_changes=true
+  fi
+
+  # Staged changes
+  if (( staged > 0 )); then
+    res+=" ${GREEN}${STAGED_ICON}${staged}${RESET}"
+    has_changes=true
+  fi
+
+  # Unstaged changes
+  if (( unstaged > 0 )); then
+    res+=" ${RED}${UNSTAGED_ICON}${unstaged}${RESET}"
+    has_changes=true
+  fi
+
+  # Untracked files
+  if (( untracked_count > 0 )); then
+    res+=" ${RED}${UNTRACKED_ICON}${untracked_count}${RESET}"
+    has_changes=true
+  fi
+}
+
+# ============================================================================
+# Display Output
+# ============================================================================
+display_output() {
+  # Display git status short format (only if there are changes)
+  if [[ $has_changes == true ]]; then
+    local status_lines=$(git -c color.status=always status -sb)
+    local line_count=$(echo "$status_lines" | wc -l | tr -d ' ')
+
+    if (( line_count > MAX_STATUS_LINES )); then
+      echo "$status_lines" | head -$MAX_STATUS_LINES
+      echo " ${RED}...${RESET}"
+    else
+      echo "$status_lines"
+    fi
+  fi
+
+  # Apply color to branch based on whether there are changes
+  if [[ $has_changes == true ]]; then
+    branch_colored="${YELLOW}${branch_part}${RESET}"
+  else
+    branch_colored="${GREEN}${branch_part}${RESET}"
+  fi
+
+  echo "${branch_colored}${res}"
+}
+
+# ============================================================================
+# Main Execution
+# ============================================================================
+main() {
+  initialize_variables
+  check_git_repo
+  parse_git_status
+  build_branch_display
+  check_wip_commit
+  add_ahead_behind
+  add_stash_count
+  check_git_action
+  count_file_changes
+  add_file_changes
+  display_output
+}
+
+main
