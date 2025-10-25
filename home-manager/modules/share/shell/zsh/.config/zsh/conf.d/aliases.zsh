@@ -63,8 +63,8 @@ alias rmf="rm -rf"
 alias tarx="tar xzvf"
 alias tarc="tar czvf"
 # eza
-alias l="eza -l --icons --git -a --group-directories-first"
-alias lt="eza --tree --level=2 --long --icons --git --group-directories-first"
+alias l="eza -l --icons -a --group-directories-first"
+alias lt="eza --tree --level=2 --long --icons --group-directories-first"
 # prettyping
 alias ping="prettyping --nolegend"
 # ssh support with alacritty
