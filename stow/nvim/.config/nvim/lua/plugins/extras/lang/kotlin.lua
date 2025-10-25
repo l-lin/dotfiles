@@ -114,23 +114,23 @@ return {
   --     }
   --   end,
   -- },
-  --
-  -- -- HACK: Disable annoying error from `kotlin_language_server`.
-  -- -- src: https://github.com/fwcd/kotlin-language-server/issues/600#issuecomment-2449770880
-  -- {
-  --   "folke/noice.nvim",
-  --   event = "VeryLazy",
-  --   optional = true,
-  --   opts = {
-  --     routes = {
-  --       {
-  --         opts = { skip = true },
-  --         filter = {
-  --           event = "notify",
-  --           find = "^kotlin_language_server: %-32603: Internal error%.$",
-  --         },
-  --       },
-  --     },
-  --   },
-  -- },
+
+  -- HACK: Disable annoying error from `kotlin_language_server`.
+  -- src: https://github.com/fwcd/kotlin-language-server/issues/600#issuecomment-2449770880
+  {
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    optional = true,
+    opts = {
+      routes = {
+        {
+          opts = { skip = true },
+          filter = {
+            event = "notify",
+            find = "^kotlin_language_server: %-32603: Internal error%.$",
+          },
+        },
+      },
+    },
+  },
 }

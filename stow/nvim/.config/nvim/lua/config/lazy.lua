@@ -69,7 +69,7 @@ require("lazy").setup({
     -- { import = "plugins.extras.lang.adoc" },
     { import = "plugins.extras.lang.java" },
     -- { import = "plugins.extras.lang.just" },
-    -- { import = "plugins.extras.lang.kotlin" },
+    { import = "plugins.extras.lang.kotlin" },
     { import = "plugins.extras.lang.markdown" },
     { import = "plugins.extras.lang.maven" },
     { import = "plugins.extras.lang.obsidian" },
