@@ -61,7 +61,7 @@ local snacks_picker_opts = {
         { win = "preview", title = "{preview}", height = 0.6, border = "bottom" },
         { win = "list", border = "none" },
         { win = "input", height = 1, border = "top" },
-      }
+      },
     },
     select = { cycle = true },
   },
@@ -70,14 +70,14 @@ local snacks_picker_opts = {
   -- Default focus to use (input, list or preview).
   focus = "input",
   formatters = {
-    file = { truncate = 150 }
+    file = { truncate = 150 },
   },
   previewers = {
     diff = {
       builtin = false,
-      cmd = { "delta" }
+      cmd = { "delta" },
     },
-    git = { builtin = false }
+    git = { builtin = false },
   },
   sources = {
     files = {
@@ -115,7 +115,7 @@ local snacks_picker_opts = {
     select = {
       win = nav_keys_select,
       focus = "input",
-    }
+    },
   },
   win = {
     input = {
@@ -125,7 +125,7 @@ local snacks_picker_opts = {
         ["<M-q>"] = { "qflist", mode = { "i", "n" } },
         ["<M-C-j>"] = { "", mode = { "i", "v" } },
         ["<M-C-k>"] = { "focus_list", mode = { "i", "n" } },
-      }
+      },
     },
     list = {
       keys = {
@@ -136,7 +136,7 @@ local snacks_picker_opts = {
         ["<C-c>"] = "close",
         ["<M-C-k>"] = "focus_preview",
         ["<M-C-j>"] = "focus_input",
-      }
+      },
     },
     preview = {
       keys = {
@@ -145,15 +145,15 @@ local snacks_picker_opts = {
         ["<M-w>"] = "focus_preview",
         ["<M-C-j>"] = "focus_list",
         ["<M-C-k>"] = "",
-      }
-    }
+      },
+    },
   },
-  debug = { scores = false }
+  debug = { scores = false },
 }
 
 return {
   -- No need for grug-far, let's use quickfix list!
-  { "MagicDuck/grug-far.nvim", enabled = false, },
+  { "MagicDuck/grug-far.nvim", enabled = false },
 
   -- #######################
   -- override default config
@@ -172,7 +172,9 @@ return {
     keys = {
       {
         "<C-g>",
-        function() Snacks.picker.files({ focus = "input" }) end,
+        function()
+          Snacks.picker.files({ focus = "input" })
+        end,
         mode = "n",
         noremap = true,
         silent = true,
@@ -180,7 +182,9 @@ return {
       },
       {
         "<C-g>",
-        function() Snacks.picker.files({ pattern = selector.get_selected_text() }) end,
+        function()
+          Snacks.picker.files({ pattern = selector.get_selected_text() })
+        end,
         mode = "v",
         noremap = true,
         silent = true,
@@ -188,14 +192,18 @@ return {
       },
       {
         "<C-t>",
-        function() Snacks.picker.files({ pattern = subject.find_subject() }) end,
+        function()
+          Snacks.picker.files({ pattern = subject.find_subject() })
+        end,
         desc = "Find associated test file (Ctrl+t)",
         noremap = true,
         silent = true,
       },
       {
         "<M-f>",
-        function () Snacks.picker.grep({ focus = "input" }) end,
+        function()
+          Snacks.picker.grep({ focus = "input" })
+        end,
         mode = "n",
         noremap = true,
         silent = true,
@@ -203,7 +211,9 @@ return {
       },
       {
         "<M-f>",
-        function() Snacks.picker.grep({ search = selector.get_selected_text() }) end,
+        function()
+          Snacks.picker.grep({ search = selector.get_selected_text() })
+        end,
         mode = "v",
         noremap = true,
         silent = true,
@@ -227,7 +237,7 @@ return {
                   ["d"] = "bufdelete",
                   ["<C-j>"] = "",
                   ["<C-k>"] = "focus_input",
-                }
+                },
               },
               preview = {
                 keys = {
@@ -236,14 +246,22 @@ return {
                 },
               },
             },
-            layout = "ivy_split"
+            layout = "ivy_split",
           })
         end,
         noremap = true,
         silent = true,
         desc = "Find file in buffer (Ctrl+e)",
       },
-      { "<C-x>", function() Snacks.picker.resume() end, noremap = true, silent = true, desc = "Resume search" },
+      {
+        "<C-x>",
+        function()
+          Snacks.picker.resume()
+        end,
+        noremap = true,
+        silent = true,
+        desc = "Resume search",
+      },
       {
         "<M-6>",
         function()
@@ -251,44 +269,69 @@ return {
         end,
         noremap = true,
         silent = true,
-        desc = "Diagnostic (Alt+6)"
+        desc = "Diagnostic (Alt+6)",
       },
-      { "<leader>su", function() Snacks.picker.undo() end, noremap = true, silent = true, desc = "Undo" },
-    }
+      {
+        "<leader>su",
+        function()
+          Snacks.picker.undo()
+        end,
+        noremap = true,
+        silent = true,
+        desc = "Undo",
+      },
+    },
   },
 
   -- highlight TODO comments
   {
     "folke/todo-comments.nvim",
     keys = {
-      { "<M-2>", function() Snacks.picker.todo_comments() end, noremap = true, desc = "Find TODO (Alt+2)" },
+      {
+        "<M-2>",
+        function()
+          Snacks.picker.todo_comments()
+        end,
+        noremap = true,
+        desc = "Find TODO (Alt+2)",
+      },
     },
   },
 
   -- easily config neovim lsp
   {
     "neovim/nvim-lspconfig",
-    opts = function ()
-      local keys = require("lazyvim.plugins.lsp.keymaps").get()
-      keys[#keys + 1] = {
-        "<C-b>",
-        function() Snacks.picker.lsp_definitions() end,
-        noremap = true,
-        silent = true,
-        desc = "Goto definition (Ctrl+b)",
-      }
-      keys[#keys + 1] = {
-        "<M-&>",
-        function() Snacks.picker.lsp_references() end,
-        noremap = true,
-        desc = "LSP references (Ctrl+Shift+7)",
-      }
-      keys[#keys + 1] = {
-        "<M-C-B>",
-        function() Snacks.picker.lsp_implementations() end,
-        "Goto implementation (Ctrl+Alt+b)",
-      }
-    end
+    opts = {
+      servers = {
+        ["*"] = {
+          keys = {
+            {
+              "<C-b>",
+              function()
+                Snacks.picker.lsp_definitions()
+              end,
+              noremap = true,
+              silent = true,
+              desc = "Goto definition (Ctrl+b)",
+            },
+            {
+              "<M-&>",
+              function()
+                Snacks.picker.lsp_references()
+              end,
+              noremap = true,
+              desc = "LSP references (Ctrl+Shift+7)",
+            },
+            {
+              "<M-C-B>",
+              function()
+                Snacks.picker.lsp_implementations()
+              end,
+              "Goto implementation (Ctrl+Alt+b)",
+            },
+          },
+        },
+      },
+    },
   },
 }
-

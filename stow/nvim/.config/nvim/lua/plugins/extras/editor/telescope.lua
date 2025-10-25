@@ -132,16 +132,16 @@ return {
             prompt_position = "bottom",
             mirror = false,
             preview_height = 0.65,
-          }
+          },
         },
       },
       pickers = {
         buffers = {
           sort_mru = true,
           sort_lastused = true,
-          initial_mode = "normal"
+          initial_mode = "normal",
         },
-        git_status = { initial_mode = "normal" }
+        git_status = { initial_mode = "normal" },
       },
     },
   },
@@ -157,27 +157,38 @@ return {
   -- LSP
   {
     "neovim/nvim-lspconfig",
-    opts = function ()
-      local keys = require("lazyvim.plugins.lsp.keymaps").get()
-      keys[#keys + 1] = {
-        "<C-b>",
-        function() require("telescope.builtin").lsp_definitions({ reuse_win = true }) end,
-        noremap = true,
-        silent = true,
-        desc = "Goto definition (Ctrl+b)",
-      }
-      keys[#keys + 1] = {
-        "<M-&>",
-        function() require("telescope.builtin").lsp_references({ show_line = false }) end,
-        noremap = true,
-        desc = "LSP references (Ctrl+Shift+7)",
-      }
-      keys[#keys + 1] = {
-        "<M-C-B>",
-        function() require("telescope.builtin").lsp_implementations({ reuse_win = true, show_line = false }) end,
-        "Goto implementation (Ctrl+Alt+b)",
-      }
-    end
+    opts = {
+      servers = {
+        ["*"] = {
+          keys = {
+            {
+              "<C-b>",
+              function()
+                require("telescope.builtin").lsp_definitions({ reuse_win = true })
+              end,
+              noremap = true,
+              silent = true,
+              desc = "Goto definition (Ctrl+b)",
+            },
+            {
+              "<M-&>",
+              function()
+                require("telescope.builtin").lsp_references({ show_line = false })
+              end,
+              noremap = true,
+              desc = "LSP references (Ctrl+Shift+7)",
+            },
+            {
+              "<M-C-B>",
+              function()
+                require("telescope.builtin").lsp_implementations({ reuse_win = true, show_line = false })
+              end,
+              "Goto implementation (Ctrl+Alt+b)",
+            },
+          },
+        },
+      },
+    },
   },
 
   -- DAP
