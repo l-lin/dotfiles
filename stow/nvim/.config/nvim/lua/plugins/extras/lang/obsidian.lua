@@ -10,7 +10,7 @@ return {
     end,
     keys = {
       {
-        "<leader>ob",
+        "<leader>oB",
         ft = "markdown",
         "<cmd>MarkdownPreviewToggle<cr>",
         desc = "Markdown Preview",

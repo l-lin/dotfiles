@@ -76,6 +76,20 @@ return {
           mode = { "i", "v" }, -- do not set to normal mode, because C-i is also Tab...
           noremap = true,
         },
+        {
+          "<leader>ob",
+          require("helpers.lang.markdown").bold_selected_text,
+          desc = "Make selected text bold",
+          mode = "v",
+          noremap = true,
+        },
+        {
+          "<leader>ob",
+          require("helpers.lang.markdown").bold_word_under_cursor,
+          desc = "Make word under cursor bold/unbold",
+          mode = "n",
+          noremap = true,
+        },
       },
     },
   },

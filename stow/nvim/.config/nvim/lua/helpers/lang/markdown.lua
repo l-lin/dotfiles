@@ -98,10 +98,52 @@ local function smart_dedent()
   end
 end
 
+---Make the selected text bold by wrapping it with **.
+---Requires mini-surround to work.
+local function bold_selected_text()
+  -- Get the selected text range
+  local start_row, start_col = unpack(vim.fn.getpos("'<"), 2, 3)
+  local end_row, end_col = unpack(vim.fn.getpos("'>"), 2, 3)
+  -- Get the selected lines
+  local lines = vim.api.nvim_buf_get_lines(0, start_row - 1, end_row, false)
+  local selected_text = table.concat(lines, "\n"):sub(start_col, #lines == 1 and end_col or -1)
+  if selected_text:match("^%*%*.*%*%*$") then
+    vim.notify("Text already bold", vim.log.levels.INFO)
+  else
+    vim.cmd("normal 2gsa*")
+  end
+end
+
+---Single word/line bold
+---In normal mode, bold the current word under the cursor
+---If already bold, it will unbold the word under the cursor
+---Requires mini-surround to work.
+local function bold_word_under_cursor()
+  local cursor_pos = vim.api.nvim_win_get_cursor(0)
+  local col = cursor_pos[2]
+  local line = vim.api.nvim_get_current_line()
+  -- Check if the cursor is on an asterisk
+  if line:sub(col + 1, col + 1):match("%*") then
+    vim.notify("Cursor is on an asterisk, run inside the bold text", vim.log.levels.WARN)
+    return
+  end
+  -- Check if the cursor is inside surrounded text
+  local before = line:sub(1, col)
+  local after = line:sub(col + 1)
+  local inside_surround = before:match("%*%*[^%*]*$") and after:match("^[^%*]*%*%*")
+  if inside_surround then
+    vim.cmd("normal gsd*.")
+  else
+    vim.cmd("normal viw")
+    vim.cmd("normal 2gsa*")
+  end
+end
 
 local M = {}
 M.insert_codeblock = insert_codeblock
 M.convert_or_toggle_task = convert_or_toggle_task
 M.smart_indent = smart_indent
 M.smart_dedent = smart_dedent
+M.bold_selected_text = bold_selected_text
+M.bold_word_under_cursor = bold_word_under_cursor
 return M
