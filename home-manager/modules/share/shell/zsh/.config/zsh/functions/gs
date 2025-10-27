@@ -83,27 +83,15 @@ parse_git_status() {
 # ============================================================================
 build_branch_display() {
   if [[ -n $branch && $branch != "(detached)" ]]; then
-    # If branch name is longer than 32 characters, truncate it
-    if (( ${#branch} > 32 )); then
-      branch="${branch:0:12}…${branch: -12}"
-    fi
     branch_part="${BRANCH_ICON}${branch}"
   else
     # Not on a branch - check for tag or show commit
     tag=$(git describe --tags --exact-match 2>/dev/null)
     if [[ -n $tag ]]; then
-      if (( ${#tag} > 32 )); then
-        tag="${tag:0:12}…${tag: -12}"
-      fi
       branch_part="#${tag}"
     else
       branch_part="@${short_head}"
     fi
-  fi
-
-  # Show remote branch if different
-  if [[ -n $remote_branch && $remote_branch != *"$branch"* ]]; then
-    branch_part+=":${remote_branch##*/}"
   fi
 }
 
