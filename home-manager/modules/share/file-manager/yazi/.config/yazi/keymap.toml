@@ -12,12 +12,17 @@ run = "cd ~/archive"
 desc = "Go to archives"
 
 [[mgr.prepend_keymap]]
-on = [ "g", "q" ]
+on = [ "g", "1" ]
 run = "cd ~/archive/archive-perso-administrative-docs/le_citadin-e42/lmnp/2023-09-locataire-qi_fang/quittances_loyers/"
 desc = "Go Le Citadin"
 
 [[mgr.prepend_keymap]]
-on = [ "g", "Q" ]
+on = [ "g", "2" ]
 run = "cd ~/archive/archive-perso-administrative-docs/saint_antoine/e105/lmnp/2022-locataire-lijuan_zhu/quittances_loyers/"
 desc = "Go Saint-Antoine"
+
+[[mgr.prepend_keymap]]
+on = [ "g", "3" ]
+run = "cd ~/archive/archive-perso-administrative-docs/jardin_anais/l26/lmnp/2025-lebrave_lapeyre/quittances_loyers/"
+desc = "Go Les Jardins d'Anais"
 
