@@ -10,6 +10,7 @@
     file = {
       ".claude/settings.json".source = ./.claude/settings.json;
       ".claude/cc_statusline.rb".source = ./.claude/cc_statusline.rb;
+      ".claude/CLAUDE.md".source = ../.config/ai/conventions/code.md;
       ".claude/mcp" = {
         source = ./.claude/mcp;
         recursive = true;

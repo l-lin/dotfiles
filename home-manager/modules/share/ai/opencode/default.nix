@@ -8,6 +8,7 @@
     configFile = {
       "mise/conf.d/opencode.toml".source = ./.config/mise/conf.d/opencode.toml;
       "opencode/config.json".source = ./.config/opencode/config.json;
+      "opencode/AGENTS.md".source = ../.config/ai/conventions/code.md;
       "opencode/command" = {
         source = ../.config/ai/prompts;
         recursive = true;
