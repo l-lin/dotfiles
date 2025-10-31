@@ -30,9 +30,7 @@ return {
       servers = {
         ruby_lsp = {
           enabled = true,
-          cmd = { "bundle", "exec", "ruby-lsp" },
-          -- use the LSP installs from Gemfile
-          mason = false,
+          cmd = { "ruby-lsp" },
         },
         -- INFO: rubocop is using some cache, so you might have to clear cache with the following
         -- command if some config file are not found:
@@ -41,9 +39,7 @@ return {
         --   bundle exec rubocop --debug
         rubocop = {
           enabled = true,
-          cmd = { "bundle", "exec", "rubocop", "--lsp" },
-          -- use the LSP installs from Gemfile
-          mason = false,
+          cmd = { "rubocop", "--lsp" },
         },
       },
     },
