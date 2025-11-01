@@ -32,7 +32,7 @@ return {
       markdown = false,
       help = false,
     },
-    copilot_model = "gpt-4.1",
+    copilot_model = "claude-sonnet-4.5",
     init = function()
       -- Disable copilot by default, only enable when needed.
       vim.cmd("silent! Copilot disable")
@@ -63,7 +63,7 @@ return {
   -- #######################
 
   -- ⚙️ Configurable GitHub Copilot blink.cmp source for Neovim.
-  -- Give more suggestions than blink-cmp-copilot
+  -- Gives more suggestions than blink-cmp-copilot.
   {
     "giuxtaposition/blink-cmp-copilot",
     enabled = false,

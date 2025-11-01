@@ -2,6 +2,7 @@ return {
   -- A powerful Neovim plugin for managing MCP (Model Context Protocol) servers: https://github.com/ravitemer/mcphub.nvim#installation
   {
     "ravitemer/mcphub.nvim",
+    enabled = false,
     dependencies = { "nvim-lua/plenary.nvim" },
     cmd = "MCPHub",
     keys = {
