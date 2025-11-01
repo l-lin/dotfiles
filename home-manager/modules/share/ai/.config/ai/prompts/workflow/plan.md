@@ -27,8 +27,8 @@ Please provide:
 
 I'll analyze this information and work with you to create a comprehensive plan.
 
-Tip: You can also invoke this command with a ticket file directly: `/2-plan JIRA-1234`
-For deeper analysis, try: `/2-plan think deeply about JIRA-1234`
+Tip: You can also invoke this command with a ticket file directly: `/workflow:plan JIRA-1234`
+For deeper analysis, try: `/workflow:plan think deeply about JIRA-1234`
 ```
 
 Then wait for the user's input.
@@ -38,7 +38,6 @@ Then wait for the user's input.
 ### Step 1: Context Gathering & Initial Analysis
 
 1. **Read all mentioned files immediately and FULLY**:
-   - Ticket files (e.g., `thoughts/allison/tickets/eng_1234.md`)
    - Research documents
    - Related implementation plans
    - Any JSON/data files mentioned
@@ -441,7 +440,7 @@ tasks = [
 ## Example Interaction Flow
 
 ```
-User: /3-implement
+User: /workflow:plan
 Assistant: I'll help you create a detailed implementation plan...
 
 User: We need to add parent-child tracking for Claude sub-tasks. See JIRA-1234.
