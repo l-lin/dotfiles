@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "theme": "system",
+  "theme": "kanagawa",
   "keybinds": {
     "input_submit": "enter,ctrl+s",
     "messages_copy": "<leader>y,alt+y"
