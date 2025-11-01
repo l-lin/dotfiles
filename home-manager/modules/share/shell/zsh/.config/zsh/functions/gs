@@ -9,7 +9,7 @@
 # ============================================================================
 initialize_variables() {
   # Icons
-  BRANCH_ICON=' '
+  BRANCH_ICON=''
   UNSTAGED_ICON=' '
   UNTRACKED_ICON=' '
   STAGED_ICON=' '
@@ -17,6 +17,7 @@ initialize_variables() {
   WIP_ICON='🚧'
   BEHIND_ICON=' '
   AHEAD_ICON=' '
+  BRANCHES_ICON=' '
 
   # Color codes
   RED=$'\e[0;31m'
@@ -79,9 +80,9 @@ parse_git_status() {
 }
 
 # ============================================================================
-# Build Branch Display
+# Add Branch Name
 # ============================================================================
-build_branch_display() {
+add_branch_name() {
   if [[ -n $branch && $branch != "(detached)" ]]; then
     branch_part="${BRANCH_ICON}${branch}"
   else
@@ -98,7 +99,7 @@ build_branch_display() {
 # ============================================================================
 # Check for WIP Commit
 # ============================================================================
-check_wip_commit() {
+add_wip_if_needed() {
   commit_msg=$(git log -1 --pretty=%s 2>/dev/null)
   if [[ $commit_msg == *[Ww][Ii][Pp]* ]]; then
     res+=" ${WIP_ICON}"
@@ -130,9 +131,19 @@ add_stash_count() {
 }
 
 # ============================================================================
-# Check Git Action (merge, rebase, etc.)
+# Add Local Branch Count
 # ============================================================================
-check_git_action() {
+add_branch_count() {
+  branches=$(git branch --format='%(refname:short)' 2>/dev/null | wc -l | tr -d ' ')
+  if (( branches > 1 )); then
+    res+=" ${BRANCHES_ICON}${branches}"
+  fi
+}
+
+# ============================================================================
+# Add Git Action (merge, rebase, etc.)
+# ============================================================================
+add_git_action() {
   if [[ -f "$git_dir/MERGE_HEAD" ]]; then
     res+=" merge"
     has_changes=true
@@ -244,13 +255,16 @@ main() {
   initialize_variables
   check_git_repo
   parse_git_status
-  build_branch_display
-  check_wip_commit
+  count_file_changes
+
+  add_branch_name
+  add_branch_count
+  add_wip_if_needed
   add_ahead_behind
   add_stash_count
-  check_git_action
-  count_file_changes
+  add_git_action
   add_file_changes
+
   display_output
 }
 
