@@ -215,14 +215,14 @@ return {
         -- src: https://codecompanion.olimorris.dev/configuration/extensions.html
         --
         extensions = {
-          mcphub = {
-            callback = "mcphub.extensions.codecompanion",
-            opts = {
-              show_result_in_chat = true,
-              make_vars = true,
-              make_slash_commands = true,
-            },
-          },
+          -- mcphub = {
+          --   callback = "mcphub.extensions.codecompanion",
+          --   opts = {
+          --     show_result_in_chat = true,
+          --     make_vars = true,
+          --     make_slash_commands = true,
+          --   },
+          -- },
           contextfiles = {
             opts = {},
           },
