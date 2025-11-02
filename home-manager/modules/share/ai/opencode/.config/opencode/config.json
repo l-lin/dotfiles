@@ -2,7 +2,12 @@
   "$schema": "https://opencode.ai/config.json",
   "theme": "kanagawa",
   "keybinds": {
-    "input_submit": "enter,ctrl+s",
+    "command_list": "alt+k",
+    "input_clear": "ctrl+c,ctrl+u",
+    "input_newline": "enter,ctrl+j",
+    "input_submit": "ctrl+s",
+    "history_previous": "ctrl+p",
+    "history_next": "ctrl+n",
     "messages_copy": "<leader>y,alt+y"
   },
   "autoshare": false,
