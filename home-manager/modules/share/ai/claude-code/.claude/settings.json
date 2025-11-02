@@ -4,12 +4,14 @@
     "allow": [
       "Bash(backlog:*)",
       "Bash(git:*)",
+      "Bash(jira issue:*)",
       "Bash(ls:*)",
       "Bash(pwd)",
       "Bash(tmux:*)",
       "Bash(rg:*)",
       "Edit",
       "Read",
+      "Skill(jira)",
       "Write",
       "WebFetch",
 

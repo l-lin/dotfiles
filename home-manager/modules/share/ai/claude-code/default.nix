@@ -19,6 +19,10 @@
         source = ../.config/ai/prompts;
         recursive = true;
       };
+      ".claude/skills" = {
+        source = ../.config/ai/skills;
+        recursive = true;
+      };
 
       #
       # AGENTS
