@@ -1,7 +1,6 @@
 ---
 name: jira
 description: Manage JIRA tickets. Use it when the user mentions JIRA with ticket IDs like FOO-123.
-allowed-tools: Bash(jira issue:*)
 ---
 
 # Jira CLI Skill
