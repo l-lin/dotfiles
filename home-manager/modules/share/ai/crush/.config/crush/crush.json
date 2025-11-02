@@ -1,29 +1,14 @@
 {
   "$schema": "https://charm.land/crush.json",
-  "mcp": {
-    "memory": {
-      "type": "stdio",
-      "command": "docker",
-      "args": [
-        "docker",
-        "run",
-        "--rm",
-        "-i",
-        "-v",
-        "mcp-memory:/app/dist",
-        "mcp/memory"
-      ]
+  "options": {
+    "attribution": {
+      "co_authored_by": false,
+      "generated_with": false
     },
-    "sequentialthinking": {
-      "type": "stdio",
-      "command": "docker",
-      "args": [
-        "docker",
-        "run",
-        "--rm",
-        "-i",
-        "mcp/sequentialthinking"
-      ]
+    "disable_metrics": true,
+    "disable_provider_auto_update": true,
+    "tui": {
+      "diff_mode": "unified"
     }
   }
 }
