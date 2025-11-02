@@ -9,11 +9,5 @@
   "share": "disabled",
   "autoupdate": false,
   "instructions": [],
-  "layout": "stretch",
-  "mcp": {
-    "sequentialthinking": {
-      "type": "local",
-      "command": ["docker", "run", "--rm", "-i", "mcp/sequentialthinking"]
-    }
-  }
+  "layout": "stretch"
 }
