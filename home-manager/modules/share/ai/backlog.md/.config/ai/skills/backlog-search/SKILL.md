@@ -1,6 +1,6 @@
 ---
 name: backlog-search
-description: Search, list, filter, and view backlog tasks using fuzzy search and filters
+description: Find and view backlog tasks. Use when searching for tasks by topic, checking task status, listing work items, or filtering by assignee/status/priority.
 allowed-tools: Bash(backlog:*), Read, Grep, Glob
 ---
 

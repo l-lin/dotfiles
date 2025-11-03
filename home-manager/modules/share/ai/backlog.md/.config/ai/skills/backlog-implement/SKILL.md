@@ -1,6 +1,6 @@
 ---
 name: backlog-implement
-description: Implement backlog tasks following proper workflow, checking acceptance criteria, and completing Definition of Done
+description: Work on and complete backlog tasks. Use when implementing features, marking ACs complete, updating task status/notes, or following DoD workflow.
 allowed-tools: Bash(backlog:*), Read, Grep, Glob, Write, Edit
 ---
 

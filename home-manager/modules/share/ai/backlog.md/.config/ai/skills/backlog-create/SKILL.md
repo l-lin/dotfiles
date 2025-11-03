@@ -1,6 +1,6 @@
 ---
 name: backlog-create
-description: Create and define backlog tasks with proper structure and acceptance criteria
+description: Create new backlog tasks with structure. Use when defining new work items, breaking down features, or planning tasks with acceptance criteria.
 allowed-tools: Bash(backlog:*), Read, Grep, Glob
 ---
 
