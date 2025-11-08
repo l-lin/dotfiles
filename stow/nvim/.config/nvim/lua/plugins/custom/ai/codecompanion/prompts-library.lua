@@ -7,68 +7,8 @@ end
 
 return {
   --
-  -- LANGUAGE
-  --
-
-  ["english@inline"] = {
-    strategy = "inline",
-    description = "Improve English wording and grammar",
-    opts = {
-      auto_submit = false,
-      index = index(),
-      is_slash_cmd = true,
-      modes = { "v" },
-      short_name = "english",
-      stop_context_insertion = true,
-      user_prompt = false,
-    },
-    prompts = {
-      {
-        role = "system",
-        content = require("plugins.custom.ai.prompts.english-enhancer").system(),
-      },
-      {
-        role = "user",
-        content = function(context)
-          local text = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
-          return require("plugins.custom.ai.prompts.english-enhancer").user(text)
-        end,
-      },
-    },
-  },
-
-  --
   -- CODE
   --
-
-  ["java-unit-tests@chat"] = {
-    strategy = "chat",
-    description = "Implement Java unit tests for the selected code.",
-    opts = {
-      index = index(),
-      is_slash_cmd = false,
-      modes = { "v" },
-      short_name = "java-unit-test",
-      auto_submit = false,
-      user_prompt = false,
-      stop_context_insertion = true,
-    },
-    prompts = {
-      {
-        role = "system",
-        opts = { visible = false },
-        content = require("plugins.custom.ai.prompts.java-tests").system(),
-      },
-      {
-        role = "user",
-        opts = { contains_code = true },
-        content = function(context)
-          local code = require("codecompanion.helpers.actions").get_code(context.start_line, context.end_line)
-          return require("plugins.custom.ai.prompts.java-tests").user(code)
-        end,
-      },
-    },
-  },
 
   ["edit"] = {
     strategy = "chat",
@@ -77,6 +17,7 @@ return {
       { role = "user", content = "@{insert_edit_into_file} #{buffer}\n\n" },
     },
     opts = {
+      index = index(),
       auto_submit = false,
       short_name = "edit",
       is_slash_cmd = true,
@@ -90,6 +31,7 @@ return {
       { role = "user", content = "@{full_stack_dev} #{buffer}\n\n" },
     },
     opts = {
+      index = index(),
       auto_submit = false,
       short_name = "dev",
       is_slash_cmd = true,
@@ -100,6 +42,7 @@ return {
     strategy = "chat",
     description = "General purpose query",
     opts = {
+      index = index(),
       auto_submit = false,
       short_name = "ask",
       is_slash_cmd = true,
