@@ -161,6 +161,10 @@ backlog task create "Subtask title" -p 42
 
 Use a clear brief title that summarizes the task.
 
+**When JIRA ticket is involved:** Include the ticket ID in the title format: `[TICKET-123] Task description`
+
+Example: `[PROJ-456] Add user authentication`
+
 ### Description (The "why")
 
 Provide a concise summary of the task purpose and its goal. Explains the context without implementation details.
