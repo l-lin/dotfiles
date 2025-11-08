@@ -9,16 +9,9 @@
   # Instead of updating CLAUDE.md / AGENTS.md, polluting the context for no reason, I want
   # to explicitely use backlog by using claude skills.
   home.file = {
-    ".claude/skills/backlog-create" = {
-      source = ./.config/ai/skills/backlog-create;
-      recursive = true;
-    };
-    ".claude/skills/backlog-implement" = {
-      source = ./.config/ai/skills/backlog-implement;
-      recursive = true;
-    };
-    ".claude/skills/backlog-search" = {
-      source = ./.config/ai/skills/backlog-search;
+    ".claude/skills/backlog.md/SKILL.md".source = ./.config/ai/skills/backlog.md/SKILL.md;
+    ".claude/commands/backlog.md" = {
+      source = ./.config/ai/prompts/backlog.md;
       recursive = true;
     };
   };
