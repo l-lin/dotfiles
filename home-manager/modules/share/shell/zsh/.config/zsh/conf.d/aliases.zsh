@@ -41,6 +41,8 @@ alias ai='CC_LAYOUT_OVERRIDE=buffer nvim +"CodeCompanionChat Toggle"'
 # mise
 alias mr="mise run"
 alias mw="mise watch"
+# vcs
+alias review="nvim +'lua Snacks.picker.gh_pr()'"
 
 # --------------------------------------------------------
 # Default options

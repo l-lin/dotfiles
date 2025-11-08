@@ -48,25 +48,18 @@ return {
     "folke/snacks.nvim",
     keys = {
       { "<leader>gb", function() Snacks.picker.git_log_line({ current_line = true, current_file = true, follow = true }) end, desc = "Git Blame Line" },
-      {
-        "<leader>gs",
-        function()
-          Snacks.picker.git_status({
-            layout = "sidebar",
-            win = {
-              list = {
-                keys = {
-                  ["<space>"] = "git_stage",
-                },
-              },
-            },
-          })
-        end,
-        desc = "Git Status",
-      },
+      { "<leader>gs", function() Snacks.picker.git_status({ layout = "sidebar" }) end, desc = "Git Status" },
       { "<leader>gl", function() Snacks.picker.git_log({ cwd = LazyVim.root.git() }) end, desc = "Git Log" },
       { "<leader>gL", function() Snacks.picker.git_log() end, desc = "Git Log (cwd)" },
       { "<M-9>", function() Snacks.picker.git_log({ current_file = true, follow = true }) end, noremap = true, silent = true, desc = "Check current file git history (Alt+9)" },
+      -- conflicting keymaps with fugitive
+      { "<leader>gp", false },
+      { "<leader>gP", false },
+      -- GH
+      { "<leader>Gp", function() Snacks.picker.gh_pr() end, desc = "GitHub Pull Requests (open)" },
+      -- I don't need those keymaps to find issues
+      { "<leader>gi", false },
+      { "<leader>gI", false },
     }
   },
 
@@ -78,9 +71,9 @@ return {
      { "<leader>gF", "<cmd>G push --force-with-lease<cr>", desc = "git push --force-with-lease" },
      -- useful for creating new PR/MR where the url is displayed in the git push message
      -- { "<leader>gO", "<cmd>G -p push<cr>", desc = "git push and display git message" },
-     { "<leader>gp", "<cmd>G pull<cr>", desc = "git pull" },
-     { "<leader>gP", "<cmd>G push<cr>", desc = "git push" },
-     { "<M-0>", toggle_fugitive, desc = "git status (Alt+0)" },
+     { "<leader>gp", "<cmd>G pull<cr>", silent = true, noremap = true, desc = "git pull" },
+     { "<leader>gP", "<cmd>G push<cr>", silent = true, noremap = true, desc = "git push" },
+     { "<M-0>", toggle_fugitive, silent = true, noremap = true, desc = "git status (Alt+0)" },
    },
  },
 
