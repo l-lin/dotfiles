@@ -76,3 +76,6 @@ map("n", "<leader>fxx", require("helpers.file").execute_bash_script, { desc = "E
 map("n", "*", "*N", { noremap = true, silent = true })
 map("n", "#", "#N", { noremap = true, silent = true })
 
+-- Open link under cursor with either browser in private window for youtube links, short reponame in browser, or fallback to gx
+map("n", "gx", require("helpers.open").smart_open, { desc = "Smart open URL or filepath" })
+
