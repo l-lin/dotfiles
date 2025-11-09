@@ -1,6 +1,5 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "theme": "kanagawa",
   "keybinds": {
     "command_list": "alt+k",
     "input_clear": "ctrl+c,ctrl+u",

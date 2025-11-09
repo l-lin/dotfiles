@@ -3,10 +3,15 @@
 # src: https://opencode.ai/
 #
 
+{ config, ... }:
 {
   xdg.configFile = {
     "mise/conf.d/opencode.toml".source = ./.config/mise/conf.d/opencode.toml;
-    "opencode/config.json".source = ./.config/opencode/config.json;
+    "opencode/config.json".text = builtins.toJSON (
+      (builtins.fromJSON (builtins.readFile ./.config/opencode/config.json)) // {
+        theme = if (config.theme.polarity == "dark") then "kanagawa" else "github";
+      }
+    );
     "opencode/AGENTS.md".source = ../.config/ai/conventions/code.md;
     "opencode/command" = {
       source = ../.config/ai/prompts;
