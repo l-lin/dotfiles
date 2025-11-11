@@ -56,7 +56,7 @@ return {
       { "<leader>gp", false },
       { "<leader>gP", false },
       -- GH
-      { "<leader>Gp", function() Snacks.picker.gh_pr() end, desc = "GitHub Pull Requests (open)" },
+      { "<leader>G", function() Snacks.picker.gh_pr() end, desc = "GitHub Pull Requests (open)" },
       -- I don't need those keymaps to find issues
       { "<leader>gi", false },
       { "<leader>gI", false },
