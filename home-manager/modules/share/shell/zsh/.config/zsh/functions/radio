@@ -1,16 +1,16 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 #
 # Listen to radio.
 # src: https://codeberg.org/EvanHahn/dotfiles/src/commit/843b9ee13d949d346a4a73ccee2a99351aed285b/home/bin/bin/radio#
 #
 
-if [ "$1" == lofi ]; then
+if [ "$1" = lofi ]; then
   url='https://live.hunter.fm/lofi_low'
-elif [ "$1" == trance ]; then
+elif [ "$1" = trance ]; then
   url='http://ubuntu.hbr1.com:19800/trance.ogg'
-elif [ "$1" == salsa ]; then
+elif [ "$1" = salsa ]; then
   url='https://latinasalsa.ice.infomaniak.ch/latinasalsa.mp3'
-elif [ "$1" == kfai ]; then
+elif [ "$1" = kfai ]; then
   url='https://kfai.broadcasttool.stream/kfai-1'
 else
   echo "don't know $1" 1>&2
