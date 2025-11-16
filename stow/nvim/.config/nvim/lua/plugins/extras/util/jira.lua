@@ -1,7 +1,7 @@
 return {
   {
     "l-lin/jira.nvim",
-    cmd = { "JiraIssues", "JiraEpic" },
+    cmd = { "JiraIssues", "JiraEpic", "JiraStartWorkingOn" },
     keys = {
       { "<leader>ji", "<cmd>JiraIssues<cr>" },
       { "<leader>je", "<cmd>JiraEpic<cr>" },
