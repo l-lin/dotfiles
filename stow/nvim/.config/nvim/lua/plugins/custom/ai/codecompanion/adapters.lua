@@ -3,7 +3,7 @@ return {
   copilot = function()
     return require("codecompanion.adapters").extend("copilot", {
       schema = {
-        model = { default = "claude-sonnet-4" },
+        model = { default = "gpt-4.1" },
         temperature = { default = 0 },
         max_tokens = { default = 200000 },
       },
