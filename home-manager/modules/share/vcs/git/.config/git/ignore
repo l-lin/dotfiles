@@ -80,3 +80,7 @@ mise.local.toml
 # Git #
 #######
 .worktree
+
+# NodeJS #
+##########
+node_modules
