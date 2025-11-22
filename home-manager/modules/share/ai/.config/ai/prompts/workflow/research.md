@@ -43,9 +43,9 @@ Then wait for the user's research query.
 
 4. **Wait for all sub-agents to complete and synthesize findings:**
    - IMPORTANT: Wait for ALL sub-agent tasks to complete before proceeding
-   - Compile all sub-agent results (both codebase and thoughts findings)
+   - Compile all sub-agent results (both codebase and.sandbox findings)
    - Prioritize live codebase findings as primary source of truth
-   - Use `.thoughts/` findings as supplementary historical context
+   - Use `.sandbox/` findings as supplementary historical context
    - Connect findings across different components
    - Include specific file paths and line numbers for reference
    - Highlight patterns, connections, and architectural decisions
@@ -53,7 +53,7 @@ Then wait for the user's research query.
 
 5. **Gather metadata for the research document:**
    - generate all relevant metadata
-   - Filename: `.thoughts/research/YYYY-MM-DD-JIRA-XXXX-description.md`
+   - Filename: `.sandbox/research/YYYY-MM-DD-JIRA-XXXX-description.md`
      - Format: `YYYY-MM-DD-JIRA-XXXX-description.md` where:
        - YYYY-MM-DD is today's date
        - JIRA-XXXX is the ticket number (omit if no ticket)
@@ -117,16 +117,16 @@ Then wait for the user's research query.
 
      [Patterns, conventions, and design decisions discovered]
 
-     ## Historical Context (from .thoughts/)
+     ## Historical Context (from .sandbox/)
 
-     [Relevant insights from .thoughts/ directory with references]
+     [Relevant insights from .sandbox/ directory with references]
 
-     - `.thoughts/research/something.md` - Historical decision about X
-     - `.thoughts/research/notes.md` - Past exploration of Y
+     - `.sandbox/research/something.md` - Historical decision about X
+     - `.sandbox/research/notes.md` - Past exploration of Y
 
      ## Related Research
 
-     [Links to other research documents in .thoughts/shared/research/]
+     [Links to other research documents in .sandbox/shared/research/]
 
      ## Open Questions
 
@@ -157,7 +157,7 @@ Then wait for the user's research query.
 
 - Always use parallel Task agents to maximize efficiency and minimize context usage
 - Always run fresh codebase research - never rely solely on existing research documents
-- The `.thoughts/` directory provides historical context to supplement live findings
+- The `.sandbox/` directory provides historical context to supplement live findings
 - Focus on finding concrete file paths and line numbers for developer reference
 - Research documents should be self-contained with all necessary context
 - Each sub-agent prompt should be specific and focused on read-only operations
@@ -166,7 +166,7 @@ Then wait for the user's research query.
 - Link to GitHub when possible for permanent references
 - Keep the main agent focused on synthesis, not deep file reading
 - Encourage sub-agents to find examples and usage patterns, not just definitions
-- Explore all of `.thoughts/` directory, not just research subdirectory
+- Explore all of `.sandbox/` directory, not just research subdirectory
 - **File reading**: Always read mentioned files FULLY (no limit/offset) before spawning sub-tasks
 - **Critical ordering**: Follow the numbered steps exactly
   - ALWAYS read mentioned files first before spawning sub-tasks (step 1)

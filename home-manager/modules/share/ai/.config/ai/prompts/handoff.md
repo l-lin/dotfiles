@@ -97,6 +97,6 @@ Here's an example of how your output should be structured:
 
 ## Final Step
 
-After providing your analysis and summary, write the handoff summary to a markdown file at `.claude/handoffs/[timestamp]-[slug].md` where [timestamp] is the current date in format YYYY-MM-DD and the slug is what we defined before.
+After providing your analysis and summary, write the handoff summary to a markdown file at `.sandbox/handoffs/[timestamp]-[slug].md` where [timestamp] is the current date in format YYYY-MM-DD and the slug is what we defined before.
 
 Then tell the user about this file and that they can use `/pickup FILENAME` to continue.

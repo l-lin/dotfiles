@@ -164,7 +164,7 @@ Once aligned on approach:
 
 After structure approval:
 
-1. **Write the plan** to `.thoughts/plans/YYYY-MM-DD-JIRA-XXXX-description.md`
+1. **Write the plan** to `.sandbox/plans/YYYY-MM-DD-JIRA-XXXX-description.md`
    - Format: `YYYY-MM-DD-JIRA-XXXX-description.md` where:
      - YYYY-MM-DD is today's date
      - JIRA-XXXX is the ticket number (omit if no ticket)
@@ -275,20 +275,20 @@ After structure approval:
 ## References
 
 - Original ticket: `JIRA-1234`
-- Related research: `thoughts/research/[relevant].md`
+- Related research: .sandbox/research/[relevant].md`
 - Similar implementation: `[file:line]`
 ````
 
 ### Step 5: Sync and Review
 
-1. **Sync the `.thoughts/` directory**:
+1. **Sync the `.sandbox/` directory**:
    - This ensures the plan is properly indexed and available
 
 2. **Present the draft plan location**:
 
    ```
    I've created the initial implementation plan at:
-   `.thoughts/plans/YYYY-MM-DD-JIRA-XXXX-description.md`
+   `.sandbox/plans/YYYY-MM-DD-JIRA-XXXX-description.md`
 
    Please review it and let me know:
    - Are the phases properly scoped?
