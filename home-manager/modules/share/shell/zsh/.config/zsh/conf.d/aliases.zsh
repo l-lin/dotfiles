@@ -37,7 +37,7 @@ alias g="git"
 alias gw="git worktree"
 alias lg="lazygit"
 # ai
-alias ai='CC_LAYOUT_OVERRIDE=buffer nvim +"CodeCompanionChat Toggle"'
+alias ai='CC_LAYOUT_OVERRIDE=buffer nvim -c "CodeCompanionActions" -c "call timer_start(200, {-> execute('\''call feedkeys(\"agent\<CR>\", \"t\")'\'')})"'
 # mise
 alias mr="mise run"
 alias mw="mise watch"

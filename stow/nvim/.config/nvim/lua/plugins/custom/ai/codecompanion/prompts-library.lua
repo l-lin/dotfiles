@@ -6,9 +6,31 @@ local function index()
 end
 
 return {
+
   --
   -- CODE
   --
+
+  ["agent"] = {
+    strategy = "chat",
+    description = "Agent mode",
+    opts = {
+      index = index(),
+      auto_submit = false,
+      short_name = "agent",
+      is_slash_cmd = true,
+      adapter = {
+        name = "copilot",
+        model = "claude-opus-4.5",
+      },
+    },
+    prompts = {
+      {
+        role = "user",
+        content = function() return "@{full_stack_dev} @{plan}" end,
+      },
+    },
+  },
 
   ["edit"] = {
     strategy = "chat",
@@ -28,7 +50,7 @@ return {
     strategy = "chat",
     description = "Edit with full tooling",
     prompts = {
-      { role = "user", content = "@{full_stack_dev} #{buffer}\n\n" },
+      { role = "user", content = "@{full_stack_dev} #{buffer}" },
     },
     opts = {
       index = index(),
