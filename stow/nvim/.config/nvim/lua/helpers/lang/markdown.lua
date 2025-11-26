@@ -101,17 +101,7 @@ end
 ---Make the selected text bold by wrapping it with **.
 ---Requires mini-surround to work.
 local function bold_selected_text()
-  -- Get the selected text range
-  local start_row, start_col = unpack(vim.fn.getpos("'<"), 2, 3)
-  local end_row, end_col = unpack(vim.fn.getpos("'>"), 2, 3)
-  -- Get the selected lines
-  local lines = vim.api.nvim_buf_get_lines(0, start_row - 1, end_row, false)
-  local selected_text = table.concat(lines, "\n"):sub(start_col, #lines == 1 and end_col or -1)
-  if selected_text:match("^%*%*.*%*%*$") then
-    vim.notify("Text already bold", vim.log.levels.INFO)
-  else
-    vim.cmd("normal 2gsa*")
-  end
+  vim.cmd("normal 2gsa*")
 end
 
 ---Single word/line bold
