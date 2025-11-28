@@ -4,12 +4,21 @@
 #
 
 { config, ... }:
-{
+let
+  darkThemeMap = {
+    "nord" = "nord";
+    "kanagawa-wave" = "kanagawa";
+  };
+  openCodeTheme =
+    if config.theme.polarity == "dark"
+    then darkThemeMap.${config.theme.nvimColorScheme} or "kanagawa"
+    else "github";
+in {
   xdg.configFile = {
     "mise/conf.d/opencode.toml".source = ./.config/mise/conf.d/opencode.toml;
     "opencode/config.json".text = builtins.toJSON (
       (builtins.fromJSON (builtins.readFile ./.config/opencode/config.json)) // {
-        theme = if (config.theme.polarity == "dark") then "kanagawa" else "github";
+        theme = openCodeTheme;
       }
     );
     "opencode/AGENTS.md".source = ../.config/ai/conventions/code.md;
