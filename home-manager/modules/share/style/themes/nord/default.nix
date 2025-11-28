@@ -18,6 +18,9 @@ in {
     styles = {
       keywords = { bold = true },
     },
+    on_highlights = function(highlights, colors)
+      highlights.SnacksPickerMatch = { link = "SpecialComment" }
+    end,
   },
 }
 '';
