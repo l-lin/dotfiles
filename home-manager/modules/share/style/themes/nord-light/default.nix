@@ -5,7 +5,7 @@
 
 { config, pkgs, ... }:
 let
-  polarity = "dark";
+  polarity = "light";
 in {
   theme = {
     inherit polarity;

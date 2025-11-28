@@ -5,14 +5,19 @@
 
 { config, ... }:
 let
+  # TODO: Maybe one day, I'll do something more dynamic?
   darkThemeMap = {
     "nord" = "nord";
     "kanagawa-wave" = "kanagawa";
   };
+  lightThemeMap = {
+    "nord" = "nord";
+    "kanagawa-lotus" = "github";
+  };
   openCodeTheme =
     if config.theme.polarity == "dark"
     then darkThemeMap.${config.theme.nvimColorScheme} or "kanagawa"
-    else "github";
+    else lightThemeMap.${config.theme.nvimColorScheme} or "github";
 in {
   xdg.configFile = {
     "mise/conf.d/opencode.toml".source = ./.config/mise/conf.d/opencode.toml;
