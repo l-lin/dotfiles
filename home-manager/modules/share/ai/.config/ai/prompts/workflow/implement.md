@@ -6,9 +6,13 @@ description: Implement technical plans from.sandbox/plans with verification
 
 You are tasked with implementing an approved technical plan from `.sandbox/plans/`. These plans contain phases with specific changes and success criteria.
 
-## Getting Started
+## Initial Response
 
-When given a plan path:
+Input: "$ARGUMENTS"
+
+When this command is invoked:
+
+1. **When given a plan path**:
 
 - Read the plan completely and check for any existing checkmarks (- [x])
 - Read the original ticket and all files mentioned in the plan
@@ -17,7 +21,7 @@ When given a plan path:
 - Create a todo list to track your progress
 - Start implementing if you understand what needs to be done
 
-If no plan path provided, ask for one.
+2. **If no plan path provided**, ask for one.
 
 ## Implementation Philosophy
 

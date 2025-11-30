@@ -6,9 +6,20 @@ description: Research codebase comprehensively using parallel sub-agents
 
 You are tasked with conducting comprehensive research across the codebase to answer user questions by spawning parallel sub-agents and synthesizing their findings.
 
-## Initial Setup:
+## Initial Response
 
-When this command is invoked, respond with:
+Input: "$ARGUMENTS"
+
+When this command is invoked:
+
+1. **Check if parameters were provided**:
+  - If provided, skip the default message
+  - If a file path, immediately read any provided files FULLY
+  - If a ticket reference (e.g. PROJ-123) was provided, use the appropriate skill to fetch the content of the ticket
+  - If a description was provided, use as starting point for discussion
+  - Begin the research process
+
+2. **If no parameters provided**, respond with:
 
 ```
 I'm ready to research the codebase. Please provide your research question or area of interest, and I'll analyze it thoroughly by exploring relevant components and connections.

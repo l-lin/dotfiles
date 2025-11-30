@@ -8,12 +8,16 @@ You are tasked with creating detailed implementation plans through an interactiv
 
 ## Initial Response
 
+Input: "$ARGUMENTS"
+
 When this command is invoked:
 
 1. **Check if parameters were provided**:
-   - If a file path or ticket reference was provided as a parameter, skip the default message
-   - Immediately read any provided files FULLY
-   - Begin the research process
+  - If provided, skip the default message
+  - If a file path, immediately read any provided files FULLY
+  - If a ticket reference (e.g. PROJ-123) was provided, use the appropriate skill to fetch the content of the ticket
+  - If a description was provided, use as starting point for discussion
+  - Begin the research process
 
 2. **If no parameters provided**, respond with:
 
