@@ -12,6 +12,8 @@
   stylix = {
     enable = true;
     autoEnable = false;
+    # Remove warning logs when executing `hm switch`
+    enableReleaseChecks = false;
     base16Scheme = (./. + "/themes/${userSettings.theme}/colorscheme.yaml");
     fonts = {
       monospace = {
