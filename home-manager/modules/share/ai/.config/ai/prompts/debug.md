@@ -8,6 +8,8 @@ You are tasked with helping debug issues during manual testing or implementation
 
 ## Initial Response
 
+Input: $ARGUMENTS
+
 When invoked WITH a plan/ticket file:
 
 ```
