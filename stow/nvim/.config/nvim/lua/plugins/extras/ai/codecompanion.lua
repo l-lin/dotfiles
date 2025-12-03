@@ -192,7 +192,7 @@ return {
           chat = {
             intro_message = "Press ? for options.",
             show_settings = false, -- Show LLM settings at the top of the chat buffer?
-            start_in_insert_mode = false,
+            start_in_insert_mode = true,
             window = { layout = layout },
           },
         },
