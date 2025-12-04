@@ -1,6 +1,6 @@
 ---
 name: implementation-planner
-description: Break down technical implementation tasks into actionable steps with codebase analysis. Use when you need to decompose complex features, refactorings, or bug fixes into a structured implementation plan.
+description: Break down technical implementation tasks into actionable steps with codebase analysis. Use when the user says "breakdown the task", "plan the implementation" or when you need to decompose complex features, refactorings, or bug fixes into a structured implementation plan.
 ---
 
 # Task Breakdown Protocol

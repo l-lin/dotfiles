@@ -1,6 +1,6 @@
 ---
-name: writer
-description: Makes your writing clearer, stronger, and more professional. Use this skill for ANY prose humans will read—documentation, commit messages, error messages, explanations, reports, or UI text.
+name: clear-writing
+description: Makes your writing clearer, stronger, and more professional. Use this skill when the user says "write clearly", "clear writing", "improve writing" or for ANY prose humans will read—documentation, commit messages, error messages, explanations, reports, or UI text.
 ---
 
 # Writing Clearly and Concisely
