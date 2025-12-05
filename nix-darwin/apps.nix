@@ -83,7 +83,7 @@
       # Music streaming service: https://www.spotify.com/https://www.spotify.com/
       "spotify"
       # macOS system monitor in your menu bar: https://github.com/exelban/stats
-      "stats"
+      #"stats"
       # 🌀 Experience tranquillity while browsing the web without people tracking you: https://zen-browser.app/
       "zen-browser"
     ];
