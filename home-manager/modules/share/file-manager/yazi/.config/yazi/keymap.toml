@@ -26,3 +26,7 @@ on = [ "g", "3" ]
 run = "cd ~/archive/archive-perso-administrative-docs/jardin_anais/l26/lmnp/2025-lebrave_lapeyre/quittances_loyers/"
 desc = "Go Les Jardins d'Anais"
 
+[[mgr.prepend_keymap]]
+on = ["<C-g>" ]
+run = "plugin fzf"
+desc = "Jump to a file/directory via fzf"
