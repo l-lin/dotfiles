@@ -11,20 +11,26 @@
     git
     git-lfs
   ];
+  xdg.configFile = {
+    # Symlink to ~/.config/git
+    "git/ignore".source = ./.config/git/ignore;
+    "git/hooks" = {
+      source = ./.config/git/hooks;
+      recursive = true;
+    };
+    "git/core".text = ''
+  [core]
+    editor = ${userSettings.editor}
+    autocrlf = input
+    pager = delta --${config.theme.polarity}
+    hooksPath = ${config.xdg.configHome}/git/hooks
+    '';
 
-  # Symlink to ~/.config/git
-  xdg.configFile."git/ignore".source = ./.config/git/ignore;
-  xdg.configFile."git/hooks" = {
-    source = ./.config/git/hooks;
-    recursive = true;
+    "zsh/functions/git-functions" = {
+      source = ./.config/zsh/functions/git-functions;
+      recursive = true;
+    };
   };
-  xdg.configFile."git/core".text = ''
-[core]
-  editor = ${userSettings.editor}
-  autocrlf = input
-  pager = delta --${config.theme.polarity}
-  hooksPath = ${config.xdg.configHome}/git/hooks
-  '';
 
   # Symlink to ~/perso/.gitconfig
   home.file."perso/.gitconfig".text = ''

@@ -1,0 +1,3 @@
+#!/usr/bin/env zsh
+
+tmux popup -E -w 80 -h 30 "git branch | sed 's/..//' | fzf --reverse | xargs -r git switch"
