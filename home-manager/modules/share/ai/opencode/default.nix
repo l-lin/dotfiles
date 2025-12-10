@@ -13,6 +13,7 @@ let
   lightThemeMap = {
     "nord" = "nord";
     "kanagawa-lotus" = "github";
+    "grey" = "system";
   };
   openCodeTheme =
     if config.theme.polarity == "dark"

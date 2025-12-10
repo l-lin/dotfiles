@@ -77,7 +77,7 @@ require("lazy").setup({
     { import = "plugins.extras.lang.typescript" },
     { import = "plugins.extras.lang.xml" },
     -- { import = "plugins.extras.test.neotest" },
-    { import = "plugins.extras.ui.auto-dark-mode" },
+    -- { import = "plugins.extras.ui.auto-dark-mode" },
     -- { import = "plugins.extras.ui.hlchunk" },
     { import = "plugins.extras.ui.snacks" },
     { import = "plugins.extras.util.jira" },
