@@ -3,8 +3,7 @@
   "keybinds": {
     "command_list": "alt+k",
     "input_clear": "ctrl+c,ctrl+u",
-    "input_newline": "enter,ctrl+j",
-    "input_submit": "ctrl+s",
+    "input_submit": "enter,ctrl+s",
     "history_previous": "ctrl+p",
     "history_next": "ctrl+n",
     "messages_copy": "<leader>y,alt+y"
