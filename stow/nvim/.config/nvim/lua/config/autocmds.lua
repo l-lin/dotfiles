@@ -67,6 +67,6 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = { "codecompanion", "gitcommit", "markdown" },
   callback = function()
     vim.wo.wrap = true
-    vim.bo.textwidth = 80
+    -- vim.bo.textwidth = 80
   end,
 })
