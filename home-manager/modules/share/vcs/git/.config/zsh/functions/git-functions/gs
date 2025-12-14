@@ -43,8 +43,8 @@ check_git_repo() {
   read -r is_repo git_dir short_head symbolic_ref <<< $(git rev-parse --is-inside-work-tree --git-dir --short=8 HEAD --symbolic-full-name HEAD 2>/dev/null | tr '\n' ' ')
 
   if [[ $is_repo != "true" ]]; then
-    echo "Not in a git repository"
-    exit 1
+    echo "Not in a git repository" >&2
+    return 0
   fi
 }
 
