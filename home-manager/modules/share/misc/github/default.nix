@@ -12,5 +12,5 @@
 
   # Symlink ~/.config/zsh/completions/_gh
   xdg.configFile."zsh/completions/_gh".source = ./.config/zsh/completions/_gh;
-  xdg.configFile."mise/conf.d/copilot-cli.toml".source = ./.config/mise/conf.d/copilot-cli.toml;
+  #xdg.configFile."mise/conf.d/copilot-cli.toml".source = ./.config/mise/conf.d/copilot-cli.toml;
 }
