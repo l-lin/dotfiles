@@ -3,6 +3,7 @@
 # src: https://github.com/watchexec/watchexec
 #
 
-{
-  xdg.configFile."mise/conf.d/watchexec.toml".source = ./.config/mise/conf.d/watchexec.toml;
-}
+{}
+# {
+#   xdg.configFile."mise/conf.d/watchexec.toml".source = ./.config/mise/conf.d/watchexec.toml;
+# }
