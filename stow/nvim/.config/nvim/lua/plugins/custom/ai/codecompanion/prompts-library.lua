@@ -17,7 +17,7 @@ return {
     opts = {
       index = index(),
       auto_submit = false,
-      short_name = "agent",
+      alias = "agent",
       is_slash_cmd = true,
       adapter = {
         name = "copilot",
@@ -41,7 +41,7 @@ return {
     opts = {
       index = index(),
       auto_submit = false,
-      short_name = "edit",
+      alias = "edit",
       is_slash_cmd = true,
     },
   },
@@ -55,7 +55,7 @@ return {
     opts = {
       index = index(),
       auto_submit = false,
-      short_name = "dev",
+      alias = "dev",
       is_slash_cmd = true,
     },
   },
@@ -66,7 +66,7 @@ return {
     opts = {
       index = index(),
       auto_submit = false,
-      short_name = "ask",
+      alias = "ask",
       is_slash_cmd = true,
       adapter = {
         name = "copilot",

@@ -37,7 +37,7 @@ alias g="git"
 alias gw="git worktree"
 alias lg="lazygit"
 # ai
-alias ai='CC_LAYOUT_OVERRIDE=buffer nvim +"CodeCompanionChat Toggle"'
+alias ai='CC_LAYOUT_OVERRIDE=buffer nvim +"CodeCompanionChat adapter=copilot model=claude-opus-4.5"'
 # mise
 alias mr="mise run"
 alias mw="mise watch"

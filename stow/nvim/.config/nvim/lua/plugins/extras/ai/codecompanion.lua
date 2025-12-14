@@ -77,8 +77,6 @@ return {
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
-      -- 📄 Utility extension to get all project files for your AI assistant
-      { "banjo/contextfiles.nvim" },
       -- History chat management
       { "ravitemer/codecompanion-history.nvim" },
       -- Inline spinner for CodeCompanion in Neovim
@@ -90,7 +88,7 @@ return {
       -- src: https://github.com/olimorris/codecompanion.nvim/discussions/1828
       local layout = vim.env.CC_LAYOUT_OVERRIDE or "vertical"
       return {
-        strategies = {
+        interactions = {
           chat = {
             adapter = "copilot",
             keymaps = {
@@ -173,16 +171,16 @@ return {
               },
               -- For read only, no need for request approval.
               file_search = {
-                opts = { requires_approval = false },
+                opts = { require_approval_before = false, require_confirmation_after = false },
               },
               get_changed_files = {
-                opts = { requires_approval = false },
+                opts = { require_approval_before = false, require_confirmation_after = false },
               },
               grep_search = {
-                opts = { requires_approval = false },
+                opts = { require_approval_before = false, require_confirmation_after = false },
               },
               read_file = {
-                opts = { requires_approval = false },
+                opts = { require_approval_before = false, require_confirmation_after = false },
               },
             },
           },
@@ -223,9 +221,6 @@ return {
           --     make_slash_commands = true,
           --   },
           -- },
-          contextfiles = {
-            opts = {},
-          },
           history = {
             enabled = true,
             expiration_days = 14,
