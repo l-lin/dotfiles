@@ -204,6 +204,8 @@ return {
           next_month = require("plugins.custom.lang.obsidian").next_month,
           todo = require("plugins.custom.lang.obsidian").todo,
           time_tracker = require("plugins.custom.lang.obsidian").time_tracker,
+          unfinished_yesterday_objective_tasks = require("plugins.custom.lang.obsidian").unfinished_yesterday_objective_tasks,
+          unfinished_yesterday_other_tasks = require("plugins.custom.lang.obsidian").unfinished_yesterday_other_tasks,
         },
       },
 

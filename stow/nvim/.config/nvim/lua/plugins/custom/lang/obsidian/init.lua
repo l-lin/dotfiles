@@ -131,6 +131,60 @@ local function time_tracker(ctx)
   return ""
 end
 
+---Get unfinished tasks from a specific section in yesterday's journal.
+---@param ctx obsidian.TemplateContext
+---@param section_header string the section header to look for (e.g., "🎯 Today's objectives")
+---@return string tasks formatted as markdown list items, or empty string if none
+local function get_unfinished_tasks_from_section(ctx, section_header)
+  local yesterday_date = os.date("%Y-%m-%d", id_to_date(ctx.partial_note) - 86400)
+  local notes_dir = vim.fn.expand(vim.g.notes_dir)
+  local yesterday_path = string.format("%s/5-rituals/daily/%s.md", notes_dir, yesterday_date)
+
+  -- Read file, return empty if doesn't exist
+  local file = io.open(yesterday_path, "r")
+  if not file then
+    return ""
+  end
+  local content = file:read("*a")
+  file:close()
+
+  -- Find the section
+  local section_pattern = "## " .. section_header:gsub("([%(%)%.%%%+%-%*%?%[%]%^%$])", "%%%1")
+  local section_start = content:find(section_pattern)
+  if not section_start then
+    return ""
+  end
+
+  -- Extract content from section start to next section or horizontal rule
+  local section_content = content:sub(section_start)
+  local section_end = section_content:find("\n## ") or section_content:find("\n%-%-%-")
+  if section_end then
+    section_content = section_content:sub(1, section_end - 1)
+  end
+
+  -- Extract unfinished tasks (- [ ] or - [>])
+  local tasks = {}
+  for line in section_content:gmatch("[^\n]+") do
+    if line:match("^%s*%- %[ %]") or line:match("^%s*%- %[>%]") then
+      -- Normalize [>] to [ ]
+      local normalized = line:gsub("%[>%]", "[ ]")
+      table.insert(tasks, normalized)
+    end
+  end
+
+  return table.concat(tasks, "\n")
+end
+
+---@param ctx obsidian.TemplateContext
+local function unfinished_yesterday_objective_tasks(ctx)
+  return get_unfinished_tasks_from_section(ctx, "🎯 Today's objectives")
+end
+
+---@param ctx obsidian.TemplateContext
+local function unfinished_yesterday_other_tasks(ctx)
+  return get_unfinished_tasks_from_section(ctx, "🚧 Others")
+end
+
 local M = {}
 M.today = today
 M.yesterday = yesterday
@@ -144,4 +198,6 @@ M.search_pending_todos = search_pending_todos
 M.open_current_monthly_note = open_current_monthly_note
 M.sanitize_and_yank = sanitize_and_yank
 M.time_tracker = time_tracker
+M.unfinished_yesterday_objective_tasks = unfinished_yesterday_objective_tasks
+M.unfinished_yesterday_other_tasks = unfinished_yesterday_other_tasks
 return M
