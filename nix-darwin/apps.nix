@@ -45,6 +45,8 @@
     # `brew install`
     # To get the list of installed apps with brew: `brew list`
     brews = [
+      # Terminal epub reader: https://bugzmanov.github.io/bookokrat/index.html
+      "bookokrat"
       # Elegant Lua unit testing: https://lunarmodules.github.io/busted/
       "busted"
       # Expose the contents of .docx files without leaving your terminal. Fast, safe, and smart — no Office required! https://github.com/bgreenwell/doxx
@@ -85,7 +87,7 @@
       # macOS system monitor in your menu bar: https://github.com/exelban/stats
       #"stats"
       # 🌀 Experience tranquillity while browsing the web without people tracking you: https://zen-browser.app/
-      "zen-browser"
+      "zen"
     ];
   };
 }
