@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+#
+#MISE description="Task to run after a MacOS reboot/startup"
+#
+
+mise run home:apply
+mise run darwin:update
+unleash-the-keys
