@@ -5,9 +5,5 @@
 
 { pkgs, ... }: {
   home.packages = with pkgs; [ just ];
- 
-  # Symlink ~/.config/nvim/snippets/just.snippets
-  xdg.configFile."nvim/snippets/just.snippets".source = ./.config/nvim/snippets/just.snippets;
-  # Symlink ~/.config/zsh/completions/_just
   xdg.configFile."zsh/completions/_just".source = ./.config/zsh/completions/_just;
 }
