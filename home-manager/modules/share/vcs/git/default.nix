@@ -5,12 +5,35 @@
 #
 
 { config, pkgs, symlinkRoot, userSettings, ... }: {
-  home.packages = with pkgs; [
-    # GitHub CLI tool: https://cli.github.com/
-    gh
-    git
-    git-lfs
-  ];
+  home = {
+    packages = with pkgs; [
+      # GitHub CLI tool: https://cli.github.com/
+      gh
+      git
+      git-lfs
+    ];
+
+    # mkOutOfStoreSymlink creates a mutable symlink (writable at runtime).
+    # .gitconfig may be modified by git commands or tools.
+    file.".gitconfig".source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/vcs/git/.gitconfig";
+
+    # Symlink to ~/perso/.gitconfig
+    file."perso/.gitconfig".text = ''
+  [commit]
+    # sign commits
+    gpgsign = true
+  [gpg]
+    format = ssh
+  [gpg "ssh"]
+    allowedSignersFile = ~/.ssh/allowed_signers
+  [tag]
+    # sign tags
+    gpgsign = true
+  [user]
+    email = ${userSettings.email}
+    signingkey = ~/.ssh/${userSettings.username}.pub
+    '';
+  };
   xdg.configFile = {
     # Symlink to ~/.config/git
     "git/ignore".source = ./.config/git/ignore;
@@ -31,25 +54,4 @@
       recursive = true;
     };
   };
-
-  # mkOutOfStoreSymlink creates a mutable symlink (writable at runtime).
-  # .gitconfig may be modified by git commands or tools.
-  home.file.".gitconfig".source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/vcs/git/.gitconfig";
-
-  # Symlink to ~/perso/.gitconfig
-  home.file."perso/.gitconfig".text = ''
-[commit]
-  # sign commits
-  gpgsign = true
-[gpg]
-  format = ssh
-[gpg "ssh"]
-  allowedSignersFile = ~/.ssh/allowed_signers
-[tag]
-  # sign tags
-  gpgsign = true
-[user]
-  email = ${userSettings.email}
-  signingkey = ~/.ssh/${userSettings.username}.pub
-  '';
 }
