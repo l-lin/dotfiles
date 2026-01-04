@@ -127,11 +127,16 @@
     # shared utility libraries
     fileExplorer = import ./scripts/file-explorer.nix { inherit lib; };
 
+    # Root path for symlinks created with mkOutOfStoreSymlink.
+    # Used for configs that need to be writable at runtime (e.g., lazy-lock.json).
+    homeDirectory = if (systemSettings.system == "x86_64-linux") then "/home" else "/Users";
+    symlinkRoot = "${homeDirectory}/${userSettings.username}/.config/dotfiles";
+
     specialArgs =
       inputs
       // {
         pkgs-bitwarden-cli = import nixpkgs-bitwarden-cli { system = systemSettings.system; };
-        inherit fileExplorer inputs nixgl outputs secrets systemSettings userSettings;
+        inherit fileExplorer inputs nixgl outputs secrets symlinkRoot systemSettings userSettings;
       };
   in {
     # Your custom packages.
