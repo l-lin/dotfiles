@@ -4,7 +4,7 @@
 # src: https://git-scm.com/
 #
 
-{ config, pkgs, userSettings, ... }: {
+{ config, pkgs, symlinkRoot, userSettings, ... }: {
   home.packages = with pkgs; [
     # GitHub CLI tool: https://cli.github.com/
     gh
@@ -31,6 +31,10 @@
       recursive = true;
     };
   };
+
+  # mkOutOfStoreSymlink creates a mutable symlink (writable at runtime).
+  # .gitconfig may be modified by git commands or tools.
+  home.file.".gitconfig".source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/vcs/git/.gitconfig";
 
   # Symlink to ~/perso/.gitconfig
   home.file."perso/.gitconfig".text = ''
