@@ -58,8 +58,7 @@ $ nix-shell -p tree --run 'tree -d -L 1'
 ├── home-manager # Install and configure package at user level.
 ├── nixos        # Install and configure package at system level.
 ├── pkgs         # Contains Nix custom packages that are not present in nixpkgs.
-├── scripts      # Contains some Nix scripts to be use in home-manager or NixOS configuration files, as well as some shell scripts to use outside of Nix.
-└── stow         # Configuration files that need to be writeable are symlinked in this folder.
+└── scripts      # Contains some Nix scripts to be use in home-manager or NixOS configuration files, as well as some shell scripts to use outside of Nix.
 ```
 
 ### Fresh installation
@@ -252,13 +251,6 @@ xdg.configFile."waybar/colorscheme.css".text = ''
 '';
 ```
 
-#### Exceptions
-
-Use `stow` for the following instead:
-
-- NeoVim configuration files
-- configuration files that can be written at runtime by tools
-
 ### LazyVim configuration
 
 > [!NOTE]
@@ -277,10 +269,6 @@ should work without any problem. If not please check below on how to configure i
 
 I still don't know if I want to migrate NeoVim to be fully Nix compliant or keep
 it like this...
-
-> [!NOTE]
-> I moved all my NeoVim configuration to the `stow/` folder, as updating a NeoVim Lua
-> file through home-manager resulted in slow feedback (~20s).
 
 ### Styling
 

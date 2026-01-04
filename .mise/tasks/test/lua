@@ -4,5 +4,5 @@
 #
 
 busted --pattern=_spec \
-  -m "stow/nvim/.config/nvim/lua/?.lua;stow/nvim/.config/nvim/lua/?/init.lua" \
-  stow/nvim/.config/nvim/lua/
+  -m "home-manager/modules/share/editor/nvim/.config/nvim/lua/?.lua;home-manager/modules/share/editor/nvim/.config/nvim/lua/?/init.lua" \
+  home-manager/modules/share/editor/nvim/.config/nvim/lua/

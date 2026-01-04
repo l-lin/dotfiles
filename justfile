@@ -112,31 +112,6 @@ add-keyboard-layout:
       "${XDG_CONFIG_HOME:-${HOME}/.config}/dotfiles/home-manager/modules/aarch64-darwin/keyboard-layout/us-altgr-intl.keylayout" \
       "/Library/Keyboard Layouts/us-altgr-intl.keylayout"
 
-# STOW --------------------------------------------------------------------------
-
-# add symlinks for files that need to be writeable
-create-symlinks: init-directories
-  cd stow \
-  && for folder in $(find . -type d -maxdepth 1 2>/dev/null); do \
-    if [[ "${folder}" != '.' ]] && [[ "${folder}" != './.git' ]]; then \
-      app=$(echo "${folder}" | sed 's~./~~') \
-      && just info "Add symlinks for ${app}" \
-      && stow --delete -t "${HOME}" "${app}" \
-      && stow -t "${HOME}" "${app}"; \
-    fi; \
-  done
-
-# remove-symlinks
-remove-symlinks folder:
-  cd stow && stow --delete -t "${HOME}" "{{folder}}"
-
-[private]
-init-directories:
-  cd stow \
-  && find . -mindepth 2 -type d | sed 's|^\./||' | grep '/' | while read folder; do \
-    mkdir -p "${HOME}/${folder}"; \
-  done
-
 # INSTALLATION / CONFIGURATION --------------------------------------------------------------------------
 
 # import SSH keys, SOPS age key and create git allowed signers

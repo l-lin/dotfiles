@@ -10,4 +10,3 @@ if type nh >/dev/null 2>&1; then \
 else \
   home-manager switch -b bak --flake ".#$(whoami)"; \
 fi
-mise run stow:create
