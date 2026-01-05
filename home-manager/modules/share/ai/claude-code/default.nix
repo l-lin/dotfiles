@@ -10,6 +10,12 @@
   };
 
   home = {
+    sessionVariables = {
+      # Enable experimental MCP-CLI for reduced token consumption.
+      # https://github.com/anthropics/claude-code/issues/7336#issuecomment-3650620407
+      ENABLE_EXPERIMENTAL_MCP_CLI = "true";
+    };
+
     file = {
       ".claude/settings.json".source = ./.claude/settings.json;
       ".claude/cc_statusline.rb".source = ./.claude/cc_statusline.rb;
