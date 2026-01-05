@@ -80,12 +80,22 @@ return {
   {
     "l-lin/jira.nvim",
     cmd = { "JiraIssues", "JiraEpic", "JiraStartWorkingOn" },
+    dependencies = {
+      {
+        "folke/which-key.nvim",
+        opts = {
+          spec = {
+            { "<leader>j", group = "jira" },
+          },
+        },
+      },
+    },
     keys = {
-      { "<leader>ji", "<cmd>JiraIssues<cr>" },
-      { "<leader>je", "<cmd>JiraEpic<cr>" },
-      { "<leader>j1", "<cmd>JiraEpic P3C-5861<cr>" },
-      { "<leader>j2", "<cmd>JiraEpic P3C-6006<cr>" },
-      { "<leader>j3", "<cmd>JiraEpic P3C-5857<cr>" },
+      { "<leader>ji", "<cmd>JiraIssues<cr>", desc = "Jira current issues" },
+      { "<leader>je", "<cmd>JiraEpic<cr>", desc = "Jira epics" },
+      { "<leader>j1", "<cmd>JiraEpic P3C-5861<cr>", desc = "Jira P3C-5861" },
+      { "<leader>j2", "<cmd>JiraEpic P3C-6006<cr>", desc = "Jira P3C-6006" },
+      { "<leader>j3", "<cmd>JiraEpic P3C-5857<cr>", desc = "Jira P3C-5857" },
     },
     opts = {
       cli = {
