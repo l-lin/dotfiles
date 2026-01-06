@@ -47,7 +47,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$HOME/.claude/hooks/skill-activation-prompt.sh"
+            "command": "$HOME/.config/ai/hooks/skill-activation-prompt.rb"
           }
         ]
       }
