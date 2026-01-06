@@ -32,10 +32,6 @@
         source = ../.config/ai/skills;
         recursive = true;
       };
-      ".claude/hooks" = {
-        source = ./.claude/hooks;
-        recursive = true;
-      };
 
       #
       # AGENTS
