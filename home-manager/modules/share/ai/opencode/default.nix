@@ -3,7 +3,7 @@
 # src: https://opencode.ai/
 #
 
-{ config, ... }:
+{ config, lib, ... }:
 let
   # TODO: Maybe one day, I'll do something more dynamic?
   darkThemeMap = {
@@ -20,6 +20,11 @@ let
     then darkThemeMap.${config.theme.nvimColorScheme} or "kanagawa"
     else lightThemeMap.${config.theme.nvimColorScheme} or "github";
 in {
+   # NOTE: Opencode fails to launch if the plugin file is a symlink, so we need to create the file directly with a script.
+   home.activation.copyOpenCodePlugin = lib.hm.dag.entryAfter ["writeBoundary"] ''
+     $DRY_RUN_CMD mkdir -p ${config.xdg.configHome}/opencode/plugin/
+     $DRY_RUN_CMD cp -f ${./.config/opencode/plugin/skill-activation.ts} ${config.xdg.configHome}/opencode/plugin/skills-activation.ts
+   '';
   xdg.configFile = {
     "mise/conf.d/opencode.toml".source = ./.config/mise/conf.d/opencode.toml;
     "opencode/config.json".text = builtins.toJSON (
