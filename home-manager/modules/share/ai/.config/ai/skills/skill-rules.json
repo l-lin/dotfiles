@@ -1,0 +1,154 @@
+{
+  "version": "1.0",
+  "description": "Skill activation triggers for Claude Code. Controls when skills automatically suggest or block actions.",
+  "skills": {
+    "clear-writing": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "high",
+      "promptTriggers": {
+        "keywords": [
+          "write clearly",
+          "clear writing",
+          "improve writing",
+          "documentation",
+          "commit message",
+          "error message",
+          "explanation",
+          "report",
+          "UI text",
+          "README",
+          "help text",
+          "comment"
+        ],
+        "intentPatterns": [
+          "(write|improve|edit|review).*(documentation|commit|message|text|copy)",
+          "(make|write).*(clear|professional|better)",
+          "how (do|can) (I|we) (write|explain)"
+        ]
+      },
+      "fileTriggers": {
+        "pathPatterns": [
+          "**/*.md",
+          "**/README*",
+          "**/CONTRIBUTING*",
+          "**/CHANGELOG*",
+          "**/.github/**/*.md"
+        ],
+        "contentPatterns": ["^#\\s+", "^##\\s+"]
+      }
+    },
+    "implementation-planner": {
+      "type": "workflow",
+      "enforcement": "suggest",
+      "priority": "high",
+      "promptTriggers": {
+        "keywords": [
+          "breakdown the task",
+          "plan the implementation",
+          "break down",
+          "implementation plan",
+          "how to implement",
+          "refactor",
+          "bug fix"
+        ],
+        "intentPatterns": [
+          "(break.*down|decompose|plan).*(task|feature|implementation|refactor)",
+          "(how|what).*(implement|build|create|add).*(feature|functionality)",
+          "(complex|large).*(feature|task|change)"
+        ]
+      },
+      "fileTriggers": {
+        "pathPatterns": [],
+        "contentPatterns": []
+      }
+    },
+    "create-skill": {
+      "type": "utility",
+      "enforcement": "suggest",
+      "priority": "medium",
+      "promptTriggers": {
+        "keywords": [
+          "create skill",
+          "new skill",
+          "make a skill",
+          "scaffold skill",
+          "build skill"
+        ],
+        "intentPatterns": [
+          "(create|make|build|scaffold|generate).*(skill|capability)",
+          "new.*(skill|reusable)"
+        ]
+      },
+      "fileTriggers": {
+        "pathPatterns": ["**/.claude/skills/**", "**/skills/**/SKILL.md"],
+        "contentPatterns": ["^---\\s*$", "^name:\\s*", "^description:\\s*"]
+      }
+    },
+    "continuous-learning": {
+      "type": "meta",
+      "enforcement": "suggest",
+      "priority": "low",
+      "promptTriggers": {
+        "keywords": [
+          "learn",
+          "reflect",
+          "save as skill",
+          "remember this",
+          "create skill from this"
+        ],
+        "intentPatterns": [
+          "(learn|save|remember|capture).*(pattern|approach|solution)",
+          "reflect on.*(task|work|session)",
+          "(worth|should) (saving|learning|remembering)"
+        ]
+      },
+      "fileTriggers": {
+        "pathPatterns": [],
+        "contentPatterns": []
+      }
+    },
+    "web-research": {
+      "type": "utility",
+      "enforcement": "suggest",
+      "priority": "medium",
+      "promptTriggers": {
+        "keywords": [
+          "search internet",
+          "web research",
+          "look up",
+          "find information",
+          "research online",
+          "search for"
+        ],
+        "intentPatterns": [
+          "(search|research|look up|find).*(internet|web|online)",
+          "(what|how).*(current|latest|recent)",
+          "compare.*(tools|libraries|frameworks|approaches)"
+        ]
+      },
+      "fileTriggers": {
+        "pathPatterns": ["**/.sandbox/research/**"],
+        "contentPatterns": []
+      }
+    }
+  },
+  "notes": {
+    "enforcement_types": {
+      "suggest": "Skill suggestion appears but doesn't block execution",
+      "block": "Requires skill to be used before proceeding (guardrail)",
+      "warn": "Shows warning but allows proceeding"
+    },
+    "priority_levels": {
+      "critical": "Highest - Always trigger when matched",
+      "high": "Important - Trigger for most matches",
+      "medium": "Moderate - Trigger for clear matches",
+      "low": "Optional - Trigger only for explicit matches"
+    },
+    "customization": {
+      "pathPatterns": "Adjust to match your project structure (blog-api, auth-service, etc.)",
+      "keywords": "Add domain-specific terms relevant to your project",
+      "intentPatterns": "Use regex for flexible user intent matching"
+    }
+  }
+}
