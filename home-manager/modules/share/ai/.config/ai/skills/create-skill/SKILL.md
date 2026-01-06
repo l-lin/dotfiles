@@ -67,6 +67,7 @@ description: <what-it-does>. <when-to-use-it>.
 ### Content Section
 
 After the frontmatter, write clear instructions for Claude:
+
 - Step-by-step workflow
 - Expected inputs/outputs
 - Error handling guidance
@@ -116,8 +117,42 @@ User provides an API endpoint. You will:
 - Invalid JSON: Report parsing error with raw response
 ```
 
+## Step 4: Register in skill-rules.json
+
+After creating the skill, add an entry to `~/.claude/skills/skill-rules.json` (or `.claude/skills/skill-rules.json` for project-specific):
+
+```json
+"<skill-name>": {
+  "type": "<domain|workflow|utility|meta>",
+  "enforcement": "suggest",
+  "priority": "<critical|high|medium|low>",
+  "promptTriggers": {
+    "keywords": ["trigger phrase 1", "trigger phrase 2"],
+    "intentPatterns": ["regex pattern for user intent"]
+  },
+  "fileTriggers": {
+    "pathPatterns": ["**/relevant/paths/**"],
+    "contentPatterns": ["regex for file content"]
+  }
+}
+```
+
+### Type Selection Guide
+
+- **domain**: Subject-matter expertise (writing, security, accessibility)
+- **workflow**: Multi-step processes (planning, deployment, review)
+- **utility**: Tools and helpers (testing, scaffolding, formatting)
+- **meta**: Self-referential (learning, skill creation)
+
+### Priority Selection
+
+- **critical**: Security, compliance - always trigger
+- **high**: Core workflows - trigger for most matches
+- **medium**: Helpful utilities - trigger for clear matches
+- **low**: Optional enhancements - explicit matches only
+
 ## Output Location
 
-Create skills in: `~/.claude/skills/<skill-name>/SKILL.md`
+Create skills in: `~/.config/ai/skills/<skill-name>/SKILL.md`
 
-For project-specific skills: `.claude/skills/<skill-name>/SKILL.md`
+For project-specific skills: `.ai/skills/<skill-name>/SKILL.md`
