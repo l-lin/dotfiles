@@ -26,16 +26,6 @@
           "(make|write).*(clear|professional|better)",
           "how (do|can) (I|we) (write|explain)"
         ]
-      },
-      "fileTriggers": {
-        "pathPatterns": [
-          "**/*.md",
-          "**/README*",
-          "**/CONTRIBUTING*",
-          "**/CHANGELOG*",
-          "**/.github/**/*.md"
-        ],
-        "contentPatterns": ["^#\\s+", "^##\\s+"]
       }
     },
     "implementation-planner": {
@@ -57,10 +47,6 @@
           "(how|what).*(implement|build|create|add).*(feature|functionality)",
           "(complex|large).*(feature|task|change)"
         ]
-      },
-      "fileTriggers": {
-        "pathPatterns": [],
-        "contentPatterns": []
       }
     },
     "create-skill": {
@@ -79,10 +65,6 @@
           "(create|make|build|scaffold|generate).*(skill|capability)",
           "new.*(skill|reusable)"
         ]
-      },
-      "fileTriggers": {
-        "pathPatterns": ["**/.claude/skills/**", "**/skills/**/SKILL.md"],
-        "contentPatterns": ["^---\\s*$", "^name:\\s*", "^description:\\s*"]
       }
     },
     "continuous-learning": {
@@ -102,10 +84,6 @@
           "reflect on.*(task|work|session)",
           "(worth|should) (saving|learning|remembering)"
         ]
-      },
-      "fileTriggers": {
-        "pathPatterns": [],
-        "contentPatterns": []
       }
     },
     "web-research": {
@@ -126,10 +104,31 @@
           "(what|how).*(current|latest|recent)",
           "compare.*(tools|libraries|frameworks|approaches)"
         ]
-      },
-      "fileTriggers": {
-        "pathPatterns": ["**/.sandbox/research/**"],
-        "contentPatterns": []
+      }
+    },
+    "brainstorm": {
+      "type": "workflow",
+      "enforcement": "suggest",
+      "priority": "critical",
+      "promptTriggers": {
+        "keywords": [
+          "brainstorm",
+          "explore feature",
+          "design discussion",
+          "requirements",
+          "create feature",
+          "build component",
+          "add functionality",
+          "modify behavior",
+          "new feature",
+          "implement feature"
+        ],
+        "intentPatterns": [
+          "(brainstorm|explore|discuss|design).*(feature|component|solution|approach)",
+          "(create|build|add|implement|modify).*(feature|component|functionality|behavior)",
+          "(what|how).*(should|could).*(we|I).*(build|implement|design)",
+          "(requirements|specs|planning).*(for|about)"
+        ]
       }
     }
   },
