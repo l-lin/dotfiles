@@ -123,26 +123,26 @@ After creating the skill, add an entry to `~/.config/ai/skills/skill-rules.json`
 
 ```json
 "<skill-name>": {
-  "type": "<domain|workflow|utility|meta>",
-  "enforcement": "suggest",
   "priority": "<critical|high|medium|low>",
   "promptTriggers": {
     "keywords": ["trigger phrase 1", "trigger phrase 2"],
     "intentPatterns": ["regex pattern for user intent"]
-  },
-  "fileTriggers": {
-    "pathPatterns": ["**/relevant/paths/**"],
-    "contentPatterns": ["regex for file content"]
   }
 }
 ```
 
-### Type Selection Guide
+### Reference files
 
-- **domain**: Subject-matter expertise (writing, security, accessibility)
-- **workflow**: Multi-step processes (planning, deployment, review)
-- **utility**: Tools and helpers (testing, scaffolding, formatting)
-- **meta**: Self-referential (learning, skill creation)
+#### [TRIGGER_TYPES.md](TRIGGER_TYPES.md)
+
+Complete guide to all trigger types:
+
+- Keyword triggers (explicit topic matching)
+- Intent patterns (implicit action detection)
+- File path triggers (glob patterns)
+- Content patterns (regex in files)
+- Best practices and examples for each
+- Common pitfalls and testing strategies
 
 ### Priority Selection
 
