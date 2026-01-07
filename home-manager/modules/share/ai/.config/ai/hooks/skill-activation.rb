@@ -21,8 +21,29 @@ class SkillActivationPrompt
   private
 
   def load_skill_rules
+    global_rules = load_global_rules
+    project_rules = load_project_rules
+    merge_rules(global_rules, project_rules)
+  end
+
+  def load_global_rules
     rules_path = File.join(ENV['HOME'], '.config', 'ai', 'skills', 'skill-rules.json')
     JSON.parse(File.read(rules_path))
+  rescue Errno::ENOENT
+    { 'skills' => {} }
+  end
+
+  def load_project_rules
+    project_rules_path = File.join(Dir.pwd, '.ai', 'skills', 'skill-rules.json')
+    JSON.parse(File.read(project_rules_path))
+  rescue Errno::ENOENT
+    { 'skills' => {} }
+  end
+
+  def merge_rules(global_rules, project_rules)
+    {
+      'skills' => global_rules.fetch('skills', {}).merge(project_rules.fetch('skills', {}))
+    }
   end
 
   def find_matched_skills(rules)
