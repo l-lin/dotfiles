@@ -172,6 +172,31 @@
           "(how|what).*(ruby).*(work|do|use)"
         ]
       }
+    },
+    "rails-mentor": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "medium",
+      "promptTriggers": {
+        "keywords": [
+          "rails",
+          "explain rails",
+          "rails concept",
+          "rails best practice",
+          "rails pattern",
+          "rails tutorial",
+          "learn rails",
+          "activerecord",
+          "actioncontroller",
+          "rails convention"
+        ],
+        "intentPatterns": [
+          "(explain|teach|show|learn).*(rails)",
+          "(rails).*(concept|feature|pattern|best practice|convention)",
+          "(how|what).*(rails).*(work|do|use)",
+          "(activerecord|actioncontroller|actionview|activejob|actioncable)"
+        ]
+      }
     }
   },
   "notes": {
