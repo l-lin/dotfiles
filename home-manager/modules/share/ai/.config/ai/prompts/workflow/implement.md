@@ -1,5 +1,5 @@
 ---
-description: Implement technical plans from.sandbox/plans with verification
+description: Implement technical plans from .sandbox/plans with verification
 ---
 
 # Implement Plan
