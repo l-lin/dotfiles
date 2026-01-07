@@ -12,10 +12,11 @@
     ./opencode
   ];
 
-  # Symlink ~/.config/zsh/secrets/.secrets.ai.
-  xdg.configFile."zsh/secrets/.secrets.ai".source = ./.config/zsh/secrets/.secrets.ai;
-  xdg.configFile."ai" = {
-    source = ./.config/ai;
-    recursive = true;
+  xdg.configFile = {
+    "zsh/secrets/.secrets.ai".source = ./.config/zsh/secrets/.secrets.ai;
+    "ai" = {
+      source = ./.config/ai;
+      recursive = true;
+    };
   };
 }
