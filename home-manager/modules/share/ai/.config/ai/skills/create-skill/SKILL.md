@@ -1,6 +1,6 @@
 ---
 name: create-skill
-description: Create new Claude Code skills with proper structure and best practices. Use when user says "create skill", "new skill", "make a skill", or wants to scaffold a reusable Claude Code capability.
+description: Create new skills with proper structure and best practices. Use when user says "create skill", "new skill", "make a skill", or wants to scaffold a reusable agent capability.
 ---
 
 # Skill Creation Guide
@@ -14,8 +14,8 @@ This skill creates a new skill with the proper directory structure.
 This means:
 
 - **Descriptions must be discoverable**: Include keywords users would naturally say
-- **Claude matches intent**: Write descriptions that help Claude recognize when the skill applies
-- **No explicit invocation**: Users don't type a command; Claude activates skills automatically
+- **Agent matches intent**: Write descriptions that help the agent recognize when the skill applies
+- **No explicit invocation**: Users don't type a command; agent activates skills automatically
 
 ## Step 1: Gather Requirements
 
@@ -30,7 +30,7 @@ If any required information is missing, ask the user to complete it.
 ## Step 2: Create Directory Structure
 
 ```
-~/.claude/skills/<skill-name>/
+~/.config/ai/skills/<skill-name>/
 ├── SKILL.md          (required - main instructions)
 ├── reference.md      (optional - detailed documentation)
 ├── examples.md       (optional - usage examples)
@@ -55,7 +55,7 @@ description: <what-it-does>. <when-to-use-it>.
 - **description**: Max 1024 chars, MUST include:
   - What the skill does (functionality)
   - When to use it (trigger conditions/keywords)
-  - **IMPORTANT** The description is critical for skill activation. Since skills are model-invoked, Claude uses the description to decide when to activate a skill. Poor descriptions = skills that never get used.
+  - **IMPORTANT** The description is critical for skill activation. Since skills are model-invoked, the agent uses the description to decide when to activate a skill. Poor descriptions = skills that never get used.
 - **allowed-tools**: Comma-separated list (optional)
 
 **Pattern for good descriptions:**
@@ -66,7 +66,7 @@ description: <what-it-does>. <when-to-use-it>.
 
 ### Content Section
 
-After the frontmatter, write clear instructions for Claude:
+After the frontmatter, write clear instructions for the agent:
 
 - Step-by-step workflow
 - Expected inputs/outputs
@@ -85,7 +85,7 @@ After the frontmatter, write clear instructions for Claude:
 
 - Vague descriptions like "Helps with code" - be specific
 - Overly broad scope - split into multiple focused skills
-- Missing trigger phrases - Claude won't know when to use it
+- Missing trigger phrases - the agent won't know when to use it
 - Tool restrictions without reason - only restrict when necessary
 
 ## Example SKILL.md
@@ -119,7 +119,7 @@ User provides an API endpoint. You will:
 
 ## Step 4: Register in skill-rules.json
 
-After creating the skill, add an entry to `~/.claude/skills/skill-rules.json` (or `.claude/skills/skill-rules.json` for project-specific):
+After creating the skill, add an entry to `~/.config/ai/skills/skill-rules.json` (or `.ai/skills/skill-rules.json` for project-specific):
 
 ```json
 "<skill-name>": {
