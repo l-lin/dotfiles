@@ -130,6 +130,27 @@
           "(requirements|specs|planning).*(for|about)"
         ]
       }
+    },
+    "kotlin-mentor": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "medium",
+      "promptTriggers": {
+        "keywords": [
+          "kotlin",
+          "explain kotlin",
+          "kotlin concept",
+          "kotlin best practice",
+          "kotlin idiom",
+          "kotlin tutorial",
+          "learn kotlin"
+        ],
+        "intentPatterns": [
+          "(explain|teach|show|learn).*(kotlin)",
+          "(kotlin).*(concept|feature|idiom|best practice|pattern)",
+          "(how|what).*(kotlin).*(work|do|use)"
+        ]
+      }
     }
   },
   "notes": {
