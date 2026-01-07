@@ -151,6 +151,27 @@
           "(how|what).*(kotlin).*(work|do|use)"
         ]
       }
+    },
+    "ruby-mentor": {
+      "type": "domain",
+      "enforcement": "suggest",
+      "priority": "medium",
+      "promptTriggers": {
+        "keywords": [
+          "ruby",
+          "explain ruby",
+          "ruby concept",
+          "ruby best practice",
+          "ruby idiom",
+          "ruby tutorial",
+          "learn ruby"
+        ],
+        "intentPatterns": [
+          "(explain|teach|show|learn).*(ruby)",
+          "(ruby).*(concept|feature|idiom|best practice|pattern)",
+          "(how|what).*(ruby).*(work|do|use)"
+        ]
+      }
     }
   },
   "notes": {
