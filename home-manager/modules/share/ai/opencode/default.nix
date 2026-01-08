@@ -153,5 +153,20 @@ tools:
 
 ${builtins.readFile ../.config/ai/agents/rails-mentor.md}
     '';
+    "opencode/agent/kotlin-mentor.md".text = ''
+---
+description: Kotlin Programming Mentor and Best Practices Guide. Use when user mentions Kotlin concepts, asks about Kotlin idioms, or works with Kotlin code. Explains Kotlin features with practical examples and warnings about common pitfalls.
+mode: subagent
+model: github-copilot/gpt-4.1
+temperature: 0
+tools:
+  read: true
+  grep: true
+  glob: true
+  list: true
+---
+
+${builtins.readFile ../.config/ai/agents/kotlin-mentor.md}
+    '';
   };
 }

@@ -114,6 +114,17 @@ color: purple
 
 ${builtins.readFile ../.config/ai/agents/rails-mentor.md}
       '';
+      ".claude/agents/kotlin-mentor.md".text = ''
+---
+name: kotlin-mentor
+description: Kotlin Programming Mentor and Best Practices Guide. Use when user mentions Kotlin concepts, asks about Kotlin idioms, or works with Kotlin code. Explains Kotlin features with practical examples and warnings about common pitfalls.
+tools: Read, Grep, Glob, LS
+model: inherit
+color: purple
+---
+
+${builtins.readFile ../.config/ai/agents/kotlin-mentor.md}
+      '';
     };
   };
 
