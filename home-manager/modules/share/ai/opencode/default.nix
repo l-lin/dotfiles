@@ -138,5 +138,20 @@ tools:
 
 ${builtins.readFile ../.config/ai/agents/ruby-mentor.md}
     '';
+    "opencode/agent/rails-mentor.md".text = ''
+---
+description: Rails Framework Mentor and Best Practices Guide. Use when user mentions Rails concepts, asks about Rails patterns, or works with Rails applications. Explains Rails conventions, architecture patterns, and common pitfalls with practical examples.
+mode: subagent
+model: github-copilot/gpt-4.1
+temperature: 0
+tools:
+  read: true
+  grep: true
+  glob: true
+  list: true
+---
+
+${builtins.readFile ../.config/ai/agents/rails-mentor.md}
+    '';
   };
 }

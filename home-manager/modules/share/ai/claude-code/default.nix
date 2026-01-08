@@ -103,6 +103,17 @@ color: purple
 
 ${builtins.readFile ../.config/ai/agents/ruby-mentor.md}
       '';
+      ".claude/agents/rails-mentor.md".text = ''
+---
+name: rails-mentor
+description: Rails Framework Mentor and Best Practices Guide. Use when user mentions Rails concepts, asks about Rails patterns, or works with Rails applications. Explains Rails conventions, architecture patterns, and common pitfalls with practical examples.
+tools: Read, Grep, Glob, LS
+model: inherit
+color: purple
+---
+
+${builtins.readFile ../.config/ai/agents/rails-mentor.md}
+      '';
     };
   };
 
