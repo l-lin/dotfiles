@@ -92,6 +92,17 @@ color: orange
 
 ${builtins.readFile ../.config/ai/agents/web-search-researcher.md}
       '';
+      ".claude/agents/ruby-mentor.md".text = ''
+---
+name: ruby-mentor
+description: Ruby Programming Mentor and Best Practices Guide. Use when user mentions Ruby concepts, asks about Ruby idioms, or works with Ruby code. Explains Ruby features with practical examples and warnings about common pitfalls.
+tools: Read, Grep, Glob, LS
+model: inherit
+color: purple
+---
+
+${builtins.readFile ../.config/ai/agents/ruby-mentor.md}
+      '';
     };
   };
 

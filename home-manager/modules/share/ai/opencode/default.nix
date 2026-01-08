@@ -123,5 +123,20 @@ tools:
 
 ${builtins.readFile ../.config/ai/agents/web-search-researcher.md}
     '';
+    "opencode/agent/ruby-mentor.md".text = ''
+---
+description: Ruby Programming Mentor and Best Practices Guide. Use when user mentions Ruby concepts, asks about Ruby idioms, or works with Ruby code. Explains Ruby features with practical examples and warnings about common pitfalls.
+mode: subagent
+model: github-copilot/gpt-4.1
+temperature: 0
+tools:
+  read: true
+  grep: true
+  glob: true
+  list: true
+---
+
+${builtins.readFile ../.config/ai/agents/ruby-mentor.md}
+    '';
   };
 }

@@ -11,12 +11,16 @@
       "Bash(rg:*)",
       "Edit",
       "Read",
+
       "Skill(clear-writing)",
       "Skill(continuous-learning)",
       "Skill(create-skill)",
       "Skill(implementation-planner)",
       "Skill(jira)",
       "Skill(web-research)",
+
+      "Skill(ruby-mentor)",
+
       "Write",
       "WebFetch",
 
