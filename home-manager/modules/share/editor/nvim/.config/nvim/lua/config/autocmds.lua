@@ -32,22 +32,6 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
--- Consider Jenkinsfile as groovy files.
-vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-  pattern = "Jenkinsfile",
-  callback = function()
-    vim.bo.filetype = "groovy"
-  end,
-})
-
--- Consider bats test files as shell files.
-vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-  pattern = "*.bats",
-  callback = function()
-    vim.bo.filetype = "sh"
-  end,
-})
-
 -- Set text width everywhere except in my notes project.
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufEnter" }, {
   pattern = "*.md",
