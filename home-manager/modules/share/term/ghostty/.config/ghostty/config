@@ -15,7 +15,7 @@
 # I'm not sure why it's looking at the wrong directory, but since the default
 # Ghostty font is JetBrainsMono, I don't really need to customize it.
 #font-family = "JetBrainsMono Nerd font"
-#font-size = 13.5
+font-size = 16
 
 #
 # Window
