@@ -67,6 +67,8 @@
     stow
     # Command to produce a depth indented directory listing: https://oldmanprogrammer.net/source.php?dir=projects/tree
     tree
+    # Convert terminal recordings to animated gifs: https://github.com/icholy/ttygif
+    ttygif
     # An extraction utility for archives compressed in .zip format: http://www.info-zip.org/
     unzip
     # Modern watch command: https://github.com/sachaos/viddy
