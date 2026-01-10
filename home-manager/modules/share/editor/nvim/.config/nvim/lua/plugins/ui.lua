@@ -133,11 +133,12 @@ return {
     },
   },
 
-  -- dashboard
+  -- Collection of QoL plugins for Neovim
   {
     "folke/snacks.nvim",
     opts = {
       dashboard = {
+        enabled = false,
         preset = {
           keys = {
             { icon = " ", key = "g", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
@@ -173,6 +174,11 @@ return {
         enabled = true,
         -- Place notifications from top to bottom.
         top_down = false,
+      },
+      indent = {
+        scope = {
+          hl = "NormalFloat"
+        }
       },
     },
   },
