@@ -179,6 +179,29 @@
           "(activerecord|actioncontroller|actionview|activejob|actioncable)"
         ]
       }
+    },
+    "multi-mind": {
+      "priority": "medium",
+      "promptTriggers": {
+        "keywords": [
+          "multi-mind",
+          "multiple perspectives",
+          "diverse viewpoints",
+          "architecture decision",
+          "technology choice",
+          "strategic planning",
+          "complex decision",
+          "multi-faceted problem",
+          "evaluate options"
+        ],
+        "intentPatterns": [
+          "(multi-mind|multiple perspectives|diverse viewpoints)",
+          "(architecture|technology).*(decision|choice|evaluation)",
+          "(strategic|complex).*(planning|decision|problem)",
+          "(evaluate|compare|analyze).*(options|approaches|alternatives)",
+          "(multi-faceted|multifaceted).*(problem|challenge|question)"
+        ]
+      }
     }
   },
   "notes": {
