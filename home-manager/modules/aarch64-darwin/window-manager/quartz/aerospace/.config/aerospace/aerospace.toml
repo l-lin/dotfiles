@@ -150,7 +150,7 @@ automatically-unhide-macos-hidden-apps = false
 
     # Applications
     cmd-ctrl-t = 'exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c tmux -2 -u'
-    cmd-ctrl-o = '''exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c "NVIM_SCRATCH=1 nvim -c 'autocmd VimLeavePre * :%y+ | :call system(\"pbcopy\", @+)' +startinsert +'set ft=markdown' +'nnoremap q ZQ<CR>'"'''
+    cmd-ctrl-o = '''exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c "NVIM_SCRATCH=1 nvim +startinsert +'set ft=markdown'"'''
     cmd-e = 'exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c yazi'
     cmd-shift-e = 'exec-and-forget open ${HOME}'
     cmd-shift-c = 'exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c numbat'

@@ -50,3 +50,13 @@ vim.api.nvim_create_autocmd("FileType", {
     end
   end,
 })
+
+-- Scratch buffer mode, yank all the file content on exit.
+if vim.env.NVIM_SCRATCH then
+  vim.api.nvim_create_autocmd("VimLeavePre", {
+    callback = function()
+      vim.cmd("%y+")
+      vim.fn.system("pbcopy", vim.fn.getreg("+"))
+    end,
+  })
+end

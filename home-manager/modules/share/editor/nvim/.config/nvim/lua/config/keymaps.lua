@@ -79,3 +79,8 @@ map("n", "#", "#N", { noremap = true, silent = true })
 -- Open link under cursor with either browser in private window for youtube links, short reponame in browser, or fallback to gx
 map("n", "gx", require("helpers.open").smart_open, { desc = "Smart open URL or filepath" })
 
+-- Scratch buffer mode: quickly exit neovim with classic keybinds.
+if vim.env.NVIM_SCRATCH then
+  map("i", "<C-s>", "<Esc>ZQ", { desc = "Quit scratch buffer" })
+  map("n", "q", "ZQ", { desc = "Quit scratch buffer" })
+end
