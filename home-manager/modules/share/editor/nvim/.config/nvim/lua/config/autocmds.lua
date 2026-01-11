@@ -32,25 +32,21 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
--- Set text width everywhere except in my notes project.
-vim.api.nvim_create_autocmd({ "BufNewFile", "BufEnter" }, {
-  pattern = "*.md",
-  callback = function()
-    local current_file = vim.fn.expand("%:p")
-    local notes_dir = vim.fn.expand(vim.g.notes_dir)
-
-    if string.find(current_file, notes_dir, 1, true) == 1 then
-      vim.bo.textwidth = 0
-      vim.wo.wrap = true
-    end
-  end,
-})
-
+-- Set word wrap and spell check for writing filetypes.
 vim.api.nvim_create_autocmd("FileType", {
-  group = vim.api.nvim_create_augroup("text_wrap", { clear = true }),
-  pattern = { "codecompanion", "gitcommit", "markdown" },
+  group = vim.api.nvim_create_augroup("writing", { clear = true }),
+  pattern = { "codecompanion", "gitcommit", "markdown", "text" },
   callback = function()
     vim.wo.wrap = true
-    -- vim.bo.textwidth = 80
+    vim.wo.spell = true
+
+    local current_file = vim.fn.expand("%:p")
+    local notes_dir = vim.fn.expand(vim.g.notes_dir)
+    -- No text width limit for my notes.
+    if string.find(current_file, notes_dir, 1, true) == 1 then
+      vim.bo.textwidth = 0
+    else
+      vim.bo.textwidth = 80
+    end
   end,
 })
