@@ -230,3 +230,6 @@ automatically-unhide-macos-hidden-apps = false
     if.app-id = 'io.mpv'
     run = 'layout floating'
 
+[[on-window-detected]]
+    if.app-id = 'com.mitchellh.ghostty'
+    run = 'layout floating'
