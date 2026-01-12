@@ -202,6 +202,31 @@
           "(multi-faceted|multifaceted).*(problem|challenge|question)"
         ]
       }
+    },
+    "teach-me": {
+      "priority": "high",
+      "promptTriggers": {
+        "keywords": [
+          "teach me",
+          "I want to learn",
+          "guide me through",
+          "help me understand",
+          "don't do it for me",
+          "walk me through",
+          "explain step by step",
+          "learn how to",
+          "guide me",
+          "tutor me"
+        ],
+        "intentPatterns": [
+          "(teach|show|explain|guide).*(me|how).*(to|through)",
+          "(I|we).*(want|need).*(learn|understand)",
+          "(don't|do not).*(do it|implement|solve).*(for me)",
+          "(walk|guide|take).*(me|us).*(through)",
+          "(help|want).*(understand|learn).*(concept|how)",
+          "(learn|understand).*(how to|the concept)"
+        ]
+      }
     }
   },
   "notes": {
