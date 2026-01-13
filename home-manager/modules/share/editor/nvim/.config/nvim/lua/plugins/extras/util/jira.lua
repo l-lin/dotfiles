@@ -93,9 +93,8 @@ return {
     keys = {
       { "<leader>ji", "<cmd>JiraIssues<cr>", desc = "Jira current issues" },
       { "<leader>je", "<cmd>JiraEpic<cr>", desc = "Jira epics" },
-      { "<leader>j1", "<cmd>JiraEpic P3C-5861<cr>", desc = "Jira P3C-5861" },
-      { "<leader>j2", "<cmd>JiraEpic P3C-6006<cr>", desc = "Jira P3C-6006" },
-      { "<leader>j3", "<cmd>JiraEpic P3C-5857<cr>", desc = "Jira P3C-5857" },
+      { "<leader>j1", "<cmd>JiraEpic P3C-5883<cr>", desc = "Jira P3C-5883" },
+      { "<leader>j2", "<cmd>JiraEpic P3C-5861<cr>", desc = "Jira P3C-5861" },
     },
     opts = {
       cli = {
