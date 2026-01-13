@@ -21,7 +21,7 @@ When this command is invoked:
 - Create a todo list to track your progress
 - Start implementing if you understand what needs to be done
 
-2. **If no plan path provided**, ask for one.
+2. **If no plan path provided**: present the list plan files in `.sandbox/plans/` and use `AskUserQuestion` tool to ask the user which plan file you need to implement from
 
 ## Implementation Philosophy
 

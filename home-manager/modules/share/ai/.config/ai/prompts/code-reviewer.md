@@ -17,10 +17,7 @@ When this command is invoked:
    - If a description was provided, use as starting point for review
    - Begin the review
 
-2. **If no parameters provided**, respond with:
-   - ask the user if they want to review the current branch with `main` or `master` branch
-
-Then wait for the user's input.
+2. **If no parameters provided**: ask the user using the `AskUserQuestion` what to review
 
 ## Git-Based Review Workflow
 

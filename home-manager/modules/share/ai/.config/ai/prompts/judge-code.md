@@ -21,10 +21,7 @@ When this command is invoked:
   - If a description was provided, use as starting point for discussion
   - Begin the talent show
 
-2. **If no parameters provided**, respond with:
-  - ask the user if they wants to review the current branch with `main` or `master` branch
-
-Then wait for the user's research query.
+2. **If no parameters provided**: ask the user using the `AskUserQuestion` what to review
 
 ## The Five Judges
 
