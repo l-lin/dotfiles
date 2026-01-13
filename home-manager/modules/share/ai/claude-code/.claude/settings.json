@@ -3,6 +3,7 @@
   "permissions": {
     "allow": [
       "Bash(backlog:*)",
+      "Bash(gh:*)",
       "Bash(git:*)",
       "Bash(jira issue:*)",
       "Bash(ls:*)",

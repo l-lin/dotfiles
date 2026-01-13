@@ -74,7 +74,7 @@ ${builtins.readFile ../.config/ai/agents/codebase-pattern-finder.md}
 ---
 name: git-investigator
 description: Investigates git history, logs, changes, and uncommitted modifications. Call the git-investigator agent when you need to analyze version control information, track changes over time, or understand the development history of specific components.
-tools: Read, Grep, Glob, LS
+tools: Read, Grep, Glob, LS, Bash(git:*), Bash(gh:*)
 model: inherit
 color: orange
 ---
