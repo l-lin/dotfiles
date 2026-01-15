@@ -169,6 +169,13 @@ return {
         mode = "v",
         noremap = true,
       },
+      {
+        "<leader>oY",
+        require("plugins.custom.lang.obsidian").to_html_and_yank,
+        desc = "Yank selection in HTML format",
+        mode = "v",
+        noremap = true,
+      },
     },
     opts = {
       -- Too noisy because of https://github.com/obsidian-nvim/obsidian.nvim/blob/5186cba27b256daae5f824b2789e016161f0b20c/lua/obsidian/config.lua#L536-L536

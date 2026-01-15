@@ -108,12 +108,98 @@ local function open_current_monthly_note()
   vim.cmd("edit " .. vim.fn.expand(vim.g.notes_dir) .. "/" .. monthly_note_path)
 end
 
----Sanitize selected text without the wiki links and yank to + register.
-local function sanitize_and_yank()
+local function sanitize_yanked_text()
   vim.cmd('normal! "+y')
   local yanked_text = vim.fn.getreg("+")
-  local sanitized_text = yanked_text:gsub("%[%[(.-)%]%]", "%1")
-  vim.fn.setreg("+", sanitized_text)
+  -- Convert wiki links [[target|display]] and [[text]] to plain text
+  yanked_text = yanked_text:gsub("%[%[([^%]|]+)|([^%]]+)%]%]", "%2")
+  yanked_text = yanked_text:gsub("%[%[([^%]]+)%]%]", "%1")
+  return yanked_text
+end
+
+---Sanitize selected text without the wiki links and yank to + register.
+local function sanitize_and_yank()
+  vim.fn.setreg("+", sanitize_yanked_text())
+end
+
+---Convert Markdown text to HTML.
+---@param text string markdown text
+---@return string html
+local function markdown_to_html(text)
+  -- Convert markdown links [text](url) BEFORE escaping HTML entities
+  text = text:gsub("%[([^%]]+)%]%(([^%)]+)%)", '<a href="%2">%1</a>')
+
+  -- Escape HTML entities (but not in the <a> tags we just created)
+  -- This is a simplification - proper solution would use a placeholder
+  text = text:gsub("&", "&amp;")
+
+  -- Convert code blocks first (before inline code)
+  text = text:gsub("```(.-)```", "<pre>%1</pre>")
+
+  -- Convert inline code
+  text = text:gsub("`([^`]+)`", "<code>%1</code>")
+
+  -- Convert bold: **text** or __text__
+  text = text:gsub("%*%*(.-)%*%*", "<b>%1</b>")
+  text = text:gsub("__(.-)__", "<b>%1</b>")
+
+  -- Convert bullet points - flatten nested lists with visual indentation
+  local lines = {}
+  for line in (text .. "\n"):gmatch("([^\n]*)\n") do
+    local indent, content = line:match("^(%s*)%- (.+)$")
+    if content then
+      -- Calculate indent level (2 or 4 spaces = 1 level typically)
+      local level = math.floor(#indent / 2)
+      -- Use non-breaking spaces for indentation + bullet
+      local visual_indent = string.rep("\u{00A0}\u{00A0}", level)
+      table.insert(lines, visual_indent .. "• " .. content)
+    else
+      table.insert(lines, line)
+    end
+  end
+
+  return table.concat(lines, "<br>")
+end
+
+---Yank HTML to clipboard for rich text paste.
+---Supports macOS (AppKit) and Linux (xclip).
+---@param html string
+---@param plain string
+local function yank_html_to_clipboard(html, plain)
+  local uname = vim.loop.os_uname().sysname
+
+  if uname == "Darwin" then
+    -- macOS: use AppleScript with AppKit
+    local escaped_html = html:gsub("\\", "\\\\"):gsub('"', '\\"'):gsub("\n", "\\n")
+    local escaped_plain = plain:gsub("\\", "\\\\"):gsub('"', '\\"'):gsub("\n", "\\n")
+
+    local script = string.format(
+      [[
+      use framework "AppKit"
+      set pb to current application's NSPasteboard's generalPasteboard()
+      pb's clearContents()
+      pb's setString:"%s" forType:(current application's NSPasteboardTypeHTML)
+      pb's setString:"%s" forType:(current application's NSPasteboardTypeString)
+    ]],
+      escaped_html,
+      escaped_plain
+    )
+    vim.fn.system({ "osascript", "-e", script })
+  elseif uname == "Linux" then
+    -- Linux: use xclip (must be installed)
+    local html_cmd = vim.fn.jobstart({ "xclip", "-selection", "clipboard", "-t", "text/html" }, { stdin = "pipe" })
+    vim.fn.chansend(html_cmd, html)
+    vim.fn.chanclose(html_cmd, "stdin")
+  else
+    vim.notify("Unsupported OS for HTML clipboard: " .. uname, vim.log.levels.WARN)
+    vim.fn.setreg("+", plain)
+  end
+end
+
+---Convert Markdown to HTML and copy to clipboard.
+local function to_html_and_yank()
+  local sanitized_text = sanitize_yanked_text()
+  yank_html_to_clipboard(markdown_to_html(sanitized_text), sanitized_text)
 end
 
 ---@param ctx obsidian.TemplateContext
@@ -197,6 +283,7 @@ M.todo = todo
 M.search_pending_todos = search_pending_todos
 M.open_current_monthly_note = open_current_monthly_note
 M.sanitize_and_yank = sanitize_and_yank
+M.to_html_and_yank = to_html_and_yank
 M.time_tracker = time_tracker
 M.unfinished_yesterday_objective_tasks = unfinished_yesterday_objective_tasks
 M.unfinished_yesterday_other_tasks = unfinished_yesterday_other_tasks
