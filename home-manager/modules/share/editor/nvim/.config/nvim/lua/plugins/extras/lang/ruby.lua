@@ -16,6 +16,11 @@ return {
       },
     },
   },
+  {
+    "l-lin/private-ruby.nvim",
+    ft = 'ruby',
+    opts = {},
+  },
 
   -- add syntax highlighting
   {
@@ -46,29 +51,30 @@ return {
   },
 
   -- Alternative LSP server to ruby-lsp for navigation (no auto-completion).
-  {
-    "neovim/nvim-lspconfig",
-    dependencies = { "pheen/fuzzy_ruby_server" },
-    opts = {
-      servers = {
-        fuzzy_ls = {
-          enabled = true,
-          filetypes = { "ruby" },
-          root_markers = { 'Gemfile', '.git' },
-          mason = false,
-          init_options = {
-            -- possible values:
-            -- ram: use RAM (can be very high on big project)
-            -- tempdir: use mmap directory to store the indexes (e.g. /tmp/.tmpcCUkiK)
-            allocationType = "ram",
-            indexGems = true,
-            reportDiagnostics = true,
-          },
-          cmd = {
-            vim.fn.expand(vim.fn.stdpath("data") .. "/lazy/fuzzy_ruby_server/bin/fuzzy_darwin-arm64"),
-          },
-        },
-      },
-    },
-  },
+  -- NOTE: disabling it because it's really resource hungry (RAM+CPU) for large projects
+  -- {
+  --   "neovim/nvim-lspconfig",
+  --   dependencies = { "pheen/fuzzy_ruby_server" },
+  --   opts = {
+  --     servers = {
+  --       fuzzy_ls = {
+  --         enabled = true,
+  --         filetypes = { "ruby" },
+  --         root_markers = { 'Gemfile', '.git' },
+  --         mason = false,
+  --         init_options = {
+  --           -- possible values:
+  --           -- ram: use RAM (can be very high on big project)
+  --           -- tempdir: use mmap directory to store the indexes (e.g. /tmp/.tmpcCUkiK)
+  --           allocationType = "ram",
+  --           indexGems = true,
+  --           reportDiagnostics = true,
+  --         },
+  --         cmd = {
+  --           vim.fn.expand(vim.fn.stdpath("data") .. "/lazy/fuzzy_ruby_server/bin/fuzzy_darwin-arm64"),
+  --         },
+  --       },
+  --     },
+  --   },
+  -- },
 }
