@@ -48,6 +48,7 @@
     "command": "$HOME/.claude/cc_statusline.rb",
     "padding": 0
   },
+  "alwaysThinkingEnabled": false,
   "hooks": {
     "UserPromptSubmit": [
       {
