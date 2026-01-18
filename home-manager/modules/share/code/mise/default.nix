@@ -30,11 +30,12 @@
     # src: https://mise.jdx.dev/configuration/settings.html#task_output
     MISE_TASK_OUTPUT = "quiet";
   };
-
-  # Symlink ~/.config/zsh/
-  xdg.configFile."zsh/completions/_mise".source = ./.config/zsh/completions/_mise;
-  xdg.configFile."zsh/plugins/mise" = {
-    source = ./.config/zsh/plugins/mise;
-    recursive = true;
+  xdg.configFile = {
+    "zsh/completions/_mise".source = ./.config/zsh/completions/_mise;
+    "zsh/plugins/mise" = {
+      source = ./.config/zsh/plugins/mise;
+      recursive = true;
+    };
+    "mise/conf.d/mise.toml".source = ./.config/mise/conf.d/mise.toml;
   };
 }

@@ -1,7 +1,5 @@
 [tools]
 # pipx is a tool for running Python CLIs in isolated virtualenvs: https://pipx.pypa.io
 pipx = "1.7.1"
-# Specification for CLI: https://usage.jdx.dev/.
-usage = "2.12.0"
 # An extremely fast Python package and project manager, written in Rust: https://docs.astral.sh/uv/
 uv = "0.7.8"

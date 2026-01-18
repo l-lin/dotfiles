@@ -1,0 +1,3 @@
+[tools]
+# Specification for CLI: https://usage.jdx.dev/.
+usage = "2.12.0"
