@@ -46,6 +46,7 @@ Then wait for the user's input.
    - Related implementation plans
    - Any JSON/data files mentioned
    - **IMPORTANT**: Use the Read tool WITHOUT limit/offset parameters to read entire files
+   - **IMPORTANT**: Use AskUserQuestion tool to ask the user questions if there are any uncertainty about the objective of the research
    - **CRITICAL**: DO NOT spawn sub-tasks before reading these files yourself in the main context
    - **NEVER** read files partially - if a file is mentioned, read it completely
 

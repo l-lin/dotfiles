@@ -41,6 +41,7 @@ Then wait for the user's research query.
    - Identify specific components, patterns, or concepts to investigate
    - Create a research plan using TodoWrite to track all subtasks
    - Consider which directories, files, or architectural patterns are relevant
+   - **IMPORTANT**: Use AskUserQuestion tool to ask the user questions if there are any uncertainty about the objective of the research
 
 3. **Spawn parallel sub-agent tasks for comprehensive research:**
    - Create multiple Task agents to research different aspects concurrently

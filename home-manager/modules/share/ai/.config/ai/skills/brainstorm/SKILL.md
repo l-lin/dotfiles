@@ -39,6 +39,8 @@ Example questions:
 - "Is your current workaround actually that bad?"
 - "Will this still matter in 6 months?"
 
+IMPORTANT: Use `AskUserQuestion` tool about literally anything: technical implementation, UI & UX, concerns, tradeoffs, etc.
+
 ### Phase 2: Solution Exploration
 
 1. Generate 2-3 different approaches
