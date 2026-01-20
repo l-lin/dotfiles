@@ -58,8 +58,8 @@ add_ssh_key() {
   local ssh_key_filename="$(basename $ssh_key_filepath)"
 
   info "Adding ssh key $ssh_key_filepath to ssh-agent."
-  if [[ $ssh_key_filename == '${userSettings.username}' ]]; then
-    local passphrase=$(bw list items --search ssh@${userSettings.username} | jq -r '.[].fields[].value')
+  if [[ $ssh_key_filename == '${userSettings.username}' || $ssh_key_filename == "codeberg" ]]; then
+    local passphrase=$(bw list items --search ssh@$ssh_key_filename | jq -r '.[].fields[].value')
 
     # SSH_ASKPASS does not work on macOS, so use expect instead.
     if [[ "$(uname)" == "Darwin" ]]; then

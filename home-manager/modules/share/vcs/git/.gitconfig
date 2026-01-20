@@ -133,6 +133,9 @@
   insteadOf = github:
   insteadOf = gh:
   insteadOf = "https://github.com/"
+[url "git@codeberg.org:"]
+  insteadOf = cb:
+  insteadOf = "https://codeberg.org"
 [user]
   name = Louis Lin
 

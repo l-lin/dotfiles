@@ -129,6 +129,12 @@ username="louis.lin"
 ssh_key_filename="${username}"
 import_all "${email}" "${username}" "${ssh_key_filename}"
 
+# Import personal SSH key.
+email="lin.louis@pm.me"
+username="codeberg"
+ssh_key_filename="${username}"
+import_all "${email}" "${username}" "${ssh_key_filename}"
+
 # Import SSH key for work related secrets.
 email="louis.lin@doctolib.com"
 username="doctolib"
