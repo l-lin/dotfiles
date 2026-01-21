@@ -69,15 +69,15 @@ $ nix-shell -p tree --run 'tree -d -L 1'
 
 ```bash
 # Clone dotfiles.
-nix-shell -p git just
+nix-shell -p git mise
 cd ~/.config
 git clone https://github.com/l-lin/dotfiles
 cd dotfiles
 
 # Install everything.
-just import-keys import-secrets
-just update-nixos
-just update-home
+mise run conf:import-keys conf:import-secrets
+mise run nixos:apply
+mise run home:apply
 reboot
 ```
 
@@ -93,15 +93,15 @@ sudo apt install curl
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 
 # Clone dotfiles.
-nix-shell -p git just
+nix-shell -p git mise
 cd ~/.config
 git clone https://github.com/l-lin/dotfiles
 cd dotfiles
 
 # Install everything.
-just import-keys import-secrets
-just install-home-standalone
-just update-home
+mise run conf:import-keys conf:import-secrets
+mise run home:install
+mise run home:apply
 reboot
 ```
 
@@ -117,16 +117,17 @@ reboot
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 
 # Clone dotfiles.
-nix-shell -p git just
+nix-shell -p git mise
 cd ~/.config
 git clone https://github.com/l-lin/dotfiles
 cd dotfiles
 
 # Install everything.
-just import-keys import-secrets
-just install-home-standalone
-just update-nix-darwin
-just update-home
+mise run conf:import-keys conf:import-secrets
+mise run darwin:install
+mise run darwin:apply
+mise run home:install
+mise run home:apply
 ```
 
 </details>
@@ -136,7 +137,7 @@ just update-home
 ```bash
 # Add navi cheatsheets.
 unleash-the-keys
-just install-cheatsheets
+mise run conf:install-cheatsheets
 
 # Synchronize atuin
 atuin login -u l-lin
@@ -150,13 +151,13 @@ git remote remove origin && git remote add origin git@github.com:l-lin/dotfiles 
 git clone --recurse-submodules git@github:l-lin/notes "${HOME}/perso/notes"
 
 # Configure Github CLI.
-just configure-gh
+mise run conf:configure-gh
 
 # Configure jira CLI.
 jira init
 
 # Configure colima to work with testcontainers
-just configure-colima
+mise run conf:configure-colima
 ```
 
 <summary>For macOS</summary>
