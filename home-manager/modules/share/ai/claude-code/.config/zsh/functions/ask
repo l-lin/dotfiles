@@ -17,5 +17,5 @@ if !type -q claude &>/dev/null; then
   return
 fi
 
-claude -p "/direct-answer $@"
+claude --model haiku -p "/direct-answer $@"
 return
