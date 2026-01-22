@@ -68,6 +68,8 @@
       #"burp-suite"
       # Web debugging Proxy application: https://www.charlesproxy.com/
       #"charles"
+      # Agentic coding tool that lives in your terminal: https://github.com/anthropics/claude-code
+      "claude-code"
       # 👻 Ghostty is a fast, feature-rich, and cross-platform terminal emulator that uses platform-native UI and GPU acceleration: https://ghostty.org/
       "ghostty"
       # Free and open-source image editor: https://www.gimp.org/
