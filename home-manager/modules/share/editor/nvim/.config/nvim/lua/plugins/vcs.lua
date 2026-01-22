@@ -35,11 +35,19 @@ return {
     "nvim-mini/mini.diff",
     optional = true,
     keys = {
-      { "<M-C-G>", function() require("mini.diff").toggle_overlay(0) end, desc = "Preview Hunk inline (Ctrl+Alt+g)" },
+      {
+        "<M-C-G>",
+        function()
+          require("mini.diff").toggle_overlay(0)
+        end,
+        desc = "Preview Hunk inline (Ctrl+Alt+g)",
+      },
     },
     init = function()
       -- Not sure why, but I cannot configure it at `keys` level...
-      vim.keymap.set("n", "<M-C-Z>", function() return MiniDiff.operator("reset") .. "gh" end, { expr = true, remap = true })
+      vim.keymap.set("n", "<M-C-Z>", function()
+        return MiniDiff.operator("reset") .. "gh"
+      end, { expr = true, remap = true })
     end,
   },
 
@@ -47,35 +55,73 @@ return {
   {
     "folke/snacks.nvim",
     keys = {
-      { "<leader>gb", function() Snacks.picker.git_log_line({ current_line = true, current_file = true, follow = true }) end, desc = "Git Blame Line" },
-      { "<leader>gs", function() Snacks.picker.git_status({ layout = "sidebar" }) end, desc = "Git Status" },
-      { "<leader>gl", function() Snacks.picker.git_log({ cwd = LazyVim.root.git() }) end, desc = "Git Log" },
-      { "<leader>gL", function() Snacks.picker.git_log() end, desc = "Git Log (cwd)" },
-      { "<M-9>", function() Snacks.picker.git_log({ current_file = true, follow = true }) end, noremap = true, silent = true, desc = "Check current file git history (Alt+9)" },
+      {
+        "<leader>gb",
+        function()
+          Snacks.picker.git_log_line({ current_line = true, current_file = true, follow = true })
+        end,
+        desc = "Git Blame Line",
+      },
+      {
+        "<leader>gs",
+        function()
+          Snacks.picker.git_status({ layout = "sidebar" })
+        end,
+        desc = "Git Status",
+      },
+      {
+        "<leader>gl",
+        function()
+          Snacks.picker.git_log({ cwd = LazyVim.root.git() })
+        end,
+        desc = "Git Log",
+      },
+      {
+        "<leader>gL",
+        function()
+          Snacks.picker.git_log()
+        end,
+        desc = "Git Log (cwd)",
+      },
+      {
+        "<M-9>",
+        function()
+          Snacks.picker.git_log({ current_file = true, follow = true })
+        end,
+        noremap = true,
+        silent = true,
+        desc = "Check current file git history (Alt+9)",
+      },
       -- conflicting keymaps with fugitive
       { "<leader>gp", false },
       { "<leader>gP", false },
       -- GH
-      { "<leader>G", function() Snacks.picker.gh_pr() end, desc = "GitHub Pull Requests (open)" },
+      {
+        "<leader>G",
+        function()
+          Snacks.picker.gh_pr()
+        end,
+        desc = "GitHub Pull Requests (open)",
+      },
       -- I don't need those keymaps to find issues
       { "<leader>gi", false },
       { "<leader>gI", false },
-    }
+    },
   },
 
- -- git integration
- {
-   "tpope/vim-fugitive",
-   keys = {
-     { "<leader>gc", "<cmd>G commit --no-verify<cr>", desc = "git commit" },
-     { "<leader>gF", "<cmd>G push --force-with-lease<cr>", desc = "git push --force-with-lease" },
-     -- useful for creating new PR/MR where the url is displayed in the git push message
-     -- { "<leader>gO", "<cmd>G -p push<cr>", desc = "git push and display git message" },
-     { "<leader>gp", "<cmd>G pull<cr>", silent = true, noremap = true, desc = "git pull" },
-     { "<leader>gP", "<cmd>G push<cr>", silent = true, noremap = true, desc = "git push" },
-     { "<M-0>", toggle_fugitive, silent = true, noremap = true, desc = "git status (Alt+0)" },
-   },
- },
+  -- git integration
+  {
+    "tpope/vim-fugitive",
+    keys = {
+      { "<leader>gc", "<cmd>G commit --no-verify<cr>", desc = "git commit" },
+      { "<leader>gF", "<cmd>G push --force-with-lease<cr>", desc = "git push --force-with-lease" },
+      -- useful for creating new PR/MR where the url is displayed in the git push message
+      -- { "<leader>gO", "<cmd>G -p push<cr>", desc = "git push and display git message" },
+      { "<leader>gp", "<cmd>G pull<cr>", silent = true, noremap = true, desc = "git pull" },
+      { "<leader>gP", "<cmd>G push<cr>", silent = true, noremap = true, desc = "git push" },
+      { "<M-0>", toggle_fugitive, silent = true, noremap = true, desc = "git status (Alt+0)" },
+    },
+  },
 
   -- add keymaps to which-key
   {
@@ -98,7 +144,9 @@ return {
         },
         {
           "<M-)>",
-          function() Snacks.lazygit( { cwd = LazyVim.root.git() }) end,
+          function()
+            Snacks.lazygit({ cwd = LazyVim.root.git() })
+          end,
           desc = "LazyGit",
           mode = { "n" },
           noremap = true,
