@@ -1,4 +1,7 @@
 {
+  "env": {
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+  },
   "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
@@ -12,7 +15,6 @@
       "Bash(rg:*)",
       "Edit",
       "Read",
-
       "Skill(brainstorm)",
       "Skill(clear-writing)",
       "Skill(continuous-learning)",
@@ -20,14 +22,11 @@
       "Skill(implementation-planner)",
       "Skill(jira)",
       "Skill(web-research)",
-
       "Skill(kotlin-mentor)",
       "Skill(rails-mentor)",
       "Skill(ruby-mentor)",
-
       "Write",
       "WebFetch",
-
       "mcp__atlassian__fetch",
       "mcp__atlassian__getJiraIssue",
       "mcp__atlassian__getConfluencePage",
@@ -39,14 +38,6 @@
       "mcp__sequentialthinking__*"
     ],
     "deny": []
-  },
-  "env": {
-    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "$HOME/.claude/cc_statusline.rb",
-    "padding": 0
   },
   "model": "opusplan",
   "hooks": {
@@ -60,5 +51,14 @@
         ]
       }
     ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "$HOME/.claude/cc_statusline.rb",
+    "padding": 0
+  },
+  "enabledPlugins": {
+    "code-simplifier@claude-plugins-official": true,
+    "hookify@claude-plugins-official": true
   }
 }

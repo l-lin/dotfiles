@@ -3,7 +3,7 @@
 # src: https://github.com/anthropics/claude-code
 #
 
-{
+{ config, symlinkRoot, ... }: {
   xdg.configFile = {
     "mise/conf.d/claude-code.toml".source = ./.config/mise/conf.d/claude-code.toml;
     "zsh/functions/ask".source = ./.config/zsh/functions/ask;
@@ -17,7 +17,8 @@
     };
 
     file = {
-      ".claude/settings.json".source = ./.claude/settings.json;
+      # claude-code edits this file at runtime (e.g. activate plugin), so need to be RW.
+      ".claude/settings.json".source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/ai/claude-code/.claude/settings.json";
       ".claude/cc_statusline.rb".source = ./.claude/cc_statusline.rb;
       ".claude/CLAUDE.md".source = ../.config/ai/conventions/code.md;
       ".claude/mcp" = {
