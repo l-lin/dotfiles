@@ -58,7 +58,6 @@
     "padding": 0
   },
   "enabledPlugins": {
-    "code-simplifier@claude-plugins-official": true,
-    "hookify@claude-plugins-official": true
+    "code-simplifier@claude-plugins-official": true
   }
 }
