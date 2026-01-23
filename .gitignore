@@ -1,4 +1,5 @@
 /secrets
+/.claude
 
 # colorscheme.lua is created by home-manager, so I don't need to version it.
 home-manager/modules/share/editor/nvim/.config/nvim/lua/plugins/colorscheme.lua
