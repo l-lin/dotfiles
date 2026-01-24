@@ -7,7 +7,7 @@
 # Shortcuts
 # --------------------------------------------------------
 # navigation
-alias cdr="cd $(git rev-parse --show-toplevel)"
+alias cdr='cd $(git rev-parse --show-toplevel)'
 # docker
 alias d="docker"
 alias dc="docker compose"
