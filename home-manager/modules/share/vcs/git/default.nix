@@ -12,27 +12,43 @@
       git
       git-lfs
     ];
+    file = {
+      # mkOutOfStoreSymlink creates a mutable symlink (writable at runtime).
+      # .gitconfig may be modified by git commands or tools.
+      ".gitconfig".source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/vcs/git/.gitconfig";
 
-    # mkOutOfStoreSymlink creates a mutable symlink (writable at runtime).
-    # .gitconfig may be modified by git commands or tools.
-    file.".gitconfig".source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/vcs/git/.gitconfig";
+      "perso/github/.gitconfig".text = ''
+[commit]
+  # sign commits
+  gpgsign = true
+[gpg]
+  format = ssh
+[gpg "ssh"]
+  allowedSignersFile = ~/.ssh/allowed_signers
+[tag]
+  # sign tags
+  gpgsign = true
+[user]
+  email = ${userSettings.email}
+  signingkey = ~/.ssh/${userSettings.username}.pub
+'';
 
-    # Symlink to ~/perso/.gitconfig
-    file."perso/.gitconfig".text = ''
-  [commit]
-    # sign commits
-    gpgsign = true
-  [gpg]
-    format = ssh
-  [gpg "ssh"]
-    allowedSignersFile = ~/.ssh/allowed_signers
-  [tag]
-    # sign tags
-    gpgsign = true
-  [user]
-    email = ${userSettings.email}
-    signingkey = ~/.ssh/${userSettings.username}.pub
-    '';
+      "perso/codeberg/.gitconfig".text = ''
+[commit]
+  # sign commits
+  gpgsign = true
+[gpg]
+  format = ssh
+[gpg "ssh"]
+  allowedSignersFile = ~/.ssh/allowed_signers
+[tag]
+  # sign tags
+  gpgsign = true
+[user]
+  email = ${userSettings.email}
+  signingkey = ~/.ssh/codeberg.pub
+'';
+};
   };
   xdg.configFile = {
     # Symlink to ~/.config/git

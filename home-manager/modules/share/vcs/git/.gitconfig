@@ -1,18 +1,22 @@
-[includeIf "gitdir:~/notes/"]
-  path = ~/notes/.gitconfig
-[includeIf "gitdir:~/perso/"]
-  path = ~/perso/.gitconfig
-[includeIf "gitdir:/tmp/"]
-  path = ~/perso/.gitconfig
-[includeIf "gitdir:~/tmp/"]
-  path = ~/perso/.gitconfig
-[includeIf "gitdir:~/.local/share/navi/"]
-  path = ~/perso/.gitconfig
-[includeIf "gitdir:~/.config/"]
-  path = ~/perso/.gitconfig
-[includeIf "gitdir:~/.claude/"]
-  path = ~/perso/.gitconfig
+# codeberg config
+[includeIf "gitdir:~/perso/codeberg/"]
+  path = ~/perso/codeberg/.gitconfig
 
+# github config
+[includeIf "gitdir:~/perso/github/"]
+  path = ~/perso/github/.gitconfig
+[includeIf "gitdir:/tmp/"]
+  path = ~/perso/github/.gitconfig
+[includeIf "gitdir:~/tmp/"]
+  path = ~/perso/github/.gitconfig
+[includeIf "gitdir:~/.local/share/navi/"]
+  path = ~/perso/github/.gitconfig
+[includeIf "gitdir:~/.config/"]
+  path = ~/perso/github/.gitconfig
+[includeIf "gitdir:~/.claude/"]
+  path = ~/perso/github/.gitconfig
+
+# work config
 [includeIf "gitdir:~/work/"]
   path = ~/work/.gitconfig
 [includeIf "gitdir:~/.config/work-dotfiles/"]

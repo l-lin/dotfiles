@@ -32,7 +32,7 @@ vim.g.snacks_animate = false
 -- vim.opt.colorcolumn = "80"
 
 -- path to my notes directory
-vim.g.notes_dir = "~/notes"
+vim.g.notes_dir = "~/perso/codeberg/notes"
 
 -- set border
 vim.o.winborder = "rounded"

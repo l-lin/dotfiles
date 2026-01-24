@@ -7,13 +7,13 @@ lazy:~/perso/LazyVim
 mobile:~/work/doctolib-mobile-apps
 monolith:~/work/monolith
 navi:~/.local/share/navi/cheats/l-lin__cheats
-notes:~/notes
+notes:~/perso/codeberg/notes
 o11y:~/work/terraform-observability
 patient-account:~/work/patient-account
 pcc:~/work/preventive-continuous-care
 phr:~/work/patient-health-record
-project-notes:~/notes/2-areas/project-notes
-projects:~/notes/1-projects
+project-notes:~/perso/codeberg/notes/2-areas/project-notes
+projects:~/perso/codeberg/notes/1-projects
 tf:~/work/terraform-infra
 work-dotfiles:~/.config/work-dotfiles
 work-navi:~/.local/share/navi/cheats/l-lin__work-cheats

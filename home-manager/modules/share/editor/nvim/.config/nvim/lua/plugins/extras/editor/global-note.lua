@@ -1,11 +1,11 @@
 ---@return string project_notes_directory containing the project notes
 local function get_notes_directory()
-  return os.getenv("HOME") .. "/notes/2-areas/project-notes"
+  return os.getenv("HOME") .. "/perso/codeberg/notes/2-areas/project-notes"
 end
 
 ---@return string daily_notes_directory containing the daily notes
 local function get_daily_notes_directory()
-  return os.getenv("HOME") .. "/notes/5-rituals/daily"
+  return os.getenv("HOME") .. "/perso/codeberg/notes/5-rituals/daily"
 end
 
 ---@return string project_name project name, e.g. "dotfiles"

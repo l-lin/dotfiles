@@ -148,7 +148,7 @@ wd dotfiles
 git remote remove origin && git remote add origin git@github.com:l-lin/dotfiles && git fetch
 
 # Clone your notes.
-git clone --recurse-submodules git@github:l-lin/notes "${HOME}/notes"
+git clone --recurse-submodules git@github:l-lin/notes "${HOME}/perso/codeberg/notes"
 
 # Configure Github CLI.
 mise run conf:configure-gh
