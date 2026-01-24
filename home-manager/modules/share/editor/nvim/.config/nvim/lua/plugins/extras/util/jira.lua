@@ -1,6 +1,6 @@
 ---@return string daily_note_filepath containing today daily note filepath
 local function daily_note_filepath()
-  return os.getenv("HOME") .. "/perso/notes/5-rituals/daily/" .. tostring(os.date("%Y-%m-%d")) .. ".md"
+  return os.getenv("HOME") .. "/notes/5-rituals/daily/" .. tostring(os.date("%Y-%m-%d")) .. ".md"
 end
 
 ---@type jira.StartWorkDoneCallback?
