@@ -26,6 +26,10 @@ return {
 }
   '';
   colorschemeFile = "${symlinkRoot}/home-manager/modules/share/editor/nvim/.config/nvim/lua/plugins/colorscheme.lua";
+  # Magick Lua package for image.nvim support.
+  # Can't use extraLuaPackages because it generates an init.lua that conflicts
+  # with our xdg.configFile."nvim" symlink (recursive = true).
+  magickPkg = pkgs.luajitPackages.magick;
 in {
   # https://mynixos.com/nixpkgs/options/programs.neovim
   programs.neovim = {
@@ -41,7 +45,10 @@ in {
     withPython3 = true;
 
     # Add imagemagick to support rendering images with NeoVim: https://github.com/3rd/image.nvim
-    extraLuaPackages = ps: [ ps.magick ];
+    # NOTE: extraLuaPackages is NOT used here because it generates an init.lua
+    # that conflicts with our xdg.configFile."nvim" symlink (recursive = true).
+    # The magick package paths are set via LUA_PATH/LUA_CPATH env vars instead.
+    #extraLuaPackages = ps: [ ps.magick ];
     extraPackages = with pkgs; [ imagemagick ];
 
     plugins = [
@@ -52,6 +59,9 @@ in {
   home.sessionVariables = {
     # Use nvim to read man pages.
     MANPAGER = "nvim +Man!";
+    # Magick Lua paths for image.nvim (can't use extraLuaPackages, see above).
+    LUA_PATH = "${magickPkg}/share/lua/5.1/?.lua;${magickPkg}/share/lua/5.1/?/init.lua;";
+    LUA_CPATH = "${magickPkg}/lib/lua/5.1/?.so;";
   };
 
   # mkOutOfStoreSymlink creates a mutable symlink (writable at runtime).
