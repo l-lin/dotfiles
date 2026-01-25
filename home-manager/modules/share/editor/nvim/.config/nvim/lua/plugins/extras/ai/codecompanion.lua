@@ -149,7 +149,7 @@ return {
                 -- How long to wait for user input before timing out (milliseconds)
                 wait_timeout = 600000,
                 -- Automatically add tools to chat buffer.
-                -- default_tools = { "files" },
+                default_tools = { "files" },
               },
               groups = {
                 files_ro = {
