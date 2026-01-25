@@ -6,7 +6,6 @@
   imports = [
     ./claude-code
     ./dust
-    #./open-codex
     ./opencode
   ];
 
