@@ -63,8 +63,6 @@ shell.nix
 
 # AI specific #
 ###############
-.aider*
-repomix-output.xml
 settings.local.json
 CLAUDE.local.md
 .opencode
