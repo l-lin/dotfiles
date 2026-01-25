@@ -1,2 +1,0 @@
-[tools]
-"go:github.com/charmbracelet/crush" = "latest"
