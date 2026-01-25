@@ -28,10 +28,10 @@
 ---@field system function the system prompt to add
 ---@field user function the user prompt to pre-fill
 
----@return l-lin.Prompt[] prompts all the prompts found in the directory `/nvim/lua/plugins/custom/ai/prompts/`
+---@return l-lin.Prompt[] prompts all the prompts found in the directory `/nvim/lua/plugins/custom/ai/commands/`
 local function global_prompts()
   local prompts = {}
-  local current_dir = os.getenv("XDG_CONFIG_HOME") .. "/nvim/lua/plugins/custom/ai/prompts/"
+  local current_dir = os.getenv("XDG_CONFIG_HOME") .. "/nvim/lua/plugins/custom/ai/commands/"
   local stdout = io.popen("ls " .. current_dir)
 
   if not stdout then

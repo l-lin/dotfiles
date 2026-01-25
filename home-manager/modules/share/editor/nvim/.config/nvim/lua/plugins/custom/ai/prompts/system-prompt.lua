@@ -8,7 +8,7 @@ local function get()
     uname.version
   )
 
-  local path = os.getenv("XDG_CONFIG_HOME") .. "/ai/conventions/code.md"
+  local path = os.getenv("XDG_CONFIG_HOME") .. "/ai/system-prompt.md"
   local file = assert(io.open(path, "r"))
   local content = file:read("*a")
   file:close()

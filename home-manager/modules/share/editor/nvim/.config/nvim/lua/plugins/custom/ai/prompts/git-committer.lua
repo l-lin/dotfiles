@@ -2,7 +2,7 @@ return {
   kind = "action",
   tools = "@{cmd_runner}",
   system = function()
-    local path = os.getenv("XDG_CONFIG_HOME") .. "/ai/prompts/git-committer.md"
+    local path = os.getenv("XDG_CONFIG_HOME") .. "/ai/commands/git-committer.md"
     local file = assert(io.open(path, "r"))
     local content = file:read("*a")
     file:close()

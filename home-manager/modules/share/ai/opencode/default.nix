@@ -32,9 +32,9 @@ in {
         theme = openCodeTheme;
       }
     );
-    "opencode/AGENTS.md".source = ../.config/ai/conventions/code.md;
+    "opencode/AGENTS.md".source = ../.config/ai/system-prompt.md;
     "opencode/command" = {
-      source = ../.config/ai/prompts;
+      source = ../.config/ai/commands;
       recursive = true;
     };
     "opencode/skill" = {

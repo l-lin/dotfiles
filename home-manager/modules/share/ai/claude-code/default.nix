@@ -20,13 +20,13 @@
       # claude-code edits this file at runtime (e.g. activate plugin), so need to be RW.
       ".claude/settings.json".source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/ai/claude-code/.claude/settings.json";
       ".claude/cc_statusline.rb".source = ./.claude/cc_statusline.rb;
-      ".claude/CLAUDE.md".source = ../.config/ai/conventions/code.md;
+      ".claude/CLAUDE.md".source = ../.config/ai/system-prompt.md;
       ".claude/mcp" = {
         source = ./.claude/mcp;
         recursive = true;
       };
       ".claude/commands" = {
-        source = ../.config/ai/prompts;
+        source = ../.config/ai/commands;
         recursive = true;
       };
       ".claude/skills" = {
