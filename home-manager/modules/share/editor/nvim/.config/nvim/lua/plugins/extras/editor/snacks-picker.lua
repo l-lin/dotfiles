@@ -1,4 +1,6 @@
+local selector = require("helpers.selector")
 local subject = require("helpers.coding.subject")
+local file_helper = require("helpers.file")
 
 ---Swap files and grep.
 ---src: https://github.com/folke/snacks.nvim/discussions/499
@@ -169,26 +171,36 @@ return {
       picker = snacks_picker_opts,
     },
     keys = {
-      -- {
-      --   "<C-g>",
-      --   function()
-      --     Snacks.picker.files({ focus = "input" })
-      --   end,
-      --   mode = "n",
-      --   noremap = true,
-      --   silent = true,
-      --   desc = "Find file (Ctrl+g)",
-      -- },
-      -- {
-      --   "<C-g>",
-      --   function()
-      --     Snacks.picker.files({ pattern = selector.get_selected_text() })
-      --   end,
-      --   mode = "v",
-      --   noremap = true,
-      --   silent = true,
-      --   desc = "Find file (Ctrl+g)",
-      -- },
+      {
+        "<C-g>",
+        function()
+          local opts = { focus = "input" }
+          if file_helper.is_git_repo() then
+            Snacks.picker.git_files(opts)
+          else
+            Snacks.picker.files(opts)
+          end
+        end,
+        mode = "n",
+        noremap = true,
+        silent = true,
+        desc = "Find file (Ctrl+g)",
+      },
+      {
+        "<C-g>",
+        function()
+          local opts = { pattern = selector.get_selected_text() }
+          if file_helper.is_git_repo() then
+            Snacks.picker.git_files(opts)
+          else
+            Snacks.picker.files(opts)
+          end
+        end,
+        mode = "v",
+        noremap = true,
+        silent = true,
+        desc = "Find file (Ctrl+g)",
+      },
       {
         "<C-t>",
         function()
@@ -198,26 +210,26 @@ return {
         noremap = true,
         silent = true,
       },
-      -- {
-      --   "<M-f>",
-      --   function()
-      --     Snacks.picker.grep({ focus = "input" })
-      --   end,
-      --   mode = "n",
-      --   noremap = true,
-      --   silent = true,
-      --   desc = "Find pattern in all files (Alt+f)",
-      -- },
-      -- {
-      --   "<M-f>",
-      --   function()
-      --     Snacks.picker.grep({ search = selector.get_selected_text() })
-      --   end,
-      --   mode = "v",
-      --   noremap = true,
-      --   silent = true,
-      --   desc = "Find pattern in all files (Alt+f)",
-      -- },
+      {
+        "<M-f>",
+        function()
+          Snacks.picker.grep({ focus = "input" })
+        end,
+        mode = "n",
+        noremap = true,
+        silent = true,
+        desc = "Find pattern in all files (Alt+f)",
+      },
+      {
+        "<M-f>",
+        function()
+          Snacks.picker.grep({ search = selector.get_selected_text() })
+        end,
+        mode = "v",
+        noremap = true,
+        silent = true,
+        desc = "Find pattern in all files (Alt+f)",
+      },
       {
         "<M-e>",
         function()

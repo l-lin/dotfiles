@@ -35,8 +35,15 @@ local function execute_bash_script()
   end
 end
 
+---Check if the current working directory is a git repository.
+---@return boolean
+local function is_git_repo()
+  local git_dir = vim.fn.finddir('.git', vim.fn.getcwd() .. ';')
+  return git_dir ~= ''
+end
 
 local M = {}
 M.toggle_executable_permission = toggle_executable_permission
 M.execute_bash_script = execute_bash_script
+M.is_git_repo = is_git_repo
 return M
