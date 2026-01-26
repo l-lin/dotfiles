@@ -2,24 +2,56 @@ local selector = require("helpers.selector")
 local subject = require("helpers.coding.subject")
 local file_helper = require("helpers.file")
 
----Swap files and grep.
+---Switch mode from files/git_files to grep.
 ---src: https://github.com/folke/snacks.nvim/discussions/499
 ---@param picker snacks.Picker the current picker
-local function switch_grep_files(picker)
-  -- switch b/w grep and files picker
+local function switch_to_grep(picker)
   local snacks = require("snacks")
   local cwd = picker.input.filter.cwd
-  local is_grep = picker.init_opts.source == "grep"
 
   picker:close()
 
-  if is_grep then
-    local pattern = picker.input.filter.search or picker.input.filter.pattern
-    snacks.picker.files({ cwd = cwd, pattern = pattern })
-  else
-    local pattern = picker.input.filter.pattern or picker.input.filter.search
-    snacks.picker.grep({ cwd = cwd, search = pattern })
-  end
+  local pattern = picker.input.filter.pattern or picker.input.filter.search
+  local search = (pattern and pattern:match("%S")) and (" -- -g **/*" .. pattern .. "*/**") or ""
+
+  snacks.picker.grep({ cwd = cwd, search = search })
+  vim.defer_fn(function()
+    require("helpers.cursor").move_to_column(0)
+  end, 10)
+end
+
+---Append file search to the search.
+---@param picker snacks.Picker the current picker
+local function append_file_search(picker)
+  local snacks = require("snacks")
+  local cwd = picker.input.filter.cwd
+
+  picker:close()
+
+  local pattern = picker.input.filter.search or picker.input.filter.pattern
+  local search = (pattern and pattern:match("%S")) and (pattern .. " -- -g **/**/**") or ""
+  -- cursor position: after "pattern -- -g **/*" (before the second *)
+  local cursor_col = (pattern and pattern:match("%S")) and (#pattern + #" -- -g **/*") or 0
+
+  snacks.picker.grep({ cwd = cwd, search = search })
+  vim.defer_fn(function()
+    require("helpers.cursor").move_to_column(cursor_col)
+  end, 10)
+end
+
+---Append file type to the search.
+---@param picker snacks.Picker the current picker
+local function append_file_type(picker)
+  local snacks = require("snacks")
+  local cwd = picker.input.filter.cwd
+
+  picker:close()
+
+  local pattern = picker.input.filter.search or picker.input.filter.pattern
+  local filetype = vim.bo.filetype
+  local search = (pattern and pattern:match("%S")) and (pattern .. " -- -t" .. filetype) or ""
+
+  snacks.picker.grep({ cwd = cwd, search = search })
 end
 
 ---Edit the file typed on the prompt.
@@ -85,12 +117,32 @@ local snacks_picker_opts = {
       focus = "input",
       actions = {
         edit_file = edit_file,
-        switch_grep_files = switch_grep_files,
+        switch_to_grep = switch_to_grep,
       },
       win = {
         input = {
           keys = {
-            ["<M-k>"] = { "switch_grep_files", desc = "Switch to grep", mode = { "i", "v" } },
+            ["<M-k>"] = { "switch_to_grep", desc = "Switch to grep", mode = { "i", "v" } },
+            ["<C-s>"] = { "edit_file", desc = "Edit file", mode = { "i", "v" } },
+          },
+        },
+        list = {
+          keys = {
+            ["<C-s>"] = "edit_file",
+          },
+        },
+      },
+    },
+    git_files = {
+      focus = "input",
+      actions = {
+        edit_file = edit_file,
+        switch_to_grep = switch_to_grep,
+      },
+      win = {
+        input = {
+          keys = {
+            ["<M-k>"] = { "switch_to_grep", desc = "Switch to grep", mode = { "i", "v" } },
             ["<C-s>"] = { "edit_file", desc = "Edit file", mode = { "i", "v" } },
           },
         },
@@ -103,12 +155,14 @@ local snacks_picker_opts = {
     },
     grep = {
       actions = {
-        switch_grep_files = switch_grep_files,
+        append_file_search = append_file_search,
+        append_file_type = append_file_type,
       },
       win = {
         input = {
           keys = {
-            ["<M-k>"] = { "switch_grep_files", desc = "Switch to grep", mode = { "i", "v" } },
+            ["<M-k>"] = { "append_file_search", desc = "Append file search", mode = { "i", "v" } },
+            ["<M-e>"] = { "append_file_type", desc = "Append file type", mode = { "i", "v" } },
           },
         },
       },
