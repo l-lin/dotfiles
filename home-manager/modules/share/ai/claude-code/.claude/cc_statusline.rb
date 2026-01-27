@@ -74,25 +74,8 @@ def format_cwd(cwd)
   "#{BLUE} #{cwd.split("/").last}#{RESET}"
 end
 
-def get_last_user_prompt(transcript_path)
-  return "" unless File.exist?(transcript_path)
-
-  last_user_entry = File.foreach(transcript_path)
-    .map { |line| JSON.parse(line.strip) }
-    .reverse
-    .find { |entry| entry.dig("message", "role") == "user" && entry.dig("message", "content").is_a?(String) }
-
-  last_user_entry&.dig("message", "content") || ""
-end
-
-def format_last_user_prompt(user_prompt)
-  return "" if user_prompt.strip.empty?
-
-  if user_prompt.size > 50
-    return "#{GREY}󰍡 #{user_prompt[0, 50]}...#{RESET}"
-  end
-
-  return "#{GREY}󰍡 #{user_prompt}#{RESET}"
+def format_model(model_id)
+  "#{GREY}󰚩 #{model_id}#{RESET}"
 end
 
 begin
@@ -103,9 +86,10 @@ begin
 
   cwd = data["cwd"].split("/").last
   context_length = compute_context_length(transcript_path)
-  last_user_prompt = get_last_user_prompt(transcript_path)
 
-  puts "#{RESET}#{format_cwd(cwd)} #{format_context_length(context_length)} #{format_last_user_prompt(last_user_prompt)}"
+  model_id = data.dig('model', 'id') || 'unknown'
+
+  puts "#{RESET}#{format_cwd(cwd)} #{format_context_length(context_length)} #{format_model(model_id)}"
 rescue => e
   puts "#{RESET}#{RED}ERROR: #{e.message}#{RESET}"
 end
