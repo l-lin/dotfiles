@@ -162,7 +162,7 @@ local snacks_picker_opts = {
         input = {
           keys = {
             ["<M-k>"] = { "append_file_search", desc = "Append file search", mode = { "i", "v" } },
-            ["<M-e>"] = { "append_file_type", desc = "Append file type", mode = { "i", "v" } },
+            ["<M-j>"] = { "append_file_type", desc = "Append file type", mode = { "i", "v" } },
           },
         },
       },
