@@ -2,7 +2,7 @@ local selector = require("helpers.selector")
 local subject = require("helpers.coding.subject")
 local file_helper = require("helpers.file")
 
----Switch mode from files/git_files to grep.
+---Switch mode from files to grep.
 ---src: https://github.com/folke/snacks.nvim/discussions/499
 ---@param picker snacks.Picker the current picker
 local function switch_to_grep(picker)
@@ -228,12 +228,7 @@ return {
       {
         "<C-g>",
         function()
-          local opts = { focus = "input" }
-          if file_helper.is_git_repo() then
-            Snacks.picker.git_files(opts)
-          else
-            Snacks.picker.files(opts)
-          end
+          Snacks.picker.files({ focus = "input" })
         end,
         mode = "n",
         noremap = true,
@@ -243,12 +238,7 @@ return {
       {
         "<C-g>",
         function()
-          local opts = { pattern = selector.get_selected_text() }
-          if file_helper.is_git_repo() then
-            Snacks.picker.git_files(opts)
-          else
-            Snacks.picker.files(opts)
-          end
+          Snacks.picker.files({ pattern = selector.get_selected_text() })
         end,
         mode = "v",
         noremap = true,
