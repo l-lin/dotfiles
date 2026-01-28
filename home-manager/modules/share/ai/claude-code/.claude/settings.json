@@ -57,6 +57,7 @@
     "command": "$HOME/.claude/cc_statusline.rb",
     "padding": 0
   },
+  "cleanupPeriodDays": 10,
   "enabledPlugins": {
     "code-simplifier@claude-plugins-official": true,
     "feature-dev@claude-plugins-official": true
