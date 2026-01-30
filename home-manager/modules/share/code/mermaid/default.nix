@@ -4,5 +4,8 @@
 #
 
 {
-  xdg.configFile."zsh/functions/mermaidify".source = ./.config/zsh/functions/mermaidify;
+  xdg.configFile = {
+    "zsh/functions/mermaidify".source = ./.config/zsh/functions/mermaidify;
+    "mise/conf.d/mermaid.toml".source = ./.config/mise/conf.d/mermaid.toml;
+  };
 }
