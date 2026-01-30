@@ -430,8 +430,3 @@ For DJ Skippy (Skip Policy):
 
 **Aggregate**: 9.5/10 → 🏆 GOLDEN BUZZER
 
-## Related
-
-- Design Spec: `design/01-workspace-sqlite-repository-api-design-spec.md`
-- Talent Show Candidates: `reference/16-talent-show-candidates-code-performance-review.md`
-- Code Review Guide: `analysis/03-code-review-guide-senior.md`
