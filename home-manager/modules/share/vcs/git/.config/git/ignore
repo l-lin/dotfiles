@@ -61,6 +61,10 @@ server exited unexpectedly
 .direnv
 shell.nix
 
+# CTAGS #
+#########
+tags
+
 # AI specific #
 ###############
 settings.local.json
