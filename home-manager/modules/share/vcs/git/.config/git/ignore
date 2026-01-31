@@ -69,6 +69,10 @@ CLAUDE.local.md
 .crush
 .thoughts
 .sandbox
+# Specific to https://github.com/OthmanAdi/planning-with-files
+./findings.md
+./progress.md
+./task_plan.md
 
 # Mise #
 ########
