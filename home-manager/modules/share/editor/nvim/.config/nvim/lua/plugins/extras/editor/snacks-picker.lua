@@ -335,6 +335,8 @@ return {
         silent = true,
         desc = "Undo",
       },
+      { "<leader>n", false },
+      { "<leader>N", function() Snacks.picker.notifications() end, desc = "Notification History" },
     },
   },
 

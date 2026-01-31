@@ -225,10 +225,10 @@ return {
     "backdround/global-note.nvim",
     cmd = { "GlobalNote" },
     keys = {
-      { "<leader>fd", "<cmd>DailyNote<cr>", noremap = true, silent = true, desc = "Open daily notes" },
-      { "<leader>fP", note_picker, noremap = true, silent = true, desc = "Open project notes" },
-      { "<leader>fn", "<cmd>ProjectNote<cr>", noremap = true, silent = true, desc = "Open project note" },
-      { "<leader>fN", "<cmd>GlobalNote<cr>", noremap = true, silent = true, desc = "Open global notes" },
+      { "<leader>nd", "<cmd>DailyNote<cr>", noremap = true, silent = true, desc = "Open daily notes" },
+      { "<leader>np", note_picker, noremap = true, silent = true, desc = "Open project notes" },
+      { "<leader>nn", "<cmd>ProjectNote<cr>", noremap = true, silent = true, desc = "Open project note" },
+      { "<leader>ng", "<cmd>GlobalNote<cr>", noremap = true, silent = true, desc = "Open global notes" },
     },
     opts = global_opts(),
     init = function ()
