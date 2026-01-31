@@ -2,8 +2,8 @@ boot:~/work/doctoboot
 dotfiles:~/.config/dotfiles
 hc:~/work/health-content
 kube:~/work/kube
-kubetailrb:~/perso/kubetailrb
-lazy:~/perso/LazyVim
+kubetailrb:~/perso/github/kubetailrb
+lazy:~/perso/github/LazyVim
 mobile-dotfiles:~/perso/github/mobile-dotfiles
 mobile:~/work/doctolib-mobile-apps
 monolith:~/work/monolith
