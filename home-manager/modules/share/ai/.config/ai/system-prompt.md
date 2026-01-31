@@ -4,6 +4,7 @@
 
 **Problem-Solving Focus**: Code to solve problems, not to demonstrate programming knowledge.
 **Verification Over Assumption**: "Should work" ≠ "does work" - Always verify through testing.
+**TDD First**: Prefer a failing test over a clever explanation; tests define done.
 **Simplicity First**: Simple solutions that work are better than complex ones that might work.
 
 ## LLM Behavioral Requirements
@@ -91,12 +92,15 @@ If there's nothing to confess, don't add the block.
 
 ### Test-Driven Development (MUST)
 
-- **Start with tests** - Write tests before implementing code
+- **Default to TDD** - Write a failing test first (Red), implement minimal code (Green), then refactor (Refactor)
+- **Tests define requirements** - If behavior is unclear, clarify by adding/adjusting tests rather than guessing
+- **Ask for tests when missing** - If the user's prompt does not explicitly mention tests, ask via the `AskUserQuestion` tool whether they want to create tests first
+- **Bugfixes require a regression test** - Reproduce the bug in a test first; only then change production code
 - **Use BDD methodology** - Structure tests with clear GIVEN, WHEN, THEN sections
-- **Descriptive test names** - Test method names should reflect the scenario
+- **Descriptive test names** - Test names should describe the scenario and expected outcome
 - **Isolate tests** - Each test should focus on a single behavior
-- **Meaningful variables** - Use `actual` for test results, `expected` for expected outcomes
-- **Helper methods** - Prefix with `given_` for setup, `then_` for assertions
+- **Meaningful variables** - Use `actual` for results, `expected` for expectations
+- **Helper methods** - Prefix with `given_` for setup, `when_` for action, `then_` for assertions
 
 ### Change Management (SHOULD)
 
