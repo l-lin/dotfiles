@@ -62,6 +62,29 @@ local function edit_file(picker)
   vim.api.nvim_command("edit! " .. prompt)
 end
 
+---De-duplicate LSP items across multiple clients.
+---@type snacks.picker.transform
+local function deduplicate_lsp_items(item, ctx)
+  local seen = ctx.meta.seen
+  if not seen then
+    seen = {}
+    ctx.meta.seen = seen
+  end
+  local pos = item.pos or {}
+  -- Key syntax: file:line:col
+  local key = table.concat({
+    item.file or "",
+    tostring(pos[1] or ""),
+    tostring(pos[2] or ""),
+  }, ":")
+  if seen[key] then
+    return false
+  end
+
+  seen[key] = true
+  return item
+end
+
 local nav_keys_select = {
   input = {
     keys = {
@@ -171,6 +194,8 @@ local snacks_picker_opts = {
       win = nav_keys_select,
       focus = "input",
     },
+    lsp_definitions = { transform = deduplicate_lsp_items },
+    lsp_references = { transform = deduplicate_lsp_items },
   },
   win = {
     input = {
