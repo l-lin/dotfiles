@@ -4,7 +4,7 @@ describe("repo_parser.is_repo_pattern", function()
   local cases = {
     { name = "simple user/repo", input = "torvalds/linux", expect = true },
     { name = "user repo with dots", input = "saghen/blink.cmp", expect = true },
-    { name = "dashes and numbers", input = "foo-bar/my-repo123", expect = true },
+    { name = "dashes, underscores numbers", input = "foo-bar_hi/my-repo_123", expect = true },
     { name = "leading dash invalid", input = "-bad/repo", expect = false },
     { name = "trailing slash invalid", input = "user/repo/", expect = false },
     { name = "contains space invalid", input = "user name/repo", expect = false },

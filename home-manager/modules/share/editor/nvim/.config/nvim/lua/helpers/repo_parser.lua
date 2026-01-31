@@ -2,7 +2,7 @@
 ---@param text string the text to check
 ---@return boolean true if matches repo pattern like "username/project"
 local function is_repo_pattern(text)
-  return text:match("^[%w][%w%-%.]+/[%w][%w%-%.]+$") ~= nil
+  return text:match("^[%w_][%w%-%._]+/[%w_][%w%-%._]+$") ~= nil
 end
 
 local M = {}
