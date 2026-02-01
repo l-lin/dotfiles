@@ -12,5 +12,13 @@
   "share": "disabled",
   "autoupdate": false,
   "instructions": [],
-  "layout": "stretch"
+  "layout": "stretch",
+  "agent": {
+    "general": {
+      "model": "github-copilot/gpt-4.1"
+    },
+    "explore": {
+      "model": "github-copilot/gpt-4.1"
+    }
+  }
 }
