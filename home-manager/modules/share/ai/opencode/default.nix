@@ -20,12 +20,18 @@ let
     then darkThemeMap.${config.theme.nvimColorScheme} or "kanagawa"
     else lightThemeMap.${config.theme.nvimColorScheme} or "github";
 in {
-   # NOTE: Opencode fails to launch if the plugin file is a symlink, so we need to create the file directly with a script.
-   home.activation.copyOpenCodePlugin = lib.hm.dag.entryAfter ["writeBoundary"] ''
-     $DRY_RUN_CMD mkdir -p ${config.xdg.configHome}/opencode/plugin/
-     $DRY_RUN_CMD cp -f ${./.config/opencode/plugin/skill-activation.ts} ${config.xdg.configHome}/opencode/plugin/skills-activation.ts
-     $DRY_RUN_CMD cp -f ${./.config/opencode/plugin/pre-tool-safety.ts} ${config.xdg.configHome}/opencode/plugin/pre-tool-safety.ts
-   '';
+  # NOTE: Opencode fails to launch if the plugin file is a symlink, so we need to create the file directly with a script.
+  home.activation.copyOpenCodePlugin = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    $DRY_RUN_CMD mkdir -p ${config.xdg.configHome}/opencode/plugin/
+    $DRY_RUN_CMD cp -f ${./.config/opencode/plugin/skill-activation.ts} ${config.xdg.configHome}/opencode/plugin/skills-activation.ts
+    $DRY_RUN_CMD cp -f ${./.config/opencode/plugin/pre-tool-safety.ts} ${config.xdg.configHome}/opencode/plugin/pre-tool-safety.ts
+  '';
+
+  home.sessionVariables = {
+    # No need to support claude-code compatibility: https://opencode.ai/docs/rules/#claude-code-compatibility
+    OPENCODE_DISABLE_CLAUDE_CODE = "1";
+  };
+
   xdg.configFile = {
     "mise/conf.d/opencode.toml".source = ./.config/mise/conf.d/opencode.toml;
     "opencode/config.json".text = builtins.toJSON (
