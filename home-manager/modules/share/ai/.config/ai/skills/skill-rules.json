@@ -2,6 +2,42 @@
   "version": "1.0",
   "description": "Skill activation triggers for Claude Code. Controls when skills automatically suggest or block actions.",
   "skills": {
+    "coding-style": {
+      "priority": "critical",
+      "promptTriggers": {
+        "keywords": [
+          "implement",
+          "new feature",
+          "add feature",
+          "build feature",
+          "add functionality",
+          "fix this",
+          "fix bug",
+          "bug fix",
+          "debug",
+          "troubleshoot",
+          "issue",
+          "doesn't work",
+          "does not work",
+          "error",
+          "exception",
+          "stack trace",
+          "review code",
+          "review this",
+          "code review",
+          "pr review",
+          "pull request review"
+        ],
+        "intentPatterns": [
+          "\\b(add|implement|build|create|introduce|ship)\\b.*\\b(feature|functionality|endpoint|api|route|command|workflow|integration|component|page|screen)\\b",
+          "\\b(fix|resolve|address|debug|troubleshoot)\\b.*\\b(bug|issue|problem|error|exception|crash|failure|failing)\\b",
+          "\\b(review|audit|critique|inspect)\\b.*\\b(code|diff|patch|pr|pull request|changes)\\b",
+          "\\b(code review|pr review|review this|review my code)\\b",
+          "\\b(it|this)\\b.*\\b(does not work|doesn't work|broken|failing|fails)\\b",
+          "\\b(stack trace|traceback)\\b"
+        ]
+      }
+    },
     "clear-writing": {
       "priority": "high",
       "promptTriggers": {
