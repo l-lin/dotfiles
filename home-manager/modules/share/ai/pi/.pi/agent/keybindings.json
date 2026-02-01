@@ -1,0 +1,35 @@
+{
+  "cursorUp": ["up", "ctrl+p"],
+  "cursorDown": ["down", "ctrl+n"],
+  "cursorLeft": ["left", "ctrl+b"],
+  "cursorRight": ["right", "ctrl+f"],
+  "cursorWordLeft": ["alt+left", "alt+b"],
+  "cursorWordRight": ["alt+right", "alt+f"],
+  "cursorLineStart": ["home", "ctrl+a"],
+  "cursorLineEnd": ["end"],
+  "pageUp": ["pageUp", "ctrl+u"],
+  "pageDown": ["pageDown", "ctrl+d"],
+
+  "newLine": ["shift+enter", "ctrl+j"],
+  "submit": ["enter", "ctrl+s"],
+
+  "tab": ["tab", "ctrl+e"],
+
+  "deleteWordBackward": ["ctrl+w", "alt+backspace"],
+  "deleteWordForward": ["alt+d", "alt+delete"],
+  "deleteCharForward": ["delete", "ctrl+d"],
+  "deleteCharBackward": ["backspace", "ctrl+h"],
+  "deleteToLineStart": ["ctrl+u"],
+  "deleteToLineEnd": ["ctrl+k"],
+
+  "selectUp": ["up", "ctrl+p"],
+  "selectDown": ["down", "ctrl+n"],
+  "selectPageUp": ["pageUp", "ctrl+u"],
+  "selectPageDown": ["pageDown", "ctrl+d"],
+  "selectConfirm": ["enter", "ctrl+j"],
+  "selectCancel": ["escape", "ctrl+c"],
+
+  "selectModel": ["alt+m"],
+  "cycleModelForward": [],
+  "cycleModelBackward": []
+}

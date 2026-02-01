@@ -7,6 +7,7 @@
     ./claude-code
     ./dust
     ./opencode
+    ./pi
   ];
 
   xdg.configFile = {
