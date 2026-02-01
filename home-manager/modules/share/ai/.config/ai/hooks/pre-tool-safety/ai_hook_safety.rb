@@ -20,8 +20,7 @@ module AiHookSafety
 
   READ_EXTRA_SENSITIVE_PATH_SNIPPETS = [
     '/.config/zsh/secrets/',
-    '/.config/ai/',
-    '/.config/opencode/',
+    '/.config/dotfiles/secrets/',
     '/.claude/'
   ].freeze
 
