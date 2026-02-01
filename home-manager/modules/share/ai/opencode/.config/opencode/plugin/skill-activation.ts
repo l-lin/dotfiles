@@ -9,7 +9,8 @@ const SKILL_ACTIVATION_SCRIPT = join(
   ".config",
   "ai",
   "hooks",
-  "skill-activation.rb"
+  "skill-activation",
+  "main.rb"
 )
 
 async function runSkillActivation(prompt: string): Promise<string> {
