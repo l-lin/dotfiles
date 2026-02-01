@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+#
+#MISE description="Run Ruby tests"
+#
+
+set -euo pipefail
+
+if ! command -v ruby >/dev/null 2>&1; then
+  echo "ruby not found" >&2
+  exit 1
+fi
+
+shopt -s globstar dotglob nullglob
+
+ruby_tests=(**/*_test.rb)
+
+IFS=$'\n' ruby_tests=($(printf '%s\n' "${ruby_tests[@]}" | sort))
+unset IFS
+
+if [[ ${#ruby_tests[@]} -eq 0 ]]; then
+  echo "No Ruby test files found (**/*_test.rb)." >&2
+  exit 0
+fi
+
+echo "Ruby test files:" >&2
+for f in "${ruby_tests[@]}"; do
+  echo "- $f" >&2
+done
+
+for f in "${ruby_tests[@]}"; do
+  echo "+ ruby $f" >&2
+  ruby "$f"
+done
