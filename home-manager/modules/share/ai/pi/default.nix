@@ -6,8 +6,11 @@
 {
   xdg.configFile."mise/conf.d/pi.toml".source = ./.config/mise/conf.d/pi.toml;
 
-  home.file.".pi" = {
-    source = ./.pi;
-    recursive = true;
+  home.file = {
+    ".pi" = {
+      source = ./.pi;
+      recursive = true;
+    };
+    ".pi/agent/APPEND_SYSTEM.md".source = ../.config/ai/system-prompt.md;
   };
 }
