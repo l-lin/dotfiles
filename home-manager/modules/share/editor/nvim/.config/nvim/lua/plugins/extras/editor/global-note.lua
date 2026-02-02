@@ -224,6 +224,16 @@ return {
   {
     "backdround/global-note.nvim",
     cmd = { "GlobalNote" },
+    dependencies = {
+      {
+        "folke/which-key.nvim",
+        opts = {
+          spec = {
+            { "<leader>n", group = "notes" },
+          },
+        },
+      },
+    },
     keys = {
       { "<leader>nd", "<cmd>DailyNote<cr>", noremap = true, silent = true, desc = "Open daily notes" },
       { "<leader>np", note_picker, noremap = true, silent = true, desc = "Open project notes" },
