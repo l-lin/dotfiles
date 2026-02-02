@@ -3,14 +3,13 @@
 # src: https://github.com/badlogic/pi-mono
 #
 
-{
+{ config, symlinkRoot, ... }: {
   xdg.configFile."mise/conf.d/pi.toml".source = ./.config/mise/conf.d/pi.toml;
 
   home.file = {
-    ".pi" = {
-      source = ./.pi;
-      recursive = true;
-    };
+    # pi may edit the settings.json, so let allow write on this file.
+    ".pi/agent/settings.json".source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/ai/pi/.pi/agent/settings.json";
+    ".pi/agent/keybindings.json".source = ./.pi/agent/keybindings.json;
     ".pi/agent/APPEND_SYSTEM.md".source = ../.config/ai/system-prompt.md;
   };
 }

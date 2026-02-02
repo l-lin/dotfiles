@@ -6,7 +6,10 @@
   "skills": [
     "~/.config/ai/skills"
   ],
-  "prompts": ["~/.config/ai/commands", "~/.config/ai/commands/workflow"],
+  "prompts": [
+    "~/.config/ai/commands",
+    "~/.config/ai/commands/workflow"
+  ],
   "quietStartup": true,
   "hideThinkingBlock": false
 }
