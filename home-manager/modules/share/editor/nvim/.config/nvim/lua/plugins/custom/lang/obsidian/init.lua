@@ -143,7 +143,7 @@ local function markdown_to_html(text)
   text = text:gsub("%*%*(.-)%*%*", "<b>%1</b>")
   text = text:gsub("__(.-)__", "<b>%1</b>")
 
-  -- Convert bullet points - flatten nested lists with visual indentation
+  -- Convert bullet points - flatten nested lists with visual indentation (4 spaces per level)
   local lines = {}
   for line in (text .. "\n"):gmatch("([^\n]*)\n") do
     local indent, content = line:match("^(%s*)%- (.+)$")
@@ -151,7 +151,7 @@ local function markdown_to_html(text)
       -- Calculate indent level (2 or 4 spaces = 1 level typically)
       local level = math.floor(#indent / 2)
       -- Use non-breaking spaces for indentation + bullet
-      local visual_indent = string.rep("\u{00A0}\u{00A0}", level)
+      local visual_indent = string.rep("\u{00A0}", 4 * level)
       table.insert(lines, visual_indent .. "• " .. content)
     else
       table.insert(lines, line)
