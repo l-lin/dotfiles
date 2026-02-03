@@ -6,14 +6,14 @@
   "cursorWordLeft": ["alt+left", "alt+b"],
   "cursorWordRight": ["alt+right", "alt+f"],
   "cursorLineStart": ["home", "ctrl+a"],
-  "cursorLineEnd": ["end"],
+  "cursorLineEnd": ["end", "ctrl+e"],
   "pageUp": ["pageUp", "ctrl+u"],
   "pageDown": ["pageDown", "ctrl+d"],
 
   "newLine": ["shift+enter", "ctrl+j"],
   "submit": ["enter", "ctrl+s"],
 
-  "tab": ["tab", "ctrl+e"],
+  "tab": ["tab"],
 
   "deleteWordBackward": ["ctrl+w", "alt+backspace"],
   "deleteWordForward": ["alt+d", "alt+delete"],

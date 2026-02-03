@@ -1,15 +1,12 @@
 {
-  "lastChangelogVersion": "0.50.9",
+  "lastChangelogVersion": "0.51.2",
   "theme": "light",
   "defaultProvider": "github-copilot",
-  "defaultModel": "gpt-4.1",
+  "defaultModel": "gpt-4o",
   "skills": [
     "~/.config/ai/skills"
   ],
-  "prompts": [
-    "~/.config/ai/commands",
-    "~/.config/ai/commands/workflow"
-  ],
+  "prompts": [],
   "quietStartup": true,
-  "hideThinkingBlock": false
+  "defaultThinkingLevel": "off"
 }
