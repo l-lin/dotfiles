@@ -286,6 +286,28 @@
           "(review|check).*(what you|that you).*(wrote|implemented|changed)"
         ]
       }
+    },
+    "tmux": {
+      "priority": "high",
+      "promptTriggers": {
+        "keywords": [
+          "tmux",
+          "send-keys",
+          "pipe-pane",
+          "interactive",
+          "long-running",
+          "server logs",
+          "debugger",
+          "repl"
+        ],
+        "intentPatterns": [
+          "\\btmux\\b",
+          "(send-keys|capture-pane|pipe-pane|wait-for|split-window)",
+          "(run|start|launch).*(server|watcher|debugger|repl|tui).*(in|via).*(tmux)",
+          "(keep|persist).*(process|session).*(running)",
+          "(interactive|tty).*(command|tool|program)"
+        ]
+      }
     }
   },
   "notes": {
