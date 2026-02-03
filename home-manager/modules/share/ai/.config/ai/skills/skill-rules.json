@@ -263,6 +263,29 @@
           "(learn|understand).*(how to|the concept)"
         ]
       }
+    },
+    "self-review": {
+      "priority": "high",
+      "promptTriggers": {
+        "keywords": [
+          "review your code",
+          "review your work",
+          "check your work",
+          "self-review",
+          "fresh eyes",
+          "review that",
+          "check that",
+          "verify your code",
+          "double check",
+          "review what you wrote"
+        ],
+        "intentPatterns": [
+          "(review|check|verify|inspect).*(your|the).*(code|work|changes|implementation)",
+          "(self|critical).*(review|check|inspection)",
+          "(fresh eyes|second look|double check)",
+          "(review|check).*(what you|that you).*(wrote|implemented|changed)"
+        ]
+      }
     }
   },
   "notes": {
