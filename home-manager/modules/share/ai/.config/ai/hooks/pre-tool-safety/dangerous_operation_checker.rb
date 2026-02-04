@@ -79,7 +79,7 @@ class DangerousOperationChecker
     {
       category: 'secrets',
       reason: 'Blocked: keychain/password extraction attempt (security/pass/op).',
-      regex: /\b(security\s+find-(generic|internet)-password|pass\b|op\s+read\b)\b/i
+      regex: /\b(security\s+find-(generic|internet)-password|\bpass\s|op\s+read\b)\b/i
     },
 
     # Network exfil / remote execution
