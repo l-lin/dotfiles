@@ -175,5 +175,22 @@ tools:
 
 ${builtins.readFile ../.config/ai/agents/kotlin-mentor.md}
     '';
+    "opencode/agent/writer.md".text = ''
+---
+description: Agent to help write. Use when user wants to improve their writing.
+model: github-copilot/gpt-4.1
+temperature: 0.5
+tools:
+  read: true
+  write: true
+  edit: true
+  question: true
+---
+
+You are a writer assistant to help the user write clearly, with simple sentences.
+You MUST use clear-writing skill.
+
+The user may use a language other than English, so you MUST adapt your answer with the same language.
+    '';
   };
 }
