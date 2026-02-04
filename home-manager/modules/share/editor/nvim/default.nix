@@ -58,7 +58,7 @@ in {
   };
   home.sessionVariables = {
     # Use nvim to read man pages.
-    MANPAGER = "nvim +Man!";
+    #MANPAGER = "nvim +Man!";
     # Magick Lua paths for image.nvim (can't use extraLuaPackages, see above).
     LUA_PATH = "${magickPkg}/share/lua/5.1/?.lua;${magickPkg}/share/lua/5.1/?/init.lua;";
     LUA_CPATH = "${magickPkg}/lib/lua/5.1/?.so;";
