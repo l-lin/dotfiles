@@ -63,6 +63,7 @@ You are in the SCOUT phase of the task workflow. Your goal is to deeply understa
    - Review related tests
 3. **Document architecture insights**: Note any patterns, conventions, or constraints
 4. **Identify potential challenges**: Flag any risks or complexities
+5. **Ask questions to user**: Use the AskUserQuestion tool to the user if there are any points that require clarification
 
 ## Output Format
 
@@ -90,6 +91,7 @@ You are in the PLANNING phase of the task workflow. Based on the scout context, 
    - Consider edge cases and error handling
 3. **Estimate complexity**: Flag any high-risk areas
 4. **Define success criteria**: What does "done" look like?
+5. **Ask questions to user**: Use the AskUserQuestion tool to the user if there are any points that require clarification
 
 ## Output Format
 
