@@ -20,8 +20,7 @@ module AiHookSafety
 
   READ_EXTRA_SENSITIVE_PATH_SNIPPETS = [
     '/.config/zsh/secrets/',
-    '/.config/dotfiles/secrets/',
-    '/.claude/'
+    '/.config/dotfiles/secrets/'
   ].freeze
 
   SENSITIVE_BASENAMES = %w[
