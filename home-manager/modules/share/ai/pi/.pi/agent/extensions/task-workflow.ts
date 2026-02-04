@@ -718,95 +718,87 @@ export default function taskWorkflowExtension(pi: ExtensionAPI): void {
       }
     }
 
-    // Ask user if phase is complete
-    const isComplete = await ctx.ui.confirm(
-      `${getPhaseName(state.phase)} Phase`,
-      "Is this phase complete? Ready to proceed?",
-    );
+    // Phase transition in agent_end - we don't have full ExtensionCommandContext
+    // so we handle it inline without newSession support
+    const nextPhase = getNextPhase(state.phase);
 
-    if (isComplete) {
-      // Phase transition in agent_end - we don't have full ExtensionCommandContext
-      // so we handle it inline without newSession support
-      const nextPhase = getNextPhase(state.phase);
-
-      if (nextPhase === "complete") {
-        ctx.ui.notify("󱁖 Task workflow complete!", "success");
-        resetState();
-        updateStatus(ctx);
-        persistState();
-        return;
-      }
-
-      // Check if we should suggest a new session
-      const highContextUsage = await checkContextUsage(ctx);
-
-      // Ask for review & edit before proceeding
-      const artifact = getPhaseArtifact(state.phase);
-      let reviewContent = "";
-
-      if (artifact && state.artifactDir) {
-        reviewContent = readArtifact(state.artifactDir, artifact) || "";
-      }
-
-      // Show phase summary and ask for modifications
-      const choice = await ctx.ui.select(
-        `${getPhaseName(state.phase)} phase complete. What next?`,
-        [
-          `Proceed to ${getPhaseName(nextPhase)} phase`,
-          "Edit phase output before proceeding",
-          "Abort workflow",
-        ],
-      );
-
-      if (!choice || choice.includes("Abort")) {
-        const saveChoice = await ctx.ui.confirm(
-          "Save Progress?",
-          "Save current progress before aborting?",
-        );
-        if (saveChoice && state.artifactDir) {
-          ctx.ui.notify(`Progress saved to ${state.artifactDir}`, "info");
-        }
-        resetState();
-        updateStatus(ctx);
-        persistState();
-        return;
-      }
-
-      if (choice.includes("Edit")) {
-        const edited = await ctx.ui.editor(
-          `Edit ${getPhaseName(state.phase)} output:`,
-          reviewContent,
-        );
-        if (edited && artifact && state.artifactDir && state.saveArtifacts) {
-          writeArtifact(state.artifactDir, artifact, edited);
-        }
-      }
-
-      // Notify about high context usage (can't create new session from agent_end)
-      if (highContextUsage) {
-        ctx.ui.notify(
-          "Context usage is high (70%+). Consider using /task --resume after starting a new session.",
-          "warning",
-        );
-      }
-
-      // Continue in same session
-      state.phase = nextPhase;
+    if (nextPhase === "complete") {
+      ctx.ui.notify("󱁖 Task workflow complete!", "success");
+      resetState();
       updateStatus(ctx);
       persistState();
+      return;
+    }
 
-      // Inject next phase prompt
-      const phasePrompt = PHASE_PROMPTS[nextPhase as keyof PhasePrompts];
-      if (phasePrompt) {
-        pi.sendMessage(
-          {
-            customType: "task-workflow-phase",
-            content: phasePrompt,
-            display: false,
-          },
-          { triggerTurn: true },
-        );
+    // Check if we should suggest a new session
+    const highContextUsage = await checkContextUsage(ctx);
+
+    // Ask for review & edit before proceeding
+    const artifact = getPhaseArtifact(state.phase);
+    let reviewContent = "";
+
+    if (artifact && state.artifactDir) {
+      reviewContent = readArtifact(state.artifactDir, artifact) || "";
+    }
+
+    // Show phase summary and ask for modifications
+    const choice = await ctx.ui.select(
+      `${getPhaseName(state.phase)} phase complete. What next?`,
+      [
+        `Proceed to ${getPhaseName(nextPhase)} phase`,
+        "Edit phase output before proceeding",
+        "Abort workflow",
+      ],
+    );
+
+    if (!choice || choice.includes("Abort")) {
+      const saveChoice = await ctx.ui.confirm(
+        "Save Progress?",
+        "Save current progress before aborting?",
+      );
+      if (saveChoice && state.artifactDir) {
+        ctx.ui.notify(`Progress saved to ${state.artifactDir}`, "info");
       }
+      resetState();
+      updateStatus(ctx);
+      persistState();
+      return;
+    }
+
+    if (choice.includes("Edit")) {
+      const edited = await ctx.ui.editor(
+        `Edit ${getPhaseName(state.phase)} output:`,
+        reviewContent,
+      );
+      if (edited && artifact && state.artifactDir && state.saveArtifacts) {
+        writeArtifact(state.artifactDir, artifact, edited);
+      }
+    }
+
+    // Notify about high context usage (can't create new session from agent_end)
+    if (highContextUsage) {
+      ctx.ui.notify(
+        "Context usage is high (70%+). Consider using /task --resume after starting a new session.",
+        "warning",
+      );
+    }
+
+    // Continue in same session
+    state.phase = nextPhase;
+    updateStatus(ctx);
+    persistState();
+
+    // Inject next phase prompt
+    const phasePrompt = PHASE_PROMPTS[nextPhase as keyof PhasePrompts];
+    if (phasePrompt) {
+      pi.sendMessage(
+        {
+          customType: "task-workflow-phase",
+          content: phasePrompt,
+          display: false,
+        },
+        { triggerTurn: true },
+      );
     }
   });
 
