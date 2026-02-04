@@ -73,6 +73,7 @@ interface AuthStatus {
 
 const WIDGET_ID = "copilot-usage";
 const BAR_WIDTH = 20;
+const WIDGET_PLACEMENT = { placement: "aboveEditor" } // or belowEditor
 
 // Token file locations (same as codecompanion.nvim)
 function getTokenPaths(): string[] {
@@ -251,14 +252,14 @@ function updateWidget(
   if (!authStatus.hasToken) {
     ctx.ui.setWidget(WIDGET_ID, [
       theme.fg("error", " Copilot: ") + theme.fg("dim", authStatus.error || "No token"),
-    ]);
+    ], WIDGET_PLACEMENT);
     return;
   }
 
   if (!usageData) {
     ctx.ui.setWidget(WIDGET_ID, [
       theme.fg("warning", " Copilot: ") + theme.fg("dim", "Failed to fetch usage data"),
-    ]);
+    ], WIDGET_PLACEMENT);
     return;
   }
 
@@ -266,7 +267,7 @@ function updateWidget(
   if (usageData.unlimited) {
     ctx.ui.setWidget(WIDGET_ID, [
       theme.fg("success", "  Copilot: ") + theme.fg("dim", "Unlimited premium requests"),
-    ]);
+    ], WIDGET_PLACEMENT);
     return;
   }
 
@@ -285,7 +286,7 @@ function updateWidget(
   const daysPart = `${daysBar} ${daysRemaining}d left ( ${resetDate})`;
 
   const combinedLine = ` ${usagePart} ${daysPart}`;
-  ctx.ui.setWidget(WIDGET_ID, [combinedLine]);
+  ctx.ui.setWidget(WIDGET_ID, [combinedLine], WIDGET_PLACEMENT);
 }
 
 // ============================================================================
@@ -301,7 +302,7 @@ export default function copilotUsageExtension(pi: ExtensionAPI) {
     if (!ctx.hasUI) return;
 
     if (!widgetVisible) {
-      ctx.ui.setWidget(WIDGET_ID, []);
+      ctx.ui.setWidget(WIDGET_ID, [], WIDGET_PLACEMENT);
       return;
     }
 
