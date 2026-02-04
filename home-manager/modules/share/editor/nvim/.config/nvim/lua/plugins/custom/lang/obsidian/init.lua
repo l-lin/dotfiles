@@ -133,8 +133,11 @@ local function markdown_to_html(text)
   -- This is a simplification - proper solution would use a placeholder
   text = text:gsub("&", "&amp;")
 
-  -- Convert code blocks first (before inline code)
-  text = text:gsub("```(.-)```", "<pre>%1</pre>")
+  -- Convert code blocks first (before inline code), removing language identifier
+  text = text:gsub("```%w*\n?(.-)```", "<pre>%1</pre>")
+
+  -- Remove multiple consecutive newlines
+  text = text:gsub("\n\n+", "\n")
 
   -- Convert inline code
   text = text:gsub("`([^`]+)`", "<code>%1</code>")
