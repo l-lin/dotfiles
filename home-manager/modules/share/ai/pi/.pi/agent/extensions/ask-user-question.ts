@@ -24,7 +24,6 @@ interface Question {
   label: string;
   prompt: string;
   options: { value: string; label: string; description?: string }[];
-  allowOther: boolean;
 }
 
 interface Answer {
@@ -55,7 +54,7 @@ const QuestionnaireParams = Type.Object({
         }),
         { description: "Available options" },
       ),
-      allowOther: Type.Optional(Type.Boolean({ description: "Allow 'Type something' option (default: true)" })),
+
     }),
     { description: "Questions to ask" },
   ),
@@ -75,7 +74,6 @@ export default function questionnaire(pi: ExtensionAPI) {
       const questions: Question[] = params.questions.map((q, i) => ({
         ...q,
         label: q.label || `Q${i + 1}`,
-        allowOther: q.allowOther !== false,
       }));
 
       const isMulti = questions.length > 1;
@@ -108,7 +106,7 @@ export default function questionnaire(pi: ExtensionAPI) {
           const question = currentQuestion();
           if (!question) return [];
           const options = [...question.options];
-          if (question.allowOther) options.push({ value: "__other__", label: "Type something." });
+          options.push({ value: "__other__", label: "Type something." });
           return options;
         };
 
