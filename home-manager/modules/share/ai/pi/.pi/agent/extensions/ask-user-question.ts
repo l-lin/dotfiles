@@ -62,7 +62,7 @@ const QuestionnaireParams = Type.Object({
 
 export default function questionnaire(pi: ExtensionAPI) {
   pi.registerTool({
-    name: "ask_user_question",
+    name: "AskUserQuestion",
     label: "AskUserQuestion",
     description: "Ask the user one or more questions. Single question shows options list; multiple questions show tab-based interface.",
     parameters: QuestionnaireParams,
