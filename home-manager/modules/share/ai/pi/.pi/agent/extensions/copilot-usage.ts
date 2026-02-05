@@ -10,7 +10,10 @@
  * Uses the internal GitHub Copilot API.
  */
 
-import type { ExtensionAPI, ExtensionContext } from "@mariozechner/pi-coding-agent";
+import type {
+  ExtensionAPI,
+  ExtensionContext,
+} from "@mariozechner/pi-coding-agent";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import * as os from "node:os";
@@ -73,7 +76,28 @@ interface AuthStatus {
 
 const WIDGET_ID = "copilot-usage";
 const BAR_WIDTH = 20;
-const WIDGET_PLACEMENT = { placement: "aboveEditor" } // or belowEditor
+const WIDGET_PLACEMENT = { placement: "aboveEditor" };
+const SETTINGS_PATH = path.join(os.homedir(), ".pi/agent/settings.json");
+
+// ============================================================================
+// Settings
+// ============================================================================
+
+interface PiSettings {
+  copilotUsageVisible?: boolean;
+}
+
+function loadSettings(): PiSettings {
+  try {
+    if (fs.existsSync(SETTINGS_PATH)) {
+      const content = fs.readFileSync(SETTINGS_PATH, "utf-8");
+      return JSON.parse(content) as PiSettings;
+    }
+  } catch {
+    // Ignore errors, return defaults
+  }
+  return {};
+}
 
 // Token file locations (same as codecompanion.nvim)
 function getTokenPaths(): string[] {
@@ -122,7 +146,8 @@ function getOAuthToken(): AuthStatus {
 
   return {
     hasToken: false,
-    error: "No Copilot token found. Install GitHub Copilot extension in your editor first.",
+    error:
+      "No Copilot token found. Install GitHub Copilot extension in your editor first.",
   };
 }
 
@@ -132,13 +157,16 @@ function getOAuthToken(): AuthStatus {
 
 async function fetchUsage(token: string): Promise<UsageData | null> {
   try {
-    const response = await fetch("https://api.github.com/copilot_internal/user", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-        "User-Agent": "pi-copilot-usage",
+    const response = await fetch(
+      "https://api.github.com/copilot_internal/user",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "User-Agent": "pi-copilot-usage",
+        },
       },
-    });
+    );
 
     if (!response.ok) {
       return null;
@@ -161,7 +189,10 @@ async function fetchUsage(token: string): Promise<UsageData | null> {
     }
 
     // For limited/free users
-    if (data.access_type_sku === "free_limited_copilot" && data.limited_user_quotas) {
+    if (
+      data.access_type_sku === "free_limited_copilot" &&
+      data.limited_user_quotas
+    ) {
       // Free tier doesn't have premium_interactions, use chat quota as proxy
       const chatQuota = data.monthly_quotas?.chat || 50;
       const chatRemaining = data.limited_user_quotas.chat || 0;
@@ -244,30 +275,45 @@ function renderProgressBar(
 function updateWidget(
   ctx: ExtensionContext,
   usageData: UsageData | null,
-  authStatus: AuthStatus
+  authStatus: AuthStatus,
 ): void {
   const theme = ctx.ui.theme;
 
   // Handle error states
   if (!authStatus.hasToken) {
-    ctx.ui.setWidget(WIDGET_ID, [
-      theme.fg("error", " Copilot: ") + theme.fg("dim", authStatus.error || "No token"),
-    ], WIDGET_PLACEMENT);
+    ctx.ui.setWidget(
+      WIDGET_ID,
+      [
+        theme.fg("error", " Copilot: ") +
+          theme.fg("dim", authStatus.error || "No token"),
+      ],
+      WIDGET_PLACEMENT,
+    );
     return;
   }
 
   if (!usageData) {
-    ctx.ui.setWidget(WIDGET_ID, [
-      theme.fg("warning", " Copilot: ") + theme.fg("dim", "Failed to fetch usage data"),
-    ], WIDGET_PLACEMENT);
+    ctx.ui.setWidget(
+      WIDGET_ID,
+      [
+        theme.fg("warning", " Copilot: ") +
+          theme.fg("dim", "Failed to fetch usage data"),
+      ],
+      WIDGET_PLACEMENT,
+    );
     return;
   }
 
   // Handle unlimited users
   if (usageData.unlimited) {
-    ctx.ui.setWidget(WIDGET_ID, [
-      theme.fg("success", "  Copilot: ") + theme.fg("dim", "Unlimited premium requests"),
-    ], WIDGET_PLACEMENT);
+    ctx.ui.setWidget(
+      WIDGET_ID,
+      [
+        theme.fg("success", "  Copilot: ") +
+          theme.fg("dim", "Unlimited premium requests"),
+      ],
+      WIDGET_PLACEMENT,
+    );
     return;
   }
 
@@ -282,7 +328,13 @@ function updateWidget(
   const daysRemaining = getDaysRemaining(resetDate);
   const totalDays = getDaysInCurrentPeriod();
   const daysPassed = Math.max(0, totalDays - daysRemaining);
-  const daysBar = renderProgressBar(daysPassed, totalDays, BAR_WIDTH, theme, false);
+  const daysBar = renderProgressBar(
+    daysPassed,
+    totalDays,
+    BAR_WIDTH,
+    theme,
+    false,
+  );
   const daysPart = `${daysBar} ${daysRemaining}d left ( ${resetDate})`;
 
   const combinedLine = ` ${usagePart} ${daysPart}`;
@@ -296,7 +348,10 @@ function updateWidget(
 export default function copilotUsageExtension(pi: ExtensionAPI) {
   let cachedUsage: UsageData | null = null;
   let cachedAuth: AuthStatus | null = null;
-  let widgetVisible = true;
+
+  // Load initial visibility from settings (defaults to true if not set)
+  const settings = loadSettings();
+  let widgetVisible = settings.copilotUsageVisible !== false;
 
   async function refresh(ctx: ExtensionContext): Promise<void> {
     if (!ctx.hasUI) return;
@@ -342,7 +397,7 @@ export default function copilotUsageExtension(pi: ExtensionAPI) {
         } else {
           ctx.ui.notify(
             `${cachedUsage.used}/${cachedUsage.quota} requests used (${cachedUsage.remaining} remaining)`,
-            "success"
+            "success",
           );
         }
       } else if (cachedAuth?.error) {
@@ -361,7 +416,10 @@ export default function copilotUsageExtension(pi: ExtensionAPI) {
 
       widgetVisible = !widgetVisible;
       await refresh(ctx);
-      ctx.ui.notify(`Copilot usage widget ${widgetVisible ? "shown" : "hidden"}`, "info");
+      ctx.ui.notify(
+        `Copilot usage widget ${widgetVisible ? "shown" : "hidden"}`,
+        "info",
+      );
     },
   });
 }

@@ -8,5 +8,6 @@
   ],
   "prompts": [],
   "quietStartup": true,
-  "defaultThinkingLevel": "off"
+  "defaultThinkingLevel": "medium",
+  "copilotUsageVisible": false
 }
