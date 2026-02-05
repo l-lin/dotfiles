@@ -82,6 +82,8 @@ return {
           DiagnosticUnderlineWarn = { fg = colors.theme.diag.warning },
           DiagnosticUnderlineInfo = { fg = colors.theme.diag.info },
           DiagnosticUnderlineHint = { fg = colors.theme.diag.hint },
+          diffAdded = { link = "DiffAdd" },
+          diffRemoved = { link = "DiffDelete" },
           FloatBorder = { fg = colors.theme.ui.float.fg_border, bg = "none" },
           NormalFloat = { bg = "none" },
           LazyNormal = { bg = "none" },
