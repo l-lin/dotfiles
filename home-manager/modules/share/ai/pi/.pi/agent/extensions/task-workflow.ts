@@ -9,7 +9,8 @@
  *   /task Fix the login bug      - Start task with description
  *   /task --resume planning JIRA-1234 - Resume from a specific phase
  *   /task --status               - Show current task status
- *   /task --next                 - Manually proceed to next phase
+ *   /task --next                 - Proceed to next phase
+ *   /task --abort                - Abort current task workflow
  *
  * Artifacts stored in: .sandbox/tasks/YYYY-MM-DD-JIRA-XXXX-description/
  *   - context.md   (Scout phase)
@@ -25,7 +26,6 @@ import type {
 import * as fs from "node:fs";
 import * as path from "node:path";
 
-// Types
 type Phase = "scout" | "planning" | "implementation" | "review" | "complete";
 
 interface TaskState {
@@ -37,18 +37,18 @@ interface TaskState {
   branchCreated: string | null;
 }
 
-interface PhasePrompts {
-  scout: string;
-  planning: string;
-  implementation: string;
-  review: string;
-}
-
-// Constants
 const JIRA_PATTERN = /^[A-Z]+-\d+$/;
-const CONTEXT_THRESHOLD = 0.7; // 70% context usage triggers new session suggestion
+const CONTEXT_THRESHOLD = 70;
 
-const PHASE_PROMPTS: PhasePrompts = {
+const PHASE_META: Record<Phase, { emoji: string; artifact: string | null; next: Phase }> = {
+  scout: { emoji: " ", artifact: "context.md", next: "planning" },
+  planning: { emoji: " ", artifact: "plan.md", next: "implementation" },
+  implementation: { emoji: " ", artifact: "progress.md", next: "review" },
+  review: { emoji: " ", artifact: "progress.md", next: "complete" },
+  complete: { emoji: "󱁖 ", artifact: null, next: "complete" },
+};
+
+const PHASE_PROMPTS: Record<Exclude<Phase, "complete">, string> = {
   scout: `# Scout Phase
 
 You are in the SCOUT phase of the task workflow. Your goal is to deeply understand the codebase context for this task.
@@ -75,7 +75,9 @@ Create a comprehensive context document covering:
 - Potential challenges or risks
 - Questions that need clarification
 
-Be thorough - this context will drive the planning phase.`,
+Be thorough - this context will drive the planning phase.
+
+When done, the user will run \`/task --next\` to proceed.`,
 
   planning: `# Planning Phase
 
@@ -84,7 +86,7 @@ You are in the PLANNING phase of the task workflow. Based on the scout context, 
 ## Instructions
 
 1. **Review the context**: Use the information gathered in the scout phase
-2. **Design the solution**: 
+2. **Design the solution**:
    - Define the approach and architecture decisions
    - Break down into concrete, atomic steps
    - Identify test requirements for each step
@@ -103,7 +105,9 @@ Create a structured plan with:
 - Success criteria checklist
 - Rollback considerations (if applicable)
 
-Each step should be small enough to implement and verify independently.`,
+Each step should be small enough to implement and verify independently.
+
+When done, the user will run \`/task --next\` to proceed.`,
 
   implementation: `# Implementation Phase
 
@@ -124,7 +128,9 @@ Update the progress with:
 - [ ] Remaining steps
 - Detailed log of what was done, files modified, any deviations from plan
 
-Mark each step complete as you finish it.`,
+Mark each step complete as you finish it.
+
+When done, the user will run \`/task --next\` to proceed.`,
 
   review: `# Review Phase
 
@@ -160,155 +166,53 @@ You are in the REVIEW phase of the task workflow. Verify the implementation is c
 5. Document any issues found
 6. Fix issues or flag for discussion
 
-Report the final status with all checklist items addressed.`,
+Report the final status with all checklist items addressed.
+
+When done, the user will run \`/task --next\` to complete the workflow.`,
 };
 
-// Helper functions
-function getTodayDate(): string {
-  const now = new Date();
-  return now.toISOString().split("T")[0];
+const today = () => new Date().toISOString().split("T")[0];
+const slugify = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").substring(0, 50);
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+function readArtifact(dir: string, filename: string): string | null {
+  const filepath = path.join(dir, filename);
+  return fs.existsSync(filepath) ? fs.readFileSync(filepath, "utf-8") : null;
 }
 
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "")
-    .substring(0, 50);
+function getArtifactDir(cwd: string, taskId: string | null, description: string): string {
+  const parts = [today(), taskId, slugify(description)].filter(Boolean);
+  return path.join(cwd, ".sandbox", "tasks", parts.join("-") || `${today()}-task`);
 }
 
-function extractTicketFromBranch(branchName: string): string | null {
-  const match = branchName.match(/([A-Z]+-\d+)/);
-  return match ? match[1] : null;
+function findExistingTaskDir(cwd: string, taskId: string): string | null {
+  const tasksDir = path.join(cwd, ".sandbox", "tasks");
+  if (!fs.existsSync(tasksDir)) return null;
+  const match = fs.readdirSync(tasksDir).find((d) => d.includes(taskId));
+  return match ? path.join(tasksDir, match) : null;
 }
 
-async function getCurrentBranch(pi: ExtensionAPI): Promise<string | null> {
+async function gitBranch(pi: ExtensionAPI, args: string[]): Promise<string | null> {
   try {
-    const result = await pi.exec("git", ["rev-parse", "--abbrev-ref", "HEAD"], {
-      timeout: 5000,
-    });
+    const result = await pi.exec("git", args, { timeout: 5000 });
     return result.code === 0 ? result.stdout.trim() : null;
   } catch {
     return null;
   }
 }
 
-async function createBranch(
-  pi: ExtensionAPI,
-  branchName: string,
-): Promise<boolean> {
-  try {
-    const result = await pi.exec("git", ["checkout", "-b", branchName], {
-      timeout: 5000,
-    });
-    return result.code === 0;
-  } catch {
-    return false;
-  }
-}
-
-function getArtifactDir(
-  cwd: string,
-  taskId: string | null,
-  description: string,
-): string {
-  const date = getTodayDate();
-  const slug = slugify(description);
-  let dirName: string;
-  if (taskId && slug) {
-    dirName = `${date}-${taskId}-${slug}`;
-  } else if (taskId) {
-    dirName = `${date}-${taskId}`;
-  } else if (slug) {
-    dirName = `${date}-${slug}`;
-  } else {
-    dirName = `${date}-task`;
-  }
-  return path.join(cwd, ".sandbox", "tasks", dirName);
-}
-
-function ensureDir(dir: string): void {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-}
-
-function readArtifact(dir: string, filename: string): string | null {
-  const filepath = path.join(dir, filename);
-  if (fs.existsSync(filepath)) {
-    return fs.readFileSync(filepath, "utf-8");
-  }
-  return null;
-}
-
-function writeArtifact(dir: string, filename: string, content: string): void {
-  ensureDir(dir);
-  fs.writeFileSync(path.join(dir, filename), content, "utf-8");
-}
-
-function findExistingTaskDir(cwd: string, taskId: string): string | null {
-  const tasksDir = path.join(cwd, ".sandbox", "tasks");
-  if (!fs.existsSync(tasksDir)) return null;
-
-  const dirs = fs.readdirSync(tasksDir);
-  const matching = dirs.find((d) => d.includes(taskId));
-  return matching ? path.join(tasksDir, matching) : null;
-}
-
-function getPhaseArtifact(phase: Phase): string | null {
-  switch (phase) {
-    case "scout":
-      return "context.md";
-    case "planning":
-      return "plan.md";
-    case "implementation":
-    case "review":
-      return "progress.md";
-    default:
-      return null;
-  }
-}
-
-function getNextPhase(phase: Phase): Phase {
-  switch (phase) {
-    case "scout":
-      return "planning";
-    case "planning":
-      return "implementation";
-    case "implementation":
-      return "review";
-    case "review":
-      return "complete";
-    default:
-      return "complete";
-  }
-}
-
-function getPhaseName(phase: Phase): string {
-  return phase.charAt(0).toUpperCase() + phase.slice(1);
-}
-
-// Extension
+// Extension -------------------------------------------
 export default function taskWorkflowExtension(pi: ExtensionAPI): void {
-  let state: TaskState = {
+  const initialState = (): TaskState => ({
     phase: "scout",
     taskId: null,
     description: "",
     artifactDir: null,
     saveArtifacts: false,
     branchCreated: null,
-  };
+  });
 
-  function resetState(): void {
-    state = {
-      phase: "scout",
-      taskId: null,
-      description: "",
-      artifactDir: null,
-      saveArtifacts: false,
-      branchCreated: null,
-    };
-  }
+  let state = initialState();
 
   function updateStatus(ctx: ExtensionContext): void {
     if (!state.taskId && !state.description) {
@@ -316,545 +220,254 @@ export default function taskWorkflowExtension(pi: ExtensionAPI): void {
       ctx.ui.setWidget("task-workflow", undefined);
       return;
     }
-
-    const phaseEmoji: Record<Phase, string> = {
-      scout: " ",
-      planning: " ",
-      implementation: " ",
-      review: " ",
-      complete: "󱁖 ",
-    };
-
-    const statusText = `${phaseEmoji[state.phase]} ${state.taskId || "task"}: ${getPhaseName(state.phase)}`;
-    ctx.ui.setStatus("task-workflow", ctx.ui.theme.fg("accent", statusText));
-
-    // Widget with task info
-    const taskLabel =
-      state.taskId || state.description.substring(0, 30) || "unnamed";
-    const lines = [
-      ctx.ui.theme.fg("accent", `Task: ${taskLabel}`),
-      ctx.ui.theme.fg("muted", `Phase: ${getPhaseName(state.phase)}`),
-    ];
-    if (state.artifactDir) {
-      lines.push(
-        ctx.ui.theme.fg(
-          "dim",
-          `Artifacts: ${path.basename(state.artifactDir)}`,
-        ),
-      );
-    }
-    ctx.ui.setWidget("task-workflow", lines);
+    const text = `${PHASE_META[state.phase].emoji} ${state.taskId || "task"}: ${capitalize(state.phase)}`;
+    ctx.ui.setStatus("task-workflow", ctx.ui.theme.fg("accent", text));
   }
 
-  function persistState(): void {
-    pi.appendEntry("task-workflow-state", { ...state });
-  }
-
-  async function checkContextUsage(ctx: ExtensionContext): Promise<boolean> {
-    const usage = ctx.getContextUsage();
-    if (!usage) return false;
-    return usage.percent >= CONTEXT_THRESHOLD * 100;
-  }
-
-  async function handlePhaseTransition(
-    ctx: ExtensionCommandContext,
-  ): Promise<boolean> {
-    const nextPhase = getNextPhase(state.phase);
-
-    if (nextPhase === "complete") {
-      ctx.ui.notify("󱁖 Task workflow complete!", "success");
-      resetState();
-      updateStatus(ctx);
-      persistState();
-      return true;
-    }
-
-    // Check if we should suggest a new session
-    const highContextUsage = await checkContextUsage(ctx);
-
-    // Ask for review & edit before proceeding
-    const artifact = getPhaseArtifact(state.phase);
-    let reviewContent = "";
-
-    if (artifact && state.artifactDir) {
-      reviewContent = readArtifact(state.artifactDir, artifact) || "";
-    }
-
-    // Show phase summary and ask for modifications
-    const choice = await ctx.ui.select(
-      `${getPhaseName(state.phase)} phase complete. What next?`,
-      [
-        `Proceed to ${getPhaseName(nextPhase)} phase`,
-        "Edit phase output before proceeding",
-        "Abort workflow",
-      ],
-    );
-
-    if (!choice || choice.includes("Abort")) {
-      const saveChoice = await ctx.ui.confirm(
-        "Save Progress?",
-        "Save current progress before aborting?",
-      );
-      if (saveChoice && state.artifactDir) {
-        ctx.ui.notify(`Progress saved to ${state.artifactDir}`, "info");
-      }
-      resetState();
-      updateStatus(ctx);
-      persistState();
-      return false;
-    }
-
-    if (choice.includes("Edit")) {
-      const edited = await ctx.ui.editor(
-        `Edit ${getPhaseName(state.phase)} output:`,
-        reviewContent,
-      );
-      if (edited && artifact && state.artifactDir && state.saveArtifacts) {
-        writeArtifact(state.artifactDir, artifact, edited);
-      }
-    }
-
-    // Check if new session needed
-    if (highContextUsage) {
-      const newSessionChoice = await ctx.ui.confirm(
-        "High Context Usage",
-        "Context is at 70%+ usage. Start a new session for the next phase? Artifacts will be auto-loaded.",
-      );
-
-      if (newSessionChoice) {
-        // Prepare handoff
-        state.phase = nextPhase;
-        persistState();
-
-        const currentSessionFile = ctx.sessionManager.getSessionFile();
-        await ctx.newSession({ parentSession: currentSessionFile });
-
-        // Auto-load context for new session
-        const contextPrompt = buildPhasePrompt(nextPhase);
-        ctx.ui.setEditorText(contextPrompt);
-        ctx.ui.notify(
-          `New session started. Phase: ${getPhaseName(nextPhase)}`,
-          "info",
-        );
-        return true;
-      }
-    }
-
-    // Continue in same session
-    state.phase = nextPhase;
-    updateStatus(ctx);
-    persistState();
-
-    // Inject next phase prompt
-    const phasePrompt = PHASE_PROMPTS[nextPhase as keyof PhasePrompts];
-    if (phasePrompt) {
-      pi.sendMessage(
-        {
-          customType: "task-workflow-phase",
-          content: phasePrompt,
-          display: false,
-        },
-        { triggerTurn: true },
-      );
-    }
-
-    return true;
-  }
-
-  function buildPhasePrompt(phase: Phase): string {
-    let prompt = PHASE_PROMPTS[phase as keyof PhasePrompts] || "";
+  function buildPhasePrompt(phase: Exclude<Phase, "complete">): string {
+    let prompt = PHASE_PROMPTS[phase];
+    const { artifact } = PHASE_META[phase];
+    const dir = state.artifactDir;
 
     // Add context from previous phases
-    if (state.artifactDir) {
-      if (phase === "planning") {
-        const context = readArtifact(state.artifactDir, "context.md");
-        if (context) {
-          prompt += `\n\n---\n\n# Context from Scout Phase\n\n${context}`;
-        }
-      } else if (phase === "implementation") {
-        const context = readArtifact(state.artifactDir, "context.md");
-        const plan = readArtifact(state.artifactDir, "plan.md");
-        if (context) prompt += `\n\n---\n\n# Context\n\n${context}`;
-        if (plan) prompt += `\n\n---\n\n# Plan\n\n${plan}`;
-      } else if (phase === "review") {
-        const plan = readArtifact(state.artifactDir, "plan.md");
-        const progress = readArtifact(state.artifactDir, "progress.md");
-        if (plan) prompt += `\n\n---\n\n# Plan\n\n${plan}`;
-        if (progress) prompt += `\n\n---\n\n# Progress\n\n${progress}`;
+    if (dir) {
+      const context = readArtifact(dir, "context.md");
+      const plan = readArtifact(dir, "plan.md");
+      const progress = readArtifact(dir, "progress.md");
+
+      const additions: string[] = [];
+      if (phase === "planning" && context) additions.push(`# Context from Scout Phase\n\n${context}`);
+      if (phase === "implementation") {
+        if (context) additions.push(`# Context\n\n${context}`);
+        if (plan) additions.push(`# Plan\n\n${plan}`);
+      }
+      if (phase === "review") {
+        if (plan) additions.push(`# Plan\n\n${plan}`);
+        if (progress) additions.push(`# Progress\n\n${progress}`);
+      }
+      if (additions.length) prompt += "\n\n---\n\n" + additions.join("\n\n---\n\n");
+    }
+
+    // Artifact writing instructions
+    if (state.saveArtifacts && dir && artifact) {
+      const artifactPath = path.join(dir, artifact);
+      const isProgress = artifact === "progress.md";
+      const existing = isProgress ? readArtifact(dir, artifact) : null;
+
+      prompt += `\n\n---\n\n## Output Instructions
+
+**IMPORTANT**: Write your phase output directly to the artifact file using the write tool:
+- Artifact file: \`${artifactPath}\`
+- Use the \`write\` tool to save your analysis/plan/progress to this file
+- Keep chat output minimal - only display a brief summary (1-2 sentences)
+- Use \`AskUserQuestion\` tool for any questions that need user input
+- Do NOT dump the full analysis in chat - write it to the file instead`;
+
+      if (isProgress && existing) {
+        prompt += `\n- **APPEND** to the existing content - do not overwrite previous progress
+- Start your entry with a timestamp header: \`## ${capitalize(phase)} - [timestamp]\``;
       }
     }
 
-    if (state.taskId) {
-      prompt = `Task: ${state.taskId}\n\n${prompt}`;
-    }
-    if (state.description) {
-      prompt = `Description: ${state.description}\n\n${prompt}`;
-    }
-
+    if (state.taskId) prompt = `Task: ${state.taskId}\n\n${prompt}`;
+    if (state.description) prompt = `Description: ${state.description}\n\n${prompt}`;
     return prompt;
   }
 
-  // Register command
+  async function handleNext(ctx: ExtensionCommandContext): Promise<void> {
+    if (!state.taskId && !state.description) {
+      ctx.ui.notify("No active task. Start one with /task <description>", "error");
+      return;
+    }
+
+    const nextPhase = PHASE_META[state.phase].next;
+    if (nextPhase === "complete") {
+      ctx.ui.notify("󱁖 Task workflow complete!", "success");
+      state = initialState();
+      updateStatus(ctx);
+      pi.appendEntry("task-workflow-state", { ...state });
+      return;
+    }
+
+    // Check context usage for new session suggestion
+    const usage = ctx.getContextUsage();
+    if (usage && usage.percent >= CONTEXT_THRESHOLD) {
+      const newSession = await ctx.ui.confirm(
+        "High Context Usage",
+        "Context is at 70%+ usage. Start a new session for the next phase? Artifacts will be auto-loaded.",
+      );
+      if (newSession) {
+        state.phase = nextPhase;
+        pi.appendEntry("task-workflow-state", { ...state });
+        await ctx.newSession({ parentSession: ctx.sessionManager.getSessionFile() });
+        ctx.ui.setEditorText(buildPhasePrompt(nextPhase));
+        ctx.ui.notify(`New session started. Phase: ${capitalize(nextPhase)}`, "info");
+        return;
+      }
+    }
+
+    state.phase = nextPhase;
+    updateStatus(ctx);
+    pi.appendEntry("task-workflow-state", { ...state });
+    pi.sendMessage({ customType: "task-workflow-phase", content: PHASE_PROMPTS[nextPhase], display: false }, { triggerTurn: true });
+  }
+
+  async function handleResume(ctx: ExtensionCommandContext, args: string): Promise<void> {
+    const [resumePhase, resumeTaskId] = args.split(/\s+/) as [Phase | undefined, string | undefined];
+    const validPhases: Phase[] = ["scout", "planning", "implementation", "review"];
+
+    if (!resumePhase || !validPhases.includes(resumePhase)) {
+      ctx.ui.notify(`Usage: /task --resume <phase> [TASK-ID]\nPhases: ${validPhases.join(", ")}`, "error");
+      return;
+    }
+
+    const taskIdToFind = resumeTaskId || state.taskId;
+    if (!state.artifactDir && taskIdToFind) {
+      state.artifactDir = findExistingTaskDir(ctx.cwd, taskIdToFind);
+      if (resumeTaskId) state.taskId = resumeTaskId;
+    }
+
+    if (!state.artifactDir) {
+      ctx.ui.notify("No task artifacts found. Specify task ID: /task --resume <phase> TASK-ID", "error");
+      return;
+    }
+
+    // Extract description from dir name
+    if (!state.description && state.artifactDir) {
+      let remainder = path.basename(state.artifactDir).replace(/^\d{4}-\d{2}-\d{2}-/, "");
+      if (state.taskId) remainder = remainder.replace(new RegExp(`^${state.taskId}-?`, "i"), "");
+      state.description = remainder.replace(/-/g, " ");
+    }
+
+    state.phase = resumePhase;
+    state.saveArtifacts = true;
+    updateStatus(ctx);
+    pi.appendEntry("task-workflow-state", { ...state });
+    ctx.ui.setEditorText(buildPhasePrompt(resumePhase));
+    ctx.ui.notify(`Resuming from ${capitalize(resumePhase)} phase`, "info");
+  }
+
+  async function handleStart(ctx: ExtensionCommandContext, args: string): Promise<void> {
+    let taskId: string | null = null;
+    let description = args;
+    const firstWord = args.split(" ")[0];
+
+    if (JIRA_PATTERN.test(firstWord)) {
+      taskId = firstWord;
+      description = args.slice(taskId.length).trim();
+    }
+
+    // Check/create branch
+    const currentBranch = await gitBranch(pi, ["rev-parse", "--abbrev-ref", "HEAD"]);
+    if (currentBranch) {
+      const branchTicket = currentBranch.match(/([A-Z]+-\d+)/)?.[1] ?? null;
+      if (branchTicket && !taskId) {
+        taskId = branchTicket;
+      } else if (taskId && branchTicket !== taskId) {
+        const slug = slugify(description);
+        const newBranch = slug ? `${taskId}-${slug}` : taskId;
+        ctx.ui.notify(`Creating branch: ${newBranch}`, "info");
+        const created = await gitBranch(pi, ["checkout", "-b", newBranch]);
+        state.branchCreated = created ? newBranch : null;
+        if (!created) ctx.ui.notify("Failed to create branch. Continuing on current branch.", "warning");
+      }
+    }
+
+    const saveChoice = await ctx.ui.confirm(
+      "Save Artifacts?",
+      "Save phase outputs to .sandbox/tasks/? (Recommended for complex tasks)",
+    );
+
+    state = { ...initialState(), taskId, description, saveArtifacts: saveChoice, phase: "scout", branchCreated: state.branchCreated };
+
+    if (saveChoice) {
+      state.artifactDir = getArtifactDir(ctx.cwd, taskId, description);
+      fs.mkdirSync(state.artifactDir, { recursive: true });
+      ctx.ui.notify(`Artifacts will be saved to: ${state.artifactDir}`, "info");
+    }
+
+    updateStatus(ctx);
+    pi.appendEntry("task-workflow-state", { ...state });
+    pi.sendMessage({ customType: "task-workflow-phase", content: buildPhasePrompt("scout"), display: true }, { triggerTurn: true });
+    pi.setSessionName(`Task: ${taskId || description.substring(0, 30) || "unnamed"}`);
+  }
+
+  // Command
   pi.registerCommand("task", {
-    description:
-      "Start or manage a phased task workflow (scout → planning → implementation → review)",
+    description: "Start or manage a phased task workflow (scout → planning → implementation → review)",
     handler: async (args, ctx) => {
       if (!ctx.hasUI) {
         ctx.ui.notify("/task requires interactive mode", "error");
         return;
       }
 
-      const trimmedArgs = args.trim();
+      const trimmed = args.trim();
 
-      // Handle --status flag
-      if (trimmedArgs === "--status") {
-        if (!state.taskId && !state.description) {
-          ctx.ui.notify("No active task", "info");
-        } else {
-          ctx.ui.notify(
-            `Task: ${state.taskId || state.description}\nPhase: ${getPhaseName(state.phase)}\nArtifacts: ${state.artifactDir || "none"}`,
-            "info",
-          );
-        }
+      if (trimmed === "--status") {
+        const msg = !state.taskId && !state.description
+          ? "No active task"
+          : ` ${state.taskId || state.description}\n${PHASE_META[state.phase].emoji} ${capitalize(state.phase)}\n ${state.artifactDir || "none"}`;
+        ctx.ui.notify(msg, "info");
         return;
       }
 
-      // Handle --resume flag: /task --resume planning JIRA-1234
-      if (trimmedArgs.startsWith("--resume")) {
-        const resumeParts = trimmedArgs
-          .replace("--resume", "")
-          .trim()
-          .split(/\s+/);
-        const resumePhase = resumeParts[0]?.toLowerCase() as Phase;
-        const resumeTaskId = resumeParts[1];
-        const validPhases: Phase[] = [
-          "scout",
-          "planning",
-          "implementation",
-          "review",
-        ];
+      if (trimmed === "--next") return handleNext(ctx);
+      if (trimmed.startsWith("--resume")) return handleResume(ctx, trimmed.replace("--resume", "").trim());
 
-        if (!resumePhase || !validPhases.includes(resumePhase)) {
-          ctx.ui.notify(
-            `Usage: /task --resume <phase> [TASK-ID]\nPhases: ${validPhases.join(", ")}`,
-            "error",
-          );
+      if (trimmed === "--abort") {
+        if (!state.taskId && !state.description) {
+          ctx.ui.notify("No active task to abort", "info");
           return;
         }
-
-        // Find existing task dir - use provided task ID, or fall back to current state
-        const taskIdToFind = resumeTaskId || state.taskId;
-        if (!state.artifactDir && taskIdToFind) {
-          state.artifactDir = findExistingTaskDir(ctx.cwd, taskIdToFind);
-          if (resumeTaskId) {
-            state.taskId = resumeTaskId;
-          }
-        }
-
-        if (!state.artifactDir) {
-          ctx.ui.notify(
-            "No task artifacts found. Specify task ID: /task --resume <phase> TASK-ID",
-            "error",
-          );
-          return;
-        }
-
-        // Extract description from artifact dir name if not already set
-        // Format: YYYY-MM-DD-TASK-XXX-description or YYYY-MM-DD-description
-        if (!state.description && state.artifactDir) {
-          const dirName = path.basename(state.artifactDir);
-          // Remove date prefix (YYYY-MM-DD-)
-          let remainder = dirName.replace(/^\d{4}-\d{2}-\d{2}-/, "");
-          // Remove task ID if present
-          if (state.taskId) {
-            remainder = remainder.replace(
-              new RegExp(`^${state.taskId}-?`, "i"),
-              "",
-            );
-          }
-          // Convert slug back to readable text
-          state.description = remainder.replace(/-/g, " ");
-        }
-
-        state.phase = resumePhase;
-        state.saveArtifacts = true;
+        const label = state.taskId || state.description;
+        ctx.ui.notify(`Task "${label}" aborted${state.artifactDir ? `. Artifacts saved to ${state.artifactDir}` : ""}`, "info");
+        state = initialState();
         updateStatus(ctx);
-        persistState();
-
-        const prompt = buildPhasePrompt(resumePhase);
-        ctx.ui.setEditorText(prompt);
-        ctx.ui.notify(
-          `Resuming from ${getPhaseName(resumePhase)} phase`,
-          "info",
-        );
+        pi.appendEntry("task-workflow-state", { ...state });
         return;
       }
 
-      // Handle --next flag (proceed to next phase)
-      if (trimmedArgs === "--next") {
-        if (!state.taskId && !state.description) {
-          ctx.ui.notify(
-            "No active task. Start one with /task <description>",
-            "error",
-          );
-          return;
-        }
-        await handlePhaseTransition(ctx);
-        return;
-      }
-
-      // Start new task
-      if (!trimmedArgs) {
+      if (!trimmed) {
         ctx.ui.notify("Usage: /task <JIRA-ID or description>", "error");
         return;
       }
 
-      // Parse task input
-      let taskId: string | null = null;
-      let description = trimmedArgs;
-
-      if (JIRA_PATTERN.test(trimmedArgs.split(" ")[0])) {
-        taskId = trimmedArgs.split(" ")[0];
-        const remainingText = trimmedArgs.slice(taskId.length).trim();
-        description = remainingText || ""; // Don't duplicate ticket ID as description
-      }
-
-      // Check current branch for ticket
-      const currentBranch = await getCurrentBranch(pi);
-      if (currentBranch) {
-        const branchTicket = extractTicketFromBranch(currentBranch);
-        if (branchTicket && !taskId) {
-          taskId = branchTicket;
-        } else if (taskId && branchTicket !== taskId) {
-          // Need to create new branch
-          const slug = slugify(description);
-          const newBranchName = slug ? `${taskId}-${slug}` : taskId;
-          ctx.ui.notify(`Creating branch: ${newBranchName}`, "info");
-          const created = await createBranch(pi, newBranchName);
-          if (created) {
-            state.branchCreated = newBranchName;
-          } else {
-            ctx.ui.notify(
-              "Failed to create branch. Continuing on current branch.",
-              "warning",
-            );
-          }
-        }
-      }
-
-      // Ask about saving artifacts
-      const saveChoice = await ctx.ui.confirm(
-        "Save Artifacts?",
-        "Save phase outputs to .sandbox/tasks/? (Recommended for complex tasks)",
-      );
-
-      state.taskId = taskId;
-      state.description = description;
-      state.saveArtifacts = saveChoice;
-      state.phase = "scout";
-
-      if (saveChoice) {
-        state.artifactDir = getArtifactDir(ctx.cwd, taskId, description);
-        ensureDir(state.artifactDir);
-        ctx.ui.notify(
-          `Artifacts will be saved to: ${state.artifactDir}`,
-          "info",
-        );
-      }
-
-      updateStatus(ctx);
-      persistState();
-
-      // Start scout phase
-      const scoutPrompt = buildPhasePrompt("scout");
-      pi.sendMessage(
-        {
-          customType: "task-workflow-phase",
-          content: scoutPrompt,
-          display: true,
-        },
-        { triggerTurn: true },
-      );
-
-      pi.setSessionName(
-        `Task: ${taskId || description.substring(0, 30) || "unnamed"}`,
-      );
+      return handleStart(ctx, trimmed);
     },
   });
 
-  // Track phase completion in agent responses
-  pi.on("agent_end", async (event, ctx) => {
-    if (!state.taskId && !state.description) return;
-    if (state.phase === "complete") return;
+  // Events
+  pi.on("agent_end", async (_event, ctx) => {
+    if ((!state.taskId && !state.description) || state.phase === "complete") return;
     if (!ctx.hasUI) return;
-
-    // Look for phase completion signals in the last message
-    const messages = event.messages;
-    const lastAssistant = [...messages]
-      .reverse()
-      .find((m) => m.role === "assistant");
-
-    if (!lastAssistant) return;
-
-    const content =
-      lastAssistant.content
-        ?.filter((c): c is { type: "text"; text: string } => c.type === "text")
-        .map((c) => c.text)
-        .join("\n") || "";
-
-    // Save artifact if configured
-    if (state.saveArtifacts && state.artifactDir) {
-      const artifact = getPhaseArtifact(state.phase);
-      if (artifact) {
-        // Append to progress.md for implementation/review, overwrite for others
-        if (artifact === "progress.md") {
-          const existing = readArtifact(state.artifactDir, artifact) || "";
-          const timestamp = new Date().toISOString();
-          const entry = `\n\n---\n\n## ${getPhaseName(state.phase)} - ${timestamp}\n\n${content}`;
-          writeArtifact(state.artifactDir, artifact, existing + entry);
-        } else {
-          writeArtifact(state.artifactDir, artifact, content);
-        }
-      }
-    }
-
-    // Phase transition in agent_end - we don't have full ExtensionCommandContext
-    // so we handle it inline without newSession support
-    const nextPhase = getNextPhase(state.phase);
-
-    if (nextPhase === "complete") {
-      ctx.ui.notify("󱁖 Task workflow complete!", "success");
-      resetState();
-      updateStatus(ctx);
-      persistState();
-      return;
-    }
-
-    // Check if we should suggest a new session
-    const highContextUsage = await checkContextUsage(ctx);
-
-    // Ask for review & edit before proceeding
-    const artifact = getPhaseArtifact(state.phase);
-    let reviewContent = "";
-
-    if (artifact && state.artifactDir) {
-      reviewContent = readArtifact(state.artifactDir, artifact) || "";
-    }
-
-    // Show phase summary and ask for modifications
-    const choice = await ctx.ui.select(
-      `${getPhaseName(state.phase)} phase complete. What next?`,
-      [
-        `Proceed to ${getPhaseName(nextPhase)} phase`,
-        "Edit phase output before proceeding",
-        "Abort workflow",
-      ],
-    );
-
-    if (!choice || choice.includes("Abort")) {
-      const saveChoice = await ctx.ui.confirm(
-        "Save Progress?",
-        "Save current progress before aborting?",
-      );
-      if (saveChoice && state.artifactDir) {
-        ctx.ui.notify(`Progress saved to ${state.artifactDir}`, "info");
-      }
-      resetState();
-      updateStatus(ctx);
-      persistState();
-      return;
-    }
-
-    if (choice.includes("Edit")) {
-      const edited = await ctx.ui.editor(
-        `Edit ${getPhaseName(state.phase)} output:`,
-        reviewContent,
-      );
-      if (edited && artifact && state.artifactDir && state.saveArtifacts) {
-        writeArtifact(state.artifactDir, artifact, edited);
-      }
-    }
-
-    // Notify about high context usage (can't create new session from agent_end)
-    if (highContextUsage) {
-      ctx.ui.notify(
-        "Context usage is high (70%+). Consider using /task --resume after starting a new session.",
-        "warning",
-      );
-    }
-
-    // Continue in same session
-    state.phase = nextPhase;
-    updateStatus(ctx);
-    persistState();
-
-    // Inject next phase prompt
-    const phasePrompt = PHASE_PROMPTS[nextPhase as keyof PhasePrompts];
-    if (phasePrompt) {
-      pi.sendMessage(
-        {
-          customType: "task-workflow-phase",
-          content: phasePrompt,
-          display: false,
-        },
-        { triggerTurn: true },
-      );
-    }
+    const next = PHASE_META[state.phase].next;
+    const action = next === "complete" ? "complete the workflow" : `proceed to ${capitalize(next)}`;
+    ctx.ui.notify(`Run /task --next to ${action}`, "info");
   });
 
-  // Handle abort
-  pi.on("session_shutdown", async (_event, ctx) => {
-    if (!state.taskId && !state.description) return;
-    if (!ctx.hasUI) return;
-
-    if (state.saveArtifacts && state.artifactDir) {
-      const saveChoice = await ctx.ui.confirm(
-        "Save Progress?",
-        "Save current progress before exiting?",
-      );
-      if (saveChoice) {
-        ctx.ui.notify(`Progress saved to ${state.artifactDir}`, "info");
-      }
-    }
-  });
-
-  // Restore state on session start
   pi.on("session_start", async (_event, ctx) => {
     const entries = ctx.sessionManager.getEntries();
-
-    // Find last task-workflow-state entry
     const stateEntry = entries
-      .filter(
-        (e: { type: string; customType?: string }) =>
-          e.type === "custom" && e.customType === "task-workflow-state",
-      )
+      .filter((e: { type: string; customType?: string }) => e.type === "custom" && e.customType === "task-workflow-state")
       .pop() as { data?: TaskState } | undefined;
 
     if (stateEntry?.data) {
       state = { ...state, ...stateEntry.data };
-
       if (ctx.hasUI) {
         updateStatus(ctx);
-
         if (state.phase !== "complete" && (state.taskId || state.description)) {
-          ctx.ui.notify(
-            `Restored task: ${state.taskId || state.description} (${getPhaseName(state.phase)} phase)`,
-            "info",
-          );
+          ctx.ui.notify(`Restored task: ${state.taskId || state.description} (${capitalize(state.phase)} phase)`, "info");
         }
       }
     }
   });
 
-  // Inject phase context before agent starts
-  pi.on("before_agent_start", async (_event, _ctx) => {
-    if (!state.taskId && !state.description) return;
-    if (state.phase === "complete") return;
-
+  pi.on("before_agent_start", async () => {
+    if ((!state.taskId && !state.description) || state.phase === "complete") return;
     return {
       message: {
         customType: "task-workflow-context",
-        content: `[TASK WORKFLOW - ${getPhaseName(state.phase).toUpperCase()} PHASE]
+        content: `[TASK WORKFLOW - ${state.phase.toUpperCase()} PHASE]
 Task: ${state.taskId || "N/A"}
 Description: ${state.description}
 Artifacts: ${state.artifactDir || "Not saving"}
