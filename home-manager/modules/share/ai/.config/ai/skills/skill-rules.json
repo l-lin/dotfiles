@@ -308,6 +308,22 @@
           "(interactive|tty).*(command|tool|program)"
         ]
       }
+    },
+    "pi-extension-builder": {
+      "priority": "high",
+      "promptTriggers": {
+        "keywords": [
+          "create pi extension",
+          "extend pi",
+          "customize pi"
+        ],
+        "intentPatterns": [
+          "(create|build|make|add).*(\\bpi\\b).*(extension|tool|command)",
+          "(\\bpi\\b|coding-agent).*(extension|plugin|tool)",
+          "(extend|customize).*(pi|coding-agent)",
+          "\\bpi\\b.*(extension|tool|command)"
+        ]
+      }
     }
   },
   "notes": {
