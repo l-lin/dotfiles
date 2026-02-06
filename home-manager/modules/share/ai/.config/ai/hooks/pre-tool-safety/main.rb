@@ -33,7 +33,6 @@ begin
   #     "tool_use_id":"toolu_01JhuMmF2efV8UWzMverCD8h"
   #   }
   input = $stdin.read
-  File.write('/tmp/pre-tool-safety-input.cmd.json', input)
   data = JSON.parse(input)
   PreToolSafety.new(data).run
 rescue JSON::ParserError

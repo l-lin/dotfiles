@@ -11,7 +11,13 @@ class DangerousOperationChecker
     # macOS temp roots
     '/tmp',
     '/private/tmp',
-    '/var/folders'
+    '/var/folders',
+    # System binaries
+    '/usr/bin',
+    '/usr/local/bin',
+    '/opt/homebrew/bin',
+    '/bin',
+    '/sbin'
   ].freeze
 
   SCRIPT_EXTRA_SENSITIVE_PATH_SNIPPETS = [
