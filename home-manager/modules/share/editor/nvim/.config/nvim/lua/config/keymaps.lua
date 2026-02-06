@@ -18,6 +18,9 @@ vim.keymap.del("n", "<leader>ft")
 vim.keymap.del("n", "<c-/>")
 vim.keymap.del("n", "<c-_>")
 
+-- Remove default gitbrowse
+vim.keymap.del("n", "<leader>gB")
+vim.keymap.del("x", "<leader>gB")
 
 local map = vim.keymap.set
 
@@ -84,3 +87,6 @@ if vim.env.NVIM_SCRATCH then
   map("i", "<C-s>", "<Esc>ZQ", { desc = "Quit scratch buffer" })
   map("n", "q", "ZQ", { desc = "Quit scratch buffer" })
 end
+
+-- Browse git repository on the browser.
+map("n", "<leader>gB", require("helpers.git").browse_with_branch_select, { desc = "Git Browse (open)" })
