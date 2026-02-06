@@ -65,6 +65,8 @@
     spacer
     # A tool for managing the installation of multiple software packages in the same run-time directory tree: https://www.gnu.org/software/stow/
     stow
+    # Command-line translator using Google Translate, Bing Translator, Yandex.Translate, and Apertium: https://www.soimort.org/translate-shell
+    translate-shell
     # Command to produce a depth indented directory listing: https://oldmanprogrammer.net/source.php?dir=projects/tree
     tree
     # Convert terminal recordings to animated gifs: https://github.com/icholy/ttygif
