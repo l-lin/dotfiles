@@ -78,6 +78,11 @@ def format_model(model_id)
   "#{GREY}󰚩 #{model_id}#{RESET}"
 end
 
+def format_cost(total_cost_usd)
+  formatted = "$%.4f" % total_cost_usd
+  "#{RED} #{formatted}#{RESET}"
+end
+
 begin
   input = STDIN.read
   data = JSON.parse(input)
@@ -88,8 +93,9 @@ begin
   context_length = compute_context_length(transcript_path)
 
   model_id = data.dig('model', 'id') || 'unknown'
+  total_cost_usd = data.dig('cost', 'total_cost_usd') || 0.0
 
-  puts "#{RESET}#{format_cwd(cwd)} #{format_context_length(context_length)} #{format_model(model_id)}"
+  puts "#{RESET}#{format_cwd(cwd)} #{format_context_length(context_length)} #{format_model(model_id)} #{format_cost(total_cost_usd)}"
 rescue => e
   puts "#{RESET}#{RED}ERROR: #{e.message}#{RESET}"
 end
