@@ -80,6 +80,7 @@ require("lazy").setup({
     -- { import = "plugins.extras.ui.auto-dark-mode" },
     -- { import = "plugins.extras.ui.hlchunk" },
     { import = "plugins.extras.util.jira" },
+    { import = "plugins.extras.util.translate" },
     -- { import = "plugins.extras.vcs.gitlab" },
     -- { import = "plugins.extras.vcs.octo" },
   },
@@ -119,7 +120,7 @@ require("lazy").setup({
     },
   },
   dev = {
-    path = "~/perso/github",
+    path = "~/perso/codeberg",
   },
   -- Since Lazy v11, it supports LuaRocks, a package manager for Lua modules, for plugins that needs to install their dependencies,
   -- e.g. image.nvim needs magick. However, there's still some issue with Nix (I did not investigate) and installed magick manually
