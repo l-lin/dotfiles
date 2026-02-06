@@ -54,7 +54,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # A wrapper tool for nix OpenGL application
     nixgl.url = "github:nix-community/nixgl";
+
+    #  Ricing mode utility for Home Manager 
+    hm-ricing-mode.url = "github:mipmip/hm-ricing-mode";
 
     ########################  My own repositories  #########################################
 
@@ -66,6 +70,7 @@
 
   outputs = {
     self,
+    hm-ricing-mode,
     home-manager,
     nix-darwin,
     nixgl,
@@ -118,7 +123,7 @@
       editor = "nvim"; # default editor
       pager = "less"; # default pager
       term = "ghostty"; # default terminal emulator
-      theme = "grey"; # colorscheme to use
+      theme = "kanagawa-wave"; # colorscheme to use
       shell = "zsh"; # shell to use
       wm = "aerospace"; # selected window manager
       wmType = "quartz"; # selected window compositor
@@ -167,7 +172,7 @@
       "${userSettings.username}" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.${systemSettings.system}; # Home-manager requires 'pkgs' instance
         extraSpecialArgs = specialArgs;
-        modules = [./home-manager/home.nix];
+        modules = [./home-manager/home.nix hm-ricing-mode.homeManagerModules.hm-ricing-mode];
       };
     };
   };

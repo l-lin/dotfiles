@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+#
+#MISE description: Toggle rice mode for faster iteration.
+#
+
+set -eu
+
+if type hmrice >/dev/null 2>&1; then \
+  RICING=$(hmrice status | grep RICING | wc -l)
+  if [ $RICING -gt 0 ]; then
+    hmrice unrice
+  else
+    hmrice rice
+  fi
+else
+  echo '"hmrice" not found, cannot toggle rice mode' > 2
+fi

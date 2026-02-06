@@ -5,6 +5,14 @@
 
 set -eu
 
+# unrice before switching to avoid issues with ricing and home-manager fighting over the same files
+if type hmrice >/dev/null 2>&1; then \
+  RICING=$(hmrice status | grep RICING | wc -l)
+  if [ $RICING -gt 0 ]; then
+    hmrice unrice
+  fi
+fi
+
 if type nh >/dev/null 2>&1; then \
   nh home switch --backup-extension bak --configuration "$(whoami)" . -- --show-trace; \
 else \
