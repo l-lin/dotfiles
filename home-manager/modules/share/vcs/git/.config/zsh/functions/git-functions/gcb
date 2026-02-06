@@ -1,3 +1,3 @@
 #!/usr/bin/env zsh
 
-tmux popup -E -w 80 -h 30 "git branch | sed 's/..//' | fzf --reverse | xargs -r git switch"
+tmux popup -E -w 80 -h 30 "git branch | sed 's/..//' | fzf --reverse --header 'C-x: delete' --bind 'ctrl-x:execute(git branch -d {})+reload(git branch | sed \"s/..//\")' | xargs -r git switch"
