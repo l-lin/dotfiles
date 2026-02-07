@@ -10,8 +10,13 @@ local function extract_title_from_html(html)
   local title = html:match("<[tT][iI][tT][lL][eE][^>]*>([^<]*)</[tT][iI][tT][lL][eE]>")
 
   if title then
-    -- Clean up the title (remove newlines, extra spaces)
-    title = title:gsub("[\r\n]", ""):gsub("^%s*(.-)%s*$", "%1")
+    -- Sanitize
+    -- Remove newlines
+    title = title:gsub("[\r\n]", "")
+    -- Remove extra spaces
+    title = title:gsub("^%s*(.-)%s*$", "%1")
+    -- Replace &amp; to &
+    title = title:gsub("&amp;", "&")
     return title or nil
   end
 
