@@ -17,7 +17,7 @@ return {
     },
   },
   {
-    "l-lin/private-ruby.nvim",
+    "https://codeberg.org/l-lin/private-ruby.nvim",
     ft = 'ruby',
     opts = {},
   },
