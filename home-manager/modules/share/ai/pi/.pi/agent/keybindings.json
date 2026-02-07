@@ -29,7 +29,10 @@
   "selectConfirm": ["enter", "ctrl+j"],
   "selectCancel": ["escape", "ctrl+c"],
 
-  "selectModel": ["alt+m"],
+  "toggleSessionPath": [],
+  "toggleSessionNamedFilter": [],
+
+  "selectModel": ["alt+p"],
   "cycleModelForward": [],
   "cycleModelBackward": []
 }
