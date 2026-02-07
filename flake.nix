@@ -123,7 +123,7 @@
       editor = "nvim"; # default editor
       pager = "less"; # default pager
       term = "ghostty"; # default terminal emulator
-      theme = "kanagawa-wave"; # colorscheme to use
+      theme = "grey"; # colorscheme to use
       shell = "zsh"; # shell to use
       wm = "aerospace"; # selected window manager
       wmType = "quartz"; # selected window compositor
