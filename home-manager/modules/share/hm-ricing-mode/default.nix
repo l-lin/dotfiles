@@ -20,7 +20,7 @@
       };
       zsh = {
         dest_dir = ".config/zsh";
-        source_dir = "${symlinkRoot}home-manager/modules/share/shell/zsh/.config/zsh";
+        source_dir = "${symlinkRoot}/home-manager/modules/share/shell/zsh/.config/zsh";
         type = "symlink";
       };
     };
