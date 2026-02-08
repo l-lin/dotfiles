@@ -74,6 +74,8 @@
       "ghostty"
       # Free and open-source image editor: https://www.gimp.org/
       "gimp"
+      # Java IDE by Jetbrains: https://www.jetbrains.com/idea/
+      "intellij-idea"
       # Jellyfin is the volunteer-built media solution that puts you in control of your media: https://jellyfin.org/
       #"jellyfin"
       # Free cross-platform office suite, fresh version: https://www.libreoffice.org/
