@@ -20,5 +20,6 @@
     "explore": {
       "model": "github-copilot/gpt-4.1"
     }
-  }
+  },
+  "plugin": ["@tarquinen/opencode-dcp@latest"]
 }
