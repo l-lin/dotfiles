@@ -55,11 +55,11 @@ in {
 set -g @plugin 'l-lin/tmux-colorscheme'
 set -g @tmux-colorscheme 'home-manager'
 set -g @tmux-colorscheme-show-pomodoro true
-set -g @tmux-colorscheme-show-upload-speed false
-set -g @tmux-colorscheme-show-download-speed false
+set -g @tmux-colorscheme-show-upload-speed true
+set -g @tmux-colorscheme-show-download-speed true
 set -g @tmux-colorscheme-show-prefix-highlight true
 set -g @tmux-colorscheme-show-battery false
-set -g @tmux-colorscheme-show-cpu false
+set -g @tmux-colorscheme-show-cpu true
 set -g @tmux-colorscheme-show-cpu-temp false
 set -g @tmux-colorscheme-show-ram false
 set -g @tmux-colorscheme-show-date false
