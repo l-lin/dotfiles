@@ -6,3 +6,10 @@
 mise run home:apply
 mise run darwin:update
 unleash-the-keys
+
+# Launch notes cron tasks.
+if [ -d "$HOME/perso/codeberg/notes" ]; then
+  cd "$HOME/perso/codeberg/notes"
+  mise run auto-commit:restart
+  mise run waypoint:restart
+fi
