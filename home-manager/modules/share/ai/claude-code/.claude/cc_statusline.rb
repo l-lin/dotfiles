@@ -31,7 +31,7 @@
 #   }
 # }
 # ```
-# src: https://anthropic.mintlify.app/en/docs/claude-code/statusline#json-input-structure
+# src: https://code.claude.com/docs/en/statusline#available-data
 #
 
 require("json")
