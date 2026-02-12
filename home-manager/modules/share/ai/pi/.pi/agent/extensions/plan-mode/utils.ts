@@ -159,10 +159,15 @@ export function extractTodoItems(message: string): TodoItem[] {
 export function extractDoneSteps(message: string): number[] {
   const steps: number[] = [];
 
-  // Match [DONE:n] format
-  for (const match of message.matchAll(/\[DONE:(\d+)\]/gi)) {
-    const step = Number(match[1]);
-    if (Number.isFinite(step)) steps.push(step);
+  // Match [DONE:n] or [DONE:n-m] format (single step or range)
+  for (const match of message.matchAll(/\[DONE:(\d+)(?:-(\d+))?\]/gi)) {
+    const start = Number(match[1]);
+    const end = match[2] ? Number(match[2]) : start;
+    if (Number.isFinite(start) && Number.isFinite(end)) {
+      for (let i = start; i <= end; i++) {
+        if (!steps.includes(i)) steps.push(i);
+      }
+    }
   }
 
   // Match numbered items with checkmarks: "1. ☑", "2. ✓", "3. [x]", "4. ✔"
