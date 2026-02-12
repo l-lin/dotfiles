@@ -4,7 +4,10 @@
  * Usage: pi --extension ./examples/extensions/modal-editor.ts
  *
  * - Escape: insert → normal mode (in normal mode, aborts agent)
- * - i: normal → insert mode
+ * - i: normal → insert mode (at cursor)
+ * - a: insert after cursor
+ * - A: insert at end of line
+ * - I: insert at start of line
  * - hjkl: navigation in normal mode
  * - 0/$: line start/end
  * - f{char}: jump to next {char} on line
@@ -40,6 +43,8 @@ const NORMAL_KEYS: Record<string, string | null> = {
   x: "\x1b[3~", // delete char
   i: null, // insert mode
   a: null, // append (insert + right)
+  A: null, // append at end of line
+  I: null, // insert at start of line
 };
 
 // Character motion keys that wait for a target character
@@ -136,6 +141,12 @@ class ModalEditor extends CustomEditor {
       } else if (data === "a") {
         this.mode = "insert";
         super.handleInput("\x1b[C"); // move right first
+      } else if (data === "A") {
+        this.mode = "insert";
+        super.handleInput("\x05"); // move to end of line first
+      } else if (data === "I") {
+        this.mode = "insert";
+        super.handleInput("\x01"); // move to start of line first
       } else if (seq) {
         super.handleInput(seq);
       }
