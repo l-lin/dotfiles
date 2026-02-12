@@ -1,6 +1,6 @@
 {
-  "lastChangelogVersion": "0.52.0",
-  "theme": "dark",
+  "lastChangelogVersion": "0.52.9",
+  "theme": "light",
   "defaultProvider": "github-copilot",
   "defaultModel": "gpt-4o",
   "skills": [
