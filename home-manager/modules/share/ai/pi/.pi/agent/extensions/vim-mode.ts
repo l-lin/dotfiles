@@ -294,7 +294,7 @@ class ModalEditor extends CustomEditor {
     const last = lines.length - 1;
     if (visibleWidth(lines[last]!) >= label.length) {
       lines[last] =
-        truncateToWidth(lines[last]!, width - label.length, "") + label;
+        label + truncateToWidth(lines[last]!, width - label.length, "");
     }
     return lines;
   }
