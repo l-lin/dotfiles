@@ -82,3 +82,11 @@ vim.keymap.set(
   end,
   { buffer = true, desc = "Run nearest test (Shift+F9)" }
 )
+vim.keymap.set(
+  "n",
+  "<leader>tr",
+  function()
+    require("helpers.lang.ruby").rerun_last()
+  end,
+  { buffer = true, desc = "Re-run last test/command" }
+)
