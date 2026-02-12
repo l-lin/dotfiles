@@ -13,10 +13,10 @@ Yank the final version to the clipboard.
 
 1. If needed, ask for the text + any constraints (audience, tone, length).
 2. Produce the improved text.
-3. Yank the improved text to clipboard by using `copy`
+3. Yank the improved text to clipboard by using `pbcopy`
 
 ```bash
-cat <<'EOF' | copy
+cat <<'EOF' | pbcopy
 <FINAL_TEXT>
 EOF
 ```
