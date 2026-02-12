@@ -22,6 +22,23 @@
 #   "output_style": {
 #     "name": "default"
 #   },
+#   "context_window": {
+#     "total_input_tokens": 300,
+#     "total_output_tokens": 144,
+#     "context_window_size": 200000,
+#     "current_usage": {
+#       "input_tokens": 10,
+#       "output_tokens": 127,
+#       "cache_creation_input_tokens": 7177,
+#       "cache_read_input_tokens": 17029
+#     },
+#     "used_percentage": 12,
+#     "remaining_percentage": 88
+#   },
+#   "exceeds_200k_tokens": false,
+#   "vim": {
+#     "mode": "INSERT"
+#   }
 #   "cost": {
 #     "total_cost_usd": 0.01234,
 #     "total_duration_ms": 45000,
@@ -58,15 +75,15 @@ def compute_context_length(transcript_path)
   input_tokens + cache_creation_input_tokens + cache_read_input_tokens
 end
 
-def format_context_length(context_length)
+def format_context_length(context_length, context_percentage)
   formatted = context_length >= 1000 ? (context_length / 1000).to_s + "K" : context_length.to_s
 
-  if context_length < 50000
-    "#{GREEN} #{formatted}#{RESET}"
-  elsif context_length < 100000
-    "#{ORANGE} #{formatted}#{RESET}"
+  if context_percentage < 50_000
+    "#{GREEN} #{formatted}(#{context_percentage}%)#{RESET}"
+  elsif context_length < 100_000
+    "#{ORANGE} #{formatted}(#{context_percentage}%)#{RESET}"
   else
-    "#{RED} #{formatted}#{RESET}"
+    "#{RED} #{formatted}(#{context_percentage}%)#{RESET}"
   end
 end
 
@@ -91,11 +108,12 @@ begin
 
   cwd = data["cwd"].split("/").last
   context_length = compute_context_length(transcript_path)
+  context_percentage = data.dig('context_window', 'used_percentage') || 0
 
   model_id = data.dig('model', 'id') || 'unknown'
   total_cost_usd = data.dig('cost', 'total_cost_usd') || 0.0
 
-  puts "#{RESET}#{format_cwd(cwd)} #{format_context_length(context_length)} #{format_model(model_id)} #{format_cost(total_cost_usd)}"
+  puts "#{RESET}#{format_cwd(cwd)} #{format_context_length(context_length, context_percentage)} #{format_model(model_id)} #{format_cost(total_cost_usd)}"
 rescue => e
   puts "#{RESET}#{RED}ERROR: #{e.message}#{RESET}"
 end
