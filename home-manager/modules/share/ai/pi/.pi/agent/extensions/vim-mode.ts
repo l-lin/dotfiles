@@ -179,27 +179,33 @@ class ModalEditor extends CustomEditor {
 
     let targetCol: number | null = null;
 
+    // For till repeats (;/,), we need extra offset to skip past the character we stopped before/after
+    const tillRepeatOffset = isTill && !saveMotion ? 1 : 0;
+
     if (isForward) {
-      // Search right from cursor+1
-      const idx = line.indexOf(targetChar, col + 1);
+      // Search right from cursor+1 (+2 on till repeat to skip current target)
+      const searchStart = col + 1 + tillRepeatOffset;
+      const idx = line.indexOf(targetChar, searchStart);
       if (idx !== -1) {
         targetCol = isTill ? idx - 1 : idx;
       }
     } else {
-      // Search left from cursor-1
-      const idx = line.lastIndexOf(targetChar, col - 1);
+      // Search left from cursor-1 (-2 on till repeat to skip current target)
+      const searchStart = col - 1 - tillRepeatOffset;
+      const idx = line.lastIndexOf(targetChar, searchStart);
       if (idx !== -1) {
         targetCol = isTill ? idx + 1 : idx;
       }
     }
 
-    // Move cursor if target found
-    if (targetCol !== null && targetCol !== col) {
-      // Save for ; repeat (only on fresh f/F/t/T, not on ; or , repeats)
-      if (saveMotion) {
-        this.lastCharMotion = { motion, char: targetChar };
-      }
+    // Save motion for ; repeat (only on fresh f/F/t/T, not on ; or , repeats)
+    // Save even if cursor doesn't move (e.g., tx when already at position before target)
+    if (targetCol !== null && saveMotion) {
+      this.lastCharMotion = { motion, char: targetChar };
+    }
 
+    // Move cursor if target found and position changed
+    if (targetCol !== null && targetCol !== col) {
       const delta = targetCol - col;
       this.moveCursorBy(delta);
     }
