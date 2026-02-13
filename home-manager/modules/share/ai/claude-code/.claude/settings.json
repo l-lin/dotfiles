@@ -31,11 +31,9 @@
       "mcp__atlassian__fetch",
       "mcp__atlassian__getJiraIssue",
       "mcp__atlassian__getConfluencePage",
-      "mcp__datadog__get_datadog_metric",
-      "mcp__datadog__search_datadog_dashboards",
-      "mcp__datadog__search_datadog_incidents",
-      "mcp__datadog__search_datadog_logs",
+      "mcp__datadog__*",
       "mcp__memory__*",
+      "mcp__sentry__*",
       "mcp__sequentialthinking__*"
     ],
     "deny": []
