@@ -13,6 +13,7 @@
  * - x: delete char under cursor
  * - D: delete to end of line
  * - S: substitute line (delete line content + insert mode)
+ * - s: substitute char (delete char + insert mode)
  * - d{motion}: delete with motion (dw, db, de, d$, d0, dd, df/dt/dF/dT{char})
  * - f{char}: jump to next {char} on line
  * - F{char}: jump to previous {char} on line
@@ -217,6 +218,10 @@ class ModalEditor extends CustomEditor {
       case "S":
         super.handleInput(CTRL_A);
         super.handleInput(CTRL_K);
+        this.mode = "insert";
+        break;
+      case "s":
+        super.handleInput(ESC_DELETE);
         this.mode = "insert";
         break;
       default:
