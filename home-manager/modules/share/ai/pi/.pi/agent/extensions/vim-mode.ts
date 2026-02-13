@@ -41,6 +41,7 @@ const NORMAL_KEYS: Record<string, string | null> = {
   "0": "\x01", // line start
   $: "\x05", // line end
   x: "\x1b[3~", // delete char
+  D: "\x0b", // delete to end of line (Ctrl+K)
   i: null, // insert mode
   a: null, // append (insert + right)
   A: null, // append at end of line
