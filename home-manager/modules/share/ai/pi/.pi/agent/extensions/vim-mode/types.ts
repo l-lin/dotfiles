@@ -22,6 +22,7 @@ export const NORMAL_KEYS: Record<string, string | null> = {
   $: "\x05", // line end
   x: "\x1b[3~", // delete char
   D: "\x0b", // delete to end of line (Ctrl+K)
+  C: null, // change to end of line (delete to end + insert mode)
   i: null, // insert mode
   a: null, // append (insert + right)
   A: null, // append at end of line

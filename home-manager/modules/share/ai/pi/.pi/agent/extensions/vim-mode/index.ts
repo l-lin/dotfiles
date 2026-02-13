@@ -179,6 +179,10 @@ class ModalEditor extends CustomEditor {
         this.mode = "insert";
         super.handleInput(CTRL_A);
         break;
+      case "C":
+        super.handleInput(CTRL_K);
+        this.mode = "insert";
+        break;
       default:
         if (seq) super.handleInput(seq);
     }
