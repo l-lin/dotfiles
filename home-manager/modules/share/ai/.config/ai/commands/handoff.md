@@ -12,8 +12,26 @@ Do not continue before asking for the purpose as you will otherwise not understa
 
 ## Goal
 
-Your task is to create a detailed summary of the conversation so far, paying close attention to the user's explicit purpose for the next steps.
+You have been in this conversation. You have context that no one else has—insights built up through back-and-forth with the user, false starts, clarifications, and discoveries. Everything in your context window is potentially relevant.
+
+Your job: perform a strategic braindump of the most important information the next agent needs. This is not a summary or formal report. It's a focused transfer of tacit knowledge—insights that would otherwise vanish with your context window.
+Pay close attention to the user's explicit purpose for the next steps.
+
 This handoff plan should be thorough in capturing technical details, code patterns, and architectural decisions that will be essential for continuing development work without losing context.
+
+## The Core Rule
+
+**Don't repeat what's already written down.**
+
+If it exists in a file (task doc, progress log, spec, code comments), the next agent can read it. Your job is to capture what ISN'T written anywhere. Fill the gaps that other documents miss.
+
+## Mindset
+
+Imagine you're leaving a note for your future self, knowing you'll return with no memory of what you've done.
+
+**What would you be furious at yourself for *not* mentioning?**
+
+Write clearly, concisely, and with care. This is your final contribution to the success of this work.
 
 ## Process
 
@@ -36,6 +54,8 @@ Your plan should include the following sections:
 6. **Current Work**: Describe in detail precisely what was being worked on immediately before this handoff request, paying special attention to the most recent messages from both user and assistant. Include file names and code snippets where applicable.
 7. **Optional Next Step**: List the next step that you will take that is related to the most recent work you were doing. IMPORTANT: ensure that this step is DIRECTLY in line with the user's explicit requests, and the task you were working on immediately before this handoff request. If your last task was concluded, then only list next steps if they are explicitly in line with the users request. Do not start on tangential requests without confirming with the user first.
 
+### Slug
+
 Additionally create a "slug" for this handoff.  The "slug" is how we will refer to it later in a few places.  Examples:
 
 * current-user-api-handler
@@ -47,6 +67,21 @@ Together with the slug create a "Readable Summary".  Examples:
 * Implement Current User API Handler
 * Implement Authentication
 * Fix Issue #42
+
+## Before Writing
+
+Think carefully and make a plan of what to include before you start writing. This is your chance to really think through everything you know and how it might be useful to the next agent.
+
+Ask yourself:
+1. What do I understand now that I didn't at the start?
+2. What would I do differently if starting over?
+3. What's the user's real priority beneath their stated request?
+4. What might the user not understand fully and need more guidance or explanation on?
+5. What almost broke and why?
+6. What am I 70% sure about but haven't verified?
+7. What pattern did I notice that might apply elsewhere?
+8. What feels intuitive to me but might not be obvious to the next agent?
+9. What would break if my understanding were wrong?
 
 ## Output Structure
 
