@@ -5,7 +5,7 @@
 export type Mode = "normal" | "insert";
 export type CharMotion = "f" | "F" | "t" | "T";
 export type PendingMotion = CharMotion | null;
-export type PendingOperator = "d" | null;
+export type PendingOperator = "d" | "c" | null;
 
 export interface LastCharMotion {
   motion: CharMotion;

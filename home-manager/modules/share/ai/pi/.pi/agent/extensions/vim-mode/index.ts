@@ -81,6 +81,10 @@ class ModalEditor extends CustomEditor {
       return this.handlePendingDelete(data);
     }
 
+    if (this.pendingOperator === "c") {
+      return this.handlePendingChange(data);
+    }
+
     this.handleNormalMode(data);
   }
 
@@ -102,6 +106,10 @@ class ModalEditor extends CustomEditor {
       if (this.pendingOperator === "d") {
         this.deleteWithCharMotion(this.pendingMotion!, data);
         this.pendingOperator = null;
+      } else if (this.pendingOperator === "c") {
+        this.deleteWithCharMotion(this.pendingMotion!, data);
+        this.pendingOperator = null;
+        this.mode = "insert";
       } else {
         this.executeCharMotion(this.pendingMotion!, data);
       }
@@ -124,9 +132,31 @@ class ModalEditor extends CustomEditor {
     }
   }
 
+  private handlePendingChange(data: string): void {
+    if (data === "c") {
+      this.deleteLine();
+      this.pendingOperator = null;
+      this.mode = "insert";
+      return;
+    }
+    if (CHAR_MOTION_KEYS.has(data)) {
+      this.pendingMotion = data as PendingMotion;
+      return;
+    }
+    if (this.deleteWithMotion(data)) {
+      this.pendingOperator = null;
+      this.mode = "insert";
+    }
+  }
+
   private handleNormalMode(data: string): void {
     if (data === "d") {
       this.pendingOperator = "d";
+      return;
+    }
+
+    if (data === "c") {
+      this.pendingOperator = "c";
       return;
     }
 
