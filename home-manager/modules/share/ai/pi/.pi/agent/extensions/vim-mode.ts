@@ -10,6 +10,9 @@
  * - I: insert at start of line
  * - hjkl: navigation in normal mode
  * - 0/$: line start/end
+ * - x: delete char under cursor
+ * - D: delete to end of line
+ * - d{motion}: delete with motion (dw, db, de, d$, d0, dd, df/dt/dF/dT{char})
  * - f{char}: jump to next {char} on line
  * - F{char}: jump to previous {char} on line
  * - t{char}: jump to just before next {char} on line
@@ -53,6 +56,7 @@ const CHAR_MOTION_KEYS = new Set(["f", "F", "t", "T"]);
 
 type PendingMotion = "f" | "F" | "t" | "T" | null;
 type CharMotion = "f" | "F" | "t" | "T";
+type PendingOperator = "d" | null;
 
 // Word character regex (alphanumeric + underscore)
 const isWordChar = (c: string) => /\w/.test(c);
@@ -60,13 +64,15 @@ const isWordChar = (c: string) => /\w/.test(c);
 class ModalEditor extends CustomEditor {
   private mode: "normal" | "insert" = "insert";
   private pendingMotion: PendingMotion = null;
+  private pendingOperator: PendingOperator = null;
   private lastCharMotion: { motion: CharMotion; char: string } | null = null;
 
   handleInput(data: string): void {
     // Escape toggles to normal mode, or passes through for app handling
     if (matchesKey(data, "escape")) {
-      if (this.pendingMotion) {
-        this.pendingMotion = null; // cancel pending motion
+      if (this.pendingMotion || this.pendingOperator) {
+        this.pendingMotion = null;
+        this.pendingOperator = null;
         return;
       }
       if (this.mode === "insert") {
@@ -86,9 +92,41 @@ class ModalEditor extends CustomEditor {
     // Handle pending character motion (waiting for target char)
     if (this.pendingMotion) {
       if (data.length === 1 && data.charCodeAt(0) >= 32) {
-        this.executeCharMotion(this.pendingMotion, data);
+        if (this.pendingOperator === "d") {
+          this.deleteWithCharMotion(this.pendingMotion, data);
+          this.pendingOperator = null;
+        } else {
+          this.executeCharMotion(this.pendingMotion, data);
+        }
       }
       this.pendingMotion = null;
+      return;
+    }
+
+    // Handle pending operator waiting for motion
+    if (this.pendingOperator === "d") {
+      // dd - delete entire line
+      if (data === "d") {
+        this.deleteLine();
+        this.pendingOperator = null;
+        return;
+      }
+      // d + char motion (df, dt, dF, dT)
+      if (CHAR_MOTION_KEYS.has(data)) {
+        this.pendingMotion = data as PendingMotion;
+        return;
+      }
+      // d + simple motions
+      const deleted = this.deleteWithMotion(data);
+      if (deleted) {
+        this.pendingOperator = null;
+      }
+      return;
+    }
+
+    // Check for operator triggers
+    if (data === "d") {
+      this.pendingOperator = "d";
       return;
     }
 
@@ -279,6 +317,155 @@ class ModalEditor extends CustomEditor {
     }
   }
 
+  /**
+   * Calculate word motion target column (used for both move and delete).
+   */
+  private getWordMotionTarget(
+    direction: "forward" | "backward",
+    target: "start" | "end",
+  ): number {
+    const lines = this.getLines();
+    const cursor = this.getCursor();
+    const line = lines[cursor.line] ?? "";
+    const col = cursor.col;
+
+    if (direction === "forward") {
+      if (target === "start") {
+        // w: move to start of next word
+        let i = col;
+        while (i < line.length && isWordChar(line[i]!)) i++;
+        while (i < line.length && !isWordChar(line[i]!)) i++;
+        return i;
+      } else {
+        // e: move to end of current/next word
+        let i = col;
+        if (i < line.length - 1) i++;
+        while (i < line.length && !isWordChar(line[i]!)) i++;
+        while (i < line.length - 1 && isWordChar(line[i + 1]!)) i++;
+        return i;
+      }
+    } else {
+      // b: move to start of previous word
+      let i = col;
+      if (i > 0) i--;
+      while (i > 0 && !isWordChar(line[i]!)) i--;
+      while (i > 0 && isWordChar(line[i - 1]!)) i--;
+      return i;
+    }
+  }
+
+  /**
+   * Delete entire line (dd).
+   */
+  private deleteLine(): void {
+    super.handleInput("\x01"); // move to start of line (Ctrl+A)
+    super.handleInput("\x0b"); // kill to end of line (Ctrl+K)
+  }
+
+  /**
+   * Delete with a simple motion (dw, db, de, d$, d0).
+   * Returns true if motion was recognized.
+   */
+  private deleteWithMotion(motion: string): boolean {
+    const cursor = this.getCursor();
+    const col = cursor.col;
+    const lines = this.getLines();
+    const line = lines[cursor.line] ?? "";
+
+    let targetCol: number | null = null;
+    let inclusive = false;
+
+    switch (motion) {
+      case "w":
+        targetCol = this.getWordMotionTarget("forward", "start");
+        break;
+      case "e":
+        targetCol = this.getWordMotionTarget("forward", "end");
+        inclusive = true; // de includes the last char
+        break;
+      case "b":
+        targetCol = this.getWordMotionTarget("backward", "start");
+        break;
+      case "$":
+        targetCol = line.length;
+        break;
+      case "0":
+        targetCol = 0;
+        break;
+      default:
+        return false;
+    }
+
+    if (targetCol === null) return false;
+
+    if (targetCol > col) {
+      // Forward delete: delete chars from cursor to target
+      const deleteCount = targetCol - col + (inclusive ? 1 : 0);
+      for (let i = 0; i < deleteCount; i++) {
+        super.handleInput("\x1b[3~"); // delete char
+      }
+    } else if (targetCol < col) {
+      // Backward delete: move to target, then delete forward
+      const deleteCount = col - targetCol;
+      this.moveCursorBy(targetCol - col); // move left
+      for (let i = 0; i < deleteCount; i++) {
+        super.handleInput("\x1b[3~"); // delete char
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Delete with a character motion (df, dt, dF, dT).
+   */
+  private deleteWithCharMotion(motion: CharMotion, targetChar: string): void {
+    const lines = this.getLines();
+    const cursor = this.getCursor();
+    const line = lines[cursor.line] ?? "";
+    const col = cursor.col;
+
+    const isForward = motion === "f" || motion === "t";
+    const isTill = motion === "t" || motion === "T";
+
+    let targetCol: number | null = null;
+
+    if (isForward) {
+      const idx = line.indexOf(targetChar, col + 1);
+      if (idx !== -1) {
+        // For df: delete through the char (inclusive)
+        // For dt: delete up to but not including the char
+        targetCol = isTill ? idx - 1 : idx;
+      }
+    } else {
+      const idx = line.lastIndexOf(targetChar, col - 1);
+      if (idx !== -1) {
+        // For dF: delete back through the char (inclusive)
+        // For dT: delete back to but not including the char
+        targetCol = isTill ? idx + 1 : idx;
+      }
+    }
+
+    if (targetCol === null) return;
+
+    // Save for ; and , repeats
+    this.lastCharMotion = { motion, char: targetChar };
+
+    if (isForward && targetCol >= col) {
+      // Forward delete: delete from cursor through target (inclusive)
+      const deleteCount = targetCol - col + 1;
+      for (let i = 0; i < deleteCount; i++) {
+        super.handleInput("\x1b[3~"); // delete char
+      }
+    } else if (!isForward && targetCol <= col) {
+      // Backward delete: move to target, delete through original cursor
+      const deleteCount = col - targetCol + 1;
+      this.moveCursorBy(targetCol - col); // move left
+      for (let i = 0; i < deleteCount; i++) {
+        super.handleInput("\x1b[3~"); // delete char
+      }
+    }
+  }
+
   render(width: number): string[] {
     const lines = super.render(width);
     if (lines.length === 0) return lines;
@@ -287,6 +474,10 @@ class ModalEditor extends CustomEditor {
     let label: string;
     if (this.mode === "insert") {
       label = " INSERT ";
+    } else if (this.pendingOperator && this.pendingMotion) {
+      label = ` NORMAL ${this.pendingOperator}${this.pendingMotion}_ `;
+    } else if (this.pendingOperator) {
+      label = ` NORMAL ${this.pendingOperator}_ `;
     } else if (this.pendingMotion) {
       label = ` NORMAL ${this.pendingMotion}_ `;
     } else {
