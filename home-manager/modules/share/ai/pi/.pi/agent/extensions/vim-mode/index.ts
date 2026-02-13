@@ -25,6 +25,7 @@
  * - b: move to start of previous word
  * - e: move to end of word
  * - Shift+Alt+A: go to end of line (insert mode shortcut)
+ * - Shift+Alt+I: go to start of line (insert mode shortcut)
  * - ctrl+c, ctrl+d, etc. work in both modes
  *
  * src: https://github.com/badlogic/pi-mono/blob/34878e7cc8074f42edff6c2cdcc9828aa9b6afde/packages/coding-agent/examples/extensions/modal-editor.ts
@@ -75,9 +76,12 @@ class ModalEditor extends CustomEditor {
 
     if (this.mode === "insert") {
       // Shift+Alt+A: go to end of line (like Esc -> A but stay in insert)
-      // Check Kitty protocol alt+A (capital A = shifted)
       if (matchesKey(data, Key.shiftAlt("a")) || data === "\x1bA") {
         return super.handleInput(CTRL_E);
+      }
+      // Shift+Alt+I: go to start of line (like Esc -> I but stay in insert)
+      if (matchesKey(data, Key.shiftAlt("i")) || data === "\x1bI") {
+        return super.handleInput(CTRL_A);
       }
       return super.handleInput(data);
     }
