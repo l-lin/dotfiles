@@ -92,12 +92,18 @@ def format_cwd(cwd)
 end
 
 def format_model(model_id)
-  "#{GREY}󰚩 #{model_id}#{RESET}"
+  "#{BLUE}󰚩 #{model_id}#{RESET}"
 end
 
 def format_cost(total_cost_usd)
   formatted = "$%.4f" % total_cost_usd
-  "#{RED} #{formatted}#{RESET}"
+  if total_cost_usd < 1
+    "#{GREEN} #{formatted}#{RESET}"
+  elsif total_cost_usd < 3
+    "#{ORANGE} #{formatted}#{RESET}"
+  else
+    "#{RED} #{formatted}#{RESET}"
+  end
 end
 
 begin
@@ -113,7 +119,7 @@ begin
   model_id = data.dig('model', 'id') || 'unknown'
   total_cost_usd = data.dig('cost', 'total_cost_usd') || 0.0
 
-  puts "#{RESET}#{format_cwd(cwd)} #{format_context_length(context_length, context_percentage)} #{format_model(model_id)} #{format_cost(total_cost_usd)}"
+  puts "#{RESET}#{format_cwd(cwd)} #{format_model(model_id)} #{format_context_length(context_length, context_percentage)} #{format_cost(total_cost_usd)}"
 rescue => e
   puts "#{RESET}#{RED}ERROR: #{e.message}#{RESET}"
 end
