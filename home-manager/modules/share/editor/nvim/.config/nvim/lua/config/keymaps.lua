@@ -29,9 +29,10 @@ local map = vim.keymap.set
 map("n", "<F28>", "<cmd>bd<CR>", { noremap = true, silent = true, desc = "Close current buffer (Ctrl+F4)" })
 
 -- yank file path / name
-map("n", "<leader>yf", "<cmd>let @+=expand('%:.')<CR>", { noremap = true, desc = "Copy current buffer relative path to clipboard" })
-map("n", "<leader>yF", "<cmd>let @+=expand('%:p')<CR>", { noremap = true, desc = "Copy current buffer absolute path to clipboard" })
-map("n", "<leader>yn", "<cmd>let @+=expand('%:t')<CR>", { noremap = true, desc = "Copy current buffer file name to clipboard" })
+map("n", "<leader>yf", require("helpers.yank").yank_relative_path, { noremap = true, desc = "Copy current buffer relative path to clipboard" })
+map("n", "<leader>yF", require("helpers.yank").yank_absolute_path, { noremap = true, desc = "Copy current buffer absolute path to clipboard" })
+map("n", "<leader>yn", require("helpers.yank").yank_filename, { noremap = true, desc = "Copy current buffer file name to clipboard" })
+map("x", "<leader>yf", ":<C-u>lua require('helpers.yank').yank_relative_path_with_line_range()<CR>", { noremap = true, desc = "Copy file path with line range" })
 
 -- LSP
 map("n", "<leader>ci", vim.lsp.buf.implementation, { desc = "Goto implementation" })
