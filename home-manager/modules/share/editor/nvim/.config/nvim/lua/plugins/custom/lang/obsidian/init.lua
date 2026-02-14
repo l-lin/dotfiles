@@ -225,7 +225,15 @@ end
 ---@param section_header string the section header to look for (e.g., "🎯 Today's objectives")
 ---@return string tasks formatted as markdown list items, or empty string if none
 local function get_unfinished_tasks_from_section(ctx, section_header)
-  local yesterday_date = os.date("%Y-%m-%d", id_to_date(ctx.partial_note) - 86400)
+  local today_iso = id_to_date(ctx.partial_note)
+  -- Return empty string if today is Saturday (6) or Sunday (7)
+  if os.date("%u", today_iso) == "6" or os.date("%u", today_iso) == "7" then
+    return ""
+  end
+
+  -- If today is Monday (1), check Friday (3 days ago), otherwise check yesterday
+  local days_back = os.date("%u", today_iso) == "1" and 3 or 1
+  local yesterday_date = os.date("%Y-%m-%d", id_to_date(ctx.partial_note) - (86400 * days_back))
   local notes_dir = vim.fn.expand(vim.g.notes_dir)
   local yesterday_path = string.format("%s/5-rituals/daily/%s.md", notes_dir, yesterday_date)
 
