@@ -108,8 +108,12 @@ local function open_current_monthly_note()
   vim.cmd("edit " .. vim.fn.expand(vim.g.notes_dir) .. "/" .. monthly_note_path)
 end
 
-local function sanitize_yanked_text()
-  vim.cmd('normal! "+y')
+local function sanitize_yanked_text(full_content)
+  if full_content then
+    vim.cmd("%y+")
+  else
+    vim.cmd('normal! "+y')
+  end
   local yanked_text = vim.fn.getreg("+")
   -- Convert wiki links [[target|display]] and [[text]] to plain text
   yanked_text = yanked_text:gsub("%[%[([^%]|]+)|([^%]]+)%]%]", "%2")
@@ -118,8 +122,9 @@ local function sanitize_yanked_text()
 end
 
 ---Sanitize selected text without the wiki links and yank to + register.
-local function sanitize_and_yank()
-  vim.fn.setreg("+", sanitize_yanked_text())
+---@param full_buffer boolean if true, yanks the entire buffer; otherwise, yanks the visual selection
+local function sanitize_and_yank(full_buffer)
+  vim.fn.setreg("+", sanitize_yanked_text(full_buffer))
 end
 
 ---Convert Markdown text to HTML.
@@ -200,8 +205,9 @@ local function yank_html_to_clipboard(html, plain)
 end
 
 ---Convert Markdown to HTML and copy to clipboard.
-local function to_html_and_yank()
-  local sanitized_text = sanitize_yanked_text()
+---@param full_buffer boolean if true, converts the entire buffer; otherwise, converts the visual selection
+local function to_html_and_yank(full_buffer)
+  local sanitized_text = sanitize_yanked_text(full_buffer)
   yank_html_to_clipboard(markdown_to_html(sanitized_text), sanitized_text)
 end
 

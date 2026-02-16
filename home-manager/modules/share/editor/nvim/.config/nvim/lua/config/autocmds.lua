@@ -55,8 +55,7 @@ vim.api.nvim_create_autocmd("FileType", {
 if vim.env.NVIM_SCRATCH then
   vim.api.nvim_create_autocmd("VimLeavePre", {
     callback = function()
-      vim.cmd("%y+")
-      vim.fn.system("pbcopy", vim.fn.getreg("+"))
+      require("plugins.custom.lang.obsidian").to_html_and_yank(true)
     end,
   })
 end
