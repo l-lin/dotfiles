@@ -7,6 +7,11 @@
   programs.hm-ricing-mode = {
     enable = true;
     apps = {
+      aerospace = {
+        dest_dir = ".config/aerospace";
+        source_dir = "${symlinkRoot}/home-manager/modules/aarch64-darwin/window-manager/quartz/aerospace/.config/aerospace";
+        type = "symlink";
+      };
       ai = {
         dest_dir = ".config/ai";
         source_dir = "${symlinkRoot}/home-manager/modules/share/ai/.config/ai";
