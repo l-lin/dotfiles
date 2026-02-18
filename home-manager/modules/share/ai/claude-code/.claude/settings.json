@@ -70,7 +70,8 @@
   "enabledPlugins": {
     "code-simplifier@claude-plugins-official": true,
     "feature-dev@claude-plugins-official": true,
-    "planning-with-files@planning-with-files": true
+    "planning-with-files@planning-with-files": false,
+    "claude-md-management@claude-plugins-official": true
   },
   "spinnerVerbs": {
     "mode": "replace",
