@@ -98,6 +98,28 @@ local function smart_dedent()
   end
 end
 
+---Fence the selected text with triple backticks.
+local function fence_selected_text()
+  local bufnr = vim.api.nvim_get_current_buf()
+  -- '< and '> are only set when leaving visual mode, but this function is called
+  -- while still in visual mode. Use getpos("v") (anchor) + getpos(".") (cursor)
+  -- to read the live selection instead.
+  local anchor = vim.fn.getpos("v")
+  local cursor = vim.fn.getpos(".")
+  local start_row = math.min(anchor[2], cursor[2]) - 1 -- 0-indexed
+  local end_row = math.max(anchor[2], cursor[2]) -- exclusive upper bound
+
+  -- Exit visual mode before modifying the buffer.
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "nx", false)
+
+  local lines = vim.api.nvim_buf_get_lines(bufnr, start_row, end_row, false)
+  local fenced = vim.list_extend({ "```" }, lines)
+  vim.list_extend(fenced, { "```" })
+
+  vim.api.nvim_buf_set_lines(bufnr, start_row, end_row, false, fenced)
+  vim.api.nvim_win_set_cursor(0, { start_row + 1, 0 })
+end
+
 ---Make the selected text bold by wrapping it with **.
 ---Requires mini-surround to work.
 local function bold_selected_text()
@@ -134,6 +156,7 @@ M.insert_codeblock = insert_codeblock
 M.convert_or_toggle_task = convert_or_toggle_task
 M.smart_indent = smart_indent
 M.smart_dedent = smart_dedent
+M.fence_selected_text = fence_selected_text
 M.bold_selected_text = bold_selected_text
 M.bold_word_under_cursor = bold_word_under_cursor
 return M

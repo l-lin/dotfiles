@@ -77,6 +77,13 @@ return {
           noremap = true,
         },
         {
+          "<leader>of",
+          require("helpers.lang.markdown").fence_selected_text,
+          desc = "Fence selected text with triple backticks",
+          mode = "v",
+          noremap = true,
+        },
+        {
           "<leader>ob",
           require("helpers.lang.markdown").bold_selected_text,
           desc = "Make selected text bold",
