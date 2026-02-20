@@ -9,12 +9,11 @@ import { StringEnum } from "@mariozechner/pi-ai";
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { Type } from "@sinclair/typebox";
 import { type AgentConfig, type AgentScope, discoverAgents } from "./agents.js";
+import { loadConfig } from "./config.js";
 import * as render from "./render.js";
 import * as sessions from "./sessions.js";
 import * as tmux from "./tmux.js";
 import type { SpawnResult, SubagentDetails } from "./types.js";
-
-const MAX_PARALLEL = 4;
 
 // ─── result helpers ──────────────────────────────────────────────────────────
 
@@ -118,7 +117,8 @@ async function handleSpawn(
   params: any,
   ctx: any,
 ): Promise<ToolResult> {
-  const scope: AgentScope = params.agentScope ?? "user";
+  const config = loadConfig();
+  const scope: AgentScope = params.agentScope ?? config.agentScope;
   const discovery = discoverAgents(ctx.cwd, scope);
   const agents = discovery.agents;
   const availableNames = agents.map((a) => `"${a.name}"`).join(", ") || "none";
@@ -132,10 +132,10 @@ async function handleSpawn(
         : [];
 
   if (taskList.length === 0) return err(`Spawn requires agent+task or tasks array.\nAvailable agents: ${availableNames}`);
-  if (taskList.length > MAX_PARALLEL) return err(`Too many parallel tasks (${taskList.length}). Max is ${MAX_PARALLEL}.`);
+  if (taskList.length > config.maxParallel) return err(`Too many parallel tasks (${taskList.length}). Max is ${config.maxParallel}.`);
 
   // Confirm project agents if needed
-  if ((scope === "project" || scope === "both") && (params.confirmProjectAgents ?? true) && ctx.hasUI) {
+  if ((scope === "project" || scope === "both") && (params.confirmProjectAgents ?? config.confirmProjectAgents) && ctx.hasUI) {
     const projectAgents = taskList
       .map((t) => agents.find((a) => a.name === t.agent))
       .filter((a): a is AgentConfig => a?.source === "project");
