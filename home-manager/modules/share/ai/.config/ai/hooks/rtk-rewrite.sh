@@ -73,16 +73,16 @@ elif echo "$MATCH_CMD" | grep -qE '^cargo[[:space:]]'; then
   esac
 
 # --- File operations ---
-elif echo "$MATCH_CMD" | grep -qE '^cat[[:space:]]+'; then
-  REWRITTEN="${ENV_PREFIX}$(echo "$CMD_BODY" | sed 's/^cat /rtk read /')"
-elif echo "$MATCH_CMD" | grep -qE '^(rg|grep)[[:space:]]+'; then
-  REWRITTEN="${ENV_PREFIX}$(echo "$CMD_BODY" | sed -E 's/^(rg|grep) /rtk grep /')"
+# elif echo "$MATCH_CMD" | grep -qE '^cat[[:space:]]+'; then
+#   REWRITTEN="${ENV_PREFIX}$(echo "$CMD_BODY" | sed 's/^cat /rtk read /')"
+# elif echo "$MATCH_CMD" | grep -qE '^(rg|grep)[[:space:]]+'; then
+#   REWRITTEN="${ENV_PREFIX}$(echo "$CMD_BODY" | sed -E 's/^(rg|grep) /rtk grep /')"
 elif echo "$MATCH_CMD" | grep -qE '^ls([[:space:]]|$)'; then
   REWRITTEN="${ENV_PREFIX}$(echo "$CMD_BODY" | sed 's/^ls/rtk ls/')"
 elif echo "$MATCH_CMD" | grep -qE '^tree([[:space:]]|$)'; then
   REWRITTEN="${ENV_PREFIX}$(echo "$CMD_BODY" | sed 's/^tree/rtk tree/')"
-elif echo "$MATCH_CMD" | grep -qE '^find[[:space:]]+'; then
-  REWRITTEN="${ENV_PREFIX}$(echo "$CMD_BODY" | sed 's/^find /rtk find /')"
+# elif echo "$MATCH_CMD" | grep -qE '^find[[:space:]]+'; then
+#   REWRITTEN="${ENV_PREFIX}$(echo "$CMD_BODY" | sed 's/^find /rtk find /')"
 elif echo "$MATCH_CMD" | grep -qE '^diff[[:space:]]+'; then
   REWRITTEN="${ENV_PREFIX}$(echo "$CMD_BODY" | sed 's/^diff /rtk diff /')"
 elif echo "$MATCH_CMD" | grep -qE '^head[[:space:]]+'; then
