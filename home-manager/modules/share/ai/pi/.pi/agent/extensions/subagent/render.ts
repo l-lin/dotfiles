@@ -1,5 +1,6 @@
 /** Rendering for subagent tool calls, results, and notifications */
 
+import * as path from "node:path";
 import { getMarkdownTheme } from "@mariozechner/pi-coding-agent";
 import { Container, Markdown, Spacer, Text } from "@mariozechner/pi-tui";
 import type { SubagentDetails } from "./types.js";
@@ -63,7 +64,7 @@ export function renderResult(result: any, { expanded }: { expanded: boolean }, t
     const container = new Container();
     for (const s of details.spawned) {
       container.addChild(new Text(
-        `${theme.fg("success", "▶")} ${theme.fg("toolTitle", theme.bold(s.agent))} ${theme.fg("muted", `(${s.agentSource})`)} → ${theme.fg("accent", s.id)}`,
+        `${theme.fg("success", "▶")} ${theme.fg("toolTitle", theme.bold(s.agent))} ${theme.fg("muted", `(${path.basename(s.agentSource)})`)} → ${theme.fg("accent", s.id)}`,
         0, 0,
       ));
     }

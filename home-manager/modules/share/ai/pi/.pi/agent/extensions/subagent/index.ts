@@ -8,7 +8,7 @@
 import { StringEnum } from "@mariozechner/pi-ai";
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { Type } from "@sinclair/typebox";
-import { type AgentScope, discoverAgents } from "./agents.js";
+import { discoverAgents } from "./agents.js";
 import { loadConfig } from "./config.js";
 import * as render from "./render.js";
 import * as sessions from "./sessions.js";
@@ -58,8 +58,8 @@ const SubagentParams = Type.Object({
   )),
   id: Type.Optional(Type.String({ description: "Session ID (for send/read/close)" })),
   message: Type.Optional(Type.String({ description: "Message to send (for send)" })),
-  agentScope: Type.Optional(StringEnum(["user", "project", "both"] as const, {
-    description: 'Agent directories to use. Default: "user".', default: "user",
+  sources: Type.Optional(Type.Array(Type.String(), {
+    description: "Directories to search for agent definitions. Accepts absolute paths (~ and $HOME are expanded) or paths relative to cwd. Overrides config defaults.",
   })),
   cwd: Type.Optional(Type.String({ description: "Working directory for the agent process" })),
 });
@@ -115,8 +115,8 @@ async function handleSpawn(
   ctx: any,
 ): Promise<ToolResult> {
   const config = loadConfig();
-  const scope: AgentScope = params.agentScope ?? config.agentScope;
-  const discovery = discoverAgents(ctx.cwd, scope);
+  const sources: string[] = params.sources ?? config.sources;
+  const discovery = discoverAgents(sources, ctx.cwd);
   const agents = discovery.agents;
   const availableNames = agents.map((a) => `"${a.name}"`).join(", ") || "none";
 
@@ -139,7 +139,7 @@ async function handleSpawn(
       const already = spawned.length > 0
         ? ` Already spawned: ${spawned.map((s) => `${s.agent} (${s.id})`).join(", ")}. Use close action to clean up.`
         : "";
-      return { ...err(`Unknown agent: "${t.agent}". Available: ${availableNames}.${already}`), details: { action: "spawn", agentScope: scope, spawned } };
+      return { ...err(`Unknown agent: "${t.agent}". Available: ${availableNames}.${already}`), details: { action: "spawn", sources, spawned } };
     }
     spawned.push(toSpawnResult(sessions.spawn(pi, agent, t.task, t.cwd ?? ctx.cwd)));
   }
@@ -149,7 +149,7 @@ async function handleSpawn(
   const lines = spawned.map((s) => `- **${s.agent}** → session \`${s.id}\``).join("\n");
   return ok(
     `Spawned ${spawned.length} sub-agent(s):\n${lines}\n\nResults delivered automatically. Use send/read/close with session IDs.`,
-    { action: "spawn", agentScope: scope, spawned },
+    { action: "spawn", sources, spawned },
   );
 }
 

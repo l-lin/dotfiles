@@ -12,7 +12,8 @@ import * as tmux from "./tmux.js";
 export interface Session {
   id: string;
   agentName: string;
-  agentSource: "user" | "project";
+  /** Resolved absolute path of the source directory */
+  agentSource: string;
   task: string;
   paneId: string;
   resultFile: string;

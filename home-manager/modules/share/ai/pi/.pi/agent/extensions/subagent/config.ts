@@ -3,17 +3,16 @@
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import type { AgentScope } from "./agents.js";
 
 export interface SubagentConfig {
-  /** Which agent directories to search. "user" = ~/.pi/agent/agents, "project" = .pi/agents, "both" = merge both. Default: "user". */
-  agentScope: AgentScope;
+  /** Directories to search for agent definitions. Supports ~ and $HOME expansion; relative paths resolve against cwd. Default: ["~/.pi/agent/agents"]. */
+  sources: string[];
   /** Maximum number of sub-agents that can be spawned in parallel per spawn call. Default: 4. */
   maxParallel: number;
 }
 
 const DEFAULTS: SubagentConfig = {
-  agentScope: "user",
+  sources: ["~/.pi/agent/agents", "./.pi/agents"],
   maxParallel: 4,
 };
 
@@ -25,7 +24,7 @@ export function loadConfig(): SubagentConfig {
     const raw = fs.readFileSync(CONFIG_PATH, "utf-8");
     const parsed = JSON.parse(raw) as Partial<SubagentConfig>;
     return {
-      agentScope: isValidScope(parsed.agentScope) ? parsed.agentScope : DEFAULTS.agentScope,
+      sources: isValidSources(parsed.sources) ? parsed.sources : DEFAULTS.sources,
       maxParallel: typeof parsed.maxParallel === "number" && parsed.maxParallel > 0
         ? Math.floor(parsed.maxParallel)
         : DEFAULTS.maxParallel,
@@ -36,6 +35,6 @@ export function loadConfig(): SubagentConfig {
   }
 }
 
-function isValidScope(v: unknown): v is AgentScope {
-  return v === "user" || v === "project" || v === "both";
+function isValidSources(v: unknown): v is string[] {
+  return Array.isArray(v) && v.length > 0 && v.every((s) => typeof s === "string" && s.length > 0);
 }

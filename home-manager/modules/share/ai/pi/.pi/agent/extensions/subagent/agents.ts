@@ -7,27 +7,38 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { parseFrontmatter } from "@mariozechner/pi-coding-agent";
 
-export type AgentScope = "user" | "project" | "both";
-
 export interface AgentConfig {
   name: string;
   description: string;
   tools?: string[];
   model?: string;
   systemPrompt: string;
-  source: "user" | "project";
+  /** Resolved absolute path of the source directory */
+  source: string;
   filePath: string;
 }
 
 export interface AgentDiscoveryResult {
   agents: AgentConfig[];
-  projectAgentsDir: string | null;
 }
 
-function loadAgentsFromDir(
-  dir: string,
-  source: "user" | "project",
-): AgentConfig[] {
+/** Expands ~ or $HOME prefix and returns an absolute path, resolving relative paths against cwd. */
+export function resolvePath(p: string, cwd: string): string {
+  const home = os.homedir();
+  let expanded = p;
+  if (expanded.startsWith("~/")) {
+    expanded = path.join(home, expanded.slice(2));
+  } else if (expanded === "~") {
+    expanded = home;
+  } else if (expanded.startsWith("$HOME/")) {
+    expanded = path.join(home, expanded.slice(6));
+  } else if (expanded === "$HOME") {
+    expanded = home;
+  }
+  return path.isAbsolute(expanded) ? expanded : path.resolve(cwd, expanded);
+}
+
+function loadAgentsFromDir(dir: string): AgentConfig[] {
   const agents: AgentConfig[] = [];
 
   if (!fs.existsSync(dir)) {
@@ -71,7 +82,7 @@ function loadAgentsFromDir(
       tools: tools && tools.length > 0 ? tools : undefined,
       model: frontmatter.model,
       systemPrompt: body,
-      source,
+      source: dir,
       filePath,
     });
   }
@@ -79,52 +90,23 @@ function loadAgentsFromDir(
   return agents;
 }
 
-function isDirectory(p: string): boolean {
-  try {
-    return fs.statSync(p).isDirectory();
-  } catch {
-    return false;
-  }
-}
-
-function findNearestProjectAgentsDir(cwd: string): string | null {
-  let currentDir = cwd;
-  while (true) {
-    const candidate = path.join(currentDir, ".pi", "agents");
-    if (isDirectory(candidate)) return candidate;
-
-    const parentDir = path.dirname(currentDir);
-    if (parentDir === currentDir) return null;
-    currentDir = parentDir;
-  }
-}
-
+/**
+ * Discover agents from an ordered list of source directories.
+ * Paths can be absolute (with ~ / $HOME expansion) or relative to cwd.
+ * Later sources override earlier ones on name collision.
+ */
 export function discoverAgents(
+  sources: string[],
   cwd: string,
-  scope: AgentScope,
 ): AgentDiscoveryResult {
-  const userDir = path.join(os.homedir(), ".pi", "agent", "agents");
-  const projectAgentsDir = findNearestProjectAgentsDir(cwd);
-
-  const userAgents =
-    scope === "project" ? [] : loadAgentsFromDir(userDir, "user");
-  const projectAgents =
-    scope === "user" || !projectAgentsDir
-      ? []
-      : loadAgentsFromDir(projectAgentsDir, "project");
-
   const agentMap = new Map<string, AgentConfig>();
 
-  if (scope === "both") {
-    for (const agent of userAgents) agentMap.set(agent.name, agent);
-    for (const agent of projectAgents) agentMap.set(agent.name, agent);
-  } else if (scope === "user") {
-    for (const agent of userAgents) agentMap.set(agent.name, agent);
-  } else {
-    for (const agent of projectAgents) agentMap.set(agent.name, agent);
+  for (const rawSource of sources) {
+    const resolvedDir = resolvePath(rawSource, cwd);
+    for (const agent of loadAgentsFromDir(resolvedDir)) {
+      agentMap.set(agent.name, agent);
+    }
   }
 
-  return { agents: Array.from(agentMap.values()), projectAgentsDir };
+  return { agents: Array.from(agentMap.values()) };
 }
-
-
