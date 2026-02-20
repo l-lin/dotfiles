@@ -1,18 +1,20 @@
 /**
- * Subagent Tool - Delegate tasks to specialized agents via tmux panes
+ * Subagent Tool - Interactive sub-agents in tmux panes
  *
- * Spawns interactive `pi` instances in tmux split panes so the user
- * can see and steer sub-agents. Results are communicated back via
- * file-based IPC (sub-agent writes to a temp file).
+ * Spawns interactive `pi` instances in tmux split panes. The user can see
+ * and steer sub-agents directly. Results are communicated back via file-based
+ * IPC + fs.watch notifications that auto-trigger the main agent.
  *
- * Supports two modes:
- *   - Single: { agent: "name", task: "..." }
- *   - Parallel: { tasks: [{ agent: "name", task: "..." }, ...] }
+ * Actions:
+ *   - spawn:  Create a sub-agent in a new tmux pane (single or parallel)
+ *   - send:   Send a message to a running sub-agent (via tmux send-keys)
+ *   - read:   Read the latest result from a sub-agent
+ *   - close:  Kill a sub-agent's pane and clean up
  *
  * Requires the main agent to be running inside tmux.
  */
 
-import { execSync, spawn } from "node:child_process";
+import { execSync } from "node:child_process";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
@@ -27,56 +29,57 @@ import { type AgentConfig, type AgentScope, discoverAgents } from "./agents.js";
 
 const MAX_PARALLEL_TASKS = 4;
 
+// ─── session state ───────────────────────────────────────────────────────────
+
+interface SubagentSession {
+  id: string;
+  agentName: string;
+  agentSource: "user" | "project";
+  task: string;
+  paneId: string;
+  resultFile: string;
+  cwd: string;
+  watcher?: fs.FSWatcher;
+  lastResult: string;
+  systemPromptFile?: string;
+  alive: boolean;
+}
+
+const sessions = new Map<string, SubagentSession>();
+
+function generateSessionId(agentName: string): string {
+  const safe = agentName.replace(/[^\w]/g, "").slice(0, 12);
+  const rand = Math.random().toString(36).slice(2, 6);
+  return `${safe}-${rand}`;
+}
+
 // ─── tmux helpers ────────────────────────────────────────────────────────────
 
 function isInsideTmux(): boolean {
   return !!process.env.TMUX;
 }
 
+function shellEscape(s: string): string {
+  return `'${s.replace(/'/g, "'\\''")}'`;
+}
+
 /** Split the current pane horizontally (new pane on the right), returns pane ID */
 function tmuxSplitRight(cwd: string): string {
-  const paneId = execSync(
-    `tmux split-window -h -P -F '#{pane_id}' -c ${shellEscape(cwd)}`,
+  return execSync(
+    `tmux split-window -h -d -P -F '#{pane_id}' -c ${shellEscape(cwd)}`,
     { encoding: "utf-8" },
   ).trim();
-  return paneId;
 }
 
-/** Send keys to a specific tmux pane */
+/** Send literal text to a pane, then press Enter */
+function tmuxSendMessage(paneId: string, text: string): void {
+  execSync(`tmux send-keys -t ${shellEscape(paneId)} -l ${shellEscape(text)}`);
+  execSync(`tmux send-keys -t ${shellEscape(paneId)} Enter`);
+}
+
+/** Send a raw command string to a pane (keys are interpreted) */
 function tmuxSendKeys(paneId: string, text: string): void {
   execSync(`tmux send-keys -t ${shellEscape(paneId)} ${shellEscape(text)} C-m`);
-}
-
-/** Wait for a tmux signal. Resolves when the signal fires or rejects on abort. */
-function tmuxWaitFor(
-  token: string,
-  signal?: AbortSignal,
-): Promise<void> {
-  return new Promise((resolve, reject) => {
-    if (signal?.aborted) {
-      reject(new Error("Aborted"));
-      return;
-    }
-
-    const proc = spawn("tmux", ["wait-for", token], { stdio: "ignore" });
-
-    const onAbort = () => {
-      proc.kill("SIGTERM");
-      reject(new Error("Aborted"));
-    };
-
-    signal?.addEventListener("abort", onAbort, { once: true });
-
-    proc.on("close", () => {
-      signal?.removeEventListener("abort", onAbort);
-      resolve();
-    });
-
-    proc.on("error", (err: Error) => {
-      signal?.removeEventListener("abort", onAbort);
-      reject(err);
-    });
-  });
 }
 
 /** Kill a tmux pane */
@@ -85,6 +88,18 @@ function tmuxKillPane(paneId: string): void {
     execSync(`tmux kill-pane -t ${shellEscape(paneId)}`, { stdio: "ignore" });
   } catch {
     // pane may already be dead
+  }
+}
+
+/** Check if a tmux pane is still alive */
+function tmuxPaneAlive(paneId: string): boolean {
+  try {
+    execSync(`tmux has-session -t ${shellEscape(paneId)}`, {
+      stdio: "ignore",
+    });
+    return true;
+  } catch {
+    return false;
   }
 }
 
@@ -97,44 +112,31 @@ function tmuxEvenHorizontal(): void {
   }
 }
 
-/** Shell-escape a string for safe use in commands */
-function shellEscape(s: string): string {
-  return `'${s.replace(/'/g, "'\\''")}'`;
-}
-
 // ─── temp file helpers ───────────────────────────────────────────────────────
 
-function createTempResultFile(agentName: string): string {
-  const safeName = agentName.replace(/[^\w.-]+/g, "_");
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "pi-subagent-"));
-  return path.join(tmpDir, `result-${safeName}.md`);
+function createSessionDir(sessionId: string): string {
+  const dir = path.join(os.tmpdir(), `pi-subagent-${sessionId}`);
+  fs.mkdirSync(dir, { recursive: true });
+  return dir;
 }
 
 function writePromptToTempFile(
+  dir: string,
   agentName: string,
   prompt: string,
-): { dir: string; filePath: string } {
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "pi-subagent-"));
+): string {
   const safeName = agentName.replace(/[^\w.-]+/g, "_");
-  const filePath = path.join(tmpDir, `prompt-${safeName}.md`);
+  const filePath = path.join(dir, `prompt-${safeName}.md`);
   fs.writeFileSync(filePath, prompt, { encoding: "utf-8", mode: 0o600 });
-  return { dir: tmpDir, filePath };
+  return filePath;
 }
 
-function cleanupTempFile(filePath: string): void {
+function cleanupSessionDir(sessionId: string): void {
+  const dir = path.join(os.tmpdir(), `pi-subagent-${sessionId}`);
   try {
-    fs.unlinkSync(filePath);
-  } catch { /* ignore */ }
-  try {
-    fs.rmdirSync(path.dirname(filePath));
-  } catch { /* ignore */ }
-}
-
-function readResultFile(filePath: string): string {
-  try {
-    return fs.readFileSync(filePath, "utf-8");
+    fs.rmSync(dir, { recursive: true, force: true });
   } catch {
-    return "";
+    // ignore
   }
 }
 
@@ -151,9 +153,16 @@ function buildPiCommand(
   if (agent.model) {
     parts.push("--model", shellEscape(agent.model));
   }
-  if (agent.tools && agent.tools.length > 0) {
-    parts.push("--tools", shellEscape(agent.tools.join(",")));
+
+  // Ensure 'write' is in tools so sub-agent can write the result file
+  const tools = agent.tools ? [...agent.tools] : undefined;
+  if (tools && !tools.includes("write")) {
+    tools.push("write");
   }
+  if (tools && tools.length > 0) {
+    parts.push("--tools", shellEscape(tools.join(",")));
+  }
+
   if (systemPromptFile) {
     parts.push("--append-system-prompt", shellEscape(systemPromptFile));
   }
@@ -161,58 +170,98 @@ function buildPiCommand(
 
   const augmentedTask = `${task}
 
-IMPORTANT: When you have completed the task, you MUST write your final answer/summary to the file "${resultFile}" using the write tool. This is how your result gets communicated back to the calling agent. Do this as your very last action before finishing.`;
+IMPORTANT COMMUNICATION PROTOCOL:
+When you have completed the task (or have a meaningful intermediate result to report), write your answer/summary to "${resultFile}" using the write tool. This file is monitored by the parent agent — writing to it automatically notifies them. You can update this file multiple times as you make progress. Always do a final write before you finish.`;
 
   parts.push(shellEscape(`Task: ${augmentedTask}`));
 
   return parts.join(" ");
 }
 
-// ─── core: run agent in tmux pane ────────────────────────────────────────────
+// ─── spawn a sub-agent ───────────────────────────────────────────────────────
 
-async function runAgentInPane(
+function spawnSubagent(
+  pi: ExtensionAPI,
   agent: AgentConfig,
   task: string,
   cwd: string,
-  signal?: AbortSignal,
-): Promise<{ agent: string; agentSource: "user" | "project"; task: string; output: string; success: boolean }> {
-  const resultFile = createTempResultFile(agent.name);
-  const token = `PI_SUBAGENT_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+): SubagentSession {
+  const id = generateSessionId(agent.name);
+  const sessionDir = createSessionDir(id);
+  const resultFile = path.join(sessionDir, "result.md");
 
   let systemPromptFile: string | undefined;
-
   if (agent.systemPrompt.trim()) {
-    const tmp = writePromptToTempFile(agent.name, agent.systemPrompt);
-    systemPromptFile = tmp.filePath;
+    systemPromptFile = writePromptToTempFile(
+      sessionDir,
+      agent.name,
+      agent.systemPrompt,
+    );
   }
 
+  // Create the pane (doesn't steal focus thanks to -d flag)
   const paneId = tmuxSplitRight(cwd);
 
+  // Build and send the pi command
+  const piCmd = buildPiCommand(agent, task, resultFile, systemPromptFile);
+  tmuxSendKeys(paneId, piCmd);
+
+  const session: SubagentSession = {
+    id,
+    agentName: agent.name,
+    agentSource: agent.source,
+    task,
+    paneId,
+    resultFile,
+    cwd,
+    lastResult: "",
+    systemPromptFile,
+    alive: true,
+  };
+
+  // Watch the result file for changes
+  // We watch the directory since the file doesn't exist yet
   try {
-    const piCmd = buildPiCommand(agent, task, resultFile, systemPromptFile);
-    // Wrap in login shell so env vars (PATH, API keys, etc.) are available
-    // Sleep gives the pane's shell time to fully initialize
-    const userShell = process.env.SHELL || "zsh";
-    const fullCmd = `${userShell} -lc ${shellEscape(`sleep 1; ${piCmd}; tmux wait-for -S ${token}`)}`;
-    tmuxSendKeys(paneId, fullCmd);
+    session.watcher = fs.watch(sessionDir, (eventType, filename) => {
+      if (filename !== "result.md") return;
 
-    await tmuxWaitFor(token, signal);
+      let content: string;
+      try {
+        content = fs.readFileSync(resultFile, "utf-8").trim();
+      } catch {
+        return;
+      }
 
-    const output = readResultFile(resultFile);
+      if (!content || content === session.lastResult) return;
+      session.lastResult = content;
 
-    return {
-      agent: agent.name,
-      agentSource: agent.source,
-      task,
-      output: output || "(sub-agent did not write a result file)",
-      success: !!output,
-    };
-  } finally {
-    // Cleanup: kill pane and temp files
-    tmuxKillPane(paneId);
-    cleanupTempFile(resultFile);
-    if (systemPromptFile) cleanupTempFile(systemPromptFile);
+      // Notify the main agent
+      pi.sendMessage(
+        {
+          customType: "subagent-result",
+          content: `Sub-agent "${agent.name}" (${id}) reported:\n\n${content}`,
+          display: true,
+          details: { sessionId: id, agentName: agent.name },
+        },
+        { triggerTurn: true, deliverAs: "followUp" },
+      );
+    });
+  } catch {
+    // If watching fails, agent can still use explicit read
   }
+
+  sessions.set(id, session);
+  return session;
+}
+
+// ─── cleanup a session ───────────────────────────────────────────────────────
+
+function closeSession(session: SubagentSession): void {
+  session.alive = false;
+  session.watcher?.close();
+  tmuxKillPane(session.paneId);
+  cleanupSessionDir(session.id);
+  sessions.delete(session.id);
 }
 
 // ─── schema ──────────────────────────────────────────────────────────────────
@@ -231,20 +280,46 @@ const AgentScopeSchema = StringEnum(["user", "project", "both"] as const, {
   default: "user",
 });
 
+const ActionSchema = StringEnum(
+  ["spawn", "send", "read", "close"] as const,
+  {
+    description:
+      "Action to perform: spawn (create sub-agent), send (message to sub-agent), read (get result), close (kill pane)",
+  },
+);
+
 const SubagentParams = Type.Object({
+  action: ActionSchema,
+
+  // For spawn (single)
   agent: Type.Optional(
-    Type.String({
-      description: "Name of the agent to invoke (for single mode)",
-    }),
+    Type.String({ description: "Agent name (for spawn single mode)" }),
   ),
   task: Type.Optional(
-    Type.String({ description: "Task to delegate (for single mode)" }),
+    Type.String({ description: "Task to delegate (for spawn single mode)" }),
   ),
+
+  // For spawn (parallel)
   tasks: Type.Optional(
     Type.Array(TaskItem, {
-      description: "Array of {agent, task} for parallel execution",
+      description:
+        "Array of {agent, task} for spawning multiple sub-agents in parallel panes",
     }),
   ),
+
+  // For send
+  id: Type.Optional(
+    Type.String({
+      description: "Session ID of the sub-agent (for send/read/close)",
+    }),
+  ),
+  message: Type.Optional(
+    Type.String({
+      description: "Message to send to the sub-agent (for send action)",
+    }),
+  ),
+
+  // Common
   agentScope: Type.Optional(AgentScopeSchema),
   confirmProjectAgents: Type.Optional(
     Type.Boolean({
@@ -253,46 +328,88 @@ const SubagentParams = Type.Object({
     }),
   ),
   cwd: Type.Optional(
-    Type.String({
-      description: "Working directory for the agent process (single mode)",
-    }),
+    Type.String({ description: "Working directory for the agent process" }),
   ),
 });
 
 // ─── result types ────────────────────────────────────────────────────────────
 
-interface AgentResult {
+interface SpawnResult {
+  id: string;
   agent: string;
-  agentSource: "user" | "project" | "unknown";
-  task: string;
-  output: string;
-  success: boolean;
+  agentSource: "user" | "project";
+  paneId: string;
 }
 
 interface SubagentDetails {
-  mode: "single" | "parallel";
-  agentScope: AgentScope;
-  projectAgentsDir: string | null;
-  results: AgentResult[];
+  action: string;
+  agentScope?: AgentScope;
+  spawned?: SpawnResult[];
+  sessionId?: string;
+  result?: string;
 }
 
 // ─── extension ───────────────────────────────────────────────────────────────
 
 export default function (pi: ExtensionAPI) {
+  // Clean up all sessions on shutdown
+  pi.on("session_shutdown", async () => {
+    for (const session of sessions.values()) {
+      closeSession(session);
+    }
+  });
+
+  // Register custom message renderer for sub-agent notifications
+  pi.registerMessageRenderer("subagent-result", (message, { expanded }, theme) => {
+    const details = message.details as
+      | { sessionId: string; agentName: string }
+      | undefined;
+    const name = details?.agentName ?? "sub-agent";
+    const id = details?.sessionId ?? "?";
+    const mdTheme = getMarkdownTheme();
+
+    const icon = theme.fg("accent", "📨");
+    const header = `${icon} ${theme.fg("toolTitle", theme.bold(name))} ${theme.fg("muted", `(${id})`)}`;
+
+    if (expanded) {
+      const container = new Container();
+      container.addChild(new Text(header, 0, 0));
+      container.addChild(new Spacer(1));
+      container.addChild(
+        new Markdown(message.content?.trim() ?? "(empty)", 0, 0, mdTheme),
+      );
+      return container;
+    }
+
+    const content = message.content ?? "";
+    const preview = content.split("\n").slice(0, 5).join("\n");
+    let text = header;
+    text += `\n${theme.fg("toolOutput", preview)}`;
+    if (content.split("\n").length > 5) {
+      text += `\n${theme.fg("muted", "(Ctrl+O to expand)")}`;
+    }
+    return new Text(text, 0, 0);
+  });
+
   pi.registerTool({
     name: "subagent",
     label: "Subagent",
     description: [
-      "Delegate tasks to specialized subagents in interactive tmux panes.",
-      "The user can see and steer sub-agents. Results are written to a temp file by the sub-agent.",
-      "Modes: single (agent + task), parallel (tasks array with side-by-side panes).",
-      'Default agent scope is "user" (from ~/.pi/agent/agents).',
-      'To enable project-local agents in .pi/agents, set agentScope: "both" (or "project").',
+      "Manage interactive sub-agents in tmux panes. The user can see and steer them.",
+      "",
+      "Actions:",
+      '  spawn  - Create sub-agent pane(s). Use "agent"+"task" for single, or "tasks" array for parallel.',
+      "           Returns session ID(s). The sub-agent runs interactively — you don't need to wait.",
+      '  send   - Send a message to a running sub-agent. Requires "id" and "message".',
+      '  read   - Read the latest result from a sub-agent. Requires "id".',
+      '  close  - Kill a sub-agent pane and clean up. Requires "id". Use "all" to close all.',
+      "",
+      "Results are delivered automatically via file watcher notifications.",
       "Requires running inside tmux.",
-    ].join(" "),
+    ].join("\n"),
     parameters: SubagentParams,
 
-    async execute(_toolCallId, params, signal, onUpdate, ctx) {
+    async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
       // ── tmux check ──
       if (!isInsideTmux()) {
         return {
@@ -306,6 +423,195 @@ export default function (pi: ExtensionAPI) {
         };
       }
 
+      const action = params.action;
+
+      // ── SEND action ──
+      if (action === "send") {
+        if (!params.id || !params.message) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: 'Send requires "id" and "message" parameters.',
+              },
+            ],
+            isError: true,
+          };
+        }
+
+        const session = sessions.get(params.id);
+        if (!session) {
+          const active = Array.from(sessions.keys()).join(", ") || "none";
+          return {
+            content: [
+              {
+                type: "text",
+                text: `Unknown session "${params.id}". Active sessions: ${active}`,
+              },
+            ],
+            isError: true,
+          };
+        }
+
+        if (!session.alive || !tmuxPaneAlive(session.paneId)) {
+          session.alive = false;
+          return {
+            content: [
+              {
+                type: "text",
+                text: `Sub-agent "${session.agentName}" (${session.id}) is no longer running.`,
+              },
+            ],
+            isError: true,
+          };
+        }
+
+        tmuxSendMessage(session.paneId, params.message);
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Message sent to "${session.agentName}" (${session.id}).`,
+            },
+          ],
+          details: { action: "send", sessionId: session.id } as SubagentDetails,
+        };
+      }
+
+      // ── READ action ──
+      if (action === "read") {
+        if (!params.id) {
+          // List all sessions and their latest results
+          if (sessions.size === 0) {
+            return {
+              content: [{ type: "text", text: "No active sub-agent sessions." }],
+            };
+          }
+
+          const summaries = Array.from(sessions.values()).map((s) => {
+            const alive = s.alive && tmuxPaneAlive(s.paneId);
+            const status = alive ? "🟢 running" : "⚫ stopped";
+            const result = s.lastResult
+              ? `\n${s.lastResult.slice(0, 200)}${s.lastResult.length > 200 ? "..." : ""}`
+              : "\n(no result yet)";
+            return `**${s.agentName}** (${s.id}) ${status}${result}`;
+          });
+
+          return {
+            content: [{ type: "text", text: summaries.join("\n\n") }],
+            details: { action: "read" } as SubagentDetails,
+          };
+        }
+
+        const session = sessions.get(params.id);
+        if (!session) {
+          const active = Array.from(sessions.keys()).join(", ") || "none";
+          return {
+            content: [
+              {
+                type: "text",
+                text: `Unknown session "${params.id}". Active sessions: ${active}`,
+              },
+            ],
+            isError: true,
+          };
+        }
+
+        // Re-read the file in case watcher missed an update
+        try {
+          const content = fs.readFileSync(session.resultFile, "utf-8").trim();
+          if (content) session.lastResult = content;
+        } catch {
+          // file may not exist yet
+        }
+
+        const alive = session.alive && tmuxPaneAlive(session.paneId);
+        if (!alive) session.alive = false;
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: session.lastResult || "(no result yet)",
+            },
+          ],
+          details: {
+            action: "read",
+            sessionId: session.id,
+            result: session.lastResult,
+          } as SubagentDetails,
+        };
+      }
+
+      // ── CLOSE action ──
+      if (action === "close") {
+        if (params.id === "all") {
+          const count = sessions.size;
+          for (const session of sessions.values()) {
+            closeSession(session);
+          }
+          return {
+            content: [
+              { type: "text", text: `Closed ${count} sub-agent session(s).` },
+            ],
+            details: { action: "close" } as SubagentDetails,
+          };
+        }
+
+        if (!params.id) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: 'Close requires "id" parameter. Use "all" to close all sessions.',
+              },
+            ],
+            isError: true,
+          };
+        }
+
+        const session = sessions.get(params.id);
+        if (!session) {
+          const active = Array.from(sessions.keys()).join(", ") || "none";
+          return {
+            content: [
+              {
+                type: "text",
+                text: `Unknown session "${params.id}". Active sessions: ${active}`,
+              },
+            ],
+            isError: true,
+          };
+        }
+
+        const lastResult = session.lastResult;
+        closeSession(session);
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Closed "${session.agentName}" (${session.id}).${lastResult ? `\n\nFinal result:\n${lastResult}` : ""}`,
+            },
+          ],
+          details: { action: "close", sessionId: session.id } as SubagentDetails,
+        };
+      }
+
+      // ── SPAWN action ──
+      if (action !== "spawn") {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Unknown action "${action}". Use: spawn, send, read, close.`,
+            },
+          ],
+          isError: true,
+        };
+      }
+
       const agentScope: AgentScope = params.agentScope ?? "user";
       const discovery = discoverAgents(ctx.cwd, agentScope);
       const agents = discovery.agents;
@@ -313,28 +619,18 @@ export default function (pi: ExtensionAPI) {
 
       const hasTasks = (params.tasks?.length ?? 0) > 0;
       const hasSingle = Boolean(params.agent && params.task);
-      const modeCount = Number(hasTasks) + Number(hasSingle);
 
-      const makeDetails =
-        (mode: "single" | "parallel") =>
-        (results: AgentResult[]): SubagentDetails => ({
-          mode,
-          agentScope,
-          projectAgentsDir: discovery.projectAgentsDir,
-          results,
-        });
-
-      if (modeCount !== 1) {
+      if (!hasTasks && !hasSingle) {
         const available =
           agents.map((a) => `${a.name} (${a.source})`).join(", ") || "none";
         return {
           content: [
             {
               type: "text",
-              text: `Invalid parameters. Provide exactly one mode: single (agent+task) or parallel (tasks array).\nAvailable agents: ${available}`,
+              text: `Spawn requires agent+task or tasks array.\nAvailable agents: ${available}`,
             },
           ],
-          details: makeDetails("single")([]),
+          isError: true,
         };
       }
 
@@ -344,12 +640,12 @@ export default function (pi: ExtensionAPI) {
         confirmProjectAgents &&
         ctx.hasUI
       ) {
-        const requestedAgentNames = new Set<string>();
+        const requestedNames = new Set<string>();
         if (params.tasks)
-          for (const t of params.tasks) requestedAgentNames.add(t.agent);
-        if (params.agent) requestedAgentNames.add(params.agent);
+          for (const t of params.tasks) requestedNames.add(t.agent);
+        if (params.agent) requestedNames.add(params.agent);
 
-        const projectAgentsRequested = Array.from(requestedAgentNames)
+        const projectAgentsRequested = Array.from(requestedNames)
           .map((name) => agents.find((a) => a.name === name))
           .filter((a): a is AgentConfig => a?.source === "project");
 
@@ -368,14 +664,13 @@ export default function (pi: ExtensionAPI) {
                   text: "Canceled: project-local agents not approved.",
                 },
               ],
-              details: makeDetails(hasTasks ? "parallel" : "single")([]),
             };
         }
       }
 
-      // ── parallel mode ──
+      // ── spawn parallel ──
       if (params.tasks && params.tasks.length > 0) {
-        if (params.tasks.length > MAX_PARALLEL_TASKS)
+        if (params.tasks.length > MAX_PARALLEL_TASKS) {
           return {
             content: [
               {
@@ -383,191 +678,182 @@ export default function (pi: ExtensionAPI) {
                 text: `Too many parallel tasks (${params.tasks.length}). Max is ${MAX_PARALLEL_TASKS}.`,
               },
             ],
-            details: makeDetails("parallel")([]),
+            isError: true,
           };
+        }
 
-        // Resolve all agents first
-        const resolvedTasks: { agent: AgentConfig; task: string; cwd: string }[] = [];
+        const spawned: SpawnResult[] = [];
+
         for (const t of params.tasks) {
           const agent = agents.find((a) => a.name === t.agent);
           if (!agent) {
-            const available = agents.map((a) => `"${a.name}"`).join(", ") || "none";
+            const available =
+              agents.map((a) => `"${a.name}"`).join(", ") || "none";
             return {
               content: [
                 {
                   type: "text",
-                  text: `Unknown agent: "${t.agent}". Available agents: ${available}.`,
+                  text: `Unknown agent: "${t.agent}". Available: ${available}. Already spawned ${spawned.length} before error.`,
                 },
               ],
-              details: makeDetails("parallel")([]),
               isError: true,
             };
           }
-          resolvedTasks.push({ agent, task: t.task, cwd: t.cwd ?? ctx.cwd });
-        }
 
-        if (onUpdate) {
-          onUpdate({
-            content: [
-              {
-                type: "text",
-                text: `Spawning ${resolvedTasks.length} sub-agents in tmux panes...`,
-              },
-            ],
-            details: makeDetails("parallel")([]),
+          const session = spawnSubagent(pi, agent, t.task, t.cwd ?? ctx.cwd);
+          spawned.push({
+            id: session.id,
+            agent: session.agentName,
+            agentSource: session.agentSource,
+            paneId: session.paneId,
           });
         }
 
-        // Spawn all agents in parallel panes
-        const promises = resolvedTasks.map((t) =>
-          runAgentInPane(t.agent, t.task, t.cwd, signal).catch(
-            (err): AgentResult => ({
-              agent: t.agent.name,
-              agentSource: t.agent.source,
-              task: t.task,
-              output: `Error: ${err.message}`,
-              success: false,
-            }),
-          ),
-        );
-
-        // Rebalance layout after all panes are created
         tmuxEvenHorizontal();
 
-        const results = await Promise.all(promises);
-        const successCount = results.filter((r) => r.success).length;
-
-        const summaries = results.map((r) => {
-          const preview =
-            r.output.length > 200
-              ? `${r.output.slice(0, 200)}...`
-              : r.output;
-          return `[${r.agent}] ${r.success ? "✓" : "✗"}: ${preview || "(no output)"}`;
-        });
+        const lines = spawned
+          .map((s) => `- **${s.agent}** → session \`${s.id}\``)
+          .join("\n");
 
         return {
           content: [
             {
               type: "text",
-              text: `Parallel: ${successCount}/${results.length} succeeded\n\n${summaries.join("\n\n")}`,
+              text: `Spawned ${spawned.length} sub-agents in tmux panes:\n${lines}\n\nResults will be delivered automatically when ready. Use send/read/close with session IDs to interact.`,
             },
           ],
-          details: makeDetails("parallel")(results),
+          details: {
+            action: "spawn",
+            agentScope,
+            spawned,
+          } as SubagentDetails,
         };
       }
 
-      // ── single mode ──
-      if (params.agent && params.task) {
-        const agent = agents.find((a) => a.name === params.agent);
-        if (!agent) {
-          const available =
-            agents.map((a) => `"${a.name}"`).join(", ") || "none";
-          return {
-            content: [
-              {
-                type: "text",
-                text: `Unknown agent: "${params.agent}". Available agents: ${available}.`,
-              },
-            ],
-            details: makeDetails("single")([]),
-            isError: true,
-          };
-        }
-
-        if (onUpdate) {
-          onUpdate({
-            content: [
-              {
-                type: "text",
-                text: `Spawning "${agent.name}" in tmux pane... User can interact with the sub-agent directly.`,
-              },
-            ],
-            details: makeDetails("single")([]),
-          });
-        }
-
-        try {
-          const result = await runAgentInPane(
-            agent,
-            params.task,
-            params.cwd ?? ctx.cwd,
-            signal,
-          );
-
-          return {
-            content: [{ type: "text", text: result.output || "(no output)" }],
-            details: makeDetails("single")([result]),
-          };
-        } catch (err: any) {
-          return {
-            content: [
-              {
-                type: "text",
-                text: `Agent aborted or failed: ${err.message}`,
-              },
-            ],
-            details: makeDetails("single")([
-              {
-                agent: agent.name,
-                agentSource: agent.source,
-                task: params.task,
-                output: err.message,
-                success: false,
-              },
-            ]),
-            isError: true,
-          };
-        }
+      // ── spawn single ──
+      const agent = agents.find((a) => a.name === params.agent);
+      if (!agent) {
+        const available =
+          agents.map((a) => `"${a.name}"`).join(", ") || "none";
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Unknown agent: "${params.agent}". Available: ${available}.`,
+            },
+          ],
+          isError: true,
+        };
       }
 
-      const available =
-        agents.map((a) => `${a.name} (${a.source})`).join(", ") || "none";
+      const session = spawnSubagent(
+        pi,
+        agent,
+        params.task!,
+        params.cwd ?? ctx.cwd,
+      );
+
       return {
         content: [
           {
             type: "text",
-            text: `Invalid parameters. Available agents: ${available}`,
+            text: `Spawned "${session.agentName}" in tmux pane → session \`${session.id}\`\n\nThe sub-agent is working on the task. Results will be delivered automatically when ready. The user can also interact with the sub-agent directly in the tmux pane.\n\nUse send/read/close with id "${session.id}" to interact.`,
           },
         ],
-        details: makeDetails("single")([]),
+        details: {
+          action: "spawn",
+          agentScope,
+          spawned: [
+            {
+              id: session.id,
+              agent: session.agentName,
+              agentSource: session.agentSource,
+              paneId: session.paneId,
+            },
+          ],
+        } as SubagentDetails,
       };
     },
 
     renderCall(args, theme) {
-      const scope: AgentScope = args.agentScope ?? "user";
+      const action = args.action || "?";
 
-      if (args.tasks && args.tasks.length > 0) {
-        let text =
-          theme.fg("toolTitle", theme.bold("subagent ")) +
-          theme.fg("accent", `parallel (${args.tasks.length} panes)`) +
-          theme.fg("muted", ` [${scope}]`);
-        for (const t of args.tasks.slice(0, 3)) {
-          const preview =
-            t.task.length > 40 ? `${t.task.slice(0, 40)}...` : t.task;
-          text += `\n  ${theme.fg("accent", t.agent)}${theme.fg("dim", ` ${preview}`)}`;
+      switch (action) {
+        case "spawn": {
+          if (args.tasks && args.tasks.length > 0) {
+            let text =
+              theme.fg("toolTitle", theme.bold("subagent spawn ")) +
+              theme.fg("accent", `${args.tasks.length} panes`);
+            for (const t of args.tasks.slice(0, 3)) {
+              const preview =
+                t.task.length > 40 ? `${t.task.slice(0, 40)}...` : t.task;
+              text += `\n  ${theme.fg("accent", t.agent)}${theme.fg("dim", ` ${preview}`)}`;
+            }
+            if (args.tasks.length > 3)
+              text += `\n  ${theme.fg("muted", `... +${args.tasks.length - 3} more`)}`;
+            return new Text(text, 0, 0);
+          }
+          const agentName = args.agent || "...";
+          const preview = args.task
+            ? args.task.length > 60
+              ? `${args.task.slice(0, 60)}...`
+              : args.task
+            : "...";
+          let text =
+            theme.fg("toolTitle", theme.bold("subagent spawn ")) +
+            theme.fg("accent", agentName);
+          text += `\n  ${theme.fg("dim", preview)}`;
+          return new Text(text, 0, 0);
         }
-        if (args.tasks.length > 3)
-          text += `\n  ${theme.fg("muted", `... +${args.tasks.length - 3} more`)}`;
-        return new Text(text, 0, 0);
-      }
 
-      const agentName = args.agent || "...";
-      const preview = args.task
-        ? args.task.length > 60
-          ? `${args.task.slice(0, 60)}...`
-          : args.task
-        : "...";
-      let text =
-        theme.fg("toolTitle", theme.bold("subagent ")) +
-        theme.fg("accent", agentName) +
-        theme.fg("muted", ` [${scope}] (tmux pane)`);
-      text += `\n  ${theme.fg("dim", preview)}`;
-      return new Text(text, 0, 0);
+        case "send": {
+          const id = args.id || "?";
+          const msg = args.message || "...";
+          const preview = msg.length > 50 ? `${msg.slice(0, 50)}...` : msg;
+          return new Text(
+            theme.fg("toolTitle", theme.bold("subagent send ")) +
+              theme.fg("accent", id) +
+              `\n  ${theme.fg("dim", preview)}`,
+            0,
+            0,
+          );
+        }
+
+        case "read": {
+          const id = args.id || "(all)";
+          return new Text(
+            theme.fg("toolTitle", theme.bold("subagent read ")) +
+              theme.fg("accent", id),
+            0,
+            0,
+          );
+        }
+
+        case "close": {
+          const id = args.id || "?";
+          return new Text(
+            theme.fg("toolTitle", theme.bold("subagent close ")) +
+              theme.fg("accent", id),
+            0,
+            0,
+          );
+        }
+
+        default:
+          return new Text(
+            theme.fg("toolTitle", theme.bold("subagent ")) +
+              theme.fg("dim", action),
+            0,
+            0,
+          );
+      }
     },
 
     renderResult(result, { expanded }, theme) {
       const details = result.details as SubagentDetails | undefined;
-      if (!details || details.results.length === 0) {
+      const mdTheme = getMarkdownTheme();
+
+      if (!details) {
         const text = result.content[0];
         return new Text(
           text?.type === "text" ? text.text : "(no output)",
@@ -576,120 +862,48 @@ export default function (pi: ExtensionAPI) {
         );
       }
 
-      const mdTheme = getMarkdownTheme();
+      // For spawn, show session IDs prominently
+      if (details.action === "spawn" && details.spawned?.length) {
+        const container = new Container();
 
-      if (details.mode === "single" && details.results.length === 1) {
-        const r = details.results[0];
-        const icon = r.success
-          ? theme.fg("success", "✓")
-          : theme.fg("error", "✗");
-
-        if (expanded) {
-          const container = new Container();
+        for (const s of details.spawned) {
+          const icon = theme.fg("success", "▶");
           container.addChild(
             new Text(
-              `${icon} ${theme.fg("toolTitle", theme.bold(r.agent))}${theme.fg("muted", ` (${r.agentSource})`)}`,
+              `${icon} ${theme.fg("toolTitle", theme.bold(s.agent))} ${theme.fg("muted", `(${s.agentSource})`)} → ${theme.fg("accent", s.id)}`,
               0,
               0,
             ),
           );
-          container.addChild(new Spacer(1));
-          container.addChild(new Text(theme.fg("muted", "─── Task ───"), 0, 0));
-          container.addChild(new Text(theme.fg("dim", r.task), 0, 0));
-          container.addChild(new Spacer(1));
-          container.addChild(
-            new Text(theme.fg("muted", "─── Result ───"), 0, 0),
-          );
-          if (r.output) {
-            container.addChild(new Markdown(r.output.trim(), 0, 0, mdTheme));
-          } else {
-            container.addChild(
-              new Text(theme.fg("muted", "(no output)"), 0, 0),
-            );
-          }
-          return container;
         }
-
-        // Collapsed view
-        const preview = r.output
-          ? r.output.split("\n").slice(0, 5).join("\n")
-          : "(no output)";
-        let text = `${icon} ${theme.fg("toolTitle", theme.bold(r.agent))}${theme.fg("muted", ` (${r.agentSource})`)}`;
-        text += `\n${theme.fg("toolOutput", preview)}`;
-        if (r.output && r.output.split("\n").length > 5) {
-          text += `\n${theme.fg("muted", "(Ctrl+O to expand)")}`;
-        }
-        return new Text(text, 0, 0);
-      }
-
-      if (details.mode === "parallel") {
-        const successCount = details.results.filter((r) => r.success).length;
-        const icon =
-          successCount === details.results.length
-            ? theme.fg("success", "✓")
-            : theme.fg("warning", "◐");
 
         if (expanded) {
-          const container = new Container();
-          container.addChild(
-            new Text(
-              `${icon} ${theme.fg("toolTitle", theme.bold("parallel "))}${theme.fg("accent", `${successCount}/${details.results.length} tasks`)}`,
-              0,
-              0,
-            ),
-          );
-
-          for (const r of details.results) {
-            const rIcon = r.success
-              ? theme.fg("success", "✓")
-              : theme.fg("error", "✗");
+          const content = result.content[0];
+          if (content?.type === "text") {
             container.addChild(new Spacer(1));
             container.addChild(
-              new Text(
-                `${theme.fg("muted", "─── ")}${theme.fg("accent", r.agent)} ${rIcon}`,
-                0,
-                0,
-              ),
+              new Markdown(content.text.trim(), 0, 0, mdTheme),
             );
-            container.addChild(
-              new Text(
-                theme.fg("muted", "Task: ") + theme.fg("dim", r.task),
-                0,
-                0,
-              ),
-            );
-            if (r.output) {
-              container.addChild(new Spacer(1));
-              container.addChild(
-                new Markdown(r.output.trim(), 0, 0, mdTheme),
-              );
-            } else {
-              container.addChild(
-                new Text(theme.fg("muted", "(no output)"), 0, 0),
-              );
-            }
           }
-          return container;
         }
 
-        // Collapsed view
-        let text = `${icon} ${theme.fg("toolTitle", theme.bold("parallel "))}${theme.fg("accent", `${successCount}/${details.results.length} tasks`)}`;
-        for (const r of details.results) {
-          const rIcon = r.success
-            ? theme.fg("success", "✓")
-            : theme.fg("error", "✗");
-          const preview = r.output
-            ? r.output.split("\n").slice(0, 3).join("\n")
-            : "(no output)";
-          text += `\n\n${theme.fg("muted", "─── ")}${theme.fg("accent", r.agent)} ${rIcon}`;
-          text += `\n${theme.fg("toolOutput", preview)}`;
-        }
-        text += `\n${theme.fg("muted", "(Ctrl+O to expand)")}`;
-        return new Text(text, 0, 0);
+        return container;
       }
 
-      const text = result.content[0];
-      return new Text(text?.type === "text" ? text.text : "(no output)", 0, 0);
+      // Default: render content as markdown if expanded, text if collapsed
+      const content = result.content[0];
+      const text = content?.type === "text" ? content.text : "(no output)";
+
+      if (expanded) {
+        return new Markdown(text.trim(), 0, 0, mdTheme);
+      }
+
+      const preview = text.split("\n").slice(0, 5).join("\n");
+      let rendered = theme.fg("toolOutput", preview);
+      if (text.split("\n").length > 5) {
+        rendered += `\n${theme.fg("muted", "(Ctrl+O to expand)")}`;
+      }
+      return new Text(rendered, 0, 0);
     },
   });
 }
