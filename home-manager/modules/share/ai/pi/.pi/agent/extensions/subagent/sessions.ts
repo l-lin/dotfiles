@@ -151,7 +151,7 @@ export function spawn(pi: ExtensionAPI, agent: AgentConfig, task: string, cwd: s
       pi.sendMessage(
         {
           customType: "subagent-result",
-          content: `Sub-agent "${agent.name}" (${id}) reported:\n\n${content}`,
+          content: `Sub-agent "${id}" reported:\n\n${content}`,
           display: true,
           details: { sessionId: id, agentName: agent.name },
         },

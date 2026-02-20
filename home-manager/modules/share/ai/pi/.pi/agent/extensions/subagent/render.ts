@@ -2,7 +2,7 @@
 
 import * as path from "node:path";
 import { getMarkdownTheme } from "@mariozechner/pi-coding-agent";
-import { Container, Markdown, Spacer, Text } from "@mariozechner/pi-tui";
+import { Box, Container, Markdown, Spacer, Text } from "@mariozechner/pi-tui";
 import type { SubagentDetails } from "./types.js";
 
 type Theme = { fg: Function; bg: Function; bold: Function };
@@ -88,23 +88,22 @@ export function renderResult(result: any, { expanded }: { expanded: boolean }, t
 
 export function renderMessage(message: any, { expanded }: { expanded: boolean }, theme: Theme) {
   const details = message.details as { sessionId?: string; agentName?: string } | undefined;
-  const name = details?.agentName ?? "sub-agent";
   const id = details?.sessionId ?? "?";
   const mdTheme = getMarkdownTheme();
 
-  const header = `${theme.fg("accent", "📨")} ${theme.fg("toolTitle", theme.bold(name))} ${theme.fg("muted", `(${id})`)}`;
+  const header = `${theme.fg("accent", "󱃚")} ${theme.fg("toolTitle", theme.bold(id))}`;
+  const box = new Box(1, 1, (s: string) => theme.bg("toolSuccessBg", s));
 
   if (expanded) {
-    const container = new Container();
-    container.addChild(new Text(header, 0, 0));
-    container.addChild(new Spacer(1));
-    container.addChild(new Markdown(message.content?.trim() ?? "(empty)", 0, 0, mdTheme));
-    return container;
+    box.addChild(new Text(header, 0, 0));
+    box.addChild(new Spacer(1));
+    box.addChild(new Markdown(message.content?.trim() ?? "(empty)", 0, 0, mdTheme));
+    return box;
   }
 
   const content = message.content ?? "";
   const lines = content.split("\n");
   let text = header + `\n${theme.fg("toolOutput", lines.slice(0, 5).join("\n"))}`;
-  if (lines.length > 5) text += `\n${theme.fg("muted", "(Ctrl+O to expand)")}`;
-  return new Text(text, 0, 0);
+  box.addChild(new Text(text, 0, 0));
+  return box;
 }
