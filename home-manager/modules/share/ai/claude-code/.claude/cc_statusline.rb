@@ -78,9 +78,9 @@ end
 def format_context_length(context_length, context_percentage)
   formatted = context_length >= 1000 ? (context_length / 1000).to_s + "K" : context_length.to_s
 
-  if context_percentage < 50_000
+  if context_length < 50000
     "#{BLUE} #{formatted}(#{context_percentage}%)#{RESET}"
-  elsif context_length < 100_000
+  elsif context_length < 100000
     "#{ORANGE} #{formatted}(#{context_percentage}%)#{RESET}"
   else
     "#{RED} #{formatted}(#{context_percentage}%)#{RESET}"
