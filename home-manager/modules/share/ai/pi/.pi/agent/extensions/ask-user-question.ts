@@ -16,6 +16,7 @@ import {
   matchesKey,
   Text,
   truncateToWidth,
+  wrapTextWithAnsi,
 } from "@mariozechner/pi-tui";
 import { Type } from "@sinclair/typebox";
 
@@ -226,7 +227,7 @@ export default function questionnaire(pi: ExtensionAPI) {
           });
 
           if (inputMode && question) {
-            addLine(theme.fg("text", ` ${question.prompt}`));
+            wrapTextWithAnsi(question.prompt, width - 2).forEach((line) => addLine(theme.fg("text", ` ${line}`)));
             lines.push("");
             renderOptions();
             lines.push("");
@@ -244,7 +245,7 @@ export default function questionnaire(pi: ExtensionAPI) {
             lines.push("");
             addLine(allAnswered() ? theme.fg("success", " Press Enter to submit") : theme.fg("warning", ` Unanswered: ${questions.filter((q) => !answers.has(q.id)).map((q) => q.label).join(", ")}`));
           } else if (question) {
-            addLine(theme.fg("text", ` ${question.prompt}`));
+            wrapTextWithAnsi(question.prompt, width - 2).forEach((line) => addLine(theme.fg("text", ` ${line}`)));
             lines.push("");
             renderOptions();
           }
