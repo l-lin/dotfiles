@@ -65,13 +65,15 @@ export default function (pi: any) {
     const task = ${t};
     ctx.ui.setWidget("subagent-badge", (_tui: any, theme: any) => ({
       render: (width: number) => {
-        // Pre-truncate plain text before colouring to stay within width
-        const header = \`󰚩 \${id}\`.slice(0, width);
-        const detail = task.slice(0, width);
-        return [theme.fg("accent", header), theme.fg("dim", detail)];
+        const dot = "󰚩 ";
+        const dotWidth = 3;
+        const sep = " ";
+        const available = Math.max(0, width - dotWidth - id.length - sep.length);
+        const taskStr = available <= 0 ? "" : task.length > available ? task.slice(0, available - 1) + "…" : task;
+        return [theme.fg("success", dot) + theme.fg("toolTitle", theme.bold(id)) + theme.fg("dim", sep + taskStr)];
       },
       invalidate: () => {},
-    }));
+    }), { placement: "belowEditor" });
   });
 }
 `;

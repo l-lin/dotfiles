@@ -169,7 +169,7 @@ function updateSessionWidget(ctx: any): void {
       const dot  = s.alive ? theme.fg("success", "󰚩") : theme.fg("muted", "󰚩");
       const id = theme.fg("toolTitle", theme.bold(s.id));
       const task = theme.fg("dim", s.task.length > 50 ? `${s.task.slice(0, 50)}…` : s.task);
-      return `  ${dot} ${id} ${task}`;
+      return `${dot} ${id} ${task}`;
     });
     return { render: (width: number) => lines.map((l) => truncateToWidth(l, width)), invalidate: () => {} };
   });
