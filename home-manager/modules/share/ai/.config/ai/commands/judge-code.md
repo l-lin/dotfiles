@@ -23,9 +23,35 @@ When this command is invoked:
 
 2. **If no parameters provided**: ask the user using the `AskUserQuestion` what to review
 
+## Team Setup
+
+Before launching judges, set up a coordination team:
+
+1. **Create the jury team** using `TeamCreate` with `team_name: "code-jury"`
+2. **Create one task per judge** using `TaskCreate` — each task describes the judge's persona, criteria, and the code/PR to review
+3. **Spawn all five judge agents simultaneously** using the `Task` tool with `team_name: "code-jury"` and `name` set to the judge's name (e.g. `"murphy"`, `"ockham"`, `"oracle"`, `"schneier"`, `"ada"`). Each agent prompt must include:
+   - The judge's full persona (personality, criteria, catchphrases)
+   - The specific code/PR diff to evaluate
+   - Instructions to claim their assigned task via `TaskUpdate`, perform their assessment, then send their verdict to the team lead via `SendMessage` with `type: "message"`
+4. **Wait** for all five judges to send their individual assessment messages (they arrive automatically)
+
+## Cross-Examination
+
+After all five verdicts arrive:
+
+1. **Send each judge's verdict to the others** via `SendMessage` (`type: "message"`) to trigger Round 2 deliberation
+2. **Each judge replies** with their rebuttal or concession (Murphy vs. Ockham, Ada vs. Oracle, etc.)
+3. Wait for replies, then proceed to consensus
+
+## Consensus & Shutdown
+
+1. **Synthesize** all assessments into the final scoring and verdict (see Scoring Rubric below)
+2. **Shut down all judges** using `SendMessage` with `type: "shutdown_request"` to each judge by name
+3. **Delete the team** using `TeamDelete` once all agents have confirmed shutdown
+
 ## The Five Judges
 
-Use the five sub-agents to judge the current code:
+Each judge is spawned as a named teammate in the `code-jury` team:
 
 ### 🔨 Judge Murphy (The Pessimist)
 
