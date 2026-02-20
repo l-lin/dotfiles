@@ -8,7 +8,7 @@
 import { StringEnum } from "@mariozechner/pi-ai";
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { Type } from "@sinclair/typebox";
-import { type AgentConfig, type AgentScope, discoverAgents } from "./agents.js";
+import { type AgentScope, discoverAgents } from "./agents.js";
 import { loadConfig } from "./config.js";
 import * as render from "./render.js";
 import * as sessions from "./sessions.js";
@@ -60,9 +60,6 @@ const SubagentParams = Type.Object({
   message: Type.Optional(Type.String({ description: "Message to send (for send)" })),
   agentScope: Type.Optional(StringEnum(["user", "project", "both"] as const, {
     description: 'Agent directories to use. Default: "user".', default: "user",
-  })),
-  confirmProjectAgents: Type.Optional(Type.Boolean({
-    description: "Prompt before running project-local agents. Default: true.", default: true,
   })),
   cwd: Type.Optional(Type.String({ description: "Working directory for the agent process" })),
 });
@@ -133,22 +130,6 @@ async function handleSpawn(
 
   if (taskList.length === 0) return err(`Spawn requires agent+task or tasks array.\nAvailable agents: ${availableNames}`);
   if (taskList.length > config.maxParallel) return err(`Too many parallel tasks (${taskList.length}). Max is ${config.maxParallel}.`);
-
-  // Confirm project agents if needed
-  if ((scope === "project" || scope === "both") && (params.confirmProjectAgents ?? config.confirmProjectAgents) && ctx.hasUI) {
-    const projectAgents = taskList
-      .map((t) => agents.find((a) => a.name === t.agent))
-      .filter((a): a is AgentConfig => a?.source === "project");
-
-    if (projectAgents.length > 0) {
-      const names = [...new Set(projectAgents.map((a) => a.name))].join(", ");
-      const confirmed = await ctx.ui.confirm(
-        "Run project-local agents?",
-        `Agents: ${names}\nSource: ${discovery.projectAgentsDir ?? "(unknown)"}\n\nProject agents are repo-controlled. Only continue for trusted repositories.`,
-      );
-      if (!confirmed) return ok("Canceled: project-local agents not approved.");
-    }
-  }
 
   // Spawn all tasks
   const spawned: SpawnResult[] = [];

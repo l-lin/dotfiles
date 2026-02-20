@@ -8,15 +8,12 @@ import type { AgentScope } from "./agents.js";
 export interface SubagentConfig {
   /** Which agent directories to search. "user" = ~/.pi/agent/agents, "project" = .pi/agents, "both" = merge both. Default: "user". */
   agentScope: AgentScope;
-  /** Whether to prompt for confirmation before running project-local agents (repo-controlled). Default: true. */
-  confirmProjectAgents: boolean;
   /** Maximum number of sub-agents that can be spawned in parallel per spawn call. Default: 4. */
   maxParallel: number;
 }
 
 const DEFAULTS: SubagentConfig = {
   agentScope: "user",
-  confirmProjectAgents: true,
   maxParallel: 4,
 };
 
@@ -29,9 +26,6 @@ export function loadConfig(): SubagentConfig {
     const parsed = JSON.parse(raw) as Partial<SubagentConfig>;
     return {
       agentScope: isValidScope(parsed.agentScope) ? parsed.agentScope : DEFAULTS.agentScope,
-      confirmProjectAgents: typeof parsed.confirmProjectAgents === "boolean"
-        ? parsed.confirmProjectAgents
-        : DEFAULTS.confirmProjectAgents,
       maxParallel: typeof parsed.maxParallel === "number" && parsed.maxParallel > 0
         ? Math.floor(parsed.maxParallel)
         : DEFAULTS.maxParallel,
