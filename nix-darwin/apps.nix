@@ -53,8 +53,10 @@
       "doxx"
       # Interpreter for PostScript and PDF: https://www.ghostscript.com/
       "ghostscript"
-       # Install and switch between multiple versions of Xcode: https://github.com/XcodesOrg/xcodes
-       "xcodes"
+      # CLI proxy that reduces LLM token consumption by 60-90% on common dev commands: https://github.com/rtk-ai/rtk
+      "rtk"
+      # Install and switch between multiple versions of Xcode: https://github.com/XcodesOrg/xcodes
+      "xcodes"
     ];
 
     # `brew install --cask`

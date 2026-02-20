@@ -59,6 +59,15 @@
             "command": "$HOME/.config/ai/hooks/pre-tool-safety/main.rb"
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.config/ai/hooks/rtk-rewrite.sh"
+          }
+        ]
       }
     ]
   },
