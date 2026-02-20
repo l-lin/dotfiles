@@ -49,3 +49,15 @@ export function rebalance(): void {
     execSync("tmux select-layout even-horizontal", { stdio: "ignore" });
   } catch { /* ignore */ }
 }
+
+/** Return the visible pane index (e.g. "2") for display purposes */
+export function getPaneIndex(paneId: string): string {
+  try {
+    return execSync(
+      `tmux display-message -t ${esc(paneId)} -p '#{pane_index}'`,
+      { encoding: "utf-8" },
+    ).trim();
+  } catch {
+    return "?";
+  }
+}

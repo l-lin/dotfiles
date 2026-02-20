@@ -7,6 +7,7 @@
 
 import { StringEnum } from "@mariozechner/pi-ai";
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import { truncateToWidth } from "@mariozechner/pi-tui";
 import { Type } from "@sinclair/typebox";
 import { discoverAgents } from "./agents.js";
 import { loadConfig } from "./config.js";
@@ -153,11 +154,33 @@ async function handleSpawn(
   );
 }
 
+// ─── session widget ──────────────────────────────────────────────────────────
+
+const WIDGET_KEY = "subagent-sessions";
+
+function updateSessionWidget(ctx: any): void {
+  const active = sessions.all();
+  if (active.length === 0) {
+    ctx.ui.setWidget(WIDGET_KEY, undefined);
+    return;
+  }
+  ctx.ui.setWidget(WIDGET_KEY, (_tui: any, theme: any) => {
+    const lines: string[] = active.map((s) => {
+      const dot  = s.alive ? theme.fg("success", "󰚩") : theme.fg("muted", "󰚩");
+      const id = theme.fg("toolTitle", theme.bold(s.id));
+      const task = theme.fg("dim", s.task.length > 50 ? `${s.task.slice(0, 50)}…` : s.task);
+      return `  ${dot} ${id} ${task}`;
+    });
+    return { render: (width: number) => lines.map((l) => truncateToWidth(l, width)), invalidate: () => {} };
+  });
+}
+
 // ─── extension ───────────────────────────────────────────────────────────────
 
 export default function (pi: ExtensionAPI) {
   pi.on("session_shutdown", async () => sessions.closeAll());
   pi.on("session_switch", async () => sessions.closeAll());
+  pi.on("session_start", async (_event, ctx) => ctx.ui.setWidget(WIDGET_KEY, undefined));
 
   pi.registerMessageRenderer("subagent-result", render.renderMessage);
 
@@ -182,13 +205,18 @@ export default function (pi: ExtensionAPI) {
       if (!tmux.isInsideTmux()) {
         return err("Subagent requires running inside tmux.");
       }
+      let result: ToolResult;
       switch (params.action) {
-        case "send":  return handleSend(params);
-        case "read":  return handleRead(params);
-        case "close": return handleClose(params);
-        case "spawn": return handleSpawn(pi, params, ctx);
+        case "send":  result = handleSend(params); break;
+        case "read":  result = handleRead(params); break;
+        case "close": result = handleClose(params); break;
+        case "spawn": result = await handleSpawn(pi, params, ctx); break;
         default:      return err(`Unknown action "${params.action}".`);
       }
+      if (params.action === "spawn" || params.action === "close") {
+        updateSessionWidget(ctx);
+      }
+      return result;
     },
 
     renderCall: render.renderCall,

@@ -53,11 +53,38 @@ function sessionDir(id: string): string {
   return path.join(os.tmpdir(), `pi-subagent-${id}`);
 }
 
+function writeBadgeExtension(dir: string, sessionId: string, task: string): string {
+  const file = path.join(dir, "badge-extension.ts");
+  // Embed values as JSON strings so all escaping is handled correctly
+  const i = JSON.stringify(sessionId);
+  const t = JSON.stringify(task.length > 120 ? `${task.slice(0, 120)}…` : task);
+  const content = `\
+export default function (pi: any) {
+  pi.on("session_start", async (_event: any, ctx: any) => {
+    const id   = ${i};
+    const task = ${t};
+    ctx.ui.setWidget("subagent-badge", (_tui: any, theme: any) => ({
+      render: (width: number) => {
+        // Pre-truncate plain text before colouring to stay within width
+        const header = \`󰚩 \${id}\`.slice(0, width);
+        const detail = task.slice(0, width);
+        return [theme.fg("accent", header), theme.fg("dim", detail)];
+      },
+      invalidate: () => {},
+    }));
+  });
+}
+`;
+  fs.writeFileSync(file, content, { encoding: "utf-8", mode: 0o600 });
+  return file;
+}
+
 function buildPiCommand(
   agent: AgentConfig,
   task: string,
   resultFile: string,
   systemPromptFile?: string,
+  badgeExtensionFile?: string,
 ): string {
   const esc = (s: string) => `'${s.replace(/'/g, "'\\''")}'`;
   const parts: string[] = ["pi"];
@@ -69,6 +96,7 @@ function buildPiCommand(
   if (tools?.length) parts.push("--tools", esc(tools.join(",")));
 
   if (systemPromptFile) parts.push("--append-system-prompt", esc(systemPromptFile));
+  if (badgeExtensionFile) parts.push("--extension", esc(badgeExtensionFile));
   parts.push("--no-session");
 
   const augmented = `${task}
@@ -93,8 +121,10 @@ export function spawn(pi: ExtensionAPI, agent: AgentConfig, task: string, cwd: s
     fs.writeFileSync(systemPromptFile, agent.systemPrompt, { encoding: "utf-8", mode: 0o600 });
   }
 
+  const badgeExtensionFile = writeBadgeExtension(dir, id, task);
+
   const paneId = tmux.splitRight(cwd);
-  tmux.sendCommand(paneId, buildPiCommand(agent, task, resultFile, systemPromptFile));
+  tmux.sendCommand(paneId, buildPiCommand(agent, task, resultFile, systemPromptFile, badgeExtensionFile));
 
   const session: Session = {
     id,
