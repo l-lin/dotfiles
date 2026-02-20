@@ -73,6 +73,7 @@ function handleSend(params: any): ToolResult {
   if (!isSession(lookup)) return lookup;
   if (!sessions.checkAlive(lookup)) return err(`Sub-agent "${lookup.agentName}" (${lookup.id}) is no longer running.`);
 
+  lookup.pending = true;
   tmux.sendMessage(lookup.paneId, params.message);
   return ok(`Message sent to "${lookup.agentName}" (${lookup.id}).`, { action: "send", sessionId: lookup.id });
 }
@@ -158,28 +159,58 @@ async function handleSpawn(
 
 const WIDGET_KEY = "subagent-sessions";
 
+let blinkTimer: ReturnType<typeof setInterval> | undefined;
+
+function clearBlinkTimer(): void {
+  if (blinkTimer !== undefined) {
+    clearInterval(blinkTimer);
+    blinkTimer = undefined;
+  }
+}
+
 function updateSessionWidget(ctx: any): void {
+  clearBlinkTimer();
   const active = sessions.all();
   if (active.length === 0) {
     ctx.ui.setWidget(WIDGET_KEY, undefined);
     return;
   }
-  ctx.ui.setWidget(WIDGET_KEY, (_tui: any, theme: any) => {
-    const lines: string[] = active.map((s) => {
-      const dot  = s.alive ? theme.fg("success", "󰚩") : theme.fg("muted", "󰚩");
-      const id = theme.fg("toolTitle", theme.bold(s.id));
-      const task = theme.fg("dim", s.task.length > 50 ? `${s.task.slice(0, 50)}…` : s.task);
-      return `${dot} ${id} ${task}`;
-    });
-    return { render: (width: number) => lines.map((l) => truncateToWidth(l, width)), invalidate: () => {} };
+  ctx.ui.setWidget(WIDGET_KEY, (tui: any, theme: any) => {
+    // Start a 500 ms interval that forces re-renders while any session is still pending.
+    // The interval stops itself once all sessions have delivered a result.
+    blinkTimer = setInterval(() => {
+      const hasPending = sessions.all().some((s) => s.pending);
+      tui.requestRender();
+      if (!hasPending) clearBlinkTimer();
+    }, 500);
+
+    return {
+      render: (width: number) => {
+        // Toggle every 500 ms using wall-clock time so blink is always in sync.
+        const blinkOn = Math.floor(Date.now() / 500) % 2 === 0;
+        return sessions.all().map((s) => {
+          const isPending = s.pending;
+          // Pending (waiting for response) → blink between warning-coloured icon and blank space.
+          // Idle (result received)          → steady success icon.
+          // Dead                            → muted icon.
+          const icon = isPending
+            ? (blinkOn ? theme.fg("warning", "󰚩") : " ")
+            : (s.alive ? theme.fg("success", "󰚩") : theme.fg("muted", "󰚩"));
+          const id   = theme.fg("toolTitle", theme.bold(s.id));
+          const task = theme.fg("dim", s.task.length > 50 ? `${s.task.slice(0, 50)}…` : s.task);
+          return truncateToWidth(`${icon} ${id} ${task}`, width);
+        });
+      },
+      invalidate: () => {},
+    };
   });
 }
 
 // ─── extension ───────────────────────────────────────────────────────────────
 
 export default function (pi: ExtensionAPI) {
-  pi.on("session_shutdown", async () => sessions.closeAll());
-  pi.on("session_switch", async () => sessions.closeAll());
+  pi.on("session_shutdown", async () => { clearBlinkTimer(); sessions.closeAll(); });
+  pi.on("session_switch", async () => { clearBlinkTimer(); sessions.closeAll(); });
   pi.on("session_start", async (_event, ctx) => ctx.ui.setWidget(WIDGET_KEY, undefined));
 
   pi.registerMessageRenderer("subagent-result", render.renderMessage);
@@ -213,7 +244,7 @@ export default function (pi: ExtensionAPI) {
         case "spawn": result = await handleSpawn(pi, params, ctx); break;
         default:      return err(`Unknown action "${params.action}".`);
       }
-      if (params.action === "spawn" || params.action === "close") {
+      if (params.action === "spawn" || params.action === "send" || params.action === "close") {
         updateSessionWidget(ctx);
       }
       return result;

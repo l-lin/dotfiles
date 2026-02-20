@@ -19,6 +19,8 @@ export interface Session {
   resultFile: string;
   lastResult: string;
   alive: boolean;
+  /** True while waiting for a response (after spawn or send, cleared on result delivery) */
+  pending: boolean;
   watcher?: fs.FSWatcher;
 }
 
@@ -137,6 +139,7 @@ export function spawn(pi: ExtensionAPI, agent: AgentConfig, task: string, cwd: s
     resultFile,
     lastResult: "",
     alive: true,
+    pending: true,
   };
 
   // Watch result file for changes (directory watch since file doesn't exist yet)
@@ -147,6 +150,7 @@ export function spawn(pi: ExtensionAPI, agent: AgentConfig, task: string, cwd: s
       try { content = fs.readFileSync(resultFile, "utf-8").trim(); } catch { return; }
       if (!content || content === session.lastResult) return;
       session.lastResult = content;
+      session.pending = false;
 
       pi.sendMessage(
         {
