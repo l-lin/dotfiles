@@ -16,5 +16,10 @@
       source = ./.pi/agent/extensions;
       recursive = true;
     };
+    ".pi/agent/subagents.json".source = ./.pi/agent/subagents.json;
+    ".pi/agent/agents" = {
+      source = ./.pi/agent/agents;
+      recursive = true;
+    };
   };
 }
