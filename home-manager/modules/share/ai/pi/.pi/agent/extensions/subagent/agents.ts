@@ -127,17 +127,4 @@ export function discoverAgents(
   return { agents: Array.from(agentMap.values()), projectAgentsDir };
 }
 
-export function formatAgentList(
-  agents: AgentConfig[],
-  maxItems: number,
-): { text: string; remaining: number } {
-  if (agents.length === 0) return { text: "none", remaining: 0 };
-  const listed = agents.slice(0, maxItems);
-  const remaining = agents.length - listed.length;
-  return {
-    text: listed
-      .map((a) => `${a.name} (${a.source}): ${a.description}`)
-      .join("; "),
-    remaining,
-  };
-}
+
