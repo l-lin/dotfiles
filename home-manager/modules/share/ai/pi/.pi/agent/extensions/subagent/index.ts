@@ -6,115 +6,154 @@
  */
 
 import { StringEnum } from "@mariozechner/pi-ai";
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI, ToolContext } from "@mariozechner/pi-coding-agent";
 import { truncateToWidth } from "@mariozechner/pi-tui";
-import { Type } from "@sinclair/typebox";
+import { Type, type Static } from "@sinclair/typebox";
 import { discoverAgents } from "./agents.js";
 import { loadConfig } from "./config.js";
 import * as render from "./render.js";
 import * as sessions from "./sessions.js";
+import type { SpawnResult, SubagentDetails } from "./sessions.js";
 import * as tmux from "./tmux.js";
-import type { SpawnResult, SubagentDetails } from "./types.js";
 
 // ─── result helpers ──────────────────────────────────────────────────────────
 
-type ToolResult = { content: { type: "text"; text: string }[]; isError?: boolean; details?: SubagentDetails };
-
-const ok = (text: string, details?: SubagentDetails): ToolResult =>
-  ({ content: [{ type: "text", text }], details });
-
-const err = (text: string): ToolResult =>
-  ({ content: [{ type: "text", text }], isError: true });
-
-function requireSession(id: string | undefined): sessions.Session | ToolResult {
-  if (!id) return err('Required parameter: "id".');
-  const s = sessions.get(id);
-  if (s) return s;
-  return err(`Unknown session "${id}". Active: ${sessions.ids().join(", ") || "none"}`);
+interface ToolResult {
+  content: { type: "text"; text: string }[];
+  isError?: boolean;
+  details?: SubagentDetails;
 }
 
-function isSession(v: sessions.Session | ToolResult): v is sessions.Session {
-  return "paneId" in v;
+const ok = (text: string, details?: SubagentDetails): ToolResult => ({
+  content: [{ type: "text", text }],
+  details,
+});
+
+const err = (text: string): ToolResult => ({
+  content: [{ type: "text", text }],
+  isError: true,
+});
+
+function getSession(id: string | undefined): sessions.Session | undefined {
+  return id ? sessions.get(id) : undefined;
 }
 
 function toSpawnResult(s: sessions.Session): SpawnResult {
-  return { id: s.id, agent: s.agentName, agentSource: s.agentSource, paneId: s.paneId };
+  return {
+    id: s.id,
+    agent: s.agentName,
+    agentSource: s.agentSource,
+    paneId: s.paneId,
+  };
 }
 
 // ─── schema ──────────────────────────────────────────────────────────────────
 
-const SubagentParams = Type.Object({
+type SubagentParams = Static<typeof SubagentParamsSchema>;
+const SubagentParamsSchema = Type.Object({
   action: StringEnum(["spawn", "send", "read", "close"] as const, {
     description: "Action: spawn, send, read, close",
   }),
   agent: Type.Optional(Type.String({ description: "Agent name (for spawn)" })),
-  task: Type.Optional(Type.String({ description: "Task to delegate (for spawn)" })),
-  tasks: Type.Optional(Type.Array(
-    Type.Object({
-      agent: Type.String({ description: "Name of the agent to invoke" }),
-      task: Type.String({ description: "Task to delegate to the agent" }),
-      cwd: Type.Optional(Type.String({ description: "Working directory for the agent process" })),
+  task: Type.Optional(
+    Type.String({ description: "Task to delegate (for spawn)" }),
+  ),
+  tasks: Type.Optional(
+    Type.Array(
+      Type.Object({
+        agent: Type.String({ description: "Name of the agent to invoke" }),
+        task: Type.String({ description: "Task to delegate to the agent" }),
+        cwd: Type.Optional(
+          Type.String({
+            description: "Working directory for the agent process",
+          }),
+        ),
+      }),
+      { description: "Array of {agent, task} for parallel spawn" },
+    ),
+  ),
+  id: Type.Optional(
+    Type.String({ description: "Session ID (for send/read/close)" }),
+  ),
+  message: Type.Optional(
+    Type.String({ description: "Message to send (for send)" }),
+  ),
+  sources: Type.Optional(
+    Type.Array(Type.String(), {
+      description:
+        "Directories to search for agent definitions. Accepts absolute paths (~ and $HOME are expanded) or paths relative to cwd. Overrides config defaults.",
     }),
-    { description: "Array of {agent, task} for parallel spawn" },
-  )),
-  id: Type.Optional(Type.String({ description: "Session ID (for send/read/close)" })),
-  message: Type.Optional(Type.String({ description: "Message to send (for send)" })),
-  sources: Type.Optional(Type.Array(Type.String(), {
-    description: "Directories to search for agent definitions. Accepts absolute paths (~ and $HOME are expanded) or paths relative to cwd. Overrides config defaults.",
-  })),
-  cwd: Type.Optional(Type.String({ description: "Working directory for the agent process" })),
+  ),
+  cwd: Type.Optional(
+    Type.String({ description: "Working directory for the agent process" }),
+  ),
 });
+
+function sessionError(id: string | undefined): ToolResult {
+  if (!id) return err('Required parameter: "id".');
+  return err(
+    `Unknown session "${id}". Active: ${sessions.ids().join(", ") || "none"}`,
+  );
+}
 
 // ─── action handlers ─────────────────────────────────────────────────────────
 
-function handleSend(params: any): ToolResult {
+function handleSend(params: SubagentParams): ToolResult {
   if (!params.message) return err('Send requires "message" parameter.');
-  const lookup = requireSession(params.id);
-  if (!isSession(lookup)) return lookup;
-  if (!sessions.checkAlive(lookup)) return err(`Sub-agent "${lookup.agentName}" (${lookup.id}) is no longer running.`);
+  const session = getSession(params.id);
+  if (!session) return sessionError(params.id);
+  if (!sessions.checkAlive(session))
+    return err(
+      `Sub-agent "${session.agentName}" (${session.id}) is no longer running.`,
+    );
 
-  lookup.pending = true;
-  tmux.sendMessage(lookup.paneId, params.message);
-  return ok(`Message sent to "${lookup.agentName}" (${lookup.id}).`, { action: "send", sessionId: lookup.id });
+  session.pending = true;
+  tmux.sendMessage(session.paneId, params.message);
+  return ok(`Message sent to "${session.agentName}" (${session.id}).`, {
+    action: "send",
+    sessionId: session.id,
+  });
 }
 
-function handleRead(params: any): ToolResult {
+function handleRead(params: SubagentParams): ToolResult {
   // No ID → list all sessions
   if (!params.id) {
     if (sessions.size() === 0) return ok("No active sub-agent sessions.");
-    const summaries = sessions.all().map((s) => {
-      return `**${s.agentName}** (${s.id})`;
-    });
+    const summaries = sessions.all().map((s) => `**${s.agentName}** (${s.id})`);
     return ok(summaries.join("\n\n"), { action: "read" });
   }
 
-  const lookup = requireSession(params.id);
-  if (!isSession(lookup)) return lookup;
-  sessions.refreshResult(lookup);
-  sessions.checkAlive(lookup);
-  return ok(lookup.lastResult || "(no result yet)", { action: "read", sessionId: lookup.id, result: lookup.lastResult });
+  const session = getSession(params.id);
+  if (!session) return sessionError(params.id);
+  sessions.refreshResult(session);
+  sessions.checkAlive(session);
+  return ok(session.lastResult || "(no result yet)", {
+    action: "read",
+    sessionId: session.id,
+    result: session.lastResult,
+  });
 }
 
-function handleClose(params: any): ToolResult {
+function handleClose(params: SubagentParams): ToolResult {
   if (params.id === "all") {
     const count = sessions.size();
     sessions.closeAll();
     return ok(`Closed ${count} sub-agent session(s).`, { action: "close" });
   }
-  const lookup = requireSession(params.id);
-  if (!isSession(lookup)) return lookup;
-  const lastResult = lookup.lastResult;
-  sessions.close(lookup);
+  const session = getSession(params.id);
+  if (!session) return sessionError(params.id);
+  const lastResult = session.lastResult;
+  sessions.close(session);
   return ok(
-    `Closed "${lookup.agentName}" (${lookup.id}).${lastResult ? `\n\nFinal result:\n${lastResult}` : ""}`,
-    { action: "close", sessionId: lookup.id },
+    `Closed "${session.agentName}" (${session.id}).${lastResult ? `\n\nFinal result:\n${lastResult}` : ""}`,
+    { action: "close", sessionId: session.id },
   );
 }
 
 async function handleSpawn(
   pi: ExtensionAPI,
-  params: any,
-  ctx: any,
+  params: SubagentParams,
+  ctx: ToolContext,
 ): Promise<ToolResult> {
   const config = loadConfig();
   const sources: string[] = params.sources ?? config.sources;
@@ -130,25 +169,41 @@ async function handleSpawn(
         ? [{ agent: params.agent, task: params.task, cwd: params.cwd }]
         : [];
 
-  if (taskList.length === 0) return err(`Spawn requires agent+task or tasks array.\nAvailable agents: ${availableNames}`);
-  if (taskList.length > config.maxParallel) return err(`Too many parallel tasks (${taskList.length}). Max is ${config.maxParallel}.`);
+  if (taskList.length === 0)
+    return err(
+      `Spawn requires agent+task or tasks array.\nAvailable agents: ${availableNames}`,
+    );
+  if (taskList.length > config.maxParallel)
+    return err(
+      `Too many parallel tasks (${taskList.length}). Max is ${config.maxParallel}.`,
+    );
 
   // Spawn all tasks
   const spawned: SpawnResult[] = [];
   for (const t of taskList) {
     const agent = agents.find((a) => a.name === t.agent);
     if (!agent) {
-      const already = spawned.length > 0
-        ? ` Already spawned: ${spawned.map((s) => `${s.agent} (${s.id})`).join(", ")}. Use close action to clean up.`
-        : "";
-      return { ...err(`Unknown agent: "${t.agent}". Available: ${availableNames}.${already}`), details: { action: "spawn", sources, spawned } };
+      const already =
+        spawned.length > 0
+          ? ` Already spawned: ${spawned.map((s) => `${s.agent} (${s.id})`).join(", ")}. Use close action to clean up.`
+          : "";
+      return {
+        ...err(
+          `Unknown agent: "${t.agent}". Available: ${availableNames}.${already}`,
+        ),
+        details: { action: "spawn", sources, spawned },
+      };
     }
-    spawned.push(toSpawnResult(sessions.spawn(pi, agent, t.task, t.cwd ?? ctx.cwd)));
+    spawned.push(
+      toSpawnResult(sessions.spawn(pi, agent, t.task, t.cwd ?? ctx.cwd)),
+    );
   }
 
   if (spawned.length > 1) tmux.rebalance();
 
-  const lines = spawned.map((s) => `- **${s.agent}** → session \`${s.id}\``).join("\n");
+  const lines = spawned
+    .map((s) => `- **${s.agent}** → session \`${s.id}\``)
+    .join("\n");
   return ok(
     `Spawned ${spawned.length} sub-agent(s):\n${lines}\n\nResults delivered automatically. Use send/read/close with session IDs.`,
     { action: "spawn", sources, spawned },
@@ -158,46 +213,47 @@ async function handleSpawn(
 // ─── session widget ──────────────────────────────────────────────────────────
 
 const WIDGET_KEY = "subagent-sessions";
-
 let blinkTimer: ReturnType<typeof setInterval> | undefined;
 
-function clearBlinkTimer(): void {
-  if (blinkTimer !== undefined) {
+function stopBlinkTimer(): void {
+  if (blinkTimer) {
     clearInterval(blinkTimer);
     blinkTimer = undefined;
   }
 }
 
-function updateSessionWidget(ctx: any): void {
-  clearBlinkTimer();
+function updateSessionWidget(ctx: ToolContext): void {
+  stopBlinkTimer();
   const active = sessions.all();
+
   if (active.length === 0) {
     ctx.ui.setWidget(WIDGET_KEY, undefined);
     return;
   }
-  ctx.ui.setWidget(WIDGET_KEY, (tui: any, theme: any) => {
-    // Start a 500 ms interval that forces re-renders while any session is still pending.
-    // The interval stops itself once all sessions have delivered a result.
+
+  ctx.ui.setWidget(WIDGET_KEY, (tui, theme) => {
+    // Blink timer: re-renders every 500ms while any session is pending
     blinkTimer = setInterval(() => {
-      const hasPending = sessions.all().some((s) => s.pending);
       tui.requestRender();
-      if (!hasPending) clearBlinkTimer();
+      if (!sessions.all().some((s) => s.pending)) stopBlinkTimer();
     }, 500);
 
     return {
       render: (width: number) => {
-        // Toggle every 500 ms using wall-clock time so blink is always in sync.
         const blinkOn = Math.floor(Date.now() / 500) % 2 === 0;
-        return sessions.all().map((s) => {
-          const isPending = s.pending;
-          // Pending (waiting for response) → blink between warning-coloured icon and blank space.
-          // Idle (result received)          → steady success icon.
-          // Dead                            → muted icon.
-          const icon = isPending
-            ? (blinkOn ? theme.fg("warning", "󰚩") : " ")
-            : (s.alive ? theme.fg("success", "󰚩") : theme.fg("muted", "󰚩"));
-          const id   = theme.fg("toolTitle", theme.bold(s.id));
-          const task = theme.fg("dim", s.task.length > 50 ? `${s.task.slice(0, 50)}…` : s.task);
+        return active.map((s) => {
+          const icon = s.pending
+            ? blinkOn
+              ? theme.fg("warning", "󰚩")
+              : " "
+            : s.alive
+              ? theme.fg("success", "󰚩")
+              : theme.fg("muted", "󰚩");
+          const id = theme.fg("toolTitle", theme.bold(s.id));
+          const task = theme.fg(
+            "dim",
+            s.task.length > 50 ? `${s.task.slice(0, 50)}…` : s.task,
+          );
           return truncateToWidth(`${icon} ${id} ${task}`, width);
         });
       },
@@ -209,9 +265,17 @@ function updateSessionWidget(ctx: any): void {
 // ─── extension ───────────────────────────────────────────────────────────────
 
 export default function (pi: ExtensionAPI) {
-  pi.on("session_shutdown", async () => { clearBlinkTimer(); sessions.closeAll(); });
-  pi.on("session_switch", async () => { clearBlinkTimer(); sessions.closeAll(); });
-  pi.on("session_start", async (_event, ctx) => ctx.ui.setWidget(WIDGET_KEY, undefined));
+  pi.on("session_shutdown", async () => {
+    stopBlinkTimer();
+    sessions.closeAll();
+  });
+  pi.on("session_switch", async () => {
+    stopBlinkTimer();
+    sessions.closeAll();
+  });
+  pi.on("session_start", async (_event, ctx) =>
+    ctx.ui.setWidget(WIDGET_KEY, undefined),
+  );
 
   pi.registerMessageRenderer("subagent-result", render.renderMessage);
 
@@ -230,21 +294,40 @@ export default function (pi: ExtensionAPI) {
       "Results are delivered automatically via file watcher.",
       "Requires tmux.",
     ].join("\n"),
-    parameters: SubagentParams,
+    parameters: SubagentParamsSchema,
 
-    async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
+    async execute(
+      _toolCallId,
+      params: SubagentParams,
+      _signal,
+      _onUpdate,
+      ctx,
+    ) {
       if (!tmux.isInsideTmux()) {
         return err("Subagent requires running inside tmux.");
       }
       let result: ToolResult;
       switch (params.action) {
-        case "send":  result = handleSend(params); break;
-        case "read":  result = handleRead(params); break;
-        case "close": result = handleClose(params); break;
-        case "spawn": result = await handleSpawn(pi, params, ctx); break;
-        default:      return err(`Unknown action "${params.action}".`);
+        case "send":
+          result = handleSend(params);
+          break;
+        case "read":
+          result = handleRead(params);
+          break;
+        case "close":
+          result = handleClose(params);
+          break;
+        case "spawn":
+          result = await handleSpawn(pi, params, ctx);
+          break;
+        default:
+          return err(`Unknown action "${params.action}".`);
       }
-      if (params.action === "spawn" || params.action === "send" || params.action === "close") {
+      if (
+        params.action === "spawn" ||
+        params.action === "send" ||
+        params.action === "close"
+      ) {
         updateSessionWidget(ctx);
       }
       return result;

@@ -6,7 +6,8 @@ export function isInsideTmux(): boolean {
   return !!process.env.TMUX;
 }
 
-function esc(s: string): string {
+/** Shell-escape a string for safe use in tmux commands */
+export function esc(s: string): string {
   return `'${s.replace(/'/g, "'\\''")}'`;
 }
 

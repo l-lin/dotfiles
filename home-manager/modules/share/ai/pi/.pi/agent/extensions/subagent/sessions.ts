@@ -7,7 +7,25 @@ import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import type { AgentConfig } from "./agents.js";
 import * as tmux from "./tmux.js";
 
-// ─── types ───────────────────────────────────────────────────────────────────
+// ─── shared types ────────────────────────────────────────────────────────────
+
+export interface SpawnResult {
+  id: string;
+  agent: string;
+  /** Resolved absolute path of the source directory */
+  agentSource: string;
+  paneId: string;
+}
+
+export interface SubagentDetails {
+  action: string;
+  sources?: string[];
+  spawned?: SpawnResult[];
+  sessionId?: string;
+  result?: string;
+}
+
+// ─── session type ────────────────────────────────────────────────────────────
 
 export interface Session {
   id: string;
@@ -90,17 +108,16 @@ function buildPiCommand(
   systemPromptFile?: string,
   badgeExtensionFile?: string,
 ): string {
-  const esc = (s: string) => `'${s.replace(/'/g, "'\\''")}'`;
   const parts: string[] = ["pi"];
 
-  if (agent.model) parts.push("--model", esc(agent.model));
+  if (agent.model) parts.push("--model", tmux.esc(agent.model));
 
   const tools = agent.tools ? [...agent.tools] : undefined;
   if (tools && !tools.includes("write")) tools.push("write");
-  if (tools?.length) parts.push("--tools", esc(tools.join(",")));
+  if (tools?.length) parts.push("--tools", tmux.esc(tools.join(",")));
 
-  if (systemPromptFile) parts.push("--append-system-prompt", esc(systemPromptFile));
-  if (badgeExtensionFile) parts.push("--extension", esc(badgeExtensionFile));
+  if (systemPromptFile) parts.push("--append-system-prompt", tmux.esc(systemPromptFile));
+  if (badgeExtensionFile) parts.push("--extension", tmux.esc(badgeExtensionFile));
   parts.push("--no-session");
 
   const augmented = `${task}
@@ -108,7 +125,7 @@ function buildPiCommand(
 IMPORTANT COMMUNICATION PROTOCOL:
 When you have completed the task (or have a meaningful intermediate result to report), write your answer/summary to "${resultFile}" using the write tool. This file is monitored by the parent agent — writing to it automatically notifies them. You can update this file multiple times as you make progress. Always do a final write before you finish.`;
 
-  parts.push(esc(`Task: ${augmented}`));
+  parts.push(tmux.esc(`Task: ${augmented}`));
   return parts.join(" ");
 }
 

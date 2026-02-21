@@ -2,14 +2,10 @@
 
 import * as path from "node:path";
 import { getMarkdownTheme } from "@mariozechner/pi-coding-agent";
-import { Box, Container, Markdown, Spacer, Text } from "@mariozechner/pi-tui";
-import type { SubagentDetails } from "./types.js";
+import { Box, Container, Markdown, Spacer, Text, truncateToWidth } from "@mariozechner/pi-tui";
+import type { SubagentDetails } from "./sessions.js";
 
 type Theme = { fg: Function; bg: Function; bold: Function };
-
-function truncate(s: string, max: number): string {
-  return s.length > max ? `${s.slice(0, max)}...` : s;
-}
 
 // ─── renderCall ──────────────────────────────────────────────────────────────
 
@@ -21,14 +17,14 @@ export function renderCall(args: any, theme: Theme): Text {
     if (args.tasks?.length > 0) {
       let text = title("subagent spawn ") + theme.fg("accent", `${args.tasks.length} panes`);
       for (const t of args.tasks.slice(0, 3)) {
-        text += `\n  ${theme.fg("accent", t.agent)}${theme.fg("dim", ` ${truncate(t.task, 40)}`)}`;
+        text += `\n  ${theme.fg("accent", t.agent)}${theme.fg("dim", ` ${truncateToWidth(t.task, 40)}`)}`;
       }
       if (args.tasks.length > 3) text += `\n  ${theme.fg("muted", `... +${args.tasks.length - 3} more`)}`;
       return new Text(text, 0, 0);
     }
     return new Text(
       title("subagent spawn ") + theme.fg("accent", args.agent || "...") +
-      `\n  ${theme.fg("dim", truncate(args.task || "...", 60))}`,
+      `\n  ${theme.fg("dim", truncateToWidth(args.task || "...", 60))}`,
       0, 0,
     );
   }
@@ -36,7 +32,7 @@ export function renderCall(args: any, theme: Theme): Text {
   if (action === "send") {
     return new Text(
       title("subagent send ") + theme.fg("accent", args.id || "?") +
-      `\n  ${theme.fg("dim", truncate(args.message || "...", 50))}`,
+      `\n  ${theme.fg("dim", truncateToWidth(args.message || "...", 50))}`,
       0, 0,
     );
   }
