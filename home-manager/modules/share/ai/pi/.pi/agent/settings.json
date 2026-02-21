@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.52.9",
+  "lastChangelogVersion": "0.54.0",
   "theme": "light",
   "defaultProvider": "github-copilot",
   "defaultModel": "gpt-4o",
@@ -8,6 +8,7 @@
   ],
   "prompts": [],
   "quietStartup": true,
-  "defaultThinkingLevel": "medium",
-  "copilotUsageVisible": false
+  "defaultThinkingLevel": "off",
+  "copilotUsageVisible": false,
+  "hideThinkingBlock": false
 }
