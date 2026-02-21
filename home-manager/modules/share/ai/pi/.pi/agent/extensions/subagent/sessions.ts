@@ -65,8 +65,7 @@ export function size(): number {
 // ─── spawn ───────────────────────────────────────────────────────────────────
 
 function generateId(agentName: string): string {
-  const safe = agentName.replace(/[^\w]/g, "").slice(0, 12);
-  return `${safe}-${Math.random().toString(36).slice(2, 6)}`;
+  return `${agentName}-${Math.random().toString(36).slice(2, 6)}`;
 }
 
 function sessionDir(id: string): string {
@@ -90,7 +89,7 @@ export default function (pi: any) {
         const sep = " ";
         const available = Math.max(0, width - dotWidth - id.length - sep.length);
         const taskStr = available <= 0 ? "" : task.length > available ? task.slice(0, available - 1) + "…" : task;
-        return [theme.fg("success", dot) + theme.fg("toolTitle", theme.bold(id)) + theme.fg("dim", sep + taskStr)];
+        return [theme.fg("dim", dot) + theme.fg("toolTitle", theme.bold(id)) + theme.fg("dim", sep + taskStr)];
       },
       invalidate: () => {},
     }), { placement: "belowEditor" });
@@ -116,7 +115,7 @@ function buildPiCommand(
   if (tools && !tools.includes("write")) tools.push("write");
   if (tools?.length) parts.push("--tools", tmux.esc(tools.join(",")));
 
-  if (systemPromptFile) parts.push("--append-system-prompt", tmux.esc(systemPromptFile));
+  if (systemPromptFile) parts.push("--system-prompt", tmux.esc(systemPromptFile));
   if (badgeExtensionFile) parts.push("--extension", tmux.esc(badgeExtensionFile));
   parts.push("--no-session");
 

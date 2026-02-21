@@ -244,7 +244,7 @@ function updateSessionWidget(ctx: ToolContext): void {
         return active.map((s) => {
           const icon = s.pending
             ? blinkOn
-              ? theme.fg("warning", "󰚩")
+              ? theme.fg("success", "󰚩")
               : " "
             : s.alive
               ? theme.fg("success", "󰚩")
