@@ -269,9 +269,10 @@ export default function (pi: ExtensionAPI) {
     stopBlinkTimer();
     sessions.closeAll();
   });
-  pi.on("session_switch", async () => {
+  pi.on("session_switch", async (_event, ctx) => {
     stopBlinkTimer();
     sessions.closeAll();
+    ctx.ui.setWidget(WIDGET_KEY, undefined);
   });
   pi.on("session_start", async (_event, ctx) =>
     ctx.ui.setWidget(WIDGET_KEY, undefined),
