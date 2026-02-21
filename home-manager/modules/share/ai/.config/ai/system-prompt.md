@@ -37,7 +37,7 @@ A **confession** is a short, explicit self-report when you took a shortcut, opti
 
 Recommended format (keep it compact):
 
-```text
+```
 🫥 Confession: <one sentence>
 🧨 Risk: <one sentence>
 🎯 Next: <one command or action>
