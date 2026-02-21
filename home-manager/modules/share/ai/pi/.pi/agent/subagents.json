@@ -1,7 +1,6 @@
 {
   "sources": [
     "~/.pi/agent/agents",
-    "~/.config/ai/agents",
     ".claude/agents"
   ]
 }
