@@ -1,7 +1,9 @@
 #!/usr/bin/env zsh
 #
 # remove merged branches
-# src: https://stackoverflow.com/questions/6127328/how-do-i-delete-all-git-branches-which-have-been-merged
+# src:
+# - https://stackoverflow.com/questions/6127328/how-do-i-delete-all-git-branches-which-have-been-merged
+# - https://spencer.wtf/2026/02/20/cleaning-up-merged-git-branches-a-one-liner-from-the-cias-leaked-dev-docs.html
 #
 
-git branch --verbose | grep '\[gone\]' | grep -v '^+' | awk '{print $1}' | xargs --no-run-if-empty git branch -D
+git branch --merged | grep -vE "^\s*(\*|main|master)" | xargs -n 1 --no-run-if-empty git branch -d
