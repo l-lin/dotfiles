@@ -14,11 +14,13 @@
  *   pi -e ./minimal-mode.ts
  *
  * Then use ctrl+o to toggle between minimal (collapsed) and full (expanded) views.
+ *
+ * src: https://github.com/badlogic/pi-mono/blob/3a3e37d39014acc4269171be2a51518f6a71be1f/packages/coding-agent/examples/extensions/minimal-mode.ts
+ * Adapted to remove the bash tool override as it's used by rtk-rewrite extension.
  */
 
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import {
-  createBashTool,
   createEditTool,
   createFindTool,
   createGrepTool,
@@ -46,7 +48,6 @@ const toolCache = new Map<string, ReturnType<typeof createBuiltInTools>>();
 function createBuiltInTools(cwd: string) {
   return {
     read: createReadTool(cwd),
-    bash: createBashTool(cwd),
     edit: createEditTool(cwd),
     write: createWriteTool(cwd),
     find: createFindTool(cwd),
@@ -120,61 +121,6 @@ export default function (pi: ExtensionAPI) {
       const output = lines
         .map((line) => theme.fg("toolOutput", line))
         .join("\n");
-      return new Text(`\n${output}`, 0, 0);
-    },
-  });
-
-  // =========================================================================
-  // Bash Tool
-  // =========================================================================
-  pi.registerTool({
-    name: "bash",
-    label: "bash",
-    description:
-      "Execute a bash command in the current working directory. Returns stdout and stderr. Output is truncated to last 2000 lines or 50KB (whichever is hit first).",
-    parameters: getBuiltInTools(process.cwd()).bash.parameters,
-
-    async execute(toolCallId, params, signal, onUpdate, ctx) {
-      const tools = getBuiltInTools(ctx.cwd);
-      return tools.bash.execute(toolCallId, params, signal, onUpdate);
-    },
-
-    renderCall(args, theme) {
-      const command = args.command || "...";
-      const timeout = args.timeout as number | undefined;
-      const timeoutSuffix = timeout
-        ? theme.fg("muted", ` (timeout ${timeout}s)`)
-        : "";
-
-      return new Text(
-        theme.fg("toolTitle", theme.bold(`$ ${command}`)) + timeoutSuffix,
-        0,
-        0,
-      );
-    },
-
-    renderResult(result, { expanded }, theme) {
-      // Minimal mode: show nothing in collapsed state
-      if (!expanded) {
-        return new Text("", 0, 0);
-      }
-
-      // Expanded mode: show full output
-      const textContent = result.content.find((c) => c.type === "text");
-      if (!textContent || textContent.type !== "text") {
-        return new Text("", 0, 0);
-      }
-
-      const output = textContent.text
-        .trim()
-        .split("\n")
-        .map((line) => theme.fg("toolOutput", line))
-        .join("\n");
-
-      if (!output) {
-        return new Text("", 0, 0);
-      }
-
       return new Text(`\n${output}`, 0, 0);
     },
   });
