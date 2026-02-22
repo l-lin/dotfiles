@@ -1,6 +1,0 @@
-{
-  "sources": [
-    "~/.pi/agent/agents",
-    ".claude/agents"
-  ]
-}
