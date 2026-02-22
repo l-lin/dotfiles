@@ -382,6 +382,11 @@ export default function copilotUsageExtension(pi: ExtensionAPI) {
     await refresh(ctx);
   });
 
+  // Refresh when agent finishes work
+  pi.on("agent_end", async (_event, ctx) => {
+    await refresh(ctx);
+  });
+
   // Manual refresh command
   pi.registerCommand("copilot-usage", {
     description: "Refresh GitHub Copilot premium request usage",
