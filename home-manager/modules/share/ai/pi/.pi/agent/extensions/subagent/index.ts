@@ -271,14 +271,7 @@ function updateSessionWidget(ctx: ToolContext): void {
 // ─── list-agents schema ──────────────────────────────────────────────────────
 
 type ListAgentsParams = Static<typeof ListAgentsParamsSchema>;
-const ListAgentsParamsSchema = Type.Object({
-  sources: Type.Optional(
-    Type.Array(Type.String(), {
-      description:
-        "Directories to search for agent definitions. Accepts absolute paths (~ and $HOME are expanded) or paths relative to cwd. Overrides config defaults.",
-    }),
-  ),
-});
+const ListAgentsParamsSchema = Type.Object({});
 
 // ─── extension ───────────────────────────────────────────────────────────────
 
@@ -307,13 +300,13 @@ export default function (pi: ExtensionAPI) {
 
     async execute(
       _toolCallId,
-      params: ListAgentsParams,
+      _params: ListAgentsParams,
       _signal,
       _onUpdate,
       ctx,
     ) {
       const config = loadConfig();
-      const sources: string[] = params.sources ?? config.sources;
+      const sources: string[] = config.sources;
       const discovery = discoverAgents(sources, ctx.cwd);
       const agents = discovery.agents;
 
