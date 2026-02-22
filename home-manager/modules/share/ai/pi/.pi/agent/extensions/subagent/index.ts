@@ -268,6 +268,18 @@ function updateSessionWidget(ctx: ToolContext): void {
   });
 }
 
+// ─── list-agents schema ──────────────────────────────────────────────────────
+
+type ListAgentsParams = Static<typeof ListAgentsParamsSchema>;
+const ListAgentsParamsSchema = Type.Object({
+  sources: Type.Optional(
+    Type.Array(Type.String(), {
+      description:
+        "Directories to search for agent definitions. Accepts absolute paths (~ and $HOME are expanded) or paths relative to cwd. Overrides config defaults.",
+    }),
+  ),
+});
+
 // ─── extension ───────────────────────────────────────────────────────────────
 
 export default function (pi: ExtensionAPI) {
@@ -285,6 +297,47 @@ export default function (pi: ExtensionAPI) {
   );
 
   pi.registerMessageRenderer("subagent-result", render.renderMessage);
+
+  pi.registerTool({
+    name: "list-subagents",
+    label: "List Subagents",
+    description:
+      "List all available subagents (name and description) to determine which agent to spawn for a given task.",
+    parameters: ListAgentsParamsSchema,
+
+    async execute(
+      _toolCallId,
+      params: ListAgentsParams,
+      _signal,
+      _onUpdate,
+      ctx,
+    ) {
+      const config = loadConfig();
+      const sources: string[] = params.sources ?? config.sources;
+      const discovery = discoverAgents(sources, ctx.cwd);
+      const agents = discovery.agents;
+
+      if (agents.length === 0) {
+        return ok(
+          "No subagents found. Check your configuration or agent directories.",
+        );
+      }
+
+      const lines = agents.map((a) => `**${a.name}**\n  ${a.description}`);
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Available subagents:\n\n${lines.join("\n\n")}`,
+          },
+        ],
+        details: { action: "list", count: agents.length },
+      };
+    },
+
+    renderCall: render.renderListCall,
+    renderResult: render.renderListResult,
+  });
 
   pi.registerTool({
     name: "subagent",

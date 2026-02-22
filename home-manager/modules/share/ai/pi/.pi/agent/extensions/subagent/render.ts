@@ -2,12 +2,24 @@
 
 import * as path from "node:path";
 import { getMarkdownTheme } from "@mariozechner/pi-coding-agent";
-import { Box, Container, Markdown, Spacer, Text, truncateToWidth } from "@mariozechner/pi-tui";
+import {
+  Box,
+  Container,
+  Markdown,
+  Spacer,
+  Text,
+  truncateToWidth,
+} from "@mariozechner/pi-tui";
 import type { SubagentDetails } from "./sessions.js";
 
 type Theme = { fg: Function; bg: Function; bold: Function };
 
 // ─── renderCall ──────────────────────────────────────────────────────────────
+
+export function renderListCall(args: any, theme: Theme): Text {
+  const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
+  return new Text(title("list-subagents"), 0, 0);
+}
 
 export function renderCall(args: any, theme: Theme): Text {
   const action = args.action || "?";
@@ -15,54 +27,114 @@ export function renderCall(args: any, theme: Theme): Text {
 
   if (action === "spawn") {
     if (args.tasks?.length > 0) {
-      let text = title("subagent spawn ") + theme.fg("accent", `${args.tasks.length} panes`);
+      let text =
+        title("subagent spawn ") +
+        theme.fg("accent", `${args.tasks.length} panes`);
       for (const t of args.tasks.slice(0, 3)) {
         text += `\n  ${theme.fg("accent", t.agent)}${theme.fg("dim", ` ${truncateToWidth(t.task, 40)}`)}`;
       }
-      if (args.tasks.length > 3) text += `\n  ${theme.fg("muted", `... +${args.tasks.length - 3} more`)}`;
+      if (args.tasks.length > 3)
+        text += `\n  ${theme.fg("muted", `... +${args.tasks.length - 3} more`)}`;
       return new Text(text, 0, 0);
     }
     return new Text(
-      title("subagent spawn ") + theme.fg("accent", args.agent || "...") +
-      `\n  ${theme.fg("dim", truncateToWidth(args.task || "...", 60))}`,
-      0, 0,
+      title("subagent spawn ") +
+        theme.fg("accent", args.agent || "...") +
+        `\n  ${theme.fg("dim", truncateToWidth(args.task || "...", 60))}`,
+      0,
+      0,
     );
   }
 
   if (action === "send") {
     return new Text(
-      title("subagent send ") + theme.fg("accent", args.id || "?") +
-      `\n  ${theme.fg("dim", truncateToWidth(args.message || "...", 50))}`,
-      0, 0,
+      title("subagent send ") +
+        theme.fg("accent", args.id || "?") +
+        `\n  ${theme.fg("dim", truncateToWidth(args.message || "...", 50))}`,
+      0,
+      0,
     );
   }
 
   if (action === "read") {
-    return new Text(title("subagent read ") + theme.fg("accent", args.id || "(all)"), 0, 0);
+    return new Text(
+      title("subagent read ") + theme.fg("accent", args.id || "(all)"),
+      0,
+      0,
+    );
   }
 
   if (action === "close") {
-    return new Text(title("subagent close ") + theme.fg("accent", args.id || "?"), 0, 0);
+    return new Text(
+      title("subagent close ") + theme.fg("accent", args.id || "?"),
+      0,
+      0,
+    );
   }
 
   return new Text(title("subagent ") + theme.fg("dim", action), 0, 0);
 }
 
+// ─── renderListResult ────────────────────────────────────────────────────────
+
+export function renderListResult(
+  result: any,
+  { expanded }: { expanded: boolean },
+  theme: Theme,
+) {
+  const details = result.details as
+    | { action?: string; count?: number }
+    | undefined;
+  const mdTheme = getMarkdownTheme();
+  const textContent =
+    result.content[0]?.type === "text" ? result.content[0].text : "(no output)";
+
+  if (details?.action === "list" && details.count !== undefined) {
+    if (expanded) {
+      return new Markdown(textContent.trim(), 0, 0, mdTheme);
+    }
+    return new Text(
+      theme.fg(
+        "toolOutput",
+        `Found ${details.count} available subagent${details.count === 1 ? "" : "s"}.`,
+      ) + ` ${theme.fg("muted", "(Ctrl+O to expand)")}`,
+      0,
+      0,
+    );
+  }
+
+  // Fallback
+  if (expanded) return new Markdown(textContent.trim(), 0, 0, mdTheme);
+  return new Text(
+    theme.fg("toolOutput", textContent.trim().split("\n")[0]),
+    0,
+    0,
+  );
+}
+
 // ─── renderResult ────────────────────────────────────────────────────────────
 
-export function renderResult(result: any, { expanded }: { expanded: boolean }, theme: Theme) {
+export function renderResult(
+  result: any,
+  { expanded }: { expanded: boolean },
+  theme: Theme,
+) {
   const details = result.details as SubagentDetails | undefined;
   const mdTheme = getMarkdownTheme();
-  const textContent = result.content[0]?.type === "text" ? result.content[0].text : "(no output)";
+  const textContent =
+    result.content[0]?.type === "text" ? result.content[0].text : "(no output)";
 
   // Spawn: show session IDs prominently
   if (details?.action === "spawn" && details.spawned?.length) {
     const container = new Container();
     for (const s of details.spawned) {
-      container.addChild(new Text(
-        `${theme.fg("success", "▶")} ${theme.fg("toolTitle", theme.bold(s.agent))} ${theme.fg("muted", `(${path.basename(s.agentSource)})`)} → ${theme.fg("accent", s.id)}`,
-        0, 0,
-      ));
+      container.addChild(
+        new Text(
+          `${theme.fg("success", "▶")} ${theme.fg("toolTitle", theme.bold(s.agent))} ${theme.fg("muted", `(${path.basename(s.agentSource)})`)} → ${theme.fg("accent", s.id)}`,
+          0,
+          0,
+        ),
+      );
     }
     if (expanded) {
       container.addChild(new Spacer(1));
@@ -76,14 +148,21 @@ export function renderResult(result: any, { expanded }: { expanded: boolean }, t
 
   const lines = textContent.split("\n");
   let rendered = theme.fg("toolOutput", lines.slice(0, 5).join("\n"));
-  if (lines.length > 5) rendered += `\n${theme.fg("muted", "(Ctrl+O to expand)")}`;
+  if (lines.length > 5)
+    rendered += `\n${theme.fg("muted", "(Ctrl+O to expand)")}`;
   return new Text(rendered, 0, 0);
 }
 
 // ─── message renderer for subagent-result notifications ──────────────────────
 
-export function renderMessage(message: any, { expanded }: { expanded: boolean }, theme: Theme) {
-  const details = message.details as { sessionId?: string; agentName?: string } | undefined;
+export function renderMessage(
+  message: any,
+  { expanded }: { expanded: boolean },
+  theme: Theme,
+) {
+  const details = message.details as
+    | { sessionId?: string; agentName?: string }
+    | undefined;
   const id = details?.sessionId ?? "?";
   const mdTheme = getMarkdownTheme();
 
@@ -93,13 +172,16 @@ export function renderMessage(message: any, { expanded }: { expanded: boolean },
   if (expanded) {
     box.addChild(new Text(header, 0, 0));
     box.addChild(new Spacer(1));
-    box.addChild(new Markdown(message.content?.trim() ?? "(empty)", 0, 0, mdTheme));
+    box.addChild(
+      new Markdown(message.content?.trim() ?? "(empty)", 0, 0, mdTheme),
+    );
     return box;
   }
 
   const content = message.content ?? "";
   const lines = content.split("\n");
-  let text = header + `\n${theme.fg("toolOutput", lines.slice(0, 5).join("\n"))}`;
+  let text =
+    header + `\n${theme.fg("toolOutput", lines.slice(0, 5).join("\n"))}`;
   box.addChild(new Text(text, 0, 0));
   return box;
 }
