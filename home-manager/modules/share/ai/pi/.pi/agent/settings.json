@@ -10,5 +10,9 @@
   "quietStartup": true,
   "defaultThinkingLevel": "off",
   "copilotUsageVisible": false,
+  "subagent": {
+    "sources": ["~/.pi/agent/agents", "./.pi/agents", "./.claude/agents"],
+    "maxParallel": 4
+  },
   "hideThinkingBlock": false
 }

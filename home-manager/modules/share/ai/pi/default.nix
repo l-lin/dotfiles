@@ -20,8 +20,6 @@
     #
     # AGENTS
     #
-    ".pi/agent/subagents.json".source = ./.pi/agent/subagents.json;
-
     ".pi/agent/agents/explore.md".source = ./.pi/agent/agents/explore.md;
     ".pi/agent/agents/general-purpose.md".source = ./.pi/agent/agents/general-purpose.md;
     ".pi/agent/agents/codebase-analyzer.md".text = ''

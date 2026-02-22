@@ -1,4 +1,4 @@
-/** Reads ~/.pi/agent/subagents.json to provide configurable defaults. */
+/** Reads ~/.pi/agent/settings.json (subagent property) to provide configurable defaults. */
 
 import * as fs from "node:fs";
 import * as os from "node:os";
@@ -16,13 +16,14 @@ const DEFAULTS: SubagentConfig = {
   maxParallel: 4,
 };
 
-const CONFIG_PATH = path.join(os.homedir(), ".pi", "agent", "subagents.json");
+const CONFIG_PATH = path.join(os.homedir(), ".pi", "agent", "settings.json");
 
 /** Loads config from disk each call so changes are picked up without restart. */
 export function loadConfig(): SubagentConfig {
   try {
     const raw = fs.readFileSync(CONFIG_PATH, "utf-8");
-    const parsed = JSON.parse(raw) as Partial<SubagentConfig>;
+    const settings = JSON.parse(raw) as { subagent?: Partial<SubagentConfig> };
+    const parsed = settings.subagent || {};
     return {
       sources: isValidSources(parsed.sources) ? parsed.sources : DEFAULTS.sources,
       maxParallel: typeof parsed.maxParallel === "number" && parsed.maxParallel > 0
