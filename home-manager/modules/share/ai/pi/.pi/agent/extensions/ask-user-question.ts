@@ -3,7 +3,7 @@
  *
  * src: https://github.com/badlogic/pi-mono/blob/81b8f9c083db63ed9b7ffb1f555fc6fee8653767/packages/coding-agent/examples/extensions/questionnaire.ts
  * Adapted with the following changes:
- * - rename extension to `AskUserQuestion` to match the same name as claude-code & opencode
+ * - rename extension to `ask-user-question` to match the same name as claude-code & opencode
  * - use keymaps from keybindings.json instead of hard coded keymaps (arrows, Esc, Enter)
  */
 
@@ -63,8 +63,8 @@ const QuestionnaireParams = Type.Object({
 
 export default function questionnaire(pi: ExtensionAPI) {
   pi.registerTool({
-    name: "AskUserQuestion",
-    label: "AskUserQuestion",
+    name: "ask-user-question",
+    label: "Ask user question",
     description: "Ask the user one or more questions. Single question shows options list; multiple questions show tab-based interface.",
     parameters: QuestionnaireParams,
 
@@ -273,7 +273,7 @@ export default function questionnaire(pi: ExtensionAPI) {
 
     renderCall(args, theme) {
       const qs = (args.questions as Question[]) || [];
-      let text = theme.fg("toolTitle", theme.bold("AskUserQuestion "));
+      let text = theme.fg("toolTitle", theme.bold("ask-user-question "));
       text += theme.fg("muted", `${qs.length} question${qs.length !== 1 ? "s" : ""}`);
       const labels = qs.map((q) => q.label || q.id).join(", ");
       if (labels) text += theme.fg("dim", ` (${truncateToWidth(labels, 40)})`);
