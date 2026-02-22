@@ -1,10 +1,10 @@
 ---
-description: Research codebase comprehensively using parallel sub-agents
+description: Research codebase comprehensively using parallel subagents
 ---
 
 # Research Codebase
 
-You are tasked with conducting comprehensive research across the codebase to answer user questions by spawning parallel sub-agents and synthesizing their findings.
+You are tasked with conducting comprehensive research across the codebase to answer user questions by spawning parallel subagents and synthesizing their findings.
 
 ## Initial Response
 
@@ -43,7 +43,7 @@ Then wait for the user's research query.
    - Consider which directories, files, or architectural patterns are relevant
    - **IMPORTANT**: Use AskUserQuestion tool to ask the user questions if there are any uncertainty about the objective of the research
 
-3. **Spawn parallel sub-agent tasks for comprehensive research:**
+3. **Spawn parallel subagent tasks for comprehensive research:**
    - Create multiple Task agents to research different aspects concurrently
 
    The key is to use these agents intelligently:
@@ -53,9 +53,9 @@ Then wait for the user's research query.
    - Each agent knows its job - just tell it what you're looking for
    - Don't write detailed prompts about HOW to search - the agents already know
 
-4. **Wait for all sub-agents to complete and synthesize findings:**
-   - IMPORTANT: Wait for ALL sub-agent tasks to complete before proceeding
-   - Compile all sub-agent results (both codebase and.sandbox findings)
+4. **Wait for all subagents to complete and synthesize findings:**
+   - IMPORTANT: Wait for ALL subagent tasks to complete before proceeding
+   - Compile all subagent results (both codebase and.sandbox findings)
    - Prioritize live codebase findings as primary source of truth
    - Use `.sandbox/` findings as supplementary historical context
    - Connect findings across different components
@@ -162,7 +162,7 @@ Then wait for the user's research query.
    - Update the frontmatter fields `last_updated` and `last_updated_by` to reflect the update
    - Add `last_updated_note: "Added follow-up research for [brief description]"` to frontmatter
    - Add a new section: `## Follow-up Research [timestamp]`
-   - Spawn new sub-agents as needed for additional investigation
+   - Spawn new subagents as needed for additional investigation
    - Continue updating the document and syncing
 
 ## Important notes:
@@ -172,17 +172,17 @@ Then wait for the user's research query.
 - The `.sandbox/` directory provides historical context to supplement live findings
 - Focus on finding concrete file paths and line numbers for developer reference
 - Research documents should be self-contained with all necessary context
-- Each sub-agent prompt should be specific and focused on read-only operations
+- Each subagent prompt should be specific and focused on read-only operations
 - Consider cross-component connections and architectural patterns
 - Include temporal context (when the research was conducted)
 - Link to GitHub when possible for permanent references
 - Keep the main agent focused on synthesis, not deep file reading
-- Encourage sub-agents to find examples and usage patterns, not just definitions
+- Encourage subagents to find examples and usage patterns, not just definitions
 - Explore all of `.sandbox/` directory, not just research subdirectory
 - **File reading**: Always read mentioned files FULLY (no limit/offset) before spawning sub-tasks
 - **Critical ordering**: Follow the numbered steps exactly
   - ALWAYS read mentioned files first before spawning sub-tasks (step 1)
-  - ALWAYS wait for all sub-agents to complete before synthesizing (step 4)
+  - ALWAYS wait for all subagents to complete before synthesizing (step 4)
   - ALWAYS gather metadata before writing the document (step 5 before step 6)
   - NEVER write the research document with placeholder values
 - **Frontmatter consistency**:
