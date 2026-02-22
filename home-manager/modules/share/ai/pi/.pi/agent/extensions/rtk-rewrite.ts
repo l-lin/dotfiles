@@ -27,6 +27,7 @@
  */
 
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import { Text } from "@mariozechner/pi-tui";
 import { createBashTool } from "@mariozechner/pi-coding-agent";
 import { spawn } from "node:child_process";
 import { homedir } from "node:os";
@@ -42,7 +43,7 @@ export default function (pi: ExtensionAPI) {
   function debug(message: string, data?: unknown) {
     if (DEBUG) {
       console.log(
-        `[rtk-rewrite] ${message}`,
+        `[rtk] ${message}`,
         data !== undefined ? JSON.stringify(data) : "",
       );
     }
@@ -52,13 +53,13 @@ export default function (pi: ExtensionAPI) {
   try {
     hookAvailable = existsSync(HOOK_PATH);
     if (!hookAvailable) {
-      console.warn(`[rtk-rewrite] Hook script not found: ${HOOK_PATH}`);
-      console.warn(`[rtk-rewrite] RTK rewrites disabled.`);
+      console.warn(`[rtk] Hook script not found: ${HOOK_PATH}`);
+      console.warn(`[rtk] RTK rewrites disabled.`);
     } else {
       debug(`Hook script found: ${HOOK_PATH}`);
     }
   } catch (err) {
-    console.warn(`[rtk-rewrite] Failed to check hook script: ${err}`);
+    console.warn(`[rtk] Failed to check hook script: ${err}`);
   }
 
   /**
@@ -141,9 +142,7 @@ export default function (pi: ExtensionAPI) {
       if (hookAvailable) {
         const rewritten = await getRewrittenCommand(params.command, ctx.cwd);
         if (rewritten) {
-          if (ctx.hasUI) {
-            ctx.ui.notify(`⚡ rtk: ${rewritten}`, "info");
-          }
+          if (ctx.hasUI) ctx.ui.notify(`⚡ [rtk] ${rewritten}`, "info");
           debug(`Executing rewritten command: ${rewritten}`);
           return bashTool.execute(
             toolCallId,
@@ -155,6 +154,45 @@ export default function (pi: ExtensionAPI) {
       }
 
       return bashTool.execute(toolCallId, params, signal, onUpdate);
+    },
+
+    renderCall(args, theme) {
+      const command = args.command || "...";
+      const timeout = args.timeout as number | undefined;
+      const timeoutSuffix = timeout
+        ? theme.fg("muted", ` (timeout ${timeout}s)`)
+        : "";
+
+      return new Text(
+        theme.fg("toolTitle", theme.bold(`$ ${command}`)) + timeoutSuffix,
+        0,
+        0,
+      );
+    },
+
+    renderResult(result, { expanded }, theme) {
+      // Minimal mode: show nothing in collapsed state
+      if (!expanded) {
+        return new Text("", 0, 0);
+      }
+
+      // Expanded mode: show full output
+      const textContent = result.content.find((c) => c.type === "text");
+      if (!textContent || textContent.type !== "text") {
+        return new Text("", 0, 0);
+      }
+
+      const output = textContent.text
+        .trim()
+        .split("\n")
+        .map((line) => theme.fg("toolOutput", line))
+        .join("\n");
+
+      if (!output) {
+        return new Text("", 0, 0);
+      }
+
+      return new Text(`\n${output}`, 0, 0);
     },
   });
 }
