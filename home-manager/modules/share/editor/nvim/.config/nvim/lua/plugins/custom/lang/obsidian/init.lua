@@ -215,14 +215,14 @@ end
 local function time_tracker(ctx)
   local today_iso = id_to_date(ctx.partial_note)
   if os.date("%u", today_iso) ~= "6" and os.date("%u", today_iso) ~= "7" then
-    return [[
+    return [=[
 
 ---
 ## 🕐 Time tracker
 
-- \[\[patient-account\]\]: 
+- [[patient-account]]: 
 - administration: 
-- maintenance: ]]
+- maintenance: ]=]
   end
   return ""
 end
