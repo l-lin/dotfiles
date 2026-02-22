@@ -69,7 +69,8 @@ function generateId(agentName: string): string {
 }
 
 function sessionDir(id: string): string {
-  return path.join(os.tmpdir(), `pi-subagent-${id}`);
+  const homeDir = os.homedir();
+  return path.join(homeDir, ".local", "share", "pi", "subagent", id);
 }
 
 function writeBadgeExtension(dir: string, sessionId: string, task: string): string {
