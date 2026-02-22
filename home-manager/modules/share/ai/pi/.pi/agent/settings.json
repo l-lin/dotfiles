@@ -6,7 +6,9 @@
   "skills": [
     "~/.config/ai/skills"
   ],
-  "prompts": [],
+  "prompts": [
+    "~/.config/ai/commands"
+  ],
   "quietStartup": true,
   "defaultThinkingLevel": "off",
   "copilotUsageVisible": false,
