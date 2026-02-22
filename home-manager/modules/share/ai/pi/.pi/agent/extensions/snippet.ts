@@ -19,7 +19,7 @@ export default function (pi: ExtensionAPI) {
     if (event.text.includes("?q")) {
       return {
         action: "transform",
-        text: event.text.replace(/\?q/g, "Use AskUserQuestion tool if there are any points to clarify."),
+        text: event.text.replace(/\?q/g, "Use ask-user-question tool if there are any points to clarify."),
       };
     }
 
