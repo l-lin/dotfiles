@@ -178,8 +178,10 @@ async function handleSpawn(
       `Too many parallel tasks (${taskList.length}). Max is ${config.maxParallel}.`,
     );
 
-  // Spawn all tasks
+  // Spawn subagents one at a time
   const spawned: SpawnResult[] = [];
+  let windowId: string | undefined;
+
   for (const t of taskList) {
     const agent = agents.find((a) => a.name === t.agent);
     if (!agent) {
@@ -194,12 +196,16 @@ async function handleSpawn(
         details: { action: "spawn", sources, spawned },
       };
     }
-    spawned.push(
-      toSpawnResult(sessions.spawn(pi, agent, t.task, t.cwd ?? ctx.cwd)),
-    );
+    const session = sessions.spawn(pi, agent, t.task, t.cwd ?? ctx.cwd);
+    spawned.push(toSpawnResult(session));
+
+    // Capture window ID from first spawn for rebalancing
+    if (!windowId) {
+      windowId = tmux.getWindowId(session.paneId);
+    }
   }
 
-  if (spawned.length > 1) tmux.rebalance();
+  if (spawned.length > 1 && windowId) tmux.rebalance(windowId);
 
   const lines = spawned
     .map((s) => `- **${s.agent}** → session \`${s.id}\``)
