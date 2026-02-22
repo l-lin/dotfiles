@@ -288,21 +288,6 @@
           "\\bpi\\b.*(extension|tool|command)"
         ]
       }
-    },
-    "yank": {
-      "priority": "high",
-      "promptTriggers": {
-        "keywords": [
-          "yank",
-          "copy to clipboard",
-          "clipboard",
-          "copy this"
-        ],
-        "intentPatterns": [
-          "(copy|yank).*(to )?(clipboard)",
-          "(fix|clean up).*(wording|grammar|tone)"
-        ]
-      }
     }
   },
   "notes": {
