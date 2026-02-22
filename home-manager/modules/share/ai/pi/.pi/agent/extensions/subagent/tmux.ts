@@ -23,7 +23,7 @@ export function createWindow(cwd: string, name: string): string {
 /** Split a specific pane horizontally, return new pane ID */
 export function splitPane(targetPaneId: string, cwd: string): string {
   return execSync(
-    `tmux split-window -h -d -P -F '#{pane_id}' -t ${esc(targetPaneId)} -c ${esc(cwd)}`,
+    `tmux split-window -v -d -P -F '#{pane_id}' -t ${esc(targetPaneId)} -c ${esc(cwd)}`,
     { encoding: "utf-8" },
   ).trim();
 }
