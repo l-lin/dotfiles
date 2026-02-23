@@ -142,7 +142,7 @@ export default function (pi: ExtensionAPI) {
       if (hookAvailable) {
         const rewritten = await getRewrittenCommand(params.command, ctx.cwd);
         if (rewritten) {
-          if (ctx.hasUI) ctx.ui.notify(`⚡ [rtk] ${rewritten}`, "info");
+          if (ctx.hasUI) ctx.ui.notify(`⚡ ${rewritten}`, "info");
           debug(`Executing rewritten command: ${rewritten}`);
           return bashTool.execute(
             toolCallId,
