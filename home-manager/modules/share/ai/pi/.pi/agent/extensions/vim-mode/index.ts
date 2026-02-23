@@ -28,6 +28,8 @@
  * - e: move to end of word
  * - Shift+Alt+A: go to end of line (insert mode shortcut)
  * - Shift+Alt+I: go to start of line (insert mode shortcut)
+ * - Alt+o: open new line below (insert mode shortcut)
+ * - Alt+Shift+o: open new line above (insert mode shortcut)
  * - ctrl+c, ctrl+d, etc. work in both modes
  *
  * src: https://github.com/badlogic/pi-mono/blob/34878e7cc8074f42edff6c2cdcc9828aa9b6afde/packages/coding-agent/examples/extensions/modal-editor.ts
@@ -86,6 +88,20 @@ class ModalEditor extends CustomEditor {
       // Shift+Alt+I: go to start of line (like Esc -> I but stay in insert)
       if (matchesKey(data, Key.shiftAlt("i")) || data === "\x1bI") {
         return super.handleInput(CTRL_A);
+      }
+      // Alt+o: open new line below (stay in insert mode)
+      if (matchesKey(data, Key.alt("o")) || data === "\x1bo") {
+        super.handleInput(CTRL_E);
+        super.handleInput(NEWLINE);
+        return;
+      }
+      // Alt+Shift+o: open new line above (stay in insert mode)
+      // \x1bO is the legacy sequence for Alt+Shift+O (VT100 SS3 prefix in non-Kitty terminals)
+      if (matchesKey(data, Key.shiftAlt("o")) || data === "\x1bO") {
+        super.handleInput(CTRL_A);
+        super.handleInput(NEWLINE);
+        super.handleInput(ESC_UP);
+        return;
       }
       return super.handleInput(data);
     }
