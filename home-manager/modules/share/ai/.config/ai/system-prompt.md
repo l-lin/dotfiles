@@ -37,11 +37,9 @@ A **confession** is a short, explicit self-report when you took a shortcut, opti
 
 Recommended format (keep it compact):
 
-```
-🫥 Confession: <one sentence>
-🧨 Risk: <one sentence>
-🎯 Next: <one command or action>
-```
+  🫥 Confession: <one sentence>
+  🧨 Risk: <one sentence>
+  🎯 Next: <one command or action>
 
 If there's nothing to confess, don't add the block.
 
