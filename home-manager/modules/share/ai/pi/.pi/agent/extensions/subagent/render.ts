@@ -166,11 +166,17 @@ export function renderMessage(
   const id = details?.sessionId ?? "?";
   const mdTheme = getMarkdownTheme();
 
-  const header = `${theme.fg("accent", "󱃚")} ${theme.fg("toolTitle", theme.bold(id))}`;
+  const isAllDone = (details as any)?.action === "all-done";
+  const collapsedHeader = isAllDone
+    ? `${theme.fg("success", "󱃚")} ${theme.fg("toolTitle", theme.bold("All sub-agents reported"))}`
+    : `${theme.fg("accent", "󱃚")} ${theme.fg("toolTitle", theme.bold(id))}`;
+  const expandedHeader = isAllDone
+    ? `${theme.fg("success", "󱃚")} ${theme.fg("toolTitle", theme.bold("All sub-agents reported"))}`
+    : `${theme.fg("accent", "󱃚")} ${theme.fg("toolTitle", theme.bold(id))}`;
   const box = new Box(1, 1, (s: string) => theme.bg("toolSuccessBg", s));
 
   if (expanded) {
-    box.addChild(new Text(header, 0, 0));
+    box.addChild(new Text(expandedHeader, 0, 0));
     box.addChild(new Spacer(1));
     box.addChild(
       new Markdown(message.content?.trim() ?? "(empty)", 0, 0, mdTheme),
@@ -178,10 +184,6 @@ export function renderMessage(
     return box;
   }
 
-  const content = message.content ?? "";
-  const lines = content.split("\n");
-  let text =
-    header + `\n${theme.fg("toolOutput", lines.slice(0, 5).join("\n"))}`;
-  box.addChild(new Text(text, 0, 0));
+  box.addChild(new Text(collapsedHeader, 0, 0));
   return box;
 }

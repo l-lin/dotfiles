@@ -42,10 +42,81 @@ export interface Session {
   watcher?: fs.FSWatcher;
 }
 
+// ─── pending pool ─────────────────────────────────────────────────────────────
+// A single flat pool accumulates all spawned sessions regardless of how many
+// spawn calls the agent makes. Consolidated fires once when ≥2 sessions have
+// all reported. Resets automatically when a new spawn starts and the previous
+// pool was already complete (all results in).
+
+interface PoolEntry {
+  agentName: string;
+  result: string | null;
+}
+
+const pendingPool = new Map<string, PoolEntry>();
+let poolTriggered = false;
+
+/**
+ * Register newly spawned session IDs into the pool.
+ * If the previous pool cycle is complete (all results collected), it is reset
+ * first so unrelated future spawns start clean.
+ */
+export function registerGroup(ids: string[]): void {
+  if (ids.length === 0) return;
+  const prevComplete =
+    poolTriggered ||
+    (pendingPool.size > 0 &&
+      [...pendingPool.values()].every((e) => e.result !== null));
+  if (prevComplete) {
+    pendingPool.clear();
+    poolTriggered = false;
+  }
+  for (const id of ids) {
+    pendingPool.set(id, { agentName: "", result: null });
+  }
+}
+
+/**
+ * Record a result for a session. Fires the consolidated "all done" trigger
+ * once every session in the pool has reported (and there are ≥2 sessions).
+ * Safe to call multiple times — idempotent after pool fires.
+ */
+function flushToPool(
+  sessionId: string,
+  agentName: string,
+  result: string,
+  pi: ExtensionAPI,
+): void {
+  const entry = pendingPool.get(sessionId);
+  if (!entry) return;
+  entry.agentName = agentName;
+  entry.result = result;
+
+  if (poolTriggered) return;
+  if (pendingPool.size < 2) return; // single session — individual message is enough
+
+  const allDone = [...pendingPool.values()].every((e) => e.result !== null);
+  if (!allDone) return;
+
+  poolTriggered = true;
+
+  pi.sendMessage(
+    {
+      customType: "subagent-result",
+      content:
+        "All sub-agents have reported. Now synthesize these results and complete your task.",
+      display: true,
+      details: { action: "all-done" },
+    },
+    { triggerTurn: true, deliverAs: "followUp" },
+  );
+}
+
 // ─── state ───────────────────────────────────────────────────────────────────
 
 const sessions = new Map<string, Session>();
 let subagentWindowId: string | undefined;
+let piRef: ExtensionAPI | undefined;
 
 export function get(id: string): Session | undefined {
   return sessions.get(id);
@@ -142,6 +213,7 @@ export function spawn(
   task: string,
   cwd: string,
 ): Session {
+  piRef = pi;
   const id = generateId(agent.name);
   const dir = sessionDir(id);
   fs.mkdirSync(dir, { recursive: true });
@@ -165,7 +237,6 @@ export function spawn(
   // First subagent creates a new window, subsequent ones split within it
   let paneId: string;
   if (!subagentWindowId || sessions.size === 0) {
-    console.log(`[subagent] Creating new window for first subagent`);
     paneId = tmux.createWindow(cwd, "subagents");
     subagentWindowId = tmux.getWindowId(paneId);
   } else {
@@ -213,6 +284,7 @@ export function spawn(
       session.lastResult = content;
       session.pending = false;
 
+      // Deliver individual result visibly but don't wake the main agent yet
       pi.sendMessage(
         {
           customType: "subagent-result",
@@ -220,8 +292,10 @@ export function spawn(
           display: true,
           details: { sessionId: id, agentName: agent.name },
         },
-        { triggerTurn: true, deliverAs: "followUp" },
+        { triggerTurn: false, deliverAs: "followUp" },
       );
+
+      flushToPool(id, agent.name, content, pi);
     });
   } catch {
     /* watcher failure is non-fatal — use explicit read */
@@ -234,6 +308,11 @@ export function spawn(
 // ─── close ───────────────────────────────────────────────────────────────────
 
 export function close(session: Session): void {
+  // Flush last known result into the pool before the watcher is stopped,
+  // so the consolidated trigger can still fire even if close() races the watcher.
+  if (session.lastResult && piRef) {
+    flushToPool(session.id, session.agentName, session.lastResult, piRef);
+  }
   session.alive = false;
   session.watcher?.close();
   tmux.killPane(session.paneId);
@@ -253,6 +332,8 @@ export function close(session: Session): void {
 export function closeAll(): void {
   for (const s of all()) close(s);
   subagentWindowId = undefined;
+  pendingPool.clear();
+  poolTriggered = false;
 }
 
 // ─── helpers ─────────────────────────────────────────────────────────────────

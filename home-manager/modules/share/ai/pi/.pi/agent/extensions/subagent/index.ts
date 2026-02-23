@@ -207,11 +207,13 @@ async function handleSpawn(
 
   if (spawned.length > 1 && windowId) tmux.rebalance(windowId);
 
+  sessions.registerGroup(spawned.map((s) => s.id));
+
   const lines = spawned
     .map((s) => `- **${s.agent}** → session \`${s.id}\``)
     .join("\n");
   return ok(
-    `Spawned ${spawned.length} sub-agent(s):\n${lines}\n\nResults delivered automatically. Use send/read/close with session IDs.`,
+    `Spawned ${spawned.length} sub-agent(s):\n${lines}\n\nDo NOT call subagent read. Results are pushed automatically — your turn will be triggered once all sub-agents have reported. Use send to send follow-up messages, close to terminate a session.`,
     { action: "spawn", sources, spawned },
   );
 }
@@ -341,10 +343,10 @@ export default function (pi: ExtensionAPI) {
       "Actions:",
       '  spawn  — Create pane(s). "agent"+"task" for single, "tasks" array for parallel.',
       '  send   — Send message to sub-agent. Requires "id" and "message".',
-      '  read   — Read latest result. Requires "id" (omit for all).',
+      '  read   — Read latest result. Requires "id" (omit for all). DO NOT use this to poll after spawn — results are pushed automatically.',
       '  close  — Kill pane. Requires "id" (or "all").',
       "",
-      "Results are delivered automatically via file watcher.",
+      "IMPORTANT: After spawning, do NOT poll with read. Results are pushed automatically via file watcher and your turn will be triggered once all sub-agents have reported. Just wait.",
       "Requires tmux.",
     ].join("\n"),
     parameters: SubagentParamsSchema,
