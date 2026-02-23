@@ -28,7 +28,7 @@ export function renderCall(args: any, theme: Theme): Text {
   if (action === "spawn") {
     if (args.tasks?.length > 0) {
       let text =
-        title("subagent spawn ") +
+        title("󰚩 subagent spawn ") +
         theme.fg("accent", `${args.tasks.length} panes`);
       for (const t of args.tasks.slice(0, 3)) {
         text += `\n  ${theme.fg("accent", t.agent)}${theme.fg("dim", ` ${truncateToWidth(t.task, 40)}`)}`;
@@ -38,7 +38,7 @@ export function renderCall(args: any, theme: Theme): Text {
       return new Text(text, 0, 0);
     }
     return new Text(
-      title("subagent spawn ") +
+      title("󰚩 subagent spawn ") +
         theme.fg("accent", args.agent || "...") +
         `\n  ${theme.fg("dim", truncateToWidth(args.task || "...", 60))}`,
       0,
@@ -48,7 +48,7 @@ export function renderCall(args: any, theme: Theme): Text {
 
   if (action === "send") {
     return new Text(
-      title("subagent send ") +
+      title("󱃜 subagent send ") +
         theme.fg("accent", args.id || "?") +
         `\n  ${theme.fg("dim", truncateToWidth(args.message || "...", 50))}`,
       0,
@@ -58,7 +58,7 @@ export function renderCall(args: any, theme: Theme): Text {
 
   if (action === "read") {
     return new Text(
-      title("subagent read ") + theme.fg("accent", args.id || "(all)"),
+      title(" subagent read ") + theme.fg("accent", args.id || "(all)"),
       0,
       0,
     );
@@ -66,7 +66,7 @@ export function renderCall(args: any, theme: Theme): Text {
 
   if (action === "close") {
     return new Text(
-      title("subagent close ") + theme.fg("accent", args.id || "?"),
+      title("󱚧 subagent close ") + theme.fg("accent", args.id || "?"),
       0,
       0,
     );
@@ -97,7 +97,7 @@ export function renderListResult(
       theme.fg(
         "toolOutput",
         `Found ${details.count} available subagent${details.count === 1 ? "" : "s"}.`,
-      ) + ` ${theme.fg("muted", "(Ctrl+O to expand)")}`,
+      ),
       0,
       0,
     );
@@ -137,19 +137,27 @@ export function renderResult(
       );
     }
     if (expanded) {
-      container.addChild(new Spacer(1));
-      container.addChild(new Markdown(textContent.trim(), 0, 0, mdTheme));
+      // Raw text format: "Spawned X sub-agent(s):\n- ...\n\n<instructions>"
+      // Skip the session list lines (already shown visually) and show only
+      // the instructions that follow the first blank line.
+      const separatorIdx = textContent.indexOf("\n\n");
+      const extraText =
+        separatorIdx >= 0 ? textContent.slice(separatorIdx + 2).trim() : "";
+      if (extraText) {
+        container.addChild(new Spacer(1));
+        container.addChild(new Markdown(extraText, 0, 0, mdTheme));
+      }
     }
     return container;
   }
 
-  // Default
+  // All non-spawn actions: collapsed = first line only, expanded = full markdown
   if (expanded) return new Markdown(textContent.trim(), 0, 0, mdTheme);
 
-  const lines = textContent.split("\n");
-  let rendered = theme.fg("toolOutput", lines.slice(0, 5).join("\n"));
-  if (lines.length > 5)
-    rendered += `\n${theme.fg("muted", "(Ctrl+O to expand)")}`;
+  if (!textContent.trim()) return new Text("", 0, 0);
+
+  const firstLine = textContent.split("\n")[0].trim();
+  let rendered = theme.fg("toolOutput", firstLine);
   return new Text(rendered, 0, 0);
 }
 
@@ -165,18 +173,16 @@ export function renderMessage(
     | undefined;
   const id = details?.sessionId ?? "?";
   const mdTheme = getMarkdownTheme();
+  const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
 
   const isAllDone = (details as any)?.action === "all-done";
-  const collapsedHeader = isAllDone
-    ? `${theme.fg("success", "󱃚")} ${theme.fg("toolTitle", theme.bold("All sub-agents reported"))}`
-    : `${theme.fg("accent", "󱃚")} ${theme.fg("toolTitle", theme.bold(id))}`;
-  const expandedHeader = isAllDone
-    ? `${theme.fg("success", "󱃚")} ${theme.fg("toolTitle", theme.bold("All sub-agents reported"))}`
-    : `${theme.fg("accent", "󱃚")} ${theme.fg("toolTitle", theme.bold(id))}`;
+  const header = isAllDone
+    ? `${title("󱃚 subagent report")} ${theme.fg("success", "all")}`
+    : `${title("󱃚 subagent report")} ${theme.fg("accent", id)}`;
   const box = new Box(1, 1, (s: string) => theme.bg("toolSuccessBg", s));
 
   if (expanded) {
-    box.addChild(new Text(expandedHeader, 0, 0));
+    box.addChild(new Text(header, 0, 0));
     box.addChild(new Spacer(1));
     box.addChild(
       new Markdown(message.content?.trim() ?? "(empty)", 0, 0, mdTheme),
@@ -184,6 +190,6 @@ export function renderMessage(
     return box;
   }
 
-  box.addChild(new Text(collapsedHeader, 0, 0));
+  box.addChild(new Text(header, 0, 0));
   return box;
 }

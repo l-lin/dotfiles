@@ -142,12 +142,8 @@ function handleClose(params: SubagentParams): ToolResult {
   }
   const session = getSession(params.id);
   if (!session) return sessionError(params.id);
-  const lastResult = session.lastResult;
   sessions.close(session);
-  return ok(
-    `Closed "${session.agentName}" (${session.id}).${lastResult ? `\n\nFinal result:\n${lastResult}` : ""}`,
-    { action: "close", sessionId: session.id },
-  );
+  return ok("", { action: "close", sessionId: session.id });
 }
 
 async function handleSpawn(

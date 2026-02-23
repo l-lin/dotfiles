@@ -1,5 +1,6 @@
 /** Sub-agent session lifecycle: spawn, track, close */
 
+import { execSync } from "node:child_process";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
@@ -245,8 +246,8 @@ export function spawn(
     paneId = tmux.splitPane(existingSession.paneId, cwd);
   }
 
-  // Wait for the shell environment to be fully ready before launching pi
-  tmux.sendCommand(paneId, "sleep 1");
+  // HACK: wait for shell to finish initializing before sending command
+  execSync("sleep 1.5");
   tmux.sendCommand(
     paneId,
     buildPiCommand(
