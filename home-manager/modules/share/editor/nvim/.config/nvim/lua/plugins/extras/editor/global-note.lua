@@ -63,6 +63,9 @@ end
 ---@param buffer_id integer|boolean `0` or `true` for current buffer.
 ---@param window_id integer Window handle, or 0 for current window
 local function post_open(buffer_id, window_id)
+  -- Enable relative line numbers in the note window.
+  vim.api.nvim_win_set_option(window_id, "relativenumber", true)
+
   -- Add keymap on this buffer to press q to close the note.
   vim.keymap.set("n", "q", function()
     vim.api.nvim_win_close(window_id, true)
