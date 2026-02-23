@@ -174,6 +174,8 @@ export function spawn(
     paneId = tmux.splitPane(existingSession.paneId, cwd);
   }
 
+  // Wait for the shell environment to be fully ready before launching pi
+  tmux.sendCommand(paneId, "sleep 1");
   tmux.sendCommand(
     paneId,
     buildPiCommand(
