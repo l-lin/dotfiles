@@ -10,6 +10,15 @@ import * as tmux from "./tmux.js";
 
 // ─── shared types ────────────────────────────────────────────────────────────
 
+export enum Action {
+  Spawn = "spawn",
+  Send = "send",
+  Read = "read",
+  Close = "close",
+  List = "list",
+  AllDone = "all-done",
+}
+
 export interface SpawnResult {
   id: string;
   agent: string;
@@ -19,11 +28,12 @@ export interface SpawnResult {
 }
 
 export interface SubagentDetails {
-  action: string;
+  action: Action;
   sources?: string[];
   spawned?: SpawnResult[];
   sessionId?: string;
   result?: string;
+  count?: number;
 }
 
 // ─── session type ────────────────────────────────────────────────────────────
@@ -107,7 +117,7 @@ function flushToPool(
       content:
         "All sub-agents have reported. Now synthesize these results and complete your task.",
       display: true,
-      details: { action: "all-done" },
+      details: { action: Action.AllDone },
     },
     { triggerTurn: true, deliverAs: "followUp" },
   );

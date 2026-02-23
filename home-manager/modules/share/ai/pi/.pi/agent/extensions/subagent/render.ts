@@ -10,6 +10,7 @@ import {
   Text,
   truncateToWidth,
 } from "@mariozechner/pi-tui";
+import { Action } from "./sessions.js";
 import type { SubagentDetails } from "./sessions.js";
 
 type Theme = { fg: Function; bg: Function; bold: Function };
@@ -25,7 +26,7 @@ export function renderCall(args: any, theme: Theme): Text {
   const action = args.action || "?";
   const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
 
-  if (action === "spawn") {
+  if (action === Action.Spawn) {
     if (args.tasks?.length > 0) {
       let text =
         title("󰚩 subagent spawn ") +
@@ -46,7 +47,7 @@ export function renderCall(args: any, theme: Theme): Text {
     );
   }
 
-  if (action === "send") {
+  if (action === Action.Send) {
     return new Text(
       title("󱃜 subagent send ") +
         theme.fg("accent", args.id || "?") +
@@ -56,7 +57,7 @@ export function renderCall(args: any, theme: Theme): Text {
     );
   }
 
-  if (action === "read") {
+  if (action === Action.Read) {
     return new Text(
       title(" subagent read ") + theme.fg("accent", args.id || "(all)"),
       0,
@@ -64,7 +65,7 @@ export function renderCall(args: any, theme: Theme): Text {
     );
   }
 
-  if (action === "close") {
+  if (action === Action.Close) {
     return new Text(
       title("󱚧 subagent close ") + theme.fg("accent", args.id || "?"),
       0,
@@ -89,7 +90,7 @@ export function renderListResult(
   const textContent =
     result.content[0]?.type === "text" ? result.content[0].text : "(no output)";
 
-  if (details?.action === "list" && details.count !== undefined) {
+  if (details?.action === Action.List && details.count !== undefined) {
     if (expanded) {
       return new Markdown(textContent.trim(), 0, 0, mdTheme);
     }
@@ -125,12 +126,12 @@ export function renderResult(
     result.content[0]?.type === "text" ? result.content[0].text : "(no output)";
 
   // Spawn: show session IDs prominently
-  if (details?.action === "spawn" && details.spawned?.length) {
+  if (details?.action === Action.Spawn && details.spawned?.length) {
     const container = new Container();
     for (const s of details.spawned) {
       container.addChild(
         new Text(
-          `${theme.fg("success", "▶")} ${theme.fg("toolTitle", theme.bold(s.agent))} ${theme.fg("muted", `(${path.basename(s.agentSource)})`)} → ${theme.fg("accent", s.id)}`,
+          `  ${theme.fg("success", "▶")} ${theme.fg("accent", s.id)}`,
           0,
           0,
         ),
@@ -175,7 +176,7 @@ export function renderMessage(
   const mdTheme = getMarkdownTheme();
   const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
 
-  const isAllDone = (details as any)?.action === "all-done";
+  const isAllDone = (details as any)?.action === Action.AllDone;
   const header = isAllDone
     ? `${title("󱃚 subagent report")} ${theme.fg("success", "all")}`
     : `${title("󱃚 subagent report")} ${theme.fg("accent", id)}`;

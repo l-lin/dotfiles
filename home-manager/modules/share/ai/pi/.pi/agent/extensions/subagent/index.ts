@@ -13,6 +13,7 @@ import { discoverAgents } from "./agents.js";
 import { loadConfig } from "./config.js";
 import * as render from "./render.js";
 import * as sessions from "./sessions.js";
+import { Action } from "./sessions.js";
 import type { SpawnResult, SubagentDetails } from "./sessions.js";
 import * as tmux from "./tmux.js";
 
@@ -38,20 +39,13 @@ function getSession(id: string | undefined): sessions.Session | undefined {
   return id ? sessions.get(id) : undefined;
 }
 
-function toSpawnResult(s: sessions.Session): SpawnResult {
-  return {
-    id: s.id,
-    agent: s.agentName,
-    agentSource: s.agentSource,
-    paneId: s.paneId,
-  };
-}
-
 // ─── schema ──────────────────────────────────────────────────────────────────
+
+const ACTIONS = [Action.Spawn, Action.Send, Action.Read, Action.Close] as const;
 
 type SubagentParams = Static<typeof SubagentParamsSchema>;
 const SubagentParamsSchema = Type.Object({
-  action: StringEnum(["spawn", "send", "read", "close"] as const, {
+  action: StringEnum(ACTIONS, {
     description: "Action: spawn, send, read, close",
   }),
   agent: Type.Optional(Type.String({ description: "Agent name (for spawn)" })),
@@ -110,7 +104,7 @@ function handleSend(params: SubagentParams): ToolResult {
   session.pending = true;
   tmux.sendMessage(session.paneId, params.message);
   return ok(`Message sent to "${session.agentName}" (${session.id}).`, {
-    action: "send",
+    action: Action.Send,
     sessionId: session.id,
   });
 }
@@ -120,7 +114,7 @@ function handleRead(params: SubagentParams): ToolResult {
   if (!params.id) {
     if (sessions.size() === 0) return ok("No active sub-agent sessions.");
     const summaries = sessions.all().map((s) => `**${s.agentName}** (${s.id})`);
-    return ok(summaries.join("\n\n"), { action: "read" });
+    return ok(summaries.join("\n\n"), { action: Action.Read });
   }
 
   const session = getSession(params.id);
@@ -128,7 +122,7 @@ function handleRead(params: SubagentParams): ToolResult {
   sessions.refreshResult(session);
   sessions.checkAlive(session);
   return ok(session.lastResult || "(no result yet)", {
-    action: "read",
+    action: Action.Read,
     sessionId: session.id,
     result: session.lastResult,
   });
@@ -138,12 +132,14 @@ function handleClose(params: SubagentParams): ToolResult {
   if (params.id === "all") {
     const count = sessions.size();
     sessions.closeAll();
-    return ok(`Closed ${count} sub-agent session(s).`, { action: "close" });
+    return ok(`Closed ${count} sub-agent session(s).`, {
+      action: Action.Close,
+    });
   }
   const session = getSession(params.id);
   if (!session) return sessionError(params.id);
   sessions.close(session);
-  return ok("", { action: "close", sessionId: session.id });
+  return ok("", { action: Action.Close, sessionId: session.id });
 }
 
 async function handleSpawn(
@@ -189,11 +185,16 @@ async function handleSpawn(
         ...err(
           `Unknown agent: "${t.agent}". Available: ${availableNames}.${already}`,
         ),
-        details: { action: "spawn", sources, spawned },
+        details: { action: Action.Spawn, sources, spawned },
       };
     }
     const session = sessions.spawn(pi, agent, t.task, t.cwd ?? ctx.cwd);
-    spawned.push(toSpawnResult(session));
+    spawned.push({
+      id: session.id,
+      agent: session.agentName,
+      agentSource: session.agentSource,
+      paneId: session.paneId,
+    });
 
     // Capture window ID from first spawn for rebalancing
     if (!windowId) {
@@ -210,7 +211,7 @@ async function handleSpawn(
     .join("\n");
   return ok(
     `Spawned ${spawned.length} sub-agent(s):\n${lines}\n\nDo NOT call subagent read. Results are pushed automatically — your turn will be triggered once all sub-agents have reported. Use send to send follow-up messages, close to terminate a session.`,
-    { action: "spawn", sources, spawned },
+    { action: Action.Spawn, sources, spawned },
   );
 }
 
@@ -315,15 +316,10 @@ export default function (pi: ExtensionAPI) {
       }
 
       const lines = agents.map((a) => `**${a.name}**\n  ${a.description}`);
-      return {
-        content: [
-          {
-            type: "text",
-            text: `Available subagents:\n\n${lines.join("\n\n")}`,
-          },
-        ],
-        details: { action: "list", count: agents.length },
-      };
+      return ok(`Available subagents:\n\n${lines.join("\n\n")}`, {
+        action: Action.List,
+        count: agents.length,
+      });
     },
 
     renderCall: render.renderListCall,
@@ -359,28 +355,22 @@ export default function (pi: ExtensionAPI) {
       }
       let result: ToolResult;
       switch (params.action) {
-        case "send":
+        case Action.Send:
           result = handleSend(params);
           break;
-        case "read":
+        case Action.Read:
           result = handleRead(params);
           break;
-        case "close":
+        case Action.Close:
           result = handleClose(params);
           break;
-        case "spawn":
+        case Action.Spawn:
           result = await handleSpawn(pi, params, ctx);
           break;
         default:
           return err(`Unknown action "${params.action}".`);
       }
-      if (
-        params.action === "spawn" ||
-        params.action === "send" ||
-        params.action === "close"
-      ) {
-        updateSessionWidget(ctx);
-      }
+      if (params.action !== Action.Read) updateSessionWidget(ctx);
       return result;
     },
 
