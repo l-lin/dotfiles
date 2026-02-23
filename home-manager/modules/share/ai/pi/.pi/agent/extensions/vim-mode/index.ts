@@ -8,6 +8,8 @@
  * - a: insert after cursor
  * - A: insert at end of line
  * - I: insert at start of line
+ * - o: open new line below (insert mode)
+ * - O: open new line above (insert mode)
  * - hjkl: navigation in normal mode
  * - 0/$: line start/end
  * - x: delete char under cursor
@@ -53,9 +55,11 @@ import {
   ESC_LEFT,
   ESC_RIGHT,
   ESC_DELETE,
+  ESC_UP,
   CTRL_A,
   CTRL_E,
   CTRL_K,
+  NEWLINE,
 } from "./types.js";
 import {
   reverseCharMotion,
@@ -222,6 +226,17 @@ class ModalEditor extends CustomEditor {
       case "I":
         this.mode = "insert";
         super.handleInput(CTRL_A);
+        break;
+      case "o":
+        super.handleInput(CTRL_E);
+        super.handleInput(NEWLINE);
+        this.mode = "insert";
+        break;
+      case "O":
+        super.handleInput(CTRL_A);
+        super.handleInput(NEWLINE);
+        super.handleInput(ESC_UP);
+        this.mode = "insert";
         break;
       case "C":
         super.handleInput(CTRL_K);

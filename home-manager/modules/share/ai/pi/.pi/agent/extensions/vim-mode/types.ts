@@ -29,6 +29,8 @@ export const NORMAL_KEYS: Record<string, string | null> = {
   a: null, // append (insert + right)
   A: null, // append at end of line
   I: null, // insert at start of line
+  o: null, // open line below
+  O: null, // open line above
 };
 
 // Character motion keys that wait for a target character
@@ -41,3 +43,6 @@ export const ESC_DELETE = "\x1b[3~";
 export const CTRL_A = "\x01"; // line start
 export const CTRL_E = "\x05"; // line end
 export const CTRL_K = "\x0b"; // kill to end of line
+export const NEWLINE = "\n"; // newline character
+export const ESC_UP = "\x1b[A"; // cursor up
+export const ESC_DOWN = "\x1b[B"; // cursor down
