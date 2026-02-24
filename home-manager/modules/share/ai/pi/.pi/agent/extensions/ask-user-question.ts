@@ -150,13 +150,13 @@ export default function questionnaire(pi: ExtensionAPI) {
 
           // Tab navigation
           if (isMulti) {
-            if (matchesKey(data, Key.tab) || matchesKey(data, Key.right)) {
+            if (matchesKey(data, Key.tab) || matchesKey(data, Key.right) || data === "l") {
               currentTab = (currentTab + 1) % (questions.length + 1);
               selectedIndex = 0;
               refresh();
               return;
             }
-            if (matchesKey(data, Key.shift("tab")) || matchesKey(data, Key.left)) {
+            if (matchesKey(data, Key.shift("tab")) || matchesKey(data, Key.left) || data === "h") {
               currentTab = (currentTab - 1 + questions.length + 1) % (questions.length + 1);
               selectedIndex = 0;
               refresh();
@@ -172,8 +172,8 @@ export default function questionnaire(pi: ExtensionAPI) {
           }
 
           // Option navigation & selection
-          if (kb.matches(data, "selectUp")) { selectedIndex = Math.max(0, selectedIndex - 1); refresh(); return; }
-          if (kb.matches(data, "selectDown")) { selectedIndex = Math.min(options.length - 1, selectedIndex + 1); refresh(); return; }
+          if (kb.matches(data, "selectUp") || data === "k") { selectedIndex = Math.max(0, selectedIndex - 1); refresh(); return; }
+          if (kb.matches(data, "selectDown") || data === "j") { selectedIndex = Math.min(options.length - 1, selectedIndex + 1); refresh(); return; }
           if (kb.matches(data, "selectConfirm") && currentQuestion()) {
             const option = options[selectedIndex];
             if (option.value === "__other__") {
@@ -251,7 +251,7 @@ export default function questionnaire(pi: ExtensionAPI) {
           }
 
           lines.push("");
-          if (!inputMode) addLine(theme.fg("dim", isMulti ? " Tab/←→ navigate • ↑↓ select • Enter confirm • Esc cancel" : " ↑↓ navigate • Enter select • Esc cancel"));
+          if (!inputMode) addLine(theme.fg("dim", isMulti ? " Tab/←→/h/l navigate • ↑↓/j/k select • Enter confirm • Esc cancel" : " ↑↓/j/k navigate • Enter select • Esc cancel"));
           addLine(theme.fg("accent", "─".repeat(width)));
 
           cachedLines = lines;
