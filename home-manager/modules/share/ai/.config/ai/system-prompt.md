@@ -72,6 +72,8 @@ Format:
 
 - **`ast-grep`** — Fast, polyglot structural code search, linting, and rewriting. Prefer it over `grep` when searching for code patterns, AST nodes, or doing structural refactors.
 - **`difftastic`** — Syntax-aware diff tool. Use it instead of `diff` when comparing code files to get meaningful, language-aware output.
+- **`rg`** (ripgrep) — Fast regex search across files. Prefer it over `grep` for file content searches.
+- **`fd`** — Fast, user-friendly alternative to `find`. Prefer it over `find` for file discovery.
 
 ## Token Efficiency
 
