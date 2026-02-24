@@ -109,10 +109,27 @@ function handleSend(params: SubagentParams): ToolResult {
   });
 }
 
+const POLL_WARNING = `\
+⛔ STOP — DO NOT PROCEED.
+
+Subagents are still running. Results are pushed automatically — you will be \
+notified the moment they finish. Polling wastes time and context.
+
+DO NOT:
+- Call subagent read again
+- Do the subagents' work yourself
+- Take any other action
+
+Just stop and wait. Your turn will be triggered automatically.`;
+
 function handleRead(params: SubagentParams): ToolResult {
   // No ID → list all sessions
   if (!params.id) {
     if (sessions.size() === 0) return ok("No active sub-agent sessions.");
+    const pending = sessions.all().filter((s) => s.pending);
+    if (pending.length > 0) {
+      return err(POLL_WARNING);
+    }
     const summaries = sessions.all().map((s) => `**${s.agentName}** (${s.id})`);
     return ok(summaries.join("\n\n"), { action: Action.Read });
   }
@@ -121,6 +138,11 @@ function handleRead(params: SubagentParams): ToolResult {
   if (!session) return sessionError(params.id);
   sessions.refreshResult(session);
   sessions.checkAlive(session);
+
+  if (session.pending) {
+    return err(POLL_WARNING);
+  }
+
   return ok(session.lastResult || "(no result yet)", {
     action: Action.Read,
     sessionId: session.id,
@@ -210,7 +232,10 @@ async function handleSpawn(
     .map((s) => `- **${s.agent}** → session \`${s.id}\``)
     .join("\n");
   return ok(
-    `Spawned ${spawned.length} sub-agent(s):\n${lines}\n\nDo NOT call subagent read. Results are pushed automatically — your turn will be triggered once all sub-agents have reported. Use send to send follow-up messages, close to terminate a session.`,
+    `Spawned ${spawned.length} sub-agent(s):\n${lines}\n\n` +
+      `⛔ STOP HERE. Do not call any tools. Do not do the work yourself. Do not poll with read.\n` +
+      `Results are pushed automatically — your turn will be triggered once all sub-agents have reported.\n` +
+      `Use send to send follow-up messages, close to terminate a session.`,
     { action: Action.Spawn, sources, spawned },
   );
 }
@@ -335,10 +360,10 @@ export default function (pi: ExtensionAPI) {
       "Actions:",
       '  spawn  — Create pane(s). "agent"+"task" for single, "tasks" array for parallel.',
       '  send   — Send message to sub-agent. Requires "id" and "message".',
-      '  read   — Read latest result. Requires "id" (omit for all). DO NOT use this to poll after spawn — results are pushed automatically.',
+      '  read   — Read latest result. Requires "id" (omit for all). NEVER poll with this after spawn — if subagents are still running, this returns an error. Results are pushed automatically.',
       '  close  — Kill pane. Requires "id" (or "all").',
       "",
-      "IMPORTANT: After spawning, do NOT poll with read. Results are pushed automatically via file watcher and your turn will be triggered once all sub-agents have reported. Just wait.",
+      "IMPORTANT: After spawning, STOP — do not call any tools, do not do the work yourself. If you call read while agents are running, you get an error. Results are pushed automatically via file watcher; your turn is triggered once all sub-agents have reported.",
       "Requires tmux.",
     ].join("\n"),
     parameters: SubagentParamsSchema,

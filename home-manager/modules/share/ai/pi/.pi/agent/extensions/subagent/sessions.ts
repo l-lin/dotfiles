@@ -88,8 +88,8 @@ export function registerGroup(ids: string[]): void {
 }
 
 /**
- * Record a result for a session. Fires the consolidated "all done" trigger
- * once every session in the pool has reported (and there are ≥2 sessions).
+ * Record a result for a session. Fires the "all done" trigger once every
+ * session in the pool has reported (works for both single and parallel spawns).
  * Safe to call multiple times — idempotent after pool fires.
  */
 function flushToPool(
@@ -104,18 +104,22 @@ function flushToPool(
   entry.result = result;
 
   if (poolTriggered) return;
-  if (pendingPool.size < 2) return; // single session — individual message is enough
 
   const allDone = [...pendingPool.values()].every((e) => e.result !== null);
   if (!allDone) return;
 
   poolTriggered = true;
 
+  const count = pendingPool.size;
+  const content =
+    count === 1
+      ? "Sub-agent has reported. Now use the result to complete your task."
+      : "All sub-agents have reported. Now synthesize these results and complete your task.";
+
   pi.sendMessage(
     {
       customType: "subagent-result",
-      content:
-        "All sub-agents have reported. Now synthesize these results and complete your task.",
+      content,
       display: true,
       details: { action: Action.AllDone },
     },
