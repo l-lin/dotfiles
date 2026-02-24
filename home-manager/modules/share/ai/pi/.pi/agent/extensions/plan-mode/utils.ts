@@ -156,37 +156,3 @@ export function extractTodoItems(message: string): TodoItem[] {
   return items;
 }
 
-export function extractDoneSteps(message: string): number[] {
-  const steps: number[] = [];
-
-  // Match [DONE:n] or [DONE:n-m] format (single step or range)
-  for (const match of message.matchAll(/\[DONE:(\d+)(?:-(\d+))?\]/gi)) {
-    const start = Number(match[1]);
-    const end = match[2] ? Number(match[2]) : start;
-    if (Number.isFinite(start) && Number.isFinite(end)) {
-      for (let i = start; i <= end; i++) {
-        if (!steps.includes(i)) steps.push(i);
-      }
-    }
-  }
-
-  // Match numbered items with checkmarks: "1. ☑", "2. ✓", "3. [x]", "4. ✔"
-  // Handles formats like "1. ☑ text", "2) ✓ text", "3. [x] text"
-  for (const match of message.matchAll(
-    /^\s*(\d+)[.)]\s*(?:[☑✓✔]|\[\s*[xX✓✔]\s*\])/gm,
-  )) {
-    const step = Number(match[1]);
-    if (Number.isFinite(step) && !steps.includes(step)) steps.push(step);
-  }
-
-  return steps;
-}
-
-export function markCompletedSteps(text: string, items: TodoItem[]): number {
-  const doneSteps = extractDoneSteps(text);
-  for (const step of doneSteps) {
-    const item = items.find((t) => t.step === step);
-    if (item) item.completed = true;
-  }
-  return doneSteps.length;
-}
