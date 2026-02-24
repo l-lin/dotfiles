@@ -73,8 +73,11 @@ export default function (pi: ExtensionAPI) {
           const ctxUsage = ctx.getContextUsage();
           const contextWindow = ctxUsage?.contextWindow ?? 0;
           const percentValue = ctxUsage?.percent ?? 0;
-          const percentStr = ctxUsage?.percent != null ? percentValue.toFixed(1) : "?";
-          const contextDisplay = ` ${percentStr}%/${formatTokens(contextWindow)}`;
+          const usedTokens = Math.round(contextWindow * percentValue / 100);
+          const percentRounded = Math.round(percentValue);
+          const contextDisplay = ctxUsage != null
+            ? ` ${formatTokens(usedTokens)}/${formatTokens(contextWindow)} (${percentRounded}%)`
+            : "";
           const coloredContext = colorContext(percentValue, contextDisplay, t);
 
           // Accumulate spend from session entries
