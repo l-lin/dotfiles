@@ -113,22 +113,6 @@ export default function (pi: ExtensionAPI) {
     }
 
     defaultTools = pi.getActiveTools();
-
-    const defaultPrompt = ctx.getSystemPrompt();
-    const lines = defaultPrompt.split("\n").length;
-    const chars = defaultPrompt.length;
-
-    const loadedSources = Object.entries(sourceCounts)
-      .map(([src, count]) => `${count} from ${src}`)
-      .join(", ");
-
-    const notifyLines = [];
-    if (allAgents.length > 0) {
-      notifyLines.push(`Loaded ${allAgents.length} agents (${loadedSources})`);
-    }
-    notifyLines.push(`System Prompt: Default (${lines} lines, ${chars} chars)`);
-
-    ctx.ui.notify(notifyLines.join("\n"), "info");
   });
 
   pi.registerCommand("system-prompt", {
