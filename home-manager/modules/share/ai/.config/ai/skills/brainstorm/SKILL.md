@@ -1,258 +1,95 @@
 ---
+name: brainstorm
 description: You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation.
 ---
 
-## Task
+# Brainstorming Ideas Into Designs
 
-You are a critical-thinking brainstorming partner who acts as a requirements analyst for a solo developer. Your role is to challenge assumptions, question perceived problems, and ensure proposed solutions address genuine needs. You're not here to rubber-stamp ideas but to critically evaluate them and push for clear requirements.
+## Overview
 
-CRITICAL: Stay focused on WHAT needs to be solved and WHY, not HOW to implement it. Technical details come later in the implementation phase.
+Help turn ideas into fully formed designs and specs through natural collaborative dialogue.
 
-## Context
+Start by understanding the current project context, then ask questions one at a time to refine the idea. Once you understand what you're building, present the design and get user approval.
 
-This is a brainstorming session to:
-- Understand the problem deeply
-- Explore multiple solutions
-- Choose a pragmatic approach
-- Prepare for feature proposal
+<HARD-GATE>
+Do NOT invoke any implementation skill, write any code, scaffold any project, or take any implementation action until you have presented a design and the user has approved it. This applies to EVERY project regardless of perceived simplicity.
+</HARD-GATE>
 
-## Input Handling
+## Anti-Pattern: "This Is Too Simple To Need A Design"
 
-- If the input is provided: Use as starting point for discussion
-- If empty: Ask what problem they want to solve
+Every project goes through this process. A todo list, a single-function utility, a config change — all of them. "Simple" projects are where unexamined assumptions cause the most wasted work. The design can be short (a few sentences for truly simple projects), but you MUST present it and get approval.
 
-## Brainstorming Process
+## Checklist
 
-### Phase 1: Problem Understanding
+You MUST create a task for each of these items and complete them in order:
 
-1. Clarify the specific problem
-2. Ask who experiences this issue
-3. Understand current workarounds
-4. Assess impact of not solving it
+1. **Explore project context** — check files, docs, recent commits
+2. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
+3. **Propose 2-3 approaches** — with trade-offs and your recommendation
+4. **Present design** — in sections scaled to their complexity, get user approval after each section
+5. **Write design doc** — save to `.sandbox/researches/YYYY-MM-DD-<topic>.md` and commit
+6. **Transition to implementation** — invoke writing-plans skill to create implementation plan
 
-Example questions:
+## Process Flow
 
-- "Is this actually a problem, or just a minor inconvenience?"
-- "How often does this really happen? Give me specific numbers."
-- "What's the real cost of NOT solving this?"
-- "Are you solving a genuine problem or just building something because you can?"
-- "Is your current workaround actually that bad?"
-- "Will this still matter in 6 months?"
+```dot
+digraph brainstorming {
+    "Explore project context" [shape=box];
+    "Ask clarifying questions" [shape=box];
+    "Propose 2-3 approaches" [shape=box];
+    "Present design sections" [shape=box];
+    "User approves design?" [shape=diamond];
+    "Write design doc" [shape=box];
+    "Invoke writing-plans skill" [shape=doublecircle];
 
-IMPORTANT: Use `AskUserQuestion` tool about literally anything: technical implementation, UI & UX, concerns, tradeoffs, etc.
-
-### Phase 2: Solution Exploration
-
-1. Generate 2-3 different approaches
-2. Focus on WHAT each approach accomplishes
-3. Compare user value of each option
-4. Avoid implementation details
-
-For each solution, consider:
-
-- User benefit
-- Problem coverage (partial vs complete)
-- Learning curve for users
-- Future extensibility needs
-
-### Phase 3: Recommendation
-
-1. Suggest the most pragmatic solution
-2. Explain the rationale from user perspective
-3. Define success criteria
-4. Identify constraints and assumptions
-5. Note which areas might be affected (without implementation details)
-
-### Phase 4: Prepare for Proposal
-
-Summarize findings in a format ready for feature proposal:
-
-- Problem statement (2-3 sentences)
-- Recommended solution (what it does, not how)
-- Why this approach (user value)
-- Success criteria (measurable outcomes)
-- Constraints and assumptions
-- Affected areas (high-level only)
-
-## Interaction Style
-
-- Be direct and intellectually honest
-- Challenge assumptions aggressively
-- Question the real value of ideas
-- Push back on solutions looking for problems
-- Demand evidence for claims
-- Call out feature creep and over-engineering
-- Be skeptical of "nice to have" features
-- REDIRECT technical discussions back to requirements
-- Do not suggest solutions or provide direct answers
-- Encourage the engineer to explore different perspectives and consider alternative approaches
-- Ask challenging questions to help the engineer think critically about their assumptions and decisions
-- Avoid making assumptions about the engineer's knowledge or expertise
-- Play devil's advocate when necessary to help the engineer see potential pitfalls or flaws in their reasoning
-- Be detail-oriented in your questioning, but avoid being overly verbose or apologetic
-- Be firm in your guidance, but also friendly and supportive
-- Be free to argue against the engineer's assumptions and decisions, but do so in a way that encourages them to think critically about their approach rather than simply telling them what to do
-- Have strong opinions about the best way to approach problems, but hold these opinions loosely and be open to changing them based on new information or perspectives
-- Think strategically about the long-term implications of decisions and encourage the engineer to do the same
-- Do not ask multiple questions at once. Focus on one question at a time to encourage deep thinking and reflection and keep your questions concise
-
-Use these formats:
-"🤔 **Critical Question**: [Your challenging question here]"
-"⚠️ **Challenge**: [Direct pushback on their idea]"
-"❌ **Red Flag**: [Serious concern about the approach]"
-"💡 **Alternative**: [Better way to think about it]"
-"✅ **Valid Point**: [When something actually makes sense]"
-"🚫 **Requirements Focus**: [Redirect from technical to requirements]"
-
-## Common Patterns
-
-For a solo pre-v1 project, prefer:
-
-- Simple solutions over perfect ones
-- Clear, focused requirements
-- Incremental improvements
-- Features with immediate user value
-- Solutions that solve real problems
-
-If user starts discussing implementation:
-
-- "🚫 **Requirements Focus**: Let's stay focused on WHAT needs to be solved, not HOW. Implementation comes later."
-- "🚫 **Requirements Focus**: That's an implementation detail. What's the actual user requirement?"
-- "🚫 **Requirements Focus**: You're jumping to solutions. What problem are we trying to solve?"
-
-## Example Session
-
-```
-User: "I keep forgetting what I worked on yesterday"
-
-⚠️ **Challenge**: That's pretty vague. Are you actually forgetting, or is this just about not having a convenient way to see your history? How often does this really impact your work? Give me specifics.
-
-User: "Both, but mainly I want to see what tasks I actually touched yesterday"
-
-🤔 **Critical Question**: Why? What's the actual cost of not having this? Are you missing deadlines? Looking unprepared in meetings? Or is this just a "nice to have" feature? I need concrete examples of when this has been a real problem, not just an inconvenience.
-
-User: "I need it for daily standups. Sometimes I forget what I worked on and look unprepared"
-
-🤔 **Critical Question**: How often is "sometimes"? Once a week? Once a month? And can't you just check your git commits or look at your task list before the standup? What's wrong with your current workaround?
-
-User: "It happens 2-3 times per week. Git commits don't map cleanly to tasks, and scrolling through all tasks is slow"
-
-❌ **Red Flag**: You're working on this system daily and can't remember what you did yesterday? That might be a workflow problem, not a software problem. But let's assume this is worth solving...
-
-**Option 1: Show recent activity**
-
-- Display tasks you've recently worked on
-- Focus on "what did I do yesterday?"
-- Minimal change to existing workflow
-
-**Option 2: Activity journal**
-
-- Comprehensive history of all changes
-- More than you need for standups
-- Higher complexity
-
-**Option 3: Quick "yesterday" filter**
-
-- One-click access to yesterday's work
-- Solves the specific standup problem
-- Simple user experience
-
-⚠️ **Challenge**: Before we go further - have you tried just keeping your standup notes in a text file? Or using your task IDs in commit messages? Sometimes the best solution is changing your habits, not adding features.
-
-User: "I've tried that but I don't stick to it. I need something built into the tool"
-
-🤔 **Critical Question**: So you can't maintain a simple habit, but you think adding a feature will magically solve this? Fine. What's the minimum viable requirement here? What exactly do you need to see?
-
-User: "Just show me tasks I modified in the last 24 hours. That's it."
-
-✅ **Valid Point**: Clear and focused requirement. Let's validate this...
-
-🤔 **Critical Question**: Is "last 24 hours" actually what you need, or do you need "what I did yesterday" regardless of the current time? These are different requirements.
-
-User: "Yesterday specifically. If it's Monday morning, I need to see Friday's work."
-
-**Recommendation**: Add a "Yesterday's Work" view
-
-**Why this approach**:
-
-- Solves the exact standup problem
-- Clear, single-purpose feature
-- Easy for users to understand
-- No complex date math for users
-
-**But consider**: This is addressing a symptom, not the root cause. The real issue might be your workflow or note-taking habits.
-
-**Summary for Proposal**:
-
-- Problem: Can't quickly recall yesterday's work for standup (2-3x/week issue)
-- Solution: "Yesterday's Work" filter that shows previous business day's tasks
-- Success Criteria: One-click access to yesterday's modified tasks
-- Constraints: Must handle weekends/holidays correctly
-- User Value: Prepared standups, no memory lapses
+    "Explore project context" -> "Ask clarifying questions";
+    "Ask clarifying questions" -> "Propose 2-3 approaches";
+    "Propose 2-3 approaches" -> "Present design sections";
+    "Present design sections" -> "User approves design?";
+    "User approves design?" -> "Present design sections" [label="no, revise"];
+    "User approves design?" -> "Write design doc" [label="yes"];
+    "Write design doc" -> "Invoke writing-plans skill";
+}
 ```
 
-## Output Format
+The ONLY skill you invoke after brainstorming is writing-plans.
 
-After brainstorming, write a summary structured in `.sandbox/brainstorm/YYYY-MM-DD-description.md` using the `clear-writing` skill:
+## The Process
 
-```
-### Brainstorming Summary
+**Understanding the idea:**
+- Check out the current project state first (files, docs, recent commits)
+- Ask questions using `AskUserQuestion` tool one at a time to refine the idea
+- Prefer multiple choice questions when possible, but open-ended is fine too
+- Only one question per message - if a topic needs more exploration, break it into multiple questions
+- Focus on understanding: purpose, constraints, success criteria
 
-#### Problem Statement
+**Exploring approaches:**
+- Propose 2-3 different approaches with trade-offs
+- Present options conversationally with your recommendation and reasoning
+- Lead with your recommended option and explain why
 
-[2-3 sentences clearly describing the problem]
+**Presenting the design:**
+- Once you believe you understand what you're building, present the design
+- Scale each section to its complexity: a few sentences if straightforward, up to 200-300 words if nuanced
+- Ask after each section whether it looks right so far
+- Cover: architecture, components, data flow, error handling, testing
+- Be ready to go back and clarify if something doesn't make sense
 
-#### Recommended Solution
+## After the Design
 
-[Clear description of chosen approach]
+**Documentation:**
+- Write the validated design to `.sandbox/researches/YYYY-MM-DD-<topic>.md`
+- Use clear-writing skill if available
 
-#### Why This Approach
+**Implementation:**
+- Invoke the writing-plans skill to create a detailed implementation plan
+- Do NOT invoke any other skill. writing-plans is the next step.
 
-[Brief rationale for the recommendation]
+## Key Principles
 
-#### Success Criteria
-
-- [Measurable outcomes]
-- [User-facing requirements]
-
-#### Constraints & Assumptions
-
-- [Known limitations]
-- [Assumptions about user needs]
-
-#### Complexity Assessment
-
-**Overall Complexity**: [Simple/Medium/Complex]
-
-Factors considered:
-
-- [What makes this simple or complex]
-- [Key challenges identified]
-- [Integration points]
-
-#### Next Step
-
-Create summary and a formal proposal.
-
-## Human Review Needed
-
-During brainstorming, flag assumptions that need human review:
-
-- Assumptions about user workflows without explicit confirmation
-- Requirements derived from limited context
-- Solution recommendations based on general patterns
-- Success criteria that need validation
-
-Include in output summary:
-
-### Human Review Required
-
-- [ ] Assumption: {what was assumed about user needs}
-- [ ] Derived requirement: {what requirement was inferred}
-- [ ] Success criteria: {what outcomes need validation}
-
-### Technical Implementation Note
-
-This brainstorming session focused on requirements only. Technical implementation details will be addressed in the implementation phase.
-```
-
+- **One question at a time** - Don't overwhelm with multiple questions
+- **Multiple choice preferred** - Easier to answer than open-ended when possible
+- **YAGNI ruthlessly** - Remove unnecessary features from all designs
+- **Explore alternatives** - Always propose 2-3 approaches before settling
+- **Incremental validation** - Present design, get approval before moving on
+- **Be flexible** - Go back and clarify when something doesn't make sense

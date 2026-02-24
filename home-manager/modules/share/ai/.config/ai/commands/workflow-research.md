@@ -65,7 +65,7 @@ Then wait for the user's research query.
 
 5. **Gather metadata for the research document:**
    - generate all relevant metadata
-   - Filename: `.sandbox/research/YYYY-MM-DD-JIRA-XXXX-description.md`
+   - Filename: `.sandbox/researches/YYYY-MM-DD-JIRA-XXXX-description.md`
      - Format: `YYYY-MM-DD-JIRA-XXXX-description.md` where:
        - YYYY-MM-DD is today's date
        - JIRA-XXXX is the ticket number (omit if no ticket)
@@ -133,8 +133,8 @@ Then wait for the user's research query.
 
      [Relevant insights from .sandbox/ directory with references]
 
-     - `.sandbox/research/something.md` - Historical decision about X
-     - `.sandbox/research/notes.md` - Past exploration of Y
+     - `.sandbox/researches/something.md` - Historical decision about X
+     - `.sandbox/researches/notes.md` - Past exploration of Y
 
      ## Related Research
 
