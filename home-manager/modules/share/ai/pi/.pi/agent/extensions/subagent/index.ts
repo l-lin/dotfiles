@@ -211,7 +211,6 @@ async function handleSpawn(
 
   // Spawn subagents one at a time
   const spawned: SpawnResult[] = [];
-  let windowId: string | undefined;
 
   for (const t of taskList) {
     const agent = agents.find((a) => a.name === t.agent);
@@ -235,13 +234,7 @@ async function handleSpawn(
       paneId: session.paneId,
     });
 
-    // Capture window ID from first spawn for rebalancing
-    if (!windowId) {
-      windowId = tmux.getWindowId(session.paneId);
-    }
   }
-
-  if (spawned.length > 1 && windowId) tmux.rebalance(windowId);
 
   sessions.registerGroup(spawned.map((s) => s.id));
 
@@ -331,14 +324,14 @@ export default function (pi: ExtensionAPI) {
     name: "subagent",
     label: "Subagent",
     description: [
-      "Manage interactive sub-agents in tmux panes.",
+      "Manage interactive sub-agents in tmux windows.",
       "",
       "Actions:",
       '  list   — List all available subagents (name and description) to determine which agent to spawn for a given task.',
-      '  spawn  — Create pane(s). "agent"+"task" for single, "tasks" array for parallel.',
+      '  spawn  — Create window(s). "agent"+"task" for single, "tasks" array for parallel.',
       '  send   — Send message to sub-agent. Requires "id" and "message".',
       '  read   — Read latest result. Requires "id" (omit for all). NEVER poll with this after spawn — if subagents are still running, this returns an error. Results are pushed automatically.',
-      '  close  — Kill pane. Requires "id" (or "all").',
+      '  close  — Kill window. Requires "id" (or "all").',
       "",
       "IMPORTANT: After spawning, STOP — do not call any tools, do not do the work yourself. If you call read while agents are running, you get an error. Results are pushed automatically via file watcher; your turn is triggered once all sub-agents have reported.",
       "Requires tmux.",

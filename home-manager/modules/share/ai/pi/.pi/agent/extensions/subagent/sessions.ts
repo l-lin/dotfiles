@@ -130,7 +130,6 @@ function flushToPool(
 // ─── state ───────────────────────────────────────────────────────────────────
 
 const sessions = new Map<string, Session>();
-let subagentWindowId: string | undefined;
 let piRef: ExtensionAPI | undefined;
 
 export function get(id: string): Session | undefined {
@@ -249,16 +248,8 @@ export function spawn(
 
   const badgeExtensionFile = writeBadgeExtension(dir, id, task);
 
-  // First subagent creates a new window, subsequent ones split within it
-  let paneId: string;
-  if (!subagentWindowId || sessions.size === 0) {
-    paneId = tmux.createWindow(cwd, "subagents");
-    subagentWindowId = tmux.getWindowId(paneId);
-  } else {
-    // Get any existing pane in the subagent window to split from
-    const existingSession = sessions.values().next().value as Session;
-    paneId = tmux.splitPane(existingSession.paneId, cwd);
-  }
+  // Each subagent gets its own window, titled with the session ID
+  const paneId = tmux.createWindow(cwd, id);
 
   // HACK: wait for shell to finish initializing before sending command
   execSync("sleep 1.5");
@@ -337,16 +328,10 @@ export function close(session: Session): void {
     /* ignore */
   }
   sessions.delete(session.id);
-
-  // Clear window tracking when all sessions are closed
-  if (sessions.size === 0) {
-    subagentWindowId = undefined;
-  }
 }
 
 export function closeAll(): void {
   for (const s of all()) close(s);
-  subagentWindowId = undefined;
   pendingPool.clear();
   poolTriggered = false;
 }

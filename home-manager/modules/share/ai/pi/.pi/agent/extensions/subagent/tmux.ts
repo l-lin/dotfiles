@@ -20,25 +20,6 @@ export function createWindow(cwd: string, name: string): string {
   return result;
 }
 
-/** Split a specific pane horizontally, return new pane ID */
-export function splitPane(targetPaneId: string, cwd: string): string {
-  return execSync(
-    `tmux split-window -v -d -P -F '#{pane_id}' -t ${esc(targetPaneId)} -c ${esc(cwd)}`,
-    { encoding: "utf-8" },
-  ).trim();
-}
-
-/** Get the window ID for a given pane */
-export function getWindowId(paneId: string): string {
-  try {
-    return execSync(
-      `tmux display-message -t ${esc(paneId)} -p '#{window_id}'`,
-      { encoding: "utf-8" },
-    ).trim();
-  } catch {
-    return "";
-  }
-}
 
 /** Send literal text + Enter to a pane */
 export function sendMessage(paneId: string, text: string): void {
@@ -70,25 +51,3 @@ export function paneAlive(paneId: string): boolean {
   }
 }
 
-export function rebalance(windowId?: string): void {
-  try {
-    const target = windowId ? `-t ${esc(windowId)}` : "";
-    execSync(`tmux select-layout ${target} even-horizontal`, {
-      stdio: "ignore",
-    });
-  } catch {
-    /* ignore */
-  }
-}
-
-/** Return the visible pane index (e.g. "2") for display purposes */
-export function getPaneIndex(paneId: string): string {
-  try {
-    return execSync(
-      `tmux display-message -t ${esc(paneId)} -p '#{pane_index}'`,
-      { encoding: "utf-8" },
-    ).trim();
-  } catch {
-    return "?";
-  }
-}
