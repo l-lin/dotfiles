@@ -809,6 +809,7 @@ function fitRight(text: string, width: number): string {
 function renderModelTable(
   range: RangeAgg,
   mode: MeasurementMode,
+  today?: DayAgg,
   maxRows = 8,
 ): string[] {
   // Keep this relatively narrow: model + selected metric + cost + share.
@@ -839,13 +840,29 @@ function renderModelTable(
     Math.max("model".length, ...rows.map((r) => r.key.length)),
   );
 
+  const totalWidth = modelWidth + 2 + valueWidth + 2 + 10 + 2 + 6;
+  const divider = "-".repeat(totalWidth);
+
   const lines: string[] = [];
   lines.push(
     `${padRight("model", modelWidth)}  ${padLeft(label, valueWidth)}  ${padLeft("cost", 10)}  ${padLeft("share", 6)}`,
   );
-  lines.push(
-    `${"-".repeat(modelWidth)}  ${"-".repeat(valueWidth)}  ${"-".repeat(10)}  ${"-".repeat(6)}`,
-  );
+  lines.push(divider);
+
+  // Today row: pinned at top, spans full width showing all 4 metrics.
+  if (today) {
+    const todayParts: string[] = [];
+    todayParts.push(
+      `${formatCount(today.sessions)} sess`,
+      `${formatCount(today.messages)} msg`,
+      `${formatCount(today.tokens)} tok`,
+      formatUsd(today.totalCost),
+    );
+    const todayLabel = bold("today ★");
+    const todayValues = todayParts.join("  ·  ");
+    lines.push(`${todayLabel}  ${todayValues}`);
+    lines.push(divider);
+  }
 
   for (const r of rows) {
     const value = perModel.get(r.key) ?? 0;
@@ -1102,7 +1119,9 @@ class BreakdownComponent implements Component {
       this.measurement,
       { cellWidth, gap, bgColor: bgBase, emptyCellBg: emptyCell },
     );
-    const tableLines = renderModelTable(range, metric.kind, 8);
+    const todayKey = toLocalDayKey(new Date());
+    const todayDay = this.data.ranges.get(7)?.dayByKey.get(todayKey);
+    const tableLines = renderModelTable(range, metric.kind, todayDay, 8);
 
     const lines: string[] = [];
     lines.push(truncateToWidth(header, width));
