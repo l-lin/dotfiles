@@ -41,7 +41,7 @@ function getSession(id: string | undefined): sessions.Session | undefined {
 
 // ─── schema ──────────────────────────────────────────────────────────────────
 
-const ACTIONS = [Action.Spawn, Action.Send, Action.Read, Action.Close] as const;
+const ACTIONS = [Action.Spawn, Action.Send, Action.Read, Action.Close, Action.List] as const;
 
 type SubagentParams = Static<typeof SubagentParamsSchema>;
 const SubagentParamsSchema = Type.Object({
@@ -82,6 +82,23 @@ const SubagentParamsSchema = Type.Object({
     Type.String({ description: "Working directory for the agent process" }),
   ),
 });
+
+function handleList(params: SubagentParams, ctx: ToolContext): ToolResult {
+  const config = loadConfig();
+  const sources: string[] = params.sources ?? config.sources;
+  const discovery = discoverAgents(sources, ctx.cwd);
+  const agents = discovery.agents;
+
+  if (agents.length === 0) {
+    return ok("No subagents found. Check your configuration or agent directories.");
+  }
+
+  const lines = agents.map((a) => `**${a.name}**\n  ${a.description}`);
+  return ok(`Available subagents:\n\n${lines.join("\n\n")}`, {
+    action: Action.List,
+    count: agents.length,
+  });
+}
 
 function sessionError(id: string | undefined): ToolResult {
   if (!id) return err('Required parameter: "id".');
@@ -292,11 +309,6 @@ function updateSessionWidget(ctx: ToolContext): void {
   });
 }
 
-// ─── list-agents schema ──────────────────────────────────────────────────────
-
-type ListAgentsParams = Static<typeof ListAgentsParamsSchema>;
-const ListAgentsParamsSchema = Type.Object({});
-
 // ─── extension ───────────────────────────────────────────────────────────────
 
 export default function (pi: ExtensionAPI) {
@@ -316,48 +328,13 @@ export default function (pi: ExtensionAPI) {
   pi.registerMessageRenderer("subagent-result", render.renderMessage);
 
   pi.registerTool({
-    name: "list-subagents",
-    label: "List Subagents",
-    description:
-      "List all available subagents (name and description) to determine which agent to spawn for a given task.",
-    parameters: ListAgentsParamsSchema,
-
-    async execute(
-      _toolCallId,
-      _params: ListAgentsParams,
-      _signal,
-      _onUpdate,
-      ctx,
-    ) {
-      const config = loadConfig();
-      const sources: string[] = config.sources;
-      const discovery = discoverAgents(sources, ctx.cwd);
-      const agents = discovery.agents;
-
-      if (agents.length === 0) {
-        return ok(
-          "No subagents found. Check your configuration or agent directories.",
-        );
-      }
-
-      const lines = agents.map((a) => `**${a.name}**\n  ${a.description}`);
-      return ok(`Available subagents:\n\n${lines.join("\n\n")}`, {
-        action: Action.List,
-        count: agents.length,
-      });
-    },
-
-    renderCall: render.renderListCall,
-    renderResult: render.renderListResult,
-  });
-
-  pi.registerTool({
     name: "subagent",
     label: "Subagent",
     description: [
       "Manage interactive sub-agents in tmux panes.",
       "",
       "Actions:",
+      '  list   — List all available subagents (name and description) to determine which agent to spawn for a given task.',
       '  spawn  — Create pane(s). "agent"+"task" for single, "tasks" array for parallel.',
       '  send   — Send message to sub-agent. Requires "id" and "message".',
       '  read   — Read latest result. Requires "id" (omit for all). NEVER poll with this after spawn — if subagents are still running, this returns an error. Results are pushed automatically.',
@@ -375,6 +352,7 @@ export default function (pi: ExtensionAPI) {
       _onUpdate,
       ctx,
     ) {
+      if (params.action === Action.List) return handleList(params, ctx);
       if (!tmux.isInsideTmux()) {
         return err("Subagent requires running inside tmux.");
       }
@@ -399,7 +377,13 @@ export default function (pi: ExtensionAPI) {
       return result;
     },
 
-    renderCall: render.renderCall,
-    renderResult: render.renderResult,
+    renderCall: (args: any, theme: any) =>
+      args.action === Action.List
+        ? render.renderListCall(args, theme)
+        : render.renderCall(args, theme),
+    renderResult: (result: any, opts: any, theme: any) =>
+      result.details?.action === Action.List
+        ? render.renderListResult(result, opts, theme)
+        : render.renderResult(result, opts, theme),
   });
 }

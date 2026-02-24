@@ -19,7 +19,7 @@ type Theme = { fg: Function; bg: Function; bold: Function };
 
 export function renderListCall(args: any, theme: Theme): Text {
   const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
-  return new Text(title("list-subagents"), 0, 0);
+  return new Text(title("󰚩 subagent list"), 0, 0);
 }
 
 export function renderCall(args: any, theme: Theme): Text {
