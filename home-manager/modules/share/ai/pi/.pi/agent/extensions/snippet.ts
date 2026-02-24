@@ -31,11 +31,19 @@ export default function (pi: ExtensionAPI) {
       };
     }
 
-    // Transform: replace !test_pi with text message to tell the agent to test the extension is working
+    // Transform: replace $test_pi with text message to tell the agent to test the extension is working.
     if (event.text.includes("$test_pi")) {
       return {
         action: "transform",
         text: event.text.replace(/\$test_pi/g, "Test the pi extension with tmux by spawning a new pi session with 'pi --models \"github-copilot/gpt-4o\""),
+      };
+    }
+
+    // Transform: replace $tdd with text message to tell the agent to use TDD.
+    if (event.text.includes("$tdd")) {
+      return {
+        action: "transform",
+        text: event.text.replace(/\$tdd/g, "Use red/green TDD."),
       };
     }
 
