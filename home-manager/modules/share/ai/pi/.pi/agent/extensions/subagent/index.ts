@@ -377,10 +377,16 @@ export default function (pi: ExtensionAPI) {
       return result;
     },
 
-    renderCall: (args: any, theme: any) =>
-      args.action === Action.List
-        ? render.renderListCall(args, theme)
-        : render.renderCall(args, theme),
+    renderCall: (args: any, theme: any) => {
+      switch (args.action) {
+        case Action.List:  return render.renderListCall(args, theme);
+        case Action.Spawn: return render.renderSpawnCall(args, theme);
+        case Action.Send:  return render.renderSendCall(args, theme);
+        case Action.Read:  return render.renderReadCall(args, theme);
+        case Action.Close: return render.renderCloseCall(args, theme);
+        default:           return render.renderListCall(args, theme);
+      }
+    },
     renderResult: (result: any, opts: any, theme: any) =>
       result.details?.action === Action.List
         ? render.renderListResult(result, opts, theme)

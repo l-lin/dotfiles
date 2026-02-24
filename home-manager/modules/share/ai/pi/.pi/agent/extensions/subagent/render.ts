@@ -1,6 +1,5 @@
 /** Rendering for subagent tool calls, results, and notifications */
 
-import * as path from "node:path";
 import { getMarkdownTheme } from "@mariozechner/pi-coding-agent";
 import {
   Box,
@@ -17,63 +16,65 @@ type Theme = { fg: Function; bg: Function; bold: Function };
 
 // ─── renderCall ──────────────────────────────────────────────────────────────
 
-export function renderListCall(args: any, theme: Theme): Text {
+export function renderListCall(_: any, theme: Theme): Text {
   const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
   return new Text(title("󰚩 subagent list"), 0, 0);
 }
 
-export function renderCall(args: any, theme: Theme): Text {
-  const action = args.action || "?";
+export function renderSpawnCall(args: any, theme: Theme): Text {
   const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
-
-  if (action === Action.Spawn) {
-    if (args.tasks?.length > 0) {
-      let text =
-        title("󰚩 subagent spawn ") +
-        theme.fg("accent", `${args.tasks.length} panes`);
-      for (const t of args.tasks.slice(0, 3)) {
-        text += `\n  ${theme.fg("accent", t.agent)}${theme.fg("dim", ` ${truncateToWidth(t.task, 40)}`)}`;
-      }
-      if (args.tasks.length > 3)
-        text += `\n  ${theme.fg("muted", `... +${args.tasks.length - 3} more`)}`;
-      return new Text(text, 0, 0);
-    }
-    return new Text(
+  if (args.tasks?.length > 0) {
+    let text =
       title("󰚩 subagent spawn ") +
-        theme.fg("accent", args.agent || "...") +
-        `\n  ${theme.fg("dim", truncateToWidth(args.task || "...", 60))}`,
-      0,
-      0,
-    );
+      theme.fg("accent", `${args.tasks.length} panes`);
+    for (const t of args.tasks.slice(0, 3)) {
+      text += `\n  ${theme.fg("accent", t.agent)}${theme.fg("dim", ` ${truncateToWidth(t.task, 40)}`)}`;
+    }
+    if (args.tasks.length > 3)
+      text += `\n  ${theme.fg("muted", `... +${args.tasks.length - 3} more`)}`;
+    return new Text(text, 0, 0);
   }
+  return new Text(
+    title("󰚩 subagent spawn ") +
+      theme.fg("accent", args.agent || "...") +
+      `\n  ${theme.fg("dim", truncateToWidth(args.task || "...", 60))}`,
+    0,
+    0,
+  );
+}
 
-  if (action === Action.Send) {
-    return new Text(
-      title("󱃜 subagent send ") +
-        theme.fg("accent", args.id || "?") +
-        `\n  ${theme.fg("dim", truncateToWidth(args.message || "...", 50))}`,
-      0,
-      0,
-    );
-  }
+export function renderSendCall(args: any, theme: Theme): Text {
+  const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
+  return new Text(
+    title("󱃜 subagent send ") +
+      theme.fg("accent", args.id || "?") +
+      `\n  ${theme.fg("dim", truncateToWidth(args.message || "...", 50))}`,
+    0,
+    0,
+  );
+}
 
-  if (action === Action.Read) {
-    return new Text(
-      title(" subagent read ") + theme.fg("accent", args.id || "(all)"),
-      0,
-      0,
-    );
-  }
+export function renderReadCall(args: any, theme: Theme): Text {
+  const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
+  return new Text(
+    title(" subagent read ") + theme.fg("accent", args.id || "(all)"),
+    0,
+    0,
+  );
+}
 
-  if (action === Action.Close) {
-    return new Text(
-      title("󱚧 subagent close ") + theme.fg("accent", args.id || "?"),
-      0,
-      0,
-    );
-  }
+export function renderCloseCall(args: any, theme: Theme): Text {
+  const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
+  return new Text(
+    title("󱚧 subagent close ") + theme.fg("accent", args.id || "?"),
+    0,
+    0,
+  );
+}
 
-  return new Text(title("subagent ") + theme.fg("dim", action), 0, 0);
+export function renderDefaultCall(_: any, theme: Theme): Text {
+  const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
+  return new Text(title("󰚩 subagent"), 0, 0);
 }
 
 // ─── renderListResult ────────────────────────────────────────────────────────
