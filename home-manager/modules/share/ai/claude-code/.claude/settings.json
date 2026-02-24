@@ -41,16 +41,6 @@
   },
   "model": "opusplan",
   "hooks": {
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.config/ai/hooks/skill-activation/main.rb"
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
         "matcher": "Bash|Read",

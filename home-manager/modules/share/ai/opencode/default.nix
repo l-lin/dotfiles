@@ -23,7 +23,6 @@ in {
   # NOTE: Opencode fails to launch if the plugin file is a symlink, so we need to create the file directly with a script.
   home.activation.copyOpenCodePlugin = lib.hm.dag.entryAfter ["writeBoundary"] ''
     $DRY_RUN_CMD mkdir -p ${config.xdg.configHome}/opencode/plugin/
-    $DRY_RUN_CMD cp -f ${./.config/opencode/plugin/skill-activation.ts} ${config.xdg.configHome}/opencode/plugin/skills-activation.ts
     $DRY_RUN_CMD cp -f ${./.config/opencode/plugin/pre-tool-safety.ts} ${config.xdg.configHome}/opencode/plugin/pre-tool-safety.ts
   '';
 
