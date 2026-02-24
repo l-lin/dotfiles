@@ -98,13 +98,17 @@ export class AwesomeEditor extends CustomEditor {
   private handlePendingDelete(data: string): void {
     if (data === "d")                { this.deleteLine(); this.pendingOperator = null; return; }
     if (CHAR_MOTION_KEYS.has(data))  { this.pendingMotion = data as CharMotion; return; }
-    if (this.deleteWithMotion(data)) this.pendingOperator = null;
+    // Unknown motion: cancel operator (vim behaviour)
+    this.pendingOperator = null;
+    if (this.deleteWithMotion(data)) return;
   }
 
   private handlePendingChange(data: string): void {
     if (data === "c")               { this.deleteLine(); this.pendingOperator = null; this.mode = "insert"; return; }
     if (CHAR_MOTION_KEYS.has(data)) { this.pendingMotion = data as CharMotion; return; }
-    if (this.deleteWithMotion(data)) { this.pendingOperator = null; this.mode = "insert"; }
+    // Unknown motion: cancel operator (vim behaviour)
+    this.pendingOperator = null;
+    if (this.deleteWithMotion(data)) this.mode = "insert";
   }
 
   // ─── Normal mode dispatch ────────────────────────────────────────────────────
@@ -202,17 +206,7 @@ export class AwesomeEditor extends CustomEditor {
   private deleteWithCharMotion(motion: CharMotion, targetChar: string): void {
     const line      = this.getLines()[this.getCursor().line] ?? "";
     const col       = this.getCursor().col;
-    const isForward = motion === "f" || motion === "t";
-    const isTill    = motion === "t" || motion === "T";
-
-    let targetCol: number | null = null;
-    if (isForward) {
-      const idx = line.indexOf(targetChar, col + 1);
-      if (idx !== -1) targetCol = isTill ? idx - 1 : idx;
-    } else {
-      const idx = line.lastIndexOf(targetChar, col - 1);
-      if (idx !== -1) targetCol = isTill ? idx + 1 : idx;
-    }
+    const targetCol = findCharMotionTarget(line, col, motion, targetChar);
     if (targetCol === null) return;
     this.lastCharMotion = { motion, char: targetChar };
     this.deleteRange(col, targetCol, true);
