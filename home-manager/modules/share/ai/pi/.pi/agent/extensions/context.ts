@@ -7,6 +7,9 @@
  * - project context files (AGENTS.md / CLAUDE.md)
  * - current context window usage + session totals (tokens/cost)
  *
+ * Dependencies:
+ * - ./subagent
+ *
  * src: https://github.com/mitsuhiko/agent-stuff/blob/7e67a9684f066435dd996a5b98c6850ecf3c8c6d/pi-extensions/context.ts
  */
 
@@ -29,6 +32,8 @@ import os from "node:os";
 import path from "node:path";
 import fs from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { loadConfig } from "./subagent/config.js";
+import { discoverAgents } from "./subagent/agents.js";
 
 function formatUsd(cost: number): string {
   if (!Number.isFinite(cost) || cost <= 0) return "$0.00";
@@ -298,6 +303,7 @@ type ContextViewData = {
   extensions: string[];
   skills: string[];
   loadedSkills: string[];
+  subagents: string[];
   session: { totalTokens: number; totalCost: number };
 };
 
@@ -336,24 +342,22 @@ class ContextView implements Component {
   }
 
   private rebuild(width: number): void {
-    const muted = (s: string) => this.theme.fg("muted", s);
     const dim = (s: string) => this.theme.fg("dim", s);
-    const text = (s: string) => this.theme.fg("text", s);
+    const label = (icon: string, s: string) =>
+      icon + " " + this.theme.bold(this.theme.fg("text", s));
 
     const lines: string[] = [];
 
     // Window + bar
     if (!this.data.usage) {
-      lines.push(muted("Window: ") + dim("(unknown)"));
+      lines.push(label("", "Window:") + " " + dim("(unknown)"));
     } else {
       const u = this.data.usage;
       lines.push(
-        muted("Window: ") +
-          text(
-            `~${u.effectiveTokens.toLocaleString()} / ${u.contextWindow.toLocaleString()}`,
-          ) +
-          muted(
-            `  (${u.percent.toFixed(1)}% used, ~${u.remainingTokens.toLocaleString()} left)`,
+        label("", "Window:") +
+          " " +
+          dim(
+            `~${u.effectiveTokens.toLocaleString()} / ${u.contextWindow.toLocaleString()}  (${u.percent.toFixed(1)}% used, ~${u.remainingTokens.toLocaleString()} left)`,
           ),
       );
 
@@ -396,20 +400,25 @@ class ContextView implements Component {
     if (this.data.usage) {
       const u = this.data.usage;
       lines.push(
-        muted("System: ") +
-          text(`~${u.systemPromptTokens.toLocaleString()} tok`) +
-          muted(` (AGENTS ~${u.agentTokens.toLocaleString()})`),
+        label("", "System:") +
+          " " +
+          dim(
+            `~${u.systemPromptTokens.toLocaleString()} tok  (AGENTS ~${u.agentTokens.toLocaleString()})`,
+          ),
       );
       lines.push(
-        muted("Tools: ") +
-          text(`~${u.toolsTokens.toLocaleString()} tok`) +
-          muted(` (${u.activeTools} active)`),
+        label("", "Tools:") +
+          " " +
+          dim(
+            `~${u.toolsTokens.toLocaleString()} tok  (${u.activeTools} active)`,
+          ),
       );
     }
 
     lines.push(
-      muted(`AGENTS (${this.data.agentFiles.length}): `) +
-        text(
+      label("󰎚", `AGENTS (${this.data.agentFiles.length}):`) +
+        " " +
+        dim(
           this.data.agentFiles.length
             ? joinComma(this.data.agentFiles)
             : "(none)",
@@ -417,8 +426,9 @@ class ContextView implements Component {
     );
     lines.push("");
     lines.push(
-      muted(`Extensions (${this.data.extensions.length}): `) +
-        text(
+      label("", `Extensions (${this.data.extensions.length}):`) +
+        " " +
+        dim(
           this.data.extensions.length
             ? joinComma(this.data.extensions)
             : "(none)",
@@ -430,19 +440,31 @@ class ContextView implements Component {
       ? joinCommaStyled(
           this.data.skills,
           (name) =>
-            loaded.has(name)
-              ? this.theme.fg("success", name)
-              : this.theme.fg("muted", name),
-          this.theme.fg("muted", ", "),
+            loaded.has(name) ? this.theme.fg("success", name) : dim(name),
+          dim(", "),
         )
-      : "(none)";
-    lines.push(muted(`Skills (${this.data.skills.length}): `) + skillsRendered);
+      : dim("(none)");
+    lines.push(
+      label("", `Skills (${this.data.skills.length}):`) +
+        " " +
+        skillsRendered,
+    );
+    lines.push(
+      label("󰚩", `Subagents (${this.data.subagents.length}):`) +
+        " " +
+        dim(
+          this.data.subagents.length
+            ? joinComma(this.data.subagents)
+            : "(none)",
+        ),
+    );
     lines.push("");
     lines.push(
-      muted("Session: ") +
-        text(`${this.data.session.totalTokens.toLocaleString()} tokens`) +
-        muted(" · ") +
-        text(formatUsd(this.data.session.totalCost)),
+      label("", "Session:") +
+        " " +
+        dim(
+          `${this.data.session.totalTokens.toLocaleString()} tokens · ${formatUsd(this.data.session.totalCost)}`,
+        ),
     );
 
     this.body.setText(lines.join("\n"));
@@ -587,6 +609,15 @@ export default function contextExtension(pi: ExtensionAPI) {
 
       const sessionUsage = sumSessionUsage(ctx);
 
+      const subagentConfig = loadConfig();
+      const { agents: discoveredAgents } = discoverAgents(
+        subagentConfig.sources,
+        ctx.cwd,
+      );
+      const subagents = discoveredAgents
+        .map((a) => a.name)
+        .sort((a, b) => a.localeCompare(b));
+
       const makePlainText = () => {
         const lines: string[] = [];
         lines.push("Context");
@@ -611,6 +642,9 @@ export default function contextExtension(pi: ExtensionAPI) {
         );
         lines.push(
           `Skills (${skills.length}): ${skills.length ? joinComma(skills) : "(none)"}`,
+        );
+        lines.push(
+          `Subagents (${subagents.length}): ${subagents.length ? joinComma(subagents) : "(none)"}`,
         );
         lines.push(
           `Session: ${sessionUsage.totalTokens.toLocaleString()} tokens · ${formatUsd(sessionUsage.totalCost)}`,
@@ -648,6 +682,7 @@ export default function contextExtension(pi: ExtensionAPI) {
         extensions: extensionFiles,
         skills,
         loadedSkills,
+        subagents,
         session: {
           totalTokens: sessionUsage.totalTokens,
           totalCost: sessionUsage.totalCost,
