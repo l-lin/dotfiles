@@ -68,12 +68,14 @@ Format:
 - Use user's current language for non-code responses (code comments in English unless specified)
 - When tool execution is denied, ask for guidance instead of retrying
 
-## Additional Available Tools
+## Additional Available Tools (MUST USE)
 
-- **`ast-grep`** — Fast, polyglot structural code search, linting, and rewriting. Prefer it over `grep` when searching for code patterns, AST nodes, or doing structural refactors.
-- **`difftastic`** — Syntax-aware diff tool. Use it instead of `diff` when comparing code files to get meaningful, language-aware output.
-- **`rg`** (ripgrep) — Fast regex search across files. Prefer it over `grep` for file content searches.
-- **`fd`** — Fast, user-friendly alternative to `find`. Prefer it over `find` for file discovery.
+You have access to faster/better CLI tools. You MUST use these instead of their defaults:
+
+- **NEVER use `grep`** → use **`rg`** (ripgrep) for file content searches
+- **NEVER use `find`** → use **`fd`** for file discovery
+- **NEVER use `grep` for code patterns** → use **`ast-grep`** for structural code search, linting, and rewriting
+- **NEVER use `diff`** → use **`difftastic`** for syntax-aware diffs on code files
 
 ## Token Efficiency
 
