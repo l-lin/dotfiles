@@ -35,6 +35,11 @@ import { existsSync } from "node:fs";
 import { loadConfig } from "./subagent/config.js";
 import { discoverAgents } from "./subagent/agents.js";
 
+const SYSTEM_FG = "warning";
+const TOOLS_FG = "error";
+const CONVO_FG = "accent";
+const FREE_FG = "muted";
+
 function formatUsd(cost: number): string {
   if (!Number.isFinite(cost) || cost <= 0) return "$0.00";
   if (cost >= 1) return `$${cost.toFixed(2)}`;
@@ -266,10 +271,10 @@ function renderUsageBar(
   while (sys + tools + con + rem > w && rem > 0) rem--;
 
   const block = "█";
-  const sysStr = theme.fg("accent", block.repeat(sys));
-  const toolsStr = theme.fg("warning", block.repeat(tools));
-  const conStr = theme.fg("success", block.repeat(con));
-  const remStr = theme.fg("dim", block.repeat(rem));
+  const sysStr = theme.fg(SYSTEM_FG, block.repeat(sys));
+  const toolsStr = theme.fg(TOOLS_FG, block.repeat(tools));
+  const conStr = theme.fg(CONVO_FG, block.repeat(con));
+  const remStr = theme.fg(FREE_FG, block.repeat(rem));
   return `${sysStr}${toolsStr}${conStr}${remStr}`;
 }
 
@@ -381,16 +386,16 @@ class ContextView implements Component {
         ) +
         " " +
         dim("sys") +
-        this.theme.fg("accent", "█") +
+        this.theme.fg(SYSTEM_FG, "█") +
         " " +
         dim("tools") +
-        this.theme.fg("warning", "█") +
+        this.theme.fg(TOOLS_FG, "█") +
         " " +
         dim("convo") +
-        this.theme.fg("success", "█") +
+        this.theme.fg(CONVO_FG, "█") +
         " " +
         dim("free") +
-        this.theme.fg("dim", "█");
+        this.theme.fg(FREE_FG, "█");
       lines.push(bar);
     }
 
