@@ -21,7 +21,7 @@
  *   Alt+o          open line below (insert mode shortcut)
  *   Alt+Shift+O    open line above (insert mode shortcut)
  *
- * Snippet autocomplete (type trigger, press Tab):
+ * Snippet autocomplete ($-snippets trigger automatically on "$"; ?-snippets via Tab):
  *   ?q             → clarification instruction
  *   $date          → today's date (YYYY-MM-DD)
  *   $tdd           → red/green TDD instruction

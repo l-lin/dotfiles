@@ -52,7 +52,12 @@ export class AwesomeEditor extends CustomEditor {
         super.handleInput(ESC_UP);
         return;
       }
-      return super.handleInput(data);
+      super.handleInput(data);
+      // Auto-trigger snippet autocomplete as soon as "$" is typed.
+      if (data === "$" && !(this as any).autocompleteState) {
+        (this as any).tryTriggerAutocomplete();
+      }
+      return;
     }
 
     if (this.pendingMotion)             return this.handlePendingMotion(data);
