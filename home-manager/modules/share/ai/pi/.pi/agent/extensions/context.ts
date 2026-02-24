@@ -309,6 +309,7 @@ type ContextViewData = {
   skills: string[];
   loadedSkills: string[];
   subagents: string[];
+  activeToolNames: string[];
   session: { totalTokens: number; totalCost: number };
 };
 
@@ -412,10 +413,11 @@ class ContextView implements Component {
           ),
       );
       lines.push(
-        label("", "Tools:") +
+        label("", `Tools (${u.activeTools}):`) +
           " " +
           dim(
-            `~${u.toolsTokens.toLocaleString()} tok  (${u.activeTools} active)`,
+            `~${u.toolsTokens.toLocaleString()} tok` +
+            (this.data.activeToolNames.length ? `  ${this.data.activeToolNames.slice().sort().join(", ")}` : ""),
           ),
       );
     }
@@ -637,7 +639,7 @@ export default function contextExtension(pi: ExtensionAPI) {
           `System: ~${systemPromptTokens.toLocaleString()} tok (AGENTS ~${agentTokens.toLocaleString()})`,
         );
         lines.push(
-          `Tools: ~${toolsTokens.toLocaleString()} tok (${activeToolNames.length} active)`,
+          `Tools: ~${toolsTokens.toLocaleString()} tok (${activeToolNames.length} active) — ${activeToolNames.slice().sort().join(", ")}`,
         );
         lines.push(
           `AGENTS: ${agentFilePaths.length ? joinComma(agentFilePaths) : "(none)"}`,
@@ -688,6 +690,7 @@ export default function contextExtension(pi: ExtensionAPI) {
         skills,
         loadedSkills,
         subagents,
+        activeToolNames,
         session: {
           totalTokens: sessionUsage.totalTokens,
           totalCost: sessionUsage.totalCost,
