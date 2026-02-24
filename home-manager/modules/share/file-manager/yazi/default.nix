@@ -5,8 +5,10 @@
 
 {
   # Using `programs` instead of `home.packages` so stylix can customize the theme colors.
-  programs.yazi.enable = true;
-
+  programs.yazi = {
+    enable = true;
+    shellWrapperName = "y";
+  };
   # Symlink to ~/.config/yazi
   xdg.configFile.yazi = {
      source = ./.config/yazi;
