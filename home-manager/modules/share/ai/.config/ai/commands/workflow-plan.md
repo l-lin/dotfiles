@@ -31,8 +31,8 @@ Please provide:
 
 I'll analyze this information and work with you to create a comprehensive plan.
 
-Tip: You can also invoke this command with a ticket file directly: `/workflow:plan JIRA-1234`
-For deeper analysis, try: `/workflow:plan think deeply about JIRA-1234`
+Tip: You can also invoke this command with a ticket file directly: `/workflow-plan JIRA-1234`
+For deeper analysis, try: `/workflow-plan think deeply about JIRA-1234`
 ```
 
 Then wait for the user's input.
@@ -445,7 +445,7 @@ tasks = [
 ## Example Interaction Flow
 
 ```
-User: /workflow:plan
+User: /workflow-plan
 Assistant: I'll help you create a detailed implementation plan...
 
 User: We need to add parent-child tracking for Claude sub-tasks. See JIRA-1234.
