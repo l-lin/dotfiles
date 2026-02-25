@@ -6,6 +6,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import type { AgentConfig } from "./agents.js";
+import { loadConfig } from "./config.js";
 import * as tmux from "./tmux.js";
 
 // ─── shared types ────────────────────────────────────────────────────────────
@@ -234,13 +235,29 @@ export function spawn(
 
   const resultFile = path.join(dir, "result.md");
 
+  const config = loadConfig();
+
+  function readFileIfExists(filePath: string): string {
+    const expanded = filePath.replace(/^~/, os.homedir());
+    try {
+      return fs.readFileSync(expanded, "utf-8").trim();
+    } catch {
+      return "";
+    }
+  }
+
+  const userSystemPrompt = readFileIfExists(config.userSystemPromptPath);
+
+  const combinedParts = [userSystemPrompt, agent.systemPrompt.trim()].filter(Boolean);
+  const combinedPrompt = combinedParts.join("\n\n");
+
   let systemPromptFile: string | undefined;
-  if (agent.systemPrompt.trim()) {
+  if (combinedPrompt) {
     systemPromptFile = path.join(
       dir,
       `prompt-${agent.name.replace(/[^\w.-]+/g, "_")}.md`,
     );
-    fs.writeFileSync(systemPromptFile, agent.systemPrompt, {
+    fs.writeFileSync(systemPromptFile, combinedPrompt, {
       encoding: "utf-8",
       mode: 0o600,
     });

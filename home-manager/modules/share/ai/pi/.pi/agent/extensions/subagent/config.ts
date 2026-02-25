@@ -9,11 +9,14 @@ export interface SubagentConfig {
   sources: string[];
   /** Maximum number of subagents that can be spawned in parallel per spawn call. Default: 4. */
   maxParallel: number;
+  /** Path to a user-level system prompt prepended to every subagent's prompt. Supports ~ expansion. Default: "~/.pi/agent/AGENTS.md". */
+  userSystemPromptPath: string;
 }
 
 const DEFAULTS: SubagentConfig = {
   sources: ["~/.pi/agent/agents", "./.pi/agents"],
   maxParallel: 4,
+  userSystemPromptPath: "~/.pi/agent/AGENTS.md",
 };
 
 const CONFIG_PATH = path.join(os.homedir(), ".pi", "agent", "settings.json");
@@ -29,6 +32,9 @@ export function loadConfig(): SubagentConfig {
       maxParallel: typeof parsed.maxParallel === "number" && parsed.maxParallel > 0
         ? Math.floor(parsed.maxParallel)
         : DEFAULTS.maxParallel,
+      userSystemPromptPath: typeof parsed.userSystemPromptPath === "string" && parsed.userSystemPromptPath.length > 0
+        ? parsed.userSystemPromptPath
+        : DEFAULTS.userSystemPromptPath,
     };
   } catch {
     // File missing or malformed — fall back to defaults silently
