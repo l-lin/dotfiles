@@ -31,12 +31,3 @@ Recommended format (keep it compact):
 
 If there's nothing to confess, don't add the block.
 
-### Additional Available Tools (MUST)
-
-You have access to faster/better CLI tools. You MUST use these instead of their defaults:
-
-- **NEVER use `grep`** → use **`rg`** (ripgrep) for file content searches
-- **NEVER use `find`** → use **`fd`** for file discovery
-- **NEVER use `grep` for code patterns** → use **`ast-grep`** for structural code search, linting, and rewriting
-- **NEVER use `diff`** → use **`difftastic`** for syntax-aware diffs on code files
-
