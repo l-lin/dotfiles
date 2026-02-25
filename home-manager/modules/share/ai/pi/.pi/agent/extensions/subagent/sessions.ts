@@ -1,4 +1,4 @@
-/** Sub-agent session lifecycle: spawn, track, close */
+/** Subagent session lifecycle: spawn, track, close */
 
 import { execSync } from "node:child_process";
 import * as fs from "node:fs";
@@ -113,8 +113,8 @@ function flushToPool(
   const count = pendingPool.size;
   const content =
     count === 1
-      ? "Sub-agent has reported. Now use the result to complete your task."
-      : "All sub-agents have reported. Now synthesize these results and complete your task.";
+      ? "Subagent has reported. Now use the result to complete your task."
+      : "All subagents have reported. Now synthesize these results and complete your task.";
 
   pi.sendMessage(
     {
@@ -294,7 +294,7 @@ export function spawn(
       pi.sendMessage(
         {
           customType: "subagent-result",
-          content: `Sub-agent "${id}" reported:\n\n${content}`,
+          content: `Subagent "${id}" reported:\n\n${content}`,
           display: true,
           details: { sessionId: id, agentName: agent.name },
         },

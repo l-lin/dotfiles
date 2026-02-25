@@ -138,7 +138,7 @@ export function renderResult(
       );
     }
     if (expanded) {
-      // Raw text format: "Spawned X sub-agent(s):\n- ...\n\n<instructions>"
+      // Raw text format: "Spawned X subagent(s):\n- ...\n\n<instructions>"
       // Skip the session list lines (already shown visually) and show only
       // the instructions that follow the first blank line.
       const separatorIdx = textContent.indexOf("\n\n");

@@ -1,7 +1,7 @@
 /**
  * Subagent Tool — spawn interactive pi instances in tmux split panes.
  *
- * The user sees and steers sub-agents directly. Results flow back via
+ * The user sees and steers subagents directly. Results flow back via
  * file-based IPC + fs.watch that auto-triggers the main agent.
  */
 
@@ -115,7 +115,7 @@ function handleSend(params: SubagentParams): ToolResult {
   if (!session) return sessionError(params.id);
   if (!sessions.checkAlive(session))
     return err(
-      `Sub-agent "${session.agentName}" (${session.id}) is no longer running.`,
+      `Subagent "${session.agentName}" (${session.id}) is no longer running.`,
     );
 
   session.pending = true;
@@ -142,7 +142,7 @@ Just stop and wait. Your turn will be triggered automatically.`;
 function handleRead(params: SubagentParams): ToolResult {
   // No ID → list all sessions
   if (!params.id) {
-    if (sessions.size() === 0) return ok("No active sub-agent sessions.");
+    if (sessions.size() === 0) return ok("No active subagent sessions.");
     const pending = sessions.all().filter((s) => s.pending);
     if (pending.length > 0) {
       return err(POLL_WARNING);
@@ -171,7 +171,7 @@ function handleClose(params: SubagentParams): ToolResult {
   if (params.id === "all") {
     const count = sessions.size();
     sessions.closeAll();
-    return ok(`Closed ${count} sub-agent session(s).`, {
+    return ok(`Closed ${count} subagent(s).`, {
       action: Action.Close,
     });
   }
@@ -242,9 +242,9 @@ async function handleSpawn(
     .map((s) => `- **${s.agent}** → session \`${s.id}\``)
     .join("\n");
   return ok(
-    `Spawned ${spawned.length} sub-agent(s):\n${lines}\n\n` +
+    `Spawned ${spawned.length} subagent(s):\n${lines}\n\n` +
       `⛔ STOP HERE. Do not call any tools. Do not do the work yourself. Do not poll with read.\n` +
-      `Results are pushed automatically — your turn will be triggered once all sub-agents have reported.\n` +
+      `Results are pushed automatically — your turn will be triggered once all subagents have reported.\n` +
       `Use send to send follow-up messages, close to terminate a session.`,
     { action: Action.Spawn, sources, spawned },
   );
@@ -320,20 +320,54 @@ export default function (pi: ExtensionAPI) {
 
   pi.registerMessageRenderer("subagent-result", render.renderMessage);
 
+  pi.registerCommand("subagent-close", {
+    description: "Interactively close one or all active subagents",
+
+    handler: async (_args, ctx) => {
+      const active = sessions.all();
+      if (active.length === 0) {
+        ctx.ui.notify("No active subagent.", "info");
+        return;
+      }
+
+      const ALL_LABEL = "󰚩 ALL";
+      const options = [ALL_LABEL, ...active.map((s) => `󰚩 ${s.id}`)];
+      const chosen = await ctx.ui.select("Select a subagent to close:", options);
+      if (!chosen) return;
+
+      if (chosen === ALL_LABEL) {
+        const count = sessions.size();
+        sessions.closeAll();
+        updateSessionWidget(ctx);
+        ctx.ui.notify(`Closed all ${count} subagent(s).`, "info");
+      } else {
+        const id = chosen.split(" ")[1];
+        const session = sessions.get(id);
+        if (!session) {
+          ctx.ui.notify(`Subagent "${id}" not found.`, "error");
+          return;
+        }
+        sessions.close(session);
+        updateSessionWidget(ctx);
+        ctx.ui.notify(`Closed subagent "${id}".`, "info");
+      }
+    },
+  });
+
   pi.registerTool({
     name: "subagent",
     label: "Subagent",
     description: [
-      "Manage interactive sub-agents in tmux windows.",
+      "Manage interactive subagents in tmux windows.",
       "",
       "Actions:",
       '  list   — List all available subagents (name and description) to determine which agent to spawn for a given task.',
       '  spawn  — Create window(s). "agent"+"task" for single, "tasks" array for parallel.',
-      '  send   — Send message to sub-agent. Requires "id" and "message".',
+      '  send   — Send message to subagent. Requires "id" and "message".',
       '  read   — Read latest result. Requires "id" (omit for all). NEVER poll with this after spawn — if subagents are still running, this returns an error. Results are pushed automatically.',
       '  close  — Kill window. Requires "id" (or "all").',
       "",
-      "IMPORTANT: After spawning, STOP — do not call any tools, do not do the work yourself. If you call read while agents are running, you get an error. Results are pushed automatically via file watcher; your turn is triggered once all sub-agents have reported.",
+      "IMPORTANT: After spawning, STOP — do not call any tools, do not do the work yourself. If you call read while agents are running, you get an error. Results are pushed automatically via file watcher; your turn is triggered once all subagents have reported.",
       "Requires tmux.",
     ].join("\n"),
     parameters: SubagentParamsSchema,

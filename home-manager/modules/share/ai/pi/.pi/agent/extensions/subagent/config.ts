@@ -7,7 +7,7 @@ import * as path from "node:path";
 export interface SubagentConfig {
   /** Directories to search for agent definitions. Supports ~ and $HOME expansion; relative paths resolve against cwd. Default: ["~/.pi/agent/agents"]. */
   sources: string[];
-  /** Maximum number of sub-agents that can be spawned in parallel per spawn call. Default: 4. */
+  /** Maximum number of subagents that can be spawned in parallel per spawn call. Default: 4. */
   maxParallel: number;
 }
 
