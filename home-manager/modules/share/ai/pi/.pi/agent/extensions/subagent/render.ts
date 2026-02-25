@@ -2,7 +2,6 @@
 
 import { getMarkdownTheme } from "@mariozechner/pi-coding-agent";
 import {
-  Box,
   Container,
   Markdown,
   Spacer,
@@ -181,17 +180,16 @@ export function renderMessage(
   const header = isAllDone
     ? `${title("󱃚 subagent report")} ${theme.fg("success", "all")}`
     : `${title("󱃚 subagent report")} ${theme.fg("accent", id)}`;
-  const box = new Box(1, 1, (s: string) => theme.bg("toolSuccessBg", s));
 
   if (expanded) {
-    box.addChild(new Text(header, 0, 0));
-    box.addChild(new Spacer(1));
-    box.addChild(
+    const container = new Container();
+    container.addChild(new Text(header, 0, 0));
+    container.addChild(new Spacer(1));
+    container.addChild(
       new Markdown(message.content?.trim() ?? "(empty)", 0, 0, mdTheme),
     );
-    return box;
+    return container;
   }
 
-  box.addChild(new Text(header, 0, 0));
-  return box;
+  return new Text(header, 0, 0);
 }
