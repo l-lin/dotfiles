@@ -698,7 +698,12 @@ function renderGraphLines(
   modelColors: Map<ModelKey, RGB>,
   otherColor: RGB,
   mode: MeasurementMode,
-  options?: { cellWidth?: number; gap?: number; bgColor?: RGB; emptyCellBg?: RGB },
+  options?: {
+    cellWidth?: number;
+    gap?: number;
+    bgColor?: RGB;
+    emptyCellBg?: RGB;
+  },
 ): string[] {
   const days = range.days;
   const start = days[0].date;
@@ -849,18 +854,19 @@ function renderModelTable(
   );
   lines.push(divider);
 
-  // Today row: pinned at top, spans full width showing all 4 metrics.
+  // Today row: pinned at top, aligned to the same columns as the model rows.
   if (today) {
-    const todayParts: string[] = [];
-    todayParts.push(
-      `${formatCount(today.sessions)} sess`,
-      `${formatCount(today.messages)} msg`,
-      `${formatCount(today.tokens)} tok`,
-      formatUsd(today.totalCost),
+    const todayLabel = bold(padRight("today ★", modelWidth));
+    // Primary metric column: show the relevant count for the current kind
+    const todayMetricValue =
+      kind === "tokens"
+        ? today.tokens
+        : kind === "messages"
+          ? today.messages
+          : today.sessions;
+    lines.push(
+      `${todayLabel}  ${padLeft(formatCount(todayMetricValue), valueWidth)}  ${padLeft(formatUsd(today.totalCost), 10)}  ${padLeft("—", 6)}`,
     );
-    const todayLabel = bold("today ★");
-    const todayValues = todayParts.join("  ·  ");
-    lines.push(`${todayLabel}  ${todayValues}`);
     lines.push(divider);
   }
 
@@ -998,7 +1004,11 @@ class BreakdownComponent implements Component {
     this.onDone = onDone;
     // Theme provided by pi; detect light vs dark by name when possible.
     try {
-      this.isLight = !!(theme && typeof theme.name === "string" && theme.name.toLowerCase().includes("light"));
+      this.isLight = !!(
+        theme &&
+        typeof theme.name === "string" &&
+        theme.name.toLowerCase().includes("light")
+      );
     } catch {
       this.isLight = false;
     }
