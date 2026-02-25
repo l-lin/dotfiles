@@ -1,17 +1,33 @@
 /** Rendering for subagent tool calls, results, and notifications */
 
 import { getMarkdownTheme } from "@mariozechner/pi-coding-agent";
-import {
-  Container,
-  Markdown,
-  Spacer,
-  Text,
-  truncateToWidth,
-} from "@mariozechner/pi-tui";
+import { Container, Markdown, Spacer, Text } from "@mariozechner/pi-tui";
 import { Action } from "./sessions.js";
 import type { SubagentDetails } from "./sessions.js";
 
 type Theme = { fg: Function; bg: Function; bold: Function };
+
+/**
+ * Truncate plain text to maxWidth, then apply a theme color.
+ *
+ * We strip ANSI codes first so that `theme.fg` wraps only clean text
+ * with no embedded resets — otherwise `truncateToWidth` injects `\x1b[0m`
+ * before the ellipsis, which gets wrapped inside the background color and
+ * causes the background to bleed past the visible characters on light themes.
+ */
+function styledTruncate(
+  theme: Theme,
+  colorKey: string,
+  text: string,
+  maxWidth: number,
+  ellipsis = "...",
+): string {
+  const truncated =
+    text.length <= maxWidth
+      ? text
+      : text.slice(0, maxWidth - ellipsis.length) + ellipsis;
+  return theme.fg(colorKey, truncated);
+}
 
 // ─── renderCall ──────────────────────────────────────────────────────────────
 
@@ -27,7 +43,7 @@ export function renderSpawnCall(args: any, theme: Theme): Text {
       title("󰚩 subagent spawn ") +
       theme.fg("accent", `${args.tasks.length} panes`);
     for (const t of args.tasks.slice(0, 3)) {
-      text += `\n  ${theme.fg("accent", t.agent)}${theme.fg("dim", ` ${truncateToWidth(t.task, 40)}`)}`;
+      text += `\n  ${theme.fg("accent", t.agent)} ${styledTruncate(theme, "dim", t.task, 40)}`;
     }
     if (args.tasks.length > 3)
       text += `\n  ${theme.fg("muted", `... +${args.tasks.length - 3} more`)}`;
@@ -36,7 +52,7 @@ export function renderSpawnCall(args: any, theme: Theme): Text {
   return new Text(
     title("󰚩 subagent spawn ") +
       theme.fg("accent", args.agent || "...") +
-      `\n  ${theme.fg("dim", truncateToWidth(args.task || "...", 60))}`,
+      `\n  ${styledTruncate(theme, "dim", args.task || "...", 60)}`,
     0,
     0,
   );
@@ -47,7 +63,7 @@ export function renderSendCall(args: any, theme: Theme): Text {
   return new Text(
     title("󱃜 subagent send ") +
       theme.fg("accent", args.id || "?") +
-      `\n  ${theme.fg("dim", truncateToWidth(args.message || "...", 50))}`,
+      `\n  ${styledTruncate(theme, "dim", args.message || "...", 50)}`,
     0,
     0,
   );
