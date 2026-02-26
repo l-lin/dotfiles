@@ -20,7 +20,6 @@
     #
     # AGENTS
     #
-    ".pi/agent/subagents/explore.md".source = ./.pi/agent/subagents/explore.md;
     ".pi/agent/subagents/general-purpose.md".source = ./.pi/agent/subagents/general-purpose.md;
     ".pi/agent/subagents/codebase-analyzer.md".text = ''
 ---
