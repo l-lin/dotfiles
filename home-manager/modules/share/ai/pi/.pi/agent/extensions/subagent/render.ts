@@ -41,7 +41,7 @@ export function renderSpawnCall(args: any, theme: Theme): Text {
   if (args.tasks?.length > 0) {
     let text =
       title("󰚩 subagent spawn ") +
-      theme.fg("accent", `${args.tasks.length} panes`);
+      theme.fg("accent", `${args.tasks.length} agents`);
     for (const t of args.tasks.slice(0, 3)) {
       text += `\n  ${theme.fg("accent", t.agent)} ${styledTruncate(theme, "dim", t.task, 40)}`;
     }
@@ -49,10 +49,11 @@ export function renderSpawnCall(args: any, theme: Theme): Text {
       text += `\n  ${theme.fg("muted", `... +${args.tasks.length - 3} more`)}`;
     return new Text(text, 0, 0);
   }
+  // Single agent: one compact line — agent name + truncated task inline
+  const agent = args.agent || "...";
+  const task = args.task ? ` ${styledTruncate(theme, "dim", args.task, 50)}` : "";
   return new Text(
-    title("󰚩 subagent spawn ") +
-      theme.fg("accent", args.agent || "...") +
-      `\n  ${styledTruncate(theme, "dim", args.task || "...", 60)}`,
+    title("󰚩 subagent spawn ") + theme.fg("accent", agent) + task,
     0,
     0,
   );
@@ -60,10 +61,9 @@ export function renderSpawnCall(args: any, theme: Theme): Text {
 
 export function renderSendCall(args: any, theme: Theme): Text {
   const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
+  const msg = args.message ? ` ${styledTruncate(theme, "dim", args.message, 50)}` : "";
   return new Text(
-    title("󱃜 subagent send ") +
-      theme.fg("accent", args.id || "?") +
-      `\n  ${styledTruncate(theme, "dim", args.message || "...", 50)}`,
+    title("󱃜 subagent send ") + theme.fg("accent", args.id || "?") + msg,
     0,
     0,
   );
@@ -143,6 +143,15 @@ export function renderResult(
 
   // Spawn: show session IDs prominently
   if (details?.action === Action.Spawn && details.spawned?.length) {
+    if (!expanded && details.spawned.length === 1) {
+      // Single spawn collapsed: one compact line with session ID only
+      const s = details.spawned[0];
+      return new Text(
+        `  ${theme.fg("success", "▶")} ${theme.fg("accent", s.id)}`,
+        0,
+        0,
+      );
+    }
     const container = new Container();
     for (const s of details.spawned) {
       container.addChild(
