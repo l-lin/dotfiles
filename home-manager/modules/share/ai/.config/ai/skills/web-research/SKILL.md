@@ -1,108 +1,67 @@
 ---
 name: web-research
-description: Use when the user says "search internet" or for requests related to web research; it provides a structured approach to conducting comprehensive web research
+description: Use when the user says "search internet", "look it up", or asks for current web information on any topic
 ---
 
 # Web Research Skill
 
-This skill provides a structured approach to conducting comprehensive web research using the @web-search-researcher subagents. It emphasizes planning, efficient delegation, and systematic synthesis of findings.
+Structured approach to web research using parallel subagents, file-based communication, and systematic synthesis.
 
-## When to Use This Skill
+## When to Use
 
-Use this skill when you need to:
+- User asks to search the internet or look something up
+- Information may be outdated in training data (current events, versions, prices)
+- Comparative analysis across multiple sources
 
-- Research complex topics requiring multiple information sources
-- Gather and synthesize current information from the web
-- Conduct comparative analysis across multiple subjects
-- Produce well-sourced research reports with clear citations
+**When NOT to use:**
+- Single well-known fact (just answer directly)
+- Question answerable from codebase/local files
 
 ## Research Process
 
-### Step 1: Create and Save Research Plan
+### Step 1: Plan
 
-Before delegating to subagents, you MUST:
+Create `.sandbox/research/YYYY-MM-DD-[topic]/research_plan.md` with:
+- Main question
+- 2–5 non-overlapping subtopics
+- How results will be synthesized
 
-1. **Create a research folder** - Organize all research files in a dedicated folder relative to the current working directory:
-  - Filename: `.sandbox/research/YYYY-MM-DD-[topic_name]/`
-    - YYYY-MM-DD is today's date
-    - [topic_name] is a brief kebab-case description of the research topic
-  - This keeps files organized and prevents clutter in the working directory.
-  - Examples:
-    - `.sandbox/research/2025-01-08-authentication-flow/`
+**Subtopic count:**
+- Simple fact-finding: 1–2
+- Comparative: 1 per element (max 3)
+- Complex: 3–5
 
-2. **Analyze the research question** - Break it down into distinct, non-overlapping subtopics
+### Step 2: Delegate to Subagents
 
-3. **Write a research plan file** - Use the `write_file` tool to create `.sandbox/research/YYYY-MM-DD-[topic_name]/research_plan.md` containing:
-   - The main research question
-   - 2-5 specific subtopics to investigate
-   - Expected information from each subtopic
-   - How results will be synthesized
-
-**Planning Guidelines:**
-
-- **Simple fact-finding**: 1-2 subtopics
-- **Comparative analysis**: 1 subtopic per comparison element (max 3)
-- **Complex investigations**: 3-5 subtopics
-
-### Step 2: Delegate to Research Subagents
-
-For each subtopic in your plan:
-
-1. **Use the @web-search-researcher subagent** to spawn a research subagent with:
-   - Clear, specific research question (no acronyms)
-   - Instructions to write findings to a file: `.sandbox/research/YYYY-MM-DD-[topic_name]/findings_[subtopic].md`
-   - Budget: 3-5 web searches maximum
-
-2. **Run up to 3 subagents in parallel** for efficient research
-
-**Subagent Instructions Template:**
+Spawn one `web-search-researcher` subagent per subtopic (up to 3 in parallel):
 
 ```
-Research [SPECIFIC TOPIC]. Use the web_search tool to gather information.
-After completing your research, use write_file to save your findings to .sandbox/research/YYYY-MM-DD-[topic_name]/findings_[subtopic].md.
+Research [SPECIFIC TOPIC]. Use web_search to gather information.
+Save findings to .sandbox/research/YYYY-MM-DD-[topic]/findings_[subtopic].md.
 Include key facts, relevant quotes, and source URLs.
-Use 3-5 web searches maximum.
+Use 3–5 searches maximum.
 ```
 
-### Step 3: Synthesize Findings
+### Step 3: Synthesize
 
-After all subagents complete:
+1. `ls .sandbox/research/YYYY-MM-DD-[topic]/` to confirm findings files exist
+2. `read` each findings file
+3. Write a response that directly answers the question, integrates all subtopics, and cites URLs
+4. Optionally write `research_report.md` if user requested a document
 
-1. **Review the findings files** that were saved locally:
-   - First run `list_files .sandbox/research/YYYY-MM-DD-[topic_name]` to see what files were created
-   - Then use `read_file` with the **file paths** (e.g., `.sandbox/research/YYYY-MM-DD-[topic_name]/findings_*.md`)
-   - **Important**: Use `read_file` for LOCAL files only, not URLs
+## Available Tools (pi environment)
 
-2. **Synthesize the information** - Create a comprehensive response that:
-   - Directly answers the original question
-   - Integrates insights from all subtopics
-   - Cites specific sources with URLs (from the findings files)
-   - Identifies any gaps or limitations
-
-3. **Write final report** (optional) - Use `write_file` to create `.sandbox/research/YYYY-MM-DD-[topic_name]/research_report.md` if requested
-
-**Note**: If you need to fetch additional information from URLs, use the `fetch_url` tool, not `read_file`.
-
-## Available Tools
-
-You have access to:
-
-- **write_file**: Save research plans and findings to local files
-- **read_file**: Read local files (e.g., findings saved by subagents)
-- **list_files**: See what local files exist in a directory
-- **fetch_url**: Fetch content from URLs and convert to markdown (use this for web pages, not read_file)
-
-## Research Subagent Configuration
-
-Each subagent you spawn will have access to:
-
-- **web_search**: Search the web using Tavily (parameters: query, max_results, topic, include_raw_content)
-- **write_file**: Save their findings to the filesystem
+| Tool | Use for |
+|------|---------|
+| `write` | Save research plan and report |
+| `read` | Read local findings files |
+| `ls` / `find` | List files in research folder |
+| `bash` | Anything else (move, mkdir, etc.) |
+| `web-search` | Direct single searches (skip subagent for simple lookups) |
 
 ## Best Practices
 
-- **Plan before delegating** - Always write research_plan.md first
-- **Clear subtopics** - Ensure each subagent has distinct, non-overlapping scope
-- **File-based communication** - Have subagents save findings to files, not return them directly
-- **Systematic synthesis** - Read all findings files before creating final response
-- **Stop appropriately** - Don't over-research; 3-5 searches per subtopic is usually sufficient
+- Write `research_plan.md` before spawning any subagent
+- Each subagent gets a distinct, non-overlapping scope
+- 3–5 searches per subtopic is enough — don't over-research
+- Subagents communicate via files, not return values
