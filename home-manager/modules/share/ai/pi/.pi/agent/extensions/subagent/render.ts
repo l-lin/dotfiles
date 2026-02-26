@@ -51,7 +51,9 @@ export function renderSpawnCall(args: any, theme: Theme): Text {
   }
   // Single agent: one compact line — agent name + truncated task inline
   const agent = args.agent || "...";
-  const task = args.task ? ` ${styledTruncate(theme, "dim", args.task, 50)}` : "";
+  const task = args.task
+    ? ` ${styledTruncate(theme, "dim", args.task, 50)}`
+    : "";
   return new Text(
     title("󰚩 subagent spawn ") + theme.fg("accent", agent) + task,
     0,
@@ -61,18 +63,11 @@ export function renderSpawnCall(args: any, theme: Theme): Text {
 
 export function renderSendCall(args: any, theme: Theme): Text {
   const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
-  const msg = args.message ? ` ${styledTruncate(theme, "dim", args.message, 50)}` : "";
+  const msg = args.message
+    ? ` ${styledTruncate(theme, "dim", args.message, 50)}`
+    : "";
   return new Text(
     title("󱃜 subagent send ") + theme.fg("accent", args.id || "?") + msg,
-    0,
-    0,
-  );
-}
-
-export function renderReadCall(args: any, theme: Theme): Text {
-  const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
-  return new Text(
-    title(" subagent read ") + theme.fg("accent", args.id || "(all)"),
     0,
     0,
   );
@@ -85,11 +80,6 @@ export function renderCloseCall(args: any, theme: Theme): Text {
     0,
     0,
   );
-}
-
-export function renderDefaultCall(_: any, theme: Theme): Text {
-  const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
-  return new Text(title("󰚩 subagent"), 0, 0);
 }
 
 // ─── renderListResult ────────────────────────────────────────────────────────
@@ -183,7 +173,7 @@ export function renderResult(
   if (!textContent.trim()) return new Text("", 0, 0);
 
   const firstLine = textContent.split("\n")[0].trim();
-  let rendered = theme.fg("toolOutput", firstLine);
+  const rendered = theme.fg("toolOutput", firstLine);
   return new Text(rendered, 0, 0);
 }
 
@@ -194,15 +184,14 @@ export function renderMessage(
   { expanded }: { expanded: boolean },
   theme: Theme,
 ) {
-  const details = message.details as
-    | { sessionId?: string; agentName?: string }
-    | undefined;
+  const details = message.details as SubagentDetails | undefined;
   const id = details?.sessionId ?? "?";
   const mdTheme = getMarkdownTheme();
   const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
 
-  const isAllDone = (details as any)?.action === Action.AllDone;
-  const header = isAllDone
+  const isAll =
+    details?.action === Action.AllDone || details?.sessionId === "all";
+  const header = isAll
     ? `${title("󱃚 subagent report")} ${theme.fg("success", "all")}`
     : `${title("󱃚 subagent report")} ${theme.fg("accent", id)}`;
 

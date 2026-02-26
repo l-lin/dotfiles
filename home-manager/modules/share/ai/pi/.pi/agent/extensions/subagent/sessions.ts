@@ -239,12 +239,7 @@ export function spawn(
   execSync("sleep 1.5");
   tmux.sendCommand(
     paneId,
-    buildPiCommand(
-      agent,
-      task,
-      resultFile,
-      systemPromptFile,
-    ),
+    buildPiCommand(agent, task, resultFile, systemPromptFile),
   );
 
   const session: Session = {
@@ -279,7 +274,10 @@ export function spawn(
           customType: "subagent-result",
           content: `Subagent "${id}" reported:\n\n${content}`,
           display: true,
-          details: { sessionId: id, agentName: agent.name },
+          details: {
+            action: Action.Read,
+            sessionId: id,
+          } satisfies SubagentDetails,
         },
         { triggerTurn: false, deliverAs: "followUp" },
       );
@@ -314,6 +312,9 @@ export function close(session: Session): void {
 }
 
 export function closeAll(): void {
+  // Suppress pool trigger before iterating — close() calls flushToPool which
+  // would otherwise fire an "all done" notification mid-teardown.
+  poolTriggered = true;
   for (const s of all()) close(s);
   pendingPool.clear();
   poolTriggered = false;

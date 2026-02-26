@@ -41,12 +41,12 @@ function getSession(id: string | undefined): sessions.Session | undefined {
 
 // ─── schema ──────────────────────────────────────────────────────────────────
 
-const ACTIONS = [Action.Spawn, Action.Send, Action.Read, Action.Close, Action.List] as const;
+const ACTIONS = [Action.Spawn, Action.Send, Action.Close, Action.List] as const;
 
 type SubagentParams = Static<typeof SubagentParamsSchema>;
 const SubagentParamsSchema = Type.Object({
   action: StringEnum(ACTIONS, {
-    description: "Action: spawn, send, read, close",
+    description: "Action: spawn, send, close, list",
   }),
   agent: Type.Optional(Type.String({ description: "Agent name (for spawn)" })),
   task: Type.Optional(
@@ -90,7 +90,9 @@ function handleList(params: SubagentParams, ctx: ToolContext): ToolResult {
   const agents = discovery.agents;
 
   if (agents.length === 0) {
-    return ok("No subagents found. Check your configuration or agent directories.");
+    return ok(
+      "No subagents found. Check your configuration or agent directories.",
+    );
   }
 
   const lines = agents.map((a) => `**${a.name}**\n  ${a.description}`);
@@ -126,47 +128,6 @@ function handleSend(params: SubagentParams): ToolResult {
   });
 }
 
-const POLL_WARNING = `\
-⛔ STOP — DO NOT PROCEED.
-
-Subagents are still running. Results are pushed automatically — you will be \
-notified the moment they finish. Polling wastes time and context.
-
-DO NOT:
-- Call subagent read again
-- Do the subagents' work yourself
-- Take any other action
-
-Just stop and wait. Your turn will be triggered automatically.`;
-
-function handleRead(params: SubagentParams): ToolResult {
-  // No ID → list all sessions
-  if (!params.id) {
-    if (sessions.size() === 0) return ok("No active subagent sessions.");
-    const pending = sessions.all().filter((s) => s.pending);
-    if (pending.length > 0) {
-      return err(POLL_WARNING);
-    }
-    const summaries = sessions.all().map((s) => `**${s.agentName}** (${s.id})`);
-    return ok(summaries.join("\n\n"), { action: Action.Read });
-  }
-
-  const session = getSession(params.id);
-  if (!session) return sessionError(params.id);
-  sessions.refreshResult(session);
-  sessions.checkAlive(session);
-
-  if (session.pending) {
-    return err(POLL_WARNING);
-  }
-
-  return ok(session.lastResult || "(no result yet)", {
-    action: Action.Read,
-    sessionId: session.id,
-    result: session.lastResult,
-  });
-}
-
 function handleClose(params: SubagentParams): ToolResult {
   if (params.id === "all") {
     const count = sessions.size();
@@ -194,7 +155,7 @@ async function handleSpawn(
 
   // Normalize: single → array
   const taskList: { agent: string; task: string; cwd?: string }[] =
-    params.tasks?.length > 0
+    (params.tasks?.length ?? 0) > 0
       ? params.tasks
       : params.agent && params.task
         ? [{ agent: params.agent, task: params.task, cwd: params.cwd }]
@@ -233,7 +194,6 @@ async function handleSpawn(
       agentSource: session.agentSource,
       paneId: session.paneId,
     });
-
   }
 
   sessions.registerGroup(spawned.map((s) => s.id));
@@ -243,8 +203,7 @@ async function handleSpawn(
     .join("\n");
   return ok(
     `Spawned ${spawned.length} subagent(s):\n${lines}\n\n` +
-      `⛔ STOP HERE. Do not call any tools. Do not do the work yourself. Do not poll with read.\n` +
-      `Results are pushed automatically — your turn will be triggered once all subagents have reported.\n` +
+      `Results will be injected into context when all the subagents have finished their task.\n` +
       `Use send to send follow-up messages, close to terminate a session.`,
     { action: Action.Spawn, sources, spawned },
   );
@@ -272,23 +231,30 @@ function updateSessionWidget(ctx: ToolContext): void {
   }
 
   ctx.ui.setWidget(WIDGET_KEY, (tui, theme) => {
-    // Blink timer: re-renders every 500ms while any session is pending
-    blinkTimer = setInterval(() => {
-      tui.requestRender();
-      if (!sessions.all().some((s) => s.pending)) stopBlinkTimer();
-    }, 500);
+    // Start blink timer once per widget registration — guard prevents leaks
+    // if the factory is called multiple times (e.g. on resize/theme change).
+    if (!blinkTimer) {
+      blinkTimer = setInterval(() => {
+        tui.requestRender();
+        if (!sessions.all().some((s) => s.pending)) stopBlinkTimer();
+      }, 500);
+    }
 
     return {
       render: (width: number) => {
         const blinkOn = Math.floor(Date.now() / 500) % 2 === 0;
-        return active.map((s) => {
+        return sessions.all().map((s) => {
+          // live snapshot — not stale closure
+          const hasResult = s.lastResult.length > 0;
           const icon = s.pending
             ? blinkOn
               ? theme.fg("success", "󰚩")
               : " "
-            : s.alive
-              ? theme.fg("success", "󰚩")
-              : theme.fg("muted", "󰚩");
+            : hasResult
+              ? theme.fg("accent", "󰚩") // result ready — read via subagent-read
+              : s.alive
+                ? theme.fg("success", "󰚩")
+                : theme.fg("muted", "󰚩");
           const id = theme.fg("toolTitle", theme.bold(s.id));
           const task = theme.fg(
             "dim",
@@ -332,25 +298,111 @@ export default function (pi: ExtensionAPI) {
 
       const ALL_LABEL = "󰚩 ALL";
       const options = [ALL_LABEL, ...active.map((s) => `󰚩 ${s.id}`)];
-      const chosen = await ctx.ui.select("Select a subagent to close:", options);
+      const chosen = await ctx.ui.select(
+        "Select a subagent to close:",
+        options,
+      );
       if (!chosen) return;
 
       if (chosen === ALL_LABEL) {
+        const unread = active.filter((s) => s.lastResult.length > 0);
+        if (unread.length > 0) {
+          ctx.ui.notify(
+            `⚠ ${unread.length} session(s) have unread results — closing will discard them.`,
+            "warning",
+          );
+        }
         const count = sessions.size();
         sessions.closeAll();
         updateSessionWidget(ctx);
         ctx.ui.notify(`Closed all ${count} subagent(s).`, "info");
       } else {
-        const id = chosen.split(" ")[1];
+        const id = chosen.slice(chosen.indexOf(" ") + 1);
         const session = sessions.get(id);
         if (!session) {
           ctx.ui.notify(`Subagent "${id}" not found.`, "error");
           return;
         }
+        if (session.lastResult.length > 0) {
+          ctx.ui.notify(
+            `⚠ Session "${id}" has an unread result — closing will discard it.`,
+            "warning",
+          );
+        }
         sessions.close(session);
         updateSessionWidget(ctx);
         ctx.ui.notify(`Closed subagent "${id}".`, "info");
       }
+    },
+  });
+
+  pi.registerCommand("subagent-read", {
+    description:
+      "Read result(s) from finished subagents and inject into agent context",
+
+    handler: async (_args, ctx) => {
+      const active = sessions.all();
+      if (active.length === 0) {
+        ctx.ui.notify("No active subagent sessions.", "info");
+        return;
+      }
+
+      for (const s of active) sessions.refreshResult(s);
+      const finished = active.filter((s) => s.lastResult.length > 0);
+
+      if (finished.length === 0) {
+        ctx.ui.notify("No subagent has reported a result yet.", "warning");
+        return;
+      }
+
+      const ALL_LABEL = "󰚩 ALL";
+      const options = [ALL_LABEL, ...finished.map((s) => `󰚩 ${s.id}`)];
+      const chosen = await ctx.ui.select("Read result from:", options);
+      if (!chosen) return;
+
+      const targets =
+        chosen === ALL_LABEL
+          ? finished
+          : (() => {
+              const id = chosen.slice(chosen.indexOf(" ") + 1);
+              const s = sessions.get(id);
+              return s ? [s] : [];
+            })();
+
+      if (targets.length === 0) {
+        ctx.ui.notify("Session not found.", "error");
+        return;
+      }
+
+      const parts = targets.map(
+        (s) =>
+          `### Result from subagent \`${s.id}\` (${s.agentName})\n\n${s.lastResult}`,
+      );
+      const combined = parts.join("\n\n---\n\n");
+
+      try {
+        pi.sendMessage(
+          {
+            customType: "subagent-result",
+            content: combined,
+            display: true,
+            details: {
+              action: Action.Read,
+              sessionId: targets.length === 1 ? targets[0].id : "all",
+            },
+          },
+          { triggerTurn: true, deliverAs: "followUp" },
+        );
+      } catch (e: any) {
+        ctx.ui.notify(`Failed to inject result: ${e?.message ?? e}`, "error");
+        return;
+      }
+
+      const label =
+        targets.length === 1
+          ? `"${targets[0].id}"`
+          : `${targets.length} subagents`;
+      ctx.ui.notify(`Injected result from ${label} into context.`, "info");
     },
   });
 
@@ -361,13 +413,12 @@ export default function (pi: ExtensionAPI) {
       "Manage interactive subagents in tmux windows.",
       "",
       "Actions:",
-      '  list   — List all available subagents (name and description) to determine which agent to spawn for a given task.',
+      "  list   — List all available subagents (name and description) to determine which agent to spawn for a given task.",
       '  spawn  — Create window(s). "agent"+"task" for single, "tasks" array for parallel.',
       '  send   — Send message to subagent. Requires "id" and "message".',
-      '  read   — Read latest result. Requires "id" (omit for all). NEVER poll with this after spawn — if subagents are still running, this returns an error. Results are pushed automatically.',
       '  close  — Kill window. Requires "id" (or "all").',
       "",
-      "IMPORTANT: After spawning, STOP — do not call any tools, do not do the work yourself. If you call read while agents are running, you get an error. Results are pushed automatically via file watcher; your turn is triggered once all subagents have reported.",
+      "IMPORTANT: After spawning, STOP — do not call any tools, do not do the work yourself. Results are delivered by the user via the subagent-read command. Your turn is triggered once the user reads a result.",
       "Requires tmux.",
     ].join("\n"),
     parameters: SubagentParamsSchema,
@@ -388,9 +439,6 @@ export default function (pi: ExtensionAPI) {
         case Action.Send:
           result = handleSend(params);
           break;
-        case Action.Read:
-          result = handleRead(params);
-          break;
         case Action.Close:
           result = handleClose(params);
           break;
@@ -400,18 +448,22 @@ export default function (pi: ExtensionAPI) {
         default:
           return err(`Unknown action "${params.action}".`);
       }
-      if (params.action !== Action.Read) updateSessionWidget(ctx);
+      updateSessionWidget(ctx);
       return result;
     },
 
     renderCall: (args: any, theme: any) => {
       switch (args.action) {
-        case Action.List:  return render.renderListCall(args, theme);
-        case Action.Spawn: return render.renderSpawnCall(args, theme);
-        case Action.Send:  return render.renderSendCall(args, theme);
-        case Action.Read:  return render.renderReadCall(args, theme);
-        case Action.Close: return render.renderCloseCall(args, theme);
-        default:           return render.renderListCall(args, theme);
+        case Action.List:
+          return render.renderListCall(args, theme);
+        case Action.Spawn:
+          return render.renderSpawnCall(args, theme);
+        case Action.Send:
+          return render.renderSendCall(args, theme);
+        case Action.Close:
+          return render.renderCloseCall(args, theme);
+        default:
+          return render.renderListCall(args, theme);
       }
     },
     renderResult: (result: any, opts: any, theme: any) =>
