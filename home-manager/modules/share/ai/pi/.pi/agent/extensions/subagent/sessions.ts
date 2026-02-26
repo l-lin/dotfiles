@@ -160,44 +160,11 @@ function sessionDir(id: string): string {
   return path.join(homeDir, ".local", "share", "pi", "subagent", id);
 }
 
-function writeBadgeExtension(
-  dir: string,
-  sessionId: string,
-  task: string,
-): string {
-  const file = path.join(dir, "badge-extension.ts");
-  // Embed values as JSON strings so all escaping is handled correctly
-  const i = JSON.stringify(sessionId);
-  const t = JSON.stringify(task.length > 120 ? `${task.slice(0, 120)}…` : task);
-  const content = `\
-export default function (pi: any) {
-  pi.on("session_start", async (_event: any, ctx: any) => {
-    const id   = ${i};
-    const task = ${t};
-    ctx.ui.setWidget("subagent-badge", (_tui: any, theme: any) => ({
-      render: (width: number) => {
-        const dot = "󰚩 ";
-        const dotWidth = 3;
-        const sep = " ";
-        const available = Math.max(0, width - dotWidth - id.length - sep.length);
-        const taskStr = available <= 0 ? "" : task.length > available ? task.slice(0, available - 1) + "…" : task;
-        return [theme.fg("dim", dot) + theme.fg("toolTitle", theme.bold(id)) + theme.fg("dim", sep + taskStr)];
-      },
-      invalidate: () => {},
-    }), { placement: "belowEditor" });
-  });
-}
-`;
-  fs.writeFileSync(file, content, { encoding: "utf-8", mode: 0o600 });
-  return file;
-}
-
 function buildPiCommand(
   agent: AgentConfig,
   task: string,
   resultFile: string,
   systemPromptFile?: string,
-  badgeExtensionFile?: string,
 ): string {
   const parts: string[] = ["pi"];
 
@@ -209,8 +176,6 @@ function buildPiCommand(
 
   if (systemPromptFile)
     parts.push("--append-system-prompt", tmux.esc(systemPromptFile));
-  if (badgeExtensionFile)
-    parts.push("--extension", tmux.esc(badgeExtensionFile));
   parts.push("--no-session");
 
   const augmented = `${task}
@@ -267,8 +232,6 @@ export function spawn(
     });
   }
 
-  const badgeExtensionFile = writeBadgeExtension(dir, id, task);
-
   // Each subagent gets its own window, titled with the session ID
   const paneId = tmux.createWindow(cwd, id);
 
@@ -281,7 +244,6 @@ export function spawn(
       task,
       resultFile,
       systemPromptFile,
-      badgeExtensionFile,
     ),
   );
 
