@@ -1,27 +1,15 @@
 ---
 name: clear-writing
-description: Makes your writing clearer, stronger, and more professional. Use this skill when the user says "write clearly", "clear writing", "improve writing" or for ANY prose humans will read—documentation, commit messages, error messages, explanations, reports, or UI text.
+description: Use when writing or editing any prose humans will read — documentation, commit messages, error messages, UI text, reports, or explanations. Also use when user says "write clearly", "clear writing", or "improve writing".
 ---
 
 # Writing Clearly and Concisely
 
 ## Overview
 
-William Strunk Jr.'s _The Elements of Style_ (1918) teaches you to write clearly and cut ruthlessly.
+Apply William Strunk Jr.'s _The Elements of Style_: write clearly, cut ruthlessly, say exactly what you mean.
 
-## When to Use This Skill
-
-Use this skill whenever you write prose for humans:
-
-- Documentation, README files, technical explanations
-- Commit messages, pull request descriptions
-- Error messages, UI copy, help text, comments
-- Reports, summaries, or any explanation
-- Editing to improve clarity
-
-**If you're writing sentences for a human to read, use this skill.**
-
-## All Rules
+## Rules
 
 ### Elementary Rules of Usage (Grammar/Punctuation)
 
