@@ -36,7 +36,7 @@ import { discoverAgents } from "./subagent/agents.js";
 
 const SYSTEM_FG = "warning";
 const TOOLS_FG = "error";
-const WINDOW_FG = "error";
+const WINDOW_FG = "warning";
 const CONVO_FG = "accent";
 const FREE_FG = "muted";
 
@@ -450,7 +450,7 @@ class ContextView implements Component {
       label("", `Skills (${this.data.skills.length}):`) +
         " " +
         (this.data.skillDescTokens > 0
-          ? this.theme.fg(SYSTEM_FG, `~${this.data.skillDescTokens.toLocaleString()} tok`) + " "
+          ? this.theme.fg(SYSTEM_FG, `~${this.data.skillDescTokens.toLocaleString()} tok`) + dim("  ")
           : "") +
         skillsRendered,
     );
@@ -578,7 +578,9 @@ export default function contextExtension(pi: ExtensionAPI) {
 
       // Estimate tokens consumed by skill descriptions (shown in the system prompt / skill list)
       const skillDescTokens = skillCmds.reduce((acc, c) => {
-        const blob = `${normalizeSkillName(c.name)}\n${c.description ?? ""}`;
+        const blob = c.description
+          ? `${normalizeSkillName(c.name)}\n${c.description}`
+          : normalizeSkillName(c.name);
         return acc + estimateTokens(blob);
       }, 0);
 
@@ -639,15 +641,17 @@ export default function contextExtension(pi: ExtensionAPI) {
         } else {
           lines.push("Window: (unknown)");
         }
-        lines.push(
-          `System: ~${systemPromptTokens.toLocaleString()} tok (AGENTS ~${agentTokens.toLocaleString()})`,
-        );
-        lines.push(
-          `Tools: ~${toolsTokens.toLocaleString()} tok (${activeToolNames.length} active)` +
-            (activeToolNames.length
-              ? ` — ${activeToolNames.slice().sort().join(", ")}`
-              : ""),
-        );
+        if (usage) {
+          lines.push(
+            `System: ~${systemPromptTokens.toLocaleString()} tok (AGENTS ~${agentTokens.toLocaleString()})`,
+          );
+          lines.push(
+            `Tools: ~${toolsTokens.toLocaleString()} tok (${activeToolNames.length} active)` +
+              (activeToolNames.length
+                ? ` — ${activeToolNames.slice().sort().join(", ")}`
+                : ""),
+          );
+        }
         lines.push(
           `AGENTS: ${agentFilePaths.length ? joinComma(agentFilePaths) : "(none)"}`,
         );
@@ -655,7 +659,7 @@ export default function contextExtension(pi: ExtensionAPI) {
           `Extensions (${extensionFiles.length}): ${extensionFiles.length ? joinComma(extensionFiles) : "(none)"}`,
         );
         lines.push(
-          `Skills (${skills.length}):${skillDescTokens > 0 ? ` ~${skillDescTokens.toLocaleString()} tok ` : " "}${skills.length ? joinComma(skills) : "(none)"}`,
+          `Skills (${skills.length}): ${skillDescTokens > 0 ? `~${skillDescTokens.toLocaleString()} tok  ` : ""}${skills.length ? joinComma(skills) : "(none)"}`,
         );
         lines.push(
           `Subagents (${subagents.length}): ${subagents.length ? joinComma(subagents) : "(none)"}`,
@@ -705,7 +709,7 @@ export default function contextExtension(pi: ExtensionAPI) {
         },
       };
 
-      await ctx.ui.custom<void>((tui, theme, _kb, done) => {
+      await ctx.ui.custom<void>((_tui, theme, _kb, done) => {
         return new ContextView(theme, viewData, done);
       });
     },
