@@ -15,31 +15,31 @@ vim.keymap.set(
   "<leader>ta",
   function()
     require("helpers.lang.ruby").execute_file({
-      cmd = "bundle exec rails t",
+      cmd = "HEADLESS=1 bundle exec rails t",
       use_interactive_shell = true,
       include_line_number = false,
     })
   end,
-  { buffer = true, desc = "Run all test (Alt+Shift+F9)" }
+  { buffer = true, desc = "Run all test in HEADLESS mode (Alt+Shift+F9)" }
 )
 vim.keymap.set(
   "n",
   "<leader>tA",
   function()
     require("helpers.lang.ruby").execute_file({
-      cmd = "HEADLESS=1 bundle exec rails t",
+      cmd = "bundle exec rails t",
       use_interactive_shell = true,
       include_line_number = false,
     })
   end,
-  { buffer = true, desc = "Run all test in HEADLESS mode" }
+  { buffer = true, desc = "Run all test" }
 )
 vim.keymap.set(
   "n",
   "<M-S-F9>",
   function()
     require("helpers.lang.ruby").execute_file({
-      cmd = "bundle exec rails t",
+      cmd = "HEADLESS=1 bundle exec rails t",
       use_interactive_shell = true,
       include_line_number = false,
     })
@@ -51,31 +51,31 @@ vim.keymap.set(
   "<leader>tn",
   function()
     require("helpers.lang.ruby").execute_file({
-      cmd = "bundle exec rails t",
+      cmd = "HEADLESS=1 bundle exec rails t",
       use_interactive_shell = true,
       include_line_number = true,
     })
   end,
-  { buffer = true, desc = "Run nearest test (Shift+F9)" }
+  { buffer = true, desc = "Run nearest test in HEADLESS mode (Shift+F9)" }
 )
 vim.keymap.set(
   "n",
   "<leader>tN",
   function()
     require("helpers.lang.ruby").execute_file({
-      cmd = "HEADLESS=1 bundle exec rails t",
+      cmd = "bundle exec rails t",
       use_interactive_shell = true,
       include_line_number = true,
     })
   end,
-  { buffer = true, desc = "Run nearest test in HEADLESS mode" }
+  { buffer = true, desc = "Run nearest test" }
 )
 vim.keymap.set(
   "n",
   "<F21>",
   function()
     require("helpers.lang.ruby").execute_file({
-      cmd = "bundle exec rails t",
+      cmd = "HEADLESS=1 bundle exec rails t",
       use_interactive_shell = true,
       include_line_number = true,
     })
