@@ -1199,7 +1199,7 @@ class BreakdownComponent implements Component {
 }
 
 export default function sessionBreakdownExtension(pi: ExtensionAPI) {
-  pi.registerCommand("session-breakdown", {
+  pi.registerCommand("cmd:session-breakdown", {
     description:
       "Interactive breakdown of last 7/30/90 days of ~/.pi session usage (sessions/messages/tokens + cost by model)",
     handler: async (_args, ctx: ExtensionContext) => {

@@ -204,7 +204,7 @@ async function handleSpawn(
   return ok(
     `Spawned ${spawned.length} subagent(s):\n${lines}\n\n` +
       `Results will be injected into context when all the subagents have finished their task.\n` +
-      `Use send to send follow-up messages, close to terminate a session.`,
+      `Use send to send follow-up messages, close to terminate a subagent.`,
     { action: Action.Spawn, sources, spawned },
   );
 }
@@ -286,7 +286,7 @@ export default function (pi: ExtensionAPI) {
 
   pi.registerMessageRenderer("subagent-result", render.renderMessage);
 
-  pi.registerCommand("subagent-close", {
+  pi.registerCommand("cmd:subagent-close", {
     description: "Interactively close one or all active subagents",
 
     handler: async (_args, ctx) => {
@@ -308,7 +308,7 @@ export default function (pi: ExtensionAPI) {
         const unread = active.filter((s) => s.lastResult.length > 0);
         if (unread.length > 0) {
           ctx.ui.notify(
-            `⚠ ${unread.length} session(s) have unread results — closing will discard them.`,
+            `⚠ ${unread.length} subagent(s) have unread results — closing will discard them.`,
             "warning",
           );
         }
@@ -336,7 +336,7 @@ export default function (pi: ExtensionAPI) {
     },
   });
 
-  pi.registerCommand("subagent-read", {
+  pi.registerCommand("cmd:subagent-read", {
     description:
       "Read result(s) from finished subagents and inject into agent context",
 

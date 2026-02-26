@@ -8,7 +8,7 @@
  * - /plan command or Ctrl+Alt+P to toggle
  * - Bash restricted to allowlisted read-only commands
  * - Extracts numbered plan steps from "Plan:" sections
- * - plan_todos tool for step completion tracking
+ * - todo tool for step completion tracking
  * - Progress tracking widget during execution
  */
 
@@ -46,17 +46,17 @@ export default function planModeExtension(pi: ExtensionAPI): void {
 
   const WRITE_TOOLS = ["edit", "write"];
 
-  // Plan mode: drop write tools, inject plan_todos
+  // Plan mode: drop write tools, inject todo
   const toPlanMode = () => [
-    ...new Set([...pi.getActiveTools().filter((t) => !WRITE_TOOLS.includes(t)), "plan_todos"]),
+    ...new Set([...pi.getActiveTools().filter((t) => !WRITE_TOOLS.includes(t)), "todo"]),
   ];
-  // Execution mode: restore write tools, keep plan_todos
+  // Execution mode: restore write tools, keep todo
   const toExecutionMode = () => [
-    ...new Set([...pi.getActiveTools(), ...WRITE_TOOLS, "plan_todos"]),
+    ...new Set([...pi.getActiveTools(), ...WRITE_TOOLS, "todo"]),
   ];
-  // Normal mode: restore write tools, drop plan_todos
+  // Normal mode: restore write tools, drop todo
   const toNormalMode = () => [
-    ...new Set([...pi.getActiveTools().filter((t) => t !== "plan_todos"), ...WRITE_TOOLS]),
+    ...new Set([...pi.getActiveTools().filter((t) => t !== "todo"), ...WRITE_TOOLS]),
   ];
 
   pi.registerFlag("plan", {
@@ -118,8 +118,8 @@ export default function planModeExtension(pi: ExtensionAPI): void {
   }
 
   pi.registerTool({
-    name: "plan_todos",
-    label: "Plan Todos",
+    name: "todo",
+    label: "Todo",
     description:
       "List and manage plan todo items. Use 'list' to view all steps and their status. " +
       "Use 'complete' or 'uncomplete' to mark a step by its number.",
@@ -176,12 +176,12 @@ export default function planModeExtension(pi: ExtensionAPI): void {
     },
   });
 
-  pi.registerCommand("plan", {
+  pi.registerCommand("cmd:plan", {
     description: "Toggle plan mode (read-only exploration)",
     handler: async (_args, ctx) => togglePlanMode(ctx),
   });
 
-  pi.registerCommand("todos", {
+  pi.registerCommand("cmd:todos", {
     description: "Show current plan todo list",
     handler: async (_args, ctx) => {
       if (todoItems.length === 0) {
@@ -251,7 +251,7 @@ Restrictions:
 - Bash is restricted to an allowlist of read-only commands
 
 Ask clarifying questions using the AskUserQuestion tool.
-Use the plan_todos tool to list and manage plan steps.
+Use the todo tool to list and manage plan steps.
 Use brave-search skill via bash for web research.
 
 Create a detailed numbered plan under a "Plan:" header:
@@ -279,8 +279,8 @@ Remaining steps:
 ${todoList}
 
 Execute each step in order.
-After completing a step, call plan_todos with action "complete" and the step number.
-You can call plan_todos with action "list" at any time to check remaining steps.`,
+After completing a step, call todo with action "complete" and the step number.
+You can call todo with action "list" at any time to check remaining steps.`,
           display: false,
         },
       };

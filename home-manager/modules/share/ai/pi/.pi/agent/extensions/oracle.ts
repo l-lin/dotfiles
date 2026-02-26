@@ -379,7 +379,7 @@ class ModelPickerComponent {
 }
 
 export default function (pi: ExtensionAPI) {
-  pi.registerCommand("oracle", {
+  pi.registerCommand("cmd:oracle", {
     description: "Get a second opinion from another AI model",
     handler: async (args, ctx) => {
       if (!ctx.hasUI) {

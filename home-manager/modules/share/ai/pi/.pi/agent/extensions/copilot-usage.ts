@@ -388,7 +388,7 @@ export default function copilotUsageExtension(pi: ExtensionAPI) {
   });
 
   // Manual refresh command
-  pi.registerCommand("copilot-usage", {
+  pi.registerCommand("cmd:copilot-usage", {
     description: "Refresh GitHub Copilot premium request usage",
     handler: async (_args, ctx) => {
       if (!ctx.hasUI) return;
@@ -414,7 +414,7 @@ export default function copilotUsageExtension(pi: ExtensionAPI) {
   });
 
   // Toggle widget visibility
-  pi.registerCommand("copilot-usage-toggle", {
+  pi.registerCommand("cmd:copilot-usage-toggle", {
     description: "Toggle GitHub Copilot usage widget visibility",
     handler: async (_args, ctx) => {
       if (!ctx.hasUI) return;

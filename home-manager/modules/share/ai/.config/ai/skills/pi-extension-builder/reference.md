@@ -84,7 +84,7 @@ pi.registerTool({
 
 ```typescript
 pi.registerCommand({
-  name: string;        // Command name (no slash)
+  name: string;        // Command name (no slash, prefixed by cmd:)
   description: string; // Help text
 
   execute(

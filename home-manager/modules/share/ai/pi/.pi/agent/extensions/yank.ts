@@ -66,7 +66,7 @@ export default function yankExtension(pi: ExtensionAPI) {
     }
   });
 
-  pi.registerCommand("yank", {
+  pi.registerCommand("cmd:yank", {
     description: "Copy the latest agent output to the system clipboard",
     handler: async (_args, ctx) => {
       if (!lastAssistantText) {

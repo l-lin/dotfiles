@@ -115,7 +115,7 @@ export default function (pi: ExtensionAPI) {
     defaultTools = pi.getActiveTools();
   });
 
-  pi.registerCommand("system-prompt", {
+  pi.registerCommand("cmd:system-prompt", {
     description: "Select a system prompt from discovered agents",
     handler: async (_args, ctx) => {
       if (allAgents.length === 0) {
