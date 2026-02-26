@@ -1,7 +1,7 @@
 /** Rendering for subagent tool calls, results, and notifications */
 
 import { getMarkdownTheme } from "@mariozechner/pi-coding-agent";
-import { Container, Markdown, Spacer, Text } from "@mariozechner/pi-tui";
+import { Box, Container, Markdown, Spacer, Text } from "@mariozechner/pi-tui";
 import { Action } from "./sessions.js";
 import type { SubagentDetails } from "./sessions.js";
 
@@ -206,6 +206,8 @@ export function renderMessage(
     ? `${title("󱃚 subagent report")} ${theme.fg("success", "all")}`
     : `${title("󱃚 subagent report")} ${theme.fg("accent", id)}`;
 
+  const box = new Box(1, 1, (t) => theme.bg("toolSuccessBg", t));
+
   if (expanded) {
     const container = new Container();
     container.addChild(new Text(header, 0, 0));
@@ -213,8 +215,10 @@ export function renderMessage(
     container.addChild(
       new Markdown(message.content?.trim() ?? "(empty)", 0, 0, mdTheme),
     );
-    return container;
+    box.addChild(container);
+    return box;
   }
 
-  return new Text(header, 0, 0);
+  box.addChild(new Text(header, 0, 0));
+  return box;
 }
