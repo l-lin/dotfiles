@@ -208,7 +208,7 @@ function buildPiCommand(
   if (tools?.length) parts.push("--tools", tmux.esc(tools.join(",")));
 
   if (systemPromptFile)
-    parts.push("--system-prompt", tmux.esc(systemPromptFile));
+    parts.push("--append-system-prompt", tmux.esc(systemPromptFile));
   if (badgeExtensionFile)
     parts.push("--extension", tmux.esc(badgeExtensionFile));
   parts.push("--no-session");
