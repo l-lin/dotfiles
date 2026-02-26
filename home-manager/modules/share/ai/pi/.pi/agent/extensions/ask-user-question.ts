@@ -300,7 +300,7 @@ export default function questionnaire(pi: ExtensionAPI) {
       let text = theme.fg("toolTitle", theme.bold("ask-user-question "));
       text += theme.fg("muted", `${qs.length} question${qs.length !== 1 ? "s" : ""}`);
       const labels = qs.map((q) => q.label || q.id).join(", ");
-      if (labels) text += styledTruncate(theme, "dim", labels, 40);
+      if (labels) text += styledTruncate(theme, "dim", ` ${labels}`, 40);
       return new Text(text, 0, 0);
     },
 
