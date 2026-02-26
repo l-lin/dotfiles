@@ -1,18 +1,11 @@
 ---
 name: continuous-learning
-description: "Reflect on task execution and create reusable skills. Use when user says 'learn', 'reflect', 'save as skill', or after completing complex tasks."
+description: "Use when user says 'learn', 'reflect', 'save as skill', or after completing complex tasks."
 ---
 
 # Continuous Learning
 
 Two-stage learning process: reflection and skill creation.
-
-## When to Use This Skill
-
-- User says "learn from this", "reflect", "save as skill"
-- After completing a complex task with novel patterns
-- When encountering and overcoming significant pitfalls
-- After failures worth documenting for future reference
 
 ## 1. Run Reflection (Stage 1)
 
@@ -73,7 +66,7 @@ Generate a skill file capturing the learning.
 
 ### 2.1 Skill File Structure
 
-Skills are stored in `.claude/skills/<skill_name>/SKILL.md` as markdown files.
+Skills are stored in `.ai/skills/<skill_name>/SKILL.md` as markdown files.
 
 File naming: `<type>-<short-description>.md` (kebab-case)
 
@@ -81,9 +74,9 @@ Example: `debugging-postgres-connection-pool.md`
 
 ### 2.2 Create the skill
 
-Use the `create-skill` skill to generate the content of the skill and any relevant files (e.g. `reference.md`, some scripts, ...).
+Use the `writting-skill` skill to generate the content of the skill and any relevant files (e.g. `reference.md`, some scripts, ...).
 
-### 2.4 Quality Gates
+### 2.3 Quality Gates
 
 Before saving, verify:
 
@@ -97,7 +90,7 @@ Before saving, verify:
 
 ```bash
 # Write to learned-skills directory
-.claude/skills/<type>-<description>/SKILL.md
+.ai/skills/<type>-<description>/SKILL.md
 ```
 
 ### 2.5 Report to User
@@ -111,7 +104,7 @@ After creation, output:
 **Summary**: <one-line summary>
 **Confidence**: <confidence level>
 
-Stored in: ~/.claude/learned-skills/
+Stored in: .ai/learned-skills/
 ```
 
 ## Example: Learning from a Debugging Session
@@ -139,7 +132,7 @@ Stored in: ~/.claude/learned-skills/
 ```markdown
 ---
 name: debug-flaky-tests
-description: "Systematic approach to diagnose and fix flaky tests. Use when user says 'flaky' or when tests pass intermittently, fail randomly in CI, or exhibit non-deterministic behavior."
+description: "Use when user says 'flaky' or when tests pass intermittently, fail randomly in CI, or exhibit non-deterministic behavior."
 ---
 
 # Debugging Flaky Tests: Race Condition Pattern
