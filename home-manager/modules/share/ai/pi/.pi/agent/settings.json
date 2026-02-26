@@ -1,8 +1,8 @@
 {
-  "lastChangelogVersion": "0.54.0",
+  "lastChangelogVersion": "0.55.1",
   "theme": "light",
-  "defaultProvider": "github-copilot",
-  "defaultModel": "gpt-4o",
+  "defaultProvider": "anthropic",
+  "defaultModel": "claude-sonnet-4-6",
   "skills": [
     "~/.config/ai/skills"
   ],
@@ -12,9 +12,20 @@
   "quietStartup": true,
   "defaultThinkingLevel": "off",
   "copilotUsageVisible": false,
+  "compaction": {
+    "enabled": false
+  },
   "subagent": {
-    "sources": ["~/.pi/agent/subagents", "./.pi/subagents", "./.claude/agents"],
-    "maxParallel": 4
+    "sources": [
+      "~/.pi/agent/subagents",
+      "./.pi/subagents",
+      "./.claude/agents"
+    ],
+    "maxParallel": 4,
+    "userSystemPrompt": {
+      "enabled": false,
+      "path": "~/.config/ai/system-prompt.md"
+    }
   },
   "hideThinkingBlock": false
 }

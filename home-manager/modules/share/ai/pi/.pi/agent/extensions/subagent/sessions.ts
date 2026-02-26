@@ -246,9 +246,13 @@ export function spawn(
     }
   }
 
-  const userSystemPrompt = readFileIfExists(config.userSystemPromptPath);
+  const userSystemPrompt = config.userSystemPrompt.enabled
+    ? readFileIfExists(config.userSystemPrompt.path)
+    : "";
 
-  const combinedParts = [userSystemPrompt, agent.systemPrompt.trim()].filter(Boolean);
+  const combinedParts = [userSystemPrompt, agent.systemPrompt.trim()].filter(
+    Boolean,
+  );
   const combinedPrompt = combinedParts.join("\n\n");
 
   let systemPromptFile: string | undefined;
