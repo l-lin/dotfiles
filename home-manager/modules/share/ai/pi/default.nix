@@ -24,7 +24,7 @@
     ".pi/agent/subagents/codebase-analyzer.md".text = ''
 ---
 name: codebase-analyzer
-description: Analyzes codebase implementation details. Call the codebase-analyzer agent when you need to find detailed information about specific components. As always, the more detailed your request prompt, the better! :)
+description: Use when you need implementation details about specific components, functions, or modules in the codebase
 tools: read, grep, ls, find, bash
 model: anthropic/claude-haiku-4-5
 ---
@@ -34,7 +34,7 @@ ${builtins.readFile ../.config/ai/agents/codebase-analyzer.md}
     ".pi/agent/subagents/codebase-locator.md".text = ''
 ---
 name: codebase-locator
-description: Locates files, directories, and components relevant to a feature or task. Call `codebase-locator` with human language prompt describing what you're looking for. Basically a "Super Grep/Glob/LS tool" — Use it if you find yourself desiring to use one of these tools more than once.
+description: Use when you need to find files, directories, or components by feature or purpose rather than exact name
 tools: read, grep, ls, find, bash
 model: anthropic/claude-haiku-4-5
 ---
@@ -44,7 +44,7 @@ ${builtins.readFile ../.config/ai/agents/codebase-locator.md}
     ".pi/agent/subagents/codebase-pattern-finder.md".text = ''
 ---
 name: codebase-pattern-finder
-description: codebase-pattern-finder is a useful subagent_type for finding similar implementations, usage examples, or existing patterns that can be modeled after. It will give you concrete code examples based on what you're looking for! It's sorta like codebase-locator, but it will not only tell you the location of files, it will also give you code details!
+description: Use when you need existing code examples or patterns to model new implementation after, and want concrete code snippets not just file locations
 tools: read, grep, ls, find, bash
 model: anthropic/claude-haiku-4-5
 ---
@@ -54,7 +54,7 @@ ${builtins.readFile ../.config/ai/agents/codebase-pattern-finder.md}
     ".pi/agent/subagents/git-investigator.md".text = ''
 ---
 name: git-investigator
-description: Investigates git history, logs, changes, and uncommitted modifications. Call the git-investigator agent when you need to analyze version control information, track changes over time, or understand the development history of specific components.
+description: Use when you need to analyze git history, track changes over time, or understand the development history of specific files or components
 tools: read, grep, ls, find, bash
 model: anthropic/claude-haiku-4-5
 ---
@@ -64,7 +64,7 @@ ${builtins.readFile ../.config/ai/agents/git-investigator.md}
     ".pi/agent/subagents/web-search-researcher.md".text = ''
 ---
 name: web-search-researcher
-description: Do you find yourself desiring information that you don't quite feel well-trained (confident) on? Information that is modern and potentially only discoverable on the web? Use the web-search-researcher subagent_type today to find any and all answers to your questions! It will research deeply to figure out and attempt to answer your questions! If you aren't immediately satisfied you can get your money back! (Not really - but you can re-run web-search-researcher with an altered prompt in the event you're not satisfied the first time)
+description: Use when you need current information from the web, facts that may be outdated in training data, or research across multiple online sources
 model: github-copilot/gpt-4o
 ---
 
@@ -73,7 +73,7 @@ ${builtins.readFile ../.config/ai/agents/web-search-researcher.md}
     ".pi/agent/subagents/ruby-mentor.md".text = ''
 ---
 name: ruby-mentor
-description: Ruby Programming Mentor and Best Practices Guide. Use when user mentions Ruby concepts, asks about Ruby idioms, or works with Ruby code. Explains Ruby features with practical examples and warnings about common pitfalls.
+description: Use when working with Ruby code, Ruby idioms, or when Ruby-specific questions arise during implementation
 tools: read, grep, ls, find, bash
 model: github-copilot/gpt-4o
 ---
@@ -83,7 +83,7 @@ ${builtins.readFile ../.config/ai/agents/ruby-mentor.md}
     ".pi/agent/subagents/rails-mentor.md".text = ''
 ---
 name: rails-mentor
-description: Rails Framework Mentor and Best Practices Guide. Use when user mentions Rails concepts, asks about Rails patterns, or works with Rails applications. Explains Rails conventions, architecture patterns, and common pitfalls with practical examples.
+description: Use when working with Rails applications, Rails conventions, or when Rails-specific architectural questions arise
 tools: read, grep, ls, find, bash
 model: github-copilot/gpt-4o
 ---
@@ -93,7 +93,7 @@ ${builtins.readFile ../.config/ai/agents/rails-mentor.md}
     ".pi/agent/subagents/kotlin-mentor.md".text = ''
 ---
 name: kotlin-mentor
-description: Kotlin Programming Mentor and Best Practices Guide. Use when user mentions Kotlin concepts, asks about Kotlin idioms, or works with Kotlin code. Explains Kotlin features with practical examples and warnings about common pitfalls.
+description: Use when working with Kotlin code, Kotlin idioms, or when Kotlin-specific questions arise during implementation
 tools: read, grep, ls, find, bash
 model: github-copilot/gpt-4o
 ---
