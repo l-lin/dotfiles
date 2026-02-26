@@ -61,6 +61,30 @@ const QuestionnaireParams = Type.Object({
   ),
 });
 
+type Theme = { fg: Function; bg: Function; bold: Function };
+
+/**
+ * Truncate plain text to maxWidth, then apply a theme color.
+ *
+ * We strip ANSI codes first so that `theme.fg` wraps only clean text
+ * with no embedded resets — otherwise `truncateToWidth` injects `\x1b[0m`
+ * before the ellipsis, which gets wrapped inside the background color and
+ * causes the background to bleed past the visible characters on light themes.
+ */
+function styledTruncate(
+  theme: Theme,
+  colorKey: string,
+  text: string,
+  maxWidth: number,
+  ellipsis = "...",
+): string {
+  const truncated =
+    text.length <= maxWidth
+      ? text
+      : text.slice(0, maxWidth - ellipsis.length) + ellipsis;
+  return theme.fg(colorKey, truncated);
+}
+
 export default function questionnaire(pi: ExtensionAPI) {
   pi.registerTool({
     name: "ask-user-question",
@@ -276,7 +300,7 @@ export default function questionnaire(pi: ExtensionAPI) {
       let text = theme.fg("toolTitle", theme.bold("ask-user-question "));
       text += theme.fg("muted", `${qs.length} question${qs.length !== 1 ? "s" : ""}`);
       const labels = qs.map((q) => q.label || q.id).join(", ");
-      if (labels) text += theme.fg("dim", ` (${truncateToWidth(labels, 40)})`);
+      if (labels) text += styledTruncate(theme, "dim", labels, 40);
       return new Text(text, 0, 0);
     },
 
