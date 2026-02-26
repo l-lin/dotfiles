@@ -2,7 +2,7 @@
 description: Continue previous work by looking at git history
 ---
 
-Spawn parallel Task agent to understand what changed recently:
+Spawn subagents to understand what changed recently:
 
 1. Check git status and current branch
 2. Look at recent commits: git log --oneline -10
