@@ -26,7 +26,6 @@ import {
   Text,
   matchesKey,
   type Component,
-  type TUI,
 } from "@mariozechner/pi-tui";
 import os from "node:os";
 import path from "node:path";
@@ -37,6 +36,7 @@ import { discoverAgents } from "./subagent/agents.js";
 
 const SYSTEM_FG = "warning";
 const TOOLS_FG = "error";
+const WINDOW_FG = "error";
 const CONVO_FG = "accent";
 const FREE_FG = "muted";
 
@@ -307,6 +307,7 @@ type ContextViewData = {
   agentFiles: string[];
   extensions: string[];
   skills: string[];
+  skillDescTokens: number;
   loadedSkills: string[];
   subagents: string[];
   activeToolNames: string[];
@@ -314,7 +315,6 @@ type ContextViewData = {
 };
 
 class ContextView implements Component {
-  private tui: TUI;
   private theme: any;
   private onDone: () => void;
   private data: ContextViewData;
@@ -322,8 +322,7 @@ class ContextView implements Component {
   private body: Text;
   private cachedWidth?: number;
 
-  constructor(tui: TUI, theme: any, data: ContextViewData, onDone: () => void) {
-    this.tui = tui;
+  constructor(theme: any, data: ContextViewData, onDone: () => void) {
     this.theme = theme;
     this.data = data;
     this.onDone = onDone;
@@ -362,9 +361,8 @@ class ContextView implements Component {
       lines.push(
         label("", "Window:") +
           " " +
-          dim(
-            `~${u.effectiveTokens.toLocaleString()} / ${u.contextWindow.toLocaleString()}  (${u.percent.toFixed(1)}% used, ~${u.remainingTokens.toLocaleString()} left)`,
-          ),
+          this.theme.fg(WINDOW_FG, `~${u.effectiveTokens.toLocaleString()}`) +
+          dim(` / ${u.contextWindow.toLocaleString()}  (${u.percent.toFixed(1)}% used, ~${u.remainingTokens.toLocaleString()} left)`),
       );
 
       // bar width tries to fit within the viewport
@@ -408,17 +406,14 @@ class ContextView implements Component {
       lines.push(
         label("", "System:") +
           " " +
-          dim(
-            `~${u.systemPromptTokens.toLocaleString()} tok  (AGENTS ~${u.agentTokens.toLocaleString()})`,
-          ),
+          this.theme.fg(SYSTEM_FG, `~${u.systemPromptTokens.toLocaleString()} tok`) +
+          dim(`  (AGENTS ~${u.agentTokens.toLocaleString()})`),
       );
       lines.push(
         label("", `Tools (${u.activeTools}):`) +
           " " +
-          dim(
-            `~${u.toolsTokens.toLocaleString()} tok` +
-            (this.data.activeToolNames.length ? `  ${this.data.activeToolNames.slice().sort().join(", ")}` : ""),
-          ),
+          this.theme.fg(TOOLS_FG, `~${u.toolsTokens.toLocaleString()} tok`) +
+          dim(this.data.activeToolNames.length ? `  ${this.data.activeToolNames.slice().sort().join(", ")}` : ""),
       );
     }
 
@@ -454,6 +449,9 @@ class ContextView implements Component {
     lines.push(
       label("", `Skills (${this.data.skills.length}):`) +
         " " +
+        (this.data.skillDescTokens > 0
+          ? this.theme.fg(SYSTEM_FG, `~${this.data.skillDescTokens.toLocaleString()} tok`) + " "
+          : "") +
         skillsRendered,
     );
     lines.push(
@@ -470,7 +468,7 @@ class ContextView implements Component {
       label("", "Session:") +
         " " +
         dim(
-          `${this.data.session.totalTokens.toLocaleString()} tokens · ${formatUsd(this.data.session.totalCost)}`,
+          `${this.data.session.totalTokens.toLocaleString()} tok · ${formatUsd(this.data.session.totalCost)}`,
         ),
     );
 
@@ -578,6 +576,12 @@ export default function contextExtension(pi: ExtensionAPI) {
         .map((c) => normalizeSkillName(c.name))
         .sort((a, b) => a.localeCompare(b));
 
+      // Estimate tokens consumed by skill descriptions (shown in the system prompt / skill list)
+      const skillDescTokens = skillCmds.reduce((acc, c) => {
+        const blob = `${normalizeSkillName(c.name)}\n${c.description ?? ""}`;
+        return acc + estimateTokens(blob);
+      }, 0);
+
       const agentFiles = await loadProjectContextFiles(ctx.cwd);
       const agentFilePaths = agentFiles.map((f) =>
         shortenPath(f.path, ctx.cwd),
@@ -639,7 +643,10 @@ export default function contextExtension(pi: ExtensionAPI) {
           `System: ~${systemPromptTokens.toLocaleString()} tok (AGENTS ~${agentTokens.toLocaleString()})`,
         );
         lines.push(
-          `Tools: ~${toolsTokens.toLocaleString()} tok (${activeToolNames.length} active) — ${activeToolNames.slice().sort().join(", ")}`,
+          `Tools: ~${toolsTokens.toLocaleString()} tok (${activeToolNames.length} active)` +
+            (activeToolNames.length
+              ? ` — ${activeToolNames.slice().sort().join(", ")}`
+              : ""),
         );
         lines.push(
           `AGENTS: ${agentFilePaths.length ? joinComma(agentFilePaths) : "(none)"}`,
@@ -648,13 +655,13 @@ export default function contextExtension(pi: ExtensionAPI) {
           `Extensions (${extensionFiles.length}): ${extensionFiles.length ? joinComma(extensionFiles) : "(none)"}`,
         );
         lines.push(
-          `Skills (${skills.length}): ${skills.length ? joinComma(skills) : "(none)"}`,
+          `Skills (${skills.length}):${skillDescTokens > 0 ? ` ~${skillDescTokens.toLocaleString()} tok ` : " "}${skills.length ? joinComma(skills) : "(none)"}`,
         );
         lines.push(
           `Subagents (${subagents.length}): ${subagents.length ? joinComma(subagents) : "(none)"}`,
         );
         lines.push(
-          `Session: ${sessionUsage.totalTokens.toLocaleString()} tokens · ${formatUsd(sessionUsage.totalCost)}`,
+          `Session: ${sessionUsage.totalTokens.toLocaleString()} tok · ${formatUsd(sessionUsage.totalCost)}`,
         );
         return lines.join("\n");
       };
@@ -688,6 +695,7 @@ export default function contextExtension(pi: ExtensionAPI) {
         agentFiles: agentFilePaths,
         extensions: extensionFiles,
         skills,
+        skillDescTokens,
         loadedSkills,
         subagents,
         activeToolNames,
@@ -698,7 +706,7 @@ export default function contextExtension(pi: ExtensionAPI) {
       };
 
       await ctx.ui.custom<void>((tui, theme, _kb, done) => {
-        return new ContextView(tui, theme, viewData, done);
+        return new ContextView(theme, viewData, done);
       });
     },
   });
