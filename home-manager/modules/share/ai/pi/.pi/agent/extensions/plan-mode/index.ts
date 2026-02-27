@@ -90,9 +90,9 @@ export default function planModeExtension(pi: ExtensionAPI): void {
         }
         return `${ctx.ui.theme.fg("muted", "☐ ")}${item.text}`;
       });
-      ctx.ui.setWidget("plan-todos", lines);
+      ctx.ui.setWidget("todos", lines);
     } else {
-      ctx.ui.setWidget("plan-todos", undefined);
+      ctx.ui.setWidget("todos", undefined);
     }
   }
 
