@@ -3,10 +3,10 @@
  *
  * Tracks wall-clock time for each agent run and displays a summary notification
  * when the agent finishes. Shows total elapsed time broken down into estimated
- * LLM time and per-tool execution times.
+ * LLM time and tool execution times.
  */
 
-import type { ExtensionAPI, ExtensionContext } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 
 interface ToolTiming {
   name: string;
@@ -51,7 +51,8 @@ export default function (pi: ExtensionAPI) {
     const toolMs = run.toolTimings.reduce((sum, t) => sum + t.ms, 0);
     const llmMs = Math.max(0, totalMs - toolMs);
 
-    const breakdown = [`󰧑 ${formatMs(llmMs)}`, ...run.toolTimings.map((t) => `${t.name} ${formatMs(t.ms)}`)];
+    const breakdown = [`󰧑 ${formatMs(llmMs)}`];
+    if (toolMs > 0) breakdown.push(` ${formatMs(toolMs)}`);
     const message = ` ${formatMs(totalMs)} (${breakdown.join(" + ")})`;
 
     ctx.ui.notify(message, "info");
