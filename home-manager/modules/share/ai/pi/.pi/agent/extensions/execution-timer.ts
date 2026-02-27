@@ -24,7 +24,10 @@ export default function (pi: ExtensionAPI) {
 
   function formatMs(ms: number): string {
     if (ms < 1000) return `${ms}ms`;
-    return `${(ms / 1000).toFixed(1)}s`;
+    if (ms < 60_000) return `${(ms / 1000).toFixed(1)}s`;
+    const minutes = Math.floor(ms / 60_000);
+    const seconds = ((ms % 60_000) / 1000).toFixed(0).padStart(2, "0");
+    return `${minutes}m${seconds}s`;
   }
 
   pi.on("agent_start", (_event, _ctx) => {
