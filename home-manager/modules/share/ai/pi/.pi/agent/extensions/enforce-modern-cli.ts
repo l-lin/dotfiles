@@ -4,7 +4,6 @@
  * Hard-blocks bash commands that use legacy tools when modern equivalents are available:
  * - `grep` → use `rg` (ripgrep) or `ast-grep` for structural code patterns
  * - `find` → use `fd`
- * - `diff` → use `difft` (difftastic)
  *
  * The block returns a descriptive error so the LLM understands what to use instead.
  * Note: regexes intentionally omit the `g` flag to avoid stateful `lastIndex` issues.
@@ -38,13 +37,7 @@ const BLOCKED_TOOLS: BlockedTool[] = [
     pattern: /(?<![a-z\-_])find(?![\w\-])/,
     legacy: "find",
     replacement: "fd",
-  },
-  {
-    // Match `diff` but not `difftastic`, `diff-so-fancy`, `diff-highlight`, etc.
-    pattern: /(?<![a-z\-_])diff(?![\w\-])/,
-    legacy: "diff",
-    replacement: "difft (difftastic)",
-  },
+  }
 ];
 
 export default function (pi: ExtensionAPI) {
