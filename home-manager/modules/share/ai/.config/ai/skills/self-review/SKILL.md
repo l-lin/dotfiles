@@ -13,7 +13,7 @@ Perform a multi-pass self-inspection of all code written or modified in the sess
 
 **Default: 3 independent passes.** If user says "review N times", use that number.
 
-For each pass, spawn a **subagent** to review ALL code written or modified in the session against the full checklist. After the subagent reports, the main agent applies fixes before spawning the next subagent. Passes are sequential:
+For each pass, spawn a **code-reviewer subagent** to review ALL code written or modified in the session against the full checklist. After the subagent reports, the main agent applies fixes before spawning the next subagent. Passes are sequential:
 
 `subagent reviews → main agent fixes → subagent reviews → main agent fixes → ...`
 
