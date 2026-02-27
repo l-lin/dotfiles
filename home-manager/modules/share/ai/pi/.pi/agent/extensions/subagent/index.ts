@@ -230,15 +230,19 @@ function updateSessionWidget(ctx: ToolContext): void {
     return;
   }
 
+  // Start the blink timer here (outside the factory) so it is only created
+  // once per widget registration.  The factory is a pure render function and
+  // must NOT start timers — it may be called on every resize / theme-change /
+  // requestRender(), which would leak timers and cause repeated re-renders.
+  let requestRenderFn: (() => void) | undefined;
+  blinkTimer = setInterval(() => {
+    requestRenderFn?.();
+    if (!sessions.all().some((s) => s.pending)) stopBlinkTimer();
+  }, 500);
+
   ctx.ui.setWidget(WIDGET_KEY, (tui, theme) => {
-    // Start blink timer once per widget registration — guard prevents leaks
-    // if the factory is called multiple times (e.g. on resize/theme change).
-    if (!blinkTimer) {
-      blinkTimer = setInterval(() => {
-        tui.requestRender();
-        if (!sessions.all().some((s) => s.pending)) stopBlinkTimer();
-      }, 500);
-    }
+    // Capture the tui.requestRender handle so the timer above can use it.
+    requestRenderFn = () => tui.requestRender();
 
     return {
       render: (width: number) => {
@@ -305,13 +309,6 @@ export default function (pi: ExtensionAPI) {
       if (!chosen) return;
 
       if (chosen === ALL_LABEL) {
-        const unread = active.filter((s) => s.lastResult.length > 0);
-        if (unread.length > 0) {
-          ctx.ui.notify(
-            `⚠ ${unread.length} subagent(s) have unread results — closing will discard them.`,
-            "warning",
-          );
-        }
         const count = sessions.size();
         sessions.closeAll();
         updateSessionWidget(ctx);
@@ -322,12 +319,6 @@ export default function (pi: ExtensionAPI) {
         if (!session) {
           ctx.ui.notify(`Subagent "${id}" not found.`, "error");
           return;
-        }
-        if (session.lastResult.length > 0) {
-          ctx.ui.notify(
-            `⚠ Session "${id}" has an unread result — closing will discard it.`,
-            "warning",
-          );
         }
         sessions.close(session);
         updateSessionWidget(ctx);
