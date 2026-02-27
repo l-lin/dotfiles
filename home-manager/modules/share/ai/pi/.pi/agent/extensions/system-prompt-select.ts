@@ -173,7 +173,7 @@ export default function (pi: ExtensionAPI) {
   pi.on("before_agent_start", async (event, _ctx) => {
     if (!activeAgent) return;
     return {
-      systemPrompt: activeAgent.body + "\n\n" + event.systemPrompt,
+      systemPrompt: activeAgent.body,
     };
   });
 }
