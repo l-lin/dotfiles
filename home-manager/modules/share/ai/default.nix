@@ -18,4 +18,9 @@
       recursive = true;
     };
   };
+
+  home.sessionVariables = {
+    # Force agent mode for pup (Datadog CLI): https://github.com/datadog-labs/pup#agent-mode
+    FORCE_AGENT_MODE = "true";
+  };
 }

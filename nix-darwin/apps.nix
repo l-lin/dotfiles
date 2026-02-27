@@ -39,7 +39,8 @@
 
     taps = [
       "bgreenwell/doxx"
-       "xcodesorg/made"
+      "datadog-labs/pack"
+      "xcodesorg/made"
     ];
 
     # `brew install`
@@ -49,6 +50,8 @@
       "bookokrat"
       # Elegant Lua unit testing: https://lunarmodules.github.io/busted/
       "busted"
+      # Give your AI agent a Pup — a CLI companion with 200+ commands across 33+ Datadog products: https://github.com/datadog-labs/pup
+      "datadog-labs/pack/pup"
       # Expose the contents of .docx files without leaving your terminal. Fast, safe, and smart — no Office required! https://github.com/bgreenwell/doxx
       "doxx"
       # Interpreter for PostScript and PDF: https://www.ghostscript.com/
