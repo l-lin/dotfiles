@@ -3,7 +3,7 @@
 # Use this to configure your system environment.
 #
 
-{
+{ pkgs, ... }: {
   nix = {
     # Determinate uses its own daemon to manage the Nix installation that
     # conflicts with nix-darwin’s native Nix management.
@@ -13,6 +13,7 @@
     # `nix.*` options to adjust Nix settings or configure a Linux builder,
     # will be unavailable.
     enable = false;
+    package = pkgs.lixPackageSets.stable.lix;
   };
 
   # Allow unfree packages.

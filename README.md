@@ -48,7 +48,7 @@
 
 ```bash
 # list all available operations
-make help
+mise run
 ```
 
 ```bash
@@ -113,8 +113,8 @@ reboot
 ```bash
 # Install homebrew: https://brew.sh/.
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-# Install Nix.
-curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+# Install Lix: https://lix.systems/install/#on-any-other-linuxmacos-system
+curl -sSf -L https://install.lix.systems/lix | sh -s -- install
 
 # Clone dotfiles.
 nix-shell -p git mise
@@ -124,6 +124,9 @@ cd dotfiles
 
 # Install everything.
 mise run conf:import-keys conf:import-secrets
+# You might want to give your terminal Full Disk Access via "System Settings > Privacy & Security > Full Disk Access"
+# in order to be able to install nix-darwin.
+# src: https://github.com/nix-darwin/nix-darwin/issues/1049#issuecomment-2323300537
 mise run darwin:install
 mise run darwin:apply
 mise run home:install
@@ -330,6 +333,27 @@ You might want to install with the latter if:
 That will make your life a bit less coherent, but hey, it's already a mess!
 
 ---
+
+### Uninstalling Lix
+
+If for some reason, your system failed, do the usual uninstall/reinstall.
+
+```bash
+# src: https://git.lix.systems/lix-project/lix-installer#uninstalling
+/nix/lix-installer uninstall
+```
+
+### `secrets` not a git repository
+
+If you got `secrets is not repository` (or something like that) error message when trying to
+`mise run home:apply`, try:
+
+1. remove `secrets` from [flake.nix](./flake.nix)
+2. re-try `mise run home:apply`
+3. re-add `secrets`
+4. re-run `mise run home:apply`
+
+It seems to work wonder when deferencing and re-referencing it...
 
 ## Resources
 
