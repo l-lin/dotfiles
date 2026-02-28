@@ -54,6 +54,7 @@ require("lazy").setup({
     { import = "plugins" },
     { import = "plugins.extras.ai.codecompanion" },
     { import = "plugins.extras.ai.copilot" },
+    { import = "plugins.extras.ai.tuicr" },
     -- { import = "plugins.extras.ai.copilot-chat" },
     -- { import = "plugins.extras.ai.codeium" },
     -- { import = "plugins.extras.coding.leetcode" },
