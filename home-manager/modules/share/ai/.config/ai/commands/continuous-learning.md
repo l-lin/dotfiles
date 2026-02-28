@@ -1,6 +1,5 @@
 ---
-name: continuous-learning
-description: "Use when user says 'learn', 'reflect', 'save as skill', or after completing complex tasks."
+description: "Process for continuous learning from interactions, creating reusable skills for future tasks."
 ---
 
 # Continuous Learning
