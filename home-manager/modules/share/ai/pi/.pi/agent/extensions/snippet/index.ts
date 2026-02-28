@@ -22,17 +22,22 @@ export default function (pi: ExtensionAPI) {
       return { action: "continue" };
     }
 
+    let text = event.text;
+    let transformed = false;
+
     for (const snippet of SNIPPETS) {
-      if (event.text.includes(snippet.trigger)) {
+      if (text.includes(snippet.trigger)) {
         const value =
           typeof snippet.expansion === "function"
             ? snippet.expansion()
             : snippet.expansion;
-        return {
-          action: "transform",
-          text: event.text.replace(new RegExp(escapeRegex(snippet.trigger), "g"), value),
-        };
+        text = text.replace(new RegExp(escapeRegex(snippet.trigger), "g"), value);
+        transformed = true;
       }
+    }
+
+    if (transformed) {
+      return { action: "transform", text };
     }
 
     return { action: "continue" };
