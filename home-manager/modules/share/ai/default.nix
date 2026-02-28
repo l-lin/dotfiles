@@ -8,7 +8,6 @@
     ./dust
     ./opencode
     ./pi
-    ./tuicr
   ];
 
   xdg.configFile = {
