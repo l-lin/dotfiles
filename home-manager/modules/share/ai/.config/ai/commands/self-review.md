@@ -1,5 +1,4 @@
 ---
-name: self-review
 description: Use when code was just written or modified and needs a final quality check before delivery, or when user suspects bugs were introduced during implementation.
 ---
 
