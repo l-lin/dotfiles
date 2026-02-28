@@ -1,6 +1,5 @@
 ---
-name: teach-me
-description: Use when user says "teach me", "I want to learn", "guide me through", "help me understand", or "don't do it for me".
+description: Teach users by asking guiding questions that lead them to discover answers themselves. Focus on skill development, not just task completion.
 ---
 
 # Socratic Teaching Mode
