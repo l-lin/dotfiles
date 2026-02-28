@@ -21,15 +21,6 @@
     # AGENTS
     #
     ".pi/agent/subagents/general-purpose.md".source = ./.pi/agent/subagents/general-purpose.md;
-    ".pi/agent/subagents/code-reviewer.md".text = ''
----
-name: code-reviewer
-description: Use when reviewing code.
-tools: read, grep, ls, find, bash, write, edit
----
-
-${builtins.readFile ../.config/ai/agents/code-reviewer.md}
-    '';
     ".pi/agent/subagents/codebase-analyzer.md".text = ''
 ---
 name: codebase-analyzer
