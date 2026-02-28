@@ -79,35 +79,5 @@ model: github-copilot/gpt-4o
 
 ${builtins.readFile ../.config/ai/agents/web-search-researcher.md}
     '';
-    ".pi/agent/subagents/ruby-mentor.md".text = ''
----
-name: ruby-mentor
-description: Use when working with Ruby code, Ruby idioms, or when Ruby-specific questions arise during implementation
-tools: read, grep, ls, find, bash
-model: github-copilot/gpt-4o
----
-
-${builtins.readFile ../.config/ai/agents/ruby-mentor.md}
-    '';
-    ".pi/agent/subagents/rails-mentor.md".text = ''
----
-name: rails-mentor
-description: Use when working with Rails applications, Rails conventions, or when Rails-specific architectural questions arise
-tools: read, grep, ls, find, bash
-model: github-copilot/gpt-4o
----
-
-${builtins.readFile ../.config/ai/agents/rails-mentor.md}
-    '';
-    ".pi/agent/subagents/kotlin-mentor.md".text = ''
----
-name: kotlin-mentor
-description: Use when working with Kotlin code, Kotlin idioms, or when Kotlin-specific questions arise during implementation
-tools: read, grep, ls, find, bash
-model: github-copilot/gpt-4o
----
-
-${builtins.readFile ../.config/ai/agents/kotlin-mentor.md}
-    '';
   };
 }

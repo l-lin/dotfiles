@@ -129,51 +129,6 @@ tools:
 
 ${builtins.readFile ../.config/ai/agents/web-search-researcher.md}
     '';
-    "opencode/agent/ruby-mentor.md".text = ''
----
-description: Ruby Programming Mentor and Best Practices Guide. Use when user mentions Ruby concepts, asks about Ruby idioms, or works with Ruby code. Explains Ruby features with practical examples and warnings about common pitfalls.
-mode: subagent
-model: github-copilot/gpt-4.1
-temperature: 0
-tools:
-  read: true
-  grep: true
-  glob: true
-  list: true
----
-
-${builtins.readFile ../.config/ai/agents/ruby-mentor.md}
-    '';
-    "opencode/agent/rails-mentor.md".text = ''
----
-description: Rails Framework Mentor and Best Practices Guide. Use when user mentions Rails concepts, asks about Rails patterns, or works with Rails applications. Explains Rails conventions, architecture patterns, and common pitfalls with practical examples.
-mode: subagent
-model: github-copilot/gpt-4.1
-temperature: 0
-tools:
-  read: true
-  grep: true
-  glob: true
-  list: true
----
-
-${builtins.readFile ../.config/ai/agents/rails-mentor.md}
-    '';
-    "opencode/agent/kotlin-mentor.md".text = ''
----
-description: Kotlin Programming Mentor and Best Practices Guide. Use when user mentions Kotlin concepts, asks about Kotlin idioms, or works with Kotlin code. Explains Kotlin features with practical examples and warnings about common pitfalls.
-mode: subagent
-model: github-copilot/gpt-4.1
-temperature: 0
-tools:
-  read: true
-  grep: true
-  glob: true
-  list: true
----
-
-${builtins.readFile ../.config/ai/agents/kotlin-mentor.md}
-    '';
     "opencode/agent/writer.md".text = ''
 ---
 description: Agent to help write. Use when user wants to improve their writing.

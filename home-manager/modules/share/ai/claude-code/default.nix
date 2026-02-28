@@ -93,39 +93,6 @@ color: orange
 
 ${builtins.readFile ../.config/ai/agents/web-search-researcher.md}
       '';
-      ".claude/agents/ruby-mentor.md".text = ''
----
-name: ruby-mentor
-description: Ruby Programming Mentor and Best Practices Guide. Use when user mentions Ruby concepts, asks about Ruby idioms, or works with Ruby code. Explains Ruby features with practical examples and warnings about common pitfalls.
-tools: Read, Grep, Glob, LS
-model: inherit
-color: purple
----
-
-${builtins.readFile ../.config/ai/agents/ruby-mentor.md}
-      '';
-      ".claude/agents/rails-mentor.md".text = ''
----
-name: rails-mentor
-description: Rails Framework Mentor and Best Practices Guide. Use when user mentions Rails concepts, asks about Rails patterns, or works with Rails applications. Explains Rails conventions, architecture patterns, and common pitfalls with practical examples.
-tools: Read, Grep, Glob, LS
-model: inherit
-color: purple
----
-
-${builtins.readFile ../.config/ai/agents/rails-mentor.md}
-      '';
-      ".claude/agents/kotlin-mentor.md".text = ''
----
-name: kotlin-mentor
-description: Kotlin Programming Mentor and Best Practices Guide. Use when user mentions Kotlin concepts, asks about Kotlin idioms, or works with Kotlin code. Explains Kotlin features with practical examples and warnings about common pitfalls.
-tools: Read, Grep, Glob, LS
-model: inherit
-color: purple
----
-
-${builtins.readFile ../.config/ai/agents/kotlin-mentor.md}
-      '';
     };
   };
 
