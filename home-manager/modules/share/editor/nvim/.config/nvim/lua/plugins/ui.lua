@@ -179,8 +179,8 @@ return {
       },
       indent = {
         scope = {
-          hl = "NormalFloat"
-        }
+          hl = "NormalFloat",
+        },
       },
     },
   },
@@ -254,8 +254,18 @@ return {
 
   -- color highlighter
   {
-    "NvChad/nvim-colorizer.lua",
-    lazy = false,
-    opts = {},
+    "catgoose/nvim-colorizer.lua",
+    event = "BufReadPre",
+    opts = {
+      user_default_options = {
+        names = true,
+        RGB = true,
+        RRGGBB = true,
+        css = false,
+        mode = "background",
+        tailwind = false,
+        suppress_deprecation = true, -- hide the info message about the new options format
+      },
+    },
   },
 }
