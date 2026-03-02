@@ -212,7 +212,7 @@ async function collectDiagnostics(
   cwd: string,
   timeoutMs: number,
   signal?: AbortSignal,
-  onError?: (msg: string) => void,
+  onError?: (msg: string, severity?: "info" | "warning" | "error") => void,
 ): Promise<Map<string, LspDiagnostic[]>> {
   const [cmd, ...args] = lspCommand;
   const proc = spawn(cmd, args, { cwd, stdio: ["pipe", "pipe", "pipe"] });
@@ -234,15 +234,12 @@ async function collectDiagnostics(
       if (proc.stdin!.destroyed) {
         const callback = typeof encodingOrCb === "function" ? encodingOrCb : cb;
         if (typeof callback === "function") process.nextTick(callback, null);
-        onError?.(
-          "lsp-diagnostics: write to destroyed stdin (post-shutdown), ignoring",
-        );
         return false;
       }
       return _origWrite(chunk, encodingOrCb, cb);
     };
     proc.stdin.on("error", (err) =>
-      onError?.(`lsp-diagnostics: stdin error — ${err.message}`),
+      onError?.(`lsp-diagnostics: stdin error — ${err.message}`, "info"),
     );
   }
 
@@ -460,7 +457,7 @@ export default function (pi: ExtensionAPI) {
           cwd,
           timeoutMs,
           signal,
-          (msg) => ctx.ui.notify(msg, "warning"),
+          (msg, severity = "info") => ctx.ui.notify(msg, severity),
         );
       } catch (err: any) {
         return {
