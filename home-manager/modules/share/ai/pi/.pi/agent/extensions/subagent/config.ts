@@ -22,7 +22,7 @@ export interface SubagentConfig {
 
 const DEFAULTS: SubagentConfig = {
   sources: ["~/.pi/agent/agents", "./.pi/agents"],
-  maxParallel: 4,
+  maxParallel: 5,
   userSystemPrompt: {
     enabled: true,
     path: "~/.pi/agent/AGENTS.md",
