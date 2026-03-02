@@ -26,7 +26,7 @@
 name: codebase-analyzer
 description: Use when you need implementation details about specific components, functions, or modules in the codebase
 tools: read, grep, ls, find, bash
-model: anthropic/claude-haiku-4-5
+model: github-copilot/gpt-4.1
 ---
 
 ${builtins.readFile ../.config/ai/agents/codebase-analyzer.md}
@@ -36,7 +36,7 @@ ${builtins.readFile ../.config/ai/agents/codebase-analyzer.md}
 name: codebase-locator
 description: Use when you need to find files, directories, or components by feature or purpose rather than exact name
 tools: read, grep, ls, find, bash
-model: anthropic/claude-haiku-4-5
+model: github-copilot/gpt-4.1
 ---
 
 ${builtins.readFile ../.config/ai/agents/codebase-locator.md}
@@ -46,7 +46,7 @@ ${builtins.readFile ../.config/ai/agents/codebase-locator.md}
 name: codebase-pattern-finder
 description: Use when you need existing code examples or patterns to model new implementation after, and want concrete code snippets not just file locations
 tools: read, grep, ls, find, bash
-model: anthropic/claude-haiku-4-5
+model: github-copilot/gpt-4.1
 ---
 
 ${builtins.readFile ../.config/ai/agents/codebase-pattern-finder.md}
@@ -56,7 +56,7 @@ ${builtins.readFile ../.config/ai/agents/codebase-pattern-finder.md}
 name: git-investigator
 description: Use when you need to analyze git history, track changes over time, or understand the development history of specific files or components
 tools: read, grep, ls, find, bash
-model: anthropic/claude-haiku-4-5
+model: github-copilot/gpt-4.1
 ---
 
 ${builtins.readFile ../.config/ai/agents/git-investigator.md}
@@ -65,7 +65,7 @@ ${builtins.readFile ../.config/ai/agents/git-investigator.md}
 ---
 name: web-search-researcher
 description: Use when you need current information from the web, facts that may be outdated in training data, or research across multiple online sources
-model: github-copilot/gpt-4o
+model: github-copilot/gpt-4.1
 ---
 
 ${builtins.readFile ../.config/ai/agents/web-search-researcher.md}
