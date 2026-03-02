@@ -41,12 +41,18 @@ function getSession(id: string | undefined): sessions.Session | undefined {
 
 // ─── schema ──────────────────────────────────────────────────────────────────
 
-const ACTIONS = [Action.Spawn, Action.Send, Action.Close, Action.Catalog] as const;
+const ACTIONS = [
+  Action.Spawn,
+  Action.Send,
+  Action.Close,
+  Action.Catalog,
+  Action.List,
+] as const;
 
 type SubagentParams = Static<typeof SubagentParamsSchema>;
 const SubagentParamsSchema = Type.Object({
   action: StringEnum(ACTIONS, {
-    description: "Action: spawn, send, close, catalog",
+    description: "Action: spawn, send, close, catalog, list",
   }),
   agent: Type.Optional(Type.String({ description: "Agent name (for spawn)" })),
   task: Type.Optional(
@@ -99,6 +105,31 @@ function handleCatalog(params: SubagentParams, ctx: ToolContext): ToolResult {
   return ok(`Available subagents:\n\n${lines.join("\n\n")}`, {
     action: Action.Catalog,
     count: agents.length,
+  });
+}
+
+function handleList(): ToolResult {
+  const active = sessions.all();
+  if (active.length === 0) {
+    return ok("No active subagent sessions.", {
+      action: Action.List,
+      count: 0,
+    });
+  }
+  const lines = active.map((s) => {
+    const status = s.pending
+      ? " pending"
+      : s.lastResult
+        ? " result ready"
+        : s.alive
+          ? "󰚩 running"
+          : "󱚧 stopped";
+    const task = s.task.length > 60 ? `${s.task.slice(0, 60)}…` : s.task;
+    return `**${s.id}** (${s.agentName}) — ${status}\n  Task: ${task}`;
+  });
+  return ok(`Active subagents (${active.length}):\n\n${lines.join("\n\n")}`, {
+    action: Action.List,
+    count: active.length,
   });
 }
 
@@ -404,10 +435,11 @@ export default function (pi: ExtensionAPI) {
       "Manage interactive subagents in tmux windows.",
       "",
       "Actions:",
-      "  catalog — List all available subagents (name and description) to determine which agent to spawn for a given task.",
-      '  spawn — Create window(s). "agent"+"task" for single, "tasks" array for parallel.',
-      '  send — Send message to subagent. Requires "id" and "message".',
-      '  close — Kill window. Requires "id" (or "all").',
+      "  catalog — List all available agent definitions (name and description) to determine which agent to spawn.",
+      "  list   — List all active subagent sessions with their status (running/pending/result ready).",
+      '  spawn  — Create window(s). "agent"+"task" for single, "tasks" array for parallel.',
+      '  send   — Send message to subagent. Requires "id" and "message".',
+      '  close  — Kill window. Requires "id" (or "all").',
       "",
       "IMPORTANT: After spawning, STOP — do not call any tools, do not do the work yourself. Results are delivered by the user via the subagent-read command. Your turn is triggered once the user reads a result.",
       "Requires tmux.",
@@ -422,6 +454,7 @@ export default function (pi: ExtensionAPI) {
       ctx,
     ) {
       if (params.action === Action.Catalog) return handleCatalog(params, ctx);
+      if (params.action === Action.List) return handleList();
       if (!tmux.isInsideTmux()) {
         return err("Subagent requires running inside tmux.");
       }
@@ -447,6 +480,8 @@ export default function (pi: ExtensionAPI) {
       switch (args.action) {
         case Action.Catalog:
           return render.renderCatalogCall(args, theme);
+        case Action.List:
+          return render.renderListCall(args, theme);
         case Action.Spawn:
           return render.renderSpawnCall(args, theme);
         case Action.Send:
@@ -457,9 +492,15 @@ export default function (pi: ExtensionAPI) {
           return render.renderCatalogCall(args, theme);
       }
     },
-    renderResult: (result: any, opts: any, theme: any) =>
-      result.details?.action === Action.Catalog
-        ? render.renderCatalogResult(result, opts, theme)
-        : render.renderResult(result, opts, theme),
+    renderResult: (result: any, opts: any, theme: any) => {
+      switch (result.details?.action) {
+        case Action.Catalog:
+          return render.renderCatalogResult(result, opts, theme);
+        case Action.List:
+          return render.renderListResult(result, opts, theme);
+        default:
+          return render.renderResult(result, opts, theme);
+      }
+    },
   });
 }

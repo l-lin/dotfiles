@@ -31,6 +31,11 @@ function styledTruncate(
 
 // ─── renderCall ──────────────────────────────────────────────────────────────
 
+export function renderListCall(_: any, theme: Theme): Text {
+  const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
+  return new Text(title("󰚩 subagent list"), 0, 0);
+}
+
 export function renderCatalogCall(_: any, theme: Theme): Text {
   const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
   return new Text(title("󰚩 subagent catalog"), 0, 0);
@@ -111,6 +116,45 @@ export function renderCatalogResult(
   }
 
   // Fallback
+  if (expanded) return new Markdown(textContent.trim(), 0, 0, mdTheme);
+  return new Text(
+    theme.fg("toolOutput", textContent.trim().split("\n")[0]),
+    0,
+    0,
+  );
+}
+
+// ─── renderListResult ────────────────────────────────────────────────────────
+
+export function renderListResult(
+  result: any,
+  { expanded }: { expanded: boolean },
+  theme: Theme,
+) {
+  const details = result.details as
+    | { action?: string; count?: number }
+    | undefined;
+  const mdTheme = getMarkdownTheme();
+  const textContent =
+    result.content[0]?.type === "text" ? result.content[0].text : "(no output)";
+
+  if (details?.action === Action.List) {
+    if (details.count === 0) {
+      return new Text(theme.fg("muted", "No active subagent sessions."), 0, 0);
+    }
+    if (expanded) {
+      return new Markdown(textContent.trim(), 0, 0, mdTheme);
+    }
+    return new Text(
+      theme.fg(
+        "toolOutput",
+        `${details.count} active subagent${details.count === 1 ? "" : "s"}.`,
+      ),
+      0,
+      0,
+    );
+  }
+
   if (expanded) return new Markdown(textContent.trim(), 0, 0, mdTheme);
   return new Text(
     theme.fg("toolOutput", textContent.trim().split("\n")[0]),

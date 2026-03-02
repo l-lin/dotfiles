@@ -17,6 +17,7 @@ export enum Action {
   Read = "read",
   Close = "close",
   Catalog = "catalog",
+  List = "list",
   AllDone = "all-done",
 }
 
