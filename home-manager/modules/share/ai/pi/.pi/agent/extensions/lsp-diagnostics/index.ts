@@ -227,7 +227,28 @@ export default function (pi: ExtensionAPI) {
         files?.length > 0
           ? "\n" +
             files
-              .map((f: string) => `  ${theme.fg("dim", `• ${path.basename(f)}`)}`)
+              .map(
+                (f: string) => `  ${theme.fg("dim", `• ${path.basename(f)}`)}`,
+              )
+              .join("\n")
+          : "";
+
+      // Parse diagnostic lines from content, skipping the 3-line header
+      const rawLines = (result.content[0]?.text ?? "").split("\n");
+      const separatorIdx = rawLines.findIndex((l: string) => l.startsWith("─"));
+      const diagLines =
+        separatorIdx >= 0 ? rawLines.slice(separatorIdx + 1) : [];
+      const coloredDiags =
+        diagLines.length > 0
+          ? "\n" +
+            diagLines
+              .map((line: string) => {
+                if (line.includes("[error]"))
+                  return `  ${theme.fg("error", line)}`;
+                if (line.includes("[warning]"))
+                  return `  ${theme.fg("warning", line)}`;
+                return `  ${theme.fg("dim", line)}`;
+              })
               .join("\n")
           : "";
 
@@ -238,7 +259,8 @@ export default function (pi: ExtensionAPI) {
           errors +
           theme.fg("muted", ", ") +
           warnings +
-          fileList,
+          fileList +
+          coloredDiags,
         0,
         0,
       );
