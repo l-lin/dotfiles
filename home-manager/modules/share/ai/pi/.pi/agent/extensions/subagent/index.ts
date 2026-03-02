@@ -498,8 +498,14 @@ export default function (pi: ExtensionAPI) {
           return render.renderCatalogResult(result, opts, theme);
         case Action.List:
           return render.renderListResult(result, opts, theme);
+        case Action.Spawn:
+          return render.renderSpawnResult(result, opts, theme);
+        case Action.Send:
+          return render.renderSendResult(result, opts, theme);
+        case Action.Close:
+          return render.renderCloseResult(result, opts, theme);
         default:
-          return render.renderResult(result, opts, theme);
+          return render.renderSendResult(result, opts, theme);
       }
     },
   });

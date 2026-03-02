@@ -163,9 +163,9 @@ export function renderListResult(
   );
 }
 
-// ─── renderResult ────────────────────────────────────────────────────────────
+// ─── renderSpawnResult ───────────────────────────────────────────────────────
 
-export function renderResult(
+export function renderSpawnResult(
   result: any,
   { expanded }: { expanded: boolean },
   theme: Theme,
@@ -175,8 +175,7 @@ export function renderResult(
   const textContent =
     result.content[0]?.type === "text" ? result.content[0].text : "(no output)";
 
-  // Spawn: show session IDs prominently
-  if (details?.action === Action.Spawn && details.spawned?.length) {
+  if (details?.spawned?.length) {
     if (!expanded && details.spawned.length === 1) {
       // Single spawn collapsed: one compact line with session ID only
       const s = details.spawned[0];
@@ -211,14 +210,45 @@ export function renderResult(
     return container;
   }
 
-  // All non-spawn actions: collapsed = first line only, expanded = full markdown
-  if (expanded) return new Markdown(textContent.trim(), 0, 0, mdTheme);
+  return renderTextResult(result, { expanded }, theme);
+}
 
+// ─── renderSendResult ────────────────────────────────────────────────────────
+
+export function renderSendResult(
+  result: any,
+  { expanded }: { expanded: boolean },
+  theme: Theme,
+) {
+  return renderTextResult(result, { expanded }, theme);
+}
+
+// ─── renderCloseResult ───────────────────────────────────────────────────────
+
+export function renderCloseResult(
+  result: any,
+  { expanded }: { expanded: boolean },
+  theme: Theme,
+) {
+  return renderTextResult(result, { expanded }, theme);
+}
+
+// ─── renderTextResult (shared fallback) ──────────────────────────────────────
+
+function renderTextResult(
+  result: any,
+  { expanded }: { expanded: boolean },
+  theme: Theme,
+) {
+  const mdTheme = getMarkdownTheme();
+  const textContent =
+    result.content[0]?.type === "text" ? result.content[0].text : "(no output)";
+
+  if (expanded) return new Markdown(textContent.trim(), 0, 0, mdTheme);
   if (!textContent.trim()) return new Text("", 0, 0);
 
   const firstLine = textContent.split("\n")[0].trim();
-  const rendered = theme.fg("toolOutput", firstLine);
-  return new Text(rendered, 0, 0);
+  return new Text(theme.fg("toolOutput", firstLine), 0, 0);
 }
 
 // ─── message renderer for subagent-result notifications ──────────────────────
