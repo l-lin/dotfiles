@@ -45,6 +45,8 @@ alias mr="mise run"
 alias mw="mise watch"
 # vcs
 alias review="nvim +'lua Snacks.picker.gh_pr()'"
+# notes
+alias daily="cd ~/perso/codeberg/notes/ && nvim 5-rituals/daily/$(date -u '+%Y-%m-%d').md"
 
 # --------------------------------------------------------
 # Default options
