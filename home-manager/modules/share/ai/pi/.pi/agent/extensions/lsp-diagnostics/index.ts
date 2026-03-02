@@ -169,32 +169,21 @@ export default function (pi: ExtensionAPI) {
     },
 
     renderCall(args, theme) {
-      const autoResolved = resolveLspCommand(
-        args.files ?? [],
-        args.lsp_command,
-        savedConfig,
-      );
-      const cmd = autoResolved ? autoResolved.command[0] : "LSP";
-      const isAuto = !args.lsp_command && autoResolved?.source !== "explicit";
-      const sourceLabel = isAuto
-        ? theme.fg("dim", ` (${autoResolved?.source ?? "auto"})`)
-        : "";
-      const fileList =
-        args.files?.length > 0
-          ? args.files.map((f: string) => path.basename(f)).join(", ")
-          : "…";
+      const nbFiles = args.files?.length ?? 0;
+      let filePart = `${nbFiles} file(s)`;
+      if (nbFiles === 1) {
+        filePart = path.basename(args.files[0]);
+      }
       return new Text(
         theme.fg("toolTitle", theme.bold("lsp_get_diagnostics ")) +
-          theme.fg("muted", `${cmd}`) +
-          sourceLabel +
-          theme.fg("dim", ` [${fileList}]`),
+          theme.fg("muted", filePart),
         0,
         0,
       );
     },
 
-    renderResult(result, _opts, theme) {
-      const { errorCount, warningCount, lspCommand, lspSource } =
+    renderResult(result, { expanded }, theme) {
+      const { errorCount, warningCount, lspCommand, lspSource, files } =
         result.details ?? {};
 
       if (result.isError) {
@@ -226,13 +215,30 @@ export default function (pi: ExtensionAPI) {
             )
           : theme.fg("muted", "0 warnings");
 
+      if (!expanded) {
+        return new Text(
+          errors + theme.fg("muted", ", ") + warnings,
+          0,
+          0,
+        );
+      }
+
+      const fileList =
+        files?.length > 0
+          ? "\n" +
+            files
+              .map((f: string) => `  ${theme.fg("dim", `• ${path.basename(f)}`)}`)
+              .join("\n")
+          : "";
+
       return new Text(
         theme.fg("muted", `${cmd}`) +
           sourceLabel +
           theme.fg("muted", " — ") +
           errors +
           theme.fg("muted", ", ") +
-          warnings,
+          warnings +
+          fileList,
         0,
         0,
       );
