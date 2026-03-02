@@ -41,12 +41,12 @@ function getSession(id: string | undefined): sessions.Session | undefined {
 
 // ─── schema ──────────────────────────────────────────────────────────────────
 
-const ACTIONS = [Action.Spawn, Action.Send, Action.Close, Action.List] as const;
+const ACTIONS = [Action.Spawn, Action.Send, Action.Close, Action.Catalog] as const;
 
 type SubagentParams = Static<typeof SubagentParamsSchema>;
 const SubagentParamsSchema = Type.Object({
   action: StringEnum(ACTIONS, {
-    description: "Action: spawn, send, close, list",
+    description: "Action: spawn, send, close, catalog",
   }),
   agent: Type.Optional(Type.String({ description: "Agent name (for spawn)" })),
   task: Type.Optional(
@@ -83,7 +83,7 @@ const SubagentParamsSchema = Type.Object({
   ),
 });
 
-function handleList(params: SubagentParams, ctx: ToolContext): ToolResult {
+function handleCatalog(params: SubagentParams, ctx: ToolContext): ToolResult {
   const config = loadConfig();
   const sources: string[] = params.sources ?? config.sources;
   const discovery = discoverAgents(sources, ctx.cwd);
@@ -97,7 +97,7 @@ function handleList(params: SubagentParams, ctx: ToolContext): ToolResult {
 
   const lines = agents.map((a) => `**${a.name}**\n  ${a.description}`);
   return ok(`Available subagents:\n\n${lines.join("\n\n")}`, {
-    action: Action.List,
+    action: Action.Catalog,
     count: agents.length,
   });
 }
@@ -404,10 +404,10 @@ export default function (pi: ExtensionAPI) {
       "Manage interactive subagents in tmux windows.",
       "",
       "Actions:",
-      "  list   — List all available subagents (name and description) to determine which agent to spawn for a given task.",
-      '  spawn  — Create window(s). "agent"+"task" for single, "tasks" array for parallel.',
-      '  send   — Send message to subagent. Requires "id" and "message".',
-      '  close  — Kill window. Requires "id" (or "all").',
+      "  catalog — List all available subagents (name and description) to determine which agent to spawn for a given task.",
+      '  spawn — Create window(s). "agent"+"task" for single, "tasks" array for parallel.',
+      '  send — Send message to subagent. Requires "id" and "message".',
+      '  close — Kill window. Requires "id" (or "all").',
       "",
       "IMPORTANT: After spawning, STOP — do not call any tools, do not do the work yourself. Results are delivered by the user via the subagent-read command. Your turn is triggered once the user reads a result.",
       "Requires tmux.",
@@ -421,7 +421,7 @@ export default function (pi: ExtensionAPI) {
       _onUpdate,
       ctx,
     ) {
-      if (params.action === Action.List) return handleList(params, ctx);
+      if (params.action === Action.Catalog) return handleCatalog(params, ctx);
       if (!tmux.isInsideTmux()) {
         return err("Subagent requires running inside tmux.");
       }
@@ -445,8 +445,8 @@ export default function (pi: ExtensionAPI) {
 
     renderCall: (args: any, theme: any) => {
       switch (args.action) {
-        case Action.List:
-          return render.renderListCall(args, theme);
+        case Action.Catalog:
+          return render.renderCatalogCall(args, theme);
         case Action.Spawn:
           return render.renderSpawnCall(args, theme);
         case Action.Send:
@@ -454,12 +454,12 @@ export default function (pi: ExtensionAPI) {
         case Action.Close:
           return render.renderCloseCall(args, theme);
         default:
-          return render.renderListCall(args, theme);
+          return render.renderCatalogCall(args, theme);
       }
     },
     renderResult: (result: any, opts: any, theme: any) =>
-      result.details?.action === Action.List
-        ? render.renderListResult(result, opts, theme)
+      result.details?.action === Action.Catalog
+        ? render.renderCatalogResult(result, opts, theme)
         : render.renderResult(result, opts, theme),
   });
 }

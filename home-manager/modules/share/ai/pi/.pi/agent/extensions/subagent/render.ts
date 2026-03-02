@@ -31,9 +31,9 @@ function styledTruncate(
 
 // ─── renderCall ──────────────────────────────────────────────────────────────
 
-export function renderListCall(_: any, theme: Theme): Text {
+export function renderCatalogCall(_: any, theme: Theme): Text {
   const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
-  return new Text(title("󰚩 subagent list"), 0, 0);
+  return new Text(title("󰚩 subagent catalog"), 0, 0);
 }
 
 export function renderSpawnCall(args: any, theme: Theme): Text {
@@ -82,9 +82,9 @@ export function renderCloseCall(args: any, theme: Theme): Text {
   );
 }
 
-// ─── renderListResult ────────────────────────────────────────────────────────
+// ─── renderCatalogResult ────────────────────────────────────────────────────────
 
-export function renderListResult(
+export function renderCatalogResult(
   result: any,
   { expanded }: { expanded: boolean },
   theme: Theme,
@@ -96,7 +96,7 @@ export function renderListResult(
   const textContent =
     result.content[0]?.type === "text" ? result.content[0].text : "(no output)";
 
-  if (details?.action === Action.List && details.count !== undefined) {
+  if (details?.action === Action.Catalog && details.count !== undefined) {
     if (expanded) {
       return new Markdown(textContent.trim(), 0, 0, mdTheme);
     }
