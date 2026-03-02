@@ -98,13 +98,14 @@ async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
 
 ```typescript
 import { Text } from "@mariozechner/pi-tui"; // required import
+import { keyHint } from "@mariozechner/pi-coding-agent"; // for keybinding hints
 
 pi.registerTool({
   name: "my_tool",
   // ... other fields ...
 
   async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
-    const result = { status: "success", data: params.input };
+    const result = { status: "success", items: ["item1", "item2"], data: params.input };
     return {
       content: [{ type: "text", text: JSON.stringify(result) }],
       details: result, // passed to renderResult
@@ -116,11 +117,33 @@ pi.registerTool({
     return new Text(text, 0, 0);
   },
 
-  renderResult(result, _opts, theme) {
-    if (result.details?.status === "success") {
-      return new Text(theme.fg("success", "✓ Done"), 0, 0);
+  // expanded = false → collapsed (minimal, 1–2 lines)
+  // expanded = true  → user pressed Ctrl+O to see full detail
+  renderResult(result, { expanded, isPartial }, theme) {
+    // Streaming: show progress indicator
+    if (isPartial) {
+      return new Text(theme.fg("warning", "⟳ Processing..."), 0, 0);
     }
-    return new Text(result.content[0]?.text || "", 0, 0);
+
+    // Errors: always show clearly
+    if (result.details?.status === "error") {
+      return new Text(theme.fg("error", `✗ ${result.details.error}`), 0, 0);
+    }
+
+    // Collapsed (default): single summary line + expand hint
+    if (!expanded) {
+      const hint = keyHint("expandTools", "to expand");
+      return new Text(theme.fg("success", "✓ Done") + theme.fg("muted", ` (${hint})`), 0, 0);
+    }
+
+    // Expanded (Ctrl+O): full detail
+    let text = theme.fg("success", "✓ Done");
+    if (result.details?.items) {
+      for (const item of result.details.items) {
+        text += "\n  " + theme.fg("dim", item);
+      }
+    }
+    return new Text(text, 0, 0);
   },
 });
 ```
@@ -192,16 +215,19 @@ Verify:
 
 ## Key APIs
 
-| API                           | Purpose             |
-| ----------------------------- | ------------------- |
-| `pi.registerTool()`           | LLM-callable tools  |
-| `pi.registerCommand()`        | User `/commands`    |
-| `pi.on(event, handler)`       | Lifecycle hooks     |
-| `ctx.ui.select/input/confirm` | User prompts        |
-| `ctx.ui.setWidget()`          | Status display      |
-| `ctx.ui.notify()`             | Notifications       |
-| `pi.sendMessage()`            | Inject LLM messages |
-| `pi.appendEntry()`            | Persist state       |
+| API                           | Purpose                                    |
+| ----------------------------- | ------------------------------------------ |
+| `pi.registerTool()`           | LLM-callable tools                         |
+| `pi.registerCommand()`        | User `/commands`                           |
+| `pi.on(event, handler)`       | Lifecycle hooks                            |
+| `ctx.ui.select/input/confirm` | User prompts                               |
+| `ctx.ui.setWidget()`          | Status display                             |
+| `ctx.ui.notify()`             | Notifications                              |
+| `pi.sendMessage()`            | Inject LLM messages                        |
+| `pi.appendEntry()`            | Persist state                              |
+| `keyHint(action, desc)`       | Keybinding hint in `renderResult` text     |
+| `expanded` (renderResult opt) | `false` = collapsed (minimal), `true` = full detail (Ctrl+O) |
+| `isPartial` (renderResult opt)| `true` = tool still streaming, show progress |
 
 See `./reference.md` for complete API documentation.
 
@@ -211,6 +237,9 @@ See `./reference.md` for complete API documentation.
 - **Tool name in kebab-case** — tool names must be `snake_case` (`my_tool`, not `my-tool`)
 - **Missing `Text` import for custom rendering** — add `import { Text } from "@mariozechner/pi-tui"`
 - **Missing `isToolCallEventType` import** — add `import { isToolCallEventType } from "@mariozechner/pi-coding-agent"`
+- **Ignoring `expanded` in `renderResult`** — always branch on `expanded`: collapsed = minimal 1-line summary, expanded = full detail
+- **Ignoring `isPartial` in `renderResult`** — show a progress indicator when `isPartial` is true (streaming in progress)
+- **Missing keybind hint in collapsed view** — use `keyHint("expandTools", "to expand")` so users know Ctrl+O works
 - **Unconditional `{ block: true }` in event handler** — always return `undefined` on the allow path
 - **Missing entry point** — every extension must have `export default function(pi: ExtensionAPI)`
 
