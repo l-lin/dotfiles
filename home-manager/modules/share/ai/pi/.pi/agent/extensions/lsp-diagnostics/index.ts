@@ -217,7 +217,7 @@ export default function (pi: ExtensionAPI) {
 
       if (!expanded) {
         return new Text(
-          errors + theme.fg("muted", ", ") + warnings,
+          ` ${theme.fg("muted", "→")} ${errors}${theme.fg("muted", ",")} ${warnings}`,
           0,
           0,
         );
