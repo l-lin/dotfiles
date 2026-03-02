@@ -13,11 +13,22 @@ import {
 import { Type } from "@sinclair/typebox";
 import { Text } from "@mariozechner/pi-tui";
 import * as path from "node:path";
+import * as fs from "node:fs";
+import { execSync } from "node:child_process";
 import type { SavedConfig } from "./types.js";
 import { CONFIG_ENTRY_TYPE } from "./types.js";
 import { resolveLspCommand, resolveLanguage } from "./resolver.js";
 import { formatDiagnostics } from "./format.js";
-import { collectDiagnostics } from "./lsp-client.js";
+
+const EXTENSION_DIR = new URL(".", import.meta.url).pathname;
+
+function ensureDependencies(notify: (msg: string) => void): void {
+  const marker = path.join(EXTENSION_DIR, "node_modules", "vscode-jsonrpc");
+  if (!fs.existsSync(marker)) {
+    notify("lsp-diagnostics: installing dependencies...");
+    execSync("npm install --silent", { cwd: EXTENSION_DIR, stdio: "ignore" });
+  }
+}
 
 export default function (pi: ExtensionAPI) {
   let savedConfig: SavedConfig | null = null;
@@ -94,6 +105,9 @@ export default function (pi: ExtensionAPI) {
       }
 
       const { command: lspCommand, source: lspSource } = resolved;
+
+      ensureDependencies((msg) => ctx.ui.notify(msg, "info"));
+      const { collectDiagnostics } = await import("./lsp-client.js");
 
       let allDiagnostics: Map<string, any>;
       try {
