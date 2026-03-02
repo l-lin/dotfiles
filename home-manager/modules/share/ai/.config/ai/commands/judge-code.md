@@ -23,31 +23,44 @@ When this command is invoked:
 
 2. **If no parameters provided**: ask the user using the `AskUserQuestion` what to review
 
-## Team Setup
+## Orchestration Model
 
-Before launching judges, set up a coordination team:
+The main agent is the **jury orchestrator**. It owns all state and is the sole message bus between judges — judges never communicate directly with each other.
 
-1. **Create the jury team** using `TeamCreate` with `team_name: "code-jury"`
-2. **Create one task per judge** using `TaskCreate` — each task describes the judge's persona, criteria, and the code/PR to review
-3. **Spawn all five judge agents simultaneously** using the `Task` tool with `team_name: "code-jury"` and `name` set to the judge's name (e.g. `"murphy"`, `"ockham"`, `"oracle"`, `"schneier"`, `"ada"`). Each agent prompt must include:
-   - The judge's full persona (personality, criteria, catchphrases)
-   - The specific code/PR diff to evaluate
-   - Instructions to claim their assigned task via `TaskUpdate`, perform their assessment, then send their verdict to the team lead via `SendMessage` with `type: "message"`
-4. **Wait** for all five judges to send their individual assessment messages (they arrive automatically)
+The flow has three sequential phases:
 
-## Cross-Examination
+**Phase 1 — Parallel verdict collection.** Spawn all five judge subagents simultaneously. Wait for all five results before moving on.
 
-After all five verdicts arrive:
+**Phase 2 — Parallel cross-examination.** The Round 1 subagents are still active. The orchestrator sends each judge a message containing the relevant peer verdict(s) — all five messages dispatched simultaneously. Wait for all five replies before moving on.
 
-1. **Send each judge's verdict to the others** via `SendMessage` (`type: "message"`) to trigger Round 2 deliberation
-2. **Each judge replies** with their rebuttal or concession (Murphy vs. Ockham, Ada vs. Oracle, etc.)
-3. Wait for replies, then proceed to consensus
+**Phase 3 — Synthesis.** No additional subagents. The orchestrator aggregates scores, resolves conflicts, and emits the final verdict.
 
-## Consensus & Shutdown
+## Round 1: Spawn Judges & Collect Verdicts
 
-1. **Synthesize** all assessments into the final scoring and verdict (see Scoring Rubric below)
-2. **Shut down all judges** using `SendMessage` with `type: "shutdown_request"` to each judge by name
-3. **Delete the team** using `TeamDelete` once all agents have confirmed shutdown
+Spawn all five judges in parallel using the `subagent` tool (action: `spawn`, tasks array). Each task prompt must include:
+- The judge's full persona (personality, criteria, catchphrases from the definitions below)
+- The complete code/PR diff to evaluate
+- Instruction to produce a structured verdict: score per criterion, overall score (1–10), key findings (positive + negative), and one or two specific code examples
+
+Wait for all five results before proceeding. Do not synthesize yet.
+
+## Round 2: Cross-Examination (Orchestrator-Mediated)
+
+The Round 1 subagents are still active. Do not spawn new ones. Use the `subagent` tool (action: `send`) to message each judge simultaneously, relaying the relevant peer verdict(s) as the message body. Wait for all five replies before proceeding.
+
+- **Message Murphy**: include Ockham's verdict → does Ockham's simplicity argument override the robustness concern? Concede or push back with evidence from the diff.
+- **Message Ockham**: include Murphy's verdict → is Murphy's defensive complexity justified or gold-plating? Concede or push back.
+- **Message Ada**: include Oracle's verdict → does strict spec adherence excuse poor implementation craft? Concede or push back.
+- **Message Oracle**: include Ada's verdict → does implementation elegance matter if spec gaps exist? Concede or push back.
+- **Message Schneier**: include all four other verdicts → does any finding change the security assessment? Flag overlooked attack surface or confirm none found.
+
+## Round 3: Consensus & Final Verdict
+
+With all verdicts and rebuttals in hand, the orchestrator synthesizes directly (no additional subagents):
+
+1. Apply the Scoring Rubric weights to compute the aggregate score
+2. Note where judges agreed, where they diverged, and how cross-examination shifted positions
+3. Emit the final structured output (see Scoring Rubric below)
 
 ## The Five Judges
 
@@ -355,31 +368,33 @@ Each judge is spawned as a named teammate in the `code-jury` team:
 
 ## Judging Format
 
-Each judge evaluates the contestant independently, then they deliberate together. The format:
+### Round 1: Individual Assessments (parallel subagents)
 
-### Round 1: Individual Assessments (5 minutes each)
+Each judge subagent produces a structured verdict covering:
 
-Each judge speaks alone, focusing on their criteria:
+- What impressed them (with code examples)
+- What concerned them (with code examples)
+- Score per criterion (1–10) and weighted overall score
+- One-line summary catchphrase
 
-- What impressed them
-- What concerned them
-- Specific code examples (good and bad)
-- Score on their criteria (1-10)
+### Round 2: Cross-Examination (orchestrator-mediated subagents)
 
-### Round 2: Cross-Examination (10 minutes)
+The orchestrator spawns targeted rebuttal subagents, passing peer verdicts as input:
 
-Judges challenge each other's assessments:
+- **Murphy ↔ Ockham**: robustness vs. simplicity trade-offs
+- **Ada ↔ Oracle**: implementation craft vs. specification adherence
+- **Schneier**: open-floor response to any verdict that touches security
 
-- Murphy vs. Ockham (robustness vs. simplicity)
-- Ada vs. Oracle (implementation vs. specification)
-- Debates about trade-offs
-- Synthesis of perspectives
+Each rebuttal is a single focused subagent. The orchestrator collects all outputs and feeds them into Round 3.
 
-### Round 3: Consensus (5 minutes)
+### Round 3: Consensus (orchestrator synthesizes)
+
+No additional subagents. The orchestrator produces:
 
 - Aggregate scoring
+- Conflict resolution notes (where judges disagreed and why)
 - Final verdict
-- Specific recommendations
+- Specific, prioritized recommendations
 - Vote: GOLDEN BUZZER ⭐ / PASS ✅ / NEEDS WORK ⚠️ / FAIL ❌
 
 ## Scoring Rubric
