@@ -40,6 +40,11 @@ export interface LspServerConfig {
    * immediately after initialization. Shape is server-specific.
    */
   settings?: Record<string, unknown>;
+  /**
+   * Custom LSP client capabilities advertised during initialization.
+   * Merged into the default capabilities when provided.
+   */
+  capabilities?: Record<string, unknown>;
 }
 
 /** Shape of ~/.pi/agent/lsp-diagnostics.json */

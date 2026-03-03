@@ -14,6 +14,32 @@ import { pathToFileUri, guessLanguageId } from "./resolver.js";
 
 type NotifyFn = (msg: string, severity?: "info" | "warning" | "error") => void;
 
+/** Recursively merges `override` into `base`, with override values winning on conflicts. */
+function deepMerge(
+  base: Record<string, unknown>,
+  override: Record<string, unknown>,
+): Record<string, unknown> {
+  const result: Record<string, unknown> = { ...base };
+  for (const [key, val] of Object.entries(override)) {
+    if (
+      val !== null &&
+      typeof val === "object" &&
+      !Array.isArray(val) &&
+      typeof base[key] === "object" &&
+      base[key] !== null &&
+      !Array.isArray(base[key])
+    ) {
+      result[key] = deepMerge(
+        base[key] as Record<string, unknown>,
+        val as Record<string, unknown>,
+      );
+    } else {
+      result[key] = val;
+    }
+  }
+  return result;
+}
+
 export class PersistentLspClient {
   private connection;
   private proc;
@@ -53,6 +79,8 @@ export class PersistentLspClient {
     rootDir?: string,
     /** Arbitrary settings forwarded via workspace/didChangeConfiguration after init. */
     settings?: Record<string, unknown>,
+    /** Custom client capabilities merged into the default initialize capabilities. */
+    capabilities?: Record<string, unknown>,
   ): Promise<PersistentLspClient> {
     const projectRoot = rootDir ?? cwd;
     const [cmd, ...args] = lspCommand;
@@ -87,15 +115,20 @@ export class PersistentLspClient {
 
     const client = new PersistentLspClient(proc, connection, onError);
 
+    const defaultCapabilities = {
+      textDocument: { publishDiagnostics: { relatedInformation: false } },
+      workspace: { workspaceFolders: true },
+    };
+    const initCapabilities = capabilities
+      ? deepMerge(defaultCapabilities, capabilities)
+      : defaultCapabilities;
+
     await Promise.race([
       spawnError,
       connection.sendRequest("initialize", {
         processId: process.pid,
         rootUri: pathToFileUri(projectRoot),
-        capabilities: {
-          textDocument: { publishDiagnostics: { relatedInformation: false } },
-          workspace: { workspaceFolders: true },
-        },
+        capabilities: initCapabilities,
         workspaceFolders: [{ uri: pathToFileUri(projectRoot), name: path.basename(projectRoot) }],
       }),
     ]);

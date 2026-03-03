@@ -34,6 +34,10 @@ const EXT_TO_LANGUAGE_ID: Record<string, string> = {
   ".yaml": "yaml",
   ".yml": "yaml",
   ".xml": "xml",
+  ".xsd": "xml",
+  ".xsl": "xml",
+  ".xslt": "xml",
+  ".svg": "xml",
 };
 
 export function guessLanguageId(filePath: string): string {
@@ -73,7 +77,7 @@ const LANGUAGE_LSP_DEFAULTS: Record<string, string[]> = {
   lua: ["lua-language-server"],
   ruby: ["rubocop", "--lsp"],
   yaml: ["yaml-language-server", "--stdio"],
-  xml: ["xmlformat", "--stdio"],
+  xml: ["lemminx"],
 };
 
 /**
@@ -131,6 +135,7 @@ export interface ResolvedLspCommand {
   command: string[];
   rootMarkers: string[];
   settings: Record<string, unknown> | undefined;
+  capabilities: Record<string, unknown> | undefined;
   source: LspCommandSource;
 }
 
@@ -145,6 +150,7 @@ export function resolveLspCommand(
       command: explicitCommand,
       rootMarkers: [],
       settings: undefined,
+      capabilities: undefined,
       source: "explicit",
     };
   }
@@ -156,6 +162,7 @@ export function resolveLspCommand(
       command: savedConfig.perLanguage[lang]!,
       rootMarkers: [],
       settings: undefined,
+      capabilities: undefined,
       source: "per-language",
     };
   }
@@ -165,6 +172,7 @@ export function resolveLspCommand(
       command: savedConfig.lspCommand,
       rootMarkers: [],
       settings: undefined,
+      capabilities: undefined,
       source: "global",
     };
   }
@@ -183,6 +191,7 @@ export function resolveLspCommand(
         command,
         rootMarkers: serverConfig.rootMarkers ?? [],
         settings: serverConfig.settings,
+        capabilities: serverConfig.capabilities,
         source: "file-config",
       };
     }
@@ -195,7 +204,7 @@ export function resolveLspCommand(
     const command = fs.existsSync(resolvedBin)
       ? [resolvedBin, ...rest]
       : [bin!, ...rest];
-    return { command, rootMarkers: [], settings: undefined, source: "default" };
+    return { command, rootMarkers: [], settings: undefined, capabilities: undefined, source: "default" };
   }
 
   return null;

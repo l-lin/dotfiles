@@ -287,6 +287,7 @@ export default function (pi: ExtensionAPI) {
           (msg, severity = "info") => ctx.ui.notify(msg, severity),
           rootDir,
           resolved.settings,
+          resolved.capabilities,
         );
         entry = {
           client,
