@@ -6,21 +6,23 @@
  */
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import {
-  truncateHead,
-  DEFAULT_MAX_BYTES,
-  DEFAULT_MAX_LINES,
   isEditToolResult,
   isWriteToolResult,
 } from "@mariozechner/pi-coding-agent";
 import type { TUI } from "@mariozechner/pi-tui";
 import * as path from "node:path";
-import type { SavedConfig } from "./types.js";
+import type { LspDiagnostic, SavedConfig } from "./types.js";
+import {
+  getOrCreateClient,
+  handleLspError,
+  buildDiagnosticBlock,
+  appendToContent,
+} from "./tool-result-helpers.js";
 import { CONFIG_ENTRY_TYPE } from "./types.js";
 import { loadConfig, loadFileConfig, saveEnabled } from "./config.js";
 import { resolveLspCommand, resolveRootDir } from "./resolver.js";
-import { formatDiagnostics } from "./format.js";
-import { PersistentLspClient } from "./lsp-client.js";
 import { LspDebugComponent, type LspClientEntry } from "./lsp-debug.js";
+import { setLspWidget, clearWidget, LSP_ICON } from "./widget.js";
 
 const DIAGNOSTICS_TIMEOUT_IN_MS = 30_000;
 
@@ -32,6 +34,7 @@ export default function (pi: ExtensionAPI) {
   let savedConfig: SavedConfig | null = null;
   // Persistent LSP clients keyed by command string — created lazily, shut down on session end
   const lspClients = new Map<string, LspClientEntry>();
+
   // ── /lsp toggle command ──────────────────────────────────────────────────
   pi.registerCommand("cmd:lsp", {
     description: "Toggle auto LSP diagnostics on/off for this session",
@@ -66,79 +69,6 @@ export default function (pi: ExtensionAPI) {
     }
   });
 
-  // ── Widget helpers ───────────────────────────────────────────────────────
-  type WidgetCtx = {
-    ui: { setWidget: (key: string, widget: unknown) => void };
-  };
-
-  const WIDGET_KEY = "lsp-diagnostics";
-  const LSP_ICON = "";
-  const LSP_STARTING_ICON = "";
-  const LSP_BLINK_INTERVAL_MS = 500;
-
-  const enum LspWidgetState {
-    Starting = "starting",
-    Collecting = "collecting",
-    Idle = "idle",
-  }
-
-  // Blink timer — only active during the Collecting state
-  let blinkTimer: ReturnType<typeof setInterval> | undefined;
-  let blinkVisible = true;
-
-  function stopBlink() {
-    if (blinkTimer !== undefined) {
-      clearInterval(blinkTimer);
-      blinkTimer = undefined;
-    }
-    blinkVisible = true;
-  }
-
-  function renderLspWidget(
-    ctx: WidgetCtx,
-    lspBin: string,
-    icon: string,
-    iconVisible: boolean,
-  ) {
-    const renderedIcon = iconVisible ? icon : " ";
-    ctx.ui.setWidget(
-      WIDGET_KEY,
-      (
-        _tui: unknown,
-        theme: {
-          fg: (color: string, text: string) => string;
-          bold: (text: string) => string;
-        },
-      ) => {
-        const line =
-          theme.fg("success", renderedIcon) + theme.bold(` ${lspBin}`);
-        return { render: () => [line], invalidate: () => {} };
-      },
-    );
-  }
-
-  function setLspWidget(ctx: WidgetCtx, lspBin: string, state: LspWidgetState) {
-    stopBlink();
-
-    const icon =
-      state === LspWidgetState.Starting ? LSP_STARTING_ICON : LSP_ICON;
-
-    if (
-      state === LspWidgetState.Starting ||
-      state === LspWidgetState.Collecting
-    ) {
-      // Start blink loop
-      blinkVisible = true;
-      renderLspWidget(ctx, lspBin, icon, blinkVisible);
-      blinkTimer = setInterval(() => {
-        blinkVisible = !blinkVisible;
-        renderLspWidget(ctx, lspBin, icon, blinkVisible);
-      }, LSP_BLINK_INTERVAL_MS);
-    } else {
-      renderLspWidget(ctx, lspBin, icon, true);
-    }
-  }
-
   // ── /lsp-kill command ────────────────────────────────────────────────────
   pi.registerCommand("cmd:lsp-kill", {
     description: "Manually shut down one or all active LSP server(s)",
@@ -168,8 +98,7 @@ export default function (pi: ExtensionAPI) {
         );
         lspClients.clear();
         await Promise.allSettled(shutdowns);
-        stopBlink();
-        ctx.ui.setWidget(WIDGET_KEY, undefined);
+        clearWidget(ctx);
         ctx.ui.notify(`Killed all ${count} LSP server(s).`, "info");
       } else {
         const key = labelToKey.get(chosen)!;
@@ -181,8 +110,7 @@ export default function (pi: ExtensionAPI) {
         await entry.client.shutdown();
         lspClients.delete(key);
         if (lspClients.size === 0) {
-          stopBlink();
-          ctx.ui.setWidget(WIDGET_KEY, undefined);
+          clearWidget(ctx);
         }
         ctx.ui.notify(`Killed LSP server "${key}".`, "info");
       }
@@ -194,41 +122,7 @@ export default function (pi: ExtensionAPI) {
     description:
       "Show detailed debug info for all active LSP server(s) in an interactive TUI",
     handler: async (_args, ctx) => {
-      if (!ctx.hasUI) {
-        if (lspClients.size === 0) {
-          pi.sendMessage(
-            {
-              customType: "lsp-debug",
-              content: "No active LSP servers.",
-              display: true,
-            },
-            { triggerTurn: false },
-          );
-          return;
-        }
-        const lines: string[] = ["Active LSP Servers:"];
-        for (const [_key, entry] of lspClients.entries()) {
-          const info = entry.client.getDebugInfo();
-          lines.push(`\n[${entry.bin}]`);
-          lines.push(`  Command : ${entry.command.join(" ")}`);
-          lines.push(`  Root    : ${entry.rootDir}`);
-          lines.push(`  Started : ${entry.startedAt.toISOString()}`);
-          lines.push(`  Files   : ${info.openedFiles.length}`);
-          lines.push(
-            `  Diags   : ${[...info.diagnosticsMap.values()].flat().length}`,
-          );
-          if (entry.settings) {
-            lines.push(
-              `  Settings: ${JSON.stringify(entry.settings, null, 2)}`,
-            );
-          }
-        }
-        pi.sendMessage(
-          { customType: "lsp-debug", content: lines.join("\n"), display: true },
-          { triggerTurn: false },
-        );
-        return;
-      }
+      if (!ctx.hasUI) return;
 
       await ctx.ui.custom(
         (tui: TUI, theme: unknown, _kb: unknown, done: () => void) => {
@@ -245,8 +139,7 @@ export default function (pi: ExtensionAPI) {
     );
     lspClients.clear();
     await Promise.allSettled(shutdowns);
-    stopBlink();
-    ctx.ui.setWidget(WIDGET_KEY, undefined);
+    clearWidget(ctx);
   });
 
   // ── Auto-diagnose after write/edit ───────────────────────────────────────
@@ -263,111 +156,42 @@ export default function (pi: ExtensionAPI) {
       savedConfig,
       fileConfig,
     );
-    if (!resolved) return; // No LSP available for this file type — skip silently
+    if (!resolved) return;
 
-    // Resolve project root via rootMarkers — critical for multi-project workspaces
     const rootDir =
       resolved.rootMarkers.length > 0
         ? resolveRootDir(filePath, resolved.rootMarkers, ctx.cwd)
         : ctx.cwd;
-
-    // Include rootDir in the cache key so each project gets its own LSP instance
     const commandKey = `${resolved.command.join(" ")}::${rootDir}`;
     const lspBin = path.basename(resolved.command[0]!);
 
-    let allDiagnostics: Map<string, any>;
+    let diagnostics: Map<string, LspDiagnostic[]>;
     try {
-      // Get or create a persistent client for this LSP command + project root
-      let entry = lspClients.get(commandKey);
-      if (!entry) {
-        setLspWidget(ctx, lspBin, LspWidgetState.Starting);
-        const client = await PersistentLspClient.create(
-          resolved.command,
-          ctx.cwd,
-          (msg, severity = "info") => ctx.ui.notify(msg, severity),
-          rootDir,
-          resolved.settings,
-          resolved.capabilities,
-        );
-        entry = {
-          client,
-          bin: lspBin,
-          command: resolved.command,
-          rootDir,
-          settings: resolved.settings,
-          startedAt: new Date(),
-        };
-        lspClients.set(commandKey, entry);
-      }
-      setLspWidget(ctx, lspBin, LspWidgetState.Collecting);
-      allDiagnostics = await entry.client.getDiagnostics(
+      const entry = await getOrCreateClient(
+        resolved,
+        rootDir,
+        commandKey,
+        lspBin,
+        ctx,
+        lspClients,
+      );
+      setLspWidget(ctx, lspBin, "collecting");
+      diagnostics = await entry.client.getDiagnostics(
         [filePath],
         ctx.cwd,
         DIAGNOSTICS_TIMEOUT_IN_MS,
         AbortSignal.timeout(DIAGNOSTICS_TIMEOUT_IN_MS),
       );
-    } catch (err: any) {
-      // Client may be in a broken state — remove it so next call spawns fresh
-      lspClients.delete(commandKey);
-      // Stop any active blink — the finally block won't do it since the key is gone
-      if (lspClients.size === 0) {
-        stopBlink();
-        ctx.ui.setWidget(WIDGET_KEY, undefined);
-      } else {
-        // Other clients still alive — pick any surviving one to show in the widget
-        const [survivingEntry] = lspClients.values();
-        setLspWidget(ctx, survivingEntry!.bin, LspWidgetState.Idle);
-      }
-      // Don't break the tool result on LSP failure — just skip
-      ctx.ui.notify(
-        `lsp-diagnostics: ${err?.message ?? String(err)}`,
-        "warning",
-      );
+    } catch (err) {
+      handleLspError(err, commandKey, ctx, lspClients);
       return;
     } finally {
-      // Revert to idle if client is still alive; catch already handled the failure case
-      if (lspClients.has(commandKey))
-        setLspWidget(ctx, lspBin, LspWidgetState.Idle);
+      if (lspClients.has(commandKey)) setLspWidget(ctx, lspBin, "idle");
     }
 
-    const { text, errorCount, warningCount } = formatDiagnostics(
-      allDiagnostics,
-      ctx.cwd,
-    );
+    const block = buildDiagnosticBlock(diagnostics, filePath, lspBin, ctx.cwd);
+    if (!block) return;
 
-    // Skip appending when there's nothing to report — no noise for clean files
-    if (errorCount === 0 && warningCount === 0) return;
-
-    const relPath = path.relative(ctx.cwd, path.resolve(ctx.cwd, filePath));
-    const summary = `${errorCount} error(s), ${warningCount} warning(s)`;
-    const header =
-      `\n\n--- LSP Diagnostics (${lspBin}) — ${summary} ---\n` +
-      `File: ${relPath}\n` +
-      "─".repeat(60) +
-      "\n";
-
-    const full = header + (text.length > 0 ? text : "(no diagnostics)");
-    const truncation = truncateHead(full, {
-      maxLines: DEFAULT_MAX_LINES,
-      maxBytes: DEFAULT_MAX_BYTES,
-    });
-
-    let diagnosticBlock = truncation.content;
-    if (truncation.truncated) {
-      diagnosticBlock += `\n[Output truncated: ${truncation.outputLines}/${truncation.totalLines} lines shown]`;
-    }
-
-    // Append diagnostics to the existing tool result content, preserving all content items
-    const content = [...(event.content ?? [])];
-    if (content.length === 0) {
-      content.push({ type: "text", text: diagnosticBlock });
-    } else {
-      const last = content[content.length - 1];
-      content[content.length - 1] = {
-        ...last,
-        text: ((last as any).text ?? "") + diagnosticBlock,
-      };
-    }
-    return { content };
+    return { content: appendToContent(event.content, block) };
   });
 }
