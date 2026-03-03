@@ -12,6 +12,7 @@ import {
   isEditToolResult,
   isWriteToolResult,
 } from "@mariozechner/pi-coding-agent";
+import type { TUI } from "@mariozechner/pi-tui";
 import * as path from "node:path";
 import type { SavedConfig } from "./types.js";
 import { CONFIG_ENTRY_TYPE } from "./types.js";
@@ -19,6 +20,7 @@ import { loadConfig, loadFileConfig, saveEnabled } from "./config.js";
 import { resolveLspCommand, resolveRootDir } from "./resolver.js";
 import { formatDiagnostics } from "./format.js";
 import { PersistentLspClient } from "./lsp-client.js";
+import { LspDebugComponent, type LspClientEntry } from "./lsp-debug.js";
 
 const DIAGNOSTICS_TIMEOUT_IN_MS = 30_000;
 
@@ -29,7 +31,7 @@ export default function (pi: ExtensionAPI) {
 
   let savedConfig: SavedConfig | null = null;
   // Persistent LSP clients keyed by command string — created lazily, shut down on session end
-  const lspClients = new Map<string, { client: PersistentLspClient; bin: string }>();
+  const lspClients = new Map<string, LspClientEntry>();
   // ── /lsp toggle command ──────────────────────────────────────────────────
   pi.registerCommand("cmd:lsp", {
     description: "Toggle auto LSP diagnostics on/off for this session",
@@ -187,6 +189,55 @@ export default function (pi: ExtensionAPI) {
     },
   });
 
+  // ── /lsp-debug command ──────────────────────────────────────────────────
+  pi.registerCommand("cmd:lsp-debug", {
+    description:
+      "Show detailed debug info for all active LSP server(s) in an interactive TUI",
+    handler: async (_args, ctx) => {
+      if (!ctx.hasUI) {
+        if (lspClients.size === 0) {
+          pi.sendMessage(
+            {
+              customType: "lsp-debug",
+              content: "No active LSP servers.",
+              display: true,
+            },
+            { triggerTurn: false },
+          );
+          return;
+        }
+        const lines: string[] = ["Active LSP Servers:"];
+        for (const [_key, entry] of lspClients.entries()) {
+          const info = entry.client.getDebugInfo();
+          lines.push(`\n[${entry.bin}]`);
+          lines.push(`  Command : ${entry.command.join(" ")}`);
+          lines.push(`  Root    : ${entry.rootDir}`);
+          lines.push(`  Started : ${entry.startedAt.toISOString()}`);
+          lines.push(`  Files   : ${info.openedFiles.length}`);
+          lines.push(
+            `  Diags   : ${[...info.diagnosticsMap.values()].flat().length}`,
+          );
+          if (entry.settings) {
+            lines.push(
+              `  Settings: ${JSON.stringify(entry.settings, null, 2)}`,
+            );
+          }
+        }
+        pi.sendMessage(
+          { customType: "lsp-debug", content: lines.join("\n"), display: true },
+          { triggerTurn: false },
+        );
+        return;
+      }
+
+      await ctx.ui.custom(
+        (tui: TUI, theme: unknown, _kb: unknown, done: () => void) => {
+          return new LspDebugComponent(lspClients, tui, theme, done);
+        },
+      );
+    },
+  });
+
   // ── Shut down all LSP clients when the session ends ─────────────────────
   pi.on("session_end", async (_event, ctx) => {
     const shutdowns = [...lspClients.values()].map(({ client }) =>
@@ -237,7 +288,14 @@ export default function (pi: ExtensionAPI) {
           rootDir,
           resolved.settings,
         );
-        entry = { client, bin: lspBin };
+        entry = {
+          client,
+          bin: lspBin,
+          command: resolved.command,
+          rootDir,
+          settings: resolved.settings,
+          startedAt: new Date(),
+        };
         lspClients.set(commandKey, entry);
       }
       setLspWidget(ctx, lspBin, LspWidgetState.Collecting);

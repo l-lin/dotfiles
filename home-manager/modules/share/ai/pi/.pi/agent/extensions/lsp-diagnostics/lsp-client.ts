@@ -189,6 +189,25 @@ export class PersistentLspClient {
     return result;
   }
 
+  /**
+   * Returns a snapshot of internal state for debugging purposes.
+   */
+  getDebugInfo(): {
+    openedFiles: string[];
+    diagnosticsMap: Map<string, LspDiagnostic[]>;
+    versionCounter: number;
+    pendingWaiters: string[];
+  } {
+    return {
+      openedFiles: [...this.openedFiles],
+      diagnosticsMap: new Map(
+        [...this.diagnosticsMap.entries()].map(([k, v]) => [k, [...v]]),
+      ),
+      versionCounter: this.versionCounter,
+      pendingWaiters: [...this.waiters.keys()],
+    };
+  }
+
   async shutdown(): Promise<void> {
     try {
       let timer: ReturnType<typeof setTimeout> | undefined;
