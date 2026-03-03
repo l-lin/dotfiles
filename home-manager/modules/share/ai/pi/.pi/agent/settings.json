@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.55.1",
+  "lastChangelogVersion": "0.55.4",
   "theme": "light",
   "defaultProvider": "anthropic",
   "defaultModel": "claude-sonnet-4-6",
@@ -18,10 +18,9 @@
   "subagent": {
     "sources": [
       "~/.pi/agent/subagents",
-      "./.pi/subagents",
-      "./.claude/agents"
+      "./.pi/subagents"
     ],
-    "maxParallel": 4,
+    "maxParallel": 5,
     "userSystemPrompt": {
       "enabled": false,
       "path": "~/.config/ai/system-prompt.md"
