@@ -72,6 +72,25 @@ export default function (pi: ExtensionAPI) {
     const resolved = resolveLspCommand([filePath], undefined, savedConfig);
     if (!resolved) return; // No LSP available for this file type — skip silently
 
+    const lspBin = resolved.command[0]!;
+    const widgetKey = "lsp-diagnostics";
+    ctx.ui.setWidget(
+      widgetKey,
+      (
+        _tui: unknown,
+        theme: { fg: (color: string, text: string) => string },
+      ) => {
+        const line = theme.fg(
+          "warning",
+          `⚡ LSP diagnostics running (${lspBin})…`,
+        );
+        return {
+          render: () => [line],
+          invalidate: () => {},
+        };
+      },
+    );
+
     let allDiagnostics: Map<string, any>;
     try {
       allDiagnostics = await collectDiagnostics(
@@ -83,12 +102,15 @@ export default function (pi: ExtensionAPI) {
         (msg, severity = "info") => ctx.ui.notify(msg, severity),
       );
     } catch (err: any) {
+      ctx.ui.setWidget(widgetKey, undefined);
       // Don't break the tool result on LSP failure — just skip
       ctx.ui.notify(
         `lsp-diagnostics: ${err?.message ?? String(err)}`,
         "warning",
       );
       return;
+    } finally {
+      ctx.ui.setWidget(widgetKey, undefined);
     }
 
     const { text, errorCount, warningCount } = formatDiagnostics(
