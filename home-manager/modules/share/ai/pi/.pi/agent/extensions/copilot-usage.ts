@@ -399,16 +399,19 @@ export default function copilotUsageExtension(pi: ExtensionAPI) {
 
   // Initial load on session start
   pi.on("session_start", async (_event, ctx) => {
+    if (!widgetVisible) return;
     await refresh(ctx);
   });
 
   // Refresh on session switch
   pi.on("session_switch", async (_event, ctx) => {
+    if (!widgetVisible) return;
     await refresh(ctx);
   });
 
   // Refresh when agent finishes work
   pi.on("agent_end", async (_event, ctx) => {
+    if (!widgetVisible) return;
     await refresh(ctx);
   });
 
