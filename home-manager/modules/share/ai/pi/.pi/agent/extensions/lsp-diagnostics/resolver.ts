@@ -62,25 +62,6 @@ export function resolveLanguage(filePaths: string[]): string | null {
 const LSP_BIN_PATH = path.join(os.homedir(), ".local/share/nvim/mason/bin");
 
 /**
- * Built-in fallback commands keyed by languageId.
- * Takes lowest priority — prefer lsp-diagnostics.json for per-project config.
- * Commands sourced from `:LspInfo` in Neovim.
- * TODO: remove once all consumers have migrated to lsp-diagnostics.json.
- */
-const LANGUAGE_LSP_DEFAULTS: Record<string, string[]> = {
-  typescript: ["vtsls", "--stdio"],
-  typescriptreact: ["vtsls", "--stdio"],
-  javascript: ["vtsls", "--stdio"],
-  javascriptreact: ["vtsls", "--stdio"],
-  java: ["jdtls"],
-  nix: ["nil"],
-  lua: ["lua-language-server"],
-  ruby: ["rubocop", "--lsp"],
-  yaml: ["yaml-language-server", "--stdio"],
-  xml: ["lemminx"],
-};
-
-/**
  * Walks up the directory tree from `filePath`, returning the first ancestor
  * directory that contains any of the given `rootMarkers`. Falls back to `cwd`.
  */
@@ -195,16 +176,6 @@ export function resolveLspCommand(
         source: "file-config",
       };
     }
-  }
-
-  // Built-in hardcoded defaults (legacy fallback keyed by languageId)
-  if (lang && LANGUAGE_LSP_DEFAULTS[lang]) {
-    const [bin, ...rest] = LANGUAGE_LSP_DEFAULTS[lang]!;
-    const resolvedBin = `${LSP_BIN_PATH}/${bin}`;
-    const command = fs.existsSync(resolvedBin)
-      ? [resolvedBin, ...rest]
-      : [bin!, ...rest];
-    return { command, rootMarkers: [], settings: undefined, capabilities: undefined, source: "default" };
   }
 
   return null;
