@@ -72,6 +72,7 @@ export class LspDebugComponent implements Component {
   private container: Container;
   private body: Text;
   private cachedWidth?: number;
+  private cachedHeight?: number;
 
   constructor(
     lspClients: Map<string, LspClientEntry>,
@@ -124,6 +125,11 @@ export class LspDebugComponent implements Component {
     if (this.selectedIdx >= this.snapshots.length) {
       this.selectedIdx = Math.max(0, this.snapshots.length - 1);
     }
+  }
+
+  private get terminalHeight(): number {
+    // TUI.terminal.rows gives the actual terminal height
+    return (this.tui as any).terminal?.rows ?? 24;
   }
 
   private rebuild(width: number): void {
@@ -261,12 +267,20 @@ export class LspDebugComponent implements Component {
       }
     }
 
-    // Apply scroll — clamp so at least MIN_VISIBLE_LINES of content remain on screen.
-    // Terminal height isn't available here; this is a conservative UX guard, not a precise clip.
-    const MIN_VISIBLE_LINES = 8;
-    const maxScroll = Math.max(0, lines.length - MIN_VISIBLE_LINES);
+    // Clamp scroll so we never scroll past the last line, then slice a single
+    // screenful so the component never emits more lines than the terminal can show.
+    const termH = this.terminalHeight;
+    // Reserve rows for the fixed structural lines surrounding the scrollable body:
+    // 2× DynamicBorder + title line + 2× empty Text("") padding = 5 rows.
+    // One extra row for the tab bar rendered at the top of the body itself.
+    const STRUCTURAL_ROWS = 6;
+    const viewportLines = Math.max(1, termH - STRUCTURAL_ROWS);
+    const maxScroll = Math.max(0, lines.length - viewportLines);
     this.scrollOffset = Math.min(this.scrollOffset, maxScroll);
-    const visible = lines.slice(this.scrollOffset);
+    const visible = lines.slice(
+      this.scrollOffset,
+      this.scrollOffset + viewportLines,
+    );
 
     this.body.setText(
       visible
@@ -276,6 +290,7 @@ export class LspDebugComponent implements Component {
         .join("\n"),
     );
     this.cachedWidth = width;
+    this.cachedHeight = termH;
   }
 
   handleInput(data: string): void {
@@ -331,7 +346,8 @@ export class LspDebugComponent implements Component {
   }
 
   render(width: number): string[] {
-    if (this.cachedWidth !== width) this.rebuild(width);
+    if (this.cachedWidth !== width || this.cachedHeight !== this.terminalHeight)
+      this.rebuild(width);
     return this.container.render(width);
   }
 }
