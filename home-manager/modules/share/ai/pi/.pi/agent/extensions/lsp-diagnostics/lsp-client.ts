@@ -1,5 +1,5 @@
 /**
- * LSP server lifecycle: initialize → open files → collect diagnostics → shutdown.
+ * Persistent LSP client: initialize once, reuse across file writes, shutdown on session end.
  */
 import { spawn } from "node:child_process";
 import * as path from "node:path";
@@ -12,67 +12,76 @@ import {
 import type { LspDiagnostic, PublishDiagnosticsParams } from "./types.js";
 import { pathToFileUri, guessLanguageId } from "./resolver.js";
 
-export async function collectDiagnostics(
-  lspCommand: string[],
-  filePaths: string[],
-  cwd: string,
-  timeoutMs: number,
-  signal?: AbortSignal,
-  onError?: (msg: string, severity?: "info" | "warning" | "error") => void,
-): Promise<Map<string, LspDiagnostic[]>> {
-  const [cmd, ...args] = lspCommand;
-  const proc = spawn(cmd!, args, { cwd, stdio: ["pipe", "pipe", "pipe"] });
+type NotifyFn = (msg: string, severity?: "info" | "warning" | "error") => void;
 
-  // Monkey-patch proc.stdin.write so writes to a destroyed stream silently
-  // succeed instead of rejecting. vscode-jsonrpc queues writes via setImmediate;
-  // by the time they fire the stream may already be destroyed after LSP shutdown.
-  if (proc.stdin) {
-    const _origWrite = proc.stdin.write.bind(proc.stdin);
-    (proc.stdin as any).write = (
-      chunk: any,
-      encodingOrCb?: any,
-      cb?: any,
-    ): boolean => {
-      if (proc.stdin!.destroyed) {
-        const callback = typeof encodingOrCb === "function" ? encodingOrCb : cb;
-        if (typeof callback === "function") process.nextTick(callback, null);
-        return false;
-      }
-      return _origWrite(chunk, encodingOrCb, cb);
-    };
-    proc.stdin.on("error", (err) =>
-      onError?.(`lsp-diagnostics: stdin error — ${err.message}`, "info"),
+export class PersistentLspClient {
+  private connection;
+  private proc;
+  private diagnosticsMap = new Map<string, LspDiagnostic[]>();
+  // Resolvers waiting for a fresh publishDiagnostics notification for a URI
+  private waiters = new Map<string, Array<() => void>>();
+  private openedFiles = new Set<string>();
+  // Incremented per didChange to satisfy LSP version monotonicity
+  private versionCounter = 1;
+  private onError?: NotifyFn;
+
+  private constructor(
+    proc: ReturnType<typeof spawn>,
+    connection: ReturnType<typeof createMessageConnection>,
+    onError?: NotifyFn,
+  ) {
+    this.proc = proc;
+    this.connection = connection;
+    this.onError = onError;
+
+    connection.onNotification(
+      "textDocument/publishDiagnostics",
+      (params: PublishDiagnosticsParams) => {
+        this.diagnosticsMap.set(params.uri, params.diagnostics);
+        const resolvers = this.waiters.get(params.uri) ?? [];
+        this.waiters.delete(params.uri);
+        resolvers.forEach((r) => r());
+      },
     );
   }
 
-  // Reject immediately if the binary isn't found; .catch() suppresses the
-  // unhandled rejection if initialize() wins the race first.
-  const spawnError = new Promise<never>((_, reject) => {
-    proc.on("error", (err) => reject(err));
-  }).catch(() => {}) as Promise<never>;
+  static async create(
+    lspCommand: string[],
+    cwd: string,
+    onError?: NotifyFn,
+  ): Promise<PersistentLspClient> {
+    const [cmd, ...args] = lspCommand;
+    const proc = spawn(cmd!, args, { cwd, stdio: ["pipe", "pipe", "pipe"] });
 
-  const connection = createMessageConnection(
-    new StreamMessageReader(proc.stdout!),
-    new StreamMessageWriter(proc.stdin!),
-  );
-  connection.listen();
+    // Silently swallow writes to a destroyed stdin (vscode-jsonrpc flushes async)
+    if (proc.stdin) {
+      const _origWrite = proc.stdin.write.bind(proc.stdin);
+      (proc.stdin as any).write = (chunk: any, encodingOrCb?: any, cb?: any): boolean => {
+        if (proc.stdin!.destroyed) {
+          const callback = typeof encodingOrCb === "function" ? encodingOrCb : cb;
+          if (typeof callback === "function") process.nextTick(callback, null);
+          return false;
+        }
+        return _origWrite(chunk, encodingOrCb, cb);
+      };
+      proc.stdin.on("error", (err) =>
+        onError?.(`lsp-diagnostics: stdin error — ${err.message}`, "info"),
+      );
+    }
 
-  const allDiagnostics = new Map<string, LspDiagnostic[]>(
-    filePaths.map((f) => [pathToFileUri(path.resolve(cwd, f)), []]),
-  );
-  const received = new Set<string>();
+    // Surface spawn errors immediately so callers can handle them
+    const spawnError = new Promise<never>((_, reject) => {
+      proc.on("error", reject);
+    }).catch(() => {}) as Promise<never>;
 
-  connection.onNotification(
-    "textDocument/publishDiagnostics",
-    (params: PublishDiagnosticsParams) => {
-      if (allDiagnostics.has(params.uri)) {
-        allDiagnostics.set(params.uri, params.diagnostics);
-        received.add(params.uri);
-      }
-    },
-  );
+    const connection = createMessageConnection(
+      new StreamMessageReader(proc.stdout!),
+      new StreamMessageWriter(proc.stdin!),
+    );
+    connection.listen();
 
-  try {
+    const client = new PersistentLspClient(proc, connection, onError);
+
     await Promise.race([
       spawnError,
       connection.sendRequest("initialize", {
@@ -82,74 +91,109 @@ export async function collectDiagnostics(
           textDocument: { publishDiagnostics: { relatedInformation: false } },
           workspace: { workspaceFolders: true },
         },
-        workspaceFolders: [
-          { uri: pathToFileUri(cwd), name: path.basename(cwd) },
-        ],
+        workspaceFolders: [{ uri: pathToFileUri(cwd), name: path.basename(cwd) }],
       }),
     ]);
 
     connection.sendNotification("initialized", {});
 
-    for (const filePath of filePaths) {
-      const absPath = path.resolve(cwd, filePath);
+    return client;
+  }
+
+  /**
+   * Notifies the LSP of file changes and waits for fresh diagnostics.
+   * - First open: sends didOpen
+   * - Subsequent: sends didChange + didSave
+   */
+  async getDiagnostics(
+    filePaths: string[],
+    cwd: string,
+    timeoutMs: number,
+    signal?: AbortSignal,
+  ): Promise<Map<string, LspDiagnostic[]>> {
+    const uris = filePaths.map((f) => pathToFileUri(path.resolve(cwd, f)));
+
+    // Register waiters before sending notifications to avoid missing fast responses
+    const diagnosticsReady = Promise.all(
+      uris.map(
+        (uri) =>
+          new Promise<void>((resolve) => {
+            const existing = this.waiters.get(uri) ?? [];
+            existing.push(resolve);
+            this.waiters.set(uri, existing);
+          }),
+      ),
+    );
+
+    for (let i = 0; i < filePaths.length; i++) {
+      const absPath = path.resolve(cwd, filePaths[i]!);
+      const uri = uris[i]!;
       let text = "";
       try {
         text = fs.readFileSync(absPath, "utf8");
       } catch {
-        /* LSP will error */
+        /* let the LSP report the error */
       }
 
-      connection.sendNotification("textDocument/didOpen", {
-        textDocument: {
-          uri: pathToFileUri(absPath),
-          languageId: guessLanguageId(absPath),
-          version: 1,
+      if (!this.openedFiles.has(uri)) {
+        this.openedFiles.add(uri);
+        this.connection.sendNotification("textDocument/didOpen", {
+          textDocument: {
+            uri,
+            languageId: guessLanguageId(absPath),
+            version: this.versionCounter++,
+            text,
+          },
+        });
+      } else {
+        const version = this.versionCounter++;
+        this.connection.sendNotification("textDocument/didChange", {
+          textDocument: { uri, version },
+          contentChanges: [{ text }],
+        });
+        this.connection.sendNotification("textDocument/didSave", {
+          textDocument: { uri },
           text,
-        },
-      });
+        });
+      }
     }
 
-    // Wait for all diagnostics or timeout, whichever comes first
-    const allUris = [...allDiagnostics.keys()];
-    await new Promise<void>((resolve) => {
-      const timer = setTimeout(resolve, timeoutMs);
-      const interval = setInterval(() => {
-        if (allUris.every((u) => received.has(u))) {
-          clearInterval(interval);
-          clearTimeout(timer);
-          resolve();
-        }
-      }, 200);
-      signal?.addEventListener(
-        "abort",
-        () => {
-          clearInterval(interval);
-          clearTimeout(timer);
-          resolve();
-        },
-        { once: true },
-      );
-    });
+    // Race: all diagnostics arrive OR timeout OR abort
+    const timeout = new Promise<void>((resolve) => setTimeout(resolve, timeoutMs));
+    const aborted = signal
+      ? new Promise<void>((resolve) => signal.addEventListener("abort", () => resolve(), { once: true }))
+      : null;
+    await Promise.race([diagnosticsReady, timeout, ...(aborted ? [aborted] : [])]);
 
-    try {
-      let shutdownTimer: ReturnType<typeof setTimeout> | undefined;
-      await Promise.race([
-        connection.sendRequest("shutdown", null),
-        new Promise((_, reject) => {
-          shutdownTimer = setTimeout(
-            () => reject(new Error("shutdown timeout")),
-            3000,
-          );
-        }),
-      ]).finally(() => clearTimeout(shutdownTimer));
-      if (!proc.stdin?.destroyed) connection.sendNotification("exit", {});
-    } catch {
-      /* ignore shutdown errors */
+    // Clear any stale waiters that timed out
+    for (const uri of uris) {
+      this.waiters.delete(uri);
     }
-  } finally {
-    connection.dispose();
-    proc.kill();
+
+    const result = new Map<string, LspDiagnostic[]>();
+    for (const uri of uris) {
+      result.set(uri, this.diagnosticsMap.get(uri) ?? []);
+    }
+    return result;
   }
 
-  return allDiagnostics;
+  async shutdown(): Promise<void> {
+    try {
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      await Promise.race([
+        this.connection.sendRequest("shutdown", null),
+        new Promise((_, reject) => {
+          timer = setTimeout(() => reject(new Error("shutdown timeout")), 3000);
+        }),
+      ]).finally(() => clearTimeout(timer));
+      if (!this.proc.stdin?.destroyed) {
+        this.connection.sendNotification("exit", {});
+      }
+    } catch {
+      /* ignore shutdown errors */
+    } finally {
+      this.connection.dispose();
+      this.proc.kill();
+    }
+  }
 }

@@ -18,7 +18,7 @@ import { CONFIG_ENTRY_TYPE } from "./types.js";
 import { loadConfig, saveEnabled } from "./config.js";
 import { resolveLspCommand } from "./resolver.js";
 import { formatDiagnostics } from "./format.js";
-import { collectDiagnostics } from "./lsp-client.js";
+import { PersistentLspClient } from "./lsp-client.js";
 
 const DIAGNOSTICS_TIMEOUT_IN_MS = 30_000;
 
@@ -26,6 +26,8 @@ export default function (pi: ExtensionAPI) {
   const config = loadConfig();
 
   let savedConfig: SavedConfig | null = null;
+  // Persistent LSP clients keyed by command string — created lazily, shut down on session_end
+  const lspClients = new Map<string, PersistentLspClient>();
   // ── /lsp toggle command ──────────────────────────────────────────────────
   pi.registerCommand("cmd:lsp", {
     description: "Toggle auto LSP diagnostics on/off for this session",
@@ -61,6 +63,79 @@ export default function (pi: ExtensionAPI) {
     }
   });
 
+  // ── Widget helpers ───────────────────────────────────────────────────────
+  const WIDGET_KEY = "lsp-diagnostics";
+
+  function setLspWidget(
+    ctx: { ui: { setWidget: (key: string, widget: any) => void } },
+    lspBin: string,
+    running: boolean,
+  ) {
+    ctx.ui.setWidget(
+      WIDGET_KEY,
+      (
+        _tui: unknown,
+        theme: { fg: (color: string, text: string) => string },
+      ) => {
+        const label = running
+          ? `⚡ LSP diagnostics running (${lspBin})…`
+          : `● LSP connected (${lspBin})`;
+        const color = running ? "warning" : "success";
+        const line = theme.fg(color, label);
+        return { render: () => [line], invalidate: () => {} };
+      },
+    );
+  }
+
+  // ── /lsp-kill command ────────────────────────────────────────────────────
+  pi.registerCommand("cmd:lsp-kill", {
+    description: "Manually shut down one or all active LSP server(s)",
+    handler: async (_args, ctx) => {
+      if (lspClients.size === 0) {
+        ctx.ui.notify("No active LSP servers.", "info");
+        return;
+      }
+
+      const ALL_LABEL = "󰅖 ALL";
+      const options = [ALL_LABEL, ...lspClients.keys()].map((k) =>
+        k === ALL_LABEL ? k : `󰅖 ${k}`,
+      );
+      const chosen = await ctx.ui.select(
+        "Select an LSP server to kill:",
+        options,
+      );
+      if (!chosen) return;
+
+      if (chosen === ALL_LABEL) {
+        const count = lspClients.size;
+        const shutdowns = [...lspClients.values()].map((c) => c.shutdown());
+        lspClients.clear();
+        await Promise.allSettled(shutdowns);
+        ctx.ui.setWidget(WIDGET_KEY, undefined);
+        ctx.ui.notify(`Killed all ${count} LSP server(s).`, "info");
+      } else {
+        const key = chosen.slice(chosen.indexOf(" ") + 1);
+        const client = lspClients.get(key);
+        if (!client) {
+          ctx.ui.notify(`LSP server "${key}" not found.`, "error");
+          return;
+        }
+        await client.shutdown();
+        lspClients.delete(key);
+        if (lspClients.size === 0) ctx.ui.setWidget(WIDGET_KEY, undefined);
+        ctx.ui.notify(`Killed LSP server "${key}".`, "info");
+      }
+    },
+  });
+
+  // ── Shut down all LSP clients when the session ends ─────────────────────
+  pi.on("session_end", async (_event, ctx) => {
+    const shutdowns = [...lspClients.values()].map((c) => c.shutdown());
+    lspClients.clear();
+    await Promise.allSettled(shutdowns);
+    ctx.ui.setWidget(WIDGET_KEY, undefined);
+  });
+
   // ── Auto-diagnose after write/edit ───────────────────────────────────────
   pi.on("tool_result", async (event, ctx) => {
     if (!config.enabled) return;
@@ -72,37 +147,33 @@ export default function (pi: ExtensionAPI) {
     const resolved = resolveLspCommand([filePath], undefined, savedConfig);
     if (!resolved) return; // No LSP available for this file type — skip silently
 
+    const commandKey = resolved.command.join(" ");
     const lspBin = resolved.command[0]!;
-    const widgetKey = "lsp-diagnostics";
-    ctx.ui.setWidget(
-      widgetKey,
-      (
-        _tui: unknown,
-        theme: { fg: (color: string, text: string) => string },
-      ) => {
-        const line = theme.fg(
-          "warning",
-          `⚡ LSP diagnostics running (${lspBin})…`,
-        );
-        return {
-          render: () => [line],
-          invalidate: () => {},
-        };
-      },
-    );
 
     let allDiagnostics: Map<string, any>;
     try {
-      allDiagnostics = await collectDiagnostics(
-        resolved.command,
+      // Get or create a persistent client for this LSP command
+      let client = lspClients.get(commandKey);
+      if (!client) {
+        client = await PersistentLspClient.create(
+          resolved.command,
+          ctx.cwd,
+          (msg, severity = "info") => ctx.ui.notify(msg, severity),
+        );
+        lspClients.set(commandKey, client);
+      }
+      setLspWidget(ctx, lspBin, true);
+      allDiagnostics = await client.getDiagnostics(
         [filePath],
         ctx.cwd,
         DIAGNOSTICS_TIMEOUT_IN_MS,
         AbortSignal.timeout(DIAGNOSTICS_TIMEOUT_IN_MS),
-        (msg, severity = "info") => ctx.ui.notify(msg, severity),
       );
     } catch (err: any) {
-      ctx.ui.setWidget(widgetKey, undefined);
+      // Client may be in a broken state — remove it so next call spawns fresh
+      lspClients.delete(commandKey);
+      // If no clients left, clear the widget entirely
+      if (lspClients.size === 0) ctx.ui.setWidget(WIDGET_KEY, undefined);
       // Don't break the tool result on LSP failure — just skip
       ctx.ui.notify(
         `lsp-diagnostics: ${err?.message ?? String(err)}`,
@@ -110,7 +181,8 @@ export default function (pi: ExtensionAPI) {
       );
       return;
     } finally {
-      ctx.ui.setWidget(widgetKey, undefined);
+      // Revert to idle if client is still alive, otherwise widget was already cleared
+      if (lspClients.has(commandKey)) setLspWidget(ctx, lspBin, false);
     }
 
     const { text, errorCount, warningCount } = formatDiagnostics(
