@@ -10,24 +10,28 @@
     "~/.config/ai/commands"
   ],
   "quietStartup": true,
-  "defaultThinkingLevel": "off",
-  "copilotUsageVisible": false,
+  "defaultThinkingLevel": "minimal",
   "compaction": {
     "enabled": false
   },
-  "subagent": {
-    "sources": [
-      "~/.pi/agent/subagents",
-      "./.pi/subagents"
-    ],
-    "maxParallel": 5,
-    "userSystemPrompt": {
-      "enabled": false,
-      "path": "~/.config/ai/system-prompt.md"
-    }
-  },
   "hideThinkingBlock": false,
-  "lspDiagnostics": {
-    "enabled": true
+  "extensionSettings": {
+    "copilotUsage": {
+      "visible": false
+    },
+    "lspDiagnostics": {
+      "enabled": true
+    },
+    "subagent": {
+      "sources": [
+        "~/.pi/agent/subagents",
+        "./.pi/subagents"
+      ],
+      "maxParallel": 5,
+      "userSystemPrompt": {
+        "enabled": false,
+        "path": "~/.config/ai/system-prompt.md"
+      }
+    }
   }
 }
