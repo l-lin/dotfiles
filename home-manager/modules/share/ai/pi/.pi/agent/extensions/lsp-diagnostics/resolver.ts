@@ -1,7 +1,12 @@
 import * as os from "node:os";
 import * as path from "node:path";
 import * as fs from "node:fs";
-import type { LspCommandSource, SavedConfig } from "./types.js";
+import type {
+  LspCommandSource,
+  LspDiagnosticsFileConfig,
+  LspServerConfig,
+  SavedConfig,
+} from "./types.js";
 
 // ─── URI helpers ──────────────────────────────────────────────────────────────
 
@@ -49,14 +54,14 @@ export function resolveLanguage(filePaths: string[]): string | null {
 
 // ─── LSP command resolution ───────────────────────────────────────────────────
 
-/**
- * My LSP binaries are installed here by mason.nvim.
- */
+/** Default Mason.nvim binary location — overridden per-server by lsp-diagnostics.json. */
 const LSP_BIN_PATH = path.join(os.homedir(), ".local/share/nvim/mason/bin");
 
 /**
- * Built-in defaults keyed by languageId.
- * The commands are fetched from `:LspInfo` in Neovim.
+ * Built-in fallback commands keyed by languageId.
+ * Takes lowest priority — prefer lsp-diagnostics.json for per-project config.
+ * Commands sourced from `:LspInfo` in Neovim.
+ * TODO: remove once all consumers have migrated to lsp-diagnostics.json.
  */
 const LANGUAGE_LSP_DEFAULTS: Record<string, string[]> = {
   typescript: ["vtsls", "--stdio"],
@@ -103,10 +108,8 @@ export function resolveRootDir(
  */
 function matchFileConfig(
   filePath: string,
-  fileConfig: {
-    servers: Record<string, import("./types.js").LspServerConfig>;
-  } | null,
-): import("./types.js").LspServerConfig | null {
+  fileConfig: LspDiagnosticsFileConfig | null,
+): LspServerConfig | null {
   if (!fileConfig) return null;
   const ext = path.extname(filePath).toLowerCase();
   for (const server of Object.values(fileConfig.servers)) {
@@ -124,21 +127,26 @@ function matchFileConfig(
  *   5. Built-in default for the detected language
  *   6. null — no LSP available for this file type
  */
-export function resolveLspCommand(
-  files: string[],
-  explicitCommand: string[] | undefined,
-  savedConfig: SavedConfig | null,
-  fileConfig: {
-    servers: Record<string, import("./types.js").LspServerConfig>;
-  } | null = null,
-): {
+export interface ResolvedLspCommand {
   command: string[];
   rootMarkers: string[];
   settings: Record<string, unknown> | undefined;
   source: LspCommandSource;
-} | null {
+}
+
+export function resolveLspCommand(
+  files: string[],
+  explicitCommand: string[] | undefined,
+  savedConfig: SavedConfig | null,
+  fileConfig: LspDiagnosticsFileConfig | null = null,
+): ResolvedLspCommand | null {
   if (explicitCommand && explicitCommand.length > 0) {
-    return { command: explicitCommand, rootMarkers: [], settings: undefined, source: "explicit" };
+    return {
+      command: explicitCommand,
+      rootMarkers: [],
+      settings: undefined,
+      source: "explicit",
+    };
   }
 
   const lang = resolveLanguage(files);

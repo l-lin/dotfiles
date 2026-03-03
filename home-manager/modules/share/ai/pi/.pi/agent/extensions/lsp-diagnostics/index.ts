@@ -29,7 +29,7 @@ export default function (pi: ExtensionAPI) {
 
   let savedConfig: SavedConfig | null = null;
   // Persistent LSP clients keyed by command string — created lazily, shut down on session end
-  const lspClients = new Map<string, PersistentLspClient>();
+  const lspClients = new Map<string, { client: PersistentLspClient; bin: string }>();
   // ── /lsp toggle command ──────────────────────────────────────────────────
   pi.registerCommand("cmd:lsp", {
     description: "Toggle auto LSP diagnostics on/off for this session",
@@ -46,11 +46,10 @@ export default function (pi: ExtensionAPI) {
   // ── Restore config from session ──────────────────────────────────────────
   pi.on("session_start", async (_event, ctx) => {
     savedConfig = null;
-    for (const entry of ctx.sessionManager.getEntries()) {
-      if (entry.type === "custom" && entry.customType === CONFIG_ENTRY_TYPE) {
-        savedConfig = entry.data as SavedConfig;
-      }
-    }
+    const saved = [...ctx.sessionManager.getEntries()].findLast(
+      (e) => e.type === "custom" && e.customType === CONFIG_ENTRY_TYPE,
+    );
+    if (saved) savedConfig = saved.data as SavedConfig;
 
     if (savedConfig) {
       const parts: string[] = [];
@@ -66,6 +65,10 @@ export default function (pi: ExtensionAPI) {
   });
 
   // ── Widget helpers ───────────────────────────────────────────────────────
+  type WidgetCtx = {
+    ui: { setWidget: (key: string, widget: unknown) => void };
+  };
+
   const WIDGET_KEY = "lsp-diagnostics";
   const LSP_ICON = "";
   const LSP_STARTING_ICON = "";
@@ -90,7 +93,7 @@ export default function (pi: ExtensionAPI) {
   }
 
   function renderLspWidget(
-    ctx: { ui: { setWidget: (key: string, widget: any) => void } },
+    ctx: WidgetCtx,
     lspBin: string,
     icon: string,
     iconVisible: boolean,
@@ -112,11 +115,7 @@ export default function (pi: ExtensionAPI) {
     );
   }
 
-  function setLspWidget(
-    ctx: { ui: { setWidget: (key: string, widget: any) => void } },
-    lspBin: string,
-    state: LspWidgetState,
-  ) {
+  function setLspWidget(ctx: WidgetCtx, lspBin: string, state: LspWidgetState) {
     stopBlink();
 
     const icon =
@@ -162,7 +161,9 @@ export default function (pi: ExtensionAPI) {
 
       if (chosen === ALL_LABEL) {
         const count = lspClients.size;
-        const shutdowns = [...lspClients.values()].map((c) => c.shutdown());
+        const shutdowns = [...lspClients.values()].map(({ client }) =>
+          client.shutdown(),
+        );
         lspClients.clear();
         await Promise.allSettled(shutdowns);
         stopBlink();
@@ -170,12 +171,12 @@ export default function (pi: ExtensionAPI) {
         ctx.ui.notify(`Killed all ${count} LSP server(s).`, "info");
       } else {
         const key = labelToKey.get(chosen)!;
-        const client = lspClients.get(key);
-        if (!client) {
+        const entry = lspClients.get(key);
+        if (!entry) {
           ctx.ui.notify(`LSP server "${key}" not found.`, "error");
           return;
         }
-        await client.shutdown();
+        await entry.client.shutdown();
         lspClients.delete(key);
         if (lspClients.size === 0) {
           stopBlink();
@@ -188,7 +189,9 @@ export default function (pi: ExtensionAPI) {
 
   // ── Shut down all LSP clients when the session ends ─────────────────────
   pi.on("session_end", async (_event, ctx) => {
-    const shutdowns = [...lspClients.values()].map((c) => c.shutdown());
+    const shutdowns = [...lspClients.values()].map(({ client }) =>
+      client.shutdown(),
+    );
     lspClients.clear();
     await Promise.allSettled(shutdowns);
     stopBlink();
@@ -224,20 +227,21 @@ export default function (pi: ExtensionAPI) {
     let allDiagnostics: Map<string, any>;
     try {
       // Get or create a persistent client for this LSP command + project root
-      let client = lspClients.get(commandKey);
-      if (!client) {
+      let entry = lspClients.get(commandKey);
+      if (!entry) {
         setLspWidget(ctx, lspBin, LspWidgetState.Starting);
-        client = await PersistentLspClient.create(
+        const client = await PersistentLspClient.create(
           resolved.command,
           ctx.cwd,
           (msg, severity = "info") => ctx.ui.notify(msg, severity),
           rootDir,
           resolved.settings,
         );
-        lspClients.set(commandKey, client);
+        entry = { client, bin: lspBin };
+        lspClients.set(commandKey, entry);
       }
       setLspWidget(ctx, lspBin, LspWidgetState.Collecting);
-      allDiagnostics = await client.getDiagnostics(
+      allDiagnostics = await entry.client.getDiagnostics(
         [filePath],
         ctx.cwd,
         DIAGNOSTICS_TIMEOUT_IN_MS,
@@ -252,11 +256,8 @@ export default function (pi: ExtensionAPI) {
         ctx.ui.setWidget(WIDGET_KEY, undefined);
       } else {
         // Other clients still alive — pick any surviving one to show in the widget
-        const [survivingKey] = lspClients.keys();
-        const survivingBin = path.basename(
-          survivingKey!.split("::")[0]!.split(" ")[0]!,
-        );
-        setLspWidget(ctx, survivingBin, LspWidgetState.Idle);
+        const [survivingEntry] = lspClients.values();
+        setLspWidget(ctx, survivingEntry!.bin, LspWidgetState.Idle);
       }
       // Don't break the tool result on LSP failure — just skip
       ctx.ui.notify(

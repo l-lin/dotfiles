@@ -74,10 +74,10 @@ export class PersistentLspClient {
       );
     }
 
-    // Surface spawn errors immediately so callers can handle them
+    // Reject the race if the process fails to spawn — propagates to create() caller
     const spawnError = new Promise<never>((_, reject) => {
       proc.on("error", reject);
-    }).catch(() => {}) as Promise<never>;
+    });
 
     const connection = createMessageConnection(
       new StreamMessageReader(proc.stdout!),
