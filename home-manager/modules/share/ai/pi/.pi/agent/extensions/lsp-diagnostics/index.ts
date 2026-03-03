@@ -178,7 +178,7 @@ export default function (pi: ExtensionAPI) {
 
     // Include rootDir in the cache key so each project gets its own LSP instance
     const commandKey = `${resolved.command.join(" ")}::${rootDir}`;
-    const lspBin = resolved.command[0]!;
+    const lspBin = path.basename(resolved.command[0]!);
 
     let allDiagnostics: Map<string, any>;
     try {
@@ -230,7 +230,7 @@ export default function (pi: ExtensionAPI) {
     const relPath = path.relative(ctx.cwd, path.resolve(ctx.cwd, filePath));
     const summary = `${errorCount} error(s), ${warningCount} warning(s)`;
     const header =
-      `\n\n--- LSP Diagnostics (${resolved.command[0]}) — ${summary} ---\n` +
+      `\n\n--- LSP Diagnostics (${lspBin}) — ${summary} ---\n` +
       `File: ${relPath}\n` +
       "─".repeat(60) +
       "\n";
