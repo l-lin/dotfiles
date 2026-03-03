@@ -295,7 +295,7 @@ function updateSessionWidget(ctx: ToolContext): void {
             "dim",
             s.task.length > 50 ? `${s.task.slice(0, 50)}…` : s.task,
           );
-          return truncateToWidth(`${icon} ${id} ${task}`, width);
+          return truncateToWidth(` ${icon} ${id} ${task}`, width);
         });
       },
       invalidate: () => {},
