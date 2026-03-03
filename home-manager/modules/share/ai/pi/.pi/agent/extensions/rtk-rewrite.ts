@@ -24,15 +24,18 @@
  * - Rewrite found: execute rewritten command via built-in bash tool
  * - No rewrite: delegate to built-in bash tool unchanged
  * - Timeout (10s for hook): fall back to original command
+ *
+ * Dependencies:
+ * - ./minimal-mode/
  */
 
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
-import { Text } from "@mariozechner/pi-tui";
 import { createBashTool } from "@mariozechner/pi-coding-agent";
 import { spawn } from "node:child_process";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { existsSync } from "node:fs";
+import { renderBashCall, renderBashResult } from "./minimal-mode/renders.js";
 
 export default function (pi: ExtensionAPI) {
   const DEFAULT_HOOK_PATH = join(homedir(), ".config/ai/hooks/rtk-rewrite.sh");
@@ -142,7 +145,7 @@ export default function (pi: ExtensionAPI) {
       if (hookAvailable) {
         const rewritten = await getRewrittenCommand(params.command, ctx.cwd);
         if (rewritten) {
-          if (ctx.hasUI) ctx.ui.notify(` ${rewritten}`, "info");
+          if (ctx.hasUI) ctx.ui.notify(`  ${rewritten}`, "info");
           debug(`Executing rewritten command: ${rewritten}`);
           return bashTool.execute(
             toolCallId,
@@ -157,26 +160,11 @@ export default function (pi: ExtensionAPI) {
     },
 
     renderCall(args, theme) {
-      const command = args.command || "...";
-      const timeout = args.timeout as number | undefined;
-      const timeoutSuffix = timeout
-        ? theme.fg("muted", ` (timeout ${timeout}s)`)
-        : "";
-
-      return new Text(
-        theme.fg("toolTitle", theme.bold(`$ ${command}`)) + timeoutSuffix,
-        0,
-        0,
-      );
+      return renderBashCall(args, theme);
     },
 
     renderResult(result, { expanded }, theme) {
-      // Minimal mode: show nothing in collapsed state
-      if (!expanded) {
-        return new Text("", 0, 0);
-      }
-
-      return bashTool.renderResult(result, { expanded }, theme);
+      return renderBashResult(result, { expanded }, theme);
     },
   });
 }
