@@ -106,6 +106,24 @@ function loadSettings(): CopilotUsageSettings {
   return {};
 }
 
+function saveSettings(settings: CopilotUsageSettings): void {
+  try {
+    let existing: PiSettings = {};
+    if (fs.existsSync(SETTINGS_PATH)) {
+      const content = fs.readFileSync(SETTINGS_PATH, "utf-8");
+      existing = JSON.parse(content) as PiSettings;
+    }
+    existing.extensionSettings = {
+      ...existing.extensionSettings,
+      copilotUsage: settings,
+    };
+    fs.mkdirSync(path.dirname(SETTINGS_PATH), { recursive: true });
+    fs.writeFileSync(SETTINGS_PATH, JSON.stringify(existing, null, 2), "utf-8");
+  } catch {
+    // Ignore write errors silently
+  }
+}
+
 // Token file locations (same as codecompanion.nvim)
 function getTokenPaths(): string[] {
   const configDir =
@@ -427,6 +445,7 @@ export default function copilotUsageExtension(pi: ExtensionAPI) {
       if (!ctx.hasUI) return;
 
       widgetVisible = !widgetVisible;
+      saveSettings({ visible: widgetVisible });
       await refresh(ctx);
       ctx.ui.notify(
         `Copilot usage widget ${widgetVisible ? "shown" : "hidden"}`,
