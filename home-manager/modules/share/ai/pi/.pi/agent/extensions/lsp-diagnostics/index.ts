@@ -15,8 +15,8 @@ import {
 import * as path from "node:path";
 import type { SavedConfig } from "./types.js";
 import { CONFIG_ENTRY_TYPE } from "./types.js";
-import { loadConfig, saveEnabled } from "./config.js";
-import { resolveLspCommand } from "./resolver.js";
+import { loadConfig, loadFileConfig, saveEnabled } from "./config.js";
+import { resolveLspCommand, resolveRootDir } from "./resolver.js";
 import { formatDiagnostics } from "./format.js";
 import { PersistentLspClient } from "./lsp-client.js";
 
@@ -24,6 +24,8 @@ const DIAGNOSTICS_TIMEOUT_IN_MS = 30_000;
 
 export default function (pi: ExtensionAPI) {
   const config = loadConfig();
+  // Loaded once at startup — reflects ~/.pi/agent/lsp-diagnostics.json
+  const fileConfig = loadFileConfig();
 
   let savedConfig: SavedConfig | null = null;
   // Persistent LSP clients keyed by command string — created lazily, shut down on session_end
@@ -66,10 +68,28 @@ export default function (pi: ExtensionAPI) {
   // ── Widget helpers ───────────────────────────────────────────────────────
   const WIDGET_KEY = "lsp-diagnostics";
 
+  const enum LspWidgetState {
+    Starting = "starting",
+    Collecting = "collecting",
+    Idle = "idle",
+  }
+
+  const LSP_WIDGET_LABEL: Record<LspWidgetState, (bin: string) => string> = {
+    [LspWidgetState.Starting]: (bin) => ` Starting LSP server (${bin})…`,
+    [LspWidgetState.Collecting]: (bin) => ` Collecting diagnostics (${bin})…`,
+    [LspWidgetState.Idle]: (bin) => `● LSP connected (${bin})`,
+  };
+
+  const LSP_WIDGET_COLOR: Record<LspWidgetState, string> = {
+    [LspWidgetState.Starting]: "warning",
+    [LspWidgetState.Collecting]: "warning",
+    [LspWidgetState.Idle]: "success",
+  };
+
   function setLspWidget(
     ctx: { ui: { setWidget: (key: string, widget: any) => void } },
     lspBin: string,
-    running: boolean,
+    state: LspWidgetState,
   ) {
     ctx.ui.setWidget(
       WIDGET_KEY,
@@ -77,10 +97,8 @@ export default function (pi: ExtensionAPI) {
         _tui: unknown,
         theme: { fg: (color: string, text: string) => string },
       ) => {
-        const label = running
-          ? `⚡ LSP diagnostics running (${lspBin})…`
-          : `● LSP connected (${lspBin})`;
-        const color = running ? "warning" : "success";
+        const label = LSP_WIDGET_LABEL[state](lspBin);
+        const color = LSP_WIDGET_COLOR[state];
         const line = theme.fg(color, label);
         return { render: () => [line], invalidate: () => {} };
       },
@@ -144,25 +162,40 @@ export default function (pi: ExtensionAPI) {
     const filePath = event.input.path;
     if (!filePath) return;
 
-    const resolved = resolveLspCommand([filePath], undefined, savedConfig);
+    const resolved = resolveLspCommand(
+      [filePath],
+      undefined,
+      savedConfig,
+      fileConfig,
+    );
     if (!resolved) return; // No LSP available for this file type — skip silently
 
-    const commandKey = resolved.command.join(" ");
+    // Resolve project root via rootMarkers — critical for multi-project workspaces
+    const rootDir =
+      resolved.rootMarkers.length > 0
+        ? resolveRootDir(filePath, resolved.rootMarkers, ctx.cwd)
+        : ctx.cwd;
+
+    // Include rootDir in the cache key so each project gets its own LSP instance
+    const commandKey = `${resolved.command.join(" ")}::${rootDir}`;
     const lspBin = resolved.command[0]!;
 
     let allDiagnostics: Map<string, any>;
     try {
-      // Get or create a persistent client for this LSP command
+      // Get or create a persistent client for this LSP command + project root
       let client = lspClients.get(commandKey);
       if (!client) {
+        setLspWidget(ctx, lspBin, LspWidgetState.Starting);
         client = await PersistentLspClient.create(
           resolved.command,
           ctx.cwd,
           (msg, severity = "info") => ctx.ui.notify(msg, severity),
+          rootDir,
+          resolved.settings,
         );
         lspClients.set(commandKey, client);
       }
-      setLspWidget(ctx, lspBin, true);
+      setLspWidget(ctx, lspBin, LspWidgetState.Collecting);
       allDiagnostics = await client.getDiagnostics(
         [filePath],
         ctx.cwd,
@@ -182,7 +215,8 @@ export default function (pi: ExtensionAPI) {
       return;
     } finally {
       // Revert to idle if client is still alive, otherwise widget was already cleared
-      if (lspClients.has(commandKey)) setLspWidget(ctx, lspBin, false);
+      if (lspClients.has(commandKey))
+        setLspWidget(ctx, lspBin, LspWidgetState.Idle);
     }
 
     const { text, errorCount, warningCount } = formatDiagnostics(

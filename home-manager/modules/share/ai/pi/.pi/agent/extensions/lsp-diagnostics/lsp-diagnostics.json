@@ -1,0 +1,49 @@
+{
+  "servers": {
+    "vtsls": {
+      "command": "vtsls",
+      "args": ["--stdio"],
+      "fileTypes": [".ts", ".tsx", ".js", ".jsx"],
+      "rootMarkers": ["package.json", "tsconfig.json", ".git"]
+    },
+    "jdtls": {
+      "_comment": "jdtls needs --data <workspace-dir> to start. Uncomment and set args before use.",
+      "command": "jdtls",
+      "args": ["--data", "/tmp/jdtls-workspace"],
+      "fileTypes": [".java"],
+      "rootMarkers": ["pom.xml", "build.gradle", "build.gradle.kts", "settings.gradle", ".project"]
+    },
+    "nil": {
+      "command": "nil",
+      "args": [],
+      "fileTypes": [".nix"],
+      "rootMarkers": ["flake.nix", ".git"]
+    },
+    "lua-language-server": {
+      "command": "lua-language-server",
+      "args": [],
+      "fileTypes": [".lua"],
+      "rootMarkers": [".luarc.json", ".luarc.jsonc", ".luacheckrc", ".stylua.toml", "stylua.toml", ".git"],
+      "settings": {
+        "Lua": {
+          "runtime": { "version": "LuaJIT" },
+          "diagnostics": { "globals": ["vim"] },
+          "workspace": { "checkThirdParty": false },
+          "telemetry": { "enable": false }
+        }
+      }
+    },
+    "rubocop": {
+      "command": "rubocop",
+      "args": ["--lsp"],
+      "fileTypes": [".rb"],
+      "rootMarkers": [".rubocop.yml", "Gemfile", ".git"]
+    },
+    "yaml-language-server": {
+      "command": "yaml-language-server",
+      "args": ["--stdio"],
+      "fileTypes": [".yaml", ".yml"],
+      "rootMarkers": [".git"]
+    }
+  }
+}

@@ -18,6 +18,35 @@ export interface PublishDiagnosticsParams {
 
 // ─── Config types ─────────────────────────────────────────────────────────────
 
+/**
+ * Per-server definition in ~/.pi/agent/lsp-diagnostics.json.
+ * Supports rich configuration including file type routing and project root detection.
+ */
+export interface LspServerConfig {
+  /** Binary name or absolute path */
+  command: string;
+  /** CLI arguments passed to the binary (e.g. ["--stdio"]) */
+  args?: string[];
+  /** File extensions this server handles (e.g. [".ts", ".tsx"]) */
+  fileTypes: string[];
+  /**
+   * Filenames/dirs used to detect the project root.
+   * The extension walks up from the edited file and uses the first dir
+   * containing any of these markers as the LSP rootUri.
+   */
+  rootMarkers?: string[];
+  /**
+   * Arbitrary settings sent to the LSP via workspace/didChangeConfiguration
+   * immediately after initialization. Shape is server-specific.
+   */
+  settings?: Record<string, unknown>;
+}
+
+/** Shape of ~/.pi/agent/lsp-diagnostics.json */
+export interface LspDiagnosticsFileConfig {
+  servers: Record<string, LspServerConfig>;
+}
+
 export interface SavedConfig {
   /** Global fallback command (legacy, set by /lsp-config without a language). */
   lspCommand?: string[];
@@ -29,6 +58,7 @@ export type LspCommandSource =
   | "explicit"
   | "per-language"
   | "global"
+  | "file-config"
   | "default";
 
 // ─── Constants ────────────────────────────────────────────────────────────────

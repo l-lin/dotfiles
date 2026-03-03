@@ -72,39 +72,122 @@ const LANGUAGE_LSP_DEFAULTS: Record<string, string[]> = {
 };
 
 /**
+ * Walks up the directory tree from `filePath`, returning the first ancestor
+ * directory that contains any of the given `rootMarkers`. Falls back to `cwd`.
+ */
+export function resolveRootDir(
+  filePath: string,
+  rootMarkers: string[],
+  cwd: string,
+): string {
+  const abs = path.resolve(cwd, filePath);
+  let dir = path.dirname(abs);
+  const fsRoot = path.parse(dir).root;
+
+  while (true) {
+    for (const marker of rootMarkers) {
+      if (fs.existsSync(path.join(dir, marker))) return dir;
+    }
+    if (dir === fsRoot) break;
+    const parent = path.dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+
+  return cwd;
+}
+
+/**
+ * Finds the first server in the file config whose fileTypes includes the
+ * extension of the given file. Returns null if none match.
+ */
+function matchFileConfig(
+  filePath: string,
+  fileConfig: {
+    servers: Record<string, import("./types.js").LspServerConfig>;
+  } | null,
+): import("./types.js").LspServerConfig | null {
+  if (!fileConfig) return null;
+  const ext = path.extname(filePath).toLowerCase();
+  for (const server of Object.values(fileConfig.servers)) {
+    if (server.fileTypes.includes(ext)) return server;
+  }
+  return null;
+}
+
+/**
  * Resolves the LSP command in priority order:
  *   1. Explicit lsp_command from the tool call
- *   2. Per-language saved override
- *   3. Global saved fallback
- *   4. Built-in default for the detected language
- *   5. null — caller should surface an error
+ *   2. Per-language saved session override
+ *   3. Global saved session fallback
+ *   4. File-based config (~/.pi/agent/lsp-diagnostics.json), matched by fileTypes
+ *   5. Built-in default for the detected language
+ *   6. null — no LSP available for this file type
  */
 export function resolveLspCommand(
   files: string[],
   explicitCommand: string[] | undefined,
   savedConfig: SavedConfig | null,
-): { command: string[]; source: LspCommandSource } | null {
+  fileConfig: {
+    servers: Record<string, import("./types.js").LspServerConfig>;
+  } | null = null,
+): {
+  command: string[];
+  rootMarkers: string[];
+  settings: Record<string, unknown> | undefined;
+  source: LspCommandSource;
+} | null {
   if (explicitCommand && explicitCommand.length > 0) {
-    return { command: explicitCommand, source: "explicit" };
+    return { command: explicitCommand, rootMarkers: [], settings: undefined, source: "explicit" };
   }
 
   const lang = resolveLanguage(files);
 
   if (lang && savedConfig?.perLanguage[lang]) {
-    return { command: savedConfig.perLanguage[lang]!, source: "per-language" };
+    return {
+      command: savedConfig.perLanguage[lang]!,
+      rootMarkers: [],
+      settings: undefined,
+      source: "per-language",
+    };
   }
 
   if (savedConfig?.lspCommand && savedConfig.lspCommand.length > 0) {
-    return { command: savedConfig.lspCommand, source: "global" };
+    return {
+      command: savedConfig.lspCommand,
+      rootMarkers: [],
+      settings: undefined,
+      source: "global",
+    };
   }
 
+  // File-based config: match by file extension
+  if (files.length > 0) {
+    const serverConfig = matchFileConfig(files[0]!, fileConfig);
+    if (serverConfig) {
+      const bin = serverConfig.command;
+      const args = serverConfig.args ?? [];
+      const resolvedBin = `${LSP_BIN_PATH}/${bin}`;
+      const command = fs.existsSync(resolvedBin)
+        ? [resolvedBin, ...args]
+        : [bin, ...args];
+      return {
+        command,
+        rootMarkers: serverConfig.rootMarkers ?? [],
+        settings: serverConfig.settings,
+        source: "file-config",
+      };
+    }
+  }
+
+  // Built-in hardcoded defaults (legacy fallback keyed by languageId)
   if (lang && LANGUAGE_LSP_DEFAULTS[lang]) {
     const [bin, ...rest] = LANGUAGE_LSP_DEFAULTS[lang]!;
     const resolvedBin = `${LSP_BIN_PATH}/${bin}`;
     const command = fs.existsSync(resolvedBin)
       ? [resolvedBin, ...rest]
       : [bin!, ...rest];
-    return { command, source: "default" };
+    return { command, rootMarkers: [], settings: undefined, source: "default" };
   }
 
   return null;

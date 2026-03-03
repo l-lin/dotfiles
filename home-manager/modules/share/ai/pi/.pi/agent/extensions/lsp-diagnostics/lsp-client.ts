@@ -49,9 +49,14 @@ export class PersistentLspClient {
     lspCommand: string[],
     cwd: string,
     onError?: NotifyFn,
+    /** Project root to advertise as rootUri (defaults to cwd). */
+    rootDir?: string,
+    /** Arbitrary settings forwarded via workspace/didChangeConfiguration after init. */
+    settings?: Record<string, unknown>,
   ): Promise<PersistentLspClient> {
+    const projectRoot = rootDir ?? cwd;
     const [cmd, ...args] = lspCommand;
-    const proc = spawn(cmd!, args, { cwd, stdio: ["pipe", "pipe", "pipe"] });
+    const proc = spawn(cmd!, args, { cwd: projectRoot, stdio: ["pipe", "pipe", "pipe"] });
 
     // Silently swallow writes to a destroyed stdin (vscode-jsonrpc flushes async)
     if (proc.stdin) {
@@ -86,16 +91,23 @@ export class PersistentLspClient {
       spawnError,
       connection.sendRequest("initialize", {
         processId: process.pid,
-        rootUri: pathToFileUri(cwd),
+        rootUri: pathToFileUri(projectRoot),
         capabilities: {
           textDocument: { publishDiagnostics: { relatedInformation: false } },
           workspace: { workspaceFolders: true },
         },
-        workspaceFolders: [{ uri: pathToFileUri(cwd), name: path.basename(cwd) }],
+        workspaceFolders: [{ uri: pathToFileUri(projectRoot), name: path.basename(projectRoot) }],
       }),
     ]);
 
     connection.sendNotification("initialized", {});
+
+    // Push server-specific settings immediately after handshake
+    if (settings && Object.keys(settings).length > 0) {
+      connection.sendNotification("workspace/didChangeConfiguration", {
+        settings,
+      });
+    }
 
     return client;
   }
