@@ -23,10 +23,16 @@ export function saveEnabled(enabled: boolean): void {
   } catch {
     // File missing or malformed — start fresh
   }
-  const existing = (settings.lspDiagnostics ?? {}) as Record<string, unknown>;
-  settings.lspDiagnostics = { ...existing, enabled };
+  const extensionSettings = (settings.extensionSettings ?? {}) as Record<string, unknown>;
+  const existing = (extensionSettings.lspDiagnostics ?? {}) as Record<string, unknown>;
+  extensionSettings.lspDiagnostics = { ...existing, enabled };
+  settings.extensionSettings = extensionSettings;
   fs.mkdirSync(path.dirname(CONFIG_PATH), { recursive: true });
-  fs.writeFileSync(CONFIG_PATH, JSON.stringify(settings, null, 2) + "\n", "utf-8");
+  fs.writeFileSync(
+    CONFIG_PATH,
+    JSON.stringify(settings, null, 2) + "\n",
+    "utf-8",
+  );
 }
 
 /** Loads config from disk once at startup. */
@@ -34,9 +40,9 @@ export function loadConfig(): LspDiagnosticsConfig {
   try {
     const raw = fs.readFileSync(CONFIG_PATH, "utf-8");
     const settings = JSON.parse(raw) as {
-      lspDiagnostics?: Partial<LspDiagnosticsConfig>;
+      extensionSettings?: { lspDiagnostics?: Partial<LspDiagnosticsConfig> };
     };
-    const parsed = settings.lspDiagnostics ?? {};
+    const parsed = settings.extensionSettings?.lspDiagnostics ?? {};
     return {
       enabled:
         typeof parsed.enabled === "boolean" ? parsed.enabled : DEFAULTS.enabled,
