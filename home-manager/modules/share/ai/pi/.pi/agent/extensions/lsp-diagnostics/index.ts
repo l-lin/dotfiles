@@ -28,7 +28,7 @@ export default function (pi: ExtensionAPI) {
   const fileConfig = loadFileConfig();
 
   let savedConfig: SavedConfig | null = null;
-  // Persistent LSP clients keyed by command string — created lazily, shut down on session_end
+  // Persistent LSP clients keyed by command string — created lazily, shut down on session end
   const lspClients = new Map<string, PersistentLspClient>();
   // ── /lsp toggle command ──────────────────────────────────────────────────
   pi.registerCommand("cmd:lsp", {
@@ -67,6 +67,9 @@ export default function (pi: ExtensionAPI) {
 
   // ── Widget helpers ───────────────────────────────────────────────────────
   const WIDGET_KEY = "lsp-diagnostics";
+  const LSP_ICON = "";
+  const LSP_STARTING_ICON = "";
+  const LSP_BLINK_INTERVAL_MS = 500;
 
   const enum LspWidgetState {
     Starting = "starting",
@@ -74,35 +77,65 @@ export default function (pi: ExtensionAPI) {
     Idle = "idle",
   }
 
-  const LSP_WIDGET_LABEL: Record<LspWidgetState, (bin: string) => string> = {
-    [LspWidgetState.Starting]: (bin) => ` Starting LSP server (${bin})…`,
-    [LspWidgetState.Collecting]: (bin) => ` Collecting diagnostics (${bin})…`,
-    [LspWidgetState.Idle]: (bin) => `● LSP connected (${bin})`,
-  };
+  // Blink timer — only active during the Collecting state
+  let blinkTimer: ReturnType<typeof setInterval> | undefined;
+  let blinkVisible = true;
 
-  const LSP_WIDGET_COLOR: Record<LspWidgetState, string> = {
-    [LspWidgetState.Starting]: "warning",
-    [LspWidgetState.Collecting]: "warning",
-    [LspWidgetState.Idle]: "success",
-  };
+  function stopBlink() {
+    if (blinkTimer !== undefined) {
+      clearInterval(blinkTimer);
+      blinkTimer = undefined;
+    }
+    blinkVisible = true;
+  }
+
+  function renderLspWidget(
+    ctx: { ui: { setWidget: (key: string, widget: any) => void } },
+    lspBin: string,
+    icon: string,
+    iconVisible: boolean,
+  ) {
+    const renderedIcon = iconVisible ? icon : " ";
+    ctx.ui.setWidget(
+      WIDGET_KEY,
+      (
+        _tui: unknown,
+        theme: {
+          fg: (color: string, text: string) => string;
+          bold: (text: string) => string;
+        },
+      ) => {
+        const line =
+          theme.fg("success", renderedIcon) + theme.bold(` ${lspBin}`);
+        return { render: () => [line], invalidate: () => {} };
+      },
+    );
+  }
 
   function setLspWidget(
     ctx: { ui: { setWidget: (key: string, widget: any) => void } },
     lspBin: string,
     state: LspWidgetState,
   ) {
-    ctx.ui.setWidget(
-      WIDGET_KEY,
-      (
-        _tui: unknown,
-        theme: { fg: (color: string, text: string) => string },
-      ) => {
-        const label = LSP_WIDGET_LABEL[state](lspBin);
-        const color = LSP_WIDGET_COLOR[state];
-        const line = theme.fg(color, label);
-        return { render: () => [line], invalidate: () => {} };
-      },
-    );
+    stopBlink();
+
+    const icon =
+      state === LspWidgetState.Starting ? LSP_STARTING_ICON : LSP_ICON;
+
+    if (
+      state === LspWidgetState.Starting ||
+      state === LspWidgetState.Collecting
+    ) {
+      // Start blink loop
+      blinkVisible = true;
+      renderLspWidget(ctx, lspBin, icon, blinkVisible);
+      blinkTimer = setInterval(() => {
+        blinkVisible = !blinkVisible;
+        renderLspWidget(ctx, lspBin, icon, blinkVisible);
+      }, LSP_BLINK_INTERVAL_MS);
+    } else {
+      renderLspWidget(ctx, lspBin, icon, true);
+    }
   }
 
   // ── /lsp-kill command ────────────────────────────────────────────────────
@@ -114,10 +147,13 @@ export default function (pi: ExtensionAPI) {
         return;
       }
 
-      const ALL_LABEL = "󰅖 ALL";
-      const options = [ALL_LABEL, ...lspClients.keys()].map((k) =>
-        k === ALL_LABEL ? k : `󰅖 ${k}`,
-      );
+      const ALL_LABEL = `${LSP_ICON} ALL`;
+      // Map display label → original commandKey so icon-prefix stripping can't silently mismatch
+      const labelToKey = new Map<string, string>();
+      for (const k of lspClients.keys()) {
+        labelToKey.set(`${LSP_ICON} ${k}`, k);
+      }
+      const options = [ALL_LABEL, ...labelToKey.keys()];
       const chosen = await ctx.ui.select(
         "Select an LSP server to kill:",
         options,
@@ -129,10 +165,11 @@ export default function (pi: ExtensionAPI) {
         const shutdowns = [...lspClients.values()].map((c) => c.shutdown());
         lspClients.clear();
         await Promise.allSettled(shutdowns);
+        stopBlink();
         ctx.ui.setWidget(WIDGET_KEY, undefined);
         ctx.ui.notify(`Killed all ${count} LSP server(s).`, "info");
       } else {
-        const key = chosen.slice(chosen.indexOf(" ") + 1);
+        const key = labelToKey.get(chosen)!;
         const client = lspClients.get(key);
         if (!client) {
           ctx.ui.notify(`LSP server "${key}" not found.`, "error");
@@ -140,7 +177,10 @@ export default function (pi: ExtensionAPI) {
         }
         await client.shutdown();
         lspClients.delete(key);
-        if (lspClients.size === 0) ctx.ui.setWidget(WIDGET_KEY, undefined);
+        if (lspClients.size === 0) {
+          stopBlink();
+          ctx.ui.setWidget(WIDGET_KEY, undefined);
+        }
         ctx.ui.notify(`Killed LSP server "${key}".`, "info");
       }
     },
@@ -151,6 +191,7 @@ export default function (pi: ExtensionAPI) {
     const shutdowns = [...lspClients.values()].map((c) => c.shutdown());
     lspClients.clear();
     await Promise.allSettled(shutdowns);
+    stopBlink();
     ctx.ui.setWidget(WIDGET_KEY, undefined);
   });
 
@@ -205,8 +246,18 @@ export default function (pi: ExtensionAPI) {
     } catch (err: any) {
       // Client may be in a broken state — remove it so next call spawns fresh
       lspClients.delete(commandKey);
-      // If no clients left, clear the widget entirely
-      if (lspClients.size === 0) ctx.ui.setWidget(WIDGET_KEY, undefined);
+      // Stop any active blink — the finally block won't do it since the key is gone
+      if (lspClients.size === 0) {
+        stopBlink();
+        ctx.ui.setWidget(WIDGET_KEY, undefined);
+      } else {
+        // Other clients still alive — pick any surviving one to show in the widget
+        const [survivingKey] = lspClients.keys();
+        const survivingBin = path.basename(
+          survivingKey!.split("::")[0]!.split(" ")[0]!,
+        );
+        setLspWidget(ctx, survivingBin, LspWidgetState.Idle);
+      }
       // Don't break the tool result on LSP failure — just skip
       ctx.ui.notify(
         `lsp-diagnostics: ${err?.message ?? String(err)}`,
@@ -214,7 +265,7 @@ export default function (pi: ExtensionAPI) {
       );
       return;
     } finally {
-      // Revert to idle if client is still alive, otherwise widget was already cleared
+      // Revert to idle if client is still alive; catch already handled the failure case
       if (lspClients.has(commandKey))
         setLspWidget(ctx, lspBin, LspWidgetState.Idle);
     }
