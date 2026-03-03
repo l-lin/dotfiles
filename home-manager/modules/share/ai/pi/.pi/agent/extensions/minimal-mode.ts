@@ -111,17 +111,8 @@ export default function (pi: ExtensionAPI) {
         return new Text("", 0, 0);
       }
 
-      // Expanded mode: show full output
-      const textContent = result.content.find((c) => c.type === "text");
-      if (!textContent || textContent.type !== "text") {
-        return new Text("", 0, 0);
-      }
-
-      const lines = textContent.text.split("\n");
-      const output = lines
-        .map((line) => theme.fg("toolOutput", line))
-        .join("\n");
-      return new Text(`\n${output}`, 0, 0);
+      const tools = getBuiltInTools(ctx.cwd);
+      return tools.read.renderResult(result, { expanded }, theme);
     },
   });
 
@@ -162,15 +153,8 @@ export default function (pi: ExtensionAPI) {
         return new Text("", 0, 0);
       }
 
-      // Expanded mode: show error if any
-      if (result.content.some((c) => c.type === "text" && c.text)) {
-        const textContent = result.content.find((c) => c.type === "text");
-        if (textContent?.type === "text" && textContent.text) {
-          return new Text(`\n${theme.fg("error", textContent.text)}`, 0, 0);
-        }
-      }
-
-      return new Text("", 0, 0);
+      const tools = getBuiltInTools(ctx.cwd);
+      return tools.write.renderResult(result, { expanded }, theme);
     },
   });
 
@@ -208,20 +192,8 @@ export default function (pi: ExtensionAPI) {
         return new Text("", 0, 0);
       }
 
-      // Expanded mode: show diff or error
-      const textContent = result.content.find((c) => c.type === "text");
-      if (!textContent || textContent.type !== "text") {
-        return new Text("", 0, 0);
-      }
-
-      // For errors, show the error message
-      const text = textContent.text;
-      if (text.includes("Error") || text.includes("error")) {
-        return new Text(`\n${theme.fg("error", text)}`, 0, 0);
-      }
-
-      // Otherwise show the text (would be nice to show actual diff here)
-      return new Text(`\n${theme.fg("toolOutput", text)}`, 0, 0);
+      const tools = getBuiltInTools(ctx.cwd);
+      return tools.edit.renderResult(result, { expanded }, theme);
     },
   });
 
@@ -270,19 +242,8 @@ export default function (pi: ExtensionAPI) {
         return new Text("", 0, 0);
       }
 
-      // Expanded: show full results
-      const textContent = result.content.find((c) => c.type === "text");
-      if (!textContent || textContent.type !== "text") {
-        return new Text("", 0, 0);
-      }
-
-      const output = textContent.text
-        .trim()
-        .split("\n")
-        .map((line) => theme.fg("toolOutput", line))
-        .join("\n");
-
-      return new Text(`\n${output}`, 0, 0);
+      const tools = getBuiltInTools(ctx.cwd);
+      return tools.find.renderResult(result, { expanded }, theme);
     },
   });
 
@@ -335,19 +296,8 @@ export default function (pi: ExtensionAPI) {
         return new Text("", 0, 0);
       }
 
-      // Expanded: show full results
-      const textContent = result.content.find((c) => c.type === "text");
-      if (!textContent || textContent.type !== "text") {
-        return new Text("", 0, 0);
-      }
-
-      const output = textContent.text
-        .trim()
-        .split("\n")
-        .map((line) => theme.fg("toolOutput", line))
-        .join("\n");
-
-      return new Text(`\n${output}`, 0, 0);
+      const tools = getBuiltInTools(ctx.cwd);
+      return tools.grep.renderResult(result, { expanded }, theme);
     },
   });
 
@@ -394,19 +344,8 @@ export default function (pi: ExtensionAPI) {
         return new Text("", 0, 0);
       }
 
-      // Expanded: show full listing
-      const textContent = result.content.find((c) => c.type === "text");
-      if (!textContent || textContent.type !== "text") {
-        return new Text("", 0, 0);
-      }
-
-      const output = textContent.text
-        .trim()
-        .split("\n")
-        .map((line) => theme.fg("toolOutput", line))
-        .join("\n");
-
-      return new Text(`\n${output}`, 0, 0);
+      const tools = getBuiltInTools(ctx.cwd);
+      return tools.ls.renderResult(result, { expanded }, theme);
     },
   });
 }

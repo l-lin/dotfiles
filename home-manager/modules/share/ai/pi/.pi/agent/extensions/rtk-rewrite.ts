@@ -176,23 +176,7 @@ export default function (pi: ExtensionAPI) {
         return new Text("", 0, 0);
       }
 
-      // Expanded mode: show full output
-      const textContent = result.content.find((c) => c.type === "text");
-      if (!textContent || textContent.type !== "text") {
-        return new Text("", 0, 0);
-      }
-
-      const output = textContent.text
-        .trim()
-        .split("\n")
-        .map((line) => theme.fg("toolOutput", line))
-        .join("\n");
-
-      if (!output) {
-        return new Text("", 0, 0);
-      }
-
-      return new Text(`\n${output}`, 0, 0);
+      return bashTool.renderResult(result, { expanded }, theme);
     },
   });
 }
