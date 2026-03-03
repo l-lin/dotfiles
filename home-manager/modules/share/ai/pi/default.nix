@@ -13,7 +13,7 @@
     ".pi/agent/keybindings.json".source = ./.pi/agent/keybindings.json;
     ".pi/agent/APPEND_SYSTEM.md".source = ../.config/ai/system-prompt.md;
     ".pi/agent/extensions" = {
-      source = ./.pi/agent/extensions;
+      source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/ai/pi/.pi/agent/extensions";
       recursive = true;
     };
 
