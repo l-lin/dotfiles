@@ -27,5 +27,8 @@
       "path": "~/.config/ai/system-prompt.md"
     }
   },
-  "hideThinkingBlock": false
+  "hideThinkingBlock": false,
+  "lspDiagnostics": {
+    "enabled": true
+  }
 }

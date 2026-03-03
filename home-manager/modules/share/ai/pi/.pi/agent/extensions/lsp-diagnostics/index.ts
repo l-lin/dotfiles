@@ -15,7 +15,7 @@ import {
 import * as path from "node:path";
 import type { SavedConfig } from "./types.js";
 import { CONFIG_ENTRY_TYPE } from "./types.js";
-import { loadConfig } from "./config.js";
+import { loadConfig, saveEnabled } from "./config.js";
 import { resolveLspCommand } from "./resolver.js";
 import { formatDiagnostics } from "./format.js";
 import { collectDiagnostics } from "./lsp-client.js";
@@ -24,9 +24,20 @@ const DIAGNOSTICS_TIMEOUT_IN_MS = 30_000;
 
 export default function (pi: ExtensionAPI) {
   const config = loadConfig();
-  if (!config.enabled) return;
 
   let savedConfig: SavedConfig | null = null;
+  // ── /lsp toggle command ──────────────────────────────────────────────────
+  pi.registerCommand("cmd:lsp", {
+    description: "Toggle auto LSP diagnostics on/off for this session",
+    handler: async (_args, ctx) => {
+      config.enabled = !config.enabled;
+      saveEnabled(config.enabled);
+      ctx.ui.notify(
+        `lsp-diagnostics ${config.enabled ? "enabled" : "disabled"}`,
+        "info",
+      );
+    },
+  });
 
   // ── Restore config from session ──────────────────────────────────────────
   pi.on("session_start", async (_event, ctx) => {
@@ -52,6 +63,7 @@ export default function (pi: ExtensionAPI) {
 
   // ── Auto-diagnose after write/edit ───────────────────────────────────────
   pi.on("tool_result", async (event, ctx) => {
+    if (!config.enabled) return;
     if (!isWriteToolResult(event) && !isEditToolResult(event)) return;
 
     const filePath = event.input.path;

@@ -15,6 +15,20 @@ const DEFAULTS: LspDiagnosticsConfig = {
 
 const CONFIG_PATH = path.join(os.homedir(), ".pi", "agent", "settings.json");
 
+/** Persists a single field into settings.json, preserving all other keys. */
+export function saveEnabled(enabled: boolean): void {
+  let settings: Record<string, unknown> = {};
+  try {
+    settings = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf-8"));
+  } catch {
+    // File missing or malformed — start fresh
+  }
+  const existing = (settings.lspDiagnostics ?? {}) as Record<string, unknown>;
+  settings.lspDiagnostics = { ...existing, enabled };
+  fs.mkdirSync(path.dirname(CONFIG_PATH), { recursive: true });
+  fs.writeFileSync(CONFIG_PATH, JSON.stringify(settings, null, 2) + "\n", "utf-8");
+}
+
 /** Loads config from disk once at startup. */
 export function loadConfig(): LspDiagnosticsConfig {
   try {
