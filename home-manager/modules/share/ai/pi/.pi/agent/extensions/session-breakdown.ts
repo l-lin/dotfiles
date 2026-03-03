@@ -22,11 +22,12 @@ import type {
   ExtensionAPI,
   ExtensionContext,
 } from "@mariozechner/pi-coding-agent";
-import { BorderedLoader } from "@mariozechner/pi-coding-agent";
+import { BorderedLoader, DynamicBorder } from "@mariozechner/pi-coding-agent";
 import {
+  Container,
   Key,
+  Text,
   matchesKey,
-  sliceByColumn,
   type Component,
   type TUI,
   truncateToWidth,
@@ -170,10 +171,6 @@ function weightedMix(colors: Array<{ color: RGB; weight: number }>): RGB {
     g: Math.round(g / total),
     b: Math.round(b / total),
   };
-}
-
-function ansiFg(rgb: RGB, text: string): string {
-  return `\x1b[38;2;${rgb.r};${rgb.g};${rgb.b}m${text}\x1b[0m`;
 }
 
 function ansiBg(rgb: RGB, text: string): string {
@@ -800,17 +797,6 @@ function renderLegendItems(
   return items;
 }
 
-function fitRight(text: string, width: number): string {
-  if (width <= 0) return "";
-  let w = visibleWidth(text);
-  let t = text;
-  if (w > width) {
-    t = sliceByColumn(t, w - width, width, true);
-    w = visibleWidth(t);
-  }
-  return " ".repeat(Math.max(0, width - w)) + t;
-}
-
 function renderModelTable(
   range: RangeAgg,
   mode: MeasurementMode,
@@ -884,22 +870,6 @@ function renderModelTable(
   }
 
   return lines;
-}
-
-function renderLeftRight(left: string, right: string, width: number): string {
-  const leftW = visibleWidth(left);
-  if (width <= 0) return "";
-  if (leftW >= width) return truncateToWidth(left, width);
-
-  const remaining = width - leftW;
-  let rightText = right;
-  const rightW = visibleWidth(rightText);
-  if (rightW > remaining) {
-    // Keep the *rightmost* part visible.
-    rightText = sliceByColumn(rightText, rightW - remaining, remaining, true);
-  }
-  const pad = Math.max(0, remaining - visibleWidth(rightText));
-  return left + " ".repeat(pad) + rightText;
 }
 
 function rangeSummary(
@@ -995,8 +965,9 @@ class BreakdownComponent implements Component {
   private rangeIndex = 1; // default 30d
   private measurement: MeasurementMode = "sessions";
   private cachedWidth?: number;
-  private cachedLines?: string[];
   private isLight = false;
+  private container: Container;
+  private body: Text;
 
   constructor(data: BreakdownData, tui: TUI, onDone: () => void, theme?: any) {
     this.data = data;
@@ -1012,11 +983,148 @@ class BreakdownComponent implements Component {
     } catch {
       this.isLight = false;
     }
+
+    const accentBorder = (s: string) => (theme ? theme.fg("accent", s) : s);
+
+    this.container = new Container();
+    this.container.addChild(new DynamicBorder(accentBorder));
+    this.container.addChild(
+      new Text(
+        (theme
+          ? theme.fg("accent", theme.bold("Session breakdown"))
+          : bold("Session breakdown")) +
+          (theme
+            ? theme.fg("dim", "  (←/→ range · tab metric · q close)")
+            : dim("  (←/→ range · tab metric · q close)")),
+        1,
+        0,
+      ),
+    );
+    this.container.addChild(new Text("", 1, 0));
+    this.body = new Text("", 1, 0);
+    this.container.addChild(this.body);
+    this.container.addChild(new Text("", 1, 0));
+    this.container.addChild(new DynamicBorder(accentBorder));
+  }
+
+  private rebuild(width: number): void {
+    // Text children have 1-char left indent; use inner width for content that is width-sensitive.
+    const inner = Math.max(1, width - 1);
+
+    const selectedDays = RANGE_DAYS[this.rangeIndex];
+    const range = this.data.ranges.get(selectedDays)!;
+    const metric = graphMetricForRange(range, this.measurement);
+
+    const tab = (days: number, idx: number): string => {
+      const selected = idx === this.rangeIndex;
+      const label = `${days}d`;
+      return selected ? bold(`[${label}]`) : dim(` ${label} `);
+    };
+
+    const metricTab = (mode: MeasurementMode, label: string): string => {
+      const selected = mode === this.measurement;
+      return selected ? bold(`[${label}]`) : dim(` ${label} `);
+    };
+
+    const tabs =
+      `${tab(7, 0)} ${tab(30, 1)} ${tab(90, 2)}  ` +
+      `${metricTab("sessions", "sess")} ${metricTab("messages", "msg")} ${metricTab("tokens", "tok")}`;
+
+    const bgBase = this.isLight ? LIGHT_BG : DEFAULT_BG;
+    const emptyCell = this.isLight ? LIGHT_EMPTY_CELL_BG : EMPTY_CELL_BG;
+
+    const legendItems = renderLegendItems(
+      this.data.palette.modelColors,
+      this.data.palette.orderedModels,
+      this.data.palette.otherColor,
+      bgBase,
+    );
+
+    const summary =
+      rangeSummary(range, selectedDays, metric.kind) +
+      dim(`   (graph: ${metric.kind}/day)`);
+
+    const maxScale = selectedDays === 7 ? 4 : selectedDays === 30 ? 3 : 2;
+    const weeks = weeksForRange(range);
+    const leftMargin = 4; // "Mon " (or 4 spaces)
+    const gap = 1;
+    const graphArea = Math.max(1, inner - leftMargin);
+    const idealCellWidth =
+      Math.floor((graphArea + gap) / Math.max(1, weeks)) - gap;
+    const cellWidth = Math.min(maxScale, Math.max(1, idealCellWidth));
+
+    const graphLines = renderGraphLines(
+      range,
+      this.data.palette.modelColors,
+      this.data.palette.otherColor,
+      this.measurement,
+      { cellWidth, gap, bgColor: bgBase, emptyCellBg: emptyCell },
+    );
+    const todayKey = toLocalDayKey(new Date());
+    const todayDay = this.data.ranges.get(7)?.dayByKey.get(todayKey);
+    const tableLines = renderModelTable(range, metric.kind, todayDay, 8);
+
+    const lines: string[] = [];
+    lines.push(truncateToWidth(tabs, inner));
+    lines.push("");
+    lines.push(truncateToWidth(summary, inner));
+    lines.push("");
+
+    // Render legend on the RIGHT of the graph if there is space.
+    const graphWidth = Math.max(0, ...graphLines.map((l) => visibleWidth(l)));
+    const sep = 2;
+    const legendWidth = inner - graphWidth - sep;
+    const showSideLegend = legendWidth >= 22;
+
+    if (showSideLegend) {
+      const legendBlock: string[] = [];
+      legendBlock.push(dim("Top models (30d palette):"));
+      legendBlock.push(...legendItems);
+      const maxLegendRows = graphLines.length;
+      let legendLines = legendBlock.slice(0, maxLegendRows);
+      if (legendBlock.length > maxLegendRows) {
+        const remaining = legendBlock.length - (maxLegendRows - 1);
+        legendLines = [
+          ...legendBlock.slice(0, maxLegendRows - 1),
+          dim(`+${remaining} more`),
+        ];
+      }
+      while (legendLines.length < graphLines.length) legendLines.push("");
+
+      const padRightAnsi = (s: string, target: number): string => {
+        const w = visibleWidth(s);
+        return w >= target ? s : s + " ".repeat(target - w);
+      };
+
+      for (let i = 0; i < graphLines.length; i++) {
+        const left = padRightAnsi(graphLines[i] ?? "", graphWidth);
+        const right = truncateToWidth(
+          legendLines[i] ?? "",
+          Math.max(0, legendWidth),
+        );
+        lines.push(truncateToWidth(left + " ".repeat(sep) + right, inner));
+      }
+    } else {
+      for (const gl of graphLines) lines.push(truncateToWidth(gl, inner));
+      lines.push("");
+      lines.push(truncateToWidth(dim("Top models (30d palette):"), inner));
+      for (const it of legendItems) lines.push(truncateToWidth(it, inner));
+    }
+
+    lines.push("");
+    for (const tl of tableLines) lines.push(truncateToWidth(tl, inner));
+
+    this.body.setText(
+      lines
+        .map((l) => (visibleWidth(l) > inner ? truncateToWidth(l, inner) : l))
+        .join("\n"),
+    );
+    this.cachedWidth = width;
   }
 
   invalidate(): void {
     this.cachedWidth = undefined;
-    this.cachedLines = undefined;
+    this.container.invalidate();
   }
 
   handleInput(data: string): void {
@@ -1077,124 +1185,8 @@ class BreakdownComponent implements Component {
   }
 
   render(width: number): string[] {
-    if (this.cachedWidth === width && this.cachedLines) return this.cachedLines;
-
-    const selectedDays = RANGE_DAYS[this.rangeIndex];
-    const range = this.data.ranges.get(selectedDays)!;
-    const metric = graphMetricForRange(range, this.measurement);
-
-    const tab = (days: number, idx: number): string => {
-      const selected = idx === this.rangeIndex;
-      const label = `${days}d`;
-      return selected ? bold(`[${label}]`) : dim(` ${label} `);
-    };
-
-    const metricTab = (mode: MeasurementMode, label: string): string => {
-      const selected = mode === this.measurement;
-      return selected ? bold(`[${label}]`) : dim(` ${label} `);
-    };
-
-    const header =
-      `${bold("Session breakdown")}  ${tab(7, 0)} ${tab(30, 1)} ${tab(90, 2)}  ` +
-      `${metricTab("sessions", "sess")} ${metricTab("messages", "msg")} ${metricTab("tokens", "tok")}`;
-
-    const bgBase = this.isLight ? LIGHT_BG : DEFAULT_BG;
-    const emptyCell = this.isLight ? LIGHT_EMPTY_CELL_BG : EMPTY_CELL_BG;
-
-    const legendItems = renderLegendItems(
-      this.data.palette.modelColors,
-      this.data.palette.orderedModels,
-      this.data.palette.otherColor,
-      bgBase,
-    );
-
-    const summary =
-      rangeSummary(range, selectedDays, metric.kind) +
-      dim(`   (graph: ${metric.kind}/day)`);
-
-    const maxScale = selectedDays === 7 ? 4 : selectedDays === 30 ? 3 : 2;
-    const weeks = weeksForRange(range);
-    const leftMargin = 4; // "Mon " (or 4 spaces)
-    const gap = 1;
-    const graphArea = Math.max(1, width - leftMargin);
-    // Each week column uses: cellWidth + gap. Last column also gets gap (fine; we truncate anyway).
-    const idealCellWidth =
-      Math.floor((graphArea + gap) / Math.max(1, weeks)) - gap;
-    const cellWidth = Math.min(maxScale, Math.max(1, idealCellWidth));
-
-    const graphLines = renderGraphLines(
-      range,
-      this.data.palette.modelColors,
-      this.data.palette.otherColor,
-      this.measurement,
-      { cellWidth, gap, bgColor: bgBase, emptyCellBg: emptyCell },
-    );
-    const todayKey = toLocalDayKey(new Date());
-    const todayDay = this.data.ranges.get(7)?.dayByKey.get(todayKey);
-    const tableLines = renderModelTable(range, metric.kind, todayDay, 8);
-
-    const lines: string[] = [];
-    lines.push(truncateToWidth(header, width));
-    lines.push(
-      truncateToWidth(dim("←/→ range · tab metric · q to close"), width),
-    );
-    lines.push("");
-    lines.push(truncateToWidth(summary, width));
-    lines.push("");
-
-    // Render legend on the RIGHT of the graph if there is space.
-    const graphWidth = Math.max(0, ...graphLines.map((l) => visibleWidth(l)));
-    const sep = 2;
-    const legendWidth = width - graphWidth - sep;
-    const showSideLegend = legendWidth >= 22;
-
-    if (showSideLegend) {
-      const legendBlock: string[] = [];
-      legendBlock.push(dim("Top models (30d palette):"));
-      legendBlock.push(...legendItems);
-      // Fit into 7 rows (same as graph). If too many, show a final "+N more" line.
-      const maxLegendRows = graphLines.length;
-      let legendLines = legendBlock.slice(0, maxLegendRows);
-      if (legendBlock.length > maxLegendRows) {
-        const remaining = legendBlock.length - (maxLegendRows - 1);
-        legendLines = [
-          ...legendBlock.slice(0, maxLegendRows - 1),
-          dim(`+${remaining} more`),
-        ];
-      }
-      while (legendLines.length < graphLines.length) legendLines.push("");
-
-      const padRightAnsi = (s: string, target: number): string => {
-        const w = visibleWidth(s);
-        return w >= target ? s : s + " ".repeat(target - w);
-      };
-
-      for (let i = 0; i < graphLines.length; i++) {
-        const left = padRightAnsi(graphLines[i] ?? "", graphWidth);
-        const right = truncateToWidth(
-          legendLines[i] ?? "",
-          Math.max(0, legendWidth),
-        );
-        lines.push(truncateToWidth(left + " ".repeat(sep) + right, width));
-      }
-    } else {
-      // Fallback: graph only (legend will be shown below).
-      for (const gl of graphLines) lines.push(truncateToWidth(gl, width));
-      lines.push("");
-      // Compact legend below, left-aligned.
-      lines.push(truncateToWidth(dim("Top models (30d palette):"), width));
-      for (const it of legendItems) lines.push(truncateToWidth(it, width));
-    }
-
-    lines.push("");
-    for (const tl of tableLines) lines.push(truncateToWidth(tl, width));
-
-    // Ensure no overly long lines (truncateToWidth already), but keep at least 1 line.
-    this.cachedWidth = width;
-    this.cachedLines = lines.map((l) =>
-      visibleWidth(l) > width ? truncateToWidth(l, width) : l,
-    );
-    return this.cachedLines;
+    if (this.cachedWidth !== width) this.rebuild(width);
+    return this.container.render(width);
   }
 }
 
