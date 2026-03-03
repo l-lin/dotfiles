@@ -14,12 +14,13 @@ import {
   type CharMotion,
   type PendingMotion,
   type PendingOperator,
+  type PendingG,
   type LastCharMotion,
   NORMAL_KEYS,
   CHAR_MOTION_KEYS,
   ESC_LEFT, ESC_RIGHT, ESC_DELETE,
   CTRL_A, CTRL_E, CTRL_K,
-  NEWLINE, ESC_UP,
+  NEWLINE, ESC_UP, ESC_DOWN,
 } from "./vim/types.js";
 import { reverseCharMotion, findCharMotionTarget, findWordMotionTarget } from "./vim/motions.js";
 
@@ -27,6 +28,7 @@ export class AwesomeEditor extends CustomEditor {
   private mode: Mode                   = "insert";
   private pendingMotion: PendingMotion   = null;
   private pendingOperator: PendingOperator = null;
+  private pendingG: PendingG             = null;
   private lastCharMotion: LastCharMotion | null = null;
 
   // InteractiveMode calls this after construction with its CombinedAutocompleteProvider.
@@ -60,6 +62,7 @@ export class AwesomeEditor extends CustomEditor {
       return;
     }
 
+    if (this.pendingG)                  return this.handlePendingG(data);
     if (this.pendingMotion)             return this.handlePendingMotion(data);
     if (this.pendingOperator === "d")   return this.handlePendingDelete(data);
     if (this.pendingOperator === "c")   return this.handlePendingChange(data);
@@ -116,6 +119,13 @@ export class AwesomeEditor extends CustomEditor {
     if (this.deleteWithMotion(data)) this.mode = "insert";
   }
 
+  private handlePendingG(data: string): void {
+    this.pendingG = null;
+    // gg → jump to first line
+    if (data === "g") this.moveToLine(0);
+    // Any other key: cancel silently (vim behaviour)
+  }
+
   // ─── Normal mode dispatch ────────────────────────────────────────────────────
 
   private handleNormalMode(data: string): void {
@@ -130,6 +140,8 @@ export class AwesomeEditor extends CustomEditor {
       this.executeCharMotion(reverseCharMotion(this.lastCharMotion.motion), this.lastCharMotion.char, false);
       return;
     }
+    if (data === "g") { this.pendingG = "g"; return; }
+    if (data === "G") return this.moveToLine(this.getLines().length - 1);
     if (data === "w") return this.moveWord("forward",  "start");
     if (data === "b") return this.moveWord("backward", "start");
     if (data === "e") return this.moveWord("forward",  "end");
@@ -174,6 +186,16 @@ export class AwesomeEditor extends CustomEditor {
   private moveCursorBy(delta: number): void {
     const seq = delta > 0 ? ESC_RIGHT : ESC_LEFT;
     for (let i = 0; i < Math.abs(delta); i++) super.handleInput(seq);
+  }
+
+  /** Move cursor to the start of the given line (0-indexed). */
+  private moveToLine(targetLine: number): void {
+    const currentLine = this.getCursor().line;
+    const delta = targetLine - currentLine;
+    const seq = delta > 0 ? ESC_DOWN : ESC_UP;
+    for (let i = 0; i < Math.abs(delta); i++) super.handleInput(seq);
+    // Move to start of line
+    super.handleInput(CTRL_A);
   }
 
   private moveWord(direction: "forward" | "backward", target: "start" | "end"): void {
@@ -246,6 +268,7 @@ export class AwesomeEditor extends CustomEditor {
     if (this.pendingOperator && this.pendingMotion)      return ` NORMAL ${this.pendingOperator}${this.pendingMotion}_ `;
     if (this.pendingOperator)                            return ` NORMAL ${this.pendingOperator}_ `;
     if (this.pendingMotion)                              return ` NORMAL ${this.pendingMotion}_ `;
+    if (this.pendingG)                                   return ` NORMAL g_ `;
     return " NORMAL ";
   }
 }

@@ -6,6 +6,7 @@ export type Mode            = "normal" | "insert";
 export type CharMotion      = "f" | "F" | "t" | "T";
 export type PendingMotion   = CharMotion | null;
 export type PendingOperator = "d" | "c" | null;
+export type PendingG        = "g" | null;
 
 export interface LastCharMotion {
   motion: CharMotion;
@@ -43,3 +44,4 @@ export const CTRL_E     = "\x05";
 export const CTRL_K     = "\x0b";
 export const NEWLINE    = "\n";
 export const ESC_UP     = "\x1b[A";
+export const ESC_DOWN   = "\x1b[B";
