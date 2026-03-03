@@ -1,4 +1,4 @@
-/** Reads ~/.pi/agent/settings.json (subagent property) to provide configurable defaults. */
+/** Reads ~/.pi/agent/settings.json (extensionSettings.subagent property) to provide configurable defaults. */
 
 import * as fs from "node:fs";
 import * as os from "node:os";
@@ -35,8 +35,8 @@ const CONFIG_PATH = path.join(os.homedir(), ".pi", "agent", "settings.json");
 export function loadConfig(): SubagentConfig {
   try {
     const raw = fs.readFileSync(CONFIG_PATH, "utf-8");
-    const settings = JSON.parse(raw) as { subagent?: Partial<SubagentConfig> };
-    const parsed = settings.subagent || {};
+    const settings = JSON.parse(raw) as { extensionSettings?: { subagent?: Partial<SubagentConfig> } };
+    const parsed = settings.extensionSettings?.subagent || {};
     const usp = parsed.userSystemPrompt;
     return {
       sources: isValidSources(parsed.sources)

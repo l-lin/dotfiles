@@ -83,15 +83,22 @@ const SETTINGS_PATH = path.join(os.homedir(), ".pi/agent/settings.json");
 // Settings
 // ============================================================================
 
-interface PiSettings {
-  copilotUsageVisible?: boolean;
+interface CopilotUsageSettings {
+  visible?: boolean;
 }
 
-function loadSettings(): PiSettings {
+interface PiSettings {
+  extensionSettings?: {
+    copilotUsage?: CopilotUsageSettings;
+  };
+}
+
+function loadSettings(): CopilotUsageSettings {
   try {
     if (fs.existsSync(SETTINGS_PATH)) {
       const content = fs.readFileSync(SETTINGS_PATH, "utf-8");
-      return JSON.parse(content) as PiSettings;
+      const parsed = JSON.parse(content) as PiSettings;
+      return parsed.extensionSettings?.copilotUsage ?? {};
     }
   } catch {
     // Ignore errors, return defaults
@@ -351,7 +358,7 @@ export default function copilotUsageExtension(pi: ExtensionAPI) {
 
   // Load initial visibility from settings (defaults to true if not set)
   const settings = loadSettings();
-  let widgetVisible = settings.copilotUsageVisible !== false;
+  let widgetVisible = settings.visible !== false;
 
   async function refresh(ctx: ExtensionContext): Promise<void> {
     if (!ctx.hasUI) return;
