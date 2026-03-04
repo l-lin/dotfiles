@@ -84,6 +84,6 @@ export const SEVERITY_LABELS: Record<number, string> = {
 export const CONFIG_ENTRY_TYPE = "lsp-diagnostics-config";
 
 // ─── Event bus types ──────────────────────────────────────────────────────────
-// Re-exported here for internal use; the canonical definitions live in write-events.
-export type { WriteToolDiagnosticsEvent } from "../write-events/index.js";
-export { WRITE_TOOL_DIAGNOSTICS_CHANNEL } from "../write-events/index.js";
+// Re-exported here for internal use; the canonical definitions live in file-mutation-events.
+export type { FileMutationDiagnosticsEvent } from "../file-mutation-events/index.js";
+export { FILE_MUTATION_DIAGNOSTICS_CHANNEL } from "../file-mutation-events/index.js";

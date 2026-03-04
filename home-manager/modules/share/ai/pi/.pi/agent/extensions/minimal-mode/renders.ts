@@ -5,7 +5,7 @@
 import { Container, Text } from "@mariozechner/pi-tui";
 import { homedir } from "os";
 import { getBuiltInTools } from "./toolCache.js";
-import type { WriteToolDiagnosticsEvent } from "../write-events/index.js";
+import type { FileMutationDiagnosticsEvent } from "../file-mutation-events/index.js";
 
 /**
  * Shorten a path by replacing home directory with ~
@@ -54,7 +54,7 @@ export function renderReadResult(result: any, { expanded }: any, theme: any) {
  * Returns an empty Text when there are no diagnostics or no summary available.
  */
 function renderDiagnosticsSummaryLine(
-  event: WriteToolDiagnosticsEvent | undefined,
+  event: FileMutationDiagnosticsEvent | undefined,
   theme: any,
 ): Text {
   if (!event?.summary) return new Text("", 0, 0);
@@ -80,7 +80,7 @@ export function renderWriteResult(
   result: any,
   { expanded }: any,
   theme: any,
-  diagnosticsEvent?: WriteToolDiagnosticsEvent,
+  diagnosticsEvent?: FileMutationDiagnosticsEvent,
 ) {
   if (!expanded) return renderDiagnosticsSummaryLine(diagnosticsEvent, theme);
   const tools = getBuiltInTools(process.cwd());
@@ -103,7 +103,7 @@ export function renderEditResult(
   result: any,
   { expanded }: any,
   theme: any,
-  diagnosticsEvent?: WriteToolDiagnosticsEvent,
+  diagnosticsEvent?: FileMutationDiagnosticsEvent,
 ) {
   if (!expanded) return renderDiagnosticsSummaryLine(diagnosticsEvent, theme);
   const tools = getBuiltInTools(process.cwd());

@@ -35,20 +35,20 @@ import {
   renderLsResult,
 } from "./renders.js";
 import { getBuiltInTools } from "./toolCache.js";
-import { WRITE_TOOL_DIAGNOSTICS_CHANNEL } from "../write-events/index.js";
-import type { WriteToolDiagnosticsEvent } from "../write-events/index.js";
+import { FILE_MUTATION_DIAGNOSTICS_CHANNEL } from "../file-mutation-events/index.js";
+import type { FileMutationDiagnosticsEvent } from "../file-mutation-events/index.js";
 
 export default function (pi: ExtensionAPI) {
   /**
    * Cache of the latest LSP diagnostics summary per file path.
-   * Populated via the WRITE_TOOL_DIAGNOSTICS_CHANNEL event (write-events contract).
+   * Populated via the FILE_MUTATION_DIAGNOSTICS_CHANNEL event (file-mutation-events contract).
    * Keyed by the filePath from the event (as-is, no normalization needed — it
    * matches the path passed to write/edit).
    */
-  const diagnosticsCache = new Map<string, WriteToolDiagnosticsEvent>();
+  const diagnosticsCache = new Map<string, FileMutationDiagnosticsEvent>();
 
-  pi.events.on(WRITE_TOOL_DIAGNOSTICS_CHANNEL, (data) => {
-    const event = data as WriteToolDiagnosticsEvent;
+  pi.events.on(FILE_MUTATION_DIAGNOSTICS_CHANNEL, (data) => {
+    const event = data as FileMutationDiagnosticsEvent;
     diagnosticsCache.set(event.filePath, event);
   });
 

@@ -18,8 +18,11 @@ import {
   buildDiagnosticBlock,
   extractDiagnosticSummary,
 } from "./tool-result-helpers.js";
-import { CONFIG_ENTRY_TYPE, WRITE_TOOL_DIAGNOSTICS_CHANNEL } from "./types.js";
-import type { WriteToolDiagnosticsEvent } from "./types.js";
+import {
+  CONFIG_ENTRY_TYPE,
+  FILE_MUTATION_DIAGNOSTICS_CHANNEL,
+} from "./types.js";
+import type { FileMutationDiagnosticsEvent } from "./types.js";
 import { loadConfig, loadFileConfig, saveEnabled } from "./config.js";
 import { resolveLspCommand, resolveRootDir } from "./resolver.js";
 import { LspDebugComponent, type LspClientEntry } from "./lsp-debug.js";
@@ -210,12 +213,12 @@ export default function (pi: ExtensionAPI) {
     // details would silently pollute subscriber caches for no reason.
     if (summary === null) return;
 
-    // Broadcast the summary so subscribers (e.g. minimal-mode via write-events)
+    // Broadcast the summary so subscribers (e.g. minimal-mode via file-mutation-events)
     // can render the compact one-line summary in collapsed view.
-    pi.events.emit(WRITE_TOOL_DIAGNOSTICS_CHANNEL, {
+    pi.events.emit(FILE_MUTATION_DIAGNOSTICS_CHANNEL, {
       filePath,
       summary,
-    } satisfies WriteToolDiagnosticsEvent);
+    } satisfies FileMutationDiagnosticsEvent);
 
     // Append diagnostics to the tool result content so the LLM sees them and
     // the built-in renderResult shows them in expanded view without relying on
