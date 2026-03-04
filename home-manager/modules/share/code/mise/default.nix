@@ -21,6 +21,10 @@
         # Tools can read the versions files used by other version managers
         # for example, .nvmrc in the case of node's nvm.
         idiomatic_version_file_enable_tools = ["java"  "node" "ruby"];
+
+        # Suppress the following warning for now:
+        # mise WARN  env value contains '$' which will be expanded in a future release. Set `env_shell_expand = true` to opt in or `env_shell_expand = false` to keep current behavior and suppress this warning.
+        env_shell_expand = true;
       };
     };
   };
