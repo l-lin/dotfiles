@@ -35,8 +35,23 @@ import {
   renderLsResult,
 } from "./renders.js";
 import { getBuiltInTools } from "./toolCache.js";
+import { WRITE_TOOL_DIAGNOSTICS_CHANNEL } from "../write-events/index.js";
+import type { WriteToolDiagnosticsEvent } from "../write-events/index.js";
 
 export default function (pi: ExtensionAPI) {
+  /**
+   * Cache of the latest LSP diagnostics summary per file path.
+   * Populated via the WRITE_TOOL_DIAGNOSTICS_CHANNEL event (write-events contract).
+   * Keyed by the filePath from the event (as-is, no normalization needed — it
+   * matches the path passed to write/edit).
+   */
+  const diagnosticsCache = new Map<string, WriteToolDiagnosticsEvent>();
+
+  pi.events.on(WRITE_TOOL_DIAGNOSTICS_CHANNEL, (data) => {
+    const event = data as WriteToolDiagnosticsEvent;
+    diagnosticsCache.set(event.filePath, event);
+  });
+
   // =========================================================================
   // Read Tool
   // =========================================================================
@@ -64,6 +79,13 @@ export default function (pi: ExtensionAPI) {
   // =========================================================================
   // Write Tool
   // =========================================================================
+  // The pi render API does not expose toolCallId to renderCall/renderResult,
+  // so we cannot key by invocation ID. We use a FIFO queue instead: renderCall
+  // enqueues the path, renderResult dequeues it. Under sequential calls this is
+  // exact. Under parallel calls of the same tool type it degrades to FIFO order
+  // (still deterministic, never cross-contaminates with *other* tools).
+  const writePathQueue: string[] = [];
+
   pi.registerTool({
     name: "write",
     label: "write",
@@ -77,17 +99,26 @@ export default function (pi: ExtensionAPI) {
     },
 
     renderCall(args, theme) {
+      writePathQueue.push(args.path ?? "");
       return renderWriteCall(args, theme);
     },
 
     renderResult(result, { expanded }, theme) {
-      return renderWriteResult(result, { expanded }, theme);
+      const filePath = writePathQueue.shift() ?? "";
+      return renderWriteResult(
+        result,
+        { expanded },
+        theme,
+        diagnosticsCache.get(filePath),
+      );
     },
   });
 
   // =========================================================================
   // Edit Tool
   // =========================================================================
+  const editPathQueue: string[] = [];
+
   pi.registerTool({
     name: "edit",
     label: "edit",
@@ -101,11 +132,18 @@ export default function (pi: ExtensionAPI) {
     },
 
     renderCall(args, theme) {
+      editPathQueue.push(args.path ?? "");
       return renderEditCall(args, theme);
     },
 
     renderResult(result, { expanded }, theme) {
-      return renderEditResult(result, { expanded }, theme);
+      const filePath = editPathQueue.shift() ?? "";
+      return renderEditResult(
+        result,
+        { expanded },
+        theme,
+        diagnosticsCache.get(filePath),
+      );
     },
   });
 

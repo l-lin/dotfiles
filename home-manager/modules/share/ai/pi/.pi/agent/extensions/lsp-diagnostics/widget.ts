@@ -29,7 +29,7 @@ function renderWidget(
 ): void {
   const theme = ctx.ui.theme;
   const renderedIcon = iconVisible ? icon : " ";
-  const line = theme.fg("success", renderedIcon) + theme.bold(` ${lspBin}`);
+  const line = theme.fg("success", renderedIcon) + theme.bold(`  ${lspBin}`);
   ctx.ui.setWidget(WIDGET_KEY, [line]);
 }
 

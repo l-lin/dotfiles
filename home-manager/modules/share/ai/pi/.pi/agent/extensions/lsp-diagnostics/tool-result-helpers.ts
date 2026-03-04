@@ -9,6 +9,7 @@ import {
   DEFAULT_MAX_LINES,
 } from "@mariozechner/pi-coding-agent";
 import type { LspDiagnostic } from "./types.js";
+import { SEVERITY_ERROR, SEVERITY_WARNING, SEVERITY_INFO } from "./types.js";
 import type { LspClientEntry } from "./lsp-debug.js";
 import { PersistentLspClient } from "./lsp-client.js";
 import { formatDiagnostics } from "./format.js";
@@ -96,6 +97,27 @@ export function buildDiagnosticBlock(
     block += `\n[Output truncated: ${truncation.outputLines}/${truncation.totalLines} lines shown]`;
   }
   return block;
+}
+
+/**
+ * Count errors and warnings across all files in a diagnostics map.
+ * Extracted as a standalone helper so it can be called before building the
+ * full text block (needed for the event-bus broadcast).
+ */
+export function extractDiagnosticSummary(
+  diagnostics: Map<string, LspDiagnostic[]>,
+): { errorCount: number; warningCount: number; infoCount: number } {
+  let errorCount = 0;
+  let warningCount = 0;
+  let infoCount = 0;
+  for (const diags of diagnostics.values()) {
+    for (const d of diags) {
+      if (d.severity === SEVERITY_ERROR) errorCount++;
+      else if (d.severity === SEVERITY_WARNING) warningCount++;
+      else if (d.severity === SEVERITY_INFO) infoCount++;
+    }
+  }
+  return { errorCount, warningCount, infoCount };
 }
 
 export function appendToContent(

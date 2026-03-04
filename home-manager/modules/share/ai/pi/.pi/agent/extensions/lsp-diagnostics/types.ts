@@ -68,11 +68,22 @@ export type LspCommandSource =
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
+// LSP DiagnosticSeverity constants (protocol §3.15.1)
+export const SEVERITY_ERROR = 1;
+export const SEVERITY_WARNING = 2;
+export const SEVERITY_INFO = 3;
+export const SEVERITY_HINT = 4;
+
 export const SEVERITY_LABELS: Record<number, string> = {
-  1: "error",
-  2: "warning",
-  3: "info",
-  4: "hint",
+  [SEVERITY_ERROR]: "error",
+  [SEVERITY_WARNING]: "warning",
+  [SEVERITY_INFO]: "info",
+  [SEVERITY_HINT]: "hint",
 };
 
 export const CONFIG_ENTRY_TYPE = "lsp-diagnostics-config";
+
+// ─── Event bus types ──────────────────────────────────────────────────────────
+// Re-exported here for internal use; the canonical definitions live in write-events.
+export type { WriteToolDiagnosticsEvent } from "../write-events/index.js";
+export { WRITE_TOOL_DIAGNOSTICS_CHANNEL } from "../write-events/index.js";

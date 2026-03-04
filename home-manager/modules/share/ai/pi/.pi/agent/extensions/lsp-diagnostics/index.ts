@@ -16,9 +16,10 @@ import {
   getOrCreateClient,
   handleLspError,
   buildDiagnosticBlock,
-  appendToContent,
+  extractDiagnosticSummary,
 } from "./tool-result-helpers.js";
-import { CONFIG_ENTRY_TYPE } from "./types.js";
+import { CONFIG_ENTRY_TYPE, WRITE_TOOL_DIAGNOSTICS_CHANNEL } from "./types.js";
+import type { WriteToolDiagnosticsEvent } from "./types.js";
 import { loadConfig, loadFileConfig, saveEnabled } from "./config.js";
 import { resolveLspCommand, resolveRootDir } from "./resolver.js";
 import { LspDebugComponent, type LspClientEntry } from "./lsp-debug.js";
@@ -189,9 +190,32 @@ export default function (pi: ExtensionAPI) {
       if (lspClients.has(commandKey)) setLspWidget(ctx, lspBin, "idle");
     }
 
-    const block = buildDiagnosticBlock(diagnostics, filePath, lspBin, ctx.cwd);
-    if (!block) return;
+    const details = buildDiagnosticBlock(
+      diagnostics,
+      filePath,
+      lspBin,
+      ctx.cwd,
+    );
+    const { errorCount, warningCount, infoCount } =
+      extractDiagnosticSummary(diagnostics);
 
-    return { content: appendToContent(event.content, block) };
+    const summaryParts: string[] = [];
+    if (errorCount > 0) summaryParts.push(`✖ ${errorCount}`);
+    if (warningCount > 0) summaryParts.push(`⚠ ${warningCount}`);
+    if (infoCount > 0) summaryParts.push(`ℹ ${infoCount}`);
+    const summary = summaryParts.length > 0 ? summaryParts.join("  ") : null;
+
+    // Only broadcast when there is something to report — null/null events would
+    // silently clear stale diagnostics from subscriber caches, which is
+    // confusing and inconsistent with the old guard (`if (!block) return`).
+    if (summary === null && details === null) return;
+
+    // Broadcast the full diagnostic result so subscribers (e.g. minimal-mode via write-events)
+    // can render both the compact summary and the full details text themselves.
+    pi.events.emit(WRITE_TOOL_DIAGNOSTICS_CHANNEL, {
+      filePath,
+      summary,
+      details,
+    } satisfies WriteToolDiagnosticsEvent);
   });
 }

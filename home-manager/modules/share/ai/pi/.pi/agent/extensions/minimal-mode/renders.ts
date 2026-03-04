@@ -2,9 +2,10 @@
  * This module exports all the rendering functions.
  */
 
-import { Text } from "@mariozechner/pi-tui";
+import { Container, Text } from "@mariozechner/pi-tui";
 import { homedir } from "os";
 import { getBuiltInTools } from "./toolCache.js";
+import type { WriteToolDiagnosticsEvent } from "../write-events/index.js";
 
 /**
  * Shorten a path by replacing home directory with ~
@@ -45,6 +46,36 @@ export function renderReadResult(result: any, { expanded }: any, theme: any) {
   return tools.read.renderResult(result, { expanded }, theme);
 }
 
+// ─── LSP Summary Helper ─────────────────────────────────────────────────────
+
+/**
+ * Renders a compact one-line LSP diagnostics summary for collapsed tool results.
+ * Returns an empty Text when there are no diagnostics or no summary available.
+ */
+function renderDiagnosticsSummaryLine(
+  event: WriteToolDiagnosticsEvent | undefined,
+  theme: any,
+): Text {
+  if (!event?.summary) return new Text("", 0, 0);
+  return new Text(theme.fg("muted", ` ${event.summary}`), 0, 0);
+}
+
+/**
+ * Stacks the built-in tool result above the full diagnostics details.
+ * Returns the built-in result unchanged when there are no details.
+ */
+function stackWithDiagnostics(
+  builtIn: any,
+  event: WriteToolDiagnosticsEvent | undefined,
+  theme: any,
+): any {
+  if (!event?.details) return builtIn;
+  const container = new Container();
+  if (builtIn) container.addChild(builtIn);
+  container.addChild(new Text(theme.fg("toolOutput", event.details), 0, 0));
+  return container;
+}
+
 // ─── Write Tool Renders ─────────────────────────────────────────────────────
 
 export function renderWriteCall(args: any, theme: any) {
@@ -60,10 +91,16 @@ export function renderWriteCall(args: any, theme: any) {
   return new Text(text, 0, 0);
 }
 
-export function renderWriteResult(result: any, { expanded }: any, theme: any) {
-  if (!expanded) return new Text("", 0, 0);
+export function renderWriteResult(
+  result: any,
+  { expanded }: any,
+  theme: any,
+  diagnosticsEvent?: WriteToolDiagnosticsEvent,
+) {
+  if (!expanded) return renderDiagnosticsSummaryLine(diagnosticsEvent, theme);
   const tools = getBuiltInTools(process.cwd());
-  return tools.write.renderResult(result, { expanded }, theme);
+  const builtIn = tools.write.renderResult(result, { expanded }, theme);
+  return stackWithDiagnostics(builtIn, diagnosticsEvent, theme);
 }
 
 // ─── Edit Tool Renders ──────────────────────────────────────────────────────
@@ -78,10 +115,16 @@ export function renderEditCall(args: any, theme: any) {
   return new Text(text, 0, 0);
 }
 
-export function renderEditResult(result: any, { expanded }: any, theme: any) {
-  if (!expanded) return new Text("", 0, 0);
+export function renderEditResult(
+  result: any,
+  { expanded }: any,
+  theme: any,
+  diagnosticsEvent?: WriteToolDiagnosticsEvent,
+) {
+  if (!expanded) return renderDiagnosticsSummaryLine(diagnosticsEvent, theme);
   const tools = getBuiltInTools(process.cwd());
-  return tools.edit.renderResult(result, { expanded }, theme);
+  const builtIn = tools.edit.renderResult(result, { expanded }, theme);
+  return stackWithDiagnostics(builtIn, diagnosticsEvent, theme);
 }
 
 // ─── Find Tool Renders ──────────────────────────────────────────────────────
@@ -194,7 +237,8 @@ export function renderBashCall(args: any, theme: any) {
     ? theme.fg("muted", ` (timeout ${timeout}s)`)
     : "";
 
-  const text = theme.fg("toolTitle", theme.bold(`$ ${command}`)) + timeoutSuffix;
+  const text =
+    theme.fg("toolTitle", theme.bold(`$ ${command}`)) + timeoutSuffix;
   return new Text(text, 0, 0);
 }
 
