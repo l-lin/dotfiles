@@ -200,48 +200,34 @@ export default function webSearchExtension(pi: ExtensionAPI) {
       "Search the internet using Tavily API. Supports basic and advanced search with domain filtering and AI-generated summaries.",
     parameters: WebSearchParams,
 
-    async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
+    async execute(_toolCallId, params, _signal) {
+      type Details = { query: string; resultCount: number; hasAnswer: boolean; responseTime: number; error?: string };
+
+      const errorResult = (text: string, error: string) => ({
+        content: [{ type: "text" as const, text }],
+        details: { query: params.query, resultCount: 0, hasAnswer: false, responseTime: 0, error } satisfies Details,
+      });
+
       // Check for API key
       const apiKey = process.env.TAVILY_API_KEY;
       if (!apiKey) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: "Error: TAVILY_API_KEY environment variable is not set. Please configure your Tavily API key.",
-            },
-          ],
-          isError: true,
-        };
+        return errorResult(
+          "Error: TAVILY_API_KEY environment variable is not set. Please configure your Tavily API key.",
+          "missing_api_key",
+        );
       }
 
       // Validate query
       if (!params.query || params.query.trim() === "") {
-        return {
-          content: [
-            {
-              type: "text",
-              text: "Error: Search query cannot be empty.",
-            },
-          ],
-          isError: true,
-        };
+        return errorResult("Error: Search query cannot be empty.", "empty_query");
       }
 
       try {
         const results = await searchTavily(apiKey, params);
-        
+
         // Validate response structure
         if (!results || typeof results !== "object") {
-          return {
-            content: [
-              {
-                type: "text",
-                text: "Error: Invalid response from Tavily API.",
-              },
-            ],
-            isError: true,
-          };
+          return errorResult("Error: Invalid response from Tavily API.", "invalid_response");
         }
 
         const markdown = formatResultsAsMarkdown(
@@ -250,26 +236,17 @@ export default function webSearchExtension(pi: ExtensionAPI) {
         );
 
         return {
-          content: [{ type: "text", text: markdown }],
+          content: [{ type: "text" as const, text: markdown }],
           details: {
             query: params.query,
             resultCount: (results.results || []).length,
             hasAnswer: !!results.answer,
             responseTime: results.response_time || 0,
-          },
+          } satisfies Details,
         };
       } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : String(error);
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Web search failed: ${errorMessage}`,
-            },
-          ],
-          isError: true,
-        };
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return errorResult(`Web search failed: ${errorMessage}`, errorMessage);
       }
     },
 
@@ -289,9 +266,11 @@ export default function webSearchExtension(pi: ExtensionAPI) {
     },
 
     renderResult(result, opts, theme) {
-      if (result.isError) {
+      const details = result.details as { query: string; resultCount: number; hasAnswer: boolean; responseTime: number; error?: string } | undefined;
+
+      if (details?.error) {
         const errorText =
-          result.content[0]?.type === "text" ? result.content[0].text : "";
+          result.content[0]?.type === "text" ? result.content[0].text : details.error;
         return new Text(theme.fg("error", errorText), 0, 0);
       }
 
@@ -300,22 +279,8 @@ export default function webSearchExtension(pi: ExtensionAPI) {
         return new Text(result.content[0].text, 0, 0);
       }
 
-      // When collapsed, show summary
-      const details = result.details as
-        | {
-            query: string;
-            resultCount: number;
-            hasAnswer: boolean;
-            responseTime: number;
-          }
-        | undefined;
-
       if (!details) {
-        return new Text(
-          theme.fg("success", "Search completed"),
-          0,
-          0,
-        );
+        return new Text(theme.fg("success", "Search completed"), 0, 0);
       }
 
       let text = theme.fg("success", "✓ ");
@@ -325,10 +290,7 @@ export default function webSearchExtension(pi: ExtensionAPI) {
         text += theme.fg("muted", " (with AI summary)");
       }
 
-      text += theme.fg(
-        "dim",
-        ` • ${details.responseTime.toFixed(2)}s`,
-      );
+      text += theme.fg("dim", ` • ${details.responseTime.toFixed(2)}s`);
 
       return new Text(text, 0, 0);
     },

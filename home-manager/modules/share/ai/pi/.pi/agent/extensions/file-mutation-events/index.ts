@@ -31,9 +31,9 @@ export interface FileMutationDiagnosticsEvent {
   filePath: string;
   /**
    * Short plain-text summary suitable for a single collapsed line.
-   * e.g. "✖ 2  ⚠ 1  ℹ 3"
+   * e.g. "lsp ✖ 2 ⚠ 1 ℹ 3"
    */
   summary: string | null;
 }
 
-export default function (pi: ExtensionAPI) {}
+export default function (_pi: ExtensionAPI) {}

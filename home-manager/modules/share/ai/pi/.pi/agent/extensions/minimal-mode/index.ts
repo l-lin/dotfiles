@@ -65,7 +65,7 @@ export default function (pi: ExtensionAPI) {
     });
   });
 
-  pi.on("session_end", async () => {
+  pi.on("session_shutdown", async () => {
     tuiRef = null;
   });
 

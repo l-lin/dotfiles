@@ -76,7 +76,7 @@ interface AuthStatus {
 
 const WIDGET_ID = "copilot-usage";
 const BAR_WIDTH = 20;
-const WIDGET_PLACEMENT = { placement: "aboveEditor" };
+const WIDGET_PLACEMENT = { placement: "aboveEditor" as const };
 const SETTINGS_PATH = path.join(os.homedir(), ".pi/agent/settings.json");
 
 // ============================================================================
@@ -426,11 +426,11 @@ export default function copilotUsageExtension(pi: ExtensionAPI) {
 
       if (cachedUsage) {
         if (cachedUsage.unlimited) {
-          ctx.ui.notify("Unlimited premium requests", "success");
+          ctx.ui.notify("Unlimited premium requests", "info");
         } else {
           ctx.ui.notify(
             `${cachedUsage.used}/${cachedUsage.quota} requests used (${cachedUsage.remaining} remaining)`,
-            "success",
+            "info",
           );
         }
       } else if (cachedAuth?.error) {

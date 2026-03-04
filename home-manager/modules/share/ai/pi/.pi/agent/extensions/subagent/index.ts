@@ -6,7 +6,7 @@
  */
 
 import { StringEnum } from "@mariozechner/pi-ai";
-import type { ExtensionAPI, ToolContext } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI, ExtensionContext, Theme } from "@mariozechner/pi-coding-agent";
 import { truncateToWidth } from "@mariozechner/pi-tui";
 import { Type, type Static } from "@sinclair/typebox";
 import { discoverAgents } from "./agents.js";
@@ -22,17 +22,18 @@ import * as tmux from "./tmux.js";
 interface ToolResult {
   content: { type: "text"; text: string }[];
   isError?: boolean;
-  details?: SubagentDetails;
+  details: SubagentDetails;
 }
 
 const ok = (text: string, details?: SubagentDetails): ToolResult => ({
   content: [{ type: "text", text }],
-  details,
+  details: details ?? { action: Action.List },
 });
 
 const err = (text: string): ToolResult => ({
   content: [{ type: "text", text }],
   isError: true,
+  details: { action: Action.List },
 });
 
 function getSession(id: string | undefined): sessions.Session | undefined {
@@ -89,7 +90,7 @@ const SubagentParamsSchema = Type.Object({
   ),
 });
 
-function handleCatalog(params: SubagentParams, ctx: ToolContext): ToolResult {
+function handleCatalog(params: SubagentParams, ctx: ExtensionContext): ToolResult {
   const config = loadConfig();
   const sources: string[] = params.sources ?? config.sources;
   const discovery = discoverAgents(sources, ctx.cwd);
@@ -176,7 +177,7 @@ function handleClose(params: SubagentParams): ToolResult {
 async function handleSpawn(
   pi: ExtensionAPI,
   params: SubagentParams,
-  ctx: ToolContext,
+  ctx: ExtensionContext,
 ): Promise<ToolResult> {
   const config = loadConfig();
   const sources: string[] = params.sources ?? config.sources;
@@ -187,7 +188,7 @@ async function handleSpawn(
   // Normalize: single → array
   const taskList: { agent: string; task: string; cwd?: string }[] =
     (params.tasks?.length ?? 0) > 0
-      ? params.tasks
+      ? params.tasks!
       : params.agent && params.task
         ? [{ agent: params.agent, task: params.task, cwd: params.cwd }]
         : [];
@@ -252,7 +253,7 @@ function stopBlinkTimer(): void {
   }
 }
 
-function updateSessionWidget(ctx: ToolContext): void {
+function updateSessionWidget(ctx: ExtensionContext): void {
   stopBlinkTimer();
   const active = sessions.all();
 
@@ -271,7 +272,7 @@ function updateSessionWidget(ctx: ToolContext): void {
     if (!sessions.all().some((s) => s.pending)) stopBlinkTimer();
   }, 500);
 
-  ctx.ui.setWidget(WIDGET_KEY, (tui, theme) => {
+  ctx.ui.setWidget(WIDGET_KEY, (tui: any, theme: Theme) => {
     // Capture the tui.requestRender handle so the timer above can use it.
     requestRenderFn = () => tui.requestRender();
 

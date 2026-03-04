@@ -1,0 +1,12 @@
+{
+  "name": "pi-extensions",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@mariozechner/pi-coding-agent": "0.55.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

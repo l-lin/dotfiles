@@ -8,11 +8,11 @@ import type {
   BreakdownData,
   MeasurementMode,
   BreakdownProgressState,
-} from "./types.ts";
-import { RANGE_DAYS, SESSION_ROOT, PALETTE } from "./constants.ts";
-import { weightedMix } from "./color-utils.ts";
-import { toLocalDayKey, localMidnight, addDaysLocal } from "./date-utils.ts";
-import { walkSessionFiles, parseSessionFile } from "./session-parser.ts";
+} from "./types.js";
+import { RANGE_DAYS, SESSION_ROOT, PALETTE } from "./constants.js";
+import { weightedMix } from "./color-utils.js";
+import { toLocalDayKey, localMidnight, addDaysLocal } from "./date-utils.js";
+import { walkSessionFiles, parseSessionFile } from "./session-parser.js";
 
 export function buildRangeAgg(days: number, now: Date): RangeAgg {
   const end = localMidnight(now);

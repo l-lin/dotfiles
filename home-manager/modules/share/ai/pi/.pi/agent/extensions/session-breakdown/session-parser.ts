@@ -2,8 +2,8 @@ import path from "node:path";
 import fs from "node:fs/promises";
 import { createReadStream, type Dirent } from "node:fs";
 import readline from "node:readline";
-import type { ModelKey, ParsedSession } from "./types.ts";
-import { toLocalDayKey, localMidnight } from "./date-utils.ts";
+import type { ModelKey, ParsedSession } from "./types.js";
+import { toLocalDayKey, localMidnight } from "./date-utils.js";
 
 export function modelKeyFromParts(
   provider?: unknown,

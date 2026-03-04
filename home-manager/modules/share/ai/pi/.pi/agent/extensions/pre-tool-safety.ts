@@ -240,7 +240,7 @@ export default function (pi: ExtensionAPI) {
   }
 
   // Event Handler: Session start (optional status)
-  pi.on("session_start", (_event, ctx) => {
+  pi.on("session_start", (_event, _ctx) => {
     if (hookAvailable) {
       debug("Pre-tool safety checks active");
     } else {

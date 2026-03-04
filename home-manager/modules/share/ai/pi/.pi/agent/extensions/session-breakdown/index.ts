@@ -23,11 +23,11 @@ import type {
   ExtensionContext,
 } from "@mariozechner/pi-coding-agent";
 import { BorderedLoader } from "@mariozechner/pi-coding-agent";
-import type { BreakdownData, BreakdownProgressState } from "./types.ts";
-import { formatCount } from "./color-utils.ts";
-import { computeBreakdown } from "./aggregation.ts";
-import { rangeSummary } from "./renderer.ts";
-import { BreakdownComponent } from "./component.ts";
+import type { BreakdownData, BreakdownProgressState } from "./types.js";
+import { formatCount } from "./color-utils.js";
+import { computeBreakdown } from "./aggregation.js";
+import { rangeSummary } from "./renderer.js";
+import { BreakdownComponent } from "./component.js";
 
 /** BorderedLoader wraps an inner Loader that supports setMessage() but doesn't expose it publicly. */
 function setBorderedLoaderMessage(loader: BorderedLoader, message: string) {

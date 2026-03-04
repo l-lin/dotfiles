@@ -12,7 +12,7 @@
  * Adapted with my own keymaps
  */
 
-import { complete, type UserMessage, type Model } from "@mariozechner/pi-ai";
+import { complete, type UserMessage, type Model, type Api } from "@mariozechner/pi-ai";
 import type {
   ExtensionAPI,
   ExtensionContext,
@@ -50,7 +50,7 @@ interface AvailableModel {
   provider: string;
   modelId: string;
   name: string;
-  model: Model;
+  model: Model<Api>;
   apiKey: string;
 }
 
@@ -502,7 +502,7 @@ export default function (pi: ExtensionAPI) {
   // Custom renderer for oracle responses
   pi.registerMessageRenderer("oracle-response", (message, options, theme) => {
     const { expanded } = options;
-    const details = message.details || {};
+    const details = message.details as { modelName?: string; files?: string[] } || {};
 
     let text = theme.fg(
       "accent",
@@ -510,7 +510,7 @@ export default function (pi: ExtensionAPI) {
     );
     text += message.content;
 
-    if (expanded && details.files?.length > 0) {
+    if (expanded && details.files && details.files.length > 0) {
       text += "\n\n" + theme.fg("dim", `Files: ${details.files.join(", ")}`);
     }
 
@@ -648,7 +648,7 @@ Focus on being helpful and providing a fresh perspective.`,
         prompt,
       },
     });
-    ctx.ui.notify(`Oracle response added to context`, "success");
+    ctx.ui.notify(`Oracle response added to context`, "info");
   } else {
     ctx.ui.notify(`Oracle response discarded`, "info");
   }

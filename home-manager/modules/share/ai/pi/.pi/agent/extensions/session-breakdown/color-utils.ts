@@ -1,5 +1,5 @@
-import type { RGB } from "./types.ts";
-import { EMPTY_CELL_BG } from "./constants.ts";
+import type { RGB } from "./types.js";
+import { EMPTY_CELL_BG } from "./constants.js";
 
 export function clamp01(x: number): number {
   return Math.max(0, Math.min(1, x));

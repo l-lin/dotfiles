@@ -137,8 +137,7 @@ export default function (pi: ExtensionAPI) {
 
           return lines;
         },
-
-        dispose() {},
+        invalidate() {},
       };
     });
   });

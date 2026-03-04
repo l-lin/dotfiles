@@ -5,8 +5,8 @@ import type {
   RangeAgg,
   RGB,
   MeasurementMode,
-} from "./types.ts";
-import { DEFAULT_BG, EMPTY_CELL_BG } from "./constants.ts";
+} from "./types.js";
+import { DEFAULT_BG, EMPTY_CELL_BG } from "./constants.js";
 import {
   ansiBg,
   bold,
@@ -17,18 +17,18 @@ import {
   padLeft,
   padRight,
   clamp01,
-} from "./color-utils.ts";
+} from "./color-utils.js";
 import {
   addDaysLocal,
   countDaysInclusiveLocal,
   mondayIndex,
   toLocalDayKey,
-} from "./date-utils.ts";
+} from "./date-utils.js";
 import {
   dayMixedColor,
   graphMetricForRange,
   sortMapByValueDesc,
-} from "./aggregation.ts";
+} from "./aggregation.js";
 
 export { graphMetricForRange };
 

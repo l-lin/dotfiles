@@ -8,11 +8,11 @@ import {
   visibleWidth,
 } from "@mariozechner/pi-tui";
 import { DynamicBorder } from "@mariozechner/pi-coding-agent";
-import type { BreakdownData, MeasurementMode } from "./types.ts";
-import { RANGE_DAYS } from "./constants.ts";
-import { bold, dim } from "./color-utils.ts";
-import { toLocalDayKey } from "./date-utils.ts";
-import { renderBreakdownBody } from "./renderer.ts";
+import type { BreakdownData, MeasurementMode } from "./types.js";
+import { RANGE_DAYS } from "./constants.js";
+import { bold, dim } from "./color-utils.js";
+import { toLocalDayKey } from "./date-utils.js";
+import { renderBreakdownBody } from "./renderer.js";
 
 export class BreakdownComponent implements Component {
   private data: BreakdownData;

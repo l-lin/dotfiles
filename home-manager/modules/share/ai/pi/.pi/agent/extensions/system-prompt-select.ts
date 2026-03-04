@@ -20,7 +20,7 @@ import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join, basename, isAbsolute, resolve } from "node:path";
 import { homedir } from "node:os";
-import { loadConfig } from "./subagent/config";
+import { loadConfig } from "./subagent/config.js";
 
 interface AgentDef {
   name: string;
@@ -148,7 +148,7 @@ export default function (pi: ExtensionAPI) {
         activeAgent = null;
         pi.setActiveTools(defaultTools);
         ctx.ui.setStatus("system-prompt", undefined);
-        ctx.ui.notify("System Prompt reset to 'Default'", "success");
+        ctx.ui.notify("System Prompt reset to 'Default'", "info");
         return;
       }
 
@@ -165,12 +165,12 @@ export default function (pi: ExtensionAPI) {
       ctx.ui.setStatus("system-prompt", ` ${displayName(agent.name)}`);
       ctx.ui.notify(
         `System Prompt switched to: ${displayName(agent.name)}`,
-        "success",
+        "info",
       );
     },
   });
 
-  pi.on("before_agent_start", async (event, _ctx) => {
+  pi.on("before_agent_start", async (_event, _ctx) => {
     if (!activeAgent) return;
     return {
       systemPrompt: activeAgent.body,
