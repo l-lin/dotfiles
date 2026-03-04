@@ -4,7 +4,7 @@
 import type { ExtensionContext } from "@mariozechner/pi-coding-agent";
 
 export const WIDGET_KEY = "lsp-diagnostics";
-export const LSP_ICON = "";
+export const LSP_ICON = "";
 const LSP_BLINK_INTERVAL_MS = 500;
 
 export type LspWidgetState = "starting" | "collecting" | "idle";
@@ -29,7 +29,7 @@ function renderWidget(
 ): void {
   const theme = ctx.ui.theme;
   const renderedIcon = iconVisible ? icon : " ";
-  const line = theme.fg("success", renderedIcon) + theme.bold(`  ${lspBin}`);
+  const line = theme.fg("success", renderedIcon) + theme.bold(` ${lspBin}`);
   ctx.ui.setWidget(WIDGET_KEY, [line]);
 }
 
