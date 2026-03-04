@@ -2,7 +2,7 @@
  * This module exports all the rendering functions.
  */
 
-import { Container, Text } from "@mariozechner/pi-tui";
+import { Text } from "@mariozechner/pi-tui";
 import { homedir } from "os";
 import { getBuiltInTools } from "./toolCache.js";
 import type { FileMutationDiagnosticsEvent } from "../file-mutation-events/index.js";
@@ -46,19 +46,32 @@ export function renderReadResult(result: any, { expanded }: any, theme: any) {
   return tools.read.renderResult(result, { expanded }, theme);
 }
 
-// ─── LSP Summary Helper ─────────────────────────────────────────────────────
+// ─── Mutation Annotation Helper ─────────────────────────────────────────────
 
 /**
- * Renders a compact one-line LSP diagnostics summary with a label prefix.
- * Used in both collapsed (inline) and expanded (footer) views.
- * Returns an empty Text when there are no diagnostics or no summary available.
+ * Returns a lightweight reactive component for collapsed write/edit results.
+ *
+ * The component reads from the live `diagnosticsCache` map on every `render()`
+ * call, so it automatically shows fresh data whenever pi re-renders the
+ * conversation (e.g. after `tui.requestRender()` is triggered by the event
+ * listener in index.ts).
+ *
+ * No coupling to lsp-diagnostics: all data arrives via the
+ * FILE_MUTATION_DIAGNOSTICS_CHANNEL contract from file-mutation-events.
  */
-function renderDiagnosticsSummaryLine(
-  event: FileMutationDiagnosticsEvent | undefined,
+function makeMutationAnnotation(
+  cache: Map<string, FileMutationDiagnosticsEvent>,
+  filePath: string,
   theme: any,
-): Text {
-  if (!event?.summary) return new Text("", 0, 0);
-  return new Text(theme.fg("muted", ` ${event.summary}`), 0, 0);
+) {
+  return {
+    render(_width: number): string[] {
+      const event = cache.get(filePath);
+      if (!event?.summary) return [];
+      return [theme.fg("muted", ` ${event.summary}`)];
+    },
+    invalidate() {},
+  };
 }
 
 // ─── Write Tool Renders ─────────────────────────────────────────────────────
@@ -80,9 +93,10 @@ export function renderWriteResult(
   result: any,
   { expanded }: any,
   theme: any,
-  diagnosticsEvent?: FileMutationDiagnosticsEvent,
+  cache: Map<string, FileMutationDiagnosticsEvent>,
+  filePath: string,
 ) {
-  if (!expanded) return renderDiagnosticsSummaryLine(diagnosticsEvent, theme);
+  if (!expanded) return makeMutationAnnotation(cache, filePath, theme);
   const tools = getBuiltInTools(process.cwd());
   return tools.write.renderResult(result, { expanded }, theme);
 }
@@ -103,9 +117,10 @@ export function renderEditResult(
   result: any,
   { expanded }: any,
   theme: any,
-  diagnosticsEvent?: FileMutationDiagnosticsEvent,
+  cache: Map<string, FileMutationDiagnosticsEvent>,
+  filePath: string,
 ) {
-  if (!expanded) return renderDiagnosticsSummaryLine(diagnosticsEvent, theme);
+  if (!expanded) return makeMutationAnnotation(cache, filePath, theme);
   const tools = getBuiltInTools(process.cwd());
   return tools.edit.renderResult(result, { expanded }, theme);
 }
