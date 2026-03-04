@@ -56,9 +56,10 @@ export default function (pi: ExtensionAPI) {
   pi.on("session_start", async (_event, ctx) => {
     savedConfig = null;
     const saved = [...ctx.sessionManager.getEntries()].findLast(
-      (e) => e.type === "custom" && e.customType === CONFIG_ENTRY_TYPE,
+      (e): e is import("@mariozechner/pi-coding-agent").SessionEntry & { type: "custom"; data?: unknown } =>
+        e.type === "custom" && (e as any).customType === CONFIG_ENTRY_TYPE,
     );
-    if (saved) savedConfig = saved.data as SavedConfig;
+    if (saved && saved.data) savedConfig = saved.data as SavedConfig;
 
     if (savedConfig) {
       const parts: string[] = [];
@@ -129,7 +130,7 @@ export default function (pi: ExtensionAPI) {
       if (!ctx.hasUI) return;
 
       await ctx.ui.custom(
-        (tui: TUI, theme: unknown, _kb: unknown, done: () => void) => {
+        (tui: TUI, theme: unknown, _kb: unknown, done: (result: unknown) => void) => {
           return new LspDebugComponent(lspClients, tui, theme, done);
         },
       );
@@ -137,7 +138,7 @@ export default function (pi: ExtensionAPI) {
   });
 
   // ── Shut down all LSP clients when the session ends ─────────────────────
-  pi.on("session_end", async (_event, ctx) => {
+  pi.on("session_shutdown", async (_event, ctx) => {
     const shutdowns = [...lspClients.values()].map(({ client }) =>
       client.shutdown(),
     );
@@ -151,7 +152,7 @@ export default function (pi: ExtensionAPI) {
     if (!config.enabled) return;
     if (!isWriteToolResult(event) && !isEditToolResult(event)) return;
 
-    const filePath = event.input.path;
+    const filePath = event.input.path as string | undefined;
     if (!filePath) return;
 
     const resolved = resolveLspCommand(
@@ -209,12 +210,8 @@ export default function (pi: ExtensionAPI) {
     const summary =
       summaryParts.length > 0 ? `lsp ${summaryParts.join(" ")}` : null;
 
-    // Only broadcast when there is something to report — null summary with no
-    // details would silently pollute subscriber caches for no reason.
-    if (summary === null) return;
-
-    // Broadcast the summary so subscribers (e.g. minimal-mode via file-mutation-events)
-    // can render the compact one-line summary in collapsed view.
+    // Always broadcast so subscribers (e.g. minimal-mode) can clear stale
+    // cache entries when diagnostics become clean (summary === null).
     pi.events.emit(FILE_MUTATION_DIAGNOSTICS_CHANNEL, {
       filePath,
       summary,

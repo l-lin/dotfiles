@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "pi extension: query LSP diagnostics from any language server",
   "private": true,
+  "type": "module",
   "dependencies": {
     "vscode-jsonrpc": "^8.2.0"
   }

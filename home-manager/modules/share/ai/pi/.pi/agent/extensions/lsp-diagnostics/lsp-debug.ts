@@ -69,7 +69,7 @@ export class LspDebugComponent implements Component {
   private lspClients: Map<string, LspClientEntry>;
   private tui: TUI;
   private theme: any;
-  private onDone: () => void;
+  private onDone: (result?: unknown) => void;
   private selectedIdx = 0;
   private scrollOffset = 0;
   private container: Container;
@@ -81,7 +81,7 @@ export class LspDebugComponent implements Component {
     lspClients: Map<string, LspClientEntry>,
     tui: TUI,
     theme: any,
-    onDone: () => void,
+    onDone: (result?: unknown) => void,
   ) {
     this.lspClients = lspClients;
     this.tui = tui;
