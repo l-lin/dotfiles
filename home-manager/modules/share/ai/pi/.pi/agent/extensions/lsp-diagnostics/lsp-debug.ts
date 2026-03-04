@@ -62,6 +62,9 @@ interface LspClientEntrySnapshot {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export class LspDebugComponent implements Component {
+  // Rows reserved for fixed structural chrome: 2× DynamicBorder + title + 2× padding + tab bar
+  private static readonly STRUCTURAL_ROWS = 6;
+
   private snapshots: LspClientEntrySnapshot[] = [];
   private lspClients: Map<string, LspClientEntry>;
   private tui: TUI;
@@ -92,7 +95,10 @@ export class LspDebugComponent implements Component {
     this.container.addChild(
       new Text(
         theme.fg("accent", theme.bold("LSP Server Debug")) +
-          theme.fg("dim", "  (←/→ server · ↑↓/jk scroll · q close)"),
+          theme.fg(
+            "dim",
+            "  (←/→ server · ↑↓/jk scroll · ^u/^d page · q close)",
+          ),
         1,
         0,
       ),
@@ -273,8 +279,10 @@ export class LspDebugComponent implements Component {
     // Reserve rows for the fixed structural lines surrounding the scrollable body:
     // 2× DynamicBorder + title line + 2× empty Text("") padding = 5 rows.
     // One extra row for the tab bar rendered at the top of the body itself.
-    const STRUCTURAL_ROWS = 6;
-    const viewportLines = Math.max(1, termH - STRUCTURAL_ROWS);
+    const viewportLines = Math.max(
+      1,
+      termH - LspDebugComponent.STRUCTURAL_ROWS,
+    );
     const maxScroll = Math.max(0, lines.length - viewportLines);
     this.scrollOffset = Math.min(this.scrollOffset, maxScroll);
     const visible = lines.slice(
@@ -334,6 +342,30 @@ export class LspDebugComponent implements Component {
     }
     if (matchesKey(data, Key.down) || data === "j") {
       this.scrollOffset++;
+      this.cachedWidth = undefined;
+      this.container.invalidate();
+      this.tui.requestRender();
+    }
+    if (matchesKey(data, Key.ctrl("u"))) {
+      const pageSize = Math.max(
+        1,
+        Math.floor(
+          (this.terminalHeight - LspDebugComponent.STRUCTURAL_ROWS) / 2,
+        ),
+      );
+      this.scrollOffset = Math.max(0, this.scrollOffset - pageSize);
+      this.cachedWidth = undefined;
+      this.container.invalidate();
+      this.tui.requestRender();
+    }
+    if (matchesKey(data, Key.ctrl("d"))) {
+      const pageSize = Math.max(
+        1,
+        Math.floor(
+          (this.terminalHeight - LspDebugComponent.STRUCTURAL_ROWS) / 2,
+        ),
+      );
+      this.scrollOffset += pageSize; // upper-bound clamped lazily in rebuild()
       this.cachedWidth = undefined;
       this.container.invalidate();
       this.tui.requestRender();
