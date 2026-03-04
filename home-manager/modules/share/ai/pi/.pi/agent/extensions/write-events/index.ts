@@ -21,10 +21,10 @@ export const WRITE_TOOL_DIAGNOSTICS_CHANNEL = "write-events:diagnostics";
  * Payload emitted on `WRITE_TOOL_DIAGNOSTICS_CHANNEL` after a write/edit
  * that produces diagnostics.
  *
- * All content is pre-formatted by the emitter. Subscribers render the strings
- * as-is without needing to understand the underlying diagnostic format.
- *
- * Both `summary` and `details` are null when there are no diagnostics to report.
+ * `summary` is null when there are no diagnostics to report.
+ * Full diagnostic details are appended directly to the tool result content by
+ * the emitter so the LLM sees them and the built-in renderResult displays them
+ * in expanded view — no need to carry them in this event.
  */
 export interface WriteToolDiagnosticsEvent {
   /** Absolute or cwd-relative path of the file that was written/edited. */
@@ -34,11 +34,6 @@ export interface WriteToolDiagnosticsEvent {
    * e.g. "✖ 2  ⚠ 1  ℹ 3"
    */
   summary: string | null;
-  /**
-   * Full plain-text diagnostic output for the expanded view.
-   * e.g. the LSP diagnostic block with file, line, and message details.
-   */
-  details: string | null;
 }
 
 export default function (pi: ExtensionAPI) {}

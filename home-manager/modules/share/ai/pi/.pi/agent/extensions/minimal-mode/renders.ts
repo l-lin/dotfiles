@@ -49,7 +49,8 @@ export function renderReadResult(result: any, { expanded }: any, theme: any) {
 // ─── LSP Summary Helper ─────────────────────────────────────────────────────
 
 /**
- * Renders a compact one-line LSP diagnostics summary for collapsed tool results.
+ * Renders a compact one-line LSP diagnostics summary with a label prefix.
+ * Used in both collapsed (inline) and expanded (footer) views.
  * Returns an empty Text when there are no diagnostics or no summary available.
  */
 function renderDiagnosticsSummaryLine(
@@ -58,22 +59,6 @@ function renderDiagnosticsSummaryLine(
 ): Text {
   if (!event?.summary) return new Text("", 0, 0);
   return new Text(theme.fg("muted", ` ${event.summary}`), 0, 0);
-}
-
-/**
- * Stacks the built-in tool result above the full diagnostics details.
- * Returns the built-in result unchanged when there are no details.
- */
-function stackWithDiagnostics(
-  builtIn: any,
-  event: WriteToolDiagnosticsEvent | undefined,
-  theme: any,
-): any {
-  if (!event?.details) return builtIn;
-  const container = new Container();
-  if (builtIn) container.addChild(builtIn);
-  container.addChild(new Text(theme.fg("toolOutput", event.details), 0, 0));
-  return container;
 }
 
 // ─── Write Tool Renders ─────────────────────────────────────────────────────
@@ -99,8 +84,7 @@ export function renderWriteResult(
 ) {
   if (!expanded) return renderDiagnosticsSummaryLine(diagnosticsEvent, theme);
   const tools = getBuiltInTools(process.cwd());
-  const builtIn = tools.write.renderResult(result, { expanded }, theme);
-  return stackWithDiagnostics(builtIn, diagnosticsEvent, theme);
+  return tools.write.renderResult(result, { expanded }, theme);
 }
 
 // ─── Edit Tool Renders ──────────────────────────────────────────────────────
@@ -123,8 +107,7 @@ export function renderEditResult(
 ) {
   if (!expanded) return renderDiagnosticsSummaryLine(diagnosticsEvent, theme);
   const tools = getBuiltInTools(process.cwd());
-  const builtIn = tools.edit.renderResult(result, { expanded }, theme);
-  return stackWithDiagnostics(builtIn, diagnosticsEvent, theme);
+  return tools.edit.renderResult(result, { expanded }, theme);
 }
 
 // ─── Find Tool Renders ──────────────────────────────────────────────────────

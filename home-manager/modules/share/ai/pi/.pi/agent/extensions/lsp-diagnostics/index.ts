@@ -203,19 +203,30 @@ export default function (pi: ExtensionAPI) {
     if (errorCount > 0) summaryParts.push(`✖ ${errorCount}`);
     if (warningCount > 0) summaryParts.push(`⚠ ${warningCount}`);
     if (infoCount > 0) summaryParts.push(`ℹ ${infoCount}`);
-    const summary = summaryParts.length > 0 ? summaryParts.join("  ") : null;
+    const summary =
+      summaryParts.length > 0 ? `lsp ${summaryParts.join(" ")}` : null;
 
-    // Only broadcast when there is something to report — null/null events would
-    // silently clear stale diagnostics from subscriber caches, which is
-    // confusing and inconsistent with the old guard (`if (!block) return`).
-    if (summary === null && details === null) return;
+    // Only broadcast when there is something to report — null summary with no
+    // details would silently pollute subscriber caches for no reason.
+    if (summary === null) return;
 
-    // Broadcast the full diagnostic result so subscribers (e.g. minimal-mode via write-events)
-    // can render both the compact summary and the full details text themselves.
+    // Broadcast the summary so subscribers (e.g. minimal-mode via write-events)
+    // can render the compact one-line summary in collapsed view.
     pi.events.emit(WRITE_TOOL_DIAGNOSTICS_CHANNEL, {
       filePath,
       summary,
-      details,
     } satisfies WriteToolDiagnosticsEvent);
+
+    // Append diagnostics to the tool result content so the LLM sees them and
+    // the built-in renderResult shows them in expanded view without relying on
+    // the async event cache timing.
+    if (details !== null) {
+      return {
+        content: [
+          ...event.content,
+          { type: "text" as const, text: `\n${details}` },
+        ],
+      };
+    }
   });
 }
