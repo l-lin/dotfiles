@@ -52,7 +52,7 @@ require("lazy").setup({
     -- #################################
 
     { import = "plugins" },
-    { import = "plugins.extras.ai.codecompanion" },
+    -- { import = "plugins.extras.ai.codecompanion" },
     { import = "plugins.extras.ai.copilot" },
     { import = "plugins.extras.ai.review-ai" },
     -- { import = "plugins.extras.ai.copilot-chat" },
