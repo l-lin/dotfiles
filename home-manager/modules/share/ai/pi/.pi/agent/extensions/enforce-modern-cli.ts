@@ -30,7 +30,7 @@ const BLOCKED_TOOLS: BlockedTool[] = [
     // Match `grep` but not `egrep`, `fgrep`, `zgrep` (negative lookbehind on preceding letter) or `grepfile`.
     pattern: /(?<![a-z])grep(?!file)\b/,
     legacy: "grep",
-    replacement: "rg (ripgrep) for text search, or ast-grep for structural code patterns",
+    replacement: "rg",
   },
   {
     // Match `find` as a standalone command (not `findstr`, `finder`, `find-files`, etc.)
