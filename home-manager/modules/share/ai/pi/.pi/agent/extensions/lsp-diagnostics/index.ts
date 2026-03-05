@@ -24,9 +24,14 @@ import {
 } from "./types.js";
 import type { FileMutationDiagnosticsEvent } from "./types.js";
 import { loadConfig, loadFileConfig, saveEnabled } from "./config.js";
-import { resolveLspCommand, resolveRootDir } from "./resolver.js";
+import { resolveLspCommands, resolveRootDir } from "./resolver.js";
 import { LspDebugComponent, type LspClientEntry } from "./lsp-debug.js";
-import { setLspWidget, clearWidget, LSP_ICON } from "./widget.js";
+import {
+  setLspWidget,
+  syncLspServers,
+  clearWidget,
+  LSP_ICON,
+} from "./widget.js";
 
 const DIAGNOSTICS_TIMEOUT_IN_MS = 30_000;
 
@@ -56,8 +61,12 @@ export default function (pi: ExtensionAPI) {
   pi.on("session_start", async (_event, ctx) => {
     savedConfig = null;
     const saved = [...ctx.sessionManager.getEntries()].findLast(
-      (e): e is import("@mariozechner/pi-coding-agent").SessionEntry & { type: "custom"; data?: unknown } =>
-        e.type === "custom" && (e as any).customType === CONFIG_ENTRY_TYPE,
+      (
+        e,
+      ): e is import("@mariozechner/pi-coding-agent").SessionEntry & {
+        type: "custom";
+        data?: unknown;
+      } => e.type === "custom" && (e as any).customType === CONFIG_ENTRY_TYPE,
     );
     if (saved && saved.data) savedConfig = saved.data as SavedConfig;
 
@@ -130,7 +139,12 @@ export default function (pi: ExtensionAPI) {
       if (!ctx.hasUI) return;
 
       await ctx.ui.custom(
-        (tui: TUI, theme: unknown, _kb: unknown, done: (result: unknown) => void) => {
+        (
+          tui: TUI,
+          theme: unknown,
+          _kb: unknown,
+          done: (result: unknown) => void,
+        ) => {
           return new LspDebugComponent(lspClients, tui, theme, done);
         },
       );
@@ -155,53 +169,81 @@ export default function (pi: ExtensionAPI) {
     const filePath = event.input.path as string | undefined;
     if (!filePath) return;
 
-    const resolved = resolveLspCommand(
+    const resolvedList = resolveLspCommands(
       [filePath],
       undefined,
       savedConfig,
       fileConfig,
     );
-    if (!resolved) return;
+    if (resolvedList.length === 0) return;
 
-    const rootDir =
-      resolved.rootMarkers.length > 0
-        ? resolveRootDir(filePath, resolved.rootMarkers, ctx.cwd)
-        : ctx.cwd;
-    const commandKey = `${resolved.command.join(" ")}::${rootDir}`;
-    const lspBin = path.basename(resolved.command[0]!);
+    // Fan out to all matching LSP servers in parallel
+    const mergedDiagnostics = new Map<string, LspDiagnostic[]>();
+    // Pre-compute ordered bins from resolvedList for deterministic labeling.
+    // successSet tracks which servers actually produced results.
+    const orderedBins = resolvedList.map((r) => path.basename(r.command[0]!));
+    const successSet = new Set<string>();
 
-    let diagnostics: Map<string, LspDiagnostic[]>;
-    try {
-      const entry = await getOrCreateClient(
-        resolved,
-        rootDir,
-        commandKey,
-        lspBin,
-        ctx,
-        lspClients,
-      );
-      setLspWidget(ctx, lspBin, "collecting");
-      diagnostics = await entry.client.getDiagnostics(
-        [filePath],
-        ctx.cwd,
-        DIAGNOSTICS_TIMEOUT_IN_MS,
-        AbortSignal.timeout(DIAGNOSTICS_TIMEOUT_IN_MS),
-      );
-    } catch (err) {
-      handleLspError(err, commandKey, ctx, lspClients);
-      return;
-    } finally {
-      if (lspClients.has(commandKey)) setLspWidget(ctx, lspBin, "idle");
-    }
+    // Remove any widget entries from previous files that aren't active this run
+    syncLspServers(ctx, orderedBins);
 
+    await Promise.all(
+      resolvedList.map(async (resolved) => {
+        const rootDir =
+          resolved.rootMarkers.length > 0
+            ? resolveRootDir(filePath, resolved.rootMarkers, ctx.cwd)
+            : ctx.cwd;
+        const commandKey = `${resolved.command.join(" ")}::${rootDir}`;
+        const lspBin = path.basename(resolved.command[0]!);
+
+        let serverDiagnostics: Map<string, LspDiagnostic[]>;
+        try {
+          const entry = await getOrCreateClient(
+            resolved,
+            rootDir,
+            commandKey,
+            lspBin,
+            ctx,
+            lspClients,
+          );
+          setLspWidget(ctx, lspBin, "collecting");
+          serverDiagnostics = await entry.client.getDiagnostics(
+            [filePath],
+            ctx.cwd,
+            DIAGNOSTICS_TIMEOUT_IN_MS,
+            AbortSignal.timeout(DIAGNOSTICS_TIMEOUT_IN_MS),
+          );
+        } catch (err) {
+          handleLspError(err, commandKey, ctx, lspClients);
+          return;
+        } finally {
+          if (lspClients.has(commandKey)) setLspWidget(ctx, lspBin, "idle");
+        }
+
+        successSet.add(lspBin);
+        // Merge: append diagnostics per URI across all servers
+        for (const [uri, diags] of serverDiagnostics) {
+          const existing = mergedDiagnostics.get(uri) ?? [];
+          mergedDiagnostics.set(uri, [...existing, ...diags]);
+        }
+      }),
+    );
+
+    // All servers failed — individual errors already surfaced via handleLspError
+    if (successSet.size === 0) return;
+
+    // Build label in resolvedList order (deterministic), only for successful servers
+    const lspBinLabel = orderedBins
+      .filter((bin) => successSet.has(bin))
+      .join("+");
     const details = buildDiagnosticBlock(
-      diagnostics,
+      mergedDiagnostics,
       filePath,
-      lspBin,
+      lspBinLabel,
       ctx.cwd,
     );
     const { errorCount, warningCount, infoCount } =
-      extractDiagnosticSummary(diagnostics);
+      extractDiagnosticSummary(mergedDiagnostics);
 
     const summaryParts: string[] = [];
     if (errorCount > 0) summaryParts.push(`✖ ${errorCount}`);

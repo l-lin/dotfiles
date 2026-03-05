@@ -88,29 +88,27 @@ export function resolveRootDir(
 }
 
 /**
- * Finds the first server in the file config whose fileTypes includes the
- * extension of the given file. Returns null if none match.
+ * Finds all servers in the file config whose fileTypes includes the
+ * extension of the given file. Returns an empty array if none match.
  */
-function matchFileConfig(
+function matchAllFileConfigs(
   filePath: string,
   fileConfig: LspDiagnosticsFileConfig | null,
-): LspServerConfig | null {
-  if (!fileConfig) return null;
+): LspServerConfig[] {
+  if (!fileConfig) return [];
   const ext = path.extname(filePath).toLowerCase();
-  for (const server of Object.values(fileConfig.servers)) {
-    if (server.fileTypes.includes(ext)) return server;
-  }
-  return null;
+  return Object.values(fileConfig.servers).filter((server) =>
+    server.fileTypes.includes(ext),
+  );
 }
 
 /**
- * Resolves the LSP command in priority order:
- *   1. Explicit lsp_command from the tool call
- *   2. Per-language saved session override
- *   3. Global saved session fallback
- *   4. File-based config (~/.pi/agent/lsp-diagnostics.json), matched by fileTypes
- *   5. Built-in default for the detected language
- *   6. null — no LSP available for this file type
+ * Resolves LSP commands in priority order:
+ *   1. Explicit lsp_command from the tool call → single result
+ *   2. Per-language saved session override     → single result
+ *   3. Global saved session fallback           → single result
+ *   4. File-based config (~/.pi/agent/lsp-diagnostics.json) → ALL matching servers
+ *   5. [] — no LSP available for this file type
  */
 export interface ResolvedLspCommand {
   command: string[];
@@ -120,48 +118,54 @@ export interface ResolvedLspCommand {
   source: LspCommandSource;
 }
 
-export function resolveLspCommand(
+export function resolveLspCommands(
   files: string[],
   explicitCommand: string[] | undefined,
   savedConfig: SavedConfig | null,
   fileConfig: LspDiagnosticsFileConfig | null = null,
-): ResolvedLspCommand | null {
+): ResolvedLspCommand[] {
   if (explicitCommand && explicitCommand.length > 0) {
-    return {
-      command: explicitCommand,
-      rootMarkers: [],
-      settings: undefined,
-      capabilities: undefined,
-      source: "explicit",
-    };
+    return [
+      {
+        command: explicitCommand,
+        rootMarkers: [],
+        settings: undefined,
+        capabilities: undefined,
+        source: "explicit",
+      },
+    ];
   }
 
   const lang = resolveLanguage(files);
 
   if (lang && savedConfig?.perLanguage[lang]) {
-    return {
-      command: savedConfig.perLanguage[lang]!,
-      rootMarkers: [],
-      settings: undefined,
-      capabilities: undefined,
-      source: "per-language",
-    };
+    return [
+      {
+        command: savedConfig.perLanguage[lang]!,
+        rootMarkers: [],
+        settings: undefined,
+        capabilities: undefined,
+        source: "per-language",
+      },
+    ];
   }
 
   if (savedConfig?.lspCommand && savedConfig.lspCommand.length > 0) {
-    return {
-      command: savedConfig.lspCommand,
-      rootMarkers: [],
-      settings: undefined,
-      capabilities: undefined,
-      source: "global",
-    };
+    return [
+      {
+        command: savedConfig.lspCommand,
+        rootMarkers: [],
+        settings: undefined,
+        capabilities: undefined,
+        source: "global",
+      },
+    ];
   }
 
-  // File-based config: match by file extension
+  // File-based config: return ALL servers matching the file extension
   if (files.length > 0) {
-    const serverConfig = matchFileConfig(files[0]!, fileConfig);
-    if (serverConfig) {
+    const matched = matchAllFileConfigs(files[0]!, fileConfig);
+    return matched.map((serverConfig) => {
       const bin = serverConfig.command;
       const args = serverConfig.args ?? [];
       const resolvedBin = `${LSP_BIN_PATH}/${bin}`;
@@ -173,10 +177,23 @@ export function resolveLspCommand(
         rootMarkers: serverConfig.rootMarkers ?? [],
         settings: serverConfig.settings,
         capabilities: serverConfig.capabilities,
-        source: "file-config",
+        source: "file-config" as LspCommandSource,
       };
-    }
+    });
   }
 
-  return null;
+  return [];
+}
+
+/** @deprecated Use resolveLspCommands instead */
+export function resolveLspCommand(
+  files: string[],
+  explicitCommand: string[] | undefined,
+  savedConfig: SavedConfig | null,
+  fileConfig: LspDiagnosticsFileConfig | null = null,
+): ResolvedLspCommand | null {
+  return (
+    resolveLspCommands(files, explicitCommand, savedConfig, fileConfig)[0] ??
+    null
+  );
 }
