@@ -25,7 +25,7 @@ import {
 import type { FileMutationDiagnosticsEvent } from "./types.js";
 import { loadConfig, loadFileConfig, saveEnabled } from "./config.js";
 import { resolveLspCommands, resolveRootDir } from "./resolver.js";
-import { LspDebugComponent, type LspClientEntry } from "./lsp-debug.js";
+import { LspDetailsComponent, type LspClientEntry } from "./lsp-details.js";
 import {
   setLspWidget,
   syncLspServers,
@@ -131,8 +131,8 @@ export default function (pi: ExtensionAPI) {
     },
   });
 
-  // ── /lsp-debug command ──────────────────────────────────────────────────
-  pi.registerCommand("cmd:lsp-debug", {
+  // ── /lsp-details command ──────────────────────────────────────────────────
+  pi.registerCommand("cmd:lsp-details", {
     description:
       "Show detailed debug info for all active LSP server(s) in an interactive TUI",
     handler: async (_args, ctx) => {
@@ -145,7 +145,7 @@ export default function (pi: ExtensionAPI) {
           _kb: unknown,
           done: (result: unknown) => void,
         ) => {
-          return new LspDebugComponent(lspClients, tui, theme, done);
+          return new LspDetailsComponent(lspClients, tui, theme, done);
         },
       );
     },

@@ -1,5 +1,5 @@
 /**
- * LspDebugComponent — interactive TUI panel for inspecting active LSP clients.
+ * LspDetailsComponent — interactive TUI panel for inspecting active LSP clients.
  */
 import { DynamicBorder } from "@mariozechner/pi-coding-agent";
 import {
@@ -61,7 +61,7 @@ interface LspClientEntrySnapshot {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export class LspDebugComponent implements Component {
+export class LspDetailsComponent implements Component {
   // Rows reserved for fixed structural chrome: 2× DynamicBorder + title + 2× padding + tab bar
   private static readonly STRUCTURAL_ROWS = 6;
 
@@ -94,7 +94,7 @@ export class LspDebugComponent implements Component {
     );
     this.container.addChild(
       new Text(
-        theme.fg("accent", theme.bold("LSP Server Debug")) +
+        theme.fg("accent", theme.bold("LSP Server Details")) +
           theme.fg(
             "dim",
             "  (←/→ server · ↑↓/jk scroll · ^u/^d page · q close)",
@@ -281,7 +281,7 @@ export class LspDebugComponent implements Component {
     // One extra row for the tab bar rendered at the top of the body itself.
     const viewportLines = Math.max(
       1,
-      termH - LspDebugComponent.STRUCTURAL_ROWS,
+      termH - LspDetailsComponent.STRUCTURAL_ROWS,
     );
     const maxScroll = Math.max(0, lines.length - viewportLines);
     this.scrollOffset = Math.min(this.scrollOffset, maxScroll);
@@ -350,7 +350,7 @@ export class LspDebugComponent implements Component {
       const pageSize = Math.max(
         1,
         Math.floor(
-          (this.terminalHeight - LspDebugComponent.STRUCTURAL_ROWS) / 2,
+          (this.terminalHeight - LspDetailsComponent.STRUCTURAL_ROWS) / 2,
         ),
       );
       this.scrollOffset = Math.max(0, this.scrollOffset - pageSize);
@@ -362,7 +362,7 @@ export class LspDebugComponent implements Component {
       const pageSize = Math.max(
         1,
         Math.floor(
-          (this.terminalHeight - LspDebugComponent.STRUCTURAL_ROWS) / 2,
+          (this.terminalHeight - LspDetailsComponent.STRUCTURAL_ROWS) / 2,
         ),
       );
       this.scrollOffset += pageSize; // upper-bound clamped lazily in rebuild()

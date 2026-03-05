@@ -10,7 +10,7 @@ import {
 } from "@mariozechner/pi-coding-agent";
 import type { LspDiagnostic } from "./types.js";
 import { SEVERITY_ERROR, SEVERITY_WARNING, SEVERITY_INFO } from "./types.js";
-import type { LspClientEntry } from "./lsp-debug.js";
+import type { LspClientEntry } from "./lsp-details.js";
 import { PersistentLspClient } from "./lsp-client.js";
 import { formatDiagnostics } from "./format.js";
 import { resolveLspCommand } from "./resolver.js";
