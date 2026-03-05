@@ -40,10 +40,26 @@ export function renderReadCall(args: any, theme: any) {
   return new Text(text, 0, 0);
 }
 
+const MAX_DISPLAY_LINES = 50;
+
 export function renderReadResult(result: any, { expanded }: any, theme: any) {
   if (!expanded) return new Text("", 0, 0);
-  const tools = getBuiltInTools(process.cwd());
-  return tools.read.renderResult(result, { expanded }, theme);
+
+  const textContent = result.content?.find((c: any) => c.type === "text");
+  if (!textContent) return new Text("", 0, 0);
+
+  const lines = textContent.text.split("\n");
+  const truncated = lines.length > MAX_DISPLAY_LINES;
+  const displayLines = truncated ? lines.slice(0, MAX_DISPLAY_LINES) : lines;
+
+  let text = displayLines
+    .map((l: string) => theme.fg("toolOutput", l))
+    .join("\n");
+  if (truncated) {
+    text += `\n${theme.fg("muted", `... (${lines.length - MAX_DISPLAY_LINES} more lines hidden)`)}`;
+  }
+
+  return new Text(text, 0, 0);
 }
 
 // ─── Mutation Annotation Helper ─────────────────────────────────────────────
