@@ -3,6 +3,7 @@
  */
 
 import { Text } from "@mariozechner/pi-tui";
+import { renderDiff } from "@mariozechner/pi-coding-agent";
 import { homedir } from "os";
 import { getBuiltInTools } from "./toolCache.js";
 import type { FileMutationDiagnosticsEvent } from "../file-mutation-events/index.js";
@@ -137,8 +138,23 @@ export function renderEditResult(
   filePath: string,
 ) {
   if (!expanded) return makeMutationAnnotation(cache, filePath, theme);
-  const tools = getBuiltInTools(process.cwd());
-  return tools.edit.renderResult(result, { expanded }, theme);
+
+  // Try to extract diff from result
+  const diff = result.details?.diff;
+  if (typeof diff === "string" && diff.length > 0) {
+    return new Text(renderDiff(diff), 0, 0);
+  }
+
+  // Fallback: show raw content if no diff available
+  if (Array.isArray(result.content)) {
+    const textContent = result.content.find((c: any) => c.type === "text");
+    if (textContent?.text) {
+      return new Text(theme.fg("toolOutput", textContent.text), 0, 0);
+    }
+  }
+
+  // Final fallback: empty result
+  return new Text(theme.fg("toolOutput", "(no content available)"), 0, 0);
 }
 
 // ─── Find Tool Renders ──────────────────────────────────────────────────────
