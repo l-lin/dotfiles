@@ -233,7 +233,7 @@ export function rangeSummary(
   const costPart =
     range.totalCost > 0
       ? `${formatUsd(range.totalCost)} · avg ${formatUsd(avg)}/session`
-      : `$0.0000`;
+      : `$0.00`;
 
   if (mode === "tokens") {
     return `Last ${days} days: ${formatCount(range.sessions)} sessions · ${formatCount(range.totalTokens)} tokens · ${costPart}`;

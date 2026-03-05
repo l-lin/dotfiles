@@ -61,6 +61,7 @@ export function formatCount(n: number): string {
 
 export function formatUsd(cost: number): string {
   if (!Number.isFinite(cost)) return "$0.00";
+  if (cost === 0) return "$0.00";
   if (cost >= 1) return `$${cost.toFixed(2)}`;
   if (cost >= 0.1) return `$${cost.toFixed(3)}`;
   return `$${cost.toFixed(4)}`;
