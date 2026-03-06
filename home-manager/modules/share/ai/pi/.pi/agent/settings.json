@@ -35,6 +35,9 @@
     },
     "webSearch": {
       "enabled": false
+    },
+    "webFetch": {
+      "enabled": false
     }
   }
 }
