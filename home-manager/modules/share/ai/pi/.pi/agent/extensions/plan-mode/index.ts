@@ -19,6 +19,10 @@ import type {
   ExtensionAPI,
   ExtensionContext,
 } from "@mariozechner/pi-coding-agent";
+import {
+  ModelSelectorComponent,
+  SettingsManager,
+} from "@mariozechner/pi-coding-agent";
 import { Type } from "@sinclair/typebox";
 import { extractTodoItems, isSafeCommand, type TodoItem } from "./utils.js";
 
@@ -138,19 +142,22 @@ export default function planModeExtension(pi: ExtensionAPI): void {
     if (availableModels.length <= 1 || !isExecuting || !currentModel)
       return undefined;
 
-    const modelLabels = availableModels.map(
-      (m) =>
-        `${m.name}${m.id === currentModel.id && m.provider === currentModel.provider ? " ✓ current" : ""}`,
+    // Use the native ModelSelectorComponent — same UI as /model command
+    const chosenModel = await ctx.ui.custom<(typeof availableModels)[0] | null>(
+      (tui, _theme, _kb, done) => {
+        const selector = new ModelSelectorComponent(
+          tui,
+          currentModel,
+          SettingsManager.inMemory(),
+          ctx.modelRegistry,
+          [], // no scoped/pinned models
+          (model) => done(model),
+          () => done(null),
+        );
+        return selector;
+      },
     );
-    const modelChoice = await ctx.ui.select("Switch model for execution?", [
-      "Keep current model",
-      ...modelLabels,
-    ]);
 
-    if (!modelChoice || modelChoice === "Keep current model") return undefined;
-
-    const chosenIndex = modelLabels.indexOf(modelChoice);
-    const chosenModel = availableModels[chosenIndex];
     if (!chosenModel) return undefined;
 
     await pi.setModel(chosenModel);
