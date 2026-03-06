@@ -39,12 +39,6 @@
       "fileTypes": [".rb"],
       "rootMarkers": [".rubocop.yml", "Gemfile", ".git"]
     },
-    "ruby-lsp": {
-      "command": "ruby-lsp",
-      "args": [],
-      "fileTypes": [".rb", ".rake", ".gemspec"],
-      "rootMarkers": ["Gemfile", ".ruby-version", ".git"]
-    },
     "yaml-language-server": {
       "command": "yaml-language-server",
       "args": ["--stdio"],
