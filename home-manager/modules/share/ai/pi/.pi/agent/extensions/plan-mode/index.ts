@@ -20,11 +20,7 @@ import type {
   ExtensionContext,
 } from "@mariozechner/pi-coding-agent";
 import { Type } from "@sinclair/typebox";
-import {
-  extractTodoItems,
-  isSafeCommand,
-  type TodoItem,
-} from "./utils.js";
+import { extractTodoItems, isSafeCommand, type TodoItem } from "./utils.js";
 
 // Type guard for assistant messages
 function isAssistantMessage(m: AgentMessage): m is AssistantMessage {
@@ -43,12 +39,17 @@ export default function planModeExtension(pi: ExtensionAPI): void {
   let planModeEnabled = false;
   let executionMode = false;
   let todoItems: TodoItem[] = [];
+  // Model to restore after execution completes (provider + id pair)
+  let preExecutionModel: { provider: string; id: string } | undefined;
 
   const WRITE_TOOLS = ["edit", "write"];
 
   // Plan mode: drop write tools, inject todo
   const toPlanMode = () => [
-    ...new Set([...pi.getActiveTools().filter((t) => !WRITE_TOOLS.includes(t)), "todo"]),
+    ...new Set([
+      ...pi.getActiveTools().filter((t) => !WRITE_TOOLS.includes(t)),
+      "todo",
+    ]),
   ];
   // Execution mode: restore write tools, keep todo
   const toExecutionMode = () => [
@@ -56,7 +57,10 @@ export default function planModeExtension(pi: ExtensionAPI): void {
   ];
   // Normal mode: restore write tools, drop todo
   const toNormalMode = () => [
-    ...new Set([...pi.getActiveTools().filter((t) => t !== "todo"), ...WRITE_TOOLS]),
+    ...new Set([
+      ...pi.getActiveTools().filter((t) => t !== "todo"),
+      ...WRITE_TOOLS,
+    ]),
   ];
 
   pi.registerFlag("plan", {
@@ -114,7 +118,43 @@ export default function planModeExtension(pi: ExtensionAPI): void {
       enabled: planModeEnabled,
       todos: todoItems,
       executing: executionMode,
+      preExecutionModel,
     });
+  }
+
+  /**
+   * Prompts the user to optionally switch models before execution.
+   * Only shown when multiple models are available, execution is actually happening,
+   * and a current model exists (so we can restore it afterward).
+   *
+   * @returns The model to restore after execution, or undefined if no switch was made.
+   */
+  async function offerExecutionModelSwitch(
+    ctx: ExtensionContext,
+    isExecuting: boolean,
+  ): Promise<{ provider: string; id: string } | undefined> {
+    const availableModels = ctx.modelRegistry.getAvailable();
+    const currentModel = ctx.model;
+    if (availableModels.length <= 1 || !isExecuting || !currentModel)
+      return undefined;
+
+    const modelLabels = availableModels.map(
+      (m) =>
+        `${m.name}${m.id === currentModel.id && m.provider === currentModel.provider ? " ✓ current" : ""}`,
+    );
+    const modelChoice = await ctx.ui.select("Switch model for execution?", [
+      "Keep current model",
+      ...modelLabels,
+    ]);
+
+    if (!modelChoice || modelChoice === "Keep current model") return undefined;
+
+    const chosenIndex = modelLabels.indexOf(modelChoice);
+    const chosenModel = availableModels[chosenIndex];
+    if (!chosenModel) return undefined;
+
+    await pi.setModel(chosenModel);
+    return { provider: currentModel.provider, id: currentModel.id };
   }
 
   pi.registerTool({
@@ -128,24 +168,34 @@ export default function planModeExtension(pi: ExtensionAPI): void {
         description: "Action to perform",
       }),
       step: Type.Optional(
-        Type.Number({ description: "Step number (required for complete/uncomplete)" }),
+        Type.Number({
+          description: "Step number (required for complete/uncomplete)",
+        }),
       ),
     }),
     async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
       if (params.action === "list") {
         if (todoItems.length === 0) {
-          return { content: [{ type: "text", text: "No todos yet." }], details: {} };
+          return {
+            content: [{ type: "text", text: "No todos yet." }],
+            details: {},
+          };
         }
         const list = todoItems
           .map((t) => `${t.step}. [${t.completed ? "x" : " "}] ${t.text}`)
           .join("\n");
-        return { content: [{ type: "text", text: list }], details: { items: todoItems } };
+        return {
+          content: [{ type: "text", text: list }],
+          details: { items: todoItems },
+        };
       }
 
       if (params.action === "complete" || params.action === "uncomplete") {
         if (params.step == null) {
           return {
-            content: [{ type: "text", text: "Error: step number is required." }],
+            content: [
+              { type: "text", text: "Error: step number is required." },
+            ],
             details: {},
             isError: true,
           };
@@ -172,7 +222,11 @@ export default function planModeExtension(pi: ExtensionAPI): void {
         };
       }
 
-      return { content: [{ type: "text", text: "Unknown action." }], details: {}, isError: true };
+      return {
+        content: [{ type: "text", text: "Unknown action." }],
+        details: {},
+        isError: true,
+      };
     },
   });
 
@@ -304,6 +358,19 @@ You can call todo with action "list" at any time to check remaining steps.`,
         executionMode = false;
         todoItems = [];
         pi.setActiveTools(toNormalMode());
+
+        // Restore the model used during planning
+        if (preExecutionModel) {
+          const restoredModel = ctx.modelRegistry.find(
+            preExecutionModel.provider,
+            preExecutionModel.id,
+          );
+          if (restoredModel) {
+            await pi.setModel(restoredModel);
+          }
+          preExecutionModel = undefined;
+        }
+
         updateStatus(ctx);
         persistState(); // Save cleared state so resume doesn't restore old execution mode
       }
@@ -350,6 +417,13 @@ You can call todo with action "list" at any time to check remaining steps.`,
       planModeEnabled = false;
       executionMode = todoItems.length > 0;
       pi.setActiveTools(executionMode ? toExecutionMode() : toNormalMode());
+
+      const savedModel = await offerExecutionModelSwitch(ctx, executionMode);
+      if (savedModel) {
+        preExecutionModel = savedModel;
+        persistState();
+      }
+
       updateStatus(ctx);
 
       const execMessage =
@@ -397,13 +471,22 @@ You can call todo with action "list" at any time to check remaining steps.`,
           e.type === "custom" && e.customType === "plan-mode",
       )
       .pop() as
-      | { data?: { enabled: boolean; todos?: TodoItem[]; executing?: boolean } }
+      | {
+          data?: {
+            enabled: boolean;
+            todos?: TodoItem[];
+            executing?: boolean;
+            preExecutionModel?: { provider: string; id: string };
+          };
+        }
       | undefined;
 
     if (planModeEntry?.data) {
       planModeEnabled = planModeEntry.data.enabled ?? planModeEnabled;
       todoItems = planModeEntry.data.todos ?? todoItems;
       executionMode = planModeEntry.data.executing ?? executionMode;
+      preExecutionModel =
+        planModeEntry.data.preExecutionModel ?? preExecutionModel;
     }
 
     if (planModeEnabled) {
