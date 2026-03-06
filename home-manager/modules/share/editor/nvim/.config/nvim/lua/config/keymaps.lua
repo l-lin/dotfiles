@@ -89,8 +89,3 @@ if vim.env.NVIM_SCRATCH then
   map("n", "q", "ZQ", { desc = "Quit scratch buffer" })
 end
 
--- Browse git repository on the browser.
-map("n", "<leader>gB", function() require("helpers.git").browse_with_branch_select() end, { desc = "Git Browse (open)" })
-map("x", "<leader>gB", ":<C-u>lua require('helpers.git').browse_with_branch_select({ visual = true })<CR>", { desc = "Git Browse (open)" })
-map("n", "<leader>gY", function() require("helpers.git").browse_with_branch_select({ yank = true }) end, { desc = "Git Browse (yank)" })
-map("x", "<leader>gY", ":<C-u>lua require('helpers.git').browse_with_branch_select({ yank = true, visual = true })<CR>", { desc = "Git Browse (yank)" })

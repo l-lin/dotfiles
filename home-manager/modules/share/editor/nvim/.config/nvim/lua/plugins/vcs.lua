@@ -147,8 +147,40 @@ return {
           function()
             Snacks.lazygit({ cwd = LazyVim.root.git() })
           end,
-          desc = "LazyGit",
+          desc = "LazyGit open history",
           mode = { "n" },
+          noremap = true,
+        },
+        {
+          "<leader>gB",
+          function()
+            require("helpers.git").browse_with_branch_select()
+          end,
+          desc = "Git Browse (open)",
+          mode = { "n" },
+          noremap = true,
+        },
+        {
+          "<leader>gB",
+          ":<C-u>lua require('helpers.git').browse_with_branch_select({ visual = true })<CR>",
+          desc = "Git Browse (open)",
+          mode = { "x" },
+          noremap = true,
+        },
+        {
+          "<leader>gY",
+          function()
+            require("helpers.git").browse_with_branch_select({ yank = true })
+          end,
+          desc = "Git Browse (yank)",
+          mode = { "n" },
+          noremap = true,
+        },
+        {
+          "<leader>gY",
+          ":<C-u>lua require('helpers.git').browse_with_branch_select({ yank = true, visual = true })<CR>",
+          desc = "Git Browse (yank)",
+          mode = { "x" },
           noremap = true,
         },
       },
