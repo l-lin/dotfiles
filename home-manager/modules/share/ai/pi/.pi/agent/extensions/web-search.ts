@@ -3,11 +3,71 @@
  *
  * Provides a tool for searching the web using Tavily's search API.
  * Supports both basic and advanced search options with markdown-formatted results.
+ *
+ * Use /web-search-toggle to enable/disable the tool. When disabled, the tool
+ * is removed from the active tools list so it doesn't appear in the agent context.
+ * State is persisted to ~/.pi/agent/settings.json under extensionSettings.webSearch.
  */
 
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { Text } from "@mariozechner/pi-tui";
 import { Type } from "@sinclair/typebox";
+import * as fs from "node:fs";
+import * as os from "node:os";
+import * as path from "node:path";
+
+// ============================================================================
+// Settings
+// ============================================================================
+
+const SETTINGS_PATH = path.join(os.homedir(), ".pi", "agent", "settings.json");
+
+interface WebSearchConfig {
+  enabled: boolean;
+}
+
+const DEFAULTS: WebSearchConfig = { enabled: true };
+
+function loadConfig(): WebSearchConfig {
+  try {
+    const raw = fs.readFileSync(SETTINGS_PATH, "utf-8");
+    const settings = JSON.parse(raw) as {
+      extensionSettings?: { webSearch?: Partial<WebSearchConfig> };
+    };
+    const parsed = settings.extensionSettings?.webSearch ?? {};
+    return {
+      enabled:
+        typeof parsed.enabled === "boolean" ? parsed.enabled : DEFAULTS.enabled,
+    };
+  } catch {
+    return { ...DEFAULTS };
+  }
+}
+
+function saveEnabled(enabled: boolean): void {
+  let settings: Record<string, unknown> = {};
+  try {
+    settings = JSON.parse(fs.readFileSync(SETTINGS_PATH, "utf-8"));
+  } catch {
+    // File missing or malformed — start fresh
+  }
+  const extensionSettings = (settings.extensionSettings ?? {}) as Record<
+    string,
+    unknown
+  >;
+  const existing = (extensionSettings.webSearch ?? {}) as Record<
+    string,
+    unknown
+  >;
+  extensionSettings.webSearch = { ...existing, enabled };
+  settings.extensionSettings = extensionSettings;
+  fs.mkdirSync(path.dirname(SETTINGS_PATH), { recursive: true });
+  fs.writeFileSync(
+    SETTINGS_PATH,
+    JSON.stringify(settings, null, 2) + "\n",
+    "utf-8",
+  );
+}
 
 // ============================================================================
 // Types
@@ -155,7 +215,9 @@ function formatResultsAsMarkdown(
     lines.push(`### ${index + 1}. ${result.title || "Untitled"}`);
     lines.push("");
     lines.push(`**URL:** ${result.url || "N/A"}`);
-    lines.push(`**Relevance Score:** ${((result.score || 0) * 100).toFixed(1)}%`);
+    lines.push(
+      `**Relevance Score:** ${((result.score || 0) * 100).toFixed(1)}%`,
+    );
     lines.push("");
     lines.push("**Excerpt:**");
     lines.push("");
@@ -181,9 +243,7 @@ function formatResultsAsMarkdown(
     lines.push("");
   });
 
-  lines.push(
-    `*Search completed in ${(data.response_time || 0).toFixed(2)}s*`,
-  );
+  lines.push(`*Search completed in ${(data.response_time || 0).toFixed(2)}s*`);
 
   return lines.join("\n");
 }
@@ -193,6 +253,36 @@ function formatResultsAsMarkdown(
 // ============================================================================
 
 export default function webSearchExtension(pi: ExtensionAPI) {
+  const config = loadConfig();
+
+  // Apply the persisted enabled state once the session tools are ready.
+  // registerTool() adds "web-search" to active tools by default; we remove it
+  // here if settings say it should be off.
+  pi.on("session_start", async () => {
+    if (!config.enabled) {
+      pi.setActiveTools(pi.getActiveTools().filter((t) => t !== "web-search"));
+    }
+  });
+
+  pi.registerCommand("cmd:web-search-toggle", {
+    description: "Toggle web-search tool on/off",
+    handler: async (_args, ctx) => {
+      config.enabled = !config.enabled;
+      saveEnabled(config.enabled);
+      if (config.enabled) {
+        pi.setActiveTools([...new Set([...pi.getActiveTools(), "web-search"])]);
+      } else {
+        pi.setActiveTools(
+          pi.getActiveTools().filter((t) => t !== "web-search"),
+        );
+      }
+      ctx.ui.notify(
+        `web-search ${config.enabled ? "enabled" : "disabled"}`,
+        "info",
+      );
+    },
+  });
+
   pi.registerTool({
     name: "web-search",
     label: "Web Search",
@@ -201,11 +291,23 @@ export default function webSearchExtension(pi: ExtensionAPI) {
     parameters: WebSearchParams,
 
     async execute(_toolCallId, params, _signal) {
-      type Details = { query: string; resultCount: number; hasAnswer: boolean; responseTime: number; error?: string };
+      type Details = {
+        query: string;
+        resultCount: number;
+        hasAnswer: boolean;
+        responseTime: number;
+        error?: string;
+      };
 
       const errorResult = (text: string, error: string) => ({
         content: [{ type: "text" as const, text }],
-        details: { query: params.query, resultCount: 0, hasAnswer: false, responseTime: 0, error } satisfies Details,
+        details: {
+          query: params.query,
+          resultCount: 0,
+          hasAnswer: false,
+          responseTime: 0,
+          error,
+        } satisfies Details,
       });
 
       // Check for API key
@@ -219,7 +321,10 @@ export default function webSearchExtension(pi: ExtensionAPI) {
 
       // Validate query
       if (!params.query || params.query.trim() === "") {
-        return errorResult("Error: Search query cannot be empty.", "empty_query");
+        return errorResult(
+          "Error: Search query cannot be empty.",
+          "empty_query",
+        );
       }
 
       try {
@@ -227,7 +332,10 @@ export default function webSearchExtension(pi: ExtensionAPI) {
 
         // Validate response structure
         if (!results || typeof results !== "object") {
-          return errorResult("Error: Invalid response from Tavily API.", "invalid_response");
+          return errorResult(
+            "Error: Invalid response from Tavily API.",
+            "invalid_response",
+          );
         }
 
         const markdown = formatResultsAsMarkdown(
@@ -245,7 +353,8 @@ export default function webSearchExtension(pi: ExtensionAPI) {
           } satisfies Details,
         };
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
         return errorResult(`Web search failed: ${errorMessage}`, errorMessage);
       }
     },
@@ -257,20 +366,27 @@ export default function webSearchExtension(pi: ExtensionAPI) {
 
       let text = theme.fg("toolTitle", theme.bold("Web Search "));
       text += theme.fg("accent", `"${query}"`);
-      text += theme.fg(
-        "dim",
-        ` (${depth}, max ${maxResults} results)`,
-      );
+      text += theme.fg("dim", ` (${depth}, max ${maxResults} results)`);
 
       return new Text(text, 0, 0);
     },
 
     renderResult(result, opts, theme) {
-      const details = result.details as { query: string; resultCount: number; hasAnswer: boolean; responseTime: number; error?: string } | undefined;
+      const details = result.details as
+        | {
+            query: string;
+            resultCount: number;
+            hasAnswer: boolean;
+            responseTime: number;
+            error?: string;
+          }
+        | undefined;
 
       if (details?.error) {
         const errorText =
-          result.content[0]?.type === "text" ? result.content[0].text : details.error;
+          result.content[0]?.type === "text"
+            ? result.content[0].text
+            : details.error;
         return new Text(theme.fg("error", errorText), 0, 0);
       }
 
