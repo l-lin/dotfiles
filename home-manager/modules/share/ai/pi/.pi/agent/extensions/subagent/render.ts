@@ -247,7 +247,13 @@ function renderTextResult(
   if (expanded) return new Markdown(textContent.trim(), 0, 0, mdTheme);
   if (!textContent.trim()) return new Text("", 0, 0);
 
-  const firstLine = textContent.split("\n")[0].trim();
+  // Skip empty lines and markdown code fences — they make poor collapsed previews
+  const firstLine =
+    textContent
+      .split("\n")
+      .map((l: string) => l.trim())
+      .find((l: string) => l.length > 0 && !l.startsWith("```")) ?? "";
+  if (!firstLine) return new Text("", 0, 0);
   return new Text(theme.fg("toolOutput", firstLine), 0, 0);
 }
 
