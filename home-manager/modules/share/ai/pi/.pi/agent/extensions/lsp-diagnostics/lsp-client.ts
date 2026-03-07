@@ -215,11 +215,26 @@ export class PersistentLspClient {
       this.waiters.delete(uri);
     }
 
+    // Clean up empty diagnostic entries to prevent accumulation of stale data
+    this.cleanupEmptyDiagnostics();
+
     const result = new Map<string, LspDiagnostic[]>();
     for (const uri of uris) {
       result.set(uri, this.diagnosticsMap.get(uri) ?? []);
     }
     return result;
+  }
+
+  /**
+   * Removes diagnostic entries for files with empty diagnostic arrays.
+   * Call this periodically to prevent stale diagnostics from accumulating.
+   */
+  cleanupEmptyDiagnostics(): void {
+    for (const [uri, diags] of this.diagnosticsMap.entries()) {
+      if (diags.length === 0) {
+        this.diagnosticsMap.delete(uri);
+      }
+    }
   }
 
   /**

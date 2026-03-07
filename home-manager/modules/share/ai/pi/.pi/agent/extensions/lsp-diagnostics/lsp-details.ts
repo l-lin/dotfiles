@@ -170,7 +170,15 @@ export class LspDetailsComponent implements Component {
       this.cachedWidth = width;
       return;
     }
-    const allDiags = [...snap.diagnosticsMap.values()].flat();
+
+    // Filter diagnostics map to only show entries with diagnostics
+    const activeDiagnostics = new Map(
+      [...snap.diagnosticsMap.entries()].filter(
+        ([_, diags]) => diags.length > 0,
+      ),
+    );
+
+    const allDiags = [...activeDiagnostics.values()].flat();
     const totalDiags = allDiags.length;
     const errorCount = allDiags.filter((d) => d.severity === 1).length;
     const warnCount = allDiags.filter((d) => d.severity === 2).length;
@@ -233,12 +241,14 @@ export class LspDetailsComponent implements Component {
         const diags = snap.diagnosticsMap.get(uri) ?? [];
         const errors = diags.filter((dg) => dg.severity === 1).length;
         const warns = diags.filter((dg) => dg.severity === 2).length;
+        const infos = diags.filter((dg) => dg.severity === 3).length;
         const badge =
           diags.length === 0
             ? "  " + th.fg("success", "✓")
             : "  " +
-              (errors > 0 ? th.fg("error", `${errors}E`) : "") +
-              (warns > 0 ? " " + th.fg("warning", `${warns}W`) : "");
+              (errors > 0 ? th.fg("error", `✖ ${errors}`) : "") +
+              (warns > 0 ? " " + th.fg("warning", `⚠ ${warns}`) : "") +
+              (infos > 0 ? " " + th.fg("muted", `ℹ ${infos}`) : "");
         lines.push(`  ${filePath}${badge}`);
       }
     }
@@ -252,7 +262,7 @@ export class LspDetailsComponent implements Component {
         "  " + th.fg("success", "✓ No diagnostics — clean bill of health!"),
       );
     } else {
-      for (const [uri, diags] of snap.diagnosticsMap.entries()) {
+      for (const [uri, diags] of activeDiagnostics.entries()) {
         if (diags.length === 0) continue;
         lines.push(`  ${d(uri.replace(/^file:\/\//, ""))}`);
         for (const diag of diags) {
