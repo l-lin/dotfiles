@@ -97,7 +97,7 @@ export class LspDetailsComponent implements Component {
         theme.fg("accent", theme.bold("LSP Server Details")) +
           theme.fg(
             "dim",
-            "  (←/→ server · ↑↓/jk scroll · ^u/^d page · q close)",
+            "  (←→/hl server · ↑↓/jk scroll · ^u/^d page · q close)",
           ),
         1,
         0,

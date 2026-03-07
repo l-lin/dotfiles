@@ -38,9 +38,9 @@ export default function (pi: ExtensionAPI) {
   // ── /lsp unified command ────────────────────────────────────────────────
   pi.registerCommand("cmd:lsp", {
     description:
-      "LSP management: toggle extension, kill servers, or view details",
+      "LSP management: toggle extension, kill servers, check diagnostics, or view details",
     handler: async (_args, ctx) => {
-      await handleLspCommand(config, lspClients, ctx);
+      await handleLspCommand(config, lspClients, ctx, savedConfig, pi);
     },
   });
 

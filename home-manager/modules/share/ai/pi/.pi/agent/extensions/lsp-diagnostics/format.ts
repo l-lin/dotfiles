@@ -9,9 +9,10 @@ import { fileUriToPath } from "./resolver.js";
 export function formatDiagnostics(
   allDiagnostics: Map<string, LspDiagnostic[]>,
   cwd: string,
-): { text: string; errorCount: number; warningCount: number } {
+): { text: string; errorCount: number; warningCount: number; infoCount: number } {
   let errorCount = 0;
   let warningCount = 0;
+  let infoCount = 0;
   const lines: string[] = [];
 
   for (const [uri, diagnostics] of allDiagnostics) {
@@ -34,8 +35,9 @@ export function formatDiagnostics(
 
       if ((d.severity ?? 1) === 1) errorCount++;
       else if (d.severity === 2) warningCount++;
+      else if (d.severity === 3) infoCount++;
     }
   }
 
-  return { text: lines.join("\n"), errorCount, warningCount };
+  return { text: lines.join("\n"), errorCount, warningCount, infoCount };
 }
