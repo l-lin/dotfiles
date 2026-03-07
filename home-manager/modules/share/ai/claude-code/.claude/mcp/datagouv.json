@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "datagouv": {
+      "type": "streamable",
+      "url": "https://mcp.data.gouv.fr/mcp"
+    }
+  }
+}
