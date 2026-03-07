@@ -3,6 +3,7 @@
  *
  * Automatically runs LSP diagnostics after every write/edit tool call and
  * appends results to the tool result so the LLM can self-correct immediately.
+ * Updates the LSP widget with a summary of diagnostics.
  */
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import {
@@ -16,13 +17,8 @@ import {
   getOrCreateClient,
   handleLspError,
   buildDiagnosticBlock,
-  extractDiagnosticSummary,
 } from "./tool-result-helpers.js";
-import {
-  CONFIG_ENTRY_TYPE,
-  FILE_MUTATION_DIAGNOSTICS_CHANNEL,
-} from "./types.js";
-import type { FileMutationDiagnosticsEvent } from "./types.js";
+import { CONFIG_ENTRY_TYPE } from "./types.js";
 import { loadConfig, loadFileConfig, saveEnabled } from "./config.js";
 import { resolveLspCommands, resolveRootDir } from "./resolver.js";
 import { LspDetailsComponent, type LspClientEntry } from "./lsp-details.js";
@@ -179,6 +175,11 @@ export default function (pi: ExtensionAPI) {
 
     // Fan out to all matching LSP servers in parallel
     const mergedDiagnostics = new Map<string, LspDiagnostic[]>();
+    // Track diagnostics per server for widget display
+    const perServerDiagnostics = new Map<
+      string,
+      Map<string, LspDiagnostic[]>
+    >();
     // Pre-compute ordered bins from resolvedList for deterministic labeling.
     // successSet tracks which servers actually produced results.
     const orderedBins = resolvedList.map((r) => path.basename(r.command[0]!));
@@ -216,11 +217,11 @@ export default function (pi: ExtensionAPI) {
         } catch (err) {
           handleLspError(err, commandKey, ctx, lspClients);
           return;
-        } finally {
-          if (lspClients.has(commandKey)) setLspWidget(ctx, lspBin, "idle");
         }
 
         successSet.add(lspBin);
+        // Store per-server diagnostics for widget display
+        perServerDiagnostics.set(lspBin, serverDiagnostics);
         // Merge: append diagnostics per URI across all servers
         for (const [uri, diags] of serverDiagnostics) {
           const existing = mergedDiagnostics.get(uri) ?? [];
@@ -232,6 +233,12 @@ export default function (pi: ExtensionAPI) {
     // All servers failed — individual errors already surfaced via handleLspError
     if (successSet.size === 0) return;
 
+    // Update each server's widget
+    for (const bin of successSet) {
+      const serverDiags = perServerDiagnostics.get(bin)!;
+      setLspWidget(ctx, bin, "idle", serverDiags);
+    }
+
     // Build label in resolvedList order (deterministic), only for successful servers
     const lspBinLabel = orderedBins
       .filter((bin) => successSet.has(bin))
@@ -242,26 +249,7 @@ export default function (pi: ExtensionAPI) {
       lspBinLabel,
       ctx.cwd,
     );
-    const { errorCount, warningCount, infoCount } =
-      extractDiagnosticSummary(mergedDiagnostics);
-
-    const summaryParts: string[] = [];
-    if (errorCount > 0) summaryParts.push(`✖ ${errorCount}`);
-    if (warningCount > 0) summaryParts.push(`⚠ ${warningCount}`);
-    if (infoCount > 0) summaryParts.push(`ℹ ${infoCount}`);
-    const summary =
-      summaryParts.length > 0 ? `lsp ${summaryParts.join(" ")}` : null;
-
-    // Always broadcast so subscribers (e.g. minimal-mode) can clear stale
-    // cache entries when diagnostics become clean (summary === null).
-    pi.events.emit(FILE_MUTATION_DIAGNOSTICS_CHANNEL, {
-      filePath,
-      summary,
-    } satisfies FileMutationDiagnosticsEvent);
-
-    // Append diagnostics to the tool result content so the LLM sees them and
-    // the built-in renderResult shows them in expanded view without relying on
-    // the async event cache timing.
+    // Append diagnostics to the tool result content so the LLM sees them.
     if (details !== null) {
       return {
         content: [

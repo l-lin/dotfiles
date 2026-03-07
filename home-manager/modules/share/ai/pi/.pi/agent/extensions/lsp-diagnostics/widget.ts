@@ -9,15 +9,68 @@
 import type { ExtensionContext } from "@mariozechner/pi-coding-agent";
 import type { TUI } from "@mariozechner/pi-tui";
 import { truncateToWidth } from "@mariozechner/pi-tui";
+import type { LspDiagnostic } from "./types.js";
+import { SEVERITY_ERROR, SEVERITY_WARNING, SEVERITY_INFO } from "./types.js";
 
 export const WIDGET_KEY = "lsp-diagnostics";
 export const LSP_ICON = "";
+export const SUCCESS_ICON = "✓";
 const LSP_BLINK_INTERVAL_MS = 500;
 
 export type LspWidgetState = "starting" | "collecting" | "idle";
 
-// Per-server state: bin → current state
-const serverStates = new Map<string, LspWidgetState>();
+interface DiagnosticCounts {
+  errors: number;
+  warnings: number;
+  info: number;
+}
+
+interface ServerWidgetEntry {
+  state: LspWidgetState;
+  diagnostics: DiagnosticCounts | null; // null = no diagnostics run yet
+}
+
+// Per-server state: bin → entry
+const serverStates = new Map<string, ServerWidgetEntry>();
+
+/**
+ * Count diagnostics by severity across all files in the map.
+ */
+function countDiagnostics(
+  diagnostics: Map<string, LspDiagnostic[]>,
+): DiagnosticCounts {
+  let errors = 0;
+  let warnings = 0;
+  let info = 0;
+
+  for (const diags of diagnostics.values()) {
+    for (const d of diags) {
+      if (d.severity === SEVERITY_ERROR) errors++;
+      else if (d.severity === SEVERITY_WARNING) warnings++;
+      else if (d.severity === SEVERITY_INFO) info++;
+    }
+  }
+
+  return { errors, warnings, info };
+}
+
+/**
+ * Build a colored summary string from diagnostic counts.
+ * Returns empty string if no issues, or formatted string like "✖ 2 ⚠ 1 ℹ 3"
+ */
+function buildSummary(counts: DiagnosticCounts, theme: any): string {
+  const parts: string[] = [];
+  if (counts.errors > 0) {
+    parts.push(theme.fg("error", `✖ ${counts.errors}`));
+  }
+  if (counts.warnings > 0) {
+    parts.push(theme.fg("warning", `⚠ ${counts.warnings}`));
+  }
+  if (counts.info > 0) {
+    parts.push(theme.fg("muted", `ℹ ${counts.info}`));
+  }
+  return parts.length > 0 ? ` ${parts.join(" ")}` : "";
+}
 
 // Module-level blink & render state
 let blinkTimer: ReturnType<typeof setInterval> | undefined;
@@ -39,7 +92,8 @@ function ensureBlinkRunning(): void {
   blinkTimer = setInterval(() => {
     blinkVisible = !blinkVisible;
     requestRenderFn?.();
-    if ([...serverStates.values()].every((s) => s === "idle")) stopBlink();
+    if ([...serverStates.values()].every((e) => e.state === "idle"))
+      stopBlink();
   }, LSP_BLINK_INTERVAL_MS);
 }
 
@@ -61,10 +115,25 @@ function ensureWidgetRegistered(ctx: ExtensionContext): void {
     return {
       render(width: number): string[] {
         if (serverStates.size === 0) return [];
-        return [...serverStates.entries()].map(([bin, state]) => {
-          const isActive = state === "starting" || state === "collecting";
-          const icon = isActive && !blinkVisible ? " " : LSP_ICON;
-          const line = theme.fg("success", icon) + theme.bold(` ${bin}`);
+        return [...serverStates.entries()].map(([bin, entry]) => {
+          const isActive =
+            entry.state === "starting" || entry.state === "collecting";
+          const icon = isActive && !blinkVisible ? "  " : ` ${LSP_ICON}`;
+
+          let statusPart = "";
+          if (isActive || entry.diagnostics === null) {
+            statusPart = "";
+          } else {
+            const summary = buildSummary(entry.diagnostics, theme);
+            if (summary === "") {
+              statusPart = theme.fg("success", ` ${SUCCESS_ICON}`);
+            } else {
+              statusPart = summary;
+            }
+          }
+
+          const line =
+            theme.fg("success", icon) + theme.bold(` ${bin}`) + statusPart;
           return truncateToWidth(line, width);
         });
       },
@@ -86,7 +155,7 @@ function refreshBlink(ctx: ExtensionContext): void {
   ensureWidgetRegistered(ctx);
 
   const hasActive = [...serverStates.values()].some(
-    (s) => s === "starting" || s === "collecting",
+    (e) => e.state === "starting" || e.state === "collecting",
   );
   if (hasActive) {
     ensureBlinkRunning();
@@ -117,9 +186,19 @@ export function setLspWidget(
   ctx: ExtensionContext,
   lspBin: string,
   state: LspWidgetState,
+  diagnostics?: Map<string, LspDiagnostic[]>,
 ): void {
   if (!ctx.hasUI) return;
-  serverStates.set(lspBin, state);
+  const existing = serverStates.get(lspBin);
+
+  let counts: DiagnosticCounts | null;
+  if (diagnostics !== undefined) {
+    counts = countDiagnostics(diagnostics);
+  } else {
+    counts = existing?.diagnostics ?? null;
+  }
+
+  serverStates.set(lspBin, { state, diagnostics: counts });
   refreshBlink(ctx);
 }
 
