@@ -1,11 +1,7 @@
 /**
  * LspDetailsComponent — interactive TUI panel for inspecting active LSP clients.
  */
-import { DynamicBorder } from "@mariozechner/pi-coding-agent";
 import {
-  Container,
-  Key,
-  Text,
   matchesKey,
   type Component,
   type TUI,
@@ -62,9 +58,6 @@ interface LspClientEntrySnapshot {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export class LspDetailsComponent implements Component {
-  // Rows reserved for fixed structural chrome: 2× DynamicBorder + title + 2× padding + tab bar
-  private static readonly STRUCTURAL_ROWS = 6;
-
   private snapshots: LspClientEntrySnapshot[] = [];
   private lspClients: Map<string, LspClientEntry>;
   private tui: TUI;
@@ -72,10 +65,6 @@ export class LspDetailsComponent implements Component {
   private onDone: (result?: unknown) => void;
   private selectedIdx = 0;
   private scrollOffset = 0;
-  private container: Container;
-  private body: Text;
-  private cachedWidth?: number;
-  private cachedHeight?: number;
 
   constructor(
     lspClients: Map<string, LspClientEntry>,
@@ -87,29 +76,7 @@ export class LspDetailsComponent implements Component {
     this.tui = tui;
     this.theme = theme;
     this.onDone = onDone;
-
-    this.container = new Container();
-    this.container.addChild(
-      new DynamicBorder((s: string) => theme.fg("accent", s)),
-    );
-    this.container.addChild(
-      new Text(
-        theme.fg("accent", theme.bold("LSP Server Details")) +
-          theme.fg(
-            "dim",
-            "  (←→/hl server · ↑↓/jk scroll · ^u/^d page · q close)",
-          ),
-        1,
-        0,
-      ),
-    );
-    this.container.addChild(new Text("", 1, 0));
-    this.body = new Text("", 1, 0);
-    this.container.addChild(this.body);
-    this.container.addChild(new Text("", 1, 0));
-    this.container.addChild(
-      new DynamicBorder((s: string) => theme.fg("accent", s)),
-    );
+    this.refreshSnapshots();
   }
 
   private refreshSnapshots(): void {
@@ -133,43 +100,39 @@ export class LspDetailsComponent implements Component {
     }
   }
 
-  private get terminalHeight(): number {
-    // TUI.terminal.rows gives the actual terminal height
-    return (this.tui as any).terminal?.rows ?? 24;
-  }
-
-  private rebuild(width: number): void {
+  private buildContentLines(): string[] {
     this.refreshSnapshots();
     const th = this.theme;
     const d = (s: string) => th.fg("dim", s);
     const b = (s: string) => th.bold(s);
-    const divider = d("─".repeat(Math.max(0, width - 4)));
 
     if (this.snapshots.length === 0) {
-      this.body.setText(d("No active LSP servers."));
-      this.cachedWidth = width;
-      return;
+      return [
+        "",
+        d("  No active LSP servers."),
+        "",
+        d("  Press Esc or q to close"),
+        "",
+      ];
     }
 
     const lines: string[] = [];
 
-    // Tab bar
-    const tabs = this.snapshots
-      .map((s, i) =>
-        i === this.selectedIdx
-          ? b(th.fg("accent", `[${s.bin}]`))
-          : d(` ${s.bin} `),
-      )
-      .join("  ");
-    lines.push(tabs);
-    lines.push("");
+    // Tab bar for server selection
+    if (this.snapshots.length > 1) {
+      const tabs = this.snapshots
+        .map((s, i) =>
+          i === this.selectedIdx
+            ? b(th.fg("accent", `[${s.bin}]`))
+            : d(` ${s.bin} `),
+        )
+        .join("  ");
+      lines.push(tabs);
+      lines.push("");
+    }
 
     const snap = this.snapshots[this.selectedIdx];
-    if (!snap) {
-      this.body.setText(d("No active LSP servers."));
-      this.cachedWidth = width;
-      return;
-    }
+    if (!snap) return lines;
 
     // Filter diagnostics map to only show entries with diagnostics
     const activeDiagnostics = new Map(
@@ -192,6 +155,8 @@ export class LspDetailsComponent implements Component {
       ? th.fg("warning", `● collecting (${snap.pendingWaiters.length} pending)`)
       : th.fg("success", "● idle");
 
+    // Server info section
+    lines.push(b("Server Info"));
     lines.push(row("Status", statusText));
     lines.push(row("Binary", b(snap.bin)));
     lines.push(row("Full path", snap.command[0] ?? d("(none)")));
@@ -217,21 +182,17 @@ export class LspDetailsComponent implements Component {
       ),
     );
 
-    // ── Settings ─────────────────────────────────────────────────────────────
-    lines.push("");
-    lines.push(divider);
-    lines.push(b("Settings"));
-    if (!snap.settings || Object.keys(snap.settings).length === 0) {
-      lines.push(d("  (none)"));
-    } else {
+    // Settings section
+    if (snap.settings && Object.keys(snap.settings).length > 0) {
+      lines.push("");
+      lines.push(b("Settings"));
       for (const l of JSON.stringify(snap.settings, null, 2).split("\n")) {
         lines.push("  " + l);
       }
     }
 
-    // ── Open files ────────────────────────────────────────────────────────────
+    // Open files section
     lines.push("");
-    lines.push(divider);
     lines.push(b(`Open Files (${snap.openedFiles.length})`));
     if (snap.openedFiles.length === 0) {
       lines.push(d("  (none)"));
@@ -253,9 +214,8 @@ export class LspDetailsComponent implements Component {
       }
     }
 
-    // ── Diagnostics detail ────────────────────────────────────────────────────
+    // Diagnostics detail section
     lines.push("");
-    lines.push(divider);
     lines.push(b(`Diagnostics Detail (${totalDiags})`));
     if (totalDiags === 0) {
       lines.push(
@@ -283,38 +243,43 @@ export class LspDetailsComponent implements Component {
       }
     }
 
-    // Clamp scroll so we never scroll past the last line, then slice a single
-    // screenful so the component never emits more lines than the terminal can show.
-    const termH = this.terminalHeight;
-    // Reserve rows for the fixed structural lines surrounding the scrollable body:
-    // 2× DynamicBorder + title line + 2× empty Text("") padding = 5 rows.
-    // One extra row for the tab bar rendered at the top of the body itself.
-    const viewportLines = Math.max(
-      1,
-      termH - LspDetailsComponent.STRUCTURAL_ROWS,
-    );
-    const maxScroll = Math.max(0, lines.length - viewportLines);
-    this.scrollOffset = Math.min(this.scrollOffset, maxScroll);
-    const visible = lines.slice(
-      this.scrollOffset,
-      this.scrollOffset + viewportLines,
+    return lines;
+  }
+
+  private box(contentLines: string[], width: number, title: string): string[] {
+    const th = this.theme;
+    const innerW = Math.max(1, width - 2);
+    const result: string[] = [];
+
+    // Top border with title
+    const titleStr = truncateToWidth(` ${title} `, innerW);
+    const titleW = visibleWidth(titleStr);
+    const topLine = "─".repeat(Math.floor((innerW - titleW) / 2));
+    const topLine2 = "─".repeat(Math.max(0, innerW - titleW - topLine.length));
+    result.push(
+      th.fg("border", `╭${topLine}`) +
+        th.fg("accent", titleStr) +
+        th.fg("border", `${topLine2}╮`),
     );
 
-    this.body.setText(
-      visible
-        .map((l) =>
-          visibleWidth(l) > width - 4 ? truncateToWidth(l, width - 4) : l,
-        )
-        .join("\n"),
-    );
-    this.cachedWidth = width;
-    this.cachedHeight = termH;
+    // Content with scroll support
+    for (const line of contentLines) {
+      result.push(
+        th.fg("border", "│") +
+          truncateToWidth(" " + line, innerW, "...", true) +
+          th.fg("border", "│"),
+      );
+    }
+
+    // Bottom border
+    result.push(th.fg("border", `╰${"─".repeat(innerW)}╯`));
+    return result;
   }
 
   handleInput(data: string): void {
     if (
-      matchesKey(data, Key.escape) ||
-      matchesKey(data, Key.ctrl("c")) ||
+      matchesKey(data, "escape") ||
+      matchesKey(data, "ctrl+c") ||
       data.toLowerCase() === "q"
     ) {
       this.onDone();
@@ -325,8 +290,6 @@ export class LspDetailsComponent implements Component {
       if (this.selectedIdx > 0) {
         this.selectedIdx--;
         this.scrollOffset = 0;
-        this.cachedWidth = undefined;
-        this.container.invalidate();
         this.tui.requestRender();
       }
     };
@@ -334,62 +297,64 @@ export class LspDetailsComponent implements Component {
       if (this.selectedIdx < this.snapshots.length - 1) {
         this.selectedIdx++;
         this.scrollOffset = 0;
-        this.cachedWidth = undefined;
-        this.container.invalidate();
         this.tui.requestRender();
       }
     };
 
-    if (matchesKey(data, Key.left) || data.toLowerCase() === "h") prev();
-    if (matchesKey(data, Key.right) || data.toLowerCase() === "l") next();
-    if (matchesKey(data, Key.up) || data === "k") {
+    if (matchesKey(data, "left") || data.toLowerCase() === "h") prev();
+    if (matchesKey(data, "right") || data.toLowerCase() === "l") next();
+    if (matchesKey(data, "up") || data === "k") {
       if (this.scrollOffset > 0) {
         this.scrollOffset--;
-        this.cachedWidth = undefined;
-        this.container.invalidate();
         this.tui.requestRender();
       }
     }
-    if (matchesKey(data, Key.down) || data === "j") {
+    if (matchesKey(data, "down") || data === "j") {
       this.scrollOffset++;
-      this.cachedWidth = undefined;
-      this.container.invalidate();
       this.tui.requestRender();
     }
-    if (matchesKey(data, Key.ctrl("u"))) {
-      const pageSize = Math.max(
-        1,
-        Math.floor(
-          (this.terminalHeight - LspDetailsComponent.STRUCTURAL_ROWS) / 2,
-        ),
-      );
+    if (matchesKey(data, "ctrl+u")) {
+      const pageSize = Math.max(1, 10);
       this.scrollOffset = Math.max(0, this.scrollOffset - pageSize);
-      this.cachedWidth = undefined;
-      this.container.invalidate();
       this.tui.requestRender();
     }
-    if (matchesKey(data, Key.ctrl("d"))) {
-      const pageSize = Math.max(
-        1,
-        Math.floor(
-          (this.terminalHeight - LspDetailsComponent.STRUCTURAL_ROWS) / 2,
-        ),
-      );
-      this.scrollOffset += pageSize; // upper-bound clamped lazily in rebuild()
-      this.cachedWidth = undefined;
-      this.container.invalidate();
+    if (matchesKey(data, "ctrl+d")) {
+      const pageSize = Math.max(1, 10);
+      this.scrollOffset += pageSize;
       this.tui.requestRender();
     }
   }
 
   invalidate(): void {
-    this.cachedWidth = undefined;
-    this.container.invalidate();
+    // Force rebuild on next render
   }
 
   render(width: number): string[] {
-    if (this.cachedWidth !== width || this.cachedHeight !== this.terminalHeight)
-      this.rebuild(width);
-    return this.container.render(width);
+    const contentLines = this.buildContentLines();
+
+    // Calculate available height (accounting for box borders)
+    const maxHeight = 40; // Will be constrained by overlayOptions.maxHeight
+    const viewportLines = Math.max(1, maxHeight - 2); // -2 for top and bottom borders
+
+    // Clamp scroll
+    const maxScroll = Math.max(0, contentLines.length - viewportLines);
+    this.scrollOffset = Math.min(this.scrollOffset, maxScroll);
+
+    // Slice visible content
+    const visibleContent = contentLines.slice(
+      this.scrollOffset,
+      this.scrollOffset + viewportLines,
+    );
+
+    // Build title with navigation hints
+    const th = this.theme;
+    const navHint = this.snapshots.length > 1 ? " ←→/hl:server" : "";
+    const title = `LSP Server Details${navHint} · ↑↓/jk:scroll · ^u/^d:page · q:close`;
+
+    return this.box(visibleContent, width, title);
+  }
+
+  dispose(): void {
+    // Cleanup if needed
   }
 }
