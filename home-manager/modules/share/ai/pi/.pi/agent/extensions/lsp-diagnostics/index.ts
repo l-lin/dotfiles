@@ -22,7 +22,12 @@ import { loadConfig, loadFileConfig } from "./config.js";
 import { resolveLspCommands, resolveRootDir } from "./resolver.js";
 import type { LspClientEntry } from "./lsp-details.js";
 import { setLspWidget, syncLspServers, clearWidget } from "./widget.js";
-import { handleLspCommand } from "./commands.js";
+import {
+  handleCheck,
+  handleToggle,
+  handleKill,
+  handleDetails,
+} from "./commands/index.js";
 
 const DIAGNOSTICS_TIMEOUT_IN_MS = 30_000;
 
@@ -35,12 +40,33 @@ export default function (pi: ExtensionAPI) {
   // Persistent LSP clients keyed by command string — created lazily, shut down on session end
   const lspClients = new Map<string, LspClientEntry>();
 
-  // ── /lsp unified command ────────────────────────────────────────────────
-  pi.registerCommand("cmd:lsp", {
-    description:
-      "LSP management: toggle extension, kill servers, check diagnostics, or view details",
+  // ── LSP Commands ─────────────────────────────────────────────────────────
+  pi.registerCommand("cmd:lsp-check", {
+    description: "Check LSP diagnostics for a file or directory",
+    handler: async (args, ctx) => {
+      const filePath = args.split(" ")[0] || undefined;
+      await handleCheck(lspClients, ctx, savedConfig, pi, filePath);
+    },
+  });
+
+  pi.registerCommand("cmd:lsp-toggle", {
+    description: "Toggle LSP extension on/off",
     handler: async (_args, ctx) => {
-      await handleLspCommand(config, lspClients, ctx, savedConfig, pi);
+      await handleToggle(config, ctx);
+    },
+  });
+
+  pi.registerCommand("cmd:lsp-kill", {
+    description: "Kill active LSP server(s)",
+    handler: async (_args, ctx) => {
+      await handleKill(lspClients, ctx);
+    },
+  });
+
+  pi.registerCommand("cmd:lsp-details", {
+    description: "Show LSP server details",
+    handler: async (_args, ctx) => {
+      await handleDetails(lspClients, ctx);
     },
   });
 
