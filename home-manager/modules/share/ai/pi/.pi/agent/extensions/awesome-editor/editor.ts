@@ -371,22 +371,20 @@ export class AwesomeEditor extends CustomEditor {
     const lines = super.render(width);
     if (lines.length === 0) return lines;
     const label = this.getModeLabel();
-    const last = lines.length - 1;
-    if (visibleWidth(lines[last]!) >= label.length) {
-      lines[last] =
-        truncateToWidth(lines[last]!, width - label.length, "") + label;
+    if (visibleWidth(lines[0]!) >= label.length) {
+      lines[0] = label + truncateToWidth(lines[0]!, width - label.length, "");
     }
     return lines;
   }
 
   private getModeLabel(): string {
-    if (this.mode === "insert") return " INSERT ";
+    if (this.mode === "insert") return "❯ ";
     if (this.pendingOperator && this.pendingMotion)
-      return ` NORMAL ${this.pendingOperator}${this.pendingMotion}_ `;
-    if (this.pendingOperator) return ` NORMAL ${this.pendingOperator}_ `;
-    if (this.pendingMotion) return ` NORMAL ${this.pendingMotion}_ `;
-    if (this.pendingG) return ` NORMAL g_ `;
-    return " NORMAL ";
+      return `❮ ${this.pendingOperator}${this.pendingMotion}_ `;
+    if (this.pendingOperator) return `❮ ${this.pendingOperator}_ `;
+    if (this.pendingMotion) return `❮ ${this.pendingMotion}_ `;
+    if (this.pendingG) return `❮ g_ `;
+    return "❮ ";
   }
 
   // ─── Snippet expansion ───────────────────────────────────────────────────────
@@ -450,10 +448,7 @@ export class AwesomeEditor extends CustomEditor {
       }
 
       // Validate cursor position and bounds
-      if (
-        result.cursorLine < 0 ||
-        result.cursorLine >= result.lines.length
-      ) {
+      if (result.cursorLine < 0 || result.cursorLine >= result.lines.length) {
         if ((this as any).onChange) (this as any).onChange(this.getText());
         return;
       }
