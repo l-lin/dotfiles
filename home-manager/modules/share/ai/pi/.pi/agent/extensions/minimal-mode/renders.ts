@@ -6,7 +6,6 @@ import { Text } from "@mariozechner/pi-tui";
 import { renderDiff } from "@mariozechner/pi-coding-agent";
 import { homedir } from "os";
 import { getBuiltInTools } from "./toolCache.js";
-import type { FileMutationDiagnosticsEvent } from "../file-mutation-events/index.js";
 
 /**
  * Shorten a path by replacing home directory with ~
@@ -19,8 +18,9 @@ function shortenPath(path: string): string {
   return path;
 }
 
-// ─── Read Tool Renders ──────────────────────────────────────────────────────
-
+// =========================================================================
+// Read Tool
+// =========================================================================
 export function renderReadCall(args: any, theme: any) {
   const path = shortenPath(args.path || "");
   let pathDisplay = path
@@ -63,36 +63,9 @@ export function renderReadResult(result: any, { expanded }: any, theme: any) {
   return new Text(text, 0, 0);
 }
 
-// ─── Mutation Annotation Helper ─────────────────────────────────────────────
-
-/**
- * Returns a lightweight reactive component for collapsed write/edit results.
- *
- * The component reads from the live `diagnosticsCache` map on every `render()`
- * call, so it automatically shows fresh data whenever pi re-renders the
- * conversation (e.g. after `tui.requestRender()` is triggered by the event
- * listener in index.ts).
- *
- * No coupling to lsp-diagnostics: all data arrives via the
- * FILE_MUTATION_DIAGNOSTICS_CHANNEL contract from file-mutation-events.
- */
-function makeMutationAnnotation(
-  cache: Map<string, FileMutationDiagnosticsEvent>,
-  filePath: string,
-  theme: any,
-) {
-  return {
-    render(_width: number): string[] {
-      const event = cache.get(filePath);
-      if (!event?.summary) return [];
-      return [theme.fg("muted", ` ${event.summary}`)];
-    },
-    invalidate() {},
-  };
-}
-
-// ─── Write Tool Renders ─────────────────────────────────────────────────────
-
+// =========================================================================
+// Write Tool
+// =========================================================================
 export function renderWriteCall(args: any, theme: any) {
   const path = shortenPath(args.path || "");
   const pathDisplay = path
@@ -106,20 +79,15 @@ export function renderWriteCall(args: any, theme: any) {
   return new Text(text, 0, 0);
 }
 
-export function renderWriteResult(
-  result: any,
-  { expanded }: any,
-  theme: any,
-  cache: Map<string, FileMutationDiagnosticsEvent>,
-  filePath: string,
-) {
-  if (!expanded) return makeMutationAnnotation(cache, filePath, theme);
+export function renderWriteResult(result: any, { expanded }: any, theme: any) {
+  if (!expanded) return new Text("", 0, 0);
   const tools = getBuiltInTools(process.cwd());
   return tools.write.renderResult(result, { expanded }, theme);
 }
 
-// ─── Edit Tool Renders ──────────────────────────────────────────────────────
-
+// =========================================================================
+// Edit Tool
+// =========================================================================
 export function renderEditCall(args: any, theme: any) {
   const path = shortenPath(args.path || "");
   const pathDisplay = path
@@ -130,14 +98,8 @@ export function renderEditCall(args: any, theme: any) {
   return new Text(text, 0, 0);
 }
 
-export function renderEditResult(
-  result: any,
-  { expanded }: any,
-  theme: any,
-  cache: Map<string, FileMutationDiagnosticsEvent>,
-  filePath: string,
-) {
-  if (!expanded) return makeMutationAnnotation(cache, filePath, theme);
+export function renderEditResult(result: any, { expanded }: any, theme: any) {
+  if (!expanded) return new Text("", 0, 0);
 
   // Try to extract diff from result
   const diff = result.details?.diff;
@@ -145,20 +107,13 @@ export function renderEditResult(
     return new Text(renderDiff(diff), 0, 0);
   }
 
-  // Fallback: show raw content if no diff available
-  if (Array.isArray(result.content)) {
-    const textContent = result.content.find((c: any) => c.type === "text");
-    if (textContent?.text) {
-      return new Text(theme.fg("toolOutput", textContent.text), 0, 0);
-    }
-  }
-
-  // Final fallback: empty result
-  return new Text(theme.fg("toolOutput", "(no content available)"), 0, 0);
+  const tools = getBuiltInTools(process.cwd());
+  return tools.edit.renderResult(result, { expanded }, theme);
 }
 
-// ─── Find Tool Renders ──────────────────────────────────────────────────────
-
+// =========================================================================
+// Find Tool
+// =========================================================================
 export function renderFindCall(args: any, theme: any) {
   const pattern = args.pattern || "";
   const path = shortenPath(args.path || ".");
@@ -190,8 +145,9 @@ export function renderFindResult(result: any, { expanded }: any, theme: any) {
   return tools.find.renderResult(result, { expanded }, theme);
 }
 
-// ─── Grep Tool Renders ──────────────────────────────────────────────────────
-
+// =========================================================================
+// Grep Tool
+// =========================================================================
 export function renderGrepCall(args: any, theme: any) {
   const pattern = args.pattern || "";
   const path = shortenPath(args.path || ".");
@@ -227,8 +183,9 @@ export function renderGrepResult(result: any, { expanded }: any, theme: any) {
   return tools.grep.renderResult(result, { expanded }, theme);
 }
 
-// ─── Ls Tool Renders ────────────────────────────────────────────────────────
-
+// =========================================================================
+// LS Tool
+// =========================================================================
 export function renderLsCall(args: any, theme: any) {
   const path = shortenPath(args.path || ".");
   const limit = args.limit;
@@ -258,8 +215,9 @@ export function renderLsResult(result: any, { expanded }: any, theme: any) {
   return tools.ls.renderResult(result, { expanded }, theme);
 }
 
-// ─── Bash Tool Renders (for rtk-rewrite) ───────────────────────────────────
-
+// =========================================================================
+// Bash Tool
+// =========================================================================
 export function renderBashCall(args: any, theme: any) {
   const command = args.command || "...";
   const timeout = args.timeout as number | undefined;
@@ -274,6 +232,7 @@ export function renderBashCall(args: any, theme: any) {
 
 export function renderBashResult(result: any, { expanded }: any, theme: any) {
   if (!expanded) return new Text("", 0, 0);
+
   const tools = getBuiltInTools(process.cwd());
   return tools.bash.renderResult(result, { expanded }, theme);
 }

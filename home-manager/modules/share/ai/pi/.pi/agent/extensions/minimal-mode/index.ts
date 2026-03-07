@@ -35,48 +35,8 @@ import {
   renderLsResult,
 } from "./renders.js";
 import { getBuiltInTools } from "./toolCache.js";
-import { FILE_MUTATION_DIAGNOSTICS_CHANNEL } from "../file-mutation-events/index.js";
-import type { FileMutationDiagnosticsEvent } from "../file-mutation-events/index.js";
 
 export default function (pi: ExtensionAPI) {
-  /**
-   * Cache of the latest file-mutation annotation per file path.
-   * Populated via the FILE_MUTATION_DIAGNOSTICS_CHANNEL event (file-mutation-events contract).
-   * Keyed by the filePath from the event (as-is, no normalization needed — it
-   * matches the path passed to write/edit).
-   */
-  const diagnosticsCache = new Map<string, FileMutationDiagnosticsEvent>();
-
-  /**
-   * TUI reference captured via a zero-height widget factory during session_start.
-   * Used to call tui.requestRender() when an annotation event arrives, so the
-   * reactive components returned by renderResult re-render with fresh cache data
-   * without requiring the user to toggle expansion.
-   */
-  let tuiRef: { requestRender(): void } | null = null;
-
-  pi.on("session_start", async (_event, ctx) => {
-    // Capture the tui reference through a widget factory (the only hook that
-    // exposes tui to extension code outside of ctx.ui.custom()).
-    // The widget renders nothing — it exists solely to grab the reference.
-    ctx.ui.setWidget("minimal-mode:tui-ref", (tui: any) => {
-      tuiRef = tui;
-      return { render: () => [], invalidate: () => {} };
-    });
-  });
-
-  pi.on("session_shutdown", async () => {
-    tuiRef = null;
-  });
-
-  pi.events.on(FILE_MUTATION_DIAGNOSTICS_CHANNEL, (data) => {
-    const event = data as FileMutationDiagnosticsEvent;
-    diagnosticsCache.set(event.filePath, event);
-    // Trigger a re-render so the reactive annotation components pick up the
-    // new cache entry without requiring a manual Ctrl-o toggle.
-    tuiRef?.requestRender();
-  });
-
   // =========================================================================
   // Read Tool
   // =========================================================================
@@ -104,16 +64,6 @@ export default function (pi: ExtensionAPI) {
   // =========================================================================
   // Write Tool
   // =========================================================================
-  // The pi render API does not expose toolCallId to renderCall/renderResult,
-  // so we cannot key by invocation ID. We use a FIFO queue instead: renderCall
-  // enqueues the path, renderResult dequeues it.
-  //
-  // ⚠️ Parallel-call risk: if two write calls are in flight simultaneously,
-  // renderResult dequeue order depends on render scheduling — a path mismatch
-  // is possible (annotation shown for the wrong file). This is an API limitation;
-  // fixing it requires toolCallId exposure in the render API.
-  const writePathQueue: string[] = [];
-
   pi.registerTool({
     name: "write",
     label: "write",
@@ -127,27 +77,17 @@ export default function (pi: ExtensionAPI) {
     },
 
     renderCall(args, theme) {
-      writePathQueue.push(args.path ?? "");
       return renderWriteCall(args, theme);
     },
 
     renderResult(result, { expanded }, theme) {
-      const filePath = writePathQueue.shift() ?? "";
-      return renderWriteResult(
-        result,
-        { expanded },
-        theme,
-        diagnosticsCache,
-        filePath,
-      );
+      return renderWriteResult(result, { expanded }, theme);
     },
   });
 
   // =========================================================================
   // Edit Tool
   // =========================================================================
-  const editPathQueue: string[] = [];
-
   pi.registerTool({
     name: "edit",
     label: "edit",
@@ -161,19 +101,11 @@ export default function (pi: ExtensionAPI) {
     },
 
     renderCall(args, theme) {
-      editPathQueue.push(args.path ?? "");
       return renderEditCall(args, theme);
     },
 
     renderResult(result, { expanded }, theme) {
-      const filePath = editPathQueue.shift() ?? "";
-      return renderEditResult(
-        result,
-        { expanded },
-        theme,
-        diagnosticsCache,
-        filePath,
-      );
+      return renderEditResult(result, { expanded }, theme);
     },
   });
 
