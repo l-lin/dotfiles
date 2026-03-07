@@ -375,11 +375,45 @@ function pickRandom(): string {
 }
 
 export default function (pi: ExtensionAPI) {
+  let startTime: number | null = null;
+  let timerInterval: NodeJS.Timeout | null = null;
+  let currentMessage: string = "";
+
+  function formatElapsed(ms: number): string {
+    if (ms < 1000) return `${ms}ms`;
+    if (ms < 60_000) return `${(ms / 1000).toFixed(1)}s`;
+    const minutes = Math.floor(ms / 60_000);
+    const seconds = ((ms % 60_000) / 1000).toFixed(0).padStart(2, "0");
+    return `${minutes}m${seconds}s`;
+  }
+
   pi.on("turn_start", async (_event, ctx) => {
-    ctx.ui.setWorkingMessage(pickRandom());
+    currentMessage = pickRandom();
+    startTime = Date.now();
+
+    // Update immediately
+    ctx.ui.setWorkingMessage(`${currentMessage}`);
+
+    // Update every 100ms
+    timerInterval = setInterval(() => {
+      if (startTime !== null) {
+        const elapsed = Date.now() - startTime;
+        ctx.ui.setWorkingMessage(
+          `${currentMessage} ${formatElapsed(elapsed)}`,
+        );
+      }
+    }, 100);
   });
 
   pi.on("turn_end", async (_event, ctx) => {
+    // Clear the interval
+    if (timerInterval !== null) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+
+    startTime = null;
+    currentMessage = "";
     ctx.ui.setWorkingMessage(); // Reset for next time
   });
 }
