@@ -5,7 +5,7 @@
 import { Text } from "@mariozechner/pi-tui";
 import { renderDiff } from "@mariozechner/pi-coding-agent";
 import { homedir } from "os";
-import { getBuiltInTools } from "./toolCache.js";
+import { getBuiltInTools } from "./tool-cache.js";
 
 /**
  * Shorten a path by replacing home directory with ~

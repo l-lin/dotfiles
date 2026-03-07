@@ -34,7 +34,7 @@ import {
   renderLsCall,
   renderLsResult,
 } from "./renders.js";
-import { getBuiltInTools } from "./toolCache.js";
+import { getBuiltInTools } from "./tool-cache.js";
 
 export default function (pi: ExtensionAPI) {
   // =========================================================================
