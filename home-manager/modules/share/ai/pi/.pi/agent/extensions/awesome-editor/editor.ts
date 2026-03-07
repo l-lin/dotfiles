@@ -5,10 +5,16 @@
  */
 
 import { CustomEditor } from "@mariozechner/pi-coding-agent";
-import { Key, matchesKey, truncateToWidth, visibleWidth } from "@mariozechner/pi-tui";
+import {
+  Key,
+  matchesKey,
+  truncateToWidth,
+  visibleWidth,
+} from "@mariozechner/pi-tui";
 import type { AutocompleteProvider } from "@mariozechner/pi-tui";
 
 import { withSnippets } from "./snippets.js";
+import { SNIPPETS } from "../snippet/snippets.js";
 import {
   type Mode,
   type CharMotion,
@@ -18,17 +24,27 @@ import {
   type LastCharMotion,
   NORMAL_KEYS,
   CHAR_MOTION_KEYS,
-  ESC_LEFT, ESC_RIGHT, ESC_DELETE,
-  CTRL_A, CTRL_E, CTRL_K,
-  NEWLINE, ESC_UP, ESC_DOWN,
+  ESC_LEFT,
+  ESC_RIGHT,
+  ESC_DELETE,
+  CTRL_A,
+  CTRL_E,
+  CTRL_K,
+  NEWLINE,
+  ESC_UP,
+  ESC_DOWN,
 } from "./vim/types.js";
-import { reverseCharMotion, findCharMotionTarget, findWordMotionTarget } from "./vim/motions.js";
+import {
+  reverseCharMotion,
+  findCharMotionTarget,
+  findWordMotionTarget,
+} from "./vim/motions.js";
 
 export class AwesomeEditor extends CustomEditor {
-  private mode: Mode                   = "insert";
-  private pendingMotion: PendingMotion   = null;
+  private mode: Mode = "insert";
+  private pendingMotion: PendingMotion = null;
   private pendingOperator: PendingOperator = null;
-  private pendingG: PendingG             = null;
+  private pendingG: PendingG = null;
   private lastCharMotion: LastCharMotion | null = null;
 
   // InteractiveMode calls this after construction with its CombinedAutocompleteProvider.
@@ -41,9 +57,16 @@ export class AwesomeEditor extends CustomEditor {
     if (matchesKey(data, "escape")) return this.handleEscape();
 
     if (this.mode === "insert") {
-      if (matchesKey(data, Key.shiftAlt("a")) || data === "\x1bA") return super.handleInput(CTRL_E);
-      if (matchesKey(data, Key.shiftAlt("i")) || data === "\x1bI") return super.handleInput(CTRL_A);
-      if (matchesKey(data, Key.alt("o"))       || data === "\x1bo") {
+      // Ctrl-E in autocomplete mode: apply + expand snippet
+      if (data === "\x05" && (this as any).autocompleteState) {
+        this.applyAndExpandSnippet();
+        return;
+      }
+      if (matchesKey(data, Key.shiftAlt("a")) || data === "\x1bA")
+        return super.handleInput(CTRL_E);
+      if (matchesKey(data, Key.shiftAlt("i")) || data === "\x1bI")
+        return super.handleInput(CTRL_A);
+      if (matchesKey(data, Key.alt("o")) || data === "\x1bo") {
         super.handleInput(CTRL_E);
         super.handleInput(NEWLINE);
         return;
@@ -62,10 +85,10 @@ export class AwesomeEditor extends CustomEditor {
       return;
     }
 
-    if (this.pendingG)                  return this.handlePendingG(data);
-    if (this.pendingMotion)             return this.handlePendingMotion(data);
-    if (this.pendingOperator === "d")   return this.handlePendingDelete(data);
-    if (this.pendingOperator === "c")   return this.handlePendingChange(data);
+    if (this.pendingG) return this.handlePendingG(data);
+    if (this.pendingMotion) return this.handlePendingMotion(data);
+    if (this.pendingOperator === "d") return this.handlePendingDelete(data);
+    if (this.pendingOperator === "c") return this.handlePendingChange(data);
 
     this.handleNormalMode(data);
   }
@@ -74,7 +97,7 @@ export class AwesomeEditor extends CustomEditor {
 
   private handleEscape(): void {
     if (this.pendingMotion || this.pendingOperator) {
-      this.pendingMotion   = null;
+      this.pendingMotion = null;
       this.pendingOperator = null;
       return;
     }
@@ -104,16 +127,31 @@ export class AwesomeEditor extends CustomEditor {
   }
 
   private handlePendingDelete(data: string): void {
-    if (data === "d")                { this.deleteLine(); this.pendingOperator = null; return; }
-    if (CHAR_MOTION_KEYS.has(data))  { this.pendingMotion = data as CharMotion; return; }
+    if (data === "d") {
+      this.deleteLine();
+      this.pendingOperator = null;
+      return;
+    }
+    if (CHAR_MOTION_KEYS.has(data)) {
+      this.pendingMotion = data as CharMotion;
+      return;
+    }
     // Unknown motion: cancel operator (vim behaviour)
     this.pendingOperator = null;
     if (this.deleteWithMotion(data)) return;
   }
 
   private handlePendingChange(data: string): void {
-    if (data === "c")               { this.deleteLine(); this.pendingOperator = null; this.mode = "insert"; return; }
-    if (CHAR_MOTION_KEYS.has(data)) { this.pendingMotion = data as CharMotion; return; }
+    if (data === "c") {
+      this.deleteLine();
+      this.pendingOperator = null;
+      this.mode = "insert";
+      return;
+    }
+    if (CHAR_MOTION_KEYS.has(data)) {
+      this.pendingMotion = data as CharMotion;
+      return;
+    }
     // Unknown motion: cancel operator (vim behaviour)
     this.pendingOperator = null;
     if (this.deleteWithMotion(data)) this.mode = "insert";
@@ -129,22 +167,42 @@ export class AwesomeEditor extends CustomEditor {
   // ─── Normal mode dispatch ────────────────────────────────────────────────────
 
   private handleNormalMode(data: string): void {
-    if (data === "d")                        { this.pendingOperator = "d"; return; }
-    if (data === "c")                        { this.pendingOperator = "c"; return; }
-    if (CHAR_MOTION_KEYS.has(data))          { this.pendingMotion = data as CharMotion; return; }
+    if (data === "d") {
+      this.pendingOperator = "d";
+      return;
+    }
+    if (data === "c") {
+      this.pendingOperator = "c";
+      return;
+    }
+    if (CHAR_MOTION_KEYS.has(data)) {
+      this.pendingMotion = data as CharMotion;
+      return;
+    }
     if (data === ";" && this.lastCharMotion) {
-      this.executeCharMotion(this.lastCharMotion.motion, this.lastCharMotion.char, false);
+      this.executeCharMotion(
+        this.lastCharMotion.motion,
+        this.lastCharMotion.char,
+        false,
+      );
       return;
     }
     if (data === "," && this.lastCharMotion) {
-      this.executeCharMotion(reverseCharMotion(this.lastCharMotion.motion), this.lastCharMotion.char, false);
+      this.executeCharMotion(
+        reverseCharMotion(this.lastCharMotion.motion),
+        this.lastCharMotion.char,
+        false,
+      );
       return;
     }
-    if (data === "g") { this.pendingG = "g"; return; }
+    if (data === "g") {
+      this.pendingG = "g";
+      return;
+    }
     if (data === "G") return this.moveToLine(this.getLines().length - 1);
-    if (data === "w") return this.moveWord("forward",  "start");
+    if (data === "w") return this.moveWord("forward", "start");
     if (data === "b") return this.moveWord("backward", "start");
-    if (data === "e") return this.moveWord("forward",  "end");
+    if (data === "e") return this.moveWord("forward", "end");
     if (data in NORMAL_KEYS) return this.handleMappedKey(data);
 
     // Swallow printable chars; pass control sequences through
@@ -155,32 +213,70 @@ export class AwesomeEditor extends CustomEditor {
   private handleMappedKey(key: string): void {
     const seq = NORMAL_KEYS[key];
     switch (key) {
-      case "i": this.mode = "insert"; break;
-      case "a": this.mode = "insert"; super.handleInput(ESC_RIGHT); break;
-      case "A": this.mode = "insert"; super.handleInput(CTRL_E); break;
-      case "I": this.mode = "insert"; super.handleInput(CTRL_A); break;
-      case "o": super.handleInput(CTRL_E); super.handleInput(NEWLINE); this.mode = "insert"; break;
+      case "i":
+        this.mode = "insert";
+        break;
+      case "a":
+        this.mode = "insert";
+        super.handleInput(ESC_RIGHT);
+        break;
+      case "A":
+        this.mode = "insert";
+        super.handleInput(CTRL_E);
+        break;
+      case "I":
+        this.mode = "insert";
+        super.handleInput(CTRL_A);
+        break;
+      case "o":
+        super.handleInput(CTRL_E);
+        super.handleInput(NEWLINE);
+        this.mode = "insert";
+        break;
       case "O":
         super.handleInput(CTRL_A);
         super.handleInput(NEWLINE);
         super.handleInput(ESC_UP);
         this.mode = "insert";
         break;
-      case "C": super.handleInput(CTRL_K); this.mode = "insert"; break;
-      case "S": super.handleInput(CTRL_A); super.handleInput(CTRL_K); this.mode = "insert"; break;
-      case "s": super.handleInput(ESC_DELETE); this.mode = "insert"; break;
-      default:  if (seq) super.handleInput(seq);
+      case "C":
+        super.handleInput(CTRL_K);
+        this.mode = "insert";
+        break;
+      case "S":
+        super.handleInput(CTRL_A);
+        super.handleInput(CTRL_K);
+        this.mode = "insert";
+        break;
+      case "s":
+        super.handleInput(ESC_DELETE);
+        this.mode = "insert";
+        break;
+      default:
+        if (seq) super.handleInput(seq);
     }
   }
 
   // ─── Motion execution ────────────────────────────────────────────────────────
 
-  private executeCharMotion(motion: CharMotion, targetChar: string, saveMotion = true): void {
-    const line      = this.getLines()[this.getCursor().line] ?? "";
-    const col       = this.getCursor().col;
-    const targetCol = findCharMotionTarget(line, col, motion, targetChar, !saveMotion);
-    if (targetCol !== null && saveMotion) this.lastCharMotion = { motion, char: targetChar };
-    if (targetCol !== null && targetCol !== col) this.moveCursorBy(targetCol - col);
+  private executeCharMotion(
+    motion: CharMotion,
+    targetChar: string,
+    saveMotion = true,
+  ): void {
+    const line = this.getLines()[this.getCursor().line] ?? "";
+    const col = this.getCursor().col;
+    const targetCol = findCharMotionTarget(
+      line,
+      col,
+      motion,
+      targetChar,
+      !saveMotion,
+    );
+    if (targetCol !== null && saveMotion)
+      this.lastCharMotion = { motion, char: targetChar };
+    if (targetCol !== null && targetCol !== col)
+      this.moveCursorBy(targetCol - col);
   }
 
   private moveCursorBy(delta: number): void {
@@ -198,9 +294,12 @@ export class AwesomeEditor extends CustomEditor {
     super.handleInput(CTRL_A);
   }
 
-  private moveWord(direction: "forward" | "backward", target: "start" | "end"): void {
-    const line      = this.getLines()[this.getCursor().line] ?? "";
-    const col       = this.getCursor().col;
+  private moveWord(
+    direction: "forward" | "backward",
+    target: "start" | "end",
+  ): void {
+    const line = this.getLines()[this.getCursor().line] ?? "";
+    const col = this.getCursor().col;
     const targetCol = findWordMotionTarget(line, col, direction, target);
     if (targetCol !== col) this.moveCursorBy(targetCol - col);
   }
@@ -214,32 +313,48 @@ export class AwesomeEditor extends CustomEditor {
 
   private deleteWithMotion(motion: string): boolean {
     const line = this.getLines()[this.getCursor().line] ?? "";
-    const col  = this.getCursor().col;
+    const col = this.getCursor().col;
     let targetCol: number | null = null;
     let inclusive = false;
 
     switch (motion) {
-      case "w": targetCol = findWordMotionTarget(line, col, "forward",  "start"); break;
-      case "e": targetCol = findWordMotionTarget(line, col, "forward",  "end");   inclusive = true; break;
-      case "b": targetCol = findWordMotionTarget(line, col, "backward", "start"); break;
-      case "$": targetCol = line.length; break;
-      case "0": targetCol = 0; break;
-      default:  return false;
+      case "w":
+        targetCol = findWordMotionTarget(line, col, "forward", "start");
+        break;
+      case "e":
+        targetCol = findWordMotionTarget(line, col, "forward", "end");
+        inclusive = true;
+        break;
+      case "b":
+        targetCol = findWordMotionTarget(line, col, "backward", "start");
+        break;
+      case "$":
+        targetCol = line.length;
+        break;
+      case "0":
+        targetCol = 0;
+        break;
+      default:
+        return false;
     }
     this.deleteRange(col, targetCol, inclusive);
     return true;
   }
 
   private deleteWithCharMotion(motion: CharMotion, targetChar: string): void {
-    const line      = this.getLines()[this.getCursor().line] ?? "";
-    const col       = this.getCursor().col;
+    const line = this.getLines()[this.getCursor().line] ?? "";
+    const col = this.getCursor().col;
     const targetCol = findCharMotionTarget(line, col, motion, targetChar);
     if (targetCol === null) return;
     this.lastCharMotion = { motion, char: targetChar };
     this.deleteRange(col, targetCol, true);
   }
 
-  private deleteRange(col: number, targetCol: number, inclusive: boolean): void {
+  private deleteRange(
+    col: number,
+    targetCol: number,
+    inclusive: boolean,
+  ): void {
     if (targetCol > col) {
       const count = targetCol - col + (inclusive ? 1 : 0);
       for (let i = 0; i < count; i++) super.handleInput(ESC_DELETE);
@@ -256,19 +371,115 @@ export class AwesomeEditor extends CustomEditor {
     const lines = super.render(width);
     if (lines.length === 0) return lines;
     const label = this.getModeLabel();
-    const last  = lines.length - 1;
+    const last = lines.length - 1;
     if (visibleWidth(lines[last]!) >= label.length) {
-      lines[last] = truncateToWidth(lines[last]!, width - label.length, "") + label;
+      lines[last] =
+        truncateToWidth(lines[last]!, width - label.length, "") + label;
     }
     return lines;
   }
 
   private getModeLabel(): string {
-    if (this.mode === "insert")                          return " INSERT ";
-    if (this.pendingOperator && this.pendingMotion)      return ` NORMAL ${this.pendingOperator}${this.pendingMotion}_ `;
-    if (this.pendingOperator)                            return ` NORMAL ${this.pendingOperator}_ `;
-    if (this.pendingMotion)                              return ` NORMAL ${this.pendingMotion}_ `;
-    if (this.pendingG)                                   return ` NORMAL g_ `;
+    if (this.mode === "insert") return " INSERT ";
+    if (this.pendingOperator && this.pendingMotion)
+      return ` NORMAL ${this.pendingOperator}${this.pendingMotion}_ `;
+    if (this.pendingOperator) return ` NORMAL ${this.pendingOperator}_ `;
+    if (this.pendingMotion) return ` NORMAL ${this.pendingMotion}_ `;
+    if (this.pendingG) return ` NORMAL g_ `;
     return " NORMAL ";
+  }
+
+  // ─── Snippet expansion ───────────────────────────────────────────────────────
+
+  /**
+   * Apply selected autocomplete item AND expand the snippet to its final value.
+   * Used by Ctrl-E: type `$da` → Ctrl-E → get `2026-03-07` directly.
+   *
+   * NOTE: Uses `(this as any)` to access CustomEditor internals — fragile coupling.
+   */
+  private applyAndExpandSnippet(): void {
+    try {
+      const autocompleteList = (this as any).autocompleteList;
+      const autocompleteProvider = (this as any).autocompleteProvider;
+      const autocompletePrefix = (this as any).autocompletePrefix;
+
+      if (!autocompleteList || !autocompleteProvider) return;
+
+      // 1. Get selected (or first) item
+      const selected =
+        autocompleteList.getSelectedItem() ?? autocompleteList.items?.[0];
+      if (!selected) return;
+
+      // 2. Apply the completion (insert trigger like "$date")
+      (this as any).pushUndoSnapshot();
+      (this as any).lastAction = null;
+
+      const result = autocompleteProvider.applyCompletion(
+        this.getLines(),
+        this.getCursor().line,
+        this.getCursor().col,
+        selected,
+        autocompletePrefix,
+      );
+
+      // Update editor state
+      (this as any).state.lines = result.lines;
+      (this as any).state.cursorLine = result.cursorLine;
+      (this as any).setCursorCol(result.cursorCol);
+
+      // Cancel autocomplete
+      (this as any).cancelAutocomplete();
+
+      // 3. Now expand the snippet trigger to its final value
+      const snippet = SNIPPETS.find((s) => s.trigger === selected.value);
+      if (!snippet) {
+        // Not a snippet trigger, just a regular completion
+        if ((this as any).onChange) (this as any).onChange(this.getText());
+        return;
+      }
+
+      const expansion =
+        typeof snippet.expansion === "function"
+          ? snippet.expansion()
+          : snippet.expansion;
+
+      // Validate expansion result
+      if (expansion == null) {
+        if ((this as any).onChange) (this as any).onChange(this.getText());
+        return;
+      }
+
+      // Validate cursor position and bounds
+      if (
+        result.cursorLine < 0 ||
+        result.cursorLine >= result.lines.length
+      ) {
+        if ((this as any).onChange) (this as any).onChange(this.getText());
+        return;
+      }
+
+      const triggerStart = result.cursorCol - selected.value.length;
+      if (triggerStart < 0) {
+        // Trigger position invalid — abort expansion
+        if ((this as any).onChange) (this as any).onChange(this.getText());
+        return;
+      }
+
+      // Replace the trigger with expansion on current line
+      const currentLine = result.lines[result.cursorLine] ?? "";
+      const newLine =
+        currentLine.slice(0, triggerStart) +
+        expansion +
+        currentLine.slice(result.cursorCol);
+
+      (this as any).state.lines[result.cursorLine] = newLine;
+      (this as any).setCursorCol(triggerStart + expansion.length);
+
+      if ((this as any).onChange) (this as any).onChange(this.getText());
+    } catch (error) {
+      // If snippet expansion fails, ensure editor state remains consistent
+      console.error("Snippet expansion failed:", error);
+      if ((this as any).onChange) (this as any).onChange(this.getText());
+    }
   }
 }

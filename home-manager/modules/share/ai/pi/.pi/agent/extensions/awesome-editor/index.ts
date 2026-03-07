@@ -21,11 +21,18 @@
  *   Alt+o          open line below (insert mode shortcut)
  *   Alt+Shift+O    open line above (insert mode shortcut)
  *
- * Snippet autocomplete ($-snippets trigger automatically on "$"; ?-snippets via Tab):
+ * Snippet autocomplete:
+ *   $              Auto-trigger autocomplete for $-prefixed snippets
+ *   ?              Manually trigger with Tab for ?-prefixed snippets
+ *   Tab/Enter      Apply selected completion (keeps trigger, e.g. "$date")
+ *   Ctrl-E         Apply + expand immediately (e.g. "$da" → "2026-03-07")
+ *
+ * Snippet definitions:
  *   ?q             → clarification instruction
  *   $date          → today's date (YYYY-MM-DD)
  *   $tdd           → red/green TDD instruction
  *   $test_pi       → test pi extension via tmux instruction
+ *   $incentivize   → random psychological prompting trick
  *
  * Dependencies:
  * - ../snippet/
