@@ -31,6 +31,10 @@
         "path": "./markdown/presenterm.json"
       },
       {
+        "language": ["markdown"],
+        "path": "./markdown/pi.json"
+      },
+      {
         "language": ["nix"],
         "path": "./nix.json"
       },

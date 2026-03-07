@@ -1,0 +1,10 @@
+{
+  "tdd": {
+    "prefix": "$tdd",
+    "body": ["Use red/green TDD"]
+  },
+  "test_pi": {
+    "prefix": "$test_pi",
+    "body": ["Test pi extension via tmux"]
+  }
+}
