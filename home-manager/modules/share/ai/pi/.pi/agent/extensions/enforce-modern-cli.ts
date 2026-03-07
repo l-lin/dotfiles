@@ -2,7 +2,7 @@
  * Enforce Modern CLI Tools Extension
  *
  * Hard-blocks bash commands that use legacy tools when modern equivalents are available:
- * - `grep` → use `rg` (ripgrep) or `ast-grep` for structural code patterns
+ * - `grep` → use `rg`
  * - `find` → use `fd`
  *
  * The block returns a descriptive error so the LLM understands what to use instead.
