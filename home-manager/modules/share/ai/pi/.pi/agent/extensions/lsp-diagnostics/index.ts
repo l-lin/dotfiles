@@ -10,7 +10,6 @@ import {
   isEditToolResult,
   isWriteToolResult,
 } from "@mariozechner/pi-coding-agent";
-import type { TUI } from "@mariozechner/pi-tui";
 import * as path from "node:path";
 import type { LspDiagnostic, SavedConfig } from "./types.js";
 import {
@@ -19,15 +18,11 @@ import {
   buildDiagnosticBlock,
 } from "./tool-result-helpers.js";
 import { CONFIG_ENTRY_TYPE } from "./types.js";
-import { loadConfig, loadFileConfig, saveEnabled } from "./config.js";
+import { loadConfig, loadFileConfig } from "./config.js";
 import { resolveLspCommands, resolveRootDir } from "./resolver.js";
-import { LspDetailsComponent, type LspClientEntry } from "./lsp-details.js";
-import {
-  setLspWidget,
-  syncLspServers,
-  clearWidget,
-  LSP_ICON,
-} from "./widget.js";
+import type { LspClientEntry } from "./lsp-details.js";
+import { setLspWidget, syncLspServers, clearWidget } from "./widget.js";
+import { handleLspCommand } from "./commands.js";
 
 const DIAGNOSTICS_TIMEOUT_IN_MS = 30_000;
 
@@ -40,16 +35,12 @@ export default function (pi: ExtensionAPI) {
   // Persistent LSP clients keyed by command string — created lazily, shut down on session end
   const lspClients = new Map<string, LspClientEntry>();
 
-  // ── /lsp toggle command ──────────────────────────────────────────────────
+  // ── /lsp unified command ────────────────────────────────────────────────
   pi.registerCommand("cmd:lsp", {
-    description: "Toggle auto LSP diagnostics on/off for this session",
+    description:
+      "LSP management: toggle extension, kill servers, or view details",
     handler: async (_args, ctx) => {
-      config.enabled = !config.enabled;
-      saveEnabled(config.enabled);
-      ctx.ui.notify(
-        `lsp-diagnostics ${config.enabled ? "enabled" : "disabled"}`,
-        "info",
-      );
+      await handleLspCommand(config, lspClients, ctx);
     },
   });
 
@@ -77,74 +68,6 @@ export default function (pi: ExtensionAPI) {
         ctx.ui.notify(`lsp-diagnostics config — ${parts.join(" | ")}`, "info");
       }
     }
-  });
-
-  // ── /lsp-kill command ────────────────────────────────────────────────────
-  pi.registerCommand("cmd:lsp-kill", {
-    description: "Manually shut down one or all active LSP server(s)",
-    handler: async (_args, ctx) => {
-      if (lspClients.size === 0) {
-        ctx.ui.notify("No active LSP servers.", "info");
-        return;
-      }
-
-      const ALL_LABEL = `${LSP_ICON} ALL`;
-      // Map display label → original commandKey so icon-prefix stripping can't silently mismatch
-      const labelToKey = new Map<string, string>();
-      for (const k of lspClients.keys()) {
-        labelToKey.set(`${LSP_ICON} ${k}`, k);
-      }
-      const options = [ALL_LABEL, ...labelToKey.keys()];
-      const chosen = await ctx.ui.select(
-        "Select an LSP server to kill:",
-        options,
-      );
-      if (!chosen) return;
-
-      if (chosen === ALL_LABEL) {
-        const count = lspClients.size;
-        const shutdowns = [...lspClients.values()].map(({ client }) =>
-          client.shutdown(),
-        );
-        lspClients.clear();
-        await Promise.allSettled(shutdowns);
-        clearWidget(ctx);
-        ctx.ui.notify(`Killed all ${count} LSP server(s).`, "info");
-      } else {
-        const key = labelToKey.get(chosen)!;
-        const entry = lspClients.get(key);
-        if (!entry) {
-          ctx.ui.notify(`LSP server "${key}" not found.`, "error");
-          return;
-        }
-        await entry.client.shutdown();
-        lspClients.delete(key);
-        if (lspClients.size === 0) {
-          clearWidget(ctx);
-        }
-        ctx.ui.notify(`Killed LSP server "${key}".`, "info");
-      }
-    },
-  });
-
-  // ── /lsp-details command ──────────────────────────────────────────────────
-  pi.registerCommand("cmd:lsp-details", {
-    description:
-      "Show detailed debug info for all active LSP server(s) in an interactive TUI",
-    handler: async (_args, ctx) => {
-      if (!ctx.hasUI) return;
-
-      await ctx.ui.custom(
-        (
-          tui: TUI,
-          theme: unknown,
-          _kb: unknown,
-          done: (result: unknown) => void,
-        ) => {
-          return new LspDetailsComponent(lspClients, tui, theme, done);
-        },
-      );
-    },
   });
 
   // ── Shut down all LSP clients when the session ends ─────────────────────
