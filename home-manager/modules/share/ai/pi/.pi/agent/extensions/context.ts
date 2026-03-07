@@ -19,12 +19,10 @@ import type {
   ExtensionContext,
   ToolResultEvent,
 } from "@mariozechner/pi-coding-agent";
-import { DynamicBorder } from "@mariozechner/pi-coding-agent";
 import {
-  Container,
-  Key,
-  Text,
   matchesKey,
+  truncateToWidth,
+  visibleWidth,
   type Component,
 } from "@mariozechner/pi-tui";
 import os from "node:os";
@@ -48,7 +46,7 @@ function formatUsd(cost: number): string {
 }
 
 function estimateTokens(text: string): number {
-  // Deliberately fuzzy (good enough for “how big-ish is this”).
+  // Deliberately fuzzy (good enough for "how big-ish is this").
   return Math.max(0, Math.ceil(text.length / 4));
 }
 
@@ -318,35 +316,44 @@ class ContextView implements Component {
   private theme: any;
   private onDone: () => void;
   private data: ContextViewData;
-  private container: Container;
-  private body: Text;
-  private cachedWidth?: number;
 
   constructor(theme: any, data: ContextViewData, onDone: () => void) {
     this.theme = theme;
     this.data = data;
     this.onDone = onDone;
-
-    this.container = new Container();
-    this.container.addChild(new DynamicBorder((s) => theme.fg("accent", s)));
-    this.container.addChild(
-      new Text(
-        theme.fg("accent", theme.bold("Context")) +
-          theme.fg("dim", "  (Esc/q/Enter to close)"),
-        1,
-        0,
-      ),
-    );
-    this.container.addChild(new Text("", 1, 0));
-
-    this.body = new Text("", 1, 0);
-    this.container.addChild(this.body);
-
-    this.container.addChild(new Text("", 1, 0));
-    this.container.addChild(new DynamicBorder((s) => theme.fg("accent", s)));
   }
 
-  private rebuild(width: number): void {
+  private box(contentLines: string[], width: number, title: string): string[] {
+    const th = this.theme;
+    const innerW = Math.max(1, width - 2);
+    const result: string[] = [];
+
+    // Top border with title
+    const titleStr = truncateToWidth(` ${title} `, innerW);
+    const titleW = visibleWidth(titleStr);
+    const topLine = "─".repeat(Math.floor((innerW - titleW) / 2));
+    const topLine2 = "─".repeat(Math.max(0, innerW - titleW - topLine.length));
+    result.push(
+      th.fg("border", `╭${topLine}`) +
+        th.fg("accent", titleStr) +
+        th.fg("border", `${topLine2}╮`),
+    );
+
+    // Content
+    for (const line of contentLines) {
+      result.push(
+        th.fg("border", "│") +
+          truncateToWidth(" " + line, innerW, "...", true) +
+          th.fg("border", "│"),
+      );
+    }
+
+    // Bottom border
+    result.push(th.fg("border", `╰${"─".repeat(innerW)}╯`));
+    return result;
+  }
+
+  private buildContent(): string[] {
     const dim = (s: string) => this.theme.fg("dim", s);
     const label = (icon: string, s: string) =>
       icon + " " + this.theme.bold(this.theme.fg("text", s));
@@ -355,18 +362,20 @@ class ContextView implements Component {
 
     // Window + bar
     if (!this.data.usage) {
-      lines.push(label("", "Window:") + " " + dim("(unknown)"));
+      lines.push(label("", "Window:") + " " + dim("(unknown)"));
     } else {
       const u = this.data.usage;
       lines.push(
-        label("", "Window:") +
+        label("", "Window:") +
           " " +
           this.theme.fg(WINDOW_FG, `~${u.effectiveTokens.toLocaleString()}`) +
-          dim(` / ${u.contextWindow.toLocaleString()}  (${u.percent.toFixed(1)}% used, ~${u.remainingTokens.toLocaleString()} left)`),
+          dim(
+            ` / ${u.contextWindow.toLocaleString()}  (${u.percent.toFixed(1)}% used, ~${u.remainingTokens.toLocaleString()} left)`,
+          ),
       );
 
       // bar width tries to fit within the viewport
-      const barWidth = Math.max(10, Math.min(36, width - 10));
+      const barWidth = Math.max(10, 36);
 
       // Prorate system prompt into current message context estimate, then add tools estimate.
       const sysInMessages = Math.min(u.systemPromptTokens, u.messageTokens);
@@ -404,16 +413,23 @@ class ContextView implements Component {
     if (this.data.usage) {
       const u = this.data.usage;
       lines.push(
-        label("", "System:") +
+        label("", "System:") +
           " " +
-          this.theme.fg(SYSTEM_FG, `~${u.systemPromptTokens.toLocaleString()} tok`) +
+          this.theme.fg(
+            SYSTEM_FG,
+            `~${u.systemPromptTokens.toLocaleString()} tok`,
+          ) +
           dim(`  (AGENTS ~${u.agentTokens.toLocaleString()})`),
       );
       lines.push(
-        label("", `Tools (${u.activeTools}):`) +
+        label("", `Tools (${u.activeTools}):`) +
           " " +
           this.theme.fg(TOOLS_FG, `~${u.toolsTokens.toLocaleString()} tok`) +
-          dim(this.data.activeToolNames.length ? `  ${this.data.activeToolNames.slice().sort().join(", ")}` : ""),
+          dim(
+            this.data.activeToolNames.length
+              ? `  ${this.data.activeToolNames.slice().sort().join(", ")}`
+              : "",
+          ),
       );
     }
 
@@ -428,7 +444,7 @@ class ContextView implements Component {
     );
     lines.push("");
     lines.push(
-      label("", `Extensions (${this.data.extensions.length}):`) +
+      label("", `Extensions (${this.data.extensions.length}):`) +
         " " +
         dim(
           this.data.extensions.length
@@ -447,10 +463,13 @@ class ContextView implements Component {
         )
       : dim("(none)");
     lines.push(
-      label("", `Skills (${this.data.skills.length}):`) +
+      label("", `Skills (${this.data.skills.length}):`) +
         " " +
         (this.data.skillDescTokens > 0
-          ? this.theme.fg(SYSTEM_FG, `~${this.data.skillDescTokens.toLocaleString()} tok`) + dim("  ")
+          ? this.theme.fg(
+              SYSTEM_FG,
+              `~${this.data.skillDescTokens.toLocaleString()} tok`,
+            ) + dim("  ")
           : "") +
         skillsRendered,
     );
@@ -465,21 +484,20 @@ class ContextView implements Component {
     );
     lines.push("");
     lines.push(
-      label("", "Session:") +
+      label("", "Session:") +
         " " +
         dim(
           `${this.data.session.totalTokens.toLocaleString()} tok · ${formatUsd(this.data.session.totalCost)}`,
         ),
     );
 
-    this.body.setText(lines.join("\n"));
-    this.cachedWidth = width;
+    return lines;
   }
 
   handleInput(data: string): void {
     if (
-      matchesKey(data, Key.escape) ||
-      matchesKey(data, Key.ctrl("c")) ||
+      matchesKey(data, "escape") ||
+      matchesKey(data, "ctrl+c") ||
       data.toLowerCase() === "q" ||
       data === "\r"
     ) {
@@ -489,13 +507,13 @@ class ContextView implements Component {
   }
 
   invalidate(): void {
-    this.container.invalidate();
-    this.cachedWidth = undefined;
+    // No cache to invalidate
   }
 
   render(width: number): string[] {
-    if (this.cachedWidth !== width) this.rebuild(width);
-    return this.container.render(width);
+    const content = this.buildContent();
+    const title = "Context · Esc/q/Enter:close";
+    return this.box(content, width, title);
   }
 }
 
@@ -709,9 +727,20 @@ export default function contextExtension(pi: ExtensionAPI) {
         },
       };
 
-      await ctx.ui.custom<void>((_tui, theme, _kb, done) => {
-        return new ContextView(theme, viewData, done);
-      });
+      await ctx.ui.custom<void>(
+        (_tui, theme, _kb, done) => {
+          return new ContextView(theme, viewData, done);
+        },
+        {
+          overlay: true,
+          overlayOptions: {
+            anchor: "center",
+            width: "90%",
+            minWidth: 60,
+            maxHeight: "85%",
+          },
+        },
+      );
     },
   });
 }

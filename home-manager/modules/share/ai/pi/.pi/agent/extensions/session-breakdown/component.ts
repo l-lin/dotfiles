@@ -1,34 +1,30 @@
 import {
-  Container,
-  Key,
-  Text,
   matchesKey,
+  truncateToWidth,
+  visibleWidth,
   type Component,
   type TUI,
-  visibleWidth,
 } from "@mariozechner/pi-tui";
-import { DynamicBorder } from "@mariozechner/pi-coding-agent";
 import type { BreakdownData, MeasurementMode } from "./types.js";
 import { RANGE_DAYS } from "./constants.js";
-import { bold, dim } from "./color-utils.js";
 import { toLocalDayKey } from "./date-utils.js";
 import { renderBreakdownBody } from "./renderer.js";
 
 export class BreakdownComponent implements Component {
   private data: BreakdownData;
   private tui: TUI;
+  private theme: any;
   private onDone: () => void;
   private rangeIndex = 1; // default 30d
   private measurement: MeasurementMode = "sessions";
-  private cachedWidth?: number;
   private isLight = false;
-  private container: Container;
-  private body: Text;
 
   constructor(data: BreakdownData, tui: TUI, onDone: () => void, theme?: any) {
     this.data = data;
     this.tui = tui;
     this.onDone = onDone;
+    this.theme = theme;
+
     // Theme provided by pi; detect light vs dark by name when possible.
     try {
       this.isLight = !!(
@@ -39,33 +35,52 @@ export class BreakdownComponent implements Component {
     } catch {
       this.isLight = false;
     }
-
-    const accentBorder = (s: string) => (theme ? theme.fg("accent", s) : s);
-
-    this.container = new Container();
-    this.container.addChild(new DynamicBorder(accentBorder));
-    this.container.addChild(
-      new Text(
-        (theme
-          ? theme.fg("accent", theme.bold("Session breakdown"))
-          : bold("Session breakdown")) +
-          (theme
-            ? theme.fg("dim", "  (←/→ range · tab metric · q close)")
-            : dim("  (←/→ range · tab metric · q close)")),
-        1,
-        0,
-      ),
-    );
-    this.container.addChild(new Text("", 1, 0));
-    this.body = new Text("", 1, 0);
-    this.container.addChild(this.body);
-    this.container.addChild(new Text("", 1, 0));
-    this.container.addChild(new DynamicBorder(accentBorder));
   }
 
-  private rebuild(width: number): void {
-    // Text children have 1-char left indent; use inner width for content that is width-sensitive.
-    const inner = Math.max(1, width - 1);
+  private box(contentLines: string[], width: number, title: string): string[] {
+    const th = this.theme;
+    const innerW = Math.max(1, width - 2);
+    const result: string[] = [];
+
+    // Top border with title
+    const titleStr = truncateToWidth(` ${title} `, innerW);
+    const titleW = visibleWidth(titleStr);
+    const topLine = "─".repeat(Math.floor((innerW - titleW) / 2));
+    const topLine2 = "─".repeat(Math.max(0, innerW - titleW - topLine.length));
+
+    if (th) {
+      result.push(
+        th.fg("border", `╭${topLine}`) +
+          th.fg("accent", titleStr) +
+          th.fg("border", `${topLine2}╮`),
+      );
+    } else {
+      result.push(`╭${topLine}${titleStr}${topLine2}╮`);
+    }
+
+    // Content
+    for (const line of contentLines) {
+      const paddedLine = truncateToWidth(" " + line, innerW, "...", true);
+      if (th) {
+        result.push(th.fg("border", "│") + paddedLine + th.fg("border", "│"));
+      } else {
+        result.push("│" + paddedLine + "│");
+      }
+    }
+
+    // Bottom border
+    if (th) {
+      result.push(th.fg("border", `╰${"─".repeat(innerW)}╯`));
+    } else {
+      result.push(`╰${"─".repeat(innerW)}╯`);
+    }
+
+    return result;
+  }
+
+  private buildContent(width: number): string[] {
+    // Account for borders
+    const inner = Math.max(1, width - 2);
 
     const selectedDays = RANGE_DAYS[this.rangeIndex];
     const range = this.data.ranges.get(selectedDays)!;
@@ -86,23 +101,17 @@ export class BreakdownComponent implements Component {
       this.rangeIndex,
     );
 
-    this.body.setText(
-      lines
-        .map((l) => (visibleWidth(l) > inner ? l.slice(0, inner) : l))
-        .join("\n"),
-    );
-    this.cachedWidth = width;
+    return lines.map((l) => (visibleWidth(l) > inner ? l.slice(0, inner) : l));
   }
 
   invalidate(): void {
-    this.cachedWidth = undefined;
-    this.container.invalidate();
+    // No cache to invalidate
   }
 
   handleInput(data: string): void {
     if (
-      matchesKey(data, Key.escape) ||
-      matchesKey(data, Key.ctrl("c")) ||
+      matchesKey(data, "escape") ||
+      matchesKey(data, "ctrl+c") ||
       data.toLowerCase() === "q"
     ) {
       this.onDone();
@@ -110,16 +119,15 @@ export class BreakdownComponent implements Component {
     }
 
     if (
-      matchesKey(data, Key.tab) ||
-      matchesKey(data, Key.shift("tab")) ||
+      matchesKey(data, "tab") ||
+      matchesKey(data, "shift+tab") ||
       data.toLowerCase() === "t"
     ) {
       const order: MeasurementMode[] = ["sessions", "messages", "tokens"];
       const idx = Math.max(0, order.indexOf(this.measurement));
-      const dir = matchesKey(data, Key.shift("tab")) ? -1 : 1;
+      const dir = matchesKey(data, "shift+tab") ? -1 : 1;
       this.measurement =
         order[(idx + order.length + dir) % order.length] ?? "sessions";
-      this.invalidate();
       this.tui.requestRender();
       return;
     }
@@ -127,37 +135,33 @@ export class BreakdownComponent implements Component {
     const prev = () => {
       this.rangeIndex =
         (this.rangeIndex + RANGE_DAYS.length - 1) % RANGE_DAYS.length;
-      this.invalidate();
       this.tui.requestRender();
     };
     const next = () => {
       this.rangeIndex = (this.rangeIndex + 1) % RANGE_DAYS.length;
-      this.invalidate();
       this.tui.requestRender();
     };
 
-    if (matchesKey(data, Key.left) || data.toLowerCase() === "h") prev();
-    if (matchesKey(data, Key.right) || data.toLowerCase() === "l") next();
+    if (matchesKey(data, "left") || data.toLowerCase() === "h") prev();
+    if (matchesKey(data, "right") || data.toLowerCase() === "l") next();
 
     if (data === "1") {
       this.rangeIndex = 0;
-      this.invalidate();
       this.tui.requestRender();
     }
     if (data === "2") {
       this.rangeIndex = 1;
-      this.invalidate();
       this.tui.requestRender();
     }
     if (data === "3") {
       this.rangeIndex = 2;
-      this.invalidate();
       this.tui.requestRender();
     }
   }
 
   render(width: number): string[] {
-    if (this.cachedWidth !== width) this.rebuild(width);
-    return this.container.render(width);
+    const content = this.buildContent(width);
+    const title = "Session breakdown · ←→/hl:range · tab:metric · q:close";
+    return this.box(content, width, title);
   }
 }

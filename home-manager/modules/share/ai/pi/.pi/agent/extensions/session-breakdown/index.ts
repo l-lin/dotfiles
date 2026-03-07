@@ -131,9 +131,20 @@ export default function sessionBreakdownExtension(pi: ExtensionAPI) {
         return;
       }
 
-      await ctx.ui.custom<void>((tui, theme, _kb, done) => {
-        return new BreakdownComponent(data, tui, done, theme);
-      });
+      await ctx.ui.custom<void>(
+        (tui, theme, _kb, done) => {
+          return new BreakdownComponent(data, tui, done, theme);
+        },
+        {
+          overlay: true,
+          overlayOptions: {
+            anchor: "center",
+            width: "90%",
+            minWidth: 60,
+            maxHeight: "85%",
+          },
+        },
+      );
     },
   });
 }
