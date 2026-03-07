@@ -6,7 +6,7 @@
  */
 
 import { StringEnum } from "@mariozechner/pi-ai";
-import type { ExtensionAPI, ExtensionContext, Theme } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI, ExtensionContext, Theme, ThemeColor } from "@mariozechner/pi-coding-agent";
 import { truncateToWidth } from "@mariozechner/pi-tui";
 import { Type, type Static } from "@sinclair/typebox";
 import { discoverAgents } from "./agents.js";
@@ -280,17 +280,10 @@ function updateSessionWidget(ctx: ExtensionContext): void {
       render: (width: number) => {
         const blinkOn = Math.floor(Date.now() / 500) % 2 === 0;
         return sessions.all().map((s) => {
-          // live snapshot — not stale closure
-          const hasResult = s.lastResult.length > 0;
-          const icon = s.pending
-            ? blinkOn
-              ? theme.fg("success", "󰚩")
-              : " "
-            : hasResult
-              ? theme.fg("accent", "󰚩") // result ready — read via subagent-read
-              : s.alive
-                ? theme.fg("success", "󰚩")
-                : theme.fg("muted", "󰚩");
+          const color: ThemeColor = s.alive ? "success" : "muted";
+          let icon = theme.fg(color, "󰚩")
+          if (s.pending) icon = blinkOn ? theme.fg(color, "󰚩") : " ";
+
           const id = theme.fg("toolTitle", theme.bold(s.id));
           const task = theme.fg(
             "dim",
