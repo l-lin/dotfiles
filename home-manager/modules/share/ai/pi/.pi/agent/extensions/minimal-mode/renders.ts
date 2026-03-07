@@ -3,7 +3,7 @@
  */
 
 import { Text } from "@mariozechner/pi-tui";
-import { renderDiff } from "@mariozechner/pi-coding-agent";
+import { EditToolDetails, renderDiff } from "@mariozechner/pi-coding-agent";
 import { homedir } from "os";
 import { getBuiltInTools } from "./tool-cache.js";
 
@@ -99,12 +99,34 @@ export function renderEditCall(args: any, theme: any) {
 }
 
 export function renderEditResult(result: any, { expanded }: any, theme: any) {
-  if (!expanded) return new Text("", 0, 0);
+  const details = result.details as EditToolDetails | undefined;
+  const content = result.content[0];
+  if (content?.type === "text" && content.text.startsWith("Error")) {
+    return new Text(theme.fg("error", content.text.split("\n")[0]), 0, 0);
+  }
+
+  if (!details?.diff) {
+    return new Text(theme.fg("success", "Applied"), 0, 0);
+  }
+
+  // Count additions and removals from the diff
+  const diffLines = details.diff.split("\n");
+  let additions = 0;
+  let removals = 0;
+  for (const line of diffLines) {
+    if (line.startsWith("+") && !line.startsWith("+++")) additions++;
+    if (line.startsWith("-") && !line.startsWith("---")) removals++;
+  }
+  let text = theme.fg("success", ` +${additions}`);
+  text += theme.fg("dim", "/");
+  text += theme.fg("error", `-${removals}`);
+
+  if (!expanded) return new Text(text, 0, 0);
 
   // Try to extract diff from result
   const diff = result.details?.diff;
   if (typeof diff === "string" && diff.length > 0) {
-    return new Text(renderDiff(diff), 0, 0);
+    return new Text(`${text}\n${renderDiff(diff)}`, 0, 0);
   }
 
   const tools = getBuiltInTools(process.cwd());
