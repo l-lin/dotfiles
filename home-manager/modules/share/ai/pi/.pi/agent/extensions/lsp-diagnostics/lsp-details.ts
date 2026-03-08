@@ -253,13 +253,15 @@ export class LspDetailsComponent implements Component {
         const errors = diags.filter((dg) => dg.severity === 1).length;
         const warns = diags.filter((dg) => dg.severity === 2).length;
         const infos = diags.filter((dg) => dg.severity === 3).length;
+        const hints = diags.filter((dg) => dg.severity === 4).length;
         const badge =
           diags.length === 0
             ? "  " + th.fg("success", "✓")
             : "  " +
               (errors > 0 ? th.fg("error", `✖ ${errors}`) : "") +
               (warns > 0 ? " " + th.fg("warning", `⚠ ${warns}`) : "") +
-              (infos > 0 ? " " + th.fg("muted", `ℹ ${infos}`) : "");
+              (infos > 0 ? " " + th.fg("muted", ` ${infos}`) : "") +
+              (hints > 0 ? " " + th.fg("muted", ` ${hints}`) : "");
         lines.push(`  ${filePath}${badge}`);
       }
     }
@@ -363,14 +365,33 @@ export class LspDetailsComponent implements Component {
       this.scrollOffset++;
       this.tui.requestRender();
     }
-    if (matchesKey(data, "ctrl+u")) {
-      const pageSize = Math.max(1, 10);
+    if (matchesKey(data, "ctrl+u") || data === "\x1b[5~") {
+      // Page up: scroll half viewport (^U or PgUp key sequence)
+      const terminalHeight = process.stdout.rows ?? 40;
+      const viewportLines = Math.floor(terminalHeight * 0.85) - 2;
+      const pageSize = Math.max(1, Math.floor(viewportLines / 2));
       this.scrollOffset = Math.max(0, this.scrollOffset - pageSize);
       this.tui.requestRender();
     }
-    if (matchesKey(data, "ctrl+d")) {
-      const pageSize = Math.max(1, 10);
+    if (matchesKey(data, "ctrl+d") || data === "\x1b[6~") {
+      // Page down: scroll half viewport (^D or PgDn key sequence)
+      const terminalHeight = process.stdout.rows ?? 40;
+      const viewportLines = Math.floor(terminalHeight * 0.85) - 2;
+      const pageSize = Math.max(1, Math.floor(viewportLines / 2));
       this.scrollOffset += pageSize;
+      this.tui.requestRender();
+    }
+    if (matchesKey(data, "home") || data === "g") {
+      // Jump to top
+      this.scrollOffset = 0;
+      this.tui.requestRender();
+    }
+    if (matchesKey(data, "end") || data === "G") {
+      // Jump to bottom
+      const contentLines = this.buildContentLines();
+      const terminalHeight = process.stdout.rows ?? 40;
+      const viewportLines = Math.floor(terminalHeight * 0.85) - 2;
+      this.scrollOffset = Math.max(0, contentLines.length - viewportLines);
       this.tui.requestRender();
     }
   }
@@ -382,9 +403,12 @@ export class LspDetailsComponent implements Component {
   render(width: number): string[] {
     const contentLines = this.buildContentLines();
 
-    // Calculate available height (accounting for box borders)
-    const maxHeight = 40; // Will be constrained by overlayOptions.maxHeight
-    const viewportLines = Math.max(1, maxHeight - 2); // -2 for top and bottom borders
+    // Get actual terminal height (default to 40 if not available)
+    const terminalHeight = process.stdout.rows ?? 40;
+    // Overlay with 85% maxHeight from overlayOptions, with margin
+    const maxOverlayHeight = Math.floor(terminalHeight * 0.85);
+    // Account for box borders (top + bottom = 2 lines)
+    const viewportLines = Math.max(1, maxOverlayHeight - 2);
 
     // Clamp scroll
     const maxScroll = Math.max(0, contentLines.length - viewportLines);
@@ -396,10 +420,13 @@ export class LspDetailsComponent implements Component {
       this.scrollOffset + viewportLines,
     );
 
-    // Build title with navigation hints
-    const th = this.theme;
+    // Build title with navigation hints and scroll indicator
     const navHint = this.snapshots.length > 1 ? " ←→/hl:server" : "";
-    const title = `LSP Server Details${navHint} · ↑↓/jk:scroll · ^u/^d:page · q:close`;
+    const scrollHint =
+      contentLines.length > viewportLines
+        ? ` ${this.scrollOffset + 1}-${Math.min(this.scrollOffset + viewportLines, contentLines.length)}/${contentLines.length}`
+        : "";
+    const title = `LSP Server Details${navHint} · ↑↓/jk:scroll · ^u/^d/PgUp/PgDn:page · g/G/Home/End:jump · q:close${scrollHint}`;
 
     return this.box(visibleContent, width, title);
   }
