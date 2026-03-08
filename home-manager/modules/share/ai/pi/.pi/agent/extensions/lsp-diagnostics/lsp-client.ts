@@ -160,9 +160,21 @@ export class PersistentLspClient {
           this.waiters.delete(matchedUri);
           resolvers.forEach((r) => r());
         } else if (this.waiters.size > 0) {
-          // Debug: no waiters matched
-          const waiting = [...this.waiters.keys()];
-          this.lastMismatchInfo = `Received: ${params.uri}\nCanonical: ${canonicalUri}\nWaiting for: ${waiting.join(", ")}`;
+          // Only flag as mismatch if we received a URI with the SAME filename
+          // as one we're waiting for, but the full path differs.
+          // Receiving diagnostics for unrelated files (e.g., tsconfig.json when
+          // waiting for oracle.ts) is normal LSP behavior, not a mismatch.
+          const incomingFilename = path.basename(fileUriToPath(params.uri));
+          const waitingUris = [...this.waiters.keys()];
+          const sameFilenameWaiters = waitingUris.filter(
+            (uri) => path.basename(fileUriToPath(uri)) === incomingFilename,
+          );
+
+          if (sameFilenameWaiters.length > 0) {
+            // This IS a mismatch: same filename but path didn't match
+            this.lastMismatchInfo = `Received: ${params.uri}\nCanonical: ${canonicalUri}\nWaiting for: ${sameFilenameWaiters.join(", ")}`;
+          }
+          // Otherwise: just a different file, not a mismatch - don't overwrite lastMismatchInfo
         }
       },
     );
