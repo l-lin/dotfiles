@@ -56,7 +56,7 @@ export default function (pi: ExtensionAPI) {
 
     const breakdown = [`󰧑 ${formatMs(llmMs)}`];
     if (toolMs > 0) breakdown.push(` ${formatMs(toolMs)}`);
-    const message = ` ${formatMs(totalMs)} (${breakdown.join(" + ")})`;
+    const message = ` ${formatMs(totalMs)} (${breakdown.join(" + ")})`;
 
     ctx.ui.notify(message, "info");
     run = null;
