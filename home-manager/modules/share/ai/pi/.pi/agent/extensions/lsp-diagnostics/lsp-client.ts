@@ -89,12 +89,35 @@ export class PersistentLspClient {
   /** Last URI mismatch debug info */
   public lastMismatchInfo: string | null = null;
 
+  // Server settings passed during initialization
+  private serverSettings: Record<string, unknown> | undefined;
+
   private constructor(
     proc: ReturnType<typeof spawn>,
     connection: ReturnType<typeof createMessageConnection>,
+    settings?: Record<string, unknown>,
+    notify?: NotifyFn,
   ) {
     this.proc = proc;
     this.connection = connection;
+    this.serverSettings = settings;
+
+    // Handle workspace/configuration requests (pull model)
+    // Many language servers (like lua-language-server) request configuration
+    // instead of relying on didChangeConfiguration notifications
+    connection.onRequest("workspace/configuration", (params: any) => {
+      // params.items is an array of ConfigurationItem
+      // Each item has: { scopeUri?: string; section?: string; }
+      const items = params.items || [];
+      return items.map((item: any) => {
+        // If section is specified (e.g., "Lua"), return that section
+        // Otherwise return all settings
+        if (item.section && this.serverSettings) {
+          return this.serverSettings[item.section] ?? null;
+        }
+        return this.serverSettings ?? null;
+      });
+    });
 
     connection.onNotification(
       "textDocument/publishDiagnostics",
@@ -231,11 +254,14 @@ export class PersistentLspClient {
     );
     connection.listen();
 
-    const client = new PersistentLspClient(proc, connection);
+    const client = new PersistentLspClient(proc, connection, settings, onError);
 
     const defaultCapabilities = {
       textDocument: { publishDiagnostics: { relatedInformation: false } },
-      workspace: { workspaceFolders: true },
+      workspace: {
+        workspaceFolders: true,
+        configuration: true,
+      },
     };
     const initCapabilities = capabilities
       ? deepMerge(defaultCapabilities, capabilities)
@@ -247,6 +273,7 @@ export class PersistentLspClient {
         processId: process.pid,
         rootUri: pathToFileUri(projectRoot),
         capabilities: initCapabilities,
+        initializationOptions: settings,
         workspaceFolders: [
           { uri: pathToFileUri(projectRoot), name: path.basename(projectRoot) },
         ],
@@ -255,7 +282,9 @@ export class PersistentLspClient {
 
     connection.sendNotification("initialized", {});
 
-    // Push server-specific settings immediately after handshake
+    // Push server-specific settings immediately after handshake (push model)
+    // Note: Some servers like lua-language-server prefer the pull model
+    // (workspace/configuration request) which is handled by the onRequest handler
     if (settings && Object.keys(settings).length > 0) {
       connection.sendNotification("workspace/didChangeConfiguration", {
         settings,
