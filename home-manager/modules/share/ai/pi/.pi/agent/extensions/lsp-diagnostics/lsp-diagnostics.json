@@ -27,7 +27,7 @@
       "settings": {
         "Lua": {
           "runtime": { "version": "LuaJIT" },
-          "diagnostics": { "globals": ["vim"] },
+          "diagnostics": { "globals": ["vim", "LazyVim", "Snacks", "describe", "it"] },
           "workspace": { "checkThirdParty": false },
           "telemetry": { "enable": false }
         }
