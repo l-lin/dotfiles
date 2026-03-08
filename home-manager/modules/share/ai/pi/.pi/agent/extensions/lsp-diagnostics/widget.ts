@@ -10,7 +10,7 @@ import type { ExtensionContext } from "@mariozechner/pi-coding-agent";
 import type { TUI } from "@mariozechner/pi-tui";
 import { truncateToWidth } from "@mariozechner/pi-tui";
 import type { LspDiagnostic } from "./types.js";
-import { SEVERITY_ERROR, SEVERITY_WARNING, SEVERITY_INFO } from "./types.js";
+import { SEVERITY_ERROR, SEVERITY_WARNING, SEVERITY_INFO, SEVERITY_HINT } from "./types.js";
 
 export const WIDGET_KEY = "lsp-diagnostics";
 export const LSP_ICON = "";
@@ -22,7 +22,8 @@ export type LspWidgetState = "starting" | "collecting" | "idle";
 interface DiagnosticCounts {
   errors: number;
   warnings: number;
-  info: number;
+  infos: number;
+  hints: number;
 }
 
 interface TimingInfo {
@@ -48,22 +49,24 @@ function countDiagnostics(
 ): DiagnosticCounts {
   let errors = 0;
   let warnings = 0;
-  let info = 0;
+  let infos = 0;
+  let hints = 0;
 
   for (const diags of diagnostics.values()) {
     for (const d of diags) {
       if (d.severity === SEVERITY_ERROR) errors++;
       else if (d.severity === SEVERITY_WARNING) warnings++;
-      else if (d.severity === SEVERITY_INFO) info++;
+      else if (d.severity === SEVERITY_INFO) infos++;
+      else if (d.severity === SEVERITY_HINT) hints++;
     }
   }
 
-  return { errors, warnings, info };
+  return { errors, warnings, infos, hints };
 }
 
 /**
  * Build a colored summary string from diagnostic counts.
- * Returns empty string if no issues, or formatted string like "✖ 2 ⚠ 1 ℹ 3"
+ * Returns empty string if no issues, or formatted string like "✖ 2 ⚠ 1  3  4"
  */
 function buildSummary(counts: DiagnosticCounts, theme: any): string {
   const parts: string[] = [];
@@ -73,8 +76,11 @@ function buildSummary(counts: DiagnosticCounts, theme: any): string {
   if (counts.warnings > 0) {
     parts.push(theme.fg("warning", `⚠ ${counts.warnings}`));
   }
-  if (counts.info > 0) {
-    parts.push(theme.fg("muted", `ℹ ${counts.info}`));
+  if (counts.infos > 0) {
+    parts.push(theme.fg("muted", ` ${counts.infos}`));
+  }
+  if (counts.hints > 0) {
+    parts.push(theme.fg("muted", ` ${counts.hints}`));
   }
   return parts.length > 0 ? ` ${parts.join(" ")}` : "";
 }
@@ -146,13 +152,12 @@ function ensureWidgetRegistered(ctx: ExtensionContext): void {
               entry.timing && !entry.timing.receivedResponse
                 ? theme.fg("error", " ⏱")
                 : "";
-            if (summary === "") {
+            if (summary === "" && timeoutWarning === "") {
               statusPart =
-                theme.fg("success", ` ${SUCCESS_ICON}`) +
                 timingPart +
-                timeoutWarning;
+                theme.fg("success", ` ${SUCCESS_ICON}`);
             } else {
-              statusPart = summary + timingPart + timeoutWarning;
+              statusPart = timeoutWarning + timingPart + summary;
             }
           }
 
