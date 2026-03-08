@@ -329,17 +329,17 @@ export default function webFetchExtension(pi: ExtensionAPI) {
 
     renderResult(result, { expanded, isPartial }, theme) {
       if (isPartial) {
-        return new Text(theme.fg("warning", "⟳ Fetching…"), 0, 0);
+        return new Text(theme.fg("warning", " ⟳ Fetching…"), 0, 0);
       }
 
       const details = result.details as FetchDetails | undefined;
 
       if (details?.error) {
-        return new Text(theme.fg("error", `✗ ${details.error}`), 0, 0);
+        return new Text(theme.fg("error", ` ✗ ${details.error}`), 0, 0);
       }
 
       if (!details) {
-        return new Text(theme.fg("success", "✓ Fetched"), 0, 0);
+        return new Text(theme.fg("success", " ✓ Fetched"), 0, 0);
       }
 
       if (!expanded) {
