@@ -129,6 +129,15 @@ export default function (pi: ExtensionAPI) {
       string,
       Map<string, LspDiagnostic[]>
     >();
+    // Track timing per server
+    const perServerTiming = new Map<
+      string,
+      {
+        initDurationMs: number;
+        lastCheckDurationMs: number;
+        receivedResponse: boolean;
+      }
+    >();
     // Pre-compute ordered bins from resolvedList for deterministic labeling.
     // successSet tracks which servers actually produced results.
     const orderedBins = resolvedList.map((r) => path.basename(r.command[0]!));
@@ -157,12 +166,28 @@ export default function (pi: ExtensionAPI) {
             lspClients,
           );
           setLspWidget(ctx, lspBin, "collecting");
-          serverDiagnostics = await entry.client.getDiagnostics(
+          const result = await entry.client.getDiagnostics(
             [filePath],
             ctx.cwd,
             DIAGNOSTICS_TIMEOUT_IN_MS,
             AbortSignal.timeout(DIAGNOSTICS_TIMEOUT_IN_MS),
           );
+          serverDiagnostics = result.diagnostics;
+
+          // Store timing info
+          perServerTiming.set(lspBin, {
+            initDurationMs: entry.client.initDurationMs,
+            lastCheckDurationMs: result.durationMs,
+            receivedResponse: result.receivedResponse,
+          });
+
+          // Log timing info if timed out
+          if (!result.receivedResponse) {
+            ctx.ui.notify(
+              `lsp-diagnostics: ${lspBin} timed out after ${result.durationMs}ms (${result.urisResolved}/${result.urisRequested} files)`,
+              "warning",
+            );
+          }
         } catch (err) {
           handleLspError(err, commandKey, ctx, lspClients);
           return;
@@ -185,7 +210,8 @@ export default function (pi: ExtensionAPI) {
     // Update each server's widget
     for (const bin of successSet) {
       const serverDiags = perServerDiagnostics.get(bin)!;
-      setLspWidget(ctx, bin, "idle", serverDiags);
+      const timing = perServerTiming.get(bin);
+      setLspWidget(ctx, bin, "idle", serverDiags, timing);
     }
 
     // Build label in resolvedList order (deterministic), only for successful servers

@@ -25,9 +25,16 @@ interface DiagnosticCounts {
   info: number;
 }
 
+interface TimingInfo {
+  initDurationMs: number;
+  lastCheckDurationMs: number;
+  receivedResponse: boolean;
+}
+
 interface ServerWidgetEntry {
   state: LspWidgetState;
   diagnostics: DiagnosticCounts | null; // null = no diagnostics run yet
+  timing: TimingInfo | null;
 }
 
 // Per-server state: bin → entry
@@ -122,13 +129,30 @@ function ensureWidgetRegistered(ctx: ExtensionContext): void {
 
           let statusPart = "";
           if (isActive || entry.diagnostics === null) {
-            statusPart = "";
+            // Show timing for active state
+            if (entry.timing && entry.state === "collecting") {
+              statusPart = theme.fg(
+                "dim",
+                ` (init: ${entry.timing.initDurationMs}ms)`,
+              );
+            }
           } else {
             const summary = buildSummary(entry.diagnostics, theme);
+            // Show timing info: checkTime + init time
+            const timingPart = entry.timing
+              ? theme.fg("dim", ` ${entry.timing.lastCheckDurationMs}ms`)
+              : "";
+            const timeoutWarning =
+              entry.timing && !entry.timing.receivedResponse
+                ? theme.fg("error", " ⏱")
+                : "";
             if (summary === "") {
-              statusPart = theme.fg("success", ` ${SUCCESS_ICON}`);
+              statusPart =
+                theme.fg("success", ` ${SUCCESS_ICON}`) +
+                timingPart +
+                timeoutWarning;
             } else {
-              statusPart = summary;
+              statusPart = summary + timingPart + timeoutWarning;
             }
           }
 
@@ -187,6 +211,7 @@ export function setLspWidget(
   lspBin: string,
   state: LspWidgetState,
   diagnostics?: Map<string, LspDiagnostic[]>,
+  timing?: TimingInfo,
 ): void {
   if (!ctx.hasUI) return;
   const existing = serverStates.get(lspBin);
@@ -198,7 +223,11 @@ export function setLspWidget(
     counts = existing?.diagnostics ?? null;
   }
 
-  serverStates.set(lspBin, { state, diagnostics: counts });
+  serverStates.set(lspBin, {
+    state,
+    diagnostics: counts,
+    timing: timing ?? existing?.timing ?? null,
+  });
   refreshBlink(ctx);
 }
 

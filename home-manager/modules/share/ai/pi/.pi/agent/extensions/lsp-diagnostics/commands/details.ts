@@ -28,7 +28,7 @@ export async function handleDetails(
         minWidth: 80,
         maxHeight: "85%",
         anchor: "center",
-        margin: 4,
+        margin: 0,
       },
     },
   );

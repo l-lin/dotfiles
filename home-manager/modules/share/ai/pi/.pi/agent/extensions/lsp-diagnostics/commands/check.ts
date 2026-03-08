@@ -149,12 +149,29 @@ export async function handleCheck(
 
       setLspWidget(ctx, lspBin, "collecting");
 
-      const serverDiagnostics = await entry.client.getDiagnostics(
+      const result = await entry.client.getDiagnostics(
         files,
         ctx.cwd,
         DIAGNOSTICS_TIMEOUT_IN_MS,
         AbortSignal.timeout(DIAGNOSTICS_TIMEOUT_IN_MS),
       );
+
+      const serverDiagnostics = result.diagnostics;
+
+      // Build timing info
+      const timing = {
+        initDurationMs: entry.client.initDurationMs,
+        lastCheckDurationMs: result.durationMs,
+        receivedResponse: result.receivedResponse,
+      };
+
+      // Log timing info
+      if (!result.receivedResponse) {
+        ctx.ui.notify(
+          `lsp-diagnostics: ${lspBin} timed out after ${result.durationMs}ms (${result.urisResolved}/${result.urisRequested} files)`,
+          "warning",
+        );
+      }
 
       // Merge diagnostics
       for (const [uri, diags] of serverDiagnostics) {
@@ -170,7 +187,7 @@ export async function handleCheck(
         }
       }
 
-      setLspWidget(ctx, lspBin, "idle", serverDiagnostics);
+      setLspWidget(ctx, lspBin, "idle", serverDiagnostics, timing);
     } catch (err) {
       handleLspError(err, commandKey, ctx, lspClients);
     }

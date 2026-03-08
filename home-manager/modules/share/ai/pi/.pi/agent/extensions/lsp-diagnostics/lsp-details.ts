@@ -53,6 +53,15 @@ interface LspClientEntrySnapshot {
   diagnosticsMap: Map<string, LspDiagnostic[]>;
   versionCounter: number;
   pendingWaiters: string[];
+  // Timing metrics
+  initDurationMs: number;
+  lastCheckDurationMs: number;
+  lastCheckReceivedResponse: boolean;
+  totalNotificationsReceived: number;
+  // Debug info
+  pendingUris: string[];
+  receivedUris: string[];
+  lastMismatchInfo: string | null;
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -170,7 +179,24 @@ export class LspDetailsComponent implements Component {
         `${snap.startedAt.toLocaleTimeString()}  ${d(elapsedSince(snap.startedAt))}`,
       ),
     );
+
+    // Timing metrics section
+    lines.push("");
+    lines.push(b("Timing Metrics"));
+    lines.push(row("Init time", `${snap.initDurationMs}ms`));
+    if (snap.lastCheckDurationMs > 0) {
+      const checkStatus = snap.lastCheckReceivedResponse
+        ? th.fg("success", "✓ received")
+        : th.fg("error", "✖ TIMEOUT");
+      lines.push(
+        row("Last check", `${snap.lastCheckDurationMs}ms  ${checkStatus}`),
+      );
+    } else {
+      lines.push(row("Last check", d("(no checks yet)")));
+    }
+    lines.push(row("Notifs recv", String(snap.totalNotificationsReceived)));
     lines.push(row("Notifs sent", String(snap.versionCounter - 1)));
+
     lines.push(row("Files open", String(snap.openedFiles.length)));
     lines.push(
       row(
@@ -188,6 +214,30 @@ export class LspDetailsComponent implements Component {
       lines.push(b("Settings"));
       for (const l of JSON.stringify(snap.settings, null, 2).split("\n")) {
         lines.push("  " + l);
+      }
+    }
+
+    // Debug section (show if there was a timeout or mismatch)
+    if (!snap.lastCheckReceivedResponse || snap.lastMismatchInfo) {
+      lines.push("");
+      lines.push(b(th.fg("warning", "Debug Info")));
+      if (snap.lastMismatchInfo) {
+        lines.push(th.fg("error", "  URI Mismatch Detected:"));
+        for (const line of snap.lastMismatchInfo.split("\n")) {
+          lines.push("    " + line);
+        }
+      }
+      if (snap.pendingUris.length > 0) {
+        lines.push(d("  Last pending URIs:"));
+        for (const uri of snap.pendingUris) {
+          lines.push("    " + uri);
+        }
+      }
+      if (snap.receivedUris.length > 0) {
+        lines.push(d("  Last received URIs:"));
+        for (const uri of snap.receivedUris) {
+          lines.push("    " + uri);
+        }
       }
     }
 
