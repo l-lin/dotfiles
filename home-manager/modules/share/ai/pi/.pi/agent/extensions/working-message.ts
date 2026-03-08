@@ -387,7 +387,7 @@ export default function (pi: ExtensionAPI) {
     return `${minutes}m${seconds}s`;
   }
 
-  pi.on("turn_start", async (_event, ctx) => {
+  pi.on("agent_start", async (_event, ctx) => {
     currentMessage = pickRandom();
     startTime = Date.now();
 
@@ -405,7 +405,7 @@ export default function (pi: ExtensionAPI) {
     }, 100);
   });
 
-  pi.on("turn_end", async (_event, ctx) => {
+  pi.on("agent_end", async (_event, ctx) => {
     // Clear the interval
     if (timerInterval !== null) {
       clearInterval(timerInterval);
