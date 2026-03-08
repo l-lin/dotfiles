@@ -20,6 +20,37 @@ export function pathToFileUri(p: string): string {
   return "file://" + abs.split("/").map(encodeURIComponent).join("/");
 }
 
+/**
+ * Resolve symlinks and normalize path to canonical form.
+ * Falls back to original path if realpath fails (file doesn't exist yet).
+ */
+export function canonicalizePath(p: string): string {
+  try {
+    return fs.realpathSync(p);
+  } catch {
+    // File doesn't exist or not accessible — return as-is
+    return p;
+  }
+}
+
+/**
+ * Convert a file path to a canonical URI (symlinks resolved).
+ * Use this for consistent URI matching between client and server.
+ */
+export function pathToCanonicalUri(p: string): string {
+  const canonical = canonicalizePath(p);
+  return pathToFileUri(canonical);
+}
+
+/**
+ * Convert a URI to a canonical URI (resolve symlinks if file exists).
+ * Useful for normalizing incoming URIs from LSP servers.
+ */
+export function canonicalizeUri(uri: string): string {
+  const p = fileUriToPath(uri);
+  return pathToCanonicalUri(p);
+}
+
 // ─── Language detection ───────────────────────────────────────────────────────
 
 const EXT_TO_LANGUAGE_ID: Record<string, string> = {
