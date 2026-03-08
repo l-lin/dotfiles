@@ -21,8 +21,7 @@ import {
 import { getOrCreateClient, handleLspError } from "../tool-result-helpers.js";
 import { formatDiagnostics } from "../format.js";
 
-// Short timeout - LSP may not send diagnostics for clean files
-const DIAGNOSTICS_TIMEOUT_IN_MS = 3_000;
+const DIAGNOSTICS_TIMEOUT_IN_MS = 5_000;
 
 /**
  * Check diagnostics for a file or directory

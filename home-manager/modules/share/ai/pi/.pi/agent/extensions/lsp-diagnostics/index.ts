@@ -29,8 +29,7 @@ import {
   handleDetails,
 } from "./commands/index.js";
 
-// Short timeout - LSP may not send diagnostics for clean files
-const DIAGNOSTICS_TIMEOUT_IN_MS = 3_000;
+const DIAGNOSTICS_TIMEOUT_IN_MS = 5_000;
 
 export default function (pi: ExtensionAPI) {
   const config = loadConfig();
