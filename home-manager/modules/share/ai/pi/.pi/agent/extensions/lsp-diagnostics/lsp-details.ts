@@ -187,7 +187,7 @@ export class LspDetailsComponent implements Component {
     if (snap.lastCheckDurationMs > 0) {
       const checkStatus = snap.lastCheckReceivedResponse
         ? th.fg("success", "✓ received")
-        : th.fg("error", "✖ TIMEOUT");
+        : th.fg("error", "󱫏 TIMEOUT");
       lines.push(
         row("Last check", `${snap.lastCheckDurationMs}ms  ${checkStatus}`),
       );

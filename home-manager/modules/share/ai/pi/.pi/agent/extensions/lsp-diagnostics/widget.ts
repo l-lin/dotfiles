@@ -150,7 +150,7 @@ function ensureWidgetRegistered(ctx: ExtensionContext): void {
               : "";
             const timeoutWarning =
               entry.timing && !entry.timing.receivedResponse
-                ? theme.fg("error", " ⏱")
+                ? theme.fg("error", " 󱫏")
                 : "";
             if (summary === "" && timeoutWarning === "") {
               statusPart =
