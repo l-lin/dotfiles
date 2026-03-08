@@ -362,11 +362,11 @@ class ContextView implements Component {
 
     // Window + bar
     if (!this.data.usage) {
-      lines.push(label("", "Window:") + " " + dim("(unknown)"));
+      lines.push(label("", "Window:") + " " + dim("(unknown)"));
     } else {
       const u = this.data.usage;
       lines.push(
-        label("", "Window:") +
+        label("", "Window:") +
           " " +
           this.theme.fg(WINDOW_FG, `~${u.effectiveTokens.toLocaleString()}`) +
           dim(
@@ -413,7 +413,7 @@ class ContextView implements Component {
     if (this.data.usage) {
       const u = this.data.usage;
       lines.push(
-        label("", "System:") +
+        label("", "System:") +
           " " +
           this.theme.fg(
             SYSTEM_FG,
@@ -422,7 +422,7 @@ class ContextView implements Component {
           dim(`  (AGENTS ~${u.agentTokens.toLocaleString()})`),
       );
       lines.push(
-        label("", `Tools (${u.activeTools}):`) +
+        label("", `Tools (${u.activeTools}):`) +
           " " +
           this.theme.fg(TOOLS_FG, `~${u.toolsTokens.toLocaleString()} tok`) +
           dim(
@@ -444,7 +444,7 @@ class ContextView implements Component {
     );
     lines.push("");
     lines.push(
-      label("", `Extensions (${this.data.extensions.length}):`) +
+      label("", `Extensions (${this.data.extensions.length}):`) +
         " " +
         dim(
           this.data.extensions.length
@@ -463,7 +463,7 @@ class ContextView implements Component {
         )
       : dim("(none)");
     lines.push(
-      label("", `Skills (${this.data.skills.length}):`) +
+      label("", `Skills (${this.data.skills.length}):`) +
         " " +
         (this.data.skillDescTokens > 0
           ? this.theme.fg(
@@ -484,7 +484,7 @@ class ContextView implements Component {
     );
     lines.push("");
     lines.push(
-      label("", "Session:") +
+      label("", "Session:") +
         " " +
         dim(
           `${this.data.session.totalTokens.toLocaleString()} tok · ${formatUsd(this.data.session.totalCost)}`,
