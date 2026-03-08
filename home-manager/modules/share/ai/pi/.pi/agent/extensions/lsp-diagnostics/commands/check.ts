@@ -88,8 +88,11 @@ export async function handleCheck(
     return;
   }
 
-  // Group files by LSP server
-  const filesByServer = new Map<string, string[]>();
+  // Group files by LSP server, storing both files and resolved config
+  const serverGroups = new Map<
+    string,
+    { files: string[]; resolved: ReturnType<typeof resolveLspCommands>[0] }
+  >();
   for (const file of filesToCheck) {
     const resolved = resolveLspCommands(
       [file],
@@ -99,14 +102,22 @@ export async function handleCheck(
     );
     if (resolved.length === 0) continue;
 
-    // Use first matching server for each file
-    const serverKey = resolved[0]!.command.join(" ");
-    const existing = filesByServer.get(serverKey) ?? [];
-    existing.push(file);
-    filesByServer.set(serverKey, existing);
+    // Use ALL matching servers for each file
+    for (const resolvedServer of resolved) {
+      const serverKey = resolvedServer.command.join(" ");
+      const existing = serverGroups.get(serverKey);
+      if (existing) {
+        existing.files.push(file);
+      } else {
+        serverGroups.set(serverKey, {
+          files: [file],
+          resolved: resolvedServer,
+        });
+      }
+    }
   }
 
-  if (filesByServer.size === 0) {
+  if (serverGroups.size === 0) {
     ctx.ui.notify("No LSP servers configured for these files", "warning");
     return;
   }
@@ -124,13 +135,7 @@ export async function handleCheck(
   let totalHints = 0;
 
   // Process each server's files
-  for (const [serverKey, files] of filesByServer.entries()) {
-    const resolved = resolveLspCommands(
-      [files[0]!],
-      undefined,
-      savedConfig,
-      fileConfig,
-    )[0]!;
+  for (const [serverKey, { files, resolved }] of serverGroups.entries()) {
     const rootDir =
       resolved.rootMarkers.length > 0
         ? resolveRootDir(files[0]!, resolved.rootMarkers, ctx.cwd)
