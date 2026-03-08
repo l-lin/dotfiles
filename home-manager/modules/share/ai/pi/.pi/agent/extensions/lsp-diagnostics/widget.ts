@@ -74,7 +74,7 @@ function buildSummary(counts: DiagnosticCounts, theme: any): string {
     parts.push(theme.fg("error", `✖ ${counts.errors}`));
   }
   if (counts.warnings > 0) {
-    parts.push(theme.fg("warning", `⚠ ${counts.warnings}`));
+    parts.push(theme.fg("warning", ` ${counts.warnings}`));
   }
   if (counts.infos > 0) {
     parts.push(theme.fg("muted", ` ${counts.infos}`));

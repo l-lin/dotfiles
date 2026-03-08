@@ -259,7 +259,7 @@ export class LspDetailsComponent implements Component {
             ? "  " + th.fg("success", "✓")
             : "  " +
               (errors > 0 ? th.fg("error", `✖ ${errors}`) : "") +
-              (warns > 0 ? " " + th.fg("warning", `⚠ ${warns}`) : "") +
+              (warns > 0 ? " " + th.fg("warning", ` ${warns}`) : "") +
               (infos > 0 ? " " + th.fg("muted", ` ${infos}`) : "") +
               (hints > 0 ? " " + th.fg("muted", ` ${hints}`) : "");
         lines.push(`  ${filePath}${badge}`);
