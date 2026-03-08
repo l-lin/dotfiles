@@ -5,6 +5,6 @@
   },
   "test_pi": {
     "prefix": "$test_pi",
-    "body": ["Test pi extension via tmux"]
+    "body": ["Test the pi extension with tmux by spawning a new pi session with 'pi --models \"github-copilot/gpt-4o\""]
   }
 }
