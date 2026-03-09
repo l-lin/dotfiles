@@ -3,8 +3,11 @@
 # src: https://kubernetes.io/
 #
 
-{ fileExplorer, pkgs, ... }: {
-  imports = fileExplorer.allSubdirs ./.;
+{ pkgs, ... }: {
+  #imports = fileExplorer.allSubdirs ./.;
+  imports = [
+    ./k9s
+  ];
 
   home.packages = with pkgs; [
     # A helper to run k3s (Lightweight Kubernetes. 5 less than k8s) in a docker container: https://github.com/k3d-io/k3d/
