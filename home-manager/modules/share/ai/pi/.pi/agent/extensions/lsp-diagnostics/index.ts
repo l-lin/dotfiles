@@ -13,7 +13,7 @@ import {
 import type { SavedConfig, LspClientEntry } from "./types.js";
 import { CONFIG_ENTRY_TYPE } from "./types.js";
 import { loadConfig } from "./config.js";
-import { LSP_SERVERS_CONFIG } from "./lsp-diagnostics.js";
+import { LSP_SERVERS_CONFIG } from "./lsp-servers.js";
 import { resolveLspCommands } from "./resolver.js";
 import { collectDiagnostics } from "./collector.js";
 import { buildDiagnosticBlock } from "./ui/format.js";

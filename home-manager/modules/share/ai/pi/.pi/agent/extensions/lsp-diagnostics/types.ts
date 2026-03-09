@@ -19,12 +19,17 @@ export interface PublishDiagnosticsParams {
 // ─── Config types ─────────────────────────────────────────────────────────────
 
 /**
- * Per-server definition in lsp-diagnostics.ts (bundled with the extension).
+ * Per-server definition in lsp-servers.ts (bundled with the extension).
  * Supports rich configuration including file type routing and project root detection.
  */
 export interface LspServerConfig {
   /** Binary name or absolute path */
   command: string;
+  /**
+   * Whether this server is active. Set to false to disable without removing the entry.
+   * Defaults to true when omitted.
+   */
+  enabled?: boolean;
   /** CLI arguments passed to the binary (e.g. ["--stdio"]) */
   args?: string[];
   /** File extensions this server handles (e.g. [".ts", ".tsx"]) */
@@ -47,7 +52,7 @@ export interface LspServerConfig {
   capabilities?: Record<string, unknown>;
 }
 
-/** Shape of the LSP server definitions exported from lsp-diagnostics.ts */
+/** Shape of the LSP server definitions exported from lsp-servers.ts */
 export interface LspDiagnosticsFileConfig {
   servers: Record<string, LspServerConfig>;
 }

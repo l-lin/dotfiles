@@ -7,6 +7,8 @@
  *
  * Shape mirrors LspDiagnosticsFileConfig / LspServerConfig from types.ts.
  * Resolver picks up the first PATH-available binary for each matched file.
+ *
+ * To disable a server without removing it, set `enabled: false`.
  */
 
 import type { LspDiagnosticsFileConfig } from "./types.js";
@@ -17,6 +19,7 @@ export const LSP_SERVERS_CONFIG: LspDiagnosticsFileConfig = {
     // vtsls is the VS Code TypeScript language server, exposed as a standalone
     // binary. It handles both plain JS and TS, including JSX/TSX.
     vtsls: {
+      enabled: true,
       command: "vtsls",
       args: ["--stdio"],
       fileTypes: [".ts", ".tsx", ".js", ".jsx"],
@@ -29,6 +32,7 @@ export const LSP_SERVERS_CONFIG: LspDiagnosticsFileConfig = {
     // but will lose cross-session indexing. Point it at a persistent dir if
     // you work on large Java projects.
     jdtls: {
+      enabled: true,
       command: "jdtls",
       args: ["--data", "/tmp/jdtls-workspace"],
       fileTypes: [".java"],
@@ -45,6 +49,7 @@ export const LSP_SERVERS_CONFIG: LspDiagnosticsFileConfig = {
     // nil is a lean Nix language server. No args needed; it speaks stdio by
     // default. Root is detected by flake.nix or the nearest .git boundary.
     nil: {
+      enabled: true,
       command: "nil",
       args: [],
       fileTypes: [".nix"],
@@ -56,6 +61,7 @@ export const LSP_SERVERS_CONFIG: LspDiagnosticsFileConfig = {
     // names so diagnostics don't flag `vim`, `LazyVim`, etc. as undefined.
     // checkThirdParty:false suppresses noisy "third-party library" prompts.
     "lua-language-server": {
+      enabled: true,
       command: "lua-language-server",
       args: [],
       fileTypes: [".lua"],
@@ -81,9 +87,22 @@ export const LSP_SERVERS_CONFIG: LspDiagnosticsFileConfig = {
     },
 
     // ── Ruby ──────────────────────────────────────────────────────────────
+    // ruby-lsp is the primary Ruby language server from Shopify. It provides
+    // type-aware diagnostics, go-to-definition, and hover docs. Anchors to
+    // Gemfile or .git for project root discovery.
+    "ruby-lsp": {
+      enabled: false,
+      command: "ruby-lsp",
+      args: [],
+      fileTypes: [".rb"],
+      rootMarkers: ["Gemfile", ".git"],
+    },
+
     // RuboCop doubles as an LSP server via --lsp. It reports style offences
-    // as diagnostics. Needs a .rubocop.yml or Gemfile to anchor the root.
+    // as diagnostics. Complementary to ruby-lsp: catches lint/style issues
+    // that ruby-lsp doesn't cover. Needs a .rubocop.yml or Gemfile.
     rubocop: {
+      enabled: true,
       command: "rubocop",
       args: ["--lsp"],
       fileTypes: [".rb"],
@@ -95,6 +114,7 @@ export const LSP_SERVERS_CONFIG: LspDiagnosticsFileConfig = {
     // indentation. Works best with a .yamllint or schema association, but
     // provides useful structural diagnostics even without one.
     "yaml-language-server": {
+      enabled: true,
       command: "yaml-language-server",
       args: ["--stdio"],
       fileTypes: [".yaml", ".yml"],
@@ -110,6 +130,7 @@ export const LSP_SERVERS_CONFIG: LspDiagnosticsFileConfig = {
     // not advertised by the default minimal client bundled in this extension.
     // Without them, LemMinX may emit spurious errors or skip rename edits.
     lemminx: {
+      enabled: true,
       command: "lemminx",
       args: [],
       fileTypes: [".xml", ".xsd", ".xsl", ".xslt", ".svg"],
