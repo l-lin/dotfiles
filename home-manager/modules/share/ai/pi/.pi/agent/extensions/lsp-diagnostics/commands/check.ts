@@ -14,7 +14,7 @@ import {
   SEVERITY_INFO,
   SEVERITY_HINT,
 } from "../types.js";
-import { loadFileConfig } from "../config.js";
+import { LSP_SERVERS_CONFIG } from "../lsp-diagnostics.js";
 import { resolveLspCommands } from "../resolver.js";
 import { collectDiagnostics } from "../collector.js";
 import { formatDiagnostics } from "../ui/format.js";
@@ -29,7 +29,7 @@ export async function handleCheck(
   pi?: ExtensionAPI,
   filePath?: string,
 ): Promise<void> {
-  const fileConfig = loadFileConfig();
+  const fileConfig = LSP_SERVERS_CONFIG;
 
   const input =
     filePath ?? (await ctx.ui.input("Enter file or directory path:"));

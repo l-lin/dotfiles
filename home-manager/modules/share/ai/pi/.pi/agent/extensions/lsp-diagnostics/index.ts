@@ -12,7 +12,8 @@ import {
 } from "@mariozechner/pi-coding-agent";
 import type { SavedConfig, LspClientEntry } from "./types.js";
 import { CONFIG_ENTRY_TYPE } from "./types.js";
-import { loadConfig, loadFileConfig } from "./config.js";
+import { loadConfig } from "./config.js";
+import { LSP_SERVERS_CONFIG } from "./lsp-diagnostics.js";
 import { resolveLspCommands } from "./resolver.js";
 import { collectDiagnostics } from "./collector.js";
 import { buildDiagnosticBlock } from "./ui/format.js";
@@ -26,7 +27,7 @@ import {
 
 export default function (pi: ExtensionAPI) {
   const config = loadConfig();
-  const fileConfig = loadFileConfig();
+  const fileConfig = LSP_SERVERS_CONFIG;
 
   let savedConfig: SavedConfig | null = null;
   // Persistent LSP clients keyed by "command::rootDir" — created lazily, shut down on session end
@@ -102,7 +103,12 @@ export default function (pi: ExtensionAPI) {
     const filePath = event.input.path as string | undefined;
     if (!filePath) return;
 
-    const resolvedList = resolveLspCommands([filePath], undefined, savedConfig, fileConfig);
+    const resolvedList = resolveLspCommands(
+      [filePath],
+      undefined,
+      savedConfig,
+      fileConfig,
+    );
     if (resolvedList.length === 0) return;
 
     const { merged, servers } = await collectDiagnostics(
@@ -117,7 +123,10 @@ export default function (pi: ExtensionAPI) {
     const block = buildDiagnosticBlock(merged, filePath, lspBinLabel, ctx.cwd);
     if (block) {
       return {
-        content: [...event.content, { type: "text" as const, text: `\n${block}` }],
+        content: [
+          ...event.content,
+          { type: "text" as const, text: `\n${block}` },
+        ],
       };
     }
   });

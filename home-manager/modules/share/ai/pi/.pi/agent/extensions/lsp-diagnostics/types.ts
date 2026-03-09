@@ -19,7 +19,7 @@ export interface PublishDiagnosticsParams {
 // ─── Config types ─────────────────────────────────────────────────────────────
 
 /**
- * Per-server definition in ~/.pi/agent/lsp-diagnostics.json.
+ * Per-server definition in lsp-diagnostics.ts (bundled with the extension).
  * Supports rich configuration including file type routing and project root detection.
  */
 export interface LspServerConfig {
@@ -47,7 +47,7 @@ export interface LspServerConfig {
   capabilities?: Record<string, unknown>;
 }
 
-/** Shape of ~/.pi/agent/lsp-diagnostics.json */
+/** Shape of the LSP server definitions exported from lsp-diagnostics.ts */
 export interface LspDiagnosticsFileConfig {
   servers: Record<string, LspServerConfig>;
 }

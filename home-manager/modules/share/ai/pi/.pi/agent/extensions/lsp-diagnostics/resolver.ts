@@ -89,7 +89,7 @@ export function resolveLanguage(filePaths: string[]): string | null {
 
 // ─── LSP command resolution ───────────────────────────────────────────────────
 
-/** Default Mason.nvim binary location — overridden per-server by lsp-diagnostics.json. */
+/** Default Mason.nvim binary location — overridden per-server by lsp-diagnostics.ts. */
 const LSP_BIN_PATH = path.join(os.homedir(), ".local/share/nvim/mason/bin");
 
 /**
@@ -138,7 +138,7 @@ function matchAllFileConfigs(
  *   1. Explicit lsp_command from the tool call → single result
  *   2. Per-language saved session override     → single result
  *   3. Global saved session fallback           → single result
- *   4. File-based config (~/.pi/agent/lsp-diagnostics.json) → ALL matching servers
+ *   4. Bundled config (lsp-diagnostics.ts) → ALL matching servers
  *   5. [] — no LSP available for this file type
  */
 export interface ResolvedLspCommand {
@@ -215,5 +215,3 @@ export function resolveLspCommands(
 
   return [];
 }
-
-

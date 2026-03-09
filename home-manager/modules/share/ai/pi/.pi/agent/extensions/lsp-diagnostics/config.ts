@@ -3,8 +3,6 @@
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { fileURLToPath } from "node:url";
-import type { LspDiagnosticsFileConfig } from "./types.js";
 
 export interface LspDiagnosticsConfig {
   /** Whether the lsp_get_diagnostics tool is registered. Default: true. */
@@ -41,25 +39,6 @@ export function saveEnabled(enabled: boolean): void {
     JSON.stringify(settings, null, 2) + "\n",
     "utf-8",
   );
-}
-
-const LSP_FILE_CONFIG_PATH = path.join(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "lsp-diagnostics.json",
-);
-
-/**
- * Loads the rich LSP server definitions bundled alongside this extension
- * (lsp-diagnostics.json, co-located with the compiled module).
- * Returns null if the file is absent or malformed — callers fall back to built-in defaults.
- */
-export function loadFileConfig(): LspDiagnosticsFileConfig | null {
-  try {
-    const raw = fs.readFileSync(LSP_FILE_CONFIG_PATH, "utf-8");
-    return JSON.parse(raw) as LspDiagnosticsFileConfig;
-  } catch {
-    return null;
-  }
 }
 
 /** Loads config from disk once at startup. */
