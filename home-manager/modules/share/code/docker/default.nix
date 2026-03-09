@@ -8,9 +8,9 @@
     # Tool for exploring each layer in a docker image: https://github.com/wagoodman/dive
     dive
     # Docker CLI plugin for extended build capabilities with BuildKit: https://github.com/docker/buildx
-    docker-buildx
+    #docker-buildx
     # Docker CLI plugin to define and run multi-container applications with Docker: https://docs.docker.com/compose/
-    docker-compose
+    #docker-compose
     # A simple terminal UI for both docker and docker-compose: https://github.com/jesseduffield/lazydocker
     lazydocker
   ];
