@@ -216,15 +216,4 @@ export function resolveLspCommands(
   return [];
 }
 
-/** @deprecated Use resolveLspCommands instead */
-export function resolveLspCommand(
-  files: string[],
-  explicitCommand: string[] | undefined,
-  savedConfig: SavedConfig | null,
-  fileConfig: LspDiagnosticsFileConfig | null = null,
-): ResolvedLspCommand | null {
-  return (
-    resolveLspCommands(files, explicitCommand, savedConfig, fileConfig)[0] ??
-    null
-  );
-}
+

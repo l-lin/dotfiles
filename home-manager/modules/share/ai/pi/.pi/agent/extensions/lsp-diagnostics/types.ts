@@ -82,3 +82,30 @@ export const SEVERITY_LABELS: Record<number, string> = {
 };
 
 export const CONFIG_ENTRY_TYPE = "lsp-diagnostics-config";
+
+// ─── UI Icons ─────────────────────────────────────────────────────────────────
+
+export const ICON_LSP = "●";
+export const ICON_SUCCESS = "✓";
+export const ICON_ERROR = "✖";
+export const ICON_WARNING = "";
+export const ICON_INFO = "";
+export const ICON_HINT = "";
+export const ICON_TIMEOUT = "󱫏";
+
+// ─── Client entry ─────────────────────────────────────────────────────────────
+
+import type { PersistentLspClient } from "./client/persistent-client.js";
+
+export interface LspClientEntry {
+  client: PersistentLspClient;
+  bin: string;
+  /** Full command array as passed to spawn */
+  command: string[];
+  /** Resolved project root directory */
+  rootDir: string;
+  /** Settings forwarded via workspace/didChangeConfiguration */
+  settings?: Record<string, unknown>;
+  /** When this client was first created */
+  startedAt: Date;
+}

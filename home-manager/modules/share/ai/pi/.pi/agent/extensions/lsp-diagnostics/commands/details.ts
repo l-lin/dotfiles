@@ -3,8 +3,8 @@
  */
 import type { ExtensionContext } from "@mariozechner/pi-coding-agent";
 import type { TUI } from "@mariozechner/pi-tui";
-import type { LspClientEntry } from "../lsp-details.js";
-import { LspDetailsComponent } from "../lsp-details.js";
+import type { LspClientEntry } from "../types.js";
+import { LspDetailsComponent } from "../ui/details.js";
 
 export async function handleDetails(
   lspClients: Map<string, LspClientEntry>,
