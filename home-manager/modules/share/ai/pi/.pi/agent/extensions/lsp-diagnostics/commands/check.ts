@@ -77,11 +77,11 @@ export async function handleCheck(
     return;
   }
 
-  // Group files by LSP server
-  const serverGroups = new Map<
-    string,
-    { files: string[]; resolved: ReturnType<typeof resolveLspCommands>[0] }
-  >();
+  // Collect unique resolved LSP servers across all files.
+  // We gather one entry per distinct server command so that collectDiagnostics
+  // can fan-out to ALL matching servers in a single Promise.all, keeping the
+  // widget in sync for every server simultaneously.
+  const serverMap = new Map<string, ReturnType<typeof resolveLspCommands>[0]>();
   for (const file of filesToCheck) {
     const resolved = resolveLspCommands(
       [file],
@@ -89,30 +89,31 @@ export async function handleCheck(
       savedConfig,
       fileConfig,
     );
-    if (resolved.length === 0) continue;
-
     for (const resolvedServer of resolved) {
       const serverKey = resolvedServer.command.join(" ");
-      const existing = serverGroups.get(serverKey);
-      if (existing) {
-        existing.files.push(file);
-      } else {
-        serverGroups.set(serverKey, {
-          files: [file],
-          resolved: resolvedServer,
-        });
+      if (!serverMap.has(serverKey)) {
+        serverMap.set(serverKey, resolvedServer);
       }
     }
   }
 
-  if (serverGroups.size === 0) {
+  if (serverMap.size === 0) {
     ctx.ui.notify("No LSP servers configured for these files", "warning");
     return;
   }
 
   ctx.ui.notify(
-    `Checking diagnostics for ${filesToCheck.length} file(s)...`,
+    `Checking diagnostics for ${filesToCheck.length} file(s) with ${serverMap.size} server(s)...`,
     "info",
+  );
+
+  // Single collectDiagnostics call with all servers — this keeps all LSP
+  // widget entries alive concurrently (syncLspServers sees the full list).
+  const { merged: allDiagnosticsRaw } = await collectDiagnostics(
+    filesToCheck,
+    [...serverMap.values()],
+    lspClients,
+    ctx,
   );
 
   const allDiagnostics = new Map<string, LspDiagnostic[]>();
@@ -121,24 +122,13 @@ export async function handleCheck(
   let totalInfos = 0;
   let totalHints = 0;
 
-  for (const { files, resolved } of serverGroups.values()) {
-    const { merged } = await collectDiagnostics(
-      [...files],
-      [resolved],
-      lspClients,
-      ctx,
-    );
-
-    for (const [uri, diags] of merged) {
-      const existing = allDiagnostics.get(uri) ?? [];
-      allDiagnostics.set(uri, [...existing, ...diags]);
-
-      for (const diag of diags) {
-        if (diag.severity === SEVERITY_ERROR) totalErrors++;
-        else if (diag.severity === SEVERITY_WARNING) totalWarnings++;
-        else if (diag.severity === SEVERITY_INFO) totalInfos++;
-        else if (diag.severity === SEVERITY_HINT) totalHints++;
-      }
+  for (const [uri, diags] of allDiagnosticsRaw) {
+    allDiagnostics.set(uri, diags);
+    for (const diag of diags) {
+      if (diag.severity === SEVERITY_ERROR) totalErrors++;
+      else if (diag.severity === SEVERITY_WARNING) totalWarnings++;
+      else if (diag.severity === SEVERITY_INFO) totalInfos++;
+      else if (diag.severity === SEVERITY_HINT) totalHints++;
     }
   }
 
