@@ -3,10 +3,17 @@
 # src: https://github.com/derailed/k9s
 #
 
-{ config, ... }:
+{ config, pkgs, ... }:
 let
   palette = config.lib.stylix.colors.withHashtag;
+  inherit (pkgs.stdenv) isDarwin;
 in {
+  # k9s on macOS defaults to ~/Library/Application Support/k9s, but respects
+  # $XDG_CONFIG_HOME at runtime. Pin it explicitly to avoid the mismatch.
+  home.sessionVariables = pkgs.lib.mkIf isDarwin {
+    K9S_CONFIG_DIR = "${config.home.homeDirectory}/Library/Application Support/k9s";
+  };
+
   programs.k9s = with palette; {
     enable = true;
     # Stylix theming is a bit weird: putting red when it's ok, and blue when it's not...
