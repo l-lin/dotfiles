@@ -52,7 +52,6 @@ return {
   -- add keymaps to which-key
   {
     "folke/which-key.nvim",
-    ft = "markdown",
     opts = {
       spec = {
         {

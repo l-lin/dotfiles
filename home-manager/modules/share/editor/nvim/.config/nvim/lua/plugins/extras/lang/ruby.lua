@@ -8,7 +8,6 @@ return {
   -- add keymaps to which-key
   {
     "folke/which-key.nvim",
-    ft = "ruby",
     opts = {
       spec = {
         { "<leader>m", group = "execute" },
