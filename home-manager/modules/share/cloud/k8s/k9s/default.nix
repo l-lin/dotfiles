@@ -96,6 +96,7 @@ in {
           table = {
             fgColor = base05-hex;
             bgColor = "default";
+            cursorFgColor = base07-hex;
             header = {
               fgColor = base05-hex;
               bgColor = "default";
