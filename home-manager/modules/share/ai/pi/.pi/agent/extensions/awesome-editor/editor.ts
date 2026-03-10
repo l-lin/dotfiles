@@ -8,6 +8,7 @@ import { CustomEditor } from "@mariozechner/pi-coding-agent";
 import {
   Key,
   matchesKey,
+  parseKey,
   truncateToWidth,
   visibleWidth,
 } from "@mariozechner/pi-tui";
@@ -40,6 +41,21 @@ import {
   findWordMotionTarget,
 } from "./vim/motions.js";
 
+/**
+ * Translate a CSI-u extended ctrl sequence (e.g. "\x1b[101;5u" for Ctrl+E)
+ * back to its legacy single-byte form ("\x05").
+ * Non-ctrl sequences are returned unchanged.
+ */
+function normalizeLegacyCtrl(data: string): string {
+  const key = parseKey(data);
+  if (!key) return data;
+  const match = key.match(/^ctrl\+(.+)$/);
+  if (!match || match[1]!.length !== 1) return data;
+  // ctrl+X → charCode(X) & 0x1f  (covers a–z, [, \\, ], ^, _)
+  const code = match[1]!.charCodeAt(0) & 0x1f;
+  return code >= 1 && code <= 31 ? String.fromCharCode(code) : data;
+}
+
 export class AwesomeEditor extends CustomEditor {
   private mode: Mode = "insert";
   private pendingMotion: PendingMotion = null;
@@ -54,6 +70,10 @@ export class AwesomeEditor extends CustomEditor {
   }
 
   handleInput(data: string): void {
+    // Normalize CSI-u extended ctrl sequences (e.g. "\x1b[101;5u" → "\x05")
+    // so all downstream checks and readline passthrough use the expected bytes.
+    data = normalizeLegacyCtrl(data);
+
     if (matchesKey(data, "escape")) return this.handleEscape();
 
     if (this.mode === "insert") {
