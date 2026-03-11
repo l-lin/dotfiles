@@ -139,7 +139,7 @@ export default function sessionBreakdownExtension(pi: ExtensionAPI) {
           overlay: true,
           overlayOptions: {
             anchor: "center",
-            width: "90%",
+            width: "50%",
             minWidth: 60,
             maxHeight: "85%",
           },
