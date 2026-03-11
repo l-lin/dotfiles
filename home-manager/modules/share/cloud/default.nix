@@ -2,6 +2,10 @@
 # Cloud related stuff.
 #
 
-{ fileExplorer, ... }: {
-  imports = fileExplorer.allSubdirs ./.;
+{
+  #imports = fileExplorer.allSubdirs ./.;
+  imports = [
+    ./aws
+    ./k8s
+  ];
 }
