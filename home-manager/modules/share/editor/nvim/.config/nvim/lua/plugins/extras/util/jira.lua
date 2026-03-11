@@ -95,6 +95,7 @@ return {
       { "<leader>je", "<cmd>JiraEpic<cr>", desc = "Jira epics" },
       { "<leader>j1", "<cmd>JiraEpic P3C-5883<cr>", desc = "Jira P3C-5883" },
       { "<leader>j2", "<cmd>JiraEpic P3C-5861<cr>", desc = "Jira P3C-5861" },
+      { "<leader>j3", "<cmd>JiraEpic P3C-5885<cr>", desc = "Jira P3C-5885" },
     },
     opts = {
       cli = {
