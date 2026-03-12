@@ -39,15 +39,6 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function()
     vim.wo.wrap = true
     vim.wo.spell = true
-
-    local current_file = vim.fn.expand("%:p")
-    local notes_dir = vim.fn.expand(vim.g.notes_dir)
-    -- No text width limit for my notes.
-    if string.find(current_file, notes_dir, 1, true) == 1 then
-      vim.bo.textwidth = 0
-    else
-      vim.bo.textwidth = 80
-    end
   end,
 })
 
