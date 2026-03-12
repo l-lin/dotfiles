@@ -85,9 +85,13 @@ async function fetchCopilotToken(
   }
 }
 
+let cachedModels: CopilotModel[] | null = null;
+
 export async function fetchCopilotModels(
   oauthToken: string,
 ): Promise<CopilotModel[]> {
+  if (cachedModels) return cachedModels;
+
   const tokenData = await fetchCopilotToken(oauthToken);
   if (!tokenData?.token) return [];
 
@@ -110,7 +114,7 @@ export async function fetchCopilotModels(
     const json = (await response.json()) as { data: any[] };
     if (!Array.isArray(json.data)) return [];
 
-    return json.data
+    const models = json.data
       .filter((m) => m.model_picker_enabled)
       .map((m) => ({
         id: m.id as string,
@@ -124,6 +128,9 @@ export async function fetchCopilotModels(
         const mb = b.multiplier ?? 999;
         return ma !== mb ? ma - mb : a.name.localeCompare(b.name);
       });
+
+    cachedModels = models;
+    return models;
   } catch {
     return [];
   }
