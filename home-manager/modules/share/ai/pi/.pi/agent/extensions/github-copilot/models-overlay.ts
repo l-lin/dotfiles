@@ -154,6 +154,25 @@ export class ModelsOverlayComponent implements Component {
       return;
     }
 
+    // Page navigation: ctrl+u / ctrl+d scroll by a full page.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const list = this.list as any;
+    if (this.kb.matches(data, "selectPageUp")) {
+      list.selectedIndex = Math.max(0, list.selectedIndex - list.maxVisible);
+      this.tui.requestRender();
+      return;
+    }
+
+    if (this.kb.matches(data, "selectPageDown")) {
+      const lastIndex = Math.max(0, list.filteredItems.length - 1);
+      list.selectedIndex = Math.min(
+        lastIndex,
+        list.selectedIndex + list.maxVisible,
+      );
+      this.tui.requestRender();
+      return;
+    }
+
     // All other input (typing, backspace, ctrl+w, etc.) updates the search field.
     this.input.handleInput(data);
     this.applyFilter();
@@ -185,7 +204,7 @@ export class ModelsOverlayComponent implements Component {
     contentLines.push(
       theme.fg(
         "dim",
-        " ↑↓ navigate · type to filter · enter select · esc cancel",
+        " ↑↓ navigate · ^u/^d page · type to filter · enter select · esc cancel",
       ),
     );
 
