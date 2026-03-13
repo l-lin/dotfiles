@@ -108,5 +108,5 @@ export function updateWidget(
   );
   const daysPart = `${daysBar} ${daysRemaining}d left (${resetDate})`;
 
-  ctx.ui.setWidget(WIDGET_ID, [` ${usagePart}  ${daysPart}`], WIDGET_PLACEMENT);
+  ctx.ui.setWidget(WIDGET_ID, [`${usagePart}  ${daysPart}`], WIDGET_PLACEMENT);
 }
