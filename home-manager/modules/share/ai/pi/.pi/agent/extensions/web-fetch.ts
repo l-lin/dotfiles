@@ -181,6 +181,7 @@ export default function webFetchExtension(pi: ExtensionAPI) {
         `web-fetch ${config.enabled ? "enabled" : "disabled"}`,
         "info",
       );
+      pi.events.emit("custom-tool:changed", { tool: "web-fetch", enabled: config.enabled });
     },
   });
 

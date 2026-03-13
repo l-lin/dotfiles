@@ -271,6 +271,7 @@ export default function webSearchExtension(pi: ExtensionAPI) {
         `web-search ${config.enabled ? "enabled" : "disabled"}`,
         "info",
       );
+      pi.events.emit("custom-tool:changed", { tool: "web-search", enabled: config.enabled });
     },
   });
 
