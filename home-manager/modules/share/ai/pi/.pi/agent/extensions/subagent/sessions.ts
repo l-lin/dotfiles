@@ -213,10 +213,9 @@ export function spawn(
   }
 
   const shouldAppendUserSystemPrompt = agent.appendUserSystemPrompt ?? true;
-  const userSystemPrompt =
-    config.userSystemPrompt.enabled && shouldAppendUserSystemPrompt
-      ? readFileIfExists(config.userSystemPrompt.path)
-      : "";
+  const userSystemPrompt = shouldAppendUserSystemPrompt
+    ? readFileIfExists(config.userSystemPrompt.path)
+    : "";
 
   const combinedParts = [userSystemPrompt, agent.systemPrompt.trim()].filter(
     Boolean,

@@ -29,7 +29,6 @@
       ],
       "maxParallel": 5,
       "userSystemPrompt": {
-        "enabled": true,
         "path": "~/.config/ai/system-prompt.md"
       }
     },

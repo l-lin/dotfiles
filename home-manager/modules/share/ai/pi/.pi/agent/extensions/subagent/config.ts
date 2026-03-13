@@ -5,8 +5,6 @@ import * as os from "node:os";
 import * as path from "node:path";
 
 export interface UserSystemPromptConfig {
-  /** Whether to prepend the user system prompt to every subagent's prompt. Default: true. */
-  enabled: boolean;
   /** Path to a user-level system prompt prepended to every subagent's prompt. Supports ~ expansion. Default: "~/.pi/agent/AGENTS.md". */
   path: string;
 }
@@ -24,7 +22,6 @@ const DEFAULTS: SubagentConfig = {
   sources: ["~/.pi/agent/agents", "./.pi/agents"],
   maxParallel: 5,
   userSystemPrompt: {
-    enabled: true,
     path: "~/.pi/agent/AGENTS.md",
   },
 };
@@ -35,7 +32,9 @@ const CONFIG_PATH = path.join(os.homedir(), ".pi", "agent", "settings.json");
 export function loadConfig(): SubagentConfig {
   try {
     const raw = fs.readFileSync(CONFIG_PATH, "utf-8");
-    const settings = JSON.parse(raw) as { extensionSettings?: { subagent?: Partial<SubagentConfig> } };
+    const settings = JSON.parse(raw) as {
+      extensionSettings?: { subagent?: Partial<SubagentConfig> };
+    };
     const parsed = settings.extensionSettings?.subagent || {};
     const usp = parsed.userSystemPrompt;
     return {
@@ -47,10 +46,6 @@ export function loadConfig(): SubagentConfig {
           ? Math.floor(parsed.maxParallel)
           : DEFAULTS.maxParallel,
       userSystemPrompt: {
-        enabled:
-          typeof usp?.enabled === "boolean"
-            ? usp.enabled
-            : DEFAULTS.userSystemPrompt.enabled,
         path:
           typeof usp?.path === "string" && usp.path.length > 0
             ? usp.path
