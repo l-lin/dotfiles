@@ -46,7 +46,7 @@ export function colorThinking(
   return theme.fg("dim", text);
 }
 
-export function formatCurrentDirectory(): string {
+export function formatCurrentDirectory(maxLength: number = 40): string {
   let pwd = process.cwd();
   const home = process.env.HOME ?? process.env.USERPROFILE ?? "";
 
@@ -54,5 +54,34 @@ export function formatCurrentDirectory(): string {
     pwd = `~${pwd.slice(home.length)}`;
   }
 
-  return pwd;
+  if (pwd.length <= maxLength) {
+    return pwd;
+  }
+
+  const parts = pwd.split("/");
+
+  const first = parts[0] || "/";
+
+  const remaining: string[] = [];
+
+  for (let i = parts.length - 1; i > 0; i--) {
+    const part = parts[i];
+    const candidate =
+      remaining.length === 0 ? part : `${part}/${remaining.join("/")}`;
+
+    const withEllipsis = `${first}/…/${candidate}`;
+    if (withEllipsis.length > maxLength) {
+      break;
+    }
+
+    remaining.unshift(part);
+  }
+
+  if (remaining.length === parts.length - 1) {
+    return pwd;
+  }
+
+  return remaining.length > 0
+    ? `${first}/…/${remaining.join("/")}`
+    : `${first}/…`;
 }

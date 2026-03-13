@@ -17,7 +17,7 @@ export function readSettings(): SettingsStructure | null {
 export function getToolStatus(): Map<string, boolean> {
   const settings = readSettings();
   const ext = settings?.extensionSettings ?? {};
-  
+
   return new Map([
     ["ask-user-question", ext.askUserQuestion?.enabled !== false],
     ["subagent", ext.subagent?.enabled !== false],
