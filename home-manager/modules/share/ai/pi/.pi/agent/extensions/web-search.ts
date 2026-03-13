@@ -255,15 +255,6 @@ function formatResultsAsMarkdown(
 export default function webSearchExtension(pi: ExtensionAPI) {
   const config = loadConfig();
 
-  // Apply the persisted enabled state once the session tools are ready.
-  // registerTool() adds "web-search" to active tools by default; we remove it
-  // here if settings say it should be off.
-  pi.on("session_start", async () => {
-    if (!config.enabled) {
-      pi.setActiveTools(pi.getActiveTools().filter((t) => t !== "web-search"));
-    }
-  });
-
   pi.registerCommand("cmd:web-search-toggle", {
     description: "Toggle web-search tool on/off",
     handler: async (_args, ctx) => {
@@ -282,6 +273,8 @@ export default function webSearchExtension(pi: ExtensionAPI) {
       );
     },
   });
+
+  if (!config.enabled) return;
 
   pi.registerTool({
     name: "web-search",

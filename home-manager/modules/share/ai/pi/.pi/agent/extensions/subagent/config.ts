@@ -16,6 +16,8 @@ export interface SubagentConfig {
   maxParallel: number;
   /** User-level system prompt configuration. */
   userSystemPrompt: UserSystemPromptConfig;
+  /** Whether the subagent tool is enabled. Default: true. */
+  enabled: boolean;
 }
 
 const DEFAULTS: SubagentConfig = {
@@ -24,6 +26,7 @@ const DEFAULTS: SubagentConfig = {
   userSystemPrompt: {
     path: "~/.pi/agent/AGENTS.md",
   },
+  enabled: true,
 };
 
 const CONFIG_PATH = path.join(os.homedir(), ".pi", "agent", "settings.json");
@@ -51,11 +54,40 @@ export function loadConfig(): SubagentConfig {
             ? usp.path
             : DEFAULTS.userSystemPrompt.path,
       },
+      enabled:
+        typeof parsed.enabled === "boolean" ? parsed.enabled : DEFAULTS.enabled,
     };
   } catch {
-    // File missing or malformed — fall back to defaults silently
-    return { ...DEFAULTS, userSystemPrompt: { ...DEFAULTS.userSystemPrompt } };
+    return {
+      ...DEFAULTS,
+      userSystemPrompt: { ...DEFAULTS.userSystemPrompt },
+    };
   }
+}
+
+export function saveEnabled(enabled: boolean): void {
+  let settings: Record<string, unknown> = {};
+  try {
+    settings = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf-8"));
+  } catch {
+    // File missing or malformed — start fresh
+  }
+  const extensionSettings = (settings.extensionSettings ?? {}) as Record<
+    string,
+    unknown
+  >;
+  const existing = (extensionSettings.subagent ?? {}) as Record<
+    string,
+    unknown
+  >;
+  extensionSettings.subagent = { ...existing, enabled };
+  settings.extensionSettings = extensionSettings;
+  fs.mkdirSync(path.dirname(CONFIG_PATH), { recursive: true });
+  fs.writeFileSync(
+    CONFIG_PATH,
+    JSON.stringify(settings, null, 2) + "\n",
+    "utf-8",
+  );
 }
 
 function isValidSources(v: unknown): v is string[] {

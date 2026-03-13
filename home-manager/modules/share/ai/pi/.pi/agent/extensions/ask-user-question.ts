@@ -19,6 +19,58 @@ import {
   wrapTextWithAnsi,
 } from "@mariozechner/pi-tui";
 import { Type } from "@sinclair/typebox";
+import * as fs from "node:fs";
+import * as os from "node:os";
+import * as path from "node:path";
+
+const SETTINGS_PATH = path.join(os.homedir(), ".pi", "agent", "settings.json");
+
+interface AskUserQuestionConfig {
+  enabled: boolean;
+}
+
+const DEFAULTS: AskUserQuestionConfig = { enabled: true };
+
+function loadConfig(): AskUserQuestionConfig {
+  try {
+    const raw = fs.readFileSync(SETTINGS_PATH, "utf-8");
+    const settings = JSON.parse(raw) as {
+      extensionSettings?: { askUserQuestion?: Partial<AskUserQuestionConfig> };
+    };
+    const parsed = settings.extensionSettings?.askUserQuestion ?? {};
+    return {
+      enabled:
+        typeof parsed.enabled === "boolean" ? parsed.enabled : DEFAULTS.enabled,
+    };
+  } catch {
+    return { ...DEFAULTS };
+  }
+}
+
+function saveEnabled(enabled: boolean): void {
+  let settings: Record<string, unknown> = {};
+  try {
+    settings = JSON.parse(fs.readFileSync(SETTINGS_PATH, "utf-8"));
+  } catch {
+    // File missing or malformed — start fresh
+  }
+  const extensionSettings = (settings.extensionSettings ?? {}) as Record<
+    string,
+    unknown
+  >;
+  const existing = (extensionSettings.askUserQuestion ?? {}) as Record<
+    string,
+    unknown
+  >;
+  extensionSettings.askUserQuestion = { ...existing, enabled };
+  settings.extensionSettings = extensionSettings;
+  fs.mkdirSync(path.dirname(SETTINGS_PATH), { recursive: true });
+  fs.writeFileSync(
+    SETTINGS_PATH,
+    JSON.stringify(settings, null, 2) + "\n",
+    "utf-8",
+  );
+}
 
 interface Question {
   id: string;
@@ -45,17 +97,22 @@ const QuestionnaireParams = Type.Object({
   questions: Type.Array(
     Type.Object({
       id: Type.String({ description: "Unique identifier for this question" }),
-      label: Type.Optional(Type.String({ description: "Short label for tab bar (defaults to Q1, Q2)" })),
+      label: Type.Optional(
+        Type.String({
+          description: "Short label for tab bar (defaults to Q1, Q2)",
+        }),
+      ),
       prompt: Type.String({ description: "The question text to display" }),
       options: Type.Array(
         Type.Object({
           value: Type.String({ description: "Value returned when selected" }),
           label: Type.String({ description: "Display label" }),
-          description: Type.Optional(Type.String({ description: "Optional description" })),
+          description: Type.Optional(
+            Type.String({ description: "Optional description" }),
+          ),
         }),
         { description: "Available options" },
       ),
-
     }),
     { description: "Questions to ask" },
   ),
@@ -86,10 +143,40 @@ function styledTruncate(
 }
 
 export default function questionnaire(pi: ExtensionAPI) {
+  const config = loadConfig();
+
+  pi.registerCommand("cmd:ask-user-question-toggle", {
+    description: "Toggle ask-user-question tool on/off",
+    handler: async (_args, ctx) => {
+      config.enabled = !config.enabled;
+      saveEnabled(config.enabled);
+      if (config.enabled) {
+        pi.setActiveTools([
+          ...new Set([...pi.getActiveTools(), "ask-user-question"]),
+        ]);
+      } else {
+        pi.setActiveTools(
+          pi.getActiveTools().filter((t) => t !== "ask-user-question"),
+        );
+      }
+      ctx.ui.notify(
+        `ask-user-question ${config.enabled ? "enabled" : "disabled"}`,
+        "info",
+      );
+      pi.events.emit("custom-tool:changed", {
+        tool: "ask-user-question",
+        enabled: config.enabled,
+      });
+    },
+  });
+
+  if (!config.enabled) return;
+
   pi.registerTool({
     name: "ask-user-question",
     label: "Ask user question",
-    description: "Ask the user one or more questions. Single question shows options list; multiple questions show tab-based interface.",
+    description:
+      "Ask the user one or more questions. Single question shows options list; multiple questions show tab-based interface.",
     parameters: QuestionnaireParams,
 
     async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
@@ -123,7 +210,10 @@ export default function questionnaire(pi: ExtensionAPI) {
           },
         } as EditorTheme);
 
-        const refresh = () => { cachedLines = undefined; tui.requestRender(); };
+        const refresh = () => {
+          cachedLines = undefined;
+          tui.requestRender();
+        };
 
         const currentQuestion = () => questions[currentTab];
 
@@ -135,13 +225,18 @@ export default function questionnaire(pi: ExtensionAPI) {
           return options;
         };
 
-        const allAnswered = () => questions.every((question) => answers.has(question.id));
+        const allAnswered = () =>
+          questions.every((question) => answers.has(question.id));
 
-        const finish = (cancelled: boolean) => done({ questions, answers: Array.from(answers.values()), cancelled });
+        const finish = (cancelled: boolean) =>
+          done({ questions, answers: Array.from(answers.values()), cancelled });
 
         const advanceToNext = () => {
           if (!isMulti) return finish(false);
-          currentTab = currentTab < questions.length - 1 ? currentTab + 1 : questions.length;
+          currentTab =
+            currentTab < questions.length - 1
+              ? currentTab + 1
+              : questions.length;
           selectedIndex = 0;
           refresh();
         };
@@ -149,7 +244,12 @@ export default function questionnaire(pi: ExtensionAPI) {
         editor.onSubmit = (value) => {
           if (!inputQuestionId) return;
           const trimmed = value.trim() || "(no response)";
-          answers.set(inputQuestionId, { id: inputQuestionId, value: trimmed, label: trimmed, wasCustom: true });
+          answers.set(inputQuestionId, {
+            id: inputQuestionId,
+            value: trimmed,
+            label: trimmed,
+            wasCustom: true,
+          });
           inputMode = false;
           inputQuestionId = null;
           editor.setText("");
@@ -174,14 +274,24 @@ export default function questionnaire(pi: ExtensionAPI) {
 
           // Tab navigation
           if (isMulti) {
-            if (matchesKey(data, Key.tab) || matchesKey(data, Key.right) || data === "l") {
+            if (
+              matchesKey(data, Key.tab) ||
+              matchesKey(data, Key.right) ||
+              data === "l"
+            ) {
               currentTab = (currentTab + 1) % (questions.length + 1);
               selectedIndex = 0;
               refresh();
               return;
             }
-            if (matchesKey(data, Key.shift("tab")) || matchesKey(data, Key.left) || data === "h") {
-              currentTab = (currentTab - 1 + questions.length + 1) % (questions.length + 1);
+            if (
+              matchesKey(data, Key.shift("tab")) ||
+              matchesKey(data, Key.left) ||
+              data === "h"
+            ) {
+              currentTab =
+                (currentTab - 1 + questions.length + 1) %
+                (questions.length + 1);
               selectedIndex = 0;
               refresh();
               return;
@@ -190,14 +300,23 @@ export default function questionnaire(pi: ExtensionAPI) {
 
           // Submit tab
           if (currentTab === questions.length) {
-            if (kb.matches(data, "selectConfirm") && allAnswered()) finish(false);
+            if (kb.matches(data, "selectConfirm") && allAnswered())
+              finish(false);
             else if (kb.matches(data, "selectCancel")) finish(true);
             return;
           }
 
           // Option navigation & selection
-          if (kb.matches(data, "selectUp") || data === "k") { selectedIndex = Math.max(0, selectedIndex - 1); refresh(); return; }
-          if (kb.matches(data, "selectDown") || data === "j") { selectedIndex = Math.min(options.length - 1, selectedIndex + 1); refresh(); return; }
+          if (kb.matches(data, "selectUp") || data === "k") {
+            selectedIndex = Math.max(0, selectedIndex - 1);
+            refresh();
+            return;
+          }
+          if (kb.matches(data, "selectDown") || data === "j") {
+            selectedIndex = Math.min(options.length - 1, selectedIndex + 1);
+            refresh();
+            return;
+          }
           if (kb.matches(data, "selectConfirm") && currentQuestion()) {
             const option = options[selectedIndex];
             if (option.value === "__other__") {
@@ -206,7 +325,13 @@ export default function questionnaire(pi: ExtensionAPI) {
               editor.setText("");
             } else {
               const question = currentQuestion()!;
-              answers.set(question.id, { id: question.id, value: option.value, label: option.label, wasCustom: false, index: selectedIndex + 1 });
+              answers.set(question.id, {
+                id: question.id,
+                value: option.value,
+                label: option.label,
+                wasCustom: false,
+                index: selectedIndex + 1,
+              });
               advanceToNext();
             }
             refresh();
@@ -230,28 +355,38 @@ export default function questionnaire(pi: ExtensionAPI) {
             questions.forEach((q, i) => {
               const answered = answers.has(q.id);
               const text = ` ${answered ? "■" : "□"} ${q.label} `;
-              parts.push(i === currentTab ? theme.bg("selectedBg", theme.fg("text", text)) : theme.fg(answered ? "success" : "muted", text));
+              parts.push(
+                i === currentTab
+                  ? theme.bg("selectedBg", theme.fg("text", text))
+                  : theme.fg(answered ? "success" : "muted", text),
+              );
               parts.push(" ");
             });
             const submitText = " ✓ Submit ";
-            parts.push(currentTab === questions.length
-              ? theme.bg("selectedBg", theme.fg("text", submitText))
-              : theme.fg(allAnswered() ? "success" : "dim", submitText));
+            parts.push(
+              currentTab === questions.length
+                ? theme.bg("selectedBg", theme.fg("text", submitText))
+                : theme.fg(allAnswered() ? "success" : "dim", submitText),
+            );
             parts.push(" →");
             addLine(` ${parts.join("")}`);
             lines.push("");
           }
 
-          const renderOptions = () => options.forEach((option, i) => {
-            const isSelected = i === selectedIndex;
-            const prefix = isSelected ? theme.fg("accent", "> ") : "  ";
-            const label = `${i + 1}. ${option.label}${option.value === "__other__" && inputMode ? " ✎" : ""}`;
-            addLine(prefix + theme.fg(isSelected ? "accent" : "text", label));
-            if (option.description) addLine(`     ${theme.fg("muted", option.description)}`);
-          });
+          const renderOptions = () =>
+            options.forEach((option, i) => {
+              const isSelected = i === selectedIndex;
+              const prefix = isSelected ? theme.fg("accent", "> ") : "  ";
+              const label = `${i + 1}. ${option.label}${option.value === "__other__" && inputMode ? " ✎" : ""}`;
+              addLine(prefix + theme.fg(isSelected ? "accent" : "text", label));
+              if (option.description)
+                addLine(`     ${theme.fg("muted", option.description)}`);
+            });
 
           if (inputMode && question) {
-            wrapTextWithAnsi(question.prompt, width - 2).forEach((line) => addLine(theme.fg("text", ` ${line}`)));
+            wrapTextWithAnsi(question.prompt, width - 2).forEach((line) =>
+              addLine(theme.fg("text", ` ${line}`)),
+            );
             lines.push("");
             renderOptions();
             lines.push("");
@@ -264,33 +399,70 @@ export default function questionnaire(pi: ExtensionAPI) {
             lines.push("");
             questions.forEach((q) => {
               const answer = answers.get(q.id);
-              if (answer) addLine(`${theme.fg("muted", ` ${q.label}: `)}${theme.fg("text", (answer.wasCustom ? "(wrote) " : "") + answer.label)}`);
+              if (answer)
+                addLine(
+                  `${theme.fg("muted", ` ${q.label}: `)}${theme.fg("text", (answer.wasCustom ? "(wrote) " : "") + answer.label)}`,
+                );
             });
             lines.push("");
-            addLine(allAnswered() ? theme.fg("success", " Press Enter to submit") : theme.fg("warning", ` Unanswered: ${questions.filter((q) => !answers.has(q.id)).map((q) => q.label).join(", ")}`));
+            addLine(
+              allAnswered()
+                ? theme.fg("success", " Press Enter to submit")
+                : theme.fg(
+                    "warning",
+                    ` Unanswered: ${questions
+                      .filter((q) => !answers.has(q.id))
+                      .map((q) => q.label)
+                      .join(", ")}`,
+                  ),
+            );
           } else if (question) {
-            wrapTextWithAnsi(question.prompt, width - 2).forEach((line) => addLine(theme.fg("text", ` ${line}`)));
+            wrapTextWithAnsi(question.prompt, width - 2).forEach((line) =>
+              addLine(theme.fg("text", ` ${line}`)),
+            );
             lines.push("");
             renderOptions();
           }
 
           lines.push("");
-          if (!inputMode) addLine(theme.fg("dim", isMulti ? " Tab/←→/h/l navigate • ↑↓/j/k select • Enter confirm • Esc cancel" : " ↑↓/j/k navigate • Enter select • Esc cancel"));
+          if (!inputMode)
+            addLine(
+              theme.fg(
+                "dim",
+                isMulti
+                  ? " Tab/←→/h/l navigate • ↑↓/j/k select • Enter confirm • Esc cancel"
+                  : " ↑↓/j/k navigate • Enter select • Esc cancel",
+              ),
+            );
           addLine(theme.fg("accent", "─".repeat(width)));
 
           cachedLines = lines;
           return lines;
         };
 
-        return { render, invalidate: () => { cachedLines = undefined; }, handleInput };
+        return {
+          render,
+          invalidate: () => {
+            cachedLines = undefined;
+          },
+          handleInput,
+        };
       });
 
-      if (result.cancelled) return { content: [{ type: "text", text: "User cancelled" }], details: result };
+      if (result.cancelled)
+        return {
+          content: [{ type: "text", text: "User cancelled" }],
+          details: result,
+        };
 
-      const text = result.answers.map((a) => {
-        const label = questions.find((q) => q.id === a.id)?.label || a.id;
-        return a.wasCustom ? `${label}: user wrote: ${a.label}` : `${label}: user selected: ${a.index}. ${a.label}`;
-      }).join("\n");
+      const text = result.answers
+        .map((a) => {
+          const label = questions.find((q) => q.id === a.id)?.label || a.id;
+          return a.wasCustom
+            ? `${label}: user wrote: ${a.label}`
+            : `${label}: user selected: ${a.index}. ${a.label}`;
+        })
+        .join("\n");
 
       return { content: [{ type: "text", text }], details: result };
     },
@@ -298,7 +470,10 @@ export default function questionnaire(pi: ExtensionAPI) {
     renderCall(args, theme) {
       const qs = (args.questions as Question[]) || [];
       let text = theme.fg("toolTitle", theme.bold("ask-user-question "));
-      text += theme.fg("muted", `${qs.length} question${qs.length !== 1 ? "s" : ""}`);
+      text += theme.fg(
+        "muted",
+        `${qs.length} question${qs.length !== 1 ? "s" : ""}`,
+      );
       const labels = qs.map((q) => q.label || q.id).join(", ");
       if (labels) text += styledTruncate(theme, "dim", ` ${labels}`, 40);
       return new Text(text, 0, 0);
@@ -306,16 +481,34 @@ export default function questionnaire(pi: ExtensionAPI) {
 
     renderResult(result, _opts, theme) {
       const d = result.details as Result | undefined;
-      if (!d) return new Text(result.content[0]?.type === "text" ? result.content[0].text : "", 0, 0);
+      if (!d)
+        return new Text(
+          result.content[0]?.type === "text" ? result.content[0].text : "",
+          0,
+          0,
+        );
       if (d.cancelled) return new Text(theme.fg("warning", "Cancelled"), 0, 0);
-      return new Text(d.answers.map((a) => {
-        const display = a.wasCustom ? `${theme.fg("muted", "(wrote) ")}${a.label}` : (a.index ? `${a.index}. ${a.label}` : a.label);
-        return `${theme.fg("success", "✓ ")}${theme.fg("accent", a.id)}: ${display}`;
-      }).join("\n"), 0, 0);
+      return new Text(
+        d.answers
+          .map((a) => {
+            const display = a.wasCustom
+              ? `${theme.fg("muted", "(wrote) ")}${a.label}`
+              : a.index
+                ? `${a.index}. ${a.label}`
+                : a.label;
+            return `${theme.fg("success", "✓ ")}${theme.fg("accent", a.id)}: ${display}`;
+          })
+          .join("\n"),
+        0,
+        0,
+      );
     },
   });
 }
 
 function error(msg: string) {
-  return { content: [{ type: "text" as const, text: `Error: ${msg}` }], details: { questions: [], answers: [], cancelled: true } };
+  return {
+    content: [{ type: "text" as const, text: `Error: ${msg}` }],
+    details: { questions: [], answers: [], cancelled: true },
+  };
 }

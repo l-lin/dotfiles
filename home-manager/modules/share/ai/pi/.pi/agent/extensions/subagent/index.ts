@@ -6,11 +6,16 @@
  */
 
 import { StringEnum } from "@mariozechner/pi-ai";
-import type { ExtensionAPI, ExtensionContext, Theme, ThemeColor } from "@mariozechner/pi-coding-agent";
+import type {
+  ExtensionAPI,
+  ExtensionContext,
+  Theme,
+  ThemeColor,
+} from "@mariozechner/pi-coding-agent";
 import { truncateToWidth } from "@mariozechner/pi-tui";
 import { Type, type Static } from "@sinclair/typebox";
 import { discoverAgents } from "./agents.js";
-import { loadConfig } from "./config.js";
+import { loadConfig, saveEnabled } from "./config.js";
 import * as render from "./render.js";
 import * as sessions from "./sessions.js";
 import { Action } from "./sessions.js";
@@ -90,7 +95,10 @@ const SubagentParamsSchema = Type.Object({
   ),
 });
 
-function handleCatalog(params: SubagentParams, ctx: ExtensionContext): ToolResult {
+function handleCatalog(
+  params: SubagentParams,
+  ctx: ExtensionContext,
+): ToolResult {
   const config = loadConfig();
   const sources: string[] = params.sources ?? config.sources;
   const discovery = discoverAgents(sources, ctx.cwd);
@@ -281,7 +289,7 @@ function updateSessionWidget(ctx: ExtensionContext): void {
         const blinkOn = Math.floor(Date.now() / 500) % 2 === 0;
         return sessions.all().map((s) => {
           const color: ThemeColor = s.alive ? "success" : "muted";
-          let icon = theme.fg(color, "󰚩")
+          let icon = theme.fg(color, "󰚩");
           if (s.pending) icon = blinkOn ? theme.fg(color, "󰚩") : " ";
 
           const id = theme.fg("toolTitle", theme.bold(s.id));
@@ -300,6 +308,8 @@ function updateSessionWidget(ctx: ExtensionContext): void {
 // ─── extension ───────────────────────────────────────────────────────────────
 
 export default function (pi: ExtensionAPI) {
+  const config = loadConfig();
+
   pi.on("session_shutdown", async () => {
     stopBlinkTimer();
     sessions.closeAll();
@@ -349,6 +359,27 @@ export default function (pi: ExtensionAPI) {
         updateSessionWidget(ctx);
         ctx.ui.notify(`Closed subagent "${id}".`, "info");
       }
+    },
+  });
+
+  pi.registerCommand("cmd:subagent-toggle", {
+    description: "Toggle subagent tool on/off",
+    handler: async (_args, ctx) => {
+      config.enabled = !config.enabled;
+      saveEnabled(config.enabled);
+      if (config.enabled) {
+        pi.setActiveTools([...new Set([...pi.getActiveTools(), "subagent"])]);
+      } else {
+        pi.setActiveTools(pi.getActiveTools().filter((t) => t !== "subagent"));
+      }
+      ctx.ui.notify(
+        `subagent ${config.enabled ? "enabled" : "disabled"}`,
+        "info",
+      );
+      pi.events.emit("custom-tool:changed", {
+        tool: "subagent",
+        enabled: config.enabled,
+      });
     },
   });
 
@@ -421,6 +452,8 @@ export default function (pi: ExtensionAPI) {
       ctx.ui.notify(`Injected result from ${label} into context.`, "info");
     },
   });
+
+  if (!config.enabled) return;
 
   pi.registerTool({
     name: "subagent",

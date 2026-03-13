@@ -167,15 +167,6 @@ interface FetchDetails {
 export default function webFetchExtension(pi: ExtensionAPI) {
   const config = loadConfig();
 
-  // Apply the persisted enabled state once the session tools are ready.
-  // registerTool() adds "web-fetch" to active tools by default; we remove it
-  // here if settings say it should be off.
-  pi.on("session_start", async () => {
-    if (!config.enabled) {
-      pi.setActiveTools(pi.getActiveTools().filter((t) => t !== "web-fetch"));
-    }
-  });
-
   pi.registerCommand("cmd:web-fetch-toggle", {
     description: "Toggle web-fetch tool on/off",
     handler: async (_args, ctx) => {
@@ -192,6 +183,8 @@ export default function webFetchExtension(pi: ExtensionAPI) {
       );
     },
   });
+
+  if (!config.enabled) return;
 
   pi.registerTool({
     name: "web-fetch",
