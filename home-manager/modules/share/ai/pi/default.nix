@@ -21,6 +21,7 @@
     # AGENTS
     #
     ".pi/agent/subagents/general-purpose.md".source = ./.pi/agent/subagents/general-purpose.md;
+    ".pi/agent/subagents/executor.md".source = ./.pi/agent/subagents/executor.md;
     ".pi/agent/subagents/codebase-analyzer.md".text = ''
 ---
 name: codebase-analyzer
