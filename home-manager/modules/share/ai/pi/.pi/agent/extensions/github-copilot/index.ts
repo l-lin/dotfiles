@@ -21,6 +21,7 @@ import type { UsageData, AuthStatus } from "./types.js";
 export default function githubCopilotExtension(pi: ExtensionAPI) {
   let cachedUsage: UsageData | null = null;
   let cachedAuth: AuthStatus | null = null;
+  let sessionStartUsage: UsageData | null = null;
 
   const settings = loadSettings();
   let widgetVisible = settings.visible !== false;
@@ -39,15 +40,37 @@ export default function githubCopilotExtension(pi: ExtensionAPI) {
         ? await fetchUsage(cachedAuth.token)
         : null;
 
-    updateWidget(ctx, cachedUsage, cachedAuth);
+    const delta = calculateDelta(sessionStartUsage, cachedUsage);
+    updateWidget(ctx, cachedUsage, cachedAuth, delta);
+  }
+
+  function calculateDelta(
+    baseline: UsageData | null,
+    current: UsageData | null,
+  ): number {
+    if (!baseline || !current) return 0;
+    if (baseline.unlimited || current.unlimited) return 0;
+    return Math.max(0, current.used - baseline.used);
   }
 
   pi.on("session_start", async (_event, ctx) => {
-    if (widgetVisible) await refresh(ctx);
+    if (widgetVisible && ctx.hasUI) {
+      cachedAuth = getOAuthToken();
+      sessionStartUsage =
+        cachedAuth.hasToken && cachedAuth.token
+          ? await fetchUsage(cachedAuth.token)
+          : null;
+      cachedUsage = sessionStartUsage;
+
+      updateWidget(ctx, cachedUsage, cachedAuth, 0);
+    }
   });
 
   pi.on("session_switch", async (_event, ctx) => {
-    if (widgetVisible) await refresh(ctx);
+    if (widgetVisible) {
+      sessionStartUsage = cachedUsage;
+      await refresh(ctx);
+    }
   });
 
   pi.on("agent_end", async (_event, ctx) => {
@@ -69,7 +92,11 @@ export default function githubCopilotExtension(pi: ExtensionAPI) {
         cachedAuth.hasToken && cachedAuth.token
           ? await fetchUsage(cachedAuth.token)
           : null;
-      if (widgetVisible) updateWidget(ctx, cachedUsage, cachedAuth);
+
+      if (widgetVisible) {
+        const delta = calculateDelta(sessionStartUsage, cachedUsage);
+        updateWidget(ctx, cachedUsage, cachedAuth, delta);
+      }
 
       if (cachedUsage?.unlimited) {
         ctx.ui.notify("Unlimited premium requests", "info");

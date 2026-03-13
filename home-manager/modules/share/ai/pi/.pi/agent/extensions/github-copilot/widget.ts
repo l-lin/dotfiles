@@ -52,6 +52,7 @@ export function updateWidget(
   ctx: ExtensionContext,
   usageData: UsageData | null,
   authStatus: AuthStatus,
+  sessionDelta: number = 0,
 ): void {
   const theme = ctx.ui.theme;
 
@@ -94,7 +95,9 @@ export function updateWidget(
   const { used, quota, resetDate } = usageData;
   const percent = quota > 0 ? ((used / quota) * 100).toFixed(1) : "0.0";
   const usageBar = renderProgressBar(used, quota, BAR_WIDTH, theme, true);
-  const usagePart = `${usageBar} ${used}/${quota} (${percent}%)`;
+  const deltaText =
+    sessionDelta > 0 ? theme.fg("error", ` +${sessionDelta}`) : "";
+  const usagePart = `${usageBar} ${used}/${quota} (${percent}%)${deltaText}`;
 
   const daysRemaining = getDaysRemaining(resetDate);
   const totalDays = getBillingCycleDays(resetDate);
@@ -108,5 +111,5 @@ export function updateWidget(
   );
   const daysPart = `${daysBar} ${daysRemaining}d left (${resetDate})`;
 
-  ctx.ui.setWidget(WIDGET_ID, [`${usagePart}  ${daysPart}`], WIDGET_PLACEMENT);
+  ctx.ui.setWidget(WIDGET_ID, [`${usagePart} ${daysPart}`], WIDGET_PLACEMENT);
 }
