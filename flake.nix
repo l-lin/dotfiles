@@ -16,6 +16,10 @@
       url = "github:lnl7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Fix .app programs installed by Nix on Mac
+    # Include this inputs if you need to have MacOS Spotlight to be able to discover your
+    # apps installed via home-manager.
+    #mac-app-util.url = "github:hraban/mac-app-util";
 
     # Home manager
     home-manager = {
@@ -72,6 +76,7 @@
     self,
     hm-ricing-mode,
     home-manager,
+    #mac-app-util,
     nix-darwin,
     nixgl,
     nixpkgs,
@@ -100,7 +105,7 @@
     # pass to it, with each system as an argument
     forAllSystems = nixpkgs.lib.genAttrs systems;
 
-    lib = nixpkgs.lib;
+    inherit (nixpkgs) lib;
 
     # ---- SYSTEM SETTINGS ---- #
     systemSettings = {
@@ -140,7 +145,7 @@
     specialArgs =
       inputs
       // {
-        pkgs-bitwarden-cli = import nixpkgs-bitwarden-cli { system = systemSettings.system; };
+        pkgs-bitwarden-cli = import nixpkgs-bitwarden-cli { inherit (systemSettings) system; };
         inherit fileExplorer inputs nixgl outputs secrets symlinkRoot systemSettings userSettings;
       };
   in {
@@ -161,7 +166,7 @@
     darwinConfigurations = {
         "${systemSettings.hostname}" = nix-darwin.lib.darwinSystem {
           inherit specialArgs;
-          system = systemSettings.system;
+          inherit (systemSettings) system;
           modules = [./nix-darwin/configuration.nix];
         };
       };
@@ -172,7 +177,11 @@
       "${userSettings.username}" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.${systemSettings.system}; # Home-manager requires 'pkgs' instance
         extraSpecialArgs = specialArgs;
-        modules = [./home-manager/home.nix hm-ricing-mode.homeManagerModules.hm-ricing-mode];
+        modules = [
+            hm-ricing-mode.homeManagerModules.hm-ricing-mode
+            #mac-app-util.homeManagerModules.default
+            ./home-manager/home.nix
+          ];
       };
     };
   };

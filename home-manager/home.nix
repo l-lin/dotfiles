@@ -14,7 +14,7 @@ in {
   imports = [ ./modules ];
 
   home = {
-    username = userSettings.username;
+    inherit (userSettings) username;
     homeDirectory = homeDirectory+userSettings.username;
   };
 
