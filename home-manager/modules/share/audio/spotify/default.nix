@@ -7,14 +7,14 @@
 
 { config, inputs, pkgs, ... }:
 let
-  spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.system};
+  spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
   colorScheme = if (config.theme.polarity == "dark") then "catppuccin-mocha" else "catppuccin-latte";
 in {
   imports = [ inputs.spicetify-nix.homeManagerModules.default ];
   programs.spicetify = {
     enable = true;
     theme = spicePkgs.themes.dribbblish;
-    colorScheme = colorScheme;
+    inherit colorScheme;
     spotifyPackage = pkgs.spotify;
 
     enabledExtensions = with spicePkgs.extensions; [
