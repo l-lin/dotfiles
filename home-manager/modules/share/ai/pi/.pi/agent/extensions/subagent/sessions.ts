@@ -212,9 +212,11 @@ export function spawn(
     }
   }
 
-  const userSystemPrompt = config.userSystemPrompt.enabled
-    ? readFileIfExists(config.userSystemPrompt.path)
-    : "";
+  const shouldAppendUserSystemPrompt = agent.appendUserSystemPrompt ?? true;
+  const userSystemPrompt =
+    config.userSystemPrompt.enabled && shouldAppendUserSystemPrompt
+      ? readFileIfExists(config.userSystemPrompt.path)
+      : "";
 
   const combinedParts = [userSystemPrompt, agent.systemPrompt.trim()].filter(
     Boolean,

@@ -12,6 +12,8 @@ export interface AgentConfig {
   description: string;
   tools?: string[];
   model?: string;
+  /** Whether to append user system prompt (default: true) */
+  appendUserSystemPrompt?: boolean;
   systemPrompt: string;
   /** Resolved absolute path of the source directory */
   source: string;
@@ -76,11 +78,17 @@ function loadAgentsFromDir(dir: string): AgentConfig[] {
       .map((t: string) => t.trim())
       .filter(Boolean);
 
+    const appendUserSystemPrompt =
+      frontmatter.appendUserSystemPrompt === undefined
+        ? undefined
+        : frontmatter.appendUserSystemPrompt === "true";
+
     agents.push({
       name: frontmatter.name,
       description: frontmatter.description,
       tools: tools && tools.length > 0 ? tools : undefined,
       model: frontmatter.model,
+      appendUserSystemPrompt: appendUserSystemPrompt,
       systemPrompt: body,
       source: dir,
       filePath,
