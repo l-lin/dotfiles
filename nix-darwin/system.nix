@@ -81,6 +81,9 @@
 
         # Enable natural scrolling (default to true)
         "com.apple.swipescrolldirection" = true;
+        # Required alongside trackpad.Clicking to fully activate tap-to-click
+        # without needing to manually toggle it in System Settings.
+        "com.apple.mouse.tapBehavior" = 1;
         # Disable beep sound when pressing volume up/down key.
         "com.apple.sound.beep.feedback" = 0;
         # Use F1, F2, etc. keys as standard function keys.
@@ -216,4 +219,5 @@
 
   # Set your time zone.
   time.timeZone = systemSettings.timezone;
+
 }
