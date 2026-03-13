@@ -1,7 +1,7 @@
 #
 # Powerful CLI tool to take control of the Spotify client.
 # src:
-# - https://github.com/the-argus/spicetify-nix
+# - https://github.com/Gerg-L/spicetify-nix
 # - https://spicetify.app/
 #
 
