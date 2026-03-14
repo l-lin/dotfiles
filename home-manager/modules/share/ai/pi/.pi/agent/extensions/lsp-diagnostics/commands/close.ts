@@ -5,7 +5,7 @@ import type { ExtensionContext } from "@mariozechner/pi-coding-agent";
 import type { LspClientEntry } from "../types.js";
 import { clearWidget, LSP_ICON } from "../ui/widget.js";
 
-export async function handleKill(
+export async function handleClose(
   lspClients: Map<string, LspClientEntry>,
   ctx: ExtensionContext,
 ): Promise<void> {
@@ -21,7 +21,7 @@ export async function handleKill(
     labelToKey.set(`${LSP_ICON} ${k}`, k);
   }
   const options = [ALL_LABEL, ...labelToKey.keys()];
-  const chosen = await ctx.ui.select("Select an LSP server to kill:", options);
+  const chosen = await ctx.ui.select("Select an LSP server to close:", options);
   if (!chosen) return;
 
   if (chosen === ALL_LABEL) {
@@ -32,7 +32,7 @@ export async function handleKill(
     lspClients.clear();
     await Promise.allSettled(shutdowns);
     clearWidget(ctx);
-    ctx.ui.notify(`Killed all ${count} LSP server(s).`, "info");
+    ctx.ui.notify(`Closed all ${count} LSP server(s).`, "info");
   } else {
     const key = labelToKey.get(chosen)!;
     const entry = lspClients.get(key);
@@ -45,6 +45,6 @@ export async function handleKill(
     if (lspClients.size === 0) {
       clearWidget(ctx);
     }
-    ctx.ui.notify(`Killed LSP server "${key}".`, "info");
+    ctx.ui.notify(`Closed LSP server "${key}".`, "info");
   }
 }

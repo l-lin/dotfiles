@@ -21,7 +21,7 @@ import { clearWidget } from "./ui/widget.js";
 import {
   handleCheck,
   handleToggle,
-  handleKill,
+  handleClose,
   handleDetails,
 } from "./commands/index.js";
 
@@ -48,10 +48,10 @@ export default function (pi: ExtensionAPI) {
     },
   });
 
-  pi.registerCommand("cmd:lsp-kill", {
-    description: "Kill active LSP server(s)",
+  pi.registerCommand("cmd:lsp-close", {
+    description: "Close active LSP server(s)",
     handler: async (_args, ctx) => {
-      await handleKill(lspClients, ctx);
+      await handleClose(lspClients, ctx);
     },
   });
 
