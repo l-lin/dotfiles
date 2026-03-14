@@ -283,9 +283,7 @@ export function renderBreakdownBody(
     bgBase,
   );
 
-  const summary =
-    rangeSummary(range, selectedDays, metric.kind) +
-    dim(`   (graph: ${metric.kind}/day)`);
+  const summary = rangeSummary(range, selectedDays, metric.kind);
 
   const maxScale = selectedDays === 7 ? 4 : selectedDays === 30 ? 3 : 2;
   const weeks = weeksForRange(range);
