@@ -74,6 +74,15 @@ function renderUsageBar(
   let tools = toCols(parts.tools);
   let con = toCols(parts.convo);
   let rem = w - sys - tools - con;
+
+  // Ensure tools are visible if they exist
+  if (parts.tools > 0 && tools === 0) {
+    tools = 1;
+    if (rem > 0) rem--;
+    else if (con > 0) con--;
+    else if (sys > 0) sys--;
+  }
+
   if (rem < 0) rem = 0;
   while (sys + tools + con + rem < w) rem++;
   while (sys + tools + con + rem > w && rem > 0) rem--;
