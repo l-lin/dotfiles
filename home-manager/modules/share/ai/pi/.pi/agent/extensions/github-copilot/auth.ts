@@ -22,8 +22,7 @@ function getTokenPaths(): string[] {
 }
 
 export function getOAuthToken(): AuthStatus {
-  // Codespaces: use env token directly
-  if (process.env.GITHUB_TOKEN && process.env.CODESPACES) {
+  if (process.env.GITHUB_TOKEN) {
     return { hasToken: true, token: process.env.GITHUB_TOKEN };
   }
 

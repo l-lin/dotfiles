@@ -54,23 +54,21 @@ export default function githubCopilotExtension(pi: ExtensionAPI) {
   }
 
   pi.on("session_start", async (_event, ctx) => {
-    if (widgetVisible && ctx.hasUI) {
-      cachedAuth = getOAuthToken();
-      sessionStartUsage =
-        cachedAuth.hasToken && cachedAuth.token
-          ? await fetchUsage(cachedAuth.token)
-          : null;
-      cachedUsage = sessionStartUsage;
+    cachedAuth = getOAuthToken();
+    sessionStartUsage =
+      cachedAuth.hasToken && cachedAuth.token
+        ? await fetchUsage(cachedAuth.token)
+        : null;
+    cachedUsage = sessionStartUsage;
 
+    if (widgetVisible && ctx.hasUI) {
       updateWidget(ctx, cachedUsage, cachedAuth, 0);
     }
   });
 
   pi.on("session_switch", async (_event, ctx) => {
-    if (widgetVisible) {
-      sessionStartUsage = cachedUsage;
-      await refresh(ctx);
-    }
+    sessionStartUsage = cachedUsage;
+    if (widgetVisible) await refresh(ctx);
   });
 
   pi.on("agent_end", async (_event, ctx) => {
