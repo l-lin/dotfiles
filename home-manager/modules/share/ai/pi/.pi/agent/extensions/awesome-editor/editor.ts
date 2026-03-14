@@ -56,6 +56,32 @@ function normalizeLegacyCtrl(data: string): string {
   return code >= 1 && code <= 31 ? String.fromCharCode(code) : data;
 }
 
+/**
+ * Translate CSI-u extended Alt+Shift sequences to legacy format.
+ * Examples:
+ *   "\x1b[65;4u" (Alt+Shift+A) → "\x1bA"
+ *   "\x1b[73;4u" (Alt+Shift+I) → "\x1bI"
+ *   "\x1b[79;4u" (Alt+Shift+O) → "\x1bO"
+ *   "\x1b[111;3u" (Alt+o) → "\x1bo"
+ * Non-alt sequences are returned unchanged.
+ */
+function normalizeAltSequences(data: string): string {
+  // Match CSI-u format: \x1b[<code>;<modifiers>u
+  const match = data.match(/^\x1b\[(\d+);(\d+)u$/);
+  if (!match) return data;
+
+  const code = parseInt(match[1]!, 10);
+  const modifiers = parseInt(match[2]!, 10);
+
+  // Modifier values: 3=Alt, 4=Shift+Alt
+  if (modifiers === 3 || modifiers === 4) {
+    const char = String.fromCharCode(code);
+    return `\x1b${char}`;
+  }
+
+  return data;
+}
+
 export class AwesomeEditor extends CustomEditor {
   private mode: Mode = "insert";
   private pendingMotion: PendingMotion = null;
@@ -70,8 +96,9 @@ export class AwesomeEditor extends CustomEditor {
   }
 
   handleInput(data: string): void {
-    // Normalize CSI-u extended ctrl sequences (e.g. "\x1b[101;5u" → "\x05")
+    // Normalize CSI-u extended sequences for both Ctrl and Alt modifiers
     // so all downstream checks and readline passthrough use the expected bytes.
+    data = normalizeAltSequences(data);
     data = normalizeLegacyCtrl(data);
 
     if (matchesKey(data, "escape")) return this.handleEscape();
