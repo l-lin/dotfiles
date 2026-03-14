@@ -1,5 +1,5 @@
 /**
- * Agent discovery and configuration
+ * Agent discovery and settings
  */
 
 import * as fs from "node:fs";
@@ -7,7 +7,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { parseFrontmatter } from "@mariozechner/pi-coding-agent";
 
-export interface AgentConfig {
+export interface AgentSettings {
   name: string;
   description: string;
   tools?: string[];
@@ -21,7 +21,7 @@ export interface AgentConfig {
 }
 
 export interface AgentDiscoveryResult {
-  agents: AgentConfig[];
+  agents: AgentSettings[];
 }
 
 /** Expands ~ or $HOME prefix and returns an absolute path, resolving relative paths against cwd. */
@@ -40,8 +40,8 @@ export function resolvePath(p: string, cwd: string): string {
   return path.isAbsolute(expanded) ? expanded : path.resolve(cwd, expanded);
 }
 
-function loadAgentsFromDir(dir: string): AgentConfig[] {
-  const agents: AgentConfig[] = [];
+function loadAgentsFromDir(dir: string): AgentSettings[] {
+  const agents: AgentSettings[] = [];
 
   if (!fs.existsSync(dir)) {
     return agents;
@@ -107,7 +107,7 @@ export function discoverAgents(
   sources: string[],
   cwd: string,
 ): AgentDiscoveryResult {
-  const agentMap = new Map<string, AgentConfig>();
+  const agentMap = new Map<string, AgentSettings>();
 
   for (const rawSource of sources) {
     const resolvedDir = resolvePath(rawSource, cwd);

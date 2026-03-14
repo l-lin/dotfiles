@@ -23,17 +23,17 @@ import * as path from "node:path";
 
 const SETTINGS_PATH = path.join(os.homedir(), ".pi", "agent", "settings.json");
 
-interface WebFetchConfig {
+interface WebFetchSettings {
   enabled: boolean;
 }
 
-const DEFAULTS: WebFetchConfig = { enabled: true };
+const DEFAULTS: WebFetchSettings = { enabled: true };
 
-function loadConfig(): WebFetchConfig {
+function loadSettings(): WebFetchSettings {
   try {
     const raw = fs.readFileSync(SETTINGS_PATH, "utf-8");
     const settings = JSON.parse(raw) as {
-      extensionSettings?: { webFetch?: Partial<WebFetchConfig> };
+      extensionSettings?: { webFetch?: Partial<WebFetchSettings> };
     };
     const parsed = settings.extensionSettings?.webFetch ?? {};
     return {
@@ -165,27 +165,30 @@ interface FetchDetails {
 // ============================================================================
 
 export default function webFetchExtension(pi: ExtensionAPI) {
-  const config = loadConfig();
+  const settings = loadSettings();
 
   pi.registerCommand("cmd:web-fetch-toggle", {
     description: "Toggle web-fetch tool on/off",
     handler: async (_args, ctx) => {
-      config.enabled = !config.enabled;
-      saveEnabled(config.enabled);
-      if (config.enabled) {
+      settings.enabled = !settings.enabled;
+      saveEnabled(settings.enabled);
+      if (settings.enabled) {
         pi.setActiveTools([...new Set([...pi.getActiveTools(), "web-fetch"])]);
       } else {
         pi.setActiveTools(pi.getActiveTools().filter((t) => t !== "web-fetch"));
       }
       ctx.ui.notify(
-        `web-fetch ${config.enabled ? "enabled" : "disabled"}`,
+        `web-fetch ${settings.enabled ? "enabled" : "disabled"}`,
         "info",
       );
-      pi.events.emit("custom-tool:changed", { tool: "web-fetch", enabled: config.enabled });
+      pi.events.emit("custom-tool:changed", {
+        tool: "web-fetch",
+        enabled: settings.enabled,
+      });
     },
   });
 
-  if (!config.enabled) return;
+  if (!settings.enabled) return;
 
   pi.registerTool({
     name: "web-fetch",

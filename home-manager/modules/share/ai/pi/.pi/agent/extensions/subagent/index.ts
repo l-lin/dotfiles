@@ -15,7 +15,7 @@ import type {
 import { truncateToWidth } from "@mariozechner/pi-tui";
 import { Type, type Static } from "@sinclair/typebox";
 import { discoverAgents } from "./agents.js";
-import { loadConfig, saveEnabled } from "./config.js";
+import { loadSettings, saveEnabled } from "./settings.js";
 import * as render from "./render.js";
 import * as sessions from "./sessions.js";
 import { Action } from "./sessions.js";
@@ -87,7 +87,7 @@ const SubagentParamsSchema = Type.Object({
   sources: Type.Optional(
     Type.Array(Type.String(), {
       description:
-        "Directories to search for agent definitions. Accepts absolute paths (~ and $HOME are expanded) or paths relative to cwd. Overrides config defaults.",
+        "Directories to search for agent definitions. Accepts absolute paths (~ and $HOME are expanded) or paths relative to cwd. Overrides default settings.",
     }),
   ),
   cwd: Type.Optional(
@@ -99,14 +99,14 @@ function handleCatalog(
   params: SubagentParams,
   ctx: ExtensionContext,
 ): ToolResult {
-  const config = loadConfig();
-  const sources: string[] = params.sources ?? config.sources;
+  const settings = loadSettings();
+  const sources: string[] = params.sources ?? settings.sources;
   const discovery = discoverAgents(sources, ctx.cwd);
   const agents = discovery.agents;
 
   if (agents.length === 0) {
     return ok(
-      "No subagents found. Check your configuration or agent directories.",
+      "No subagents found. Check your settings or agent directories.",
     );
   }
 
@@ -187,8 +187,8 @@ async function handleSpawn(
   params: SubagentParams,
   ctx: ExtensionContext,
 ): Promise<ToolResult> {
-  const config = loadConfig();
-  const sources: string[] = params.sources ?? config.sources;
+  const settings = loadSettings();
+  const sources: string[] = params.sources ?? settings.sources;
   const discovery = discoverAgents(sources, ctx.cwd);
   const agents = discovery.agents;
   const availableNames = agents.map((a) => `"${a.name}"`).join(", ") || "none";
@@ -205,9 +205,9 @@ async function handleSpawn(
     return err(
       `Spawn requires agent+task or tasks array.\nAvailable agents: ${availableNames}`,
     );
-  if (taskList.length > config.maxParallel)
+  if (taskList.length > settings.maxParallel)
     return err(
-      `Too many parallel tasks (${taskList.length}). Max is ${config.maxParallel}.`,
+      `Too many parallel tasks (${taskList.length}). Max is ${settings.maxParallel}.`,
     );
 
   // Spawn subagents one at a time
@@ -308,7 +308,7 @@ function updateSessionWidget(ctx: ExtensionContext): void {
 // ─── extension ───────────────────────────────────────────────────────────────
 
 export default function (pi: ExtensionAPI) {
-  const config = loadConfig();
+  const settings = loadSettings();
 
   pi.on("session_shutdown", async () => {
     stopBlinkTimer();
@@ -365,20 +365,20 @@ export default function (pi: ExtensionAPI) {
   pi.registerCommand("cmd:subagent-toggle", {
     description: "Toggle subagent tool on/off",
     handler: async (_args, ctx) => {
-      config.enabled = !config.enabled;
-      saveEnabled(config.enabled);
-      if (config.enabled) {
+      settings.enabled = !settings.enabled;
+      saveEnabled(settings.enabled);
+      if (settings.enabled) {
         pi.setActiveTools([...new Set([...pi.getActiveTools(), "subagent"])]);
       } else {
         pi.setActiveTools(pi.getActiveTools().filter((t) => t !== "subagent"));
       }
       ctx.ui.notify(
-        `subagent ${config.enabled ? "enabled" : "disabled"}`,
+        `subagent ${settings.enabled ? "enabled" : "disabled"}`,
         "info",
       );
       pi.events.emit("custom-tool:changed", {
         tool: "subagent",
-        enabled: config.enabled,
+        enabled: settings.enabled,
       });
     },
   });
@@ -453,7 +453,7 @@ export default function (pi: ExtensionAPI) {
     },
   });
 
-  if (!config.enabled) return;
+  if (!settings.enabled) return;
 
   pi.registerTool({
     name: "subagent",

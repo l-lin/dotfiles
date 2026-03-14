@@ -5,8 +5,8 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
-import type { AgentConfig } from "./agents.js";
-import { loadConfig } from "./config.js";
+import type { AgentSettings } from "./agents.js";
+import { loadSettings } from "./settings.js";
 import * as tmux from "./tmux.js";
 
 // ─── shared types ────────────────────────────────────────────────────────────
@@ -162,7 +162,7 @@ function sessionDir(id: string): string {
 }
 
 function buildPiCommand(
-  agent: AgentConfig,
+  agent: AgentSettings,
   task: string,
   resultFile: string,
   systemPromptFile?: string,
@@ -190,7 +190,7 @@ When you have completed the task (or have a meaningful intermediate result to re
 
 export function spawn(
   pi: ExtensionAPI,
-  agent: AgentConfig,
+  agent: AgentSettings,
   task: string,
   cwd: string,
 ): Session {
@@ -201,7 +201,7 @@ export function spawn(
 
   const resultFile = path.join(dir, "result.md");
 
-  const config = loadConfig();
+  const settings = loadSettings();
 
   function readFileIfExists(filePath: string): string {
     const expanded = filePath.replace(/^~/, os.homedir());
@@ -214,7 +214,7 @@ export function spawn(
 
   const shouldAppendUserSystemPrompt = agent.appendUserSystemPrompt ?? true;
   const userSystemPrompt = shouldAppendUserSystemPrompt
-    ? readFileIfExists(config.userSystemPrompt.path)
+    ? readFileIfExists(settings.userSystemPrompt.path)
     : "";
 
   const combinedParts = [userSystemPrompt, agent.systemPrompt.trim()].filter(

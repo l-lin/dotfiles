@@ -20,7 +20,7 @@ import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join, basename, isAbsolute, resolve } from "node:path";
 import { homedir } from "node:os";
-import { loadConfig } from "./subagent/config.js";
+import { loadSettings } from "./subagent/settings.js";
 
 interface AgentDef {
   name: string;
@@ -91,7 +91,7 @@ export default function (pi: ExtensionAPI) {
     const home = homedir();
     const cwd = ctx.cwd;
 
-    const { sources } = loadConfig();
+    const { sources } = loadSettings();
     const dirs: [string, string][] = sources.map((src) => {
       const expanded = src.replace(/^~/, home).replace(/^\$HOME/, home);
       const absolute = isAbsolute(expanded) ? expanded : resolve(cwd, expanded);

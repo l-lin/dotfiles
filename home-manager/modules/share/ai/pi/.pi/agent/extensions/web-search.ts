@@ -22,17 +22,17 @@ import * as path from "node:path";
 
 const SETTINGS_PATH = path.join(os.homedir(), ".pi", "agent", "settings.json");
 
-interface WebSearchConfig {
+interface WebSearchSettings {
   enabled: boolean;
 }
 
-const DEFAULTS: WebSearchConfig = { enabled: true };
+const DEFAULTS: WebSearchSettings = { enabled: true };
 
-function loadConfig(): WebSearchConfig {
+function loadSettings(): WebSearchSettings {
   try {
     const raw = fs.readFileSync(SETTINGS_PATH, "utf-8");
     const settings = JSON.parse(raw) as {
-      extensionSettings?: { webSearch?: Partial<WebSearchConfig> };
+      extensionSettings?: { webSearch?: Partial<WebSearchSettings> };
     };
     const parsed = settings.extensionSettings?.webSearch ?? {};
     return {
@@ -253,14 +253,14 @@ function formatResultsAsMarkdown(
 // ============================================================================
 
 export default function webSearchExtension(pi: ExtensionAPI) {
-  const config = loadConfig();
+  const settings = loadSettings();
 
   pi.registerCommand("cmd:web-search-toggle", {
     description: "Toggle web-search tool on/off",
     handler: async (_args, ctx) => {
-      config.enabled = !config.enabled;
-      saveEnabled(config.enabled);
-      if (config.enabled) {
+      settings.enabled = !settings.enabled;
+      saveEnabled(settings.enabled);
+      if (settings.enabled) {
         pi.setActiveTools([...new Set([...pi.getActiveTools(), "web-search"])]);
       } else {
         pi.setActiveTools(
@@ -268,14 +268,17 @@ export default function webSearchExtension(pi: ExtensionAPI) {
         );
       }
       ctx.ui.notify(
-        `web-search ${config.enabled ? "enabled" : "disabled"}`,
+        `web-search ${settings.enabled ? "enabled" : "disabled"}`,
         "info",
       );
-      pi.events.emit("custom-tool:changed", { tool: "web-search", enabled: config.enabled });
+      pi.events.emit("custom-tool:changed", {
+        tool: "web-search",
+        enabled: settings.enabled,
+      });
     },
   });
 
-  if (!config.enabled) return;
+  if (!settings.enabled) return;
 
   pi.registerTool({
     name: "web-search",

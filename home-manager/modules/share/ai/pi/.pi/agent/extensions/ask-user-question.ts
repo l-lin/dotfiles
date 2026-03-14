@@ -25,17 +25,19 @@ import * as path from "node:path";
 
 const SETTINGS_PATH = path.join(os.homedir(), ".pi", "agent", "settings.json");
 
-interface AskUserQuestionConfig {
+interface AskUserQuestionSettings {
   enabled: boolean;
 }
 
-const DEFAULTS: AskUserQuestionConfig = { enabled: true };
+const DEFAULTS: AskUserQuestionSettings = { enabled: true };
 
-function loadConfig(): AskUserQuestionConfig {
+function loadSettings(): AskUserQuestionSettings {
   try {
     const raw = fs.readFileSync(SETTINGS_PATH, "utf-8");
     const settings = JSON.parse(raw) as {
-      extensionSettings?: { askUserQuestion?: Partial<AskUserQuestionConfig> };
+      extensionSettings?: {
+        askUserQuestion?: Partial<AskUserQuestionSettings>;
+      };
     };
     const parsed = settings.extensionSettings?.askUserQuestion ?? {};
     return {
@@ -143,14 +145,14 @@ function styledTruncate(
 }
 
 export default function questionnaire(pi: ExtensionAPI) {
-  const config = loadConfig();
+  const settings = loadSettings();
 
   pi.registerCommand("cmd:ask-user-question-toggle", {
     description: "Toggle ask-user-question tool on/off",
     handler: async (_args, ctx) => {
-      config.enabled = !config.enabled;
-      saveEnabled(config.enabled);
-      if (config.enabled) {
+      settings.enabled = !settings.enabled;
+      saveEnabled(settings.enabled);
+      if (settings.enabled) {
         pi.setActiveTools([
           ...new Set([...pi.getActiveTools(), "ask-user-question"]),
         ]);
@@ -160,17 +162,17 @@ export default function questionnaire(pi: ExtensionAPI) {
         );
       }
       ctx.ui.notify(
-        `ask-user-question ${config.enabled ? "enabled" : "disabled"}`,
+        `ask-user-question ${settings.enabled ? "enabled" : "disabled"}`,
         "info",
       );
       pi.events.emit("custom-tool:changed", {
         tool: "ask-user-question",
-        enabled: config.enabled,
+        enabled: settings.enabled,
       });
     },
   });
 
-  if (!config.enabled) return;
+  if (!settings.enabled) return;
 
   pi.registerTool({
     name: "ask-user-question",
