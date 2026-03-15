@@ -85,6 +85,8 @@
       "intellij-idea"
       # Jellyfin is the volunteer-built media solution that puts you in control of your media: https://jellyfin.org/
       #"jellyfin"
+      # Share files without the cloud: https://localsend.org/
+      "localsend"
       # Free cross-platform office suite, fresh version: https://www.libreoffice.org/
       "libreoffice"
       # MacOS menu bar app for launching iOS  and Android 🤖 emulators: https://github.com/okwasniewski/minisim
