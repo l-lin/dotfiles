@@ -1,5 +1,3 @@
-// ─── Skill entry ──────────────────────────────────────────────────────────────
-
 export interface ActivatedSkill {
   /** Kebab-case skill name derived from the SKILL.md path */
   name: string;
@@ -8,8 +6,6 @@ export interface ActivatedSkill {
   /** When the skill was first activated in this session */
   activatedAt: Date;
 }
-
-// ─── UI Icons ─────────────────────────────────────────────────────────────────
 
 export const ICON_SKILL = "";
 export const SKILL_MD_FILENAME = "SKILL.md";

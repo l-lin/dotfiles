@@ -15,7 +15,7 @@ export const WIDGET_PLACEMENT = { placement: "belowEditor" as const };
 
 class SkillWidgetManager {
   private skills: ActivatedSkill[] = [];
-  private requestRenderFn: (() => void) | undefined;
+  private tui: TUI | undefined;
   private registered = false;
 
   update(ctx: ExtensionContext, skills: ActivatedSkill[]): void {
@@ -28,12 +28,12 @@ class SkillWidgetManager {
     }
 
     this.ensureRegistered(ctx);
-    this.requestRenderFn?.();
+    this.tui?.requestRender();
   }
 
   clear(ctx: ExtensionContext): void {
     this.skills = [];
-    this.requestRenderFn = undefined;
+    this.tui = undefined;
     this.deregister(ctx);
   }
 
@@ -50,16 +50,14 @@ class SkillWidgetManager {
     ctx.ui.setWidget(
       WIDGET_KEY,
       (tui: TUI, theme: any) => {
-        this.requestRenderFn = () => tui.requestRender();
+        this.tui = tui;
         tui.requestRender();
 
         return {
           render: (width: number): string[] => {
             if (this.skills.length === 0) return [];
-
             const names = this.skills.map((s) => s.name).join("+");
             const line = theme.fg("muted", `${ICON_SKILL} ${names}`);
-
             return [truncateToWidth(line, width)];
           },
           invalidate() {},
