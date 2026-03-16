@@ -54,6 +54,6 @@ export function buildToolIcons(theme: Theme): string {
   return TOOL_ORDER.map((tool) => {
     const enabled = toolStatus.get(tool) ?? true;
     const icon = enabled ? TOOL_ICONS[tool].enabled : TOOL_ICONS[tool].disabled;
-    return enabled ? theme.fg("accent", icon) : theme.fg("dim", icon);
+    return theme.fg("dim", icon);
   }).join(" ");
 }
