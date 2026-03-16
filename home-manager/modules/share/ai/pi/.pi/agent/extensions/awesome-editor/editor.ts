@@ -42,41 +42,41 @@ import {
 } from "./vim/motions.js";
 
 /**
- * Translate a CSI-u extended ctrl sequence (e.g. "\x1b[101;5u" for Ctrl+E)
- * back to its legacy single-byte form ("\x05").
- * Non-ctrl sequences are returned unchanged.
- */
-function normalizeLegacyCtrl(data: string): string {
-  const key = parseKey(data);
-  if (!key) return data;
-  const match = key.match(/^ctrl\+(.+)$/);
-  if (!match || match[1]!.length !== 1) return data;
-  // ctrl+X → charCode(X) & 0x1f  (covers a–z, [, \\, ], ^, _)
-  const code = match[1]!.charCodeAt(0) & 0x1f;
-  return code >= 1 && code <= 31 ? String.fromCharCode(code) : data;
-}
-
-/**
- * Translate CSI-u extended Alt+Shift sequences to legacy format.
+ * Normalize CSI-u extended sequences to legacy format for both Ctrl and Alt modifiers.
  * Examples:
+ *   "\x1b[101;5u" (Ctrl+E) → "\x05"
  *   "\x1b[65;4u" (Alt+Shift+A) → "\x1bA"
- *   "\x1b[73;4u" (Alt+Shift+I) → "\x1bI"
- *   "\x1b[79;4u" (Alt+Shift+O) → "\x1bO"
- *   "\x1b[111;3u" (Alt+o) → "\x1bo"
- * Non-alt sequences are returned unchanged.
  */
-function normalizeAltSequences(data: string): string {
-  // Match CSI-u format: \x1b[<code>;<modifiers>u
-  const match = data.match(/^\x1b\[(\d+);(\d+)u$/);
-  if (!match) return data;
+function normalizeExtendedSequences(data: string): string {
+  const csiMatch = data.match(/^\x1b\[(\d+);(\d+)u$/);
+  if (csiMatch) {
+    const code = parseInt(csiMatch[1]!, 10);
+    const modifiers = parseInt(csiMatch[2]!, 10);
 
-  const code = parseInt(match[1]!, 10);
-  const modifiers = parseInt(match[2]!, 10);
+    // Alt (3) or Alt+Shift (4)
+    if (modifiers === 3 || modifiers === 4) {
+      return `\x1b${String.fromCharCode(code)}`;
+    }
 
-  // Modifier values: 3=Alt, 4=Shift+Alt
-  if (modifiers === 3 || modifiers === 4) {
-    const char = String.fromCharCode(code);
-    return `\x1b${char}`;
+    // Ctrl (5)
+    if (modifiers === 5) {
+      const ctrlCode = code & 0x1f;
+      if (ctrlCode >= 1 && ctrlCode <= 31) {
+        return String.fromCharCode(ctrlCode);
+      }
+    }
+  }
+
+  // Fallback: check if it's a ctrl+<key> pattern
+  const key = parseKey(data);
+  if (key) {
+    const match = key.match(/^ctrl\+(.+)$/);
+    if (match && match[1]!.length === 1) {
+      const ctrlCode = match[1]!.charCodeAt(0) & 0x1f;
+      if (ctrlCode >= 1 && ctrlCode <= 31) {
+        return String.fromCharCode(ctrlCode);
+      }
+    }
   }
 
   return data;
@@ -98,8 +98,7 @@ export class AwesomeEditor extends CustomEditor {
   handleInput(data: string): void {
     // Normalize CSI-u extended sequences for both Ctrl and Alt modifiers
     // so all downstream checks and readline passthrough use the expected bytes.
-    data = normalizeAltSequences(data);
-    data = normalizeLegacyCtrl(data);
+    data = normalizeExtendedSequences(data);
 
     if (matchesKey(data, "escape")) return this.handleEscape();
 
@@ -109,22 +108,12 @@ export class AwesomeEditor extends CustomEditor {
         this.applyAndExpandSnippet();
         return;
       }
-      if (matchesKey(data, Key.shiftAlt("a")) || data === "\x1bA")
-        return super.handleInput(CTRL_E);
-      if (matchesKey(data, Key.shiftAlt("i")) || data === "\x1bI")
-        return super.handleInput(CTRL_A);
-      if (matchesKey(data, Key.alt("o")) || data === "\x1bo") {
-        super.handleInput(CTRL_E);
-        super.handleInput(NEWLINE);
-        return;
-      }
-      if (matchesKey(data, Key.shiftAlt("o")) || data === "\x1bO") {
-        super.handleInput(CTRL_A);
-        super.handleInput(NEWLINE);
-        super.handleInput(ESC_UP);
-        return;
-      }
+
+      // Alt shortcuts for insert mode
+      if (this.handleInsertModeShortcut(data)) return;
+
       super.handleInput(data);
+
       // Auto-trigger snippet autocomplete as soon as "$" is typed.
       if (data === "$" && !(this as any).autocompleteState) {
         (this as any).tryTriggerAutocomplete();
@@ -141,6 +130,29 @@ export class AwesomeEditor extends CustomEditor {
   }
 
   // ─── Escape / mode transitions ───────────────────────────────────────────────
+
+  private handleInsertModeShortcut(data: string): boolean {
+    if (matchesKey(data, Key.shiftAlt("a")) || data === "\x1bA") {
+      super.handleInput(CTRL_E);
+      return true;
+    }
+    if (matchesKey(data, Key.shiftAlt("i")) || data === "\x1bI") {
+      super.handleInput(CTRL_A);
+      return true;
+    }
+    if (matchesKey(data, Key.alt("o")) || data === "\x1bo") {
+      super.handleInput(CTRL_E);
+      super.handleInput(NEWLINE);
+      return true;
+    }
+    if (matchesKey(data, Key.shiftAlt("o")) || data === "\x1bO") {
+      super.handleInput(CTRL_A);
+      super.handleInput(NEWLINE);
+      super.handleInput(ESC_UP);
+      return true;
+    }
+    return false;
+  }
 
   private handleEscape(): void {
     if (this.pendingMotion || this.pendingOperator) {
@@ -179,13 +191,15 @@ export class AwesomeEditor extends CustomEditor {
       this.pendingOperator = null;
       return;
     }
+
     if (CHAR_MOTION_KEYS.has(data)) {
       this.pendingMotion = data as CharMotion;
       return;
     }
+
     // Unknown motion: cancel operator (vim behaviour)
     this.pendingOperator = null;
-    if (this.deleteWithMotion(data)) return;
+    this.deleteWithMotion(data);
   }
 
   private handlePendingChange(data: string): void {
@@ -195,13 +209,17 @@ export class AwesomeEditor extends CustomEditor {
       this.mode = "insert";
       return;
     }
+
     if (CHAR_MOTION_KEYS.has(data)) {
       this.pendingMotion = data as CharMotion;
       return;
     }
+
     // Unknown motion: cancel operator (vim behaviour)
     this.pendingOperator = null;
-    if (this.deleteWithMotion(data)) this.mode = "insert";
+    if (this.deleteWithMotion(data)) {
+      this.mode = "insert";
+    }
   }
 
   private handlePendingG(data: string): void {
@@ -218,89 +236,136 @@ export class AwesomeEditor extends CustomEditor {
       this.pendingOperator = "d";
       return;
     }
+
     if (data === "c") {
       this.pendingOperator = "c";
       return;
     }
+
     if (CHAR_MOTION_KEYS.has(data)) {
       this.pendingMotion = data as CharMotion;
       return;
     }
-    if (data === ";" && this.lastCharMotion) {
-      this.executeCharMotion(
-        this.lastCharMotion.motion,
-        this.lastCharMotion.char,
-        false,
-      );
+
+    if (this.handleCharMotionRepeat(data)) return;
+    if (this.handleGCommand(data)) return;
+    if (this.handleWordMotion(data)) return;
+    if (data in NORMAL_KEYS) {
+      this.handleMappedKey(data);
       return;
     }
-    if (data === "," && this.lastCharMotion) {
-      this.executeCharMotion(
-        reverseCharMotion(this.lastCharMotion.motion),
-        this.lastCharMotion.char,
-        false,
-      );
-      return;
-    }
-    if (data === "g") {
-      this.pendingG = "g";
-      return;
-    }
-    if (data === "G") return this.moveToLine(this.getLines().length - 1);
-    if (data === "w") return this.moveWord("forward", "start");
-    if (data === "b") return this.moveWord("backward", "start");
-    if (data === "e") return this.moveWord("forward", "end");
-    if (data in NORMAL_KEYS) return this.handleMappedKey(data);
 
     // Swallow printable chars; pass control sequences through
     if (data.length === 1 && data.charCodeAt(0) >= 32) return;
     super.handleInput(data);
   }
 
+  private handleCharMotionRepeat(data: string): boolean {
+    if (!this.lastCharMotion) return false;
+
+    if (data === ";") {
+      this.executeCharMotion(
+        this.lastCharMotion.motion,
+        this.lastCharMotion.char,
+        false,
+      );
+      return true;
+    }
+
+    if (data === ",") {
+      this.executeCharMotion(
+        reverseCharMotion(this.lastCharMotion.motion),
+        this.lastCharMotion.char,
+        false,
+      );
+      return true;
+    }
+
+    return false;
+  }
+
+  private handleGCommand(data: string): boolean {
+    if (data === "g") {
+      this.pendingG = "g";
+      return true;
+    }
+
+    if (data === "G") {
+      this.moveToLine(this.getLines().length - 1);
+      return true;
+    }
+
+    return false;
+  }
+
+  private handleWordMotion(data: string): boolean {
+    if (data === "w") {
+      this.moveWord("forward", "start");
+      return true;
+    }
+
+    if (data === "b") {
+      this.moveWord("backward", "start");
+      return true;
+    }
+
+    if (data === "e") {
+      this.moveWord("forward", "end");
+      return true;
+    }
+
+    return false;
+  }
+
   private handleMappedKey(key: string): void {
-    const seq = NORMAL_KEYS[key];
+    const enterInsertMode = () => {
+      this.mode = "insert";
+    };
+
     switch (key) {
       case "i":
-        this.mode = "insert";
+        enterInsertMode();
         break;
       case "a":
-        this.mode = "insert";
+        enterInsertMode();
         super.handleInput(ESC_RIGHT);
         break;
       case "A":
-        this.mode = "insert";
+        enterInsertMode();
         super.handleInput(CTRL_E);
         break;
       case "I":
-        this.mode = "insert";
+        enterInsertMode();
         super.handleInput(CTRL_A);
         break;
       case "o":
         super.handleInput(CTRL_E);
         super.handleInput(NEWLINE);
-        this.mode = "insert";
+        enterInsertMode();
         break;
       case "O":
         super.handleInput(CTRL_A);
         super.handleInput(NEWLINE);
         super.handleInput(ESC_UP);
-        this.mode = "insert";
+        enterInsertMode();
         break;
       case "C":
         super.handleInput(CTRL_K);
-        this.mode = "insert";
+        enterInsertMode();
         break;
       case "S":
         super.handleInput(CTRL_A);
         super.handleInput(CTRL_K);
-        this.mode = "insert";
+        enterInsertMode();
         break;
       case "s":
         super.handleInput(ESC_DELETE);
-        this.mode = "insert";
+        enterInsertMode();
         break;
-      default:
+      default: {
+        const seq = NORMAL_KEYS[key];
         if (seq) super.handleInput(seq);
+      }
     }
   }
 
@@ -320,10 +385,16 @@ export class AwesomeEditor extends CustomEditor {
       targetChar,
       !saveMotion,
     );
-    if (targetCol !== null && saveMotion)
+
+    if (targetCol === null) return;
+
+    if (saveMotion) {
       this.lastCharMotion = { motion, char: targetChar };
-    if (targetCol !== null && targetCol !== col)
+    }
+
+    if (targetCol !== col) {
       this.moveCursorBy(targetCol - col);
+    }
   }
 
   private moveCursorBy(delta: number): void {
@@ -402,13 +473,17 @@ export class AwesomeEditor extends CustomEditor {
     targetCol: number,
     inclusive: boolean,
   ): void {
-    if (targetCol > col) {
-      const count = targetCol - col + (inclusive ? 1 : 0);
-      for (let i = 0; i < count; i++) super.handleInput(ESC_DELETE);
-    } else if (targetCol < col) {
-      const count = col - targetCol + (inclusive ? 1 : 0);
+    if (targetCol === col) return;
+
+    const isForward = targetCol > col;
+    const count = Math.abs(targetCol - col) + (inclusive ? 1 : 0);
+
+    if (!isForward) {
       this.moveCursorBy(targetCol - col);
-      for (let i = 0; i < count; i++) super.handleInput(ESC_DELETE);
+    }
+
+    for (let i = 0; i < count; i++) {
+      super.handleInput(ESC_DELETE);
     }
   }
 
@@ -443,85 +518,116 @@ export class AwesomeEditor extends CustomEditor {
    * NOTE: Uses `(this as any)` to access CustomEditor internals — fragile coupling.
    */
   private applyAndExpandSnippet(): void {
+    const state = this.getAutocompleteState();
+    if (!state) return;
+
+    const selectedItem = state.list.getSelectedItem() ?? state.list.items?.[0];
+    if (!selectedItem) return;
+
+    const completionResult = this.applyCompletion(selectedItem, state);
+    const snippet = SNIPPETS.find((s) => s.trigger === selectedItem.value);
+
+    if (!snippet) {
+      this.notifyChange();
+      return;
+    }
+
+    this.expandSnippet(snippet, completionResult, selectedItem.value);
+  }
+
+  private getAutocompleteState() {
+    const list = (this as any).autocompleteList;
+    const provider = (this as any).autocompleteProvider;
+    const prefix = (this as any).autocompletePrefix;
+
+    if (!list || !provider) return null;
+
+    return { list, provider, prefix };
+  }
+
+  private applyCompletion(item: any, state: any) {
+    (this as any).pushUndoSnapshot();
+    (this as any).lastAction = null;
+
+    const result = state.provider.applyCompletion(
+      this.getLines(),
+      this.getCursor().line,
+      this.getCursor().col,
+      item,
+      state.prefix,
+    );
+
+    (this as any).state.lines = result.lines;
+    (this as any).state.cursorLine = result.cursorLine;
+    (this as any).setCursorCol(result.cursorCol);
+    (this as any).cancelAutocomplete();
+
+    return result;
+  }
+
+  private expandSnippet(
+    snippet: any,
+    completionResult: any,
+    triggerValue: string,
+  ): void {
     try {
-      const autocompleteList = (this as any).autocompleteList;
-      const autocompleteProvider = (this as any).autocompleteProvider;
-      const autocompletePrefix = (this as any).autocompletePrefix;
-
-      if (!autocompleteList || !autocompleteProvider) return;
-
-      // 1. Get selected (or first) item
-      const selected =
-        autocompleteList.getSelectedItem() ?? autocompleteList.items?.[0];
-      if (!selected) return;
-
-      // 2. Apply the completion (insert trigger like "$date")
-      (this as any).pushUndoSnapshot();
-      (this as any).lastAction = null;
-
-      const result = autocompleteProvider.applyCompletion(
-        this.getLines(),
-        this.getCursor().line,
-        this.getCursor().col,
-        selected,
-        autocompletePrefix,
-      );
-
-      // Update editor state
-      (this as any).state.lines = result.lines;
-      (this as any).state.cursorLine = result.cursorLine;
-      (this as any).setCursorCol(result.cursorCol);
-
-      // Cancel autocomplete
-      (this as any).cancelAutocomplete();
-
-      // 3. Now expand the snippet trigger to its final value
-      const snippet = SNIPPETS.find((s) => s.trigger === selected.value);
-      if (!snippet) {
-        // Not a snippet trigger, just a regular completion
-        if ((this as any).onChange) (this as any).onChange(this.getText());
-        return;
-      }
-
       const expansion =
         typeof snippet.expansion === "function"
           ? snippet.expansion()
           : snippet.expansion;
 
-      // Validate expansion result
       if (expansion == null) {
-        if ((this as any).onChange) (this as any).onChange(this.getText());
+        this.notifyChange();
         return;
       }
 
-      // Validate cursor position and bounds
-      if (result.cursorLine < 0 || result.cursorLine >= result.lines.length) {
-        if ((this as any).onChange) (this as any).onChange(this.getText());
+      if (!this.isValidCursorPosition(completionResult)) {
+        this.notifyChange();
         return;
       }
 
-      const triggerStart = result.cursorCol - selected.value.length;
+      const triggerStart = completionResult.cursorCol - triggerValue.length;
       if (triggerStart < 0) {
-        // Trigger position invalid — abort expansion
-        if ((this as any).onChange) (this as any).onChange(this.getText());
+        this.notifyChange();
         return;
       }
 
-      // Replace the trigger with expansion on current line
-      const currentLine = result.lines[result.cursorLine] ?? "";
-      const newLine =
-        currentLine.slice(0, triggerStart) +
-        expansion +
-        currentLine.slice(result.cursorCol);
-
-      (this as any).state.lines[result.cursorLine] = newLine;
-      (this as any).setCursorCol(triggerStart + expansion.length);
-
-      if ((this as any).onChange) (this as any).onChange(this.getText());
+      this.replaceTextAtCursor(
+        completionResult,
+        triggerStart,
+        triggerValue.length,
+        expansion,
+      );
+      this.notifyChange();
     } catch (error) {
-      // If snippet expansion fails, ensure editor state remains consistent
       console.error("Snippet expansion failed:", error);
-      if ((this as any).onChange) (this as any).onChange(this.getText());
+      this.notifyChange();
+    }
+  }
+
+  private isValidCursorPosition(result: any): boolean {
+    return result.cursorLine >= 0 && result.cursorLine < result.lines.length;
+  }
+
+  private replaceTextAtCursor(
+    result: any,
+    start: number,
+    deleteCount: number,
+    replacement: string,
+  ): void {
+    const currentLine = result.lines[result.cursorLine] ?? "";
+    const newLine =
+      currentLine.slice(0, start) +
+      replacement +
+      currentLine.slice(start + deleteCount);
+
+    (this as any).state.lines[result.cursorLine] = newLine;
+    (this as any).setCursorCol(start + replacement.length);
+  }
+
+  private notifyChange(): void {
+    if ((this as any).onChange) {
+      (this as any).onChange(this.getText());
     }
   }
 }
