@@ -37,7 +37,7 @@ const BLOCKED_TOOLS: BlockedTool[] = [
     pattern: /(?<![a-z\-_])find(?![\w\-])/,
     legacy: "find",
     replacement: "fd",
-  }
+  },
 ];
 
 export default function (pi: ExtensionAPI) {
@@ -48,13 +48,9 @@ export default function (pi: ExtensionAPI) {
 
     for (const { pattern, legacy, replacement } of BLOCKED_TOOLS) {
       if (pattern.test(command)) {
-        const reason =
-          `\`${legacy}\` is not allowed. Use \`${replacement}\` instead.\n` +
-          `Blocked command:\n\`\`\`\n${command}\n\`\`\``;
+        const reason = `Use \`${replacement}\` instead of \`${legacy}\``;
 
-        if (ctx.hasUI) {
-          ctx.ui.notify(`Use \`${replacement}\` instead of \`${legacy}\``, "warning");
-        }
+        if (ctx.hasUI) ctx.ui.notify(reason, "warning");
 
         return { block: true, reason };
       }
