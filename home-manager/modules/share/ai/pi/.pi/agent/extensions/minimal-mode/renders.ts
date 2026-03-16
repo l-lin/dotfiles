@@ -41,7 +41,7 @@ export function renderReadCall(args: any, theme: any) {
   return new Text(text, 0, 0);
 }
 
-const MAX_DISPLAY_LINES = 50;
+const MAX_DISPLAY_LINES = 30;
 
 export function renderReadResult(result: any, { expanded }: any, theme: any) {
   if (!expanded) return new Text("", 0, 0);
