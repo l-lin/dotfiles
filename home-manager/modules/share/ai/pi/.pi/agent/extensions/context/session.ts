@@ -5,15 +5,29 @@ import type {
 import type { SkillLoadedEntryData, SkillIndexEntry } from "./types.js";
 import { SKILL_LOADED_ENTRY } from "./types.js";
 
+type CustomEntry = {
+  type: string;
+  customType: string;
+  data: SkillLoadedEntryData;
+};
+
+function isCustomEntry(entry: unknown): entry is CustomEntry {
+  const e = entry as any;
+  return e?.type === "custom" && typeof e?.customType === "string";
+}
+
 export function getLoadedSkillsFromSession(ctx: ExtensionContext): Set<string> {
-  const out = new Set<string>();
-  for (const e of ctx.sessionManager.getEntries()) {
-    if ((e as any)?.type !== "custom") continue;
-    if ((e as any)?.customType !== SKILL_LOADED_ENTRY) continue;
-    const data = (e as any)?.data as SkillLoadedEntryData | undefined;
-    if (data?.name) out.add(data.name);
+  const loadedSkills = new Set<string>();
+
+  for (const entry of ctx.sessionManager.getEntries()) {
+    if (!isCustomEntry(entry)) continue;
+    if (entry.customType !== SKILL_LOADED_ENTRY) continue;
+    if (entry.data?.name) {
+      loadedSkills.add(entry.data.name);
+    }
   }
-  return out;
+
+  return loadedSkills;
 }
 
 export function matchSkillForPath(
@@ -34,20 +48,49 @@ export function matchSkillForPath(
 }
 
 function extractCostTotal(usage: any): number {
-  if (!usage) return 0;
-  const c = usage?.cost;
-  if (typeof c === "number") return Number.isFinite(c) ? c : 0;
-  if (typeof c === "string") {
-    const n = Number(c);
-    return Number.isFinite(n) ? n : 0;
+  if (!usage?.cost) return 0;
+
+  const cost = usage.cost;
+
+  // Direct cost value
+  if (typeof cost === "number") {
+    return Number.isFinite(cost) ? cost : 0;
   }
-  const t = c?.total;
-  if (typeof t === "number") return Number.isFinite(t) ? t : 0;
-  if (typeof t === "string") {
-    const n = Number(t);
-    return Number.isFinite(n) ? n : 0;
+  if (typeof cost === "string") {
+    const parsed = Number(cost);
+    return Number.isFinite(parsed) ? parsed : 0;
   }
+
+  // Nested cost.total
+  const total = cost.total;
+  if (typeof total === "number") {
+    return Number.isFinite(total) ? total : 0;
+  }
+  if (typeof total === "string") {
+    const parsed = Number(total);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+
   return 0;
+}
+
+type MessageEntry = {
+  type: string;
+  message: {
+    role: string;
+    usage?: {
+      inputTokens?: number;
+      outputTokens?: number;
+      cacheRead?: number;
+      cacheWrite?: number;
+      cost?: any;
+    };
+  };
+};
+
+function isMessageEntry(entry: unknown): entry is MessageEntry {
+  const e = entry as any;
+  return e?.type === "message" && e?.message;
 }
 
 export function sumSessionUsage(ctx: ExtensionCommandContext): {
@@ -65,11 +108,12 @@ export function sumSessionUsage(ctx: ExtensionCommandContext): {
   let totalCost = 0;
 
   for (const entry of ctx.sessionManager.getEntries()) {
-    if ((entry as any)?.type !== "message") continue;
-    const msg = (entry as any)?.message;
-    if (!msg || msg.role !== "assistant") continue;
-    const usage = msg.usage;
+    if (!isMessageEntry(entry)) continue;
+    if (entry.message.role !== "assistant") continue;
+
+    const usage = entry.message.usage;
     if (!usage) continue;
+
     input += Number(usage.inputTokens ?? 0) || 0;
     output += Number(usage.outputTokens ?? 0) || 0;
     cacheRead += Number(usage.cacheRead ?? 0) || 0;

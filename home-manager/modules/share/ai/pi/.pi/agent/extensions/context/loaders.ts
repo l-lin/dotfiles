@@ -26,42 +26,58 @@ async function readFileIfExists(
   }
 }
 
-export async function loadProjectContextFiles(
-  cwd: string,
-): Promise<Array<{ path: string; tokens: number; bytes: number }>> {
-  const out: Array<{ path: string; tokens: number; bytes: number }> = [];
-  const seen = new Set<string>();
+async function tryLoadContextFile(
+  dir: string,
+  seen: Set<string>,
+): Promise<{ path: string; tokens: number; bytes: number } | null> {
+  for (const fileName of ["AGENTS.md", "CLAUDE.md"]) {
+    const filePath = path.join(dir, fileName);
+    const file = await readFileIfExists(filePath);
 
-  const loadFromDir = async (dir: string) => {
-    for (const name of ["AGENTS.md", "CLAUDE.md"]) {
-      const p = path.join(dir, name);
-      const f = await readFileIfExists(p);
-      if (f && !seen.has(f.path)) {
-        seen.add(f.path);
-        out.push({
-          path: f.path,
-          tokens: estimateTokens(f.content),
-          bytes: f.bytes,
-        });
-        return;
-      }
+    if (file && !seen.has(file.path)) {
+      seen.add(file.path);
+      return {
+        path: file.path,
+        tokens: estimateTokens(file.content),
+        bytes: file.bytes,
+      };
     }
-  };
+  }
+  return null;
+}
 
-  await loadFromDir(getAgentDir());
-
-  const stack: string[] = [];
+function getAncestorDirectories(cwd: string): string[] {
+  const directories: string[] = [];
   let current = path.resolve(cwd);
+
   while (true) {
-    stack.push(current);
+    directories.push(current);
     const parent = path.resolve(current, "..");
     if (parent === current) break;
     current = parent;
   }
-  stack.reverse();
-  for (const dir of stack) await loadFromDir(dir);
 
-  return out;
+  return directories.reverse();
+}
+
+export async function loadProjectContextFiles(
+  cwd: string,
+): Promise<Array<{ path: string; tokens: number; bytes: number }>> {
+  const contextFiles: Array<{ path: string; tokens: number; bytes: number }> =
+    [];
+  const seen = new Set<string>();
+
+  // Load from agent directory first
+  const agentFile = await tryLoadContextFile(getAgentDir(), seen);
+  if (agentFile) contextFiles.push(agentFile);
+
+  // Load from cwd ancestors
+  for (const dir of getAncestorDirectories(cwd)) {
+    const file = await tryLoadContextFile(dir, seen);
+    if (file) contextFiles.push(file);
+  }
+
+  return contextFiles;
 }
 
 export function buildSkillIndex(

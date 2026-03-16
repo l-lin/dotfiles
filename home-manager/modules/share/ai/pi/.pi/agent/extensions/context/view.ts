@@ -66,33 +66,37 @@ function renderUsageBar(
   total: number,
   width: number,
 ): string {
-  const w = Math.max(10, width);
+  const barWidth = Math.max(10, width);
   if (total <= 0) return "";
 
-  const toCols = (n: number) => Math.round((n / total) * w);
-  let sys = toCols(parts.system);
-  let tools = toCols(parts.tools);
-  let con = toCols(parts.convo);
-  let rem = w - sys - tools - con;
+  const tokensToColumns = (tokens: number) =>
+    Math.round((tokens / total) * barWidth);
+
+  let systemCols = tokensToColumns(parts.system);
+  let toolsCols = tokensToColumns(parts.tools);
+  let convoCols = tokensToColumns(parts.convo);
+  let remainingCols = barWidth - systemCols - toolsCols - convoCols;
 
   // Ensure tools are visible if they exist
-  if (parts.tools > 0 && tools === 0) {
-    tools = 1;
-    if (rem > 0) rem--;
-    else if (con > 0) con--;
-    else if (sys > 0) sys--;
+  if (parts.tools > 0 && toolsCols === 0) {
+    toolsCols = 1;
+    if (remainingCols > 0) remainingCols--;
+    else if (convoCols > 0) convoCols--;
+    else if (systemCols > 0) systemCols--;
   }
 
-  if (rem < 0) rem = 0;
-  while (sys + tools + con + rem < w) rem++;
-  while (sys + tools + con + rem > w && rem > 0) rem--;
+  // Adjust for rounding errors
+  remainingCols = Math.max(0, remainingCols);
+  const actualTotal = systemCols + toolsCols + convoCols + remainingCols;
+  remainingCols += barWidth - actualTotal;
 
   const block = "█";
-  const sysStr = theme.fg(SYSTEM_FG, block.repeat(sys));
-  const toolsStr = theme.fg(TOOLS_FG, block.repeat(tools));
-  const conStr = theme.fg(CONVO_FG, block.repeat(con));
-  const remStr = theme.fg(FREE_FG, block.repeat(rem));
-  return `${sysStr}${toolsStr}${conStr}${remStr}`;
+  return (
+    theme.fg(SYSTEM_FG, block.repeat(systemCols)) +
+    theme.fg(TOOLS_FG, block.repeat(toolsCols)) +
+    theme.fg(CONVO_FG, block.repeat(convoCols)) +
+    theme.fg(FREE_FG, block.repeat(remainingCols))
+  );
 }
 
 export class ContextView implements Component {

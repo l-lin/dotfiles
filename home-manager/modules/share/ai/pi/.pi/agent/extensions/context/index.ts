@@ -56,23 +56,22 @@ export default function contextExtension(pi: ExtensionAPI) {
   };
 
   pi.on("tool_result", (event: ToolResultEvent, ctx: ExtensionContext) => {
-    if ((event as any).toolName !== "read") return;
-    if ((event as any).isError) return;
+    const evt = event as any;
+    if (evt.toolName !== "read" || evt.isError) return;
 
-    const input = (event as any).input as { path?: unknown } | undefined;
-    const p = typeof input?.path === "string" ? input.path : "";
-    if (!p) return;
+    const filePath = evt.input?.path;
+    if (typeof filePath !== "string") return;
 
     ensureCaches(ctx);
-    const abs = normalizeReadPath(p, ctx.cwd);
-    const skillName = matchSkillForPath(abs, cachedSkillIndex);
-    if (!skillName) return;
 
-    if (!cachedLoadedSkills.has(skillName)) {
+    const absolutePath = normalizeReadPath(filePath, ctx.cwd);
+    const skillName = matchSkillForPath(absolutePath, cachedSkillIndex);
+
+    if (skillName && !cachedLoadedSkills.has(skillName)) {
       cachedLoadedSkills.add(skillName);
       pi.appendEntry(SKILL_LOADED_ENTRY, {
         name: skillName,
-        path: abs,
+        path: absolutePath,
       });
     }
   });

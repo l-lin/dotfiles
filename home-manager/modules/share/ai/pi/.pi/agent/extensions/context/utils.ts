@@ -21,30 +21,22 @@ export function normalizeReadPath(inputPath: string, cwd: string): string {
   return path.resolve(p);
 }
 
+function expandHomePath(p: string): string {
+  if (p === "~") return os.homedir();
+  if (p.startsWith("~/")) return path.join(os.homedir(), p.slice(2));
+  return p;
+}
+
 export function getAgentDir(): string {
-  const envCandidates = ["PI_CODING_AGENT_DIR"];
-  let envDir: string | undefined;
-  for (const k of envCandidates) {
-    if (process.env[k]) {
-      envDir = process.env[k];
-      break;
-    }
-  }
-  if (!envDir) {
-    for (const [k, v] of Object.entries(process.env)) {
-      if (k.endsWith("_CODING_AGENT_DIR") && v) {
-        envDir = v;
-        break;
-      }
+  const exactMatch = process.env["PI_CODING_AGENT_DIR"];
+  if (exactMatch) return expandHomePath(exactMatch);
+
+  for (const [key, value] of Object.entries(process.env)) {
+    if (key.endsWith("_CODING_AGENT_DIR") && value) {
+      return expandHomePath(value);
     }
   }
 
-  if (envDir) {
-    if (envDir === "~") return os.homedir();
-    if (envDir.startsWith("~/"))
-      return path.join(os.homedir(), envDir.slice(2));
-    return envDir;
-  }
   return path.join(os.homedir(), ".pi", "agent");
 }
 
@@ -62,12 +54,4 @@ export function normalizeSkillName(name: string): string {
 
 export function joinComma(items: string[]): string {
   return items.join(", ");
-}
-
-export function joinCommaStyled(
-  items: string[],
-  renderItem: (item: string) => string,
-  sep: string,
-): string {
-  return items.map(renderItem).join(sep);
 }
