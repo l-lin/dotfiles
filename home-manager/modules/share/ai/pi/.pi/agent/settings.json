@@ -16,6 +16,9 @@
   },
   "hideThinkingBlock": false,
   "extensionSettings": {
+    "askUserQuestion": {
+      "enabled": true
+    },
     "copilotUsage": {
       "visible": false
     },
@@ -23,6 +26,7 @@
       "enabled": true
     },
     "subagent": {
+      "enabled": false,
       "sources": [
         "~/.pi/agent/subagents",
         "./.pi/subagents"
