@@ -151,7 +151,7 @@ export function renderGraphLines(
       const hue = dayMixedColor(day, colorMap, otherColor, mode, view);
       let t = denom > 0 ? Math.log1p(value) / denom : 0;
       t = clamp01(t);
-      const minVisible = 0.2;
+      const minVisible = 0.45;
       const intensity = minVisible + (1 - minVisible) * t;
       const baseBg = options?.bgColor ?? DEFAULT_BG;
       const rgb = mixRgb(baseBg, hue, intensity);
@@ -239,10 +239,10 @@ export function renderLegendItems(
     const c = modelColors.get(mk);
     if (!c) continue;
     const base = bgBase ?? DEFAULT_BG;
-    const legendColor = mixRgb(base, c, 0.9);
+    const legendColor = mixRgb(base, c, 0.75);
     items.push(`${ansiBg(legendColor, "  ")} ${displayModelName(mk)}`);
   }
-  const otherLegendColor = mixRgb(bgBase ?? DEFAULT_BG, otherColor, 0.9);
+  const otherLegendColor = mixRgb(bgBase ?? DEFAULT_BG, otherColor, 0.75);
   items.push(`${ansiBg(otherLegendColor, "  ")} other`);
   return items;
 }
@@ -563,10 +563,10 @@ export function renderBreakdownBody(
       for (const cwd of orderedCwds) {
         const c = cwdColors.get(cwd);
         if (!c) continue;
-        const lc = mixRgb(bgBase, c, 0.9);
+        const lc = mixRgb(bgBase, c, 0.75);
         legendItems.push(`${ansiBg(lc, "  ")} ${abbreviatePath(cwd, 30)}`);
       }
-      const otherLc = mixRgb(bgBase, cwdOtherColor, 0.9);
+      const otherLc = mixRgb(bgBase, cwdOtherColor, 0.75);
       legendItems.push(`${ansiBg(otherLc, "  ")} other`);
     } else if (view === "tod") {
       activeColorMap = todColors;
@@ -576,7 +576,7 @@ export function renderBreakdownBody(
       for (const tod of orderedTods) {
         const c = todColors.get(tod);
         if (!c) continue;
-        const lc = mixRgb(bgBase, c, 0.9);
+        const lc = mixRgb(bgBase, c, 0.75);
         const label = TOD_BUCKETS.find((b) => b.key === tod)?.label ?? tod;
         legendItems.push(`${ansiBg(lc, "  ")} ${label}`);
       }
