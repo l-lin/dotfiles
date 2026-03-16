@@ -46,6 +46,14 @@ const MAX_DISPLAY_LINES = 50;
 export function renderReadResult(result: any, { expanded }: any, theme: any) {
   if (!expanded) return new Text("", 0, 0);
 
+  const imageContent = result.content?.find((c: any) => c.type === "image");
+  if (imageContent) {
+    const label = result.content?.find((c: any) => c.type === "text")?.text ?? "image";
+    const sizeKb = Math.round(imageContent.data.length * 0.75 / 1024);
+    const info = `${label} [${imageContent.mimeType}, ${sizeKb}KB]`;
+    return new Text(theme.fg("toolOutput", info), 0, 0);
+  }
+
   const textContent = result.content?.find((c: any) => c.type === "text");
   if (!textContent) return new Text("", 0, 0);
 
