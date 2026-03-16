@@ -5,7 +5,7 @@ import {
   type Component,
   type TUI,
 } from "@mariozechner/pi-tui";
-import type { BreakdownData, MeasurementMode } from "./types.js";
+import type { BreakdownData, BreakdownView, MeasurementMode } from "./types.js";
 import { RANGE_DAYS } from "./constants.js";
 import { toLocalDayKey } from "./date-utils.js";
 import { renderBreakdownBody } from "./renderer.js";
@@ -17,6 +17,7 @@ export class BreakdownComponent implements Component {
   private onDone: () => void;
   private rangeIndex = 1; // default 30d
   private measurement: MeasurementMode = "sessions";
+  private view: BreakdownView = "model";
   private isLight = false;
 
   constructor(data: BreakdownData, tui: TUI, onDone: () => void, theme?: any) {
@@ -25,7 +26,6 @@ export class BreakdownComponent implements Component {
     this.onDone = onDone;
     this.theme = theme;
 
-    // Theme provided by pi; detect light vs dark by name when possible.
     try {
       this.isLight = !!(
         theme &&
@@ -42,7 +42,6 @@ export class BreakdownComponent implements Component {
     const innerW = Math.max(1, width - 2);
     const result: string[] = [];
 
-    // Top border with title
     const titleStr = truncateToWidth(` ${title} `, innerW);
     const titleW = visibleWidth(titleStr);
     const topLine = "─".repeat(Math.floor((innerW - titleW) / 2));
@@ -58,7 +57,6 @@ export class BreakdownComponent implements Component {
       result.push(`╭${topLine}${titleStr}${topLine2}╮`);
     }
 
-    // Content
     for (const line of contentLines) {
       const paddedLine = truncateToWidth(" " + line, innerW, "...", true);
       if (th) {
@@ -68,7 +66,6 @@ export class BreakdownComponent implements Component {
       }
     }
 
-    // Bottom border
     if (th) {
       result.push(th.fg("border", `╰${"─".repeat(innerW)}╯`));
     } else {
@@ -79,7 +76,6 @@ export class BreakdownComponent implements Component {
   }
 
   private buildContent(width: number): string[] {
-    // Account for borders
     const inner = Math.max(1, width - 2);
 
     const selectedDays = RANGE_DAYS[this.rangeIndex];
@@ -99,6 +95,14 @@ export class BreakdownComponent implements Component {
       inner,
       todayDay,
       this.rangeIndex,
+      this.view,
+      this.data.cwdPalette.cwdColors,
+      this.data.cwdPalette.orderedCwds,
+      this.data.cwdPalette.otherColor,
+      this.data.dowPalette.dowColors,
+      this.data.dowPalette.orderedDows,
+      this.data.todPalette.todColors,
+      this.data.todPalette.orderedTods,
     );
 
     return lines.map((l) => (visibleWidth(l) > inner ? l.slice(0, inner) : l));
@@ -132,6 +136,21 @@ export class BreakdownComponent implements Component {
       return;
     }
 
+    // ↑/↓ and j/k cycle through breakdown views
+    const VIEWS: BreakdownView[] = ["model", "cwd", "dow", "tod"];
+    if (matchesKey(data, "up") || data.toLowerCase() === "k") {
+      const idx = VIEWS.indexOf(this.view);
+      this.view = VIEWS[(idx + VIEWS.length - 1) % VIEWS.length] ?? "model";
+      this.tui.requestRender();
+      return;
+    }
+    if (matchesKey(data, "down") || data.toLowerCase() === "j") {
+      const idx = VIEWS.indexOf(this.view);
+      this.view = VIEWS[(idx + 1) % VIEWS.length] ?? "model";
+      this.tui.requestRender();
+      return;
+    }
+
     const prev = () => {
       this.rangeIndex =
         (this.rangeIndex + RANGE_DAYS.length - 1) % RANGE_DAYS.length;
@@ -161,7 +180,8 @@ export class BreakdownComponent implements Component {
 
   render(width: number): string[] {
     const content = this.buildContent(width);
-    const title = "Session breakdown · ←→/hl:range · tab:metric · q:close";
+    const title =
+      "Session breakdown · ←→/hl:range · ↑↓/jk:view · tab:metric · q:close";
     return this.box(content, width, title);
   }
 }

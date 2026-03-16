@@ -1,6 +1,10 @@
 import path from "node:path";
 import type {
   ModelKey,
+  CwdKey,
+  DowKey,
+  TodKey,
+  BreakdownView,
   ParsedSession,
   DayAgg,
   RangeAgg,
@@ -9,9 +13,22 @@ import type {
   MeasurementMode,
   BreakdownProgressState,
 } from "./types.js";
-import { RANGE_DAYS, SESSION_ROOT, PALETTE } from "./constants.js";
+import {
+  RANGE_DAYS,
+  SESSION_ROOT,
+  PALETTE,
+  DOW_NAMES,
+  DOW_PALETTE,
+  TOD_BUCKETS,
+  TOD_PALETTE,
+} from "./constants.js";
 import { weightedMix } from "./color-utils.js";
-import { toLocalDayKey, localMidnight, addDaysLocal } from "./date-utils.js";
+import {
+  toLocalDayKey,
+  localMidnight,
+  addDaysLocal,
+  mondayIndex,
+} from "./date-utils.js";
 import { walkSessionFiles, parseSessionFile } from "./session-parser.js";
 
 export function buildRangeAgg(days: number, now: Date): RangeAgg {
@@ -34,6 +51,14 @@ export function buildRangeAgg(days: number, now: Date): RangeAgg {
       sessionsByModel: new Map(),
       messagesByModel: new Map(),
       tokensByModel: new Map(),
+      sessionsByCwd: new Map(),
+      messagesByCwd: new Map(),
+      tokensByCwd: new Map(),
+      costByCwd: new Map(),
+      sessionsByTod: new Map(),
+      messagesByTod: new Map(),
+      tokensByTod: new Map(),
+      costByTod: new Map(),
     };
     outDays.push(day);
     dayByKey.set(dayKeyLocal, day);
@@ -50,6 +75,18 @@ export function buildRangeAgg(days: number, now: Date): RangeAgg {
     modelSessions: new Map(),
     modelMessages: new Map(),
     modelTokens: new Map(),
+    cwdCost: new Map(),
+    cwdSessions: new Map(),
+    cwdMessages: new Map(),
+    cwdTokens: new Map(),
+    dowCost: new Map(),
+    dowSessions: new Map(),
+    dowMessages: new Map(),
+    dowTokens: new Map(),
+    todCost: new Map(),
+    todSessions: new Map(),
+    todMessages: new Map(),
+    todTokens: new Map(),
   };
 }
 
@@ -92,6 +129,52 @@ export function addSessionToRange(
     day.costByModel.set(mk, (day.costByModel.get(mk) ?? 0) + cost);
     range.modelCost.set(mk, (range.modelCost.get(mk) ?? 0) + cost);
   }
+
+  // CWD aggregation
+  const cwd = session.cwd;
+  if (cwd) {
+    day.sessionsByCwd.set(cwd, (day.sessionsByCwd.get(cwd) ?? 0) + 1);
+    range.cwdSessions.set(cwd, (range.cwdSessions.get(cwd) ?? 0) + 1);
+    day.messagesByCwd.set(
+      cwd,
+      (day.messagesByCwd.get(cwd) ?? 0) + session.messages,
+    );
+    range.cwdMessages.set(
+      cwd,
+      (range.cwdMessages.get(cwd) ?? 0) + session.messages,
+    );
+    day.tokensByCwd.set(cwd, (day.tokensByCwd.get(cwd) ?? 0) + session.tokens);
+    range.cwdTokens.set(cwd, (range.cwdTokens.get(cwd) ?? 0) + session.tokens);
+    day.costByCwd.set(cwd, (day.costByCwd.get(cwd) ?? 0) + session.totalCost);
+    range.cwdCost.set(cwd, (range.cwdCost.get(cwd) ?? 0) + session.totalCost);
+  }
+
+  // Day-of-week aggregation
+  const dow = session.dow;
+  range.dowSessions.set(dow, (range.dowSessions.get(dow) ?? 0) + 1);
+  range.dowMessages.set(
+    dow,
+    (range.dowMessages.get(dow) ?? 0) + session.messages,
+  );
+  range.dowTokens.set(dow, (range.dowTokens.get(dow) ?? 0) + session.tokens);
+  range.dowCost.set(dow, (range.dowCost.get(dow) ?? 0) + session.totalCost);
+
+  // Time-of-day aggregation
+  const tod = session.tod;
+  day.sessionsByTod.set(tod, (day.sessionsByTod.get(tod) ?? 0) + 1);
+  day.messagesByTod.set(
+    tod,
+    (day.messagesByTod.get(tod) ?? 0) + session.messages,
+  );
+  day.tokensByTod.set(tod, (day.tokensByTod.get(tod) ?? 0) + session.tokens);
+  day.costByTod.set(tod, (day.costByTod.get(tod) ?? 0) + session.totalCost);
+  range.todSessions.set(tod, (range.todSessions.get(tod) ?? 0) + 1);
+  range.todMessages.set(
+    tod,
+    (range.todMessages.get(tod) ?? 0) + session.messages,
+  );
+  range.todTokens.set(tod, (range.todTokens.get(tod) ?? 0) + session.tokens);
+  range.todCost.set(tod, (range.todCost.get(tod) ?? 0) + session.totalCost);
 }
 
 export function sortMapByValueDesc<K extends string>(
@@ -134,31 +217,122 @@ export function choosePaletteFromLast30Days(
   };
 }
 
+export function chooseCwdPaletteFromLast30Days(
+  range30: RangeAgg,
+  topN = 4,
+): {
+  cwdColors: Map<CwdKey, RGB>;
+  otherColor: RGB;
+  orderedCwds: CwdKey[];
+} {
+  const costSum = [...range30.cwdCost.values()].reduce((a, b) => a + b, 0);
+  const popularity =
+    costSum > 0
+      ? range30.cwdCost
+      : range30.totalTokens > 0
+        ? range30.cwdTokens
+        : range30.totalMessages > 0
+          ? range30.cwdMessages
+          : range30.cwdSessions;
+
+  const sorted = sortMapByValueDesc(popularity);
+  const orderedCwds = sorted.slice(0, topN).map((x) => x.key);
+  const cwdColors = new Map<CwdKey, RGB>();
+  for (let i = 0; i < orderedCwds.length; i++) {
+    cwdColors.set(orderedCwds[i], PALETTE[i % PALETTE.length]);
+  }
+  return {
+    cwdColors,
+    otherColor: { r: 160, g: 160, b: 160 },
+    orderedCwds,
+  };
+}
+
+export function buildDowPalette(): {
+  dowColors: Map<DowKey, RGB>;
+  orderedDows: DowKey[];
+} {
+  const dowColors = new Map<DowKey, RGB>();
+  for (let i = 0; i < DOW_NAMES.length; i++) {
+    dowColors.set(DOW_NAMES[i], DOW_PALETTE[i]);
+  }
+  return { dowColors, orderedDows: [...DOW_NAMES] };
+}
+
+export function buildTodPalette(): {
+  todColors: Map<TodKey, RGB>;
+  orderedTods: TodKey[];
+} {
+  const todColors = new Map<TodKey, RGB>();
+  const orderedTods: TodKey[] = [];
+  for (const b of TOD_BUCKETS) {
+    const c = TOD_PALETTE.get(b.key);
+    if (c) todColors.set(b.key, c);
+    orderedTods.push(b.key);
+  }
+  return { todColors, orderedTods };
+}
+
 export function dayMixedColor(
   day: DayAgg,
-  modelColors: Map<ModelKey, RGB>,
+  colorMap: Map<string, RGB>,
   otherColor: RGB,
   mode: MeasurementMode,
+  view: BreakdownView = "model",
 ): RGB {
-  const parts: Array<{ color: RGB; weight: number }> = [];
-  let otherWeight = 0;
-
-  let map: Map<ModelKey, number>;
-  if (mode === "tokens") {
-    map =
-      day.tokens > 0
-        ? day.tokensByModel
-        : day.messages > 0
-          ? day.messagesByModel
-          : day.sessionsByModel;
-  } else if (mode === "messages") {
-    map = day.messages > 0 ? day.messagesByModel : day.sessionsByModel;
-  } else {
-    map = day.sessionsByModel;
+  // dow: each day IS a single dow – return its color directly
+  if (view === "dow") {
+    const dowKey = DOW_NAMES[mondayIndex(day.date)];
+    return colorMap.get(dowKey) ?? otherColor;
   }
 
-  for (const [mk, w] of map.entries()) {
-    const c = modelColors.get(mk);
+  let map: Map<string, number>;
+  if (view === "tod") {
+    map =
+      mode === "tokens"
+        ? day.tokens > 0
+          ? day.tokensByTod
+          : day.messages > 0
+            ? day.messagesByTod
+            : day.sessionsByTod
+        : mode === "messages"
+          ? day.messages > 0
+            ? day.messagesByTod
+            : day.sessionsByTod
+          : day.sessionsByTod;
+  } else if (view === "cwd") {
+    map =
+      mode === "tokens"
+        ? day.tokens > 0
+          ? day.tokensByCwd
+          : day.messages > 0
+            ? day.messagesByCwd
+            : day.sessionsByCwd
+        : mode === "messages"
+          ? day.messages > 0
+            ? day.messagesByCwd
+            : day.sessionsByCwd
+          : day.sessionsByCwd;
+  } else {
+    // model
+    map =
+      mode === "tokens"
+        ? day.tokens > 0
+          ? day.tokensByModel
+          : day.messages > 0
+            ? day.messagesByModel
+            : day.sessionsByModel
+        : mode === "messages"
+          ? day.messages > 0
+            ? day.messagesByModel
+            : day.sessionsByModel
+          : day.sessionsByModel;
+  }
+
+  const parts: Array<{ color: RGB; weight: number }> = [];
+  let otherWeight = 0;
+  for (const [key, w] of map.entries()) {
+    const c = colorMap.get(key);
     if (c) parts.push({ color: c, weight: w });
     else otherWeight += w;
   }
@@ -174,7 +348,6 @@ export function graphMetricForRange(
     const maxTokens = Math.max(0, ...range.days.map((d) => d.tokens));
     if (maxTokens > 0)
       return { kind: "tokens", max: maxTokens, denom: Math.log1p(maxTokens) };
-    // fall back if tokens aren't available
     mode = "messages";
   }
 
@@ -186,7 +359,6 @@ export function graphMetricForRange(
         max: maxMessages,
         denom: Math.log1p(maxMessages),
       };
-    // fall back if messages aren't available
     mode = "sessions";
   }
 
@@ -257,5 +429,16 @@ export async function computeBreakdown(
   onProgress?.({ phase: "finalize", currentFile: undefined });
 
   const palette = choosePaletteFromLast30Days(ranges.get(30)!, 4);
-  return { generatedAt: now, ranges, palette };
+  const cwdPalette = chooseCwdPaletteFromLast30Days(ranges.get(30)!, 4);
+  const dowPalette = buildDowPalette();
+  const todPalette = buildTodPalette();
+
+  return {
+    generatedAt: now,
+    ranges,
+    palette,
+    cwdPalette,
+    dowPalette,
+    todPalette,
+  };
 }

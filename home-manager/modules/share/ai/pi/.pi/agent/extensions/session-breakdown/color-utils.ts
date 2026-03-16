@@ -43,6 +43,10 @@ export function ansiBg(rgb: RGB, text: string): string {
   return `\x1b[48;2;${rgb.r};${rgb.g};${rgb.b}m${text}\x1b[0m`;
 }
 
+export function ansiFg(rgb: RGB, text: string): string {
+  return `\x1b[38;2;${rgb.r};${rgb.g};${rgb.b}m${text}\x1b[0m`;
+}
+
 export function dim(text: string): string {
   return `\x1b[2m${text}\x1b[0m`;
 }

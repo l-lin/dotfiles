@@ -2,8 +2,16 @@ import path from "node:path";
 import fs from "node:fs/promises";
 import { createReadStream, type Dirent } from "node:fs";
 import readline from "node:readline";
-import type { ModelKey, ParsedSession } from "./types.js";
-import { toLocalDayKey, localMidnight } from "./date-utils.js";
+import type { ModelKey, TodKey, ParsedSession } from "./types.js";
+import { DOW_NAMES, TOD_BUCKETS } from "./constants.js";
+import { toLocalDayKey, localMidnight, mondayIndex } from "./date-utils.js";
+
+export function todBucketForHour(hour: number): TodKey {
+  for (const b of TOD_BUCKETS) {
+    if (hour >= b.from && hour <= b.to) return b.key;
+  }
+  return "after-midnight";
+}
 
 export function modelKeyFromParts(
   provider?: unknown,
@@ -176,6 +184,7 @@ export async function parseSessionFile(
   const fileName = path.basename(filePath);
   let startedAt = parseSessionStartFromFilename(fileName);
   let currentModel: ModelKey | null = null;
+  let cwd: string | null = null;
 
   const modelsUsed = new Set<ModelKey>();
   let messages = 0;
@@ -203,13 +212,14 @@ export async function parseSessionFile(
         continue;
       }
 
-      if (
-        !startedAt &&
-        obj?.type === "session" &&
-        typeof obj?.timestamp === "string"
-      ) {
-        const d = new Date(obj.timestamp);
-        if (Number.isFinite(d.getTime())) startedAt = d;
+      if (obj?.type === "session") {
+        if (!startedAt && typeof obj?.timestamp === "string") {
+          const d = new Date(obj.timestamp);
+          if (Number.isFinite(d.getTime())) startedAt = d;
+        }
+        if (typeof obj?.cwd === "string" && obj.cwd.trim()) {
+          cwd = obj.cwd.trim();
+        }
         continue;
       }
 
@@ -255,10 +265,15 @@ export async function parseSessionFile(
 
   if (!startedAt) return null;
   const dayKeyLocal = toLocalDayKey(startedAt);
+  const dow = DOW_NAMES[mondayIndex(startedAt)];
+  const tod = todBucketForHour(startedAt.getHours());
   return {
     filePath,
     startedAt,
     dayKeyLocal,
+    cwd,
+    dow,
+    tod,
     modelsUsed,
     messages,
     tokens,
