@@ -1,10 +1,9 @@
 import { truncateToWidth, visibleWidth } from "@mariozechner/pi-tui";
 import type {
   ModelKey,
-  CwdKey,
   DowKey,
-  TodKey,
   BreakdownView,
+  BreakdownData,
   DayAgg,
   RangeAgg,
   RGB,
@@ -71,6 +70,20 @@ function abbreviatePath(p: string, maxWidth = 40): string {
     if (candidate.length <= maxWidth || keep === 1) return candidate;
   }
   return display;
+}
+
+// Pick the right per-key map and range total based on the active metric kind.
+function selectRangeMetric<K extends string>(
+  kind: "tokens" | "messages" | "sessions",
+  byTokens: Map<K, number>,
+  byMessages: Map<K, number>,
+  bySessions: Map<K, number>,
+  range: RangeAgg,
+): { perKey: Map<K, number>; total: number } {
+  if (kind === "tokens") return { perKey: byTokens, total: range.totalTokens };
+  if (kind === "messages")
+    return { perKey: byMessages, total: range.totalMessages };
+  return { perKey: bySessions, total: range.sessions };
 }
 
 export function weeksForRange(range: RangeAgg): number {
@@ -174,18 +187,13 @@ export function renderDowDistributionLines(
 ): string[] {
   const metric = graphMetricForRange(range, mode);
   const kind = metric.kind;
-  const perDow =
-    kind === "tokens"
-      ? range.dowTokens
-      : kind === "messages"
-        ? range.dowMessages
-        : range.dowSessions;
-  const total =
-    kind === "tokens"
-      ? range.totalTokens
-      : kind === "messages"
-        ? range.totalMessages
-        : range.sessions;
+  const { perKey: perDow, total } = selectRangeMetric(
+    kind,
+    range.dowTokens,
+    range.dowMessages,
+    range.dowSessions,
+    range,
+  );
 
   const dayWidth = 3;
   const pctWidth = 4; // "100%"
@@ -255,21 +263,13 @@ export function renderModelTable(
 ): string[] {
   const metric = graphMetricForRange(range, mode);
   const kind = metric.kind;
-
-  let perModel: Map<ModelKey, number>;
-  let total = 0;
-  const label = kind;
-
-  if (kind === "tokens") {
-    perModel = range.modelTokens;
-    total = range.totalTokens;
-  } else if (kind === "messages") {
-    perModel = range.modelMessages;
-    total = range.totalMessages;
-  } else {
-    perModel = range.modelSessions;
-    total = range.sessions;
-  }
+  const { perKey: perModel, total } = selectRangeMetric(
+    kind,
+    range.modelTokens,
+    range.modelMessages,
+    range.modelSessions,
+    range,
+  );
 
   const sorted = sortMapByValueDesc(perModel);
   const rows = sorted.slice(0, maxRows);
@@ -285,18 +285,16 @@ export function renderModelTable(
 
   const lines: string[] = [];
   lines.push(
-    `${padRight("model", modelWidth)}  ${padLeft(label, valueWidth)}  ${padLeft("cost", 10)}  ${padLeft("share", 6)}`,
+    `${padRight("model", modelWidth)}  ${padLeft(kind, valueWidth)}  ${padLeft("cost", 10)}  ${padLeft("share", 6)}`,
   );
   lines.push(divider);
 
   if (today) {
     const todayLabel = bold(padRight("today ★", modelWidth));
-    const todayMetricValue =
-      kind === "tokens"
-        ? today.tokens
-        : kind === "messages"
-          ? today.messages
-          : today.sessions;
+    let todayMetricValue: number;
+    if (kind === "tokens") todayMetricValue = today.tokens;
+    else if (kind === "messages") todayMetricValue = today.messages;
+    else todayMetricValue = today.sessions;
     lines.push(
       `${todayLabel}  ${padLeft(formatCount(todayMetricValue), valueWidth)}  ${padLeft(formatUsd(today.totalCost), 10)}  ${padLeft("—", 6)}`,
     );
@@ -326,21 +324,13 @@ export function renderCwdTable(
 ): string[] {
   const metric = graphMetricForRange(range, mode);
   const kind = metric.kind;
-
-  let perCwd: Map<CwdKey, number>;
-  let total = 0;
-  const label = kind;
-
-  if (kind === "tokens") {
-    perCwd = range.cwdTokens;
-    total = range.totalTokens;
-  } else if (kind === "messages") {
-    perCwd = range.cwdMessages;
-    total = range.totalMessages;
-  } else {
-    perCwd = range.cwdSessions;
-    total = range.sessions;
-  }
+  const { perKey: perCwd, total } = selectRangeMetric(
+    kind,
+    range.cwdTokens,
+    range.cwdMessages,
+    range.cwdSessions,
+    range,
+  );
 
   const sorted = sortMapByValueDesc(perCwd);
   const rows = sorted.slice(0, maxRows);
@@ -354,7 +344,7 @@ export function renderCwdTable(
 
   const lines: string[] = [];
   lines.push(
-    `${padRight("directory", cwdWidth)}  ${padLeft(label, valueWidth)}  ${padLeft("cost", 10)}  ${padLeft("share", 6)}`,
+    `${padRight("directory", cwdWidth)}  ${padLeft(kind, valueWidth)}  ${padLeft("cost", 10)}  ${padLeft("share", 6)}`,
   );
   lines.push(
     `${"-".repeat(cwdWidth)}  ${"-".repeat(valueWidth)}  ${"-".repeat(10)}  ${"-".repeat(6)}`,
@@ -383,18 +373,13 @@ export function renderDowTable(
 ): string[] {
   const metric = graphMetricForRange(range, mode);
   const kind = metric.kind;
-  const perDow =
-    kind === "tokens"
-      ? range.dowTokens
-      : kind === "messages"
-        ? range.dowMessages
-        : range.dowSessions;
-  const total =
-    kind === "tokens"
-      ? range.totalTokens
-      : kind === "messages"
-        ? range.totalMessages
-        : range.sessions;
+  const { perKey: perDow, total } = selectRangeMetric(
+    kind,
+    range.dowTokens,
+    range.dowMessages,
+    range.dowSessions,
+    range,
+  );
 
   const valueWidth = kind === "tokens" ? 10 : 8;
   const dowWidth = 5; // "day  "
@@ -425,18 +410,13 @@ export function renderTodTable(
 ): string[] {
   const metric = graphMetricForRange(range, mode);
   const kind = metric.kind;
-  const perTod =
-    kind === "tokens"
-      ? range.todTokens
-      : kind === "messages"
-        ? range.todMessages
-        : range.todSessions;
-  const total =
-    kind === "tokens"
-      ? range.totalTokens
-      : kind === "messages"
-        ? range.totalMessages
-        : range.sessions;
+  const { perKey: perTod, total } = selectRangeMetric(
+    kind,
+    range.todTokens,
+    range.todMessages,
+    range.todSessions,
+    range,
+  );
 
   const valueWidth = kind === "tokens" ? 10 : 8;
   const todWidth = 22; // widest label
@@ -485,21 +465,12 @@ export function renderBreakdownBody(
   range: RangeAgg,
   selectedDays: number,
   measurement: MeasurementMode,
-  modelColors: Map<ModelKey, RGB>,
-  orderedModels: ModelKey[],
-  otherColor: RGB,
+  data: BreakdownData,
   isLight: boolean,
   inner: number,
   todayDay: DayAgg | undefined,
   rangeIndex: number,
   view: BreakdownView,
-  cwdColors: Map<CwdKey, RGB>,
-  orderedCwds: CwdKey[],
-  cwdOtherColor: RGB,
-  dowColors: Map<DowKey, RGB>,
-  _orderedDows: DowKey[],
-  todColors: Map<TodKey, RGB>,
-  orderedTods: TodKey[],
 ): string[] {
   const metric = graphMetricForRange(range, measurement);
 
@@ -542,7 +513,7 @@ export function renderBreakdownBody(
     const dowLines = renderDowDistributionLines(
       range,
       measurement,
-      dowColors,
+      data.dowPalette.dowColors,
       inner - 1,
       bgBase,
       emptyCell,
@@ -556,39 +527,40 @@ export function renderBreakdownBody(
     let legendItems: string[];
 
     if (view === "cwd") {
-      activeColorMap = cwdColors;
-      activeOtherColor = cwdOtherColor;
+      activeColorMap = data.cwdPalette.cwdColors;
+      activeOtherColor = data.cwdPalette.otherColor;
       legendTitle = "Top directories (30d palette):";
       legendItems = [];
-      for (const cwd of orderedCwds) {
-        const c = cwdColors.get(cwd);
+      for (const cwd of data.cwdPalette.orderedCwds) {
+        const c = activeColorMap.get(cwd);
         if (!c) continue;
-        const lc = mixRgb(bgBase, c, 0.75);
-        legendItems.push(`${ansiBg(lc, "  ")} ${abbreviatePath(cwd, 30)}`);
+        legendItems.push(
+          `${ansiBg(mixRgb(bgBase, c, 0.75), "  ")} ${abbreviatePath(cwd, 30)}`,
+        );
       }
-      const otherLc = mixRgb(bgBase, cwdOtherColor, 0.75);
-      legendItems.push(`${ansiBg(otherLc, "  ")} other`);
+      legendItems.push(
+        `${ansiBg(mixRgb(bgBase, activeOtherColor, 0.75), "  ")} other`,
+      );
     } else if (view === "tod") {
-      activeColorMap = todColors;
+      activeColorMap = data.todPalette.todColors;
       activeOtherColor = { r: 160, g: 160, b: 160 };
       legendTitle = "Time of day:";
       legendItems = [];
-      for (const tod of orderedTods) {
-        const c = todColors.get(tod);
+      for (const tod of data.todPalette.orderedTods) {
+        const c = activeColorMap.get(tod);
         if (!c) continue;
-        const lc = mixRgb(bgBase, c, 0.75);
         const label = TOD_BUCKETS.find((b) => b.key === tod)?.label ?? tod;
-        legendItems.push(`${ansiBg(lc, "  ")} ${label}`);
+        legendItems.push(`${ansiBg(mixRgb(bgBase, c, 0.75), "  ")} ${label}`);
       }
     } else {
       // model (default)
-      activeColorMap = modelColors;
-      activeOtherColor = otherColor;
+      activeColorMap = data.palette.modelColors;
+      activeOtherColor = data.palette.otherColor;
       legendTitle = "Top models (30d palette):";
       legendItems = renderLegendItems(
-        modelColors,
-        orderedModels,
-        otherColor,
+        data.palette.modelColors,
+        data.palette.orderedModels,
+        data.palette.otherColor,
         bgBase,
       );
     }
@@ -652,14 +624,12 @@ export function renderBreakdownBody(
 
   // ── Table section ─────────────────────────────────────────────────────────
   lines.push("");
-  const tableLines =
-    view === "model"
-      ? renderModelTable(range, metric.kind, todayDay, 8)
-      : view === "cwd"
-        ? renderCwdTable(range, metric.kind, 8)
-        : view === "dow"
-          ? renderDowTable(range, metric.kind)
-          : renderTodTable(range, metric.kind);
+  let tableLines: string[];
+  if (view === "model")
+    tableLines = renderModelTable(range, metric.kind, todayDay, 8);
+  else if (view === "cwd") tableLines = renderCwdTable(range, metric.kind, 8);
+  else if (view === "dow") tableLines = renderDowTable(range, metric.kind);
+  else tableLines = renderTodTable(range, metric.kind);
 
   for (const tl of tableLines) lines.push(truncateToWidth(tl, inner));
 

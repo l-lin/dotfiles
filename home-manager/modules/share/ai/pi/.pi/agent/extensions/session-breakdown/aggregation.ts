@@ -185,6 +185,21 @@ export function sortMapByValueDesc<K extends string>(
     .sort((a, b) => b.value - a.value);
 }
 
+// Prefer cost > tokens > messages > sessions for palette ordering.
+function pickPopularityMap(
+  range: RangeAgg,
+  costMap: Map<string, number>,
+  tokenMap: Map<string, number>,
+  messageMap: Map<string, number>,
+  sessionMap: Map<string, number>,
+): Map<string, number> {
+  const costSum = [...costMap.values()].reduce((a, b) => a + b, 0);
+  if (costSum > 0) return costMap;
+  if (range.totalTokens > 0) return tokenMap;
+  if (range.totalMessages > 0) return messageMap;
+  return sessionMap;
+}
+
 export function choosePaletteFromLast30Days(
   range30: RangeAgg,
   topN = 4,
@@ -193,28 +208,20 @@ export function choosePaletteFromLast30Days(
   otherColor: RGB;
   orderedModels: ModelKey[];
 } {
-  // Prefer cost if any cost exists, else tokens, else messages, else sessions.
-  const costSum = [...range30.modelCost.values()].reduce((a, b) => a + b, 0);
-  const popularity =
-    costSum > 0
-      ? range30.modelCost
-      : range30.totalTokens > 0
-        ? range30.modelTokens
-        : range30.totalMessages > 0
-          ? range30.modelMessages
-          : range30.modelSessions;
-
-  const sorted = sortMapByValueDesc(popularity);
-  const orderedModels = sorted.slice(0, topN).map((x) => x.key);
-  const modelColors = new Map<ModelKey, RGB>();
-  for (let i = 0; i < orderedModels.length; i++) {
-    modelColors.set(orderedModels[i], PALETTE[i % PALETTE.length]);
-  }
-  return {
-    modelColors,
-    otherColor: { r: 160, g: 160, b: 160 },
-    orderedModels,
-  };
+  const popularity = pickPopularityMap(
+    range30,
+    range30.modelCost,
+    range30.modelTokens,
+    range30.modelMessages,
+    range30.modelSessions,
+  );
+  const orderedModels = sortMapByValueDesc(popularity)
+    .slice(0, topN)
+    .map((x) => x.key);
+  const modelColors = new Map<ModelKey, RGB>(
+    orderedModels.map((mk, i) => [mk, PALETTE[i % PALETTE.length]]),
+  );
+  return { modelColors, otherColor: { r: 160, g: 160, b: 160 }, orderedModels };
 }
 
 export function chooseCwdPaletteFromLast30Days(
@@ -225,27 +232,20 @@ export function chooseCwdPaletteFromLast30Days(
   otherColor: RGB;
   orderedCwds: CwdKey[];
 } {
-  const costSum = [...range30.cwdCost.values()].reduce((a, b) => a + b, 0);
-  const popularity =
-    costSum > 0
-      ? range30.cwdCost
-      : range30.totalTokens > 0
-        ? range30.cwdTokens
-        : range30.totalMessages > 0
-          ? range30.cwdMessages
-          : range30.cwdSessions;
-
-  const sorted = sortMapByValueDesc(popularity);
-  const orderedCwds = sorted.slice(0, topN).map((x) => x.key);
-  const cwdColors = new Map<CwdKey, RGB>();
-  for (let i = 0; i < orderedCwds.length; i++) {
-    cwdColors.set(orderedCwds[i], PALETTE[i % PALETTE.length]);
-  }
-  return {
-    cwdColors,
-    otherColor: { r: 160, g: 160, b: 160 },
-    orderedCwds,
-  };
+  const popularity = pickPopularityMap(
+    range30,
+    range30.cwdCost,
+    range30.cwdTokens,
+    range30.cwdMessages,
+    range30.cwdSessions,
+  );
+  const orderedCwds = sortMapByValueDesc(popularity)
+    .slice(0, topN)
+    .map((x) => x.key);
+  const cwdColors = new Map<CwdKey, RGB>(
+    orderedCwds.map((cwd, i) => [cwd, PALETTE[i % PALETTE.length]]),
+  );
+  return { cwdColors, otherColor: { r: 160, g: 160, b: 160 }, orderedCwds };
 }
 
 export function buildDowPalette(): {
@@ -273,6 +273,18 @@ export function buildTodPalette(): {
   return { todColors, orderedTods };
 }
 
+function selectDayMap(
+  day: DayAgg,
+  mode: MeasurementMode,
+  byTokens: Map<string, number>,
+  byMessages: Map<string, number>,
+  bySessions: Map<string, number>,
+): Map<string, number> {
+  if (mode === "tokens" && day.tokens > 0) return byTokens;
+  if (mode !== "sessions" && day.messages > 0) return byMessages;
+  return bySessions;
+}
+
 export function dayMixedColor(
   day: DayAgg,
   colorMap: Map<string, RGB>,
@@ -288,45 +300,29 @@ export function dayMixedColor(
 
   let map: Map<string, number>;
   if (view === "tod") {
-    map =
-      mode === "tokens"
-        ? day.tokens > 0
-          ? day.tokensByTod
-          : day.messages > 0
-            ? day.messagesByTod
-            : day.sessionsByTod
-        : mode === "messages"
-          ? day.messages > 0
-            ? day.messagesByTod
-            : day.sessionsByTod
-          : day.sessionsByTod;
+    map = selectDayMap(
+      day,
+      mode,
+      day.tokensByTod,
+      day.messagesByTod,
+      day.sessionsByTod,
+    );
   } else if (view === "cwd") {
-    map =
-      mode === "tokens"
-        ? day.tokens > 0
-          ? day.tokensByCwd
-          : day.messages > 0
-            ? day.messagesByCwd
-            : day.sessionsByCwd
-        : mode === "messages"
-          ? day.messages > 0
-            ? day.messagesByCwd
-            : day.sessionsByCwd
-          : day.sessionsByCwd;
+    map = selectDayMap(
+      day,
+      mode,
+      day.tokensByCwd,
+      day.messagesByCwd,
+      day.sessionsByCwd,
+    );
   } else {
-    // model
-    map =
-      mode === "tokens"
-        ? day.tokens > 0
-          ? day.tokensByModel
-          : day.messages > 0
-            ? day.messagesByModel
-            : day.sessionsByModel
-        : mode === "messages"
-          ? day.messages > 0
-            ? day.messagesByModel
-            : day.sessionsByModel
-          : day.sessionsByModel;
+    map = selectDayMap(
+      day,
+      mode,
+      day.tokensByModel,
+      day.messagesByModel,
+      day.sessionsByModel,
+    );
   }
 
   const parts: Array<{ color: RGB; weight: number }> = [];
@@ -345,25 +341,15 @@ export function graphMetricForRange(
   mode: MeasurementMode,
 ): { kind: "sessions" | "messages" | "tokens"; max: number; denom: number } {
   if (mode === "tokens") {
-    const maxTokens = Math.max(0, ...range.days.map((d) => d.tokens));
-    if (maxTokens > 0)
-      return { kind: "tokens", max: maxTokens, denom: Math.log1p(maxTokens) };
-    mode = "messages";
+    const max = Math.max(0, ...range.days.map((d) => d.tokens));
+    if (max > 0) return { kind: "tokens", max, denom: Math.log1p(max) };
   }
-
-  if (mode === "messages") {
-    const maxMessages = Math.max(0, ...range.days.map((d) => d.messages));
-    if (maxMessages > 0)
-      return {
-        kind: "messages",
-        max: maxMessages,
-        denom: Math.log1p(maxMessages),
-      };
-    mode = "sessions";
+  if (mode === "tokens" || mode === "messages") {
+    const max = Math.max(0, ...range.days.map((d) => d.messages));
+    if (max > 0) return { kind: "messages", max, denom: Math.log1p(max) };
   }
-
-  const maxSessions = Math.max(0, ...range.days.map((d) => d.sessions));
-  return { kind: "sessions", max: maxSessions, denom: Math.log1p(maxSessions) };
+  const max = Math.max(0, ...range.days.map((d) => d.sessions));
+  return { kind: "sessions", max, denom: Math.log1p(max) };
 }
 
 export async function computeBreakdown(

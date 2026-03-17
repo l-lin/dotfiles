@@ -88,21 +88,12 @@ export class BreakdownComponent implements Component {
       range,
       selectedDays,
       this.measurement,
-      this.data.palette.modelColors,
-      this.data.palette.orderedModels,
-      this.data.palette.otherColor,
+      this.data,
       this.isLight,
       inner,
       todayDay,
       this.rangeIndex,
       this.view,
-      this.data.cwdPalette.cwdColors,
-      this.data.cwdPalette.orderedCwds,
-      this.data.cwdPalette.otherColor,
-      this.data.dowPalette.dowColors,
-      this.data.dowPalette.orderedDows,
-      this.data.todPalette.todColors,
-      this.data.todPalette.orderedTods,
     );
 
     return lines.map((l) => (visibleWidth(l) > inner ? l.slice(0, inner) : l));
@@ -164,16 +155,9 @@ export class BreakdownComponent implements Component {
     if (matchesKey(data, "left") || data.toLowerCase() === "h") prev();
     if (matchesKey(data, "right") || data.toLowerCase() === "l") next();
 
-    if (data === "1") {
-      this.rangeIndex = 0;
-      this.tui.requestRender();
-    }
-    if (data === "2") {
-      this.rangeIndex = 1;
-      this.tui.requestRender();
-    }
-    if (data === "3") {
-      this.rangeIndex = 2;
+    const rangeKey = ["1", "2", "3"].indexOf(data);
+    if (rangeKey !== -1) {
+      this.rangeIndex = rangeKey;
       this.tui.requestRender();
     }
   }
