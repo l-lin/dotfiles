@@ -26,12 +26,17 @@ import {
 import { Type } from "@sinclair/typebox";
 import { extractTodoItems, isSafeCommand, type TodoItem } from "./utils.js";
 
-// Type guard for assistant messages
+interface PlanModeState {
+  enabled?: boolean;
+  todos?: TodoItem[];
+  executing?: boolean;
+  preExecutionModel?: { provider: string; id: string };
+}
+
 function isAssistantMessage(m: AgentMessage): m is AssistantMessage {
   return m.role === "assistant" && Array.isArray(m.content);
 }
 
-// Extract text content from an assistant message
 function getTextContent(message: AssistantMessage): string {
   return message.content
     .filter((block): block is TextContent => block.type === "text")
@@ -43,29 +48,15 @@ export default function planModeExtension(pi: ExtensionAPI): void {
   let planModeEnabled = false;
   let executionMode = false;
   let todoItems: TodoItem[] = [];
-  // Model to restore after execution completes (provider + id pair)
   let preExecutionModel: { provider: string; id: string } | undefined;
 
   const WRITE_TOOLS = ["edit", "write"];
 
-  // Plan mode: drop write tools, inject todo
-  const toPlanMode = () => [
-    ...new Set([
-      ...pi.getActiveTools().filter((t) => !WRITE_TOOLS.includes(t)),
-      "todo",
-    ]),
-  ];
-  // Execution mode: restore write tools, keep todo
-  const toExecutionMode = () => [
-    ...new Set([...pi.getActiveTools(), ...WRITE_TOOLS, "todo"]),
-  ];
-  // Normal mode: restore write tools, drop todo
-  const toNormalMode = () => [
-    ...new Set([
-      ...pi.getActiveTools().filter((t) => t !== "todo"),
-      ...WRITE_TOOLS,
-    ]),
-  ];
+  // Modify the active tool set: add the given tools, remove the given tools
+  function applyTools(add: string[], remove: string[]): void {
+    const current = pi.getActiveTools().filter((t) => !remove.includes(t));
+    pi.setActiveTools([...new Set([...current, ...add])]);
+  }
 
   pi.registerFlag("plan", {
     description: "Start in plan mode (read-only exploration)",
@@ -74,8 +65,9 @@ export default function planModeExtension(pi: ExtensionAPI): void {
   });
 
   function updateStatus(ctx: ExtensionContext): void {
-    // Footer status
-    if (executionMode && todoItems.length > 0) {
+    const isTracking = executionMode && todoItems.length > 0;
+
+    if (isTracking) {
       const completed = todoItems.filter((t) => t.completed).length;
       ctx.ui.setStatus(
         "plan-mode",
@@ -87,8 +79,7 @@ export default function planModeExtension(pi: ExtensionAPI): void {
       ctx.ui.setStatus("plan-mode", undefined);
     }
 
-    // Widget showing todo list
-    if (executionMode && todoItems.length > 0) {
+    if (isTracking) {
       const lines = todoItems.map((item) => {
         if (item.completed) {
           return (
@@ -110,9 +101,9 @@ export default function planModeExtension(pi: ExtensionAPI): void {
     todoItems = [];
 
     if (planModeEnabled) {
-      pi.setActiveTools(toPlanMode());
+      applyTools(["todo"], WRITE_TOOLS);
     } else {
-      pi.setActiveTools(toNormalMode());
+      applyTools(WRITE_TOOLS, ["todo"]);
     }
     updateStatus(ctx);
   }
@@ -364,7 +355,7 @@ You can call todo with action "list" at any time to check remaining steps.`,
         );
         executionMode = false;
         todoItems = [];
-        pi.setActiveTools(toNormalMode());
+        applyTools(WRITE_TOOLS, ["todo"]);
 
         // Restore the model used during planning
         if (preExecutionModel) {
@@ -387,9 +378,7 @@ You can call todo with action "list" at any time to check remaining steps.`,
     if (!planModeEnabled || !ctx.hasUI) return;
 
     // Extract todos from last assistant message
-    const lastAssistant = [...event.messages]
-      .reverse()
-      .find(isAssistantMessage);
+    const lastAssistant = event.messages.findLast(isAssistantMessage);
     if (lastAssistant) {
       const extracted = extractTodoItems(getTextContent(lastAssistant));
       if (extracted.length > 0) {
@@ -423,7 +412,12 @@ You can call todo with action "list" at any time to check remaining steps.`,
     if (choice?.startsWith("Execute")) {
       planModeEnabled = false;
       executionMode = todoItems.length > 0;
-      pi.setActiveTools(executionMode ? toExecutionMode() : toNormalMode());
+
+      if (executionMode) {
+        applyTools([...WRITE_TOOLS, "todo"], []);
+      } else {
+        applyTools(WRITE_TOOLS, ["todo"]);
+      }
 
       const savedModel = await offerExecutionModelSwitch(ctx, executionMode);
       if (savedModel) {
@@ -459,7 +453,7 @@ You can call todo with action "list" at any time to check remaining steps.`,
     planModeEnabled = false;
     executionMode = false;
     todoItems = [];
-    pi.setActiveTools(toNormalMode());
+    applyTools(WRITE_TOOLS, ["todo"]);
     updateStatus(ctx);
   });
 
@@ -470,38 +464,27 @@ You can call todo with action "list" at any time to check remaining steps.`,
     }
 
     const entries = ctx.sessionManager.getEntries();
-
-    // Restore persisted state
-    const planModeEntry = entries
+    const saved = entries
       .filter(
         (e: { type: string; customType?: string }) =>
           e.type === "custom" && e.customType === "plan-mode",
       )
-      .pop() as
-      | {
-          data?: {
-            enabled: boolean;
-            todos?: TodoItem[];
-            executing?: boolean;
-            preExecutionModel?: { provider: string; id: string };
-          };
-        }
-      | undefined;
+      .pop() as { data?: PlanModeState } | undefined;
 
-    if (planModeEntry?.data) {
-      planModeEnabled = planModeEntry.data.enabled ?? planModeEnabled;
-      todoItems = planModeEntry.data.todos ?? todoItems;
-      executionMode = planModeEntry.data.executing ?? executionMode;
-      preExecutionModel =
-        planModeEntry.data.preExecutionModel ?? preExecutionModel;
+    if (saved?.data) {
+      const d = saved.data;
+      planModeEnabled = d.enabled ?? planModeEnabled;
+      todoItems = d.todos ?? todoItems;
+      executionMode = d.executing ?? executionMode;
+      preExecutionModel = d.preExecutionModel ?? preExecutionModel;
     }
 
     if (planModeEnabled) {
-      pi.setActiveTools(toPlanMode());
+      applyTools(["todo"], WRITE_TOOLS);
     } else if (executionMode) {
-      pi.setActiveTools(toExecutionMode());
+      applyTools([...WRITE_TOOLS, "todo"], []);
     } else {
-      pi.setActiveTools(toNormalMode());
+      applyTools(WRITE_TOOLS, ["todo"]);
     }
     updateStatus(ctx);
   });
