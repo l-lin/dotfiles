@@ -5,55 +5,16 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
-import type { AgentSettings } from "./agents.js";
 import { loadSettings } from "./settings.js";
 import * as tmux from "./tmux.js";
-
-// ─── shared types ────────────────────────────────────────────────────────────
-
-export enum Action {
-  Spawn = "spawn",
-  Send = "send",
-  Read = "read",
-  Close = "close",
-  Catalog = "catalog",
-  List = "list",
-  AllDone = "all-done",
-}
-
-export interface SpawnResult {
-  id: string;
-  agent: string;
-  /** Resolved absolute path of the source directory */
-  agentSource: string;
-  paneId: string;
-}
-
-export interface SubagentDetails {
-  action: Action;
-  sources?: string[];
-  spawned?: SpawnResult[];
-  sessionId?: string;
-  result?: string;
-  count?: number;
-}
-
-// ─── session type ────────────────────────────────────────────────────────────
-
-export interface Session {
-  id: string;
-  agentName: string;
-  /** Resolved absolute path of the source directory */
-  agentSource: string;
-  task: string;
-  paneId: string;
-  resultFile: string;
-  lastResult: string;
-  alive: boolean;
-  /** True while waiting for a response (after spawn or send, cleared on result delivery) */
-  pending: boolean;
-  watcher?: fs.FSWatcher;
-}
+import { Action } from "./types.js";
+import type {
+  AgentSettings,
+  Session,
+  SubagentDetails,
+} from "./types.js";
+export { Action } from "./types.js";
+export type { Session, SpawnResult, SubagentDetails } from "./types.js";
 
 // ─── pending pool ─────────────────────────────────────────────────────────────
 // A single flat pool accumulates all spawned sessions regardless of how many
@@ -129,6 +90,17 @@ function flushToPool(
   );
 }
 
+// ─── helpers ─────────────────────────────────────────────────────────────────
+
+function readFileIfExists(filePath: string): string {
+  const expanded = filePath.replace(/^~/, os.homedir());
+  try {
+    return fs.readFileSync(expanded, "utf-8").trim();
+  } catch {
+    return "";
+  }
+}
+
 // ─── state ───────────────────────────────────────────────────────────────────
 
 const sessions = new Map<string, Session>();
@@ -202,16 +174,6 @@ export function spawn(
   const resultFile = path.join(dir, "result.md");
 
   const settings = loadSettings();
-
-  function readFileIfExists(filePath: string): string {
-    const expanded = filePath.replace(/^~/, os.homedir());
-    try {
-      return fs.readFileSync(expanded, "utf-8").trim();
-    } catch {
-      return "";
-    }
-  }
-
   const shouldAppendUserSystemPrompt = agent.appendUserSystemPrompt ?? true;
   const userSystemPrompt = shouldAppendUserSystemPrompt
     ? readFileIfExists(settings.userSystemPrompt.path)
@@ -321,8 +283,6 @@ export function closeAll(): void {
   pendingPool.clear();
   poolTriggered = false;
 }
-
-// ─── helpers ─────────────────────────────────────────────────────────────────
 
 /** Re-read result file (compensates for missed fs.watch events) */
 export function refreshResult(session: Session): string {

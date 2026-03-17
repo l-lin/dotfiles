@@ -2,8 +2,8 @@
 
 import { getMarkdownTheme } from "@mariozechner/pi-coding-agent";
 import { Box, Container, Markdown, Spacer, Text } from "@mariozechner/pi-tui";
-import { Action } from "./sessions.js";
-import type { SubagentDetails } from "./sessions.js";
+import { Action, ICONS } from "./types.js";
+import type { SubagentDetails } from "./types.js";
 
 type Theme = { fg: Function; bg: Function; bold: Function };
 
@@ -29,23 +29,30 @@ function styledTruncate(
   return theme.fg(colorKey, truncated);
 }
 
+function titleFg(theme: Theme, s: string): string {
+  return theme.fg("toolTitle", theme.bold(s));
+}
+
+function getTextContent(result: any): string {
+  return result.content[0]?.type === "text"
+    ? result.content[0].text
+    : "(no output)";
+}
+
 // ─── renderCall ──────────────────────────────────────────────────────────────
 
 export function renderListCall(_: any, theme: Theme): Text {
-  const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
-  return new Text(title("󰚩 subagent list"), 0, 0);
+  return new Text(titleFg(theme, `${ICONS.agent} subagent list`), 0, 0);
 }
 
 export function renderCatalogCall(_: any, theme: Theme): Text {
-  const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
-  return new Text(title("󰚩 subagent catalog"), 0, 0);
+  return new Text(titleFg(theme, `${ICONS.agent} subagent catalog`), 0, 0);
 }
 
 export function renderSpawnCall(args: any, theme: Theme): Text {
-  const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
   if (args.tasks?.length > 0) {
     let text =
-      title("󰚩 subagent spawn ") +
+      titleFg(theme, `${ICONS.agent} subagent spawn `) +
       theme.fg("accent", `${args.tasks.length} agents`);
     for (const t of args.tasks.slice(0, 3)) {
       text += `\n  ${theme.fg("accent", t.agent)} ${styledTruncate(theme, "dim", t.task, 40)}`;
@@ -60,28 +67,28 @@ export function renderSpawnCall(args: any, theme: Theme): Text {
     ? ` ${styledTruncate(theme, "dim", args.task, 50)}`
     : "";
   return new Text(
-    title("󰚩 subagent spawn ") + theme.fg("accent", agent) + task,
+    titleFg(theme, `${ICONS.agent} subagent spawn `) + theme.fg("accent", agent) + task,
     0,
     0,
   );
 }
 
 export function renderSendCall(args: any, theme: Theme): Text {
-  const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
   const msg = args.message
     ? ` ${styledTruncate(theme, "dim", args.message, 50)}`
     : "";
   return new Text(
-    title("󱃜 subagent send ") + theme.fg("accent", args.id || "?") + msg,
+    titleFg(theme, `${ICONS.send} subagent send `) +
+      theme.fg("accent", args.id || "?") +
+      msg,
     0,
     0,
   );
 }
 
 export function renderCloseCall(args: any, theme: Theme): Text {
-  const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
   return new Text(
-    title("󱚧 subagent close ") + theme.fg("accent", args.id || "?"),
+    titleFg(theme, `${ICONS.stopped} subagent close `) + theme.fg("accent", args.id || "?"),
     0,
     0,
   );
@@ -98,13 +105,10 @@ export function renderCatalogResult(
     | { action?: string; count?: number }
     | undefined;
   const mdTheme = getMarkdownTheme();
-  const textContent =
-    result.content[0]?.type === "text" ? result.content[0].text : "(no output)";
+  const text = getTextContent(result);
 
   if (details?.action === Action.Catalog && details.count !== undefined) {
-    if (expanded) {
-      return new Markdown(textContent.trim(), 0, 0, mdTheme);
-    }
+    if (expanded) return new Markdown(text.trim(), 0, 0, mdTheme);
     return new Text(
       theme.fg(
         "toolOutput",
@@ -116,12 +120,8 @@ export function renderCatalogResult(
   }
 
   // Fallback
-  if (expanded) return new Markdown(textContent.trim(), 0, 0, mdTheme);
-  return new Text(
-    theme.fg("toolOutput", textContent.trim().split("\n")[0]),
-    0,
-    0,
-  );
+  if (expanded) return new Markdown(text.trim(), 0, 0, mdTheme);
+  return new Text(theme.fg("toolOutput", text.trim().split("\n")[0]), 0, 0);
 }
 
 // ─── renderListResult ────────────────────────────────────────────────────────
@@ -135,16 +135,12 @@ export function renderListResult(
     | { action?: string; count?: number }
     | undefined;
   const mdTheme = getMarkdownTheme();
-  const textContent =
-    result.content[0]?.type === "text" ? result.content[0].text : "(no output)";
+  const text = getTextContent(result);
 
   if (details?.action === Action.List) {
-    if (details.count === 0) {
+    if (details.count === 0)
       return new Text(theme.fg("muted", "No active subagent sessions."), 0, 0);
-    }
-    if (expanded) {
-      return new Markdown(textContent.trim(), 0, 0, mdTheme);
-    }
+    if (expanded) return new Markdown(text.trim(), 0, 0, mdTheme);
     return new Text(
       theme.fg(
         "toolOutput",
@@ -155,12 +151,8 @@ export function renderListResult(
     );
   }
 
-  if (expanded) return new Markdown(textContent.trim(), 0, 0, mdTheme);
-  return new Text(
-    theme.fg("toolOutput", textContent.trim().split("\n")[0]),
-    0,
-    0,
-  );
+  if (expanded) return new Markdown(text.trim(), 0, 0, mdTheme);
+  return new Text(theme.fg("toolOutput", text.trim().split("\n")[0]), 0, 0);
 }
 
 // ─── renderSpawnResult ───────────────────────────────────────────────────────
@@ -172,8 +164,7 @@ export function renderSpawnResult(
 ) {
   const details = result.details as SubagentDetails | undefined;
   const mdTheme = getMarkdownTheme();
-  const textContent =
-    result.content[0]?.type === "text" ? result.content[0].text : "(no output)";
+  const textContent = getTextContent(result);
 
   if (details?.spawned?.length) {
     if (!expanded && details.spawned.length === 1) {
@@ -241,8 +232,7 @@ function renderTextResult(
   theme: Theme,
 ) {
   const mdTheme = getMarkdownTheme();
-  const textContent =
-    result.content[0]?.type === "text" ? result.content[0].text : "(no output)";
+  const textContent = getTextContent(result);
 
   if (expanded) return new Markdown(textContent.trim(), 0, 0, mdTheme);
   if (!textContent.trim()) return new Text("", 0, 0);
@@ -267,13 +257,13 @@ export function renderMessage(
   const details = message.details as SubagentDetails | undefined;
   const id = details?.sessionId ?? "?";
   const mdTheme = getMarkdownTheme();
-  const title = (s: string) => theme.fg("toolTitle", theme.bold(s));
 
   const isAll =
     details?.action === Action.AllDone || details?.sessionId === "all";
-  const header = isAll
-    ? `${title("󱃚 subagent report")} ${theme.fg("success", "all")}`
-    : `${title("󱃚 subagent report")} ${theme.fg("accent", id)}`;
+  const headerLabel = isAll
+    ? theme.fg("success", "all")
+    : theme.fg("accent", id);
+  const header = `${titleFg(theme, `${ICONS.report} subagent report`)} ${headerLabel}`;
 
   const box = new Box(1, 1, (t) => theme.bg("toolSuccessBg", t));
 

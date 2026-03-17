@@ -6,23 +6,7 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import { parseFrontmatter } from "@mariozechner/pi-coding-agent";
-
-export interface AgentSettings {
-  name: string;
-  description: string;
-  tools?: string[];
-  model?: string;
-  /** Whether to append user system prompt (default: true) */
-  appendUserSystemPrompt?: boolean;
-  systemPrompt: string;
-  /** Resolved absolute path of the source directory */
-  source: string;
-  filePath: string;
-}
-
-export interface AgentDiscoveryResult {
-  agents: AgentSettings[];
-}
+import type { AgentDiscoveryResult, AgentSettings } from "./types.js";
 
 /** Expands ~ or $HOME prefix and returns an absolute path, resolving relative paths against cwd. */
 export function resolvePath(p: string, cwd: string): string {

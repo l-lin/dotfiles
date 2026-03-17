@@ -18,17 +18,9 @@ import { discoverAgents } from "./agents.js";
 import { loadSettings, saveEnabled } from "./settings.js";
 import * as render from "./render.js";
 import * as sessions from "./sessions.js";
-import { Action } from "./sessions.js";
-import type { SpawnResult, SubagentDetails } from "./sessions.js";
 import * as tmux from "./tmux.js";
-
-// ─── result helpers ──────────────────────────────────────────────────────────
-
-interface ToolResult {
-  content: { type: "text"; text: string }[];
-  isError?: boolean;
-  details: SubagentDetails;
-}
+import { Action, ICONS } from "./types.js";
+import type { SpawnResult, SubagentDetails, ToolResult } from "./types.js";
 
 const ok = (text: string, details?: SubagentDetails): ToolResult => ({
   content: [{ type: "text", text }],
@@ -105,9 +97,7 @@ function handleCatalog(
   const agents = discovery.agents;
 
   if (agents.length === 0) {
-    return ok(
-      "No subagents found. Check your settings or agent directories.",
-    );
+    return ok("No subagents found. Check your settings or agent directories.");
   }
 
   const lines = agents.map((a) => `**${a.name}**\n  ${a.description}`);
@@ -127,12 +117,12 @@ function handleList(): ToolResult {
   }
   const lines = active.map((s) => {
     const status = s.pending
-      ? " pending"
+      ? `${ICONS.pending} pending`
       : s.lastResult
-        ? " result ready"
+        ? `${ICONS.done} result ready`
         : s.alive
-          ? "󰚩 running"
-          : "󱚧 stopped";
+          ? `${ICONS.agent} running`
+          : `${ICONS.stopped} stopped`;
     const task = s.task.length > 60 ? `${s.task.slice(0, 60)}…` : s.task;
     return `**${s.id}** (${s.agentName}) — ${status}\n  Task: ${task}`;
   });
@@ -289,8 +279,8 @@ function updateSessionWidget(ctx: ExtensionContext): void {
         const blinkOn = Math.floor(Date.now() / 500) % 2 === 0;
         return sessions.all().map((s) => {
           const color: ThemeColor = s.alive ? "success" : "muted";
-          let icon = theme.fg(color, "󰚩");
-          if (s.pending) icon = blinkOn ? theme.fg(color, "󰚩") : " ";
+          let icon = theme.fg(color, ICONS.agent);
+          if (s.pending) icon = blinkOn ? theme.fg(color, ICONS.agent) : " ";
 
           const id = theme.fg("toolTitle", theme.bold(s.id));
           const task = theme.fg(
@@ -335,8 +325,11 @@ export default function (pi: ExtensionAPI) {
         return;
       }
 
-      const ALL_LABEL = "󰚩 ALL";
-      const options = [ALL_LABEL, ...active.map((s) => `󰚩 ${s.id}`)];
+      const ALL_LABEL = `${ICONS.agent} ALL`;
+      const options = [
+        ALL_LABEL,
+        ...active.map((s) => `${ICONS.agent} ${s.id}`),
+      ];
       const chosen = await ctx.ui.select(
         "Select a subagent to close:",
         options,
@@ -402,19 +395,22 @@ export default function (pi: ExtensionAPI) {
         return;
       }
 
-      const ALL_LABEL = "󰚩 ALL";
-      const options = [ALL_LABEL, ...finished.map((s) => `󰚩 ${s.id}`)];
+      const ALL_LABEL = `${ICONS.agent} ALL`;
+      const options = [
+        ALL_LABEL,
+        ...finished.map((s) => `${ICONS.agent} ${s.id}`),
+      ];
       const chosen = await ctx.ui.select("Read result from:", options);
       if (!chosen) return;
 
-      const targets =
-        chosen === ALL_LABEL
-          ? finished
-          : (() => {
-              const id = chosen.slice(chosen.indexOf(" ") + 1);
-              const s = sessions.get(id);
-              return s ? [s] : [];
-            })();
+      let targets: sessions.Session[];
+      if (chosen === ALL_LABEL) {
+        targets = finished;
+      } else {
+        const id = chosen.slice(chosen.indexOf(" ") + 1);
+        const session = sessions.get(id);
+        targets = session ? [session] : [];
+      }
 
       if (targets.length === 0) {
         ctx.ui.notify("Session not found.", "error");
