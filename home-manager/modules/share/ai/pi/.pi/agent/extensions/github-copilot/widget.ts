@@ -7,7 +7,10 @@ import type { AuthStatus, UsageData } from "./types.js";
 
 export const WIDGET_ID = "copilot-usage";
 export const WIDGET_PLACEMENT = { placement: "aboveEditor" as const };
+
 const BAR_WIDTH = 20;
+const USAGE_WARNING_THRESHOLD = 70;
+const USAGE_ERROR_THRESHOLD = 90;
 
 function renderProgressBar(
   current: number,
@@ -24,8 +27,8 @@ function renderProgressBar(
   if (!colorize) return bar;
 
   const percent = ratio * 100;
-  if (percent >= 90) return theme.fg("error", bar);
-  if (percent >= 70) return theme.fg("warning", bar);
+  if (percent >= USAGE_ERROR_THRESHOLD) return theme.fg("error", bar);
+  if (percent >= USAGE_WARNING_THRESHOLD) return theme.fg("warning", bar);
   return theme.fg("success", bar);
 }
 

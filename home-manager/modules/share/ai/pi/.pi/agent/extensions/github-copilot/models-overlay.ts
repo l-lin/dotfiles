@@ -23,6 +23,14 @@ import type { CopilotModel } from "./types.js";
 
 type Theme = ExtensionContext["ui"]["theme"];
 
+const MAX_VISIBLE_ITEMS = 15;
+
+function formatMultiplier(multiplier: number | null): string {
+  if (multiplier === null) return "?x";
+  if (multiplier === 0) return "free";
+  return `${multiplier}x`;
+}
+
 /**
  * Renders content lines inside a rounded box border.
  * Title appears centred in the top border — same style as session-breakdown.
@@ -62,12 +70,7 @@ function buildSelectItems(
   activeModelId: string | undefined,
 ): SelectItem[] {
   return models.map((m) => {
-    const multiplierStr =
-      m.multiplier === null
-        ? "?x"
-        : m.multiplier === 0
-          ? "free"
-          : `${m.multiplier}x`;
+    const multiplierStr = formatMultiplier(m.multiplier);
     const isActive = m.id === activeModelId;
     return {
       value: m.id,
@@ -103,7 +106,7 @@ export class ModelsOverlayComponent implements Component {
   }
 
   private buildList(items: SelectItem[]): SelectList {
-    const list = new SelectList(items, 15, {
+    const list = new SelectList(items, MAX_VISIBLE_ITEMS, {
       selectedPrefix: (t: string) => this.theme.fg("accent", t),
       selectedText: (t: string) => this.theme.fg("accent", t),
       description: (t: string) => this.theme.fg("muted", t),
@@ -130,37 +133,34 @@ export class ModelsOverlayComponent implements Component {
 
   invalidate(): void {}
 
-  handleInput(data: string): void {
-    // Cancel: Escape, Ctrl-C, and explicitly Ctrl-[ (which may differ from
-    // escape in Kitty keyboard protocol — both are valid cancel gestures).
+  private handleCancel(data: string): boolean {
     if (this.kb.matches(data, "selectCancel") || matchesKey(data, "ctrl+[")) {
       this.onDone(null);
-      return;
+      return true;
     }
+    return false;
+  }
 
-    // Navigation and confirmation go directly to the list.
+  private handleNavigation(data: string): boolean {
     if (
       this.kb.matches(data, "selectUp") ||
-      this.kb.matches(data, "selectDown")
+      this.kb.matches(data, "selectDown") ||
+      this.kb.matches(data, "selectConfirm")
     ) {
       this.list.handleInput(data);
       this.tui.requestRender();
-      return;
+      return true;
     }
+    return false;
+  }
 
-    if (this.kb.matches(data, "selectConfirm")) {
-      this.list.handleInput(data);
-      this.tui.requestRender();
-      return;
-    }
-
-    // Page navigation: ctrl+u / ctrl+d scroll by a full page.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private handlePageNavigation(data: string): boolean {
     const list = this.list as any;
+
     if (this.kb.matches(data, "selectPageUp")) {
       list.selectedIndex = Math.max(0, list.selectedIndex - list.maxVisible);
       this.tui.requestRender();
-      return;
+      return true;
     }
 
     if (this.kb.matches(data, "selectPageDown")) {
@@ -170,10 +170,17 @@ export class ModelsOverlayComponent implements Component {
         list.selectedIndex + list.maxVisible,
       );
       this.tui.requestRender();
-      return;
+      return true;
     }
 
-    // All other input (typing, backspace, ctrl+w, etc.) updates the search field.
+    return false;
+  }
+
+  handleInput(data: string): void {
+    if (this.handleCancel(data)) return;
+    if (this.handleNavigation(data)) return;
+    if (this.handlePageNavigation(data)) return;
+
     this.input.handleInput(data);
     this.applyFilter();
     this.tui.requestRender();

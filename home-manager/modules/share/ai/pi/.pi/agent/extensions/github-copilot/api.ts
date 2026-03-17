@@ -9,6 +9,54 @@ import type {
   CopilotUserResponse,
 } from "./types.js";
 
+const COMMON_HEADERS = {
+  Accept: "application/json",
+  "User-Agent": "pi-copilot-usage",
+} as const;
+
+const COPILOT_HEADERS = {
+  "X-Github-Api-Version": "2025-10-01",
+  "Editor-Version": "pi/1.0",
+  "Copilot-Integration-Id": "vscode-chat",
+} as const;
+
+function parsePremiumUsage(data: CopilotUserResponse): UsageData | null {
+  const premium = data.quota_snapshots?.premium_interactions;
+  if (!premium) return null;
+
+  return {
+    used: premium.entitlement - premium.remaining,
+    quota: premium.entitlement,
+    remaining: premium.remaining,
+    resetDate: data.quota_reset_date,
+    unlimited: premium.unlimited,
+    overagePermitted: premium.overage_permitted,
+    plan: data.copilot_plan,
+  };
+}
+
+function parseFreeUsage(data: CopilotUserResponse): UsageData | null {
+  if (
+    data.access_type_sku !== "free_limited_copilot" ||
+    !data.limited_user_quotas
+  ) {
+    return null;
+  }
+
+  const chatQuota = data.monthly_quotas?.chat ?? 50;
+  const chatRemaining = data.limited_user_quotas.chat || 0;
+
+  return {
+    used: chatQuota - chatRemaining,
+    quota: chatQuota,
+    remaining: chatRemaining,
+    resetDate: data.limited_user_reset_date || data.quota_reset_date,
+    unlimited: false,
+    overagePermitted: false,
+    plan: "free",
+  };
+}
+
 export async function fetchUsage(
   oauthToken: string,
 ): Promise<UsageData | null> {
@@ -18,47 +66,14 @@ export async function fetchUsage(
       {
         headers: {
           Authorization: `Bearer ${oauthToken}`,
-          Accept: "application/json",
-          "User-Agent": "pi-copilot-usage",
+          ...COMMON_HEADERS,
         },
       },
     );
     if (!response.ok) return null;
 
     const data = (await response.json()) as CopilotUserResponse;
-    const premium = data.quota_snapshots?.premium_interactions;
-
-    if (premium) {
-      return {
-        used: premium.entitlement - premium.remaining,
-        quota: premium.entitlement,
-        remaining: premium.remaining,
-        resetDate: data.quota_reset_date,
-        unlimited: premium.unlimited,
-        overagePermitted: premium.overage_permitted,
-        plan: data.copilot_plan,
-      };
-    }
-
-    // Free/limited tier fallback
-    if (
-      data.access_type_sku === "free_limited_copilot" &&
-      data.limited_user_quotas
-    ) {
-      const chatQuota = data.monthly_quotas?.chat ?? 50;
-      const chatRemaining = data.limited_user_quotas.chat || 0;
-      return {
-        used: chatQuota - chatRemaining,
-        quota: chatQuota,
-        remaining: chatRemaining,
-        resetDate: data.limited_user_reset_date || data.quota_reset_date,
-        unlimited: false,
-        overagePermitted: false,
-        plan: "free",
-      };
-    }
-
-    return null;
+    return parsePremiumUsage(data) ?? parseFreeUsage(data);
   } catch {
     return null;
   }
@@ -73,8 +88,7 @@ async function fetchCopilotToken(
       {
         headers: {
           Authorization: `Bearer ${oauthToken}`,
-          Accept: "application/json",
-          "User-Agent": "pi-copilot-usage",
+          ...COMMON_HEADERS,
         },
       },
     );
@@ -86,6 +100,17 @@ async function fetchCopilotToken(
 }
 
 let cachedModels: CopilotModel[] | null = null;
+
+function sortModels(models: CopilotModel[]): CopilotModel[] {
+  return models.sort((a, b) => {
+    const multiplierA = a.multiplier ?? 999;
+    const multiplierB = b.multiplier ?? 999;
+    if (multiplierA !== multiplierB) {
+      return multiplierA - multiplierB;
+    }
+    return a.name.localeCompare(b.name);
+  });
+}
 
 export async function fetchCopilotModels(
   oauthToken: string,
@@ -100,13 +125,8 @@ export async function fetchCopilotModels(
     const response = await fetch(`${baseUrl}/models`, {
       headers: {
         Authorization: `Bearer ${tokenData.token}`,
-        "X-Github-Api-Version": "2025-10-01",
-        // These two headers are required — without them the API returns:
-        // "bad request: missing Editor-Version header for IDE auth"
-        "Editor-Version": "pi/1.0",
-        "Copilot-Integration-Id": "vscode-chat",
-        Accept: "application/json",
-        "User-Agent": "pi-copilot-usage",
+        ...COPILOT_HEADERS,
+        ...COMMON_HEADERS,
       },
     });
     if (!response.ok) return [];
@@ -121,16 +141,10 @@ export async function fetchCopilotModels(
         name: (m.name ?? m.id) as string,
         multiplier: (m.billing?.multiplier ?? null) as number | null,
         isPremium: (m.billing?.is_premium ?? false) as boolean,
-      }))
-      .sort((a, b) => {
-        // Free models first, then by multiplier ascending, then alphabetically
-        const ma = a.multiplier ?? 999;
-        const mb = b.multiplier ?? 999;
-        return ma !== mb ? ma - mb : a.name.localeCompare(b.name);
-      });
+      }));
 
-    cachedModels = models;
-    return models;
+    cachedModels = sortModels(models);
+    return cachedModels;
   } catch {
     return [];
   }
