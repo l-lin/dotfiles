@@ -13,30 +13,27 @@ export function formatTokens(count: number): string {
   return `${Math.round(count / 1_000_000)}M`;
 }
 
-export function colorByThreshold(
-  value: number,
-  text: string,
-  theme: Theme,
-  thresholds: { high: number; medium: number },
-): string {
-  if (value > thresholds.high) return theme.fg("error", text);
-  if (value > thresholds.medium) return theme.fg("warning", text);
-  return theme.fg("dim", text);
-}
-
-export function colorContext(
+export function colorByPercent(
   percent: number,
   text: string,
   theme: Theme,
 ): string {
-  return colorByThreshold(percent, text, theme, { high: 60, medium: 40 });
+  if (percent > 60) return theme.fg("error", text);
+  if (percent > 40) return theme.fg("warning", text);
+  return theme.fg("dim", text);
 }
 
-export function colorCost(amount: number, text: string, theme: Theme): string {
-  return colorByThreshold(amount, text, theme, { high: 5, medium: 3 });
+export function colorByCost(
+  amount: number,
+  text: string,
+  theme: Theme,
+): string {
+  if (amount > 5) return theme.fg("error", text);
+  if (amount > 3) return theme.fg("warning", text);
+  return theme.fg("dim", text);
 }
 
-export function colorThinking(
+export function colorByThinkingLevel(
   level: ThinkingLevel,
   text: string,
   theme: Theme,
@@ -59,9 +56,7 @@ export function formatCurrentDirectory(maxLength: number = 40): string {
   }
 
   const parts = pwd.split("/");
-
   const first = parts[0] || "/";
-
   const remaining: string[] = [];
 
   for (let i = parts.length - 1; i > 0; i--) {

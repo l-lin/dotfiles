@@ -11,9 +11,9 @@ import { truncateToWidth, visibleWidth } from "@mariozechner/pi-tui";
 import { ICONS, type ThinkingLevel } from "./constants.js";
 import {
   formatCurrentDirectory,
-  colorContext,
-  colorCost,
-  colorThinking,
+  colorByPercent,
+  colorByCost,
+  colorByThinkingLevel,
 } from "./formatting.js";
 import {
   getContextData,
@@ -37,17 +37,19 @@ export function buildStatsLine(
     leftParts.push(toolIcons);
   }
 
-  leftParts.push(" ")
+  leftParts.push(" ");
 
   if (contextData.display) {
     leftParts.push(
-      colorContext(contextData.percent, contextData.display, theme),
+      colorByPercent(contextData.percent, contextData.display, theme),
     );
   }
 
   const spend = calculateSessionSpend(ctx);
   if (spend > 0) {
-    leftParts.push(colorCost(spend, `${ICONS["cost"]} $${spend.toFixed(3)}`, theme));
+    leftParts.push(
+      colorByCost(spend, `${ICONS["cost"]} $${spend.toFixed(3)}`, theme),
+    );
   }
 
   const leftStr = leftParts.join(" ");
@@ -58,7 +60,7 @@ export function buildStatsLine(
   const model = ctx.model;
 
   if (model?.reasoning && thinkingLevel !== "off") {
-    const thinkingStr = colorThinking(
+    const thinkingStr = colorByThinkingLevel(
       thinkingLevel,
       `${ICONS["thinking-level"]} ${thinkingLevel}`,
       theme,
@@ -82,7 +84,9 @@ export function buildDirectoryLine(
   const branch = footerData.getGitBranch();
 
   const cwdLeft = theme.fg("dim", `${ICONS["cwd"]} ${pwd}`);
-  const branchRight = branch ? theme.fg("dim", `${ICONS["branch"]} ${branch}`) : "";
+  const branchRight = branch
+    ? theme.fg("dim", `${ICONS["branch"]} ${branch}`)
+    : "";
 
   if (!branch) {
     return truncateToWidth(cwdLeft, width, theme.fg("dim", "…"));

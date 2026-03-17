@@ -14,11 +14,11 @@ export const SETTINGS_PATH = path.join(
 
 export const ICONS: Record<string, string> = {
   "token-usage": "",
-  "cost": "",
+  cost: "",
   "thinking-level": "󰧑",
-  "model": " ",
-  "cwd": "",
-  "branch": "󰘬",
+  model: " ",
+  cwd: "",
+  branch: "󰘬",
 }
 
 export const TOOL_ICONS: Record<string, { enabled: string; disabled: string }> =
