@@ -8,38 +8,38 @@
  * Adapted to use my own snippets
  */
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
-import { SNIPPETS } from "./snippets.js";
+import { SNIPPETS, type SnippetDef } from "./snippets.js";
 
-/** Escape special regex characters in a literal string. */
 function escapeRegex(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+function resolveExpansion(snippet: SnippetDef): string {
+  return typeof snippet.expansion === "function"
+    ? snippet.expansion()
+    : snippet.expansion;
+}
+
 export default function (pi: ExtensionAPI) {
   pi.on("input", async (event, _ctx) => {
-    // Skip extension-injected messages to avoid infinite loops.
     if (event.source === "extension") {
       return { action: "continue" };
     }
 
-    let text = event.text;
-    let transformed = false;
+    const original = event.text;
+    let text = original;
 
     for (const snippet of SNIPPETS) {
       if (text.includes(snippet.trigger)) {
-        const value =
-          typeof snippet.expansion === "function"
-            ? snippet.expansion()
-            : snippet.expansion;
-        text = text.replace(new RegExp(escapeRegex(snippet.trigger), "g"), value);
-        transformed = true;
+        text = text.replace(
+          new RegExp(escapeRegex(snippet.trigger), "g"),
+          resolveExpansion(snippet),
+        );
       }
     }
 
-    if (transformed) {
-      return { action: "transform", text };
-    }
-
-    return { action: "continue" };
+    return text !== original
+      ? { action: "transform", text }
+      : { action: "continue" };
   });
 }
