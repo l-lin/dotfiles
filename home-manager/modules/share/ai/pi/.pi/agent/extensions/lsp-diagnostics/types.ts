@@ -88,6 +88,14 @@ export const SEVERITY_LABELS: Record<number, string> = {
 
 export const CONFIG_ENTRY_TYPE = "lsp-diagnostics-config";
 
+// ─── Shared timing info ───────────────────────────────────────────────────────
+
+export interface TimingInfo {
+  initDurationMs: number;
+  lastCheckDurationMs: number;
+  receivedResponse: boolean;
+}
+
 // ─── UI Icons ─────────────────────────────────────────────────────────────────
 
 export const ICON_LSP = "●";

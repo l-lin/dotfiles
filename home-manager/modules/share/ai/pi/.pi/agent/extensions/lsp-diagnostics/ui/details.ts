@@ -140,7 +140,10 @@ export class LspDetailsComponent implements Component {
 
     const isCollecting = snap.pendingWaiters.length > 0;
     const statusText = isCollecting
-      ? th.fg("warning", `${ICON_LSP} collecting (${snap.pendingWaiters.length} pending)`)
+      ? th.fg(
+          "warning",
+          `${ICON_LSP} collecting (${snap.pendingWaiters.length} pending)`,
+        )
       : th.fg("success", `${ICON_LSP} idle`);
 
     return [
@@ -261,7 +264,9 @@ export class LspDetailsComponent implements Component {
           ? "  " + th.fg("success", ICON_SUCCESS)
           : "  " +
             (errors > 0 ? th.fg("error", `${ICON_ERROR} ${errors}`) : "") +
-            (warns > 0 ? " " + th.fg("warning", `${ICON_WARNING} ${warns}`) : "") +
+            (warns > 0
+              ? " " + th.fg("warning", `${ICON_WARNING} ${warns}`)
+              : "") +
             (infos > 0 ? " " + th.fg("muted", `${ICON_INFO} ${infos}`) : "") +
             (hints > 0 ? " " + th.fg("muted", `${ICON_HINT} ${hints}`) : "");
       lines.push(`  ${filePath}${badge}`);
@@ -285,7 +290,11 @@ export class LspDetailsComponent implements Component {
 
     if (totalDiags === 0) {
       lines.push(
-        "  " + th.fg("success", `${ICON_SUCCESS} No diagnostics — clean bill of health!`),
+        "  " +
+          th.fg(
+            "success",
+            `${ICON_SUCCESS} No diagnostics — clean bill of health!`,
+          ),
       );
       return lines;
     }
@@ -294,12 +303,10 @@ export class LspDetailsComponent implements Component {
       if (diags.length === 0) continue;
       lines.push(`  ${d(uri.replace(/^file:\/\//, ""))}`);
       for (const diag of diags) {
-        const sev =
-          diag.severity === 1
-            ? th.fg("error", "error  ")
-            : diag.severity === 2
-              ? th.fg("warning", "warning")
-              : d("info   ");
+        let sev: string;
+        if (diag.severity === 1) sev = th.fg("error", "error  ");
+        else if (diag.severity === 2) sev = th.fg("warning", "warning");
+        else sev = d("info   ");
         const loc = `${diag.range.start.line + 1}:${diag.range.start.character + 1}`;
         const src = diag.source ? d(` [${diag.source}]`) : "";
         const code = diag.code != null ? d(` (${diag.code})`) : "";

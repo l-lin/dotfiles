@@ -65,14 +65,10 @@ export default function (pi: ExtensionAPI) {
   pi.on("session_start", async (_event, ctx) => {
     savedConfig = null;
     const saved = [...ctx.sessionManager.getEntries()].findLast(
-      (
-        e,
-      ): e is import("@mariozechner/pi-coding-agent").SessionEntry & {
-        type: "custom";
-        data?: unknown;
-      } => e.type === "custom" && (e as any).customType === CONFIG_ENTRY_TYPE,
+      (e) => e.type === "custom" && (e as any).customType === CONFIG_ENTRY_TYPE,
     );
-    if (saved && saved.data) savedConfig = saved.data as SavedConfig;
+    if (saved && (saved as any).data)
+      savedConfig = (saved as any).data as SavedConfig;
 
     if (savedConfig) {
       const parts: string[] = [];

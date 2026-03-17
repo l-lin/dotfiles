@@ -70,13 +70,7 @@ export function buildDiagnosticBlock(
 ): string | null {
   const { text, errorCount, warningCount, infoCount, hintCount } =
     formatDiagnostics(diagnostics, cwd);
-  if (
-    errorCount === 0 &&
-    warningCount === 0 &&
-    infoCount === 0 &&
-    hintCount === 0
-  )
-    return null;
+  if (errorCount + warningCount + infoCount + hintCount === 0) return null;
 
   const relPath = path.relative(cwd, path.resolve(cwd, filePath));
   const summary = `${errorCount} error(s), ${warningCount} warning(s) ${infoCount} info(s)`;

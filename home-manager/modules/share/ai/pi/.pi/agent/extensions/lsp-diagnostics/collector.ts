@@ -4,19 +4,13 @@
  */
 import * as path from "node:path";
 import type { ExtensionContext } from "@mariozechner/pi-coding-agent";
-import type { LspDiagnostic, LspClientEntry } from "./types.js";
+import type { LspDiagnostic, LspClientEntry, TimingInfo } from "./types.js";
 import type { ResolvedLspCommand } from "./resolver.js";
 import { resolveRootDir } from "./resolver.js";
 import { PersistentLspClient } from "./client/persistent-client.js";
 import { setLspWidget, clearWidget, syncLspServers } from "./ui/widget.js";
 
 const DIAGNOSTICS_TIMEOUT_MS = 5_000;
-
-export interface TimingInfo {
-  initDurationMs: number;
-  lastCheckDurationMs: number;
-  receivedResponse: boolean;
-}
 
 export interface ServerResult {
   bin: string;
@@ -29,7 +23,7 @@ export interface CollectResult {
   servers: ServerResult[];
 }
 
-export async function getOrCreateClient(
+async function getOrCreateClient(
   resolved: ResolvedLspCommand,
   rootDir: string,
   commandKey: string,
@@ -63,7 +57,7 @@ export async function getOrCreateClient(
   return entry;
 }
 
-export function handleLspError(
+function handleLspError(
   err: unknown,
   commandKey: string,
   ctx: ExtensionContext,

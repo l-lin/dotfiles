@@ -9,7 +9,7 @@
 import type { ExtensionContext } from "@mariozechner/pi-coding-agent";
 import type { TUI } from "@mariozechner/pi-tui";
 import { truncateToWidth } from "@mariozechner/pi-tui";
-import type { LspDiagnostic } from "../types.js";
+import type { LspDiagnostic, TimingInfo } from "../types.js";
 import {
   SEVERITY_ERROR,
   SEVERITY_WARNING,
@@ -35,12 +35,6 @@ interface DiagnosticCounts {
   warnings: number;
   infos: number;
   hints: number;
-}
-
-interface TimingInfo {
-  initDurationMs: number;
-  lastCheckDurationMs: number;
-  receivedResponse: boolean;
 }
 
 interface ServerWidgetEntry {
@@ -71,10 +65,14 @@ function countDiagnostics(
 
 function buildSummary(counts: DiagnosticCounts, theme: any): string {
   const parts: string[] = [];
-  if (counts.errors > 0) parts.push(theme.fg("error", `${ICON_ERROR} ${counts.errors}`));
-  if (counts.warnings > 0) parts.push(theme.fg("warning", `${ICON_WARNING} ${counts.warnings}`));
-  if (counts.infos > 0) parts.push(theme.fg("muted", `${ICON_INFO} ${counts.infos}`));
-  if (counts.hints > 0) parts.push(theme.fg("muted", `${ICON_HINT} ${counts.hints}`));
+  if (counts.errors > 0)
+    parts.push(theme.fg("error", `${ICON_ERROR} ${counts.errors}`));
+  if (counts.warnings > 0)
+    parts.push(theme.fg("warning", `${ICON_WARNING} ${counts.warnings}`));
+  if (counts.infos > 0)
+    parts.push(theme.fg("muted", `${ICON_INFO} ${counts.infos}`));
+  if (counts.hints > 0)
+    parts.push(theme.fg("muted", `${ICON_HINT} ${counts.hints}`));
   return parts.length > 0 ? ` ${parts.join(" ")}` : "";
 }
 
