@@ -211,6 +211,11 @@ return {
           -- No need to display the treesitter location.
           { LazyVim.lualine.pretty_path({ modified_hl = "" }) },
         },
+        lualine_y = {
+          { require("helpers.git").codeowner, padding = { left = 1, right = 0 } },
+          { "progress", separator = " ", padding = { left = 1, right = 0 } },
+          { "location", padding = { left = 0, right = 1 } },
+        },
         -- No need to display the clock.
         lualine_z = {},
       },

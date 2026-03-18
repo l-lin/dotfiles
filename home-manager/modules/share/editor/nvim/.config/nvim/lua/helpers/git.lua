@@ -155,6 +155,127 @@ local function browse_with_branch_select(opts)
   end)
 end
 
+-- Converts a CODEOWNERS glob pattern to a Lua pattern.
+-- Handles `**` (any path), `*` (any segment), `?` (any single char).
+local function glob_to_lua_pattern(glob)
+  local result = ""
+  local i = 1
+  while i <= #glob do
+    local c = glob:sub(i, i)
+    if c == "*" and glob:sub(i, i + 1) == "**" then
+      result = result .. ".*"
+      i = i + 2
+    elseif c == "*" then
+      result = result .. "[^/]*"
+      i = i + 1
+    elseif c == "?" then
+      result = result .. "[^/]"
+      i = i + 1
+    elseif c:match("[%.%+%-%^%$%(%)%[%]%%]") then
+      result = result .. "%" .. c
+      i = i + 1
+    else
+      result = result .. c
+      i = i + 1
+    end
+  end
+  return result
+end
+
+-- Returns true if the CODEOWNERS pattern matches the given relative path.
+-- Follows GitHub's gitignore-style rules:
+--   - leading `/` anchors to root
+--   - trailing `/` matches everything under that directory
+--   - patterns without `/` match against the filename at any depth
+--   - `*` matches within a path segment, `**` crosses segment boundaries
+local function pattern_matches(pattern, rel_path)
+  local had_leading_slash = pattern:sub(1, 1) == "/"
+  local clean = pattern:gsub("^/", "")
+  local is_dir = clean:sub(-1) == "/"
+  if is_dir then
+    clean = clean:sub(1, -2)
+  end
+
+  local has_slash = clean:find("/") ~= nil
+  local anchored = had_leading_slash or has_slash
+  local lua_pat = glob_to_lua_pattern(clean)
+  local test = "/" .. rel_path
+
+  if anchored then
+    -- `**/foo` starts with `**/`: the `.*` in lua_pat must absorb the leading `/`,
+    -- so we skip the `^/` prefix and let it match at any depth.
+    local starts_with_doublestar = clean:sub(1, 3) == "**/"
+    local anchor = starts_with_doublestar and "" or "^/"
+    local suffix = is_dir and "/" or "$"
+    if test:match(anchor .. lua_pat .. suffix) ~= nil then
+      return true
+    end
+    -- `**` matches zero-or-more directories. When `**/` appears in the middle
+    -- of a pattern (e.g. `src/**/*.rb`), the `.*` in lua_pat requires at least
+    -- one path separator, so `src/foo.rb` (zero intermediate dirs) would be
+    -- missed. Retry with every `**/` collapsed away to cover the zero-dir case.
+    if not starts_with_doublestar and clean:find("%*%*/") then
+      local zero_dir_pat = glob_to_lua_pattern(clean:gsub("%*%*/", ""))
+      return test:match("^/" .. zero_dir_pat .. suffix) ~= nil
+    end
+    return false
+  else
+    -- No slash anywhere: match against the basename at any depth.
+    local basename = rel_path:match("[^/]+$") or rel_path
+    if is_dir then
+      return test:match("/" .. lua_pat .. "/") ~= nil
+    else
+      return basename:match("^" .. lua_pat .. "$") ~= nil
+    end
+  end
+end
+
+---Find the owner for a file given raw CODEOWNERS content.
+---Last matching rule wins, mirroring GitHub semantics.
+---@param content string raw content of a CODEOWNERS file
+---@param rel_path string file path relative to the repository root
+---@return string owner(s) string, or "" if none matched
+local function find_owner(content, rel_path)
+  local matched = ""
+  for raw_line in content:gmatch("[^\n]+") do
+    local line = raw_line:match("^%s*(.-)%s*$")
+    if line ~= "" and line:sub(1, 1) ~= "#" then
+      -- Extract pattern and owners separately: a line with no owners intentionally
+      -- clears ownership (GitHub semantics), so we must not skip it.
+      local pattern = line:match("^(%S+)")
+      local owners = line:match("^%S+%s+(.*)")
+      if pattern and pattern_matches(pattern, rel_path) then
+        matched = owners or ""
+      end
+    end
+  end
+  return matched
+end
+
+---Lualine component: shows the CODEOWNERS entry for the current buffer.
+---Returns "" when the buffer has no file, no git root, or no matching rule.
+local function codeowner()
+  local bufname = vim.api.nvim_buf_get_name(0)
+  if bufname == "" then
+    return ""
+  end
+
+  local root = LazyVim.root()
+  local rel_path = vim.fn.fnamemodify(bufname, ":p"):sub(#root + 2)
+
+  local f = io.open(root .. "/CODEOWNERS", "r")
+  if not f then
+    return ""
+  end
+
+  local content = f:read("*a")
+  f:close()
+
+  return find_owner(content, rel_path)
+end
+
 local M = {}
 M.browse_with_branch_select = browse_with_branch_select
+M.find_owner = find_owner
+M.codeowner = codeowner
 return M

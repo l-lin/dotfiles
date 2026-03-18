@@ -1,0 +1,155 @@
+local git = require("helpers.git")
+
+describe("git.find_owner", function()
+  local function owners(content, path)
+    return git.find_owner(content, path)
+  end
+
+  describe("wildcard patterns", function()
+    local cases = {
+      { name = "* matches any file at root", content = "* @team", path = "foo.rb", expect = "@team" },
+      { name = "* matches any nested file", content = "* @team", path = "src/foo.rb", expect = "@team" },
+      { name = "*.rb matches .rb at root", content = "*.rb @team", path = "foo.rb", expect = "@team" },
+      { name = "*.rb matches nested .rb", content = "*.rb @team", path = "src/foo.rb", expect = "@team" },
+      { name = "*.rb does not match .js", content = "*.rb @team", path = "src/foo.js", expect = "" },
+    }
+    for _, case in ipairs(cases) do
+      it(case.name, function()
+        assert.are.equal(case.expect, owners(case.content, case.path))
+      end)
+    end
+  end)
+
+  describe("anchored path patterns", function()
+    local cases = {
+      {
+        name = "/docs/*.md matches file in docs/",
+        content = "/docs/*.md @team",
+        path = "docs/readme.md",
+        expect = "@team",
+      },
+      {
+        name = "/docs/*.md does not match nested",
+        content = "/docs/*.md @team",
+        path = "src/docs/readme.md",
+        expect = "",
+      },
+      { name = "src/*.rb matches file in src/", content = "src/*.rb @team", path = "src/foo.rb", expect = "@team" },
+      { name = "src/*.rb does not match deeper", content = "src/*.rb @team", path = "src/lib/foo.rb", expect = "" },
+    }
+    for _, case in ipairs(cases) do
+      it(case.name, function()
+        assert.are.equal(case.expect, owners(case.content, case.path))
+      end)
+    end
+  end)
+
+  describe("directory patterns", function()
+    local cases = {
+      { name = "src/ matches file directly under src/", content = "src/ @team", path = "src/foo.rb", expect = "@team" },
+      {
+        name = "src/ matches deeply nested file",
+        content = "src/ @team",
+        path = "src/lib/util/foo.rb",
+        expect = "@team",
+      },
+      { name = "src/ does not match sibling dir", content = "src/ @team", path = "test/foo.rb", expect = "" },
+    }
+    for _, case in ipairs(cases) do
+      it(case.name, function()
+        assert.are.equal(case.expect, owners(case.content, case.path))
+      end)
+    end
+  end)
+
+  describe("** patterns", function()
+    local cases = {
+      { name = "**/tests matches at root", content = "**/tests @team", path = "tests", expect = "@team" },
+      { name = "**/tests matches one level deep", content = "**/tests @team", path = "src/tests", expect = "@team" },
+      { name = "**/tests matches deeply nested", content = "**/tests @team", path = "a/b/c/tests", expect = "@team" },
+      { name = "**/tests does not match partial name", content = "**/tests @team", path = "src/notests", expect = "" },
+      {
+        name = "src/**/*.rb matches direct child (zero intermediate dirs)",
+        content = "src/**/*.rb @team",
+        path = "src/foo.rb",
+        expect = "@team",
+      },
+      {
+        name = "src/**/*.rb matches nested .rb",
+        content = "src/**/*.rb @team",
+        path = "src/lib/foo.rb",
+        expect = "@team",
+      },
+      {
+        name = "src/**/*.rb matches deeply nested",
+        content = "src/**/*.rb @team",
+        path = "src/a/b/foo.rb",
+        expect = "@team",
+      },
+    }
+    for _, case in ipairs(cases) do
+      it(case.name, function()
+        assert.are.equal(case.expect, owners(case.content, case.path))
+      end)
+    end
+  end)
+
+  describe("last matching rule wins", function()
+    local cases = {
+      {
+        name = "more specific rule overrides catch-all",
+        content = "* @default\nsrc/*.rb @backend",
+        path = "src/foo.rb",
+        expect = "@backend",
+      },
+      {
+        name = "catch-all applies when no specific rule matches",
+        content = "* @default\nsrc/*.rb @backend",
+        path = "docs/readme.md",
+        expect = "@default",
+      },
+      {
+        name = "last rule among multiple matches wins",
+        content = "*.rb @first\nsrc/*.rb @second\nsrc/foo.rb @third",
+        path = "src/foo.rb",
+        expect = "@third",
+      },
+    }
+    for _, case in ipairs(cases) do
+      it(case.name, function()
+        assert.are.equal(case.expect, owners(case.content, case.path))
+      end)
+    end
+  end)
+
+  describe("edge cases", function()
+    local cases = {
+      { name = "empty content returns empty", content = "", path = "src/foo.rb", expect = "" },
+      {
+        name = "comment lines are skipped",
+        content = "# this is a comment\n*.rb @team",
+        path = "foo.rb",
+        expect = "@team",
+      },
+      { name = "blank lines are skipped", content = "\n\n*.rb @team\n\n", path = "foo.rb", expect = "@team" },
+      { name = "no matching rule returns empty", content = "*.js @frontend", path = "src/foo.rb", expect = "" },
+      {
+        name = "pattern with no owners clears previous ownership",
+        content = "* @default\n*.rb",
+        path = "foo.rb",
+        expect = "",
+      },
+      {
+        name = "multiple owners are returned as-is",
+        content = "*.rb @alice @bob",
+        path = "foo.rb",
+        expect = "@alice @bob",
+      },
+    }
+    for _, case in ipairs(cases) do
+      it(case.name, function()
+        assert.are.equal(case.expect, owners(case.content, case.path))
+      end)
+    end
+  end)
+end)
