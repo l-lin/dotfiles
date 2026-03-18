@@ -32,6 +32,12 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+vim.api.nvim_create_user_command(
+  "Codeowner",
+  function() vim.notify(require("helpers.git").codeowner(), vim.log.levels.INFO) end,
+  { desc = "Check file code ownership" }
+)
+
 -- Set word wrap and spell check for writing filetypes.
 vim.api.nvim_create_autocmd("FileType", {
   group = vim.api.nvim_create_augroup("writing", { clear = true }),
