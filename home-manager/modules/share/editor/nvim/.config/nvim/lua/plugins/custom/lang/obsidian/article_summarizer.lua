@@ -3,13 +3,13 @@ local LIGHT_SUMMARY_PROMPT = "Fetch the content of the article %s, and return on
 
 ---Execute claude CLI with the given prompt
 ---@param light_summary boolean whether to use single line summary prompt
----@return string|nil result the output from opencode CLI, error message if any
+---@return string|nil result the output from AI harness CLI, error message if any
 local function summarize_url_with_claude_code(url, light_summary)
   local prompt = light_summary and LIGHT_SUMMARY_PROMPT or SUMMARY_PROMPT
 
-  local opencode_cmd = string.format('opencode --model github-copilot/gpt-4.1 run "%s"', string.format(prompt, url))
+  local cmd = string.format('pi --models github-copilot/gpt-4.1 -p "%s"', string.format(prompt, url))
 
-  local handle = io.popen(opencode_cmd)
+  local handle = io.popen(cmd)
   if not handle then
     return nil
   end
