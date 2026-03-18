@@ -14,10 +14,10 @@ local function execute_gitbrowse(opts, yank, line1, line2)
       vim.fn.setreg("+", url)
     end
     opts.notify = false
-    Snacks.gitbrowse(opts)
+  end
+  Snacks.gitbrowse(opts)
+  if yank then
     vim.notify("URL copied to clipboard", vim.log.levels.INFO)
-  else
-    Snacks.gitbrowse(opts)
   end
 end
 
@@ -63,6 +63,19 @@ local function prompt_yank_style(branch_opts, line1, line2)
   end)
 end
 
+---Returns true if the given branch exists locally or as a remote tracking branch.
+---@param branch string branch name to check
+---@return boolean
+local function branch_exists(branch)
+  local local_ref = vim.fn.system("git show-ref --verify --quiet refs/heads/" .. branch .. " && echo 1 || echo 0")
+  if local_ref:gsub("\n", "") == "1" then
+    return true
+  end
+  local remote_ref =
+    vim.fn.system("git show-ref --verify --quiet refs/remotes/origin/" .. branch .. " && echo 1 || echo 0")
+  return remote_ref:gsub("\n", "") == "1"
+end
+
 ---Browse git repository on the browser with branch selection.
 ---If on main/master, opens directly (or prompts for URL style when yanking).
 ---Otherwise prompts for branch choice first.
@@ -71,8 +84,8 @@ local function browse_with_branch_select(opts)
   opts = opts or {}
   local yank = opts.yank or false
 
-  -- Capture visual range NOW before vim.ui.select destroys it
-  -- Only if called from visual mode (marks are set by Neovim before function call)
+  -- Capture visual range NOW before vim.ui.select destroys it.
+  -- Only if called from visual mode (marks are set by Neovim before function call).
   local line1, line2 = nil, nil
   if opts.visual then
     local bufnr = vim.api.nvim_get_current_buf()
@@ -88,7 +101,6 @@ local function browse_with_branch_select(opts)
     end
   end
 
-  -- Get current branch name
   local current_branch = vim.fn.system("git rev-parse --abbrev-ref HEAD"):gsub("\n", "")
   if vim.v.shell_error ~= 0 then
     vim.notify("Not in a git repository", vim.log.levels.ERROR)
@@ -106,26 +118,13 @@ local function browse_with_branch_select(opts)
     return
   end
 
-  -- Check which default branch exists (main or master)
-  local has_main = vim.fn.system("git show-ref --verify --quiet refs/heads/main && echo 1 || echo 0"):gsub("\n", "")
-    == "1"
-  local has_remote_main = vim.fn
-    .system("git show-ref --verify --quiet refs/remotes/origin/main && echo 1 || echo 0")
-    :gsub("\n", "") == "1"
-  local has_master = vim.fn.system("git show-ref --verify --quiet refs/heads/master && echo 1 || echo 0"):gsub("\n", "")
-    == "1"
-  local has_remote_master = vim.fn
-    .system("git show-ref --verify --quiet refs/remotes/origin/master && echo 1 || echo 0")
-    :gsub("\n", "") == "1"
-
   local default_branch = nil
-  if has_main or has_remote_main then
+  if branch_exists("main") then
     default_branch = "main"
-  elseif has_master or has_remote_master then
+  elseif branch_exists("master") then
     default_branch = "master"
   end
 
-  -- Build choices
   local choices = { { label = "Current Branch (" .. current_branch .. ")", branch = nil, is_default = false } }
   if default_branch then
     table.insert(choices, {
@@ -274,8 +273,8 @@ local function codeowner()
   return find_owner(content, rel_path)
 end
 
-local M = {}
-M.browse_with_branch_select = browse_with_branch_select
-M.find_owner = find_owner
-M.codeowner = codeowner
-return M
+return {
+  browse_with_branch_select = browse_with_branch_select,
+  find_owner = find_owner,
+  codeowner = codeowner,
+}
