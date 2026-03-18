@@ -67,7 +67,9 @@ export function renderSpawnCall(args: any, theme: Theme): Text {
     ? ` ${styledTruncate(theme, "dim", args.task, 50)}`
     : "";
   return new Text(
-    titleFg(theme, `${ICONS.agent} subagent spawn `) + theme.fg("accent", agent) + task,
+    titleFg(theme, `${ICONS.agent} subagent spawn `) +
+      theme.fg("accent", agent) +
+      task,
     0,
     0,
   );
@@ -88,7 +90,8 @@ export function renderSendCall(args: any, theme: Theme): Text {
 
 export function renderCloseCall(args: any, theme: Theme): Text {
   return new Text(
-    titleFg(theme, `${ICONS.stopped} subagent close `) + theme.fg("accent", args.id || "?"),
+    titleFg(theme, `${ICONS.stopped} subagent close `) +
+      theme.fg("accent", args.id || "?"),
     0,
     0,
   );
@@ -237,12 +240,20 @@ function renderTextResult(
   if (expanded) return new Markdown(textContent.trim(), 0, 0, mdTheme);
   if (!textContent.trim()) return new Text("", 0, 0);
 
-  // Skip empty lines and markdown code fences — they make poor collapsed previews
-  const firstLine =
-    textContent
-      .split("\n")
-      .map((l: string) => l.trim())
-      .find((l: string) => l.length > 0 && !l.startsWith("```")) ?? "";
+  // Skip empty lines and entire code blocks — they make poor collapsed previews
+  const lines = textContent.split("\n").map((l: string) => l.trim());
+  let insideCodeBlock = false;
+  let firstLine = "";
+  for (const l of lines) {
+    if (l.startsWith("```")) {
+      insideCodeBlock = !insideCodeBlock;
+      continue;
+    }
+    if (!insideCodeBlock && l.length > 0) {
+      firstLine = l;
+      break;
+    }
+  }
   if (!firstLine) return new Text("", 0, 0);
   return new Text(theme.fg("toolOutput", firstLine), 0, 0);
 }
