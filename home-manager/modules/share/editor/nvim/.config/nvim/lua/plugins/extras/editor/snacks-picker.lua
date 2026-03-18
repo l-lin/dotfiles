@@ -85,21 +85,6 @@ local function deduplicate_lsp_items(item, ctx)
   return item
 end
 
-local nav_keys_select = {
-  input = {
-    keys = {
-      ["<M-C-j>"] = { "focus_list", mode = { "i", "n" } },
-      ["<M-C-k>"] = { "", mode = { "i", "v" } },
-    },
-  },
-  list = {
-    keys = {
-      ["<M-C-j>"] = "",
-      ["<M-C-k>"] = "focus_input",
-    },
-  },
-}
-
 local snacks_picker_opts = {
   layouts = {
     vertical = {
@@ -190,10 +175,7 @@ local snacks_picker_opts = {
         },
       },
     },
-    select = {
-      win = nav_keys_select,
-      focus = "input",
-    },
+    select = { focus = "input" },
     lsp_definitions = { transform = deduplicate_lsp_items },
     lsp_references = { transform = deduplicate_lsp_items },
   },
@@ -203,8 +185,6 @@ local snacks_picker_opts = {
         ["<M-l>"] = { "focus_list", mode = { "i", "n" } },
         ["<M-w>"] = { "focus_preview", mode = { "i", "n" } },
         ["<M-q>"] = { "qflist", mode = { "i", "n" } },
-        ["<M-C-j>"] = { "", mode = { "i", "v" } },
-        ["<M-C-k>"] = { "focus_list", mode = { "i", "n" } },
       },
     },
     list = {
@@ -214,8 +194,6 @@ local snacks_picker_opts = {
         ["<M-w>"] = "focus_preview",
         ["<M-q>"] = "qflist",
         ["<C-c>"] = "close",
-        ["<M-C-k>"] = "focus_preview",
-        ["<M-C-j>"] = "focus_input",
       },
     },
     preview = {
@@ -223,8 +201,6 @@ local snacks_picker_opts = {
         ["a"] = "focus_input",
         ["<M-l>"] = "focus_list",
         ["<M-w>"] = "focus_preview",
-        ["<M-C-j>"] = "focus_list",
-        ["<M-C-k>"] = "",
       },
     },
   },
