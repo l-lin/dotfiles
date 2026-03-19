@@ -7,8 +7,6 @@ local function setup()
   -- Custom init for Java debugger.
   require("jdtls").setup_dap({ hotcodereplace = "auto", config_overrides = {} })
   require("jdtls.dap").setup_dap_main_class_configs()
-  -- Setup dap config by VsCode launch.json file.
-  require("dap.ext.vscode").load_launchjs()
 end
 
 -- See https://github.com/mfussenegger/nvim-jdtls#java-debug-installation.
