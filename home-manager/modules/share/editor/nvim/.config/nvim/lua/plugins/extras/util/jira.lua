@@ -78,7 +78,7 @@ end
 
 return {
   {
-    "l-lin/jira.nvim",
+    "https://codeberg.org/l-lin/jira.nvim",
     cmd = { "JiraIssues", "JiraEpic", "JiraStartWorkingOn" },
     dependencies = {
       {
