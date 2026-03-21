@@ -3,7 +3,7 @@
 import {
   Editor,
   type EditorTheme,
-  getEditorKeybindings,
+  getKeybindings,
   Key,
   matchesKey,
   truncateToWidth,
@@ -17,7 +17,7 @@ import type { Answer, Question, Result } from "./types.js";
  */
 export function buildWidget(questions: Question[]) {
   const isMulti = questions.length > 1;
-  const kb = getEditorKeybindings();
+  const kb = getKeybindings();
 
   return (
     tui: any,
@@ -95,7 +95,10 @@ export function buildWidget(questions: Question[]) {
 
     const handleInput = (data: string) => {
       if (inputMode) {
-        if (kb.matches(data, "selectCancel")) {
+        if (
+          kb.matches(data, "tui.select.cancel") ||
+          matchesKey(data, "ctrl+[")
+        ) {
           inputMode = false;
           inputQuestionId = null;
           editor.setText("");
@@ -135,25 +138,30 @@ export function buildWidget(questions: Question[]) {
 
       // Submit tab
       if (currentTab === questions.length) {
-        if (kb.matches(data, "selectConfirm") && allAnswered()) finish(false);
-        else if (kb.matches(data, "selectCancel")) finish(true);
+        if (kb.matches(data, "tui.select.confirm") && allAnswered())
+          finish(false);
+        else if (
+          kb.matches(data, "tui.select.cancel") ||
+          matchesKey(data, "ctrl+[")
+        )
+          finish(true);
         return;
       }
 
       // Option navigation
-      if (kb.matches(data, "selectUp") || data === "k") {
+      if (kb.matches(data, "tui.select.up") || data === "k") {
         selectedIndex = Math.max(0, selectedIndex - 1);
         refresh();
         return;
       }
-      if (kb.matches(data, "selectDown") || data === "j") {
+      if (kb.matches(data, "tui.select.down") || data === "j") {
         selectedIndex = Math.min(options.length - 1, selectedIndex + 1);
         refresh();
         return;
       }
 
       // Option selection
-      if (kb.matches(data, "selectConfirm") && currentQuestion()) {
+      if (kb.matches(data, "tui.select.confirm") && currentQuestion()) {
         const option = options[selectedIndex];
         if (option.value === "__other__") {
           inputMode = true;
@@ -174,7 +182,8 @@ export function buildWidget(questions: Question[]) {
         return;
       }
 
-      if (kb.matches(data, "selectCancel")) finish(true);
+      if (kb.matches(data, "tui.select.cancel") || matchesKey(data, "ctrl+["))
+        finish(true);
     };
 
     // ── rendering ──────────────────────────────────────────────────────────

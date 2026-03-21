@@ -12,7 +12,7 @@ import {
   SelectList,
   type SelectItem,
   fuzzyFilter,
-  getEditorKeybindings,
+  getKeybindings,
   matchesKey,
   truncateToWidth,
   visibleWidth,
@@ -87,7 +87,7 @@ export class ModelsOverlayComponent implements Component {
   private theme: Theme;
   private onDone: (value: string | null) => void;
   private allItems: SelectItem[];
-  private kb = getEditorKeybindings();
+  private kb = getKeybindings();
 
   constructor(
     models: CopilotModel[],
@@ -134,7 +134,10 @@ export class ModelsOverlayComponent implements Component {
   invalidate(): void {}
 
   private handleCancel(data: string): boolean {
-    if (this.kb.matches(data, "selectCancel") || matchesKey(data, "ctrl+[")) {
+    if (
+      this.kb.matches(data, "tui.select.cancel") ||
+      matchesKey(data, "ctrl+[")
+    ) {
       this.onDone(null);
       return true;
     }
@@ -143,9 +146,9 @@ export class ModelsOverlayComponent implements Component {
 
   private handleNavigation(data: string): boolean {
     if (
-      this.kb.matches(data, "selectUp") ||
-      this.kb.matches(data, "selectDown") ||
-      this.kb.matches(data, "selectConfirm")
+      this.kb.matches(data, "tui.select.up") ||
+      this.kb.matches(data, "tui.select.down") ||
+      this.kb.matches(data, "tui.select.confirm")
     ) {
       this.list.handleInput(data);
       this.tui.requestRender();
@@ -157,13 +160,13 @@ export class ModelsOverlayComponent implements Component {
   private handlePageNavigation(data: string): boolean {
     const list = this.list as any;
 
-    if (this.kb.matches(data, "selectPageUp")) {
+    if (this.kb.matches(data, "tui.select.pageUp")) {
       list.selectedIndex = Math.max(0, list.selectedIndex - list.maxVisible);
       this.tui.requestRender();
       return true;
     }
 
-    if (this.kb.matches(data, "selectPageDown")) {
+    if (this.kb.matches(data, "tui.select.pageDown")) {
       const lastIndex = Math.max(0, list.filteredItems.length - 1);
       list.selectedIndex = Math.min(
         lastIndex,
