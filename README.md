@@ -1,5 +1,5 @@
 # Dotfiles
-
+Reproducible cross-platform dotfiles powered by Nix to instantly set up a complete development environment.
 <summary>:snowflake: NixOS</summary>
 <details>
 
