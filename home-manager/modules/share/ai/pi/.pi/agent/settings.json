@@ -1,8 +1,8 @@
 {
   "lastChangelogVersion": "0.61.1",
   "theme": "light",
-  "defaultProvider": "anthropic",
-  "defaultModel": "claude-sonnet-4-6",
+  "defaultProvider": "github-copilot",
+  "defaultModel": "gpt-5.3-codex",
   "skills": [
     "~/.config/ai/skills"
   ],
@@ -41,6 +41,14 @@
     },
     "webFetch": {
       "enabled": false
+    },
+    "modelSelector": {
+      "enabled": true,
+      "models": [
+        "github-copilot/gpt-4.1",
+        "github-copilot/gpt-5.4"
+      ],
+      "keybind": "alt-m"
     }
   }
 }
