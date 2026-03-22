@@ -127,6 +127,25 @@ local function sanitize_and_yank(full_buffer)
   vim.fn.setreg("+", sanitize_yanked_text(full_buffer))
 end
 
+---Format a line of markdown for better display in HTML, especially for quoted lines.
+---This function converts markdown list items (e.g., "- item") into a visually indented format using
+---non-breaking spaces and a bullet character. It calculates the indent level based on the number of
+---leading spaces and applies appropriate indentation for better readability in HTML.
+---@param line string the line of markdown to format
+---@return string the formatted line with visual indentation and bullet points
+local function format_markdown_line(line)
+  local indent, content = line:match("^(%s*)%- (.+)$")
+  if not content then
+    return line
+  end
+
+  -- Calculate indent level (2 or 4 spaces = 1 level typically)
+  local level = math.floor(#indent / 2)
+  -- Use non-breaking spaces for indentation + bullet
+  local visual_indent = string.rep("\u{00A0}", 4 * level)
+  return visual_indent .. "• " .. content
+end
+
 ---Convert Markdown text to HTML.
 ---@param text string markdown text
 ---@return string html
@@ -151,20 +170,29 @@ local function markdown_to_html(text)
   text = text:gsub("%*%*(.-)%*%*", "<b>%1</b>")
   text = text:gsub("__(.-)__", "<b>%1</b>")
 
-  -- Convert bullet points - flatten nested lists with visual indentation (4 spaces per level)
   local lines = {}
+  local quote_lines = {}
+
+  local function flush_quote_lines()
+    if #quote_lines == 0 then
+      return
+    end
+
+    table.insert(lines, "<blockquote>" .. table.concat(quote_lines, "<br>") .. "</blockquote>")
+    quote_lines = {}
+  end
+
   for line in (text .. "\n"):gmatch("([^\n]*)\n") do
-    local indent, content = line:match("^(%s*)%- (.+)$")
-    if content then
-      -- Calculate indent level (2 or 4 spaces = 1 level typically)
-      local level = math.floor(#indent / 2)
-      -- Use non-breaking spaces for indentation + bullet
-      local visual_indent = string.rep("\u{00A0}", 4 * level)
-      table.insert(lines, visual_indent .. "• " .. content)
+    local quote_content = line:match("^%s*>%s?(.*)$")
+    if quote_content then
+      table.insert(quote_lines, format_markdown_line(quote_content))
     else
-      table.insert(lines, line)
+      flush_quote_lines()
+      table.insert(lines, format_markdown_line(line))
     end
   end
+
+  flush_quote_lines()
 
   return table.concat(lines, "<br>")
 end
