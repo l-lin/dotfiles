@@ -6,11 +6,12 @@
  * Use ctrl+o to toggle between collapsed and expanded views.
  *
  * src: https://github.com/badlogic/pi-mono/blob/3a3e37d39014acc4269171be2a51518f6a71be1f/packages/coding-agent/examples/extensions/minimal-mode.ts
- * Adapted to remove the bash tool override (used by rtk-rewrite extension).
  */
 
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import {
+  renderBashCall,
+  renderBashResult,
   renderEditCall,
   renderEditResult,
   renderFindCall,
@@ -26,7 +27,7 @@ import {
 } from "./renders.js";
 import { type BuiltInTools, getBuiltInTools } from "./tool-cache.js";
 
-type ToolName = keyof Omit<BuiltInTools, "bash">;
+type ToolName = keyof BuiltInTools;
 
 function registerMinimalTool(
   pi: ExtensionAPI,
@@ -58,6 +59,7 @@ function registerMinimalTool(
 }
 
 export default function (pi: ExtensionAPI): void {
+  registerMinimalTool(pi, "bash", renderBashCall, renderBashResult);
   registerMinimalTool(pi, "read", renderReadCall, renderReadResult);
   registerMinimalTool(pi, "write", renderWriteCall, renderWriteResult);
   registerMinimalTool(pi, "edit", renderEditCall, renderEditResult);

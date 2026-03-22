@@ -56,8 +56,6 @@
       "doxx"
       # Interpreter for PostScript and PDF: https://www.ghostscript.com/
       "ghostscript"
-      # CLI proxy that reduces LLM token consumption by 60-90% on common dev commands: https://github.com/rtk-ai/rtk
-      "rtk"
       # Customize themes, inject extensions, and unlock the full potential of your Spotify client: https://spicetify.app/
       "spicetify-cli"
       # Install and switch between multiple versions of Xcode: https://github.com/XcodesOrg/xcodes

@@ -222,7 +222,7 @@ export function renderGrepResult(
 }
 
 // =========================================================================
-// Bash Tool (not registered in minimal-mode; used by rtk-rewrite extension)
+// Bash Tool
 // =========================================================================
 
 export function renderBashCall(args: any, theme: any): Text {
