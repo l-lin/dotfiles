@@ -1,5 +1,4 @@
 import type { Theme } from "@mariozechner/pi-coding-agent";
-import { keyHint } from "@mariozechner/pi-coding-agent";
 import { Text } from "@mariozechner/pi-tui";
 import type { FetchDetails } from "./types.js";
 
@@ -38,12 +37,10 @@ export function renderResult(
 
   if (!expanded) {
     const truncNote = details.truncated ? " (truncated)" : "";
-    const hint = keyHint("expandTools", "to expand");
     const text =
       theme.fg("success", "✓ ") +
       theme.fg("text", `${details.returnedLength.toLocaleString()} chars`) +
-      theme.fg("muted", `${truncNote} • HTTP ${details.status}`) +
-      theme.fg("dim", ` (${hint})`);
+      theme.fg("muted", `${truncNote} • HTTP ${details.status}`);
     return new Text(text, 0, 0);
   }
 

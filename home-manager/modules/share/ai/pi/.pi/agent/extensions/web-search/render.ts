@@ -1,10 +1,10 @@
+import type {
+  AgentToolResult,
+  Theme,
+  ToolRenderResultOptions,
+} from "@mariozechner/pi-coding-agent";
 import { Text } from "@mariozechner/pi-tui";
 import type { WebSearchDetails } from "./types.js";
-
-type Theme = {
-  fg: (color: string, text: string) => string;
-  bold: (text: string) => string;
-};
 
 export function renderCall(args: any, theme: Theme): Text {
   const query = args.query || "(empty)";
@@ -19,8 +19,8 @@ export function renderCall(args: any, theme: Theme): Text {
 }
 
 export function renderResult(
-  result: any,
-  opts: { expanded: boolean },
+  result: AgentToolResult<WebSearchDetails>,
+  opts: ToolRenderResultOptions,
   theme: Theme,
 ): Text {
   const details = result.details as WebSearchDetails | undefined;

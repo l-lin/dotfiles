@@ -1,10 +1,13 @@
 /** Rendering for ask-user-question tool calls and results. */
 
+import type {
+  AgentToolResult,
+  Theme,
+  ThemeColor,
+  ToolRenderResultOptions,
+} from "@mariozechner/pi-coding-agent";
 import { Text } from "@mariozechner/pi-tui";
 import type { Question, Result } from "./types.js";
-
-type ThemeColor = (key: string, text: string) => string;
-type Theme = { fg: ThemeColor; bg: ThemeColor; bold: (text: string) => string };
 
 /**
  * Truncate plain text to maxWidth, then apply a theme color.
@@ -14,7 +17,7 @@ type Theme = { fg: ThemeColor; bg: ThemeColor; bold: (text: string) => string };
  */
 function styledTruncate(
   theme: Theme,
-  colorKey: string,
+  colorKey: ThemeColor,
   text: string,
   maxWidth: number,
   ellipsis = "...",
@@ -40,7 +43,11 @@ export function renderCall(args: any, theme: Theme): Text {
   return new Text(text, 0, 0);
 }
 
-export function renderResult(result: any, _opts: any, theme: Theme): Text {
+export function renderResult(
+  result: AgentToolResult<Result>,
+  _opts: ToolRenderResultOptions,
+  theme: Theme,
+): Text {
   const d = result.details as Result | undefined;
   if (!d) {
     const text =
