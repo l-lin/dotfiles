@@ -1,20 +1,26 @@
 import type {
   BashOperations,
   ExtensionAPI,
+  ToolRenderResultOptions,
 } from "@mariozechner/pi-coding-agent";
 import { createBashTool } from "@mariozechner/pi-coding-agent";
+import { Clone } from "@sinclair/typebox/value";
 import { renderBashCall, renderBashResult } from "../minimal-mode/renders.js";
 
-const TOKF_BASH_PREFIX = "tokf run --";
+export const TOKF_BASH_PREFIX = "tokf run --";
 
-function createTokfBashTool(
+export function rewriteCommandForTokf(command: string): string {
+  return `${TOKF_BASH_PREFIX} ${command}`;
+}
+
+export function createTokfBashTool(
   cwd = process.cwd(),
   options?: { operations?: BashOperations },
 ) {
   return createBashTool(cwd, {
     operations: options?.operations,
     spawnHook: ({ command, cwd: commandCwd, env }) => ({
-      command: `${TOKF_BASH_PREFIX} ${command}`,
+      command: rewriteCommandForTokf(command),
       cwd: commandCwd,
       env,
     }),
@@ -26,11 +32,17 @@ export default function tokfExtension(pi: ExtensionAPI) {
 
   pi.registerTool({
     ...bashTool,
-    renderCall(args, theme) {
-      return renderBashCall(args, theme);
+    parameters: Clone(bashTool.parameters),
+    renderCall(args: any, theme: any, ctx: any) {
+      return renderBashCall(args, theme, ctx);
     },
-    renderResult(result, { expanded }, theme, context) {
-      return renderBashResult(result, { expanded }, theme, context);
+    renderResult(
+      result: any,
+      options: ToolRenderResultOptions,
+      theme: any,
+      context: any,
+    ) {
+      return renderBashResult(result, options, theme, context);
     },
-  });
+  } as any);
 }

@@ -9,61 +9,42 @@
  */
 
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import { Clone } from "@sinclair/typebox/value";
 import {
-  renderBashCall,
-  renderBashResult,
-  renderEditCall,
   renderEditResult,
-  renderFindCall,
   renderFindResult,
-  renderGrepCall,
   renderGrepResult,
-  renderLsCall,
   renderLsResult,
-  renderReadCall,
   renderReadResult,
-  renderWriteCall,
   renderWriteResult,
 } from "./renders.js";
 import { type BuiltInTools, getBuiltInTools } from "./tool-cache.js";
 
 type ToolName = keyof BuiltInTools;
 
+function cloneParameters<T>(parameters: T): T {
+  return Clone(parameters);
+}
+
 function registerMinimalTool(
   pi: ExtensionAPI,
   name: ToolName,
-  renderCall: (args: any, theme: any) => any,
-  renderResult: (
-    result: any,
-    options: { expanded: boolean },
-    theme: any,
-  ) => any,
+  renderResult: any,
 ): void {
-  const builtIn = getBuiltInTools(process.cwd());
+  const builtInTool = getBuiltInTools(process.cwd())[name];
+
   pi.registerTool({
-    name,
-    label: name,
-    description: builtIn[name].description,
-    parameters: builtIn[name].parameters,
-    async execute(toolCallId, params, signal, onUpdate, ctx) {
-      return getBuiltInTools(ctx.cwd)[name].execute(
-        toolCallId,
-        params,
-        signal as AbortSignal,
-        onUpdate,
-      );
-    },
-    renderCall,
+    ...builtInTool,
+    parameters: cloneParameters(builtInTool.parameters),
     renderResult,
-  });
+  } as any);
 }
 
 export default function (pi: ExtensionAPI): void {
-  registerMinimalTool(pi, "bash", renderBashCall, renderBashResult);
-  registerMinimalTool(pi, "read", renderReadCall, renderReadResult);
-  registerMinimalTool(pi, "write", renderWriteCall, renderWriteResult);
-  registerMinimalTool(pi, "edit", renderEditCall, renderEditResult);
-  registerMinimalTool(pi, "find", renderFindCall, renderFindResult);
-  registerMinimalTool(pi, "grep", renderGrepCall, renderGrepResult);
-  registerMinimalTool(pi, "ls", renderLsCall, renderLsResult);
+  registerMinimalTool(pi, "read", renderReadResult);
+  registerMinimalTool(pi, "write", renderWriteResult);
+  registerMinimalTool(pi, "edit", renderEditResult);
+  registerMinimalTool(pi, "find", renderFindResult);
+  registerMinimalTool(pi, "grep", renderGrepResult);
+  registerMinimalTool(pi, "ls", renderLsResult);
 }

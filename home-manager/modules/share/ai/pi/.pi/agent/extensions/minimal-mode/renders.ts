@@ -1,23 +1,53 @@
-import { Text } from "@mariozechner/pi-tui";
-import { EditToolDetails, renderDiff } from "@mariozechner/pi-coding-agent";
-import { homedir } from "os";
-import { getBuiltInTools } from "./tool-cache.js";
-
-function shortenPath(path: string): string {
-  const home = homedir();
-  return path.startsWith(home) ? `~${path.slice(home.length)}` : path;
-}
+import type {
+  EditToolDetails,
+  ToolRenderResultOptions,
+} from "@mariozechner/pi-coding-agent";
+import { renderDiff } from "@mariozechner/pi-coding-agent";
+import { Component, Text } from "@mariozechner/pi-tui";
+import { type BuiltInTools, getBuiltInTools } from "./tool-cache.js";
 
 /** Returns a collapsed count summary (e.g. "→ 5 files") or empty text. */
 function renderCollapsedCount(result: any, theme: any, label: string): Text {
   const textContent = result.content.find((c: any) => c.type === "text");
   const count =
     textContent?.text.trim().split("\n").filter(Boolean).length ?? 0;
+
   return new Text(
     count > 0 ? theme.fg("muted", ` → ${count} ${label}`) : "",
     0,
     0,
   );
+}
+
+function renderBuiltInCall(
+  toolName: keyof BuiltInTools,
+  args: any,
+  theme: any,
+  ctx: any,
+): Component {
+  const renderCall = getBuiltInTools(ctx.cwd)[toolName].renderCall;
+
+  if (!renderCall) {
+    return new Text("", 0, 0);
+  }
+
+  return renderCall(args, theme, ctx);
+}
+
+function renderBuiltInResult(
+  toolName: keyof BuiltInTools,
+  result: any,
+  options: ToolRenderResultOptions,
+  theme: any,
+  context: any,
+): Component {
+  const renderResult = getBuiltInTools(context.cwd)[toolName].renderResult;
+
+  if (!renderResult) {
+    return new Text("", 0, 0);
+  }
+
+  return renderResult(result, options, theme, context);
 }
 
 // =========================================================================
@@ -26,40 +56,20 @@ function renderCollapsedCount(result: any, theme: any, label: string): Text {
 
 const MAX_DISPLAY_LINES = 30;
 
-export function renderReadCall(args: any, theme: any): Text {
-  const path = shortenPath(args.path || "");
-  let pathDisplay = path
-    ? theme.fg("accent", path)
-    : theme.fg("toolOutput", "...");
-
-  if (args.offset !== undefined || args.limit !== undefined) {
-    const startLine = args.offset ?? 1;
-    const endLine = args.limit !== undefined ? startLine + args.limit - 1 : "";
-    pathDisplay += theme.fg(
-      "warning",
-      `:${startLine}${endLine ? `-${endLine}` : ""}`,
-    );
-  }
-
-  return new Text(
-    `${theme.fg("toolTitle", theme.bold("read"))} ${pathDisplay}`,
-    0,
-    0,
-  );
-}
-
 export function renderReadResult(
   result: any,
-  { expanded }: any,
+  options: ToolRenderResultOptions,
   theme: any,
-): Text {
-  if (!expanded) return new Text("", 0, 0);
+  _context: any,
+): Component {
+  if (!options.expanded) return new Text("", 0, 0);
 
   const imageContent = result.content?.find((c: any) => c.type === "image");
   if (imageContent) {
     const label =
       result.content?.find((c: any) => c.type === "text")?.text ?? "image";
     const sizeKb = Math.round((imageContent.data.length * 0.75) / 1024);
+
     return new Text(
       theme.fg(
         "toolOutput",
@@ -78,7 +88,7 @@ export function renderReadResult(
   const displayLines = truncated ? lines.slice(0, MAX_DISPLAY_LINES) : lines;
 
   let text = displayLines
-    .map((l: string) => theme.fg("toolOutput", l))
+    .map((line: string) => theme.fg("toolOutput", line))
     .join("\n");
   if (truncated) {
     text += `\n${theme.fg("muted", `... (${lines.length - MAX_DISPLAY_LINES} more lines hidden)`)}`;
@@ -91,56 +101,27 @@ export function renderReadResult(
 // Write Tool
 // =========================================================================
 
-export function renderWriteCall(args: any, theme: any): Text {
-  const path = shortenPath(args.path || "");
-  const pathDisplay = path
-    ? theme.fg("accent", path)
-    : theme.fg("toolOutput", "...");
-  const lineCount = args.content ? args.content.split("\n").length : 0;
-  const lineInfo =
-    lineCount > 0 ? theme.fg("muted", ` (${lineCount} lines)`) : "";
-
-  return new Text(
-    `${theme.fg("toolTitle", theme.bold("write"))} ${pathDisplay}${lineInfo}`,
-    0,
-    0,
-  );
-}
-
 export function renderWriteResult(
   result: any,
-  { expanded }: any,
+  options: ToolRenderResultOptions,
   theme: any,
-): any {
-  if (!expanded) return new Text("", 0, 0);
-  return getBuiltInTools(process.cwd()).write.renderResult(
-    result,
-    { expanded },
-    theme,
-  );
+  context: any,
+): Component {
+  if (!options.expanded) return new Text("", 0, 0);
+
+  return renderBuiltInResult("write", result, options, theme, context);
 }
 
 // =========================================================================
 // Edit Tool
 // =========================================================================
 
-export function renderEditCall(args: any, theme: any): Text {
-  const path = shortenPath(args.path || "");
-  const pathDisplay = path
-    ? theme.fg("accent", path)
-    : theme.fg("toolOutput", "...");
-  return new Text(
-    `${theme.fg("toolTitle", theme.bold("edit"))} ${pathDisplay}`,
-    0,
-    0,
-  );
-}
-
 export function renderEditResult(
   result: any,
-  { expanded }: any,
+  options: ToolRenderResultOptions,
   theme: any,
-): Text | any {
+  _context: any,
+): Component {
   const details = result.details as EditToolDetails | undefined;
   const content = result.content[0];
 
@@ -164,7 +145,7 @@ export function renderEditResult(
     theme.fg("dim", "/") +
     theme.fg("error", `-${removals}`);
 
-  if (!expanded) return new Text(summary, 0, 0);
+  if (!options.expanded) return new Text(summary, 0, 0);
   return new Text(`${summary}\n${renderDiff(details.diff)}`, 0, 0);
 }
 
@@ -172,106 +153,64 @@ export function renderEditResult(
 // Find Tool
 // =========================================================================
 
-export function renderFindCall(args: any, theme: any): Text {
-  const path = shortenPath(args.path || ".");
-  let text = `${theme.fg("toolTitle", theme.bold("find"))} ${theme.fg("accent", args.pattern || "")}`;
-  text += theme.fg("toolOutput", ` in ${path}`);
-  if (args.limit !== undefined)
-    text += theme.fg("toolOutput", ` (limit ${args.limit})`);
-  return new Text(text, 0, 0);
-}
-
 export function renderFindResult(
   result: any,
-  { expanded }: any,
+  options: ToolRenderResultOptions,
   theme: any,
-): Text | any {
-  if (!expanded) return renderCollapsedCount(result, theme, "files");
-  return getBuiltInTools(process.cwd()).find.renderResult(
-    result,
-    { expanded },
-    theme,
-  );
+  context: any,
+): Component {
+  if (!options.expanded) return renderCollapsedCount(result, theme, "files");
+
+  return renderBuiltInResult("find", result, options, theme, context);
 }
 
 // =========================================================================
 // Grep Tool
 // =========================================================================
 
-export function renderGrepCall(args: any, theme: any): Text {
-  const path = shortenPath(args.path || ".");
-  let text = `${theme.fg("toolTitle", theme.bold("grep"))} ${theme.fg("accent", `/${args.pattern || ""}/`)}`;
-  text += theme.fg("toolOutput", ` in ${path}`);
-  if (args.glob) text += theme.fg("toolOutput", ` (${args.glob})`);
-  if (args.limit !== undefined)
-    text += theme.fg("toolOutput", ` limit ${args.limit}`);
-  return new Text(text, 0, 0);
-}
-
 export function renderGrepResult(
   result: any,
-  { expanded }: any,
+  options: ToolRenderResultOptions,
   theme: any,
-): Text | any {
-  if (!expanded) return renderCollapsedCount(result, theme, "matches");
-  return getBuiltInTools(process.cwd()).grep.renderResult(
-    result,
-    { expanded },
-    theme,
-  );
+  context: any,
+): Component {
+  if (!options.expanded) {
+    return renderCollapsedCount(result, theme, "matches");
+  }
+
+  return renderBuiltInResult("grep", result, options, theme, context);
 }
 
 // =========================================================================
 // Bash Tool
 // =========================================================================
 
-export function renderBashCall(args: any, theme: any): Text {
-  const command = args.command || "...";
-  const timeout = args.timeout as number | undefined;
-  const timeoutSuffix = timeout
-    ? theme.fg("muted", ` (timeout ${timeout}s)`)
-    : "";
-  return new Text(
-    theme.fg("toolTitle", theme.bold(`$ ${command}`)) + timeoutSuffix,
-    0,
-    0,
-  );
+export function renderBashCall(args: any, theme: any, ctx: any): Component {
+  return renderBuiltInCall("bash", args, theme, ctx);
 }
 
 export function renderBashResult(
   result: any,
-  { expanded }: any,
+  options: ToolRenderResultOptions,
   theme: any,
-): any {
-  if (!expanded) return new Text("", 0, 0);
-  return getBuiltInTools(process.cwd()).bash.renderResult(
-    result,
-    { expanded },
-    theme,
-  );
+  context: any,
+): Component {
+  if (!options.expanded) return new Text("", 0, 0);
+
+  return renderBuiltInResult("bash", result, options, theme, context);
 }
 
 // =========================================================================
 // Ls Tool
 // =========================================================================
 
-export function renderLsCall(args: any, theme: any): Text {
-  const path = shortenPath(args.path || ".");
-  let text = `${theme.fg("toolTitle", theme.bold("ls"))} ${theme.fg("accent", path)}`;
-  if (args.limit !== undefined)
-    text += theme.fg("toolOutput", ` (limit ${args.limit})`);
-  return new Text(text, 0, 0);
-}
-
 export function renderLsResult(
   result: any,
-  { expanded }: any,
+  options: ToolRenderResultOptions,
   theme: any,
-): Text | any {
-  if (!expanded) return renderCollapsedCount(result, theme, "entries");
-  return getBuiltInTools(process.cwd()).ls.renderResult(
-    result,
-    { expanded },
-    theme,
-  );
+  context: any,
+): Component {
+  if (!options.expanded) return renderCollapsedCount(result, theme, "entries");
+
+  return renderBuiltInResult("ls", result, options, theme, context);
 }
