@@ -86,14 +86,17 @@ export function buildSkillIndex(
 ): SkillIndexEntry[] {
   return pi
     .getCommands()
-    .filter((c) => c.source === "skill")
-    .map((c) => {
-      const p = c.path ? normalizeReadPath(c.path, cwd) : "";
+    .filter((command) => command.source === "skill")
+    .map((command) => {
+      const skillFilePath = command.sourceInfo.path
+        ? normalizeReadPath(command.sourceInfo.path, cwd)
+        : "";
+
       return {
-        name: normalizeSkillName(c.name),
-        skillFilePath: p,
-        skillDir: p ? path.dirname(p) : "",
+        name: normalizeSkillName(command.name),
+        skillFilePath,
+        skillDir: skillFilePath ? path.dirname(skillFilePath) : "",
       };
     })
-    .filter((x) => x.name && x.skillDir);
+    .filter((entry) => entry.name && entry.skillDir);
 }

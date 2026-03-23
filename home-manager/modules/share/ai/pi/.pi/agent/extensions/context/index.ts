@@ -84,11 +84,11 @@ export default function contextExtension(pi: ExtensionAPI) {
       const skillCmds = commands.filter((c) => c.source === "skill");
 
       const extensionsByPath = new Map<string, string[]>();
-      for (const c of extensionCmds) {
-        const p = c.path ?? "<unknown>";
-        const arr = extensionsByPath.get(p) ?? [];
-        arr.push(c.name);
-        extensionsByPath.set(p, arr);
+      for (const command of extensionCmds) {
+        const commandPath = command.sourceInfo.path ?? "<unknown>";
+        const namesAtPath = extensionsByPath.get(commandPath) ?? [];
+        namesAtPath.push(command.name);
+        extensionsByPath.set(commandPath, namesAtPath);
       }
       const extensionFiles = [...extensionsByPath.keys()]
         .map((p) => (p === "<unknown>" ? p : path.basename(p)))
