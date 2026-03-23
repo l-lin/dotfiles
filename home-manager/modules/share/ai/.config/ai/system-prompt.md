@@ -67,3 +67,8 @@ Skip if nothing to confess.
 - **Isolate tests**: Each test should focus on a single behavior
 - **Meaningful variables**: Use `actual` for results, `expected` for expectations
 - **Helper methods**: Prefix with `given_` for setup, `when_` for action, `then_` for assertions
+
+## tokf
+
+🗜️ means this output was compressed by tokf.
+Run `tokf raw last` to see the full uncompressed output of the last command.

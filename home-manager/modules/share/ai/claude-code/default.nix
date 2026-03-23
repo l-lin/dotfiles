@@ -25,6 +25,10 @@
         source = ./.claude/mcp;
         recursive = true;
       };
+      ".claude/hooks" = {
+        source = ./.claude/hooks;
+        recursive = true;
+      };
       ".claude/commands" = {
         source = ../.config/ai/commands;
         recursive = true;
