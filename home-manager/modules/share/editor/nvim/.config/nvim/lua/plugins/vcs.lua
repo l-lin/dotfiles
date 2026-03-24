@@ -112,6 +112,7 @@ return {
   -- git integration
   {
     "tpope/vim-fugitive",
+    cmd = { "G" },
     keys = {
       { "<leader>gc", "<cmd>G commit --no-verify<cr>", desc = "git commit" },
       { "<leader>gF", "<cmd>G push --force-with-lease<cr>", desc = "git push --force-with-lease" },
