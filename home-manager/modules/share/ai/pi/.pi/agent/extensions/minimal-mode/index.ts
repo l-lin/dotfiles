@@ -22,10 +22,6 @@ import { type BuiltInTools, getBuiltInTools } from "./tool-cache.js";
 
 type ToolName = keyof BuiltInTools;
 
-function cloneParameters<T>(parameters: T): T {
-  return Clone(parameters);
-}
-
 function registerMinimalTool(
   pi: ExtensionAPI,
   name: ToolName,
@@ -35,7 +31,7 @@ function registerMinimalTool(
 
   pi.registerTool({
     ...builtInTool,
-    parameters: cloneParameters(builtInTool.parameters),
+    parameters: Clone(builtInTool.parameters),
     renderResult,
   } as any);
 }
