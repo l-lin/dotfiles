@@ -1,5 +1,5 @@
 /**
- * System Prompt Select — Switch the system prompt via /system
+ * System Prompt Selector — Switch the system prompt via /system
  *
  * Scans .pi/agents/, .claude/agents/, .gemini/agents/, .codex/agents/
  * (project-local and global) for agent definition .md files.
@@ -20,7 +20,7 @@ import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join, basename, isAbsolute, resolve } from "node:path";
 import { homedir } from "node:os";
-import { loadSettings } from "./subagent/settings.js";
+import { loadSettings } from "../subagent/settings.js";
 
 interface AgentDef {
   name: string;
