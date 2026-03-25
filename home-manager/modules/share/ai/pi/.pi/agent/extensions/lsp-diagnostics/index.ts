@@ -12,7 +12,7 @@ import {
 } from "@mariozechner/pi-coding-agent";
 import type { SavedConfig, LspClientEntry } from "./types.js";
 import { CONFIG_ENTRY_TYPE } from "./types.js";
-import { loadConfig } from "./config.js";
+import { loadSettings } from "./settings.js";
 import { LSP_SERVERS_CONFIG } from "./lsp-servers.js";
 import { resolveLspCommands } from "./resolver.js";
 import { collectDiagnostics } from "./collector.js";
@@ -26,7 +26,7 @@ import {
 } from "./commands/index.js";
 
 export default function (pi: ExtensionAPI) {
-  const config = loadConfig();
+  const settings = loadSettings();
   const fileConfig = LSP_SERVERS_CONFIG;
 
   let savedConfig: SavedConfig | null = null;
@@ -44,7 +44,7 @@ export default function (pi: ExtensionAPI) {
   pi.registerCommand("cmd:lsp-toggle", {
     description: "Toggle LSP extension on/off",
     handler: async (_args, ctx) => {
-      await handleToggle(config, ctx);
+      await handleToggle(settings, ctx);
     },
   });
 
@@ -78,7 +78,7 @@ export default function (pi: ExtensionAPI) {
         parts.push(`${lang}: ${cmd.join(" ")}`);
       }
       if (parts.length > 0) {
-        ctx.ui.notify(`lsp-diagnostics config — ${parts.join(" | ")}`, "info");
+        ctx.ui.notify(`lsp-diagnostics extension — ${parts.join(" | ")}`, "info");
       }
     }
   });
@@ -93,7 +93,7 @@ export default function (pi: ExtensionAPI) {
   });
 
   pi.on("tool_result", async (event, ctx) => {
-    if (!config.enabled) return;
+    if (!settings.enabled) return;
     if (!isWriteToolResult(event) && !isEditToolResult(event)) return;
 
     const filePath = event.input.path as string | undefined;

@@ -2,17 +2,17 @@
  * Toggle auto LSP diagnostics on/off for this session
  */
 import type { ExtensionContext } from "@mariozechner/pi-coding-agent";
-import type { LspDiagnosticsConfig } from "../config.js";
-import { saveEnabled } from "../config.js";
+import type { LspDiagnosticsSettings } from "../settings.js";
+import { saveEnabled } from "../settings.js";
 
 export async function handleToggle(
-  config: LspDiagnosticsConfig,
+  settings: LspDiagnosticsSettings,
   ctx: ExtensionContext,
 ): Promise<void> {
-  config.enabled = !config.enabled;
-  saveEnabled(config.enabled);
+  settings.enabled = !settings.enabled;
+  saveEnabled(settings.enabled);
   ctx.ui.notify(
-    `lsp-diagnostics ${config.enabled ? "enabled" : "disabled"}`,
+    `lsp-diagnostics ${settings.enabled ? "enabled" : "disabled"}`,
     "info",
   );
 }
