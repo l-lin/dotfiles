@@ -10,33 +10,37 @@ import { executeFetch } from "./fetch.js";
 import * as render from "./render.js";
 import { loadSettings, saveEnabled } from "./settings.js";
 import { DEFAULT_MAX_LENGTH, WebFetchParams } from "./types.js";
+import { updateActiveTools } from "../tool-settings.js";
+
+const TOOL_NAME = "web-fetch";
 
 export default function webFetchExtension(pi: ExtensionAPI) {
   const settings = loadSettings();
 
-  pi.registerCommand("cmd:web-fetch-toggle", {
-    description: "Toggle web-fetch tool on/off",
+  pi.registerCommand(`cmd:${TOOL_NAME}-toggle`, {
+    description: `Toggle ${TOOL_NAME} tool on/off`,
     handler: async (_args, ctx) => {
       settings.enabled = !settings.enabled;
       saveEnabled(settings.enabled);
-      if (settings.enabled) {
-        pi.setActiveTools([...new Set([...pi.getActiveTools(), "web-fetch"])]);
-      } else {
-        pi.setActiveTools(pi.getActiveTools().filter((t) => t !== "web-fetch"));
-      }
+
+      updateActiveTools(pi, {
+        toolName: TOOL_NAME,
+        enabled: settings.enabled,
+      });
+
       ctx.ui.notify(
-        `web-fetch ${settings.enabled ? "enabled" : "disabled"}`,
+        `${TOOL_NAME} ${settings.enabled ? "enabled" : "disabled"}`,
         "info",
       );
       pi.events.emit("custom-tool:changed", {
-        tool: "web-fetch",
+        tool: TOOL_NAME,
         enabled: settings.enabled,
       });
     },
   });
 
   pi.registerTool({
-    name: "web-fetch",
+    name: TOOL_NAME,
     label: "Web Fetch",
     description:
       'Fetch the content of a URL. Use mode="readable" (default) to get clean human-readable text with HTML tags stripped, or mode="raw" to get the full HTML/text body. Useful for reading documentation, articles, or any web page.',
@@ -54,4 +58,8 @@ export default function webFetchExtension(pi: ExtensionAPI) {
     renderCall: render.renderCall,
     renderResult: render.renderResult,
   });
+
+  pi.on("session_start", () =>
+    updateActiveTools(pi, { toolName: TOOL_NAME, enabled: settings.enabled }),
+  );
 }

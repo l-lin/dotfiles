@@ -16,40 +16,37 @@ import * as render from "./render.js";
 import { loadSettings, saveEnabled } from "./settings.js";
 import type { WebSearchDetails } from "./types.js";
 import { WebSearchParams } from "./types.js";
+import { updateActiveTools } from "../tool-settings.js";
+
+const TOOL_NAME = "web-search";
 
 export default function webSearchExtension(pi: ExtensionAPI) {
   const settings = loadSettings();
 
-  pi.registerCommand("cmd:web-search-toggle", {
-    description: "Toggle web-search tool on/off",
+  pi.registerCommand(`cmd:${TOOL_NAME}-toggle`, {
+    description: `Toggle ${TOOL_NAME} tool on/off`,
     handler: async (_args, ctx) => {
       settings.enabled = !settings.enabled;
       saveEnabled(settings.enabled);
 
-      const current = pi.getActiveTools();
-      let updated: string[];
-      if (settings.enabled) {
-        updated = current.includes("web-search")
-          ? current
-          : [...current, "web-search"];
-      } else {
-        updated = current.filter((t) => t !== "web-search");
-      }
-      pi.setActiveTools(updated);
+      updateActiveTools(pi, {
+        toolName: TOOL_NAME,
+        enabled: settings.enabled,
+      });
 
-      const status = settings.enabled ? "enabled" : "disabled";
-      ctx.ui.notify(`web-search ${status}`, "info");
+      ctx.ui.notify(
+        `${TOOL_NAME} ${settings.enabled ? "enabled" : "disabled"}`,
+        "info",
+      );
       pi.events.emit("custom-tool:changed", {
-        tool: "web-search",
+        tool: TOOL_NAME,
         enabled: settings.enabled,
       });
     },
   });
 
-  if (!settings.enabled) return;
-
   pi.registerTool({
-    name: "web-search",
+    name: TOOL_NAME,
     label: "Web Search",
     description:
       "Search the internet using Tavily API. Supports basic and advanced search with domain filtering and AI-generated summaries.",
@@ -109,4 +106,8 @@ export default function webSearchExtension(pi: ExtensionAPI) {
     renderCall: render.renderCall,
     renderResult: render.renderResult,
   });
+
+  pi.on("session_start", () =>
+    updateActiveTools(pi, { toolName: TOOL_NAME, enabled: settings.enabled }),
+  );
 }

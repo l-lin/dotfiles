@@ -13,26 +13,23 @@ import { error, QuestionnaireParams } from "./types.js";
 import type { Question, Result } from "./types.js";
 import { renderCall, renderResult } from "./render.js";
 import { buildWidget } from "./widget.js";
+import { updateActiveTools } from "../tool-settings.js";
+
+const TOOL_NAME = "ask-user-question";
 
 export default function (pi: ExtensionAPI) {
   const settings = loadSettings();
 
-  pi.registerCommand("cmd:ask-user-question-toggle", {
-    description: "Toggle ask-user-question tool on/off",
+  pi.registerCommand(`cmd:${TOOL_NAME}-toggle`, {
+    description: `Toggle ${TOOL_NAME} tool on/off`,
     handler: async (_args, ctx) => {
       settings.enabled = !settings.enabled;
       saveEnabled(settings.enabled);
-      if (settings.enabled) {
-        pi.setActiveTools([
-          ...new Set([...pi.getActiveTools(), "ask-user-question"]),
-        ]);
-      } else {
-        pi.setActiveTools(
-          pi.getActiveTools().filter((t) => t !== "ask-user-question"),
-        );
-      }
+
+      updateActiveTools(pi, { toolName: TOOL_NAME, enabled: settings.enabled });
+
       ctx.ui.notify(
-        `ask-user-question ${settings.enabled ? "enabled" : "disabled"}`,
+        `${TOOL_NAME} ${settings.enabled ? "enabled" : "disabled"}`,
         "info",
       );
       pi.events.emit("custom-tool:changed", {
@@ -42,10 +39,8 @@ export default function (pi: ExtensionAPI) {
     },
   });
 
-  if (!settings.enabled) return;
-
   pi.registerTool({
-    name: "ask-user-question",
+    name: TOOL_NAME,
     label: "Ask user question",
     description:
       "Ask the user one or more questions. Single question shows options list; multiple questions show tab-based interface.",
@@ -84,4 +79,8 @@ export default function (pi: ExtensionAPI) {
     renderCall,
     renderResult,
   });
+
+  pi.on("session_start", () =>
+    updateActiveTools(pi, { toolName: TOOL_NAME, enabled: settings.enabled }),
+  );
 }

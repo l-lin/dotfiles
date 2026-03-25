@@ -21,6 +21,7 @@ import * as sessions from "./sessions.js";
 import * as tmux from "./tmux.js";
 import { Action, ICONS } from "./types.js";
 import type { SpawnResult, SubagentDetails, ToolResult } from "./types.js";
+import { updateActiveTools } from "../tool-settings.js";
 
 const ok = (text: string, details?: SubagentDetails): ToolResult => ({
   content: [{ type: "text", text }],
@@ -297,6 +298,8 @@ function updateSessionWidget(ctx: ExtensionContext): void {
 
 // ─── extension ───────────────────────────────────────────────────────────────
 
+const TOOL_NAME = "subagent";
+
 export default function (pi: ExtensionAPI) {
   const settings = loadSettings();
 
@@ -309,9 +312,10 @@ export default function (pi: ExtensionAPI) {
     sessions.closeAll();
     ctx.ui.setWidget(WIDGET_KEY, undefined);
   });
-  pi.on("session_start", async (_event, ctx) =>
-    ctx.ui.setWidget(WIDGET_KEY, undefined),
-  );
+  pi.on("session_start", async (_event, ctx) => {
+    ctx.ui.setWidget(WIDGET_KEY, undefined);
+    updateActiveTools(pi, { toolName: TOOL_NAME, enabled: settings.enabled });
+  });
 
   pi.registerMessageRenderer("subagent-result", render.renderMessage);
 
@@ -355,22 +359,23 @@ export default function (pi: ExtensionAPI) {
     },
   });
 
-  pi.registerCommand("cmd:subagent-toggle", {
-    description: "Toggle subagent tool on/off",
+  pi.registerCommand(`cmd:${TOOL_NAME}-toggle`, {
+    description: `Toggle ${TOOL_NAME} tool on/off`,
     handler: async (_args, ctx) => {
       settings.enabled = !settings.enabled;
       saveEnabled(settings.enabled);
-      if (settings.enabled) {
-        pi.setActiveTools([...new Set([...pi.getActiveTools(), "subagent"])]);
-      } else {
-        pi.setActiveTools(pi.getActiveTools().filter((t) => t !== "subagent"));
-      }
+
+      updateActiveTools(pi, {
+        toolName: TOOL_NAME,
+        enabled: settings.enabled,
+      });
+
       ctx.ui.notify(
-        `subagent ${settings.enabled ? "enabled" : "disabled"}`,
+        `${TOOL_NAME} ${settings.enabled ? "enabled" : "disabled"}`,
         "info",
       );
       pi.events.emit("custom-tool:changed", {
-        tool: "subagent",
+        tool: TOOL_NAME,
         enabled: settings.enabled,
       });
     },
@@ -449,10 +454,8 @@ export default function (pi: ExtensionAPI) {
     },
   });
 
-  if (!settings.enabled) return;
-
   pi.registerTool({
-    name: "subagent",
+    name: TOOL_NAME,
     label: "Subagent",
     description: [
       "Manage interactive subagents in tmux windows.",
