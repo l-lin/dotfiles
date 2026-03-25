@@ -8,23 +8,31 @@
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { executeFetch } from "./fetch.js";
 import * as render from "./render.js";
-import { loadSettings, saveEnabled } from "./settings.js";
 import { DEFAULT_MAX_LENGTH, WebFetchParams } from "./types.js";
 import {
+  loadEnabledSettings,
   registerEnabledToggleCommand,
+  saveExtensionSettings,
   updateActiveTools,
 } from "../tool-settings/index.js";
 
 const TOOL_NAME = "web-fetch";
+const SETTINGS_KEY = "webFetch";
+const DEFAULT_SETTINGS = { enabled: true };
 
 export default function webFetchExtension(pi: ExtensionAPI) {
-  const settings = loadSettings();
+  const settings = loadEnabledSettings(SETTINGS_KEY, DEFAULT_SETTINGS);
 
   registerEnabledToggleCommand(pi, {
     toolName: TOOL_NAME,
     description: `Toggle ${TOOL_NAME} tool on/off`,
     settings,
-    saveEnabled,
+    saveEnabled(enabled: boolean) {
+      saveExtensionSettings({
+        extensionKey: SETTINGS_KEY,
+        enabled,
+      });
+    },
   });
 
   pi.registerTool({

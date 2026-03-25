@@ -8,26 +8,34 @@
  */
 
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
-import { loadSettings, saveEnabled } from "./settings.js";
 import { error, QuestionnaireParams } from "./types.js";
 import type { Question, Result } from "./types.js";
 import { renderCall, renderResult } from "./render.js";
 import { buildWidget } from "./widget.js";
 import {
+  loadEnabledSettings,
   registerEnabledToggleCommand,
+  saveExtensionSettings,
   updateActiveTools,
 } from "../tool-settings/index.js";
 
 const TOOL_NAME = "ask-user-question";
+const SETTINGS_KEY = "askUserQuestion";
+const DEFAULT_SETTINGS = { enabled: true };
 
 export default function (pi: ExtensionAPI) {
-  const settings = loadSettings();
+  const settings = loadEnabledSettings(SETTINGS_KEY, DEFAULT_SETTINGS);
 
   registerEnabledToggleCommand(pi, {
     toolName: TOOL_NAME,
     description: `Toggle ${TOOL_NAME} tool on/off`,
     settings,
-    saveEnabled,
+    saveEnabled(enabled: boolean) {
+      saveExtensionSettings({
+        extensionKey: SETTINGS_KEY,
+        enabled,
+      });
+    },
   });
 
   pi.registerTool({

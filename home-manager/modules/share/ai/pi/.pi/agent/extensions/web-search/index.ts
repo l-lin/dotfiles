@@ -13,24 +13,32 @@ import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { searchTavily } from "./api.js";
 import { formatResultsAsMarkdown } from "./format.js";
 import * as render from "./render.js";
-import { loadSettings, saveEnabled } from "./settings.js";
 import type { WebSearchDetails } from "./types.js";
 import { WebSearchParams } from "./types.js";
 import {
+  loadEnabledSettings,
   registerEnabledToggleCommand,
+  saveExtensionSettings,
   updateActiveTools,
 } from "../tool-settings/index.js";
 
 const TOOL_NAME = "web-search";
+const SETTINGS_KEY = "webSearch";
+const DEFAULT_SETTINGS = { enabled: true };
 
 export default function webSearchExtension(pi: ExtensionAPI) {
-  const settings = loadSettings();
+  const settings = loadEnabledSettings(SETTINGS_KEY, DEFAULT_SETTINGS);
 
   registerEnabledToggleCommand(pi, {
     toolName: TOOL_NAME,
     description: `Toggle ${TOOL_NAME} tool on/off`,
     settings,
-    saveEnabled,
+    saveEnabled(enabled: boolean) {
+      saveExtensionSettings({
+        extensionKey: SETTINGS_KEY,
+        enabled,
+      });
+    },
   });
 
   pi.registerTool({

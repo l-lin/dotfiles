@@ -1,6 +1,14 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import test from "node:test";
-import { registerEnabledToggleCommand } from "./index.js";
+import {
+  loadEnabledSettings,
+  readExtensionSettings,
+  registerEnabledToggleCommand,
+  saveExtensionSettings,
+} from "./index.js";
 
 function given_mockPi(activeTools: string[] = []) {
   const registeredCommands = new Map<
@@ -13,7 +21,10 @@ function given_mockPi(activeTools: string[] = []) {
 
   return {
     pi: {
-      registerCommand(name: string, options: { description?: string; handler: Function }) {
+      registerCommand(
+        name: string,
+        options: { description?: string; handler: Function },
+      ) {
         registeredCommands.set(name, options);
       },
       getActiveTools() {
@@ -48,6 +59,44 @@ function given_mockContext() {
     },
     notifications,
   };
+}
+
+function given_tempHome(t: test.TestContext): string {
+  const previousHome = process.env.HOME;
+  const previousXdgConfigHome = process.env.XDG_CONFIG_HOME;
+  const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "tool-settings-"));
+
+  process.env.HOME = tempHome;
+  delete process.env.XDG_CONFIG_HOME;
+
+  t.after(() => {
+    if (previousHome === undefined) delete process.env.HOME;
+    else process.env.HOME = previousHome;
+
+    if (previousXdgConfigHome === undefined) delete process.env.XDG_CONFIG_HOME;
+    else process.env.XDG_CONFIG_HOME = previousXdgConfigHome;
+
+    fs.rmSync(tempHome, { recursive: true, force: true });
+  });
+
+  return tempHome;
+}
+
+function given_savedSettingsFile(tempHome: string, settings: unknown): string {
+  const settingsPath = path.join(tempHome, ".pi", "agent", "settings.json");
+  fs.mkdirSync(path.dirname(settingsPath), { recursive: true });
+  fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + "\n");
+  return settingsPath;
+}
+
+function given_fileBlockingSettingsDirectory(tempHome: string): void {
+  const piDirectoryPath = path.join(tempHome, ".pi");
+  fs.writeFileSync(piDirectoryPath, "blocked", "utf8");
+}
+
+function when_readingSavedSettingsFile(tempHome: string): unknown {
+  const settingsPath = path.join(tempHome, ".pi", "agent", "settings.json");
+  return JSON.parse(fs.readFileSync(settingsPath, "utf8"));
 }
 
 async function when_runningCommand(
@@ -92,37 +141,123 @@ test("registerEnabledToggleCommand GIVEN a tool-backed extension WHEN toggled TH
   ]);
 });
 
-test("registerEnabledToggleCommand GIVEN a command-only extension WHEN toggled THEN it persists state without touching active tools", async () => {
+test("registerEnabledToggleCommand GIVEN a tool-backed extension WHEN save fails THEN it keeps in-memory state unchanged", async () => {
   const { pi, registeredCommands, emittedEvents, setActiveToolsCalls } =
-    given_mockPi(["read"]);
+    given_mockPi(["read", "web-fetch"]);
   const { ctx, notifications } = given_mockContext();
   const settings = { enabled: true };
-  const savedValues: boolean[] = [];
 
   registerEnabledToggleCommand(pi as never, {
-    toolName: "lsp-diagnostics",
-    description: "Toggle LSP extension on/off",
+    description: "Toggle web-fetch tool on/off",
     settings,
-    saveEnabled(enabled: boolean) {
-      savedValues.push(enabled);
+    saveEnabled() {
+      throw new Error("boom");
+    },
+    toolName: "web-fetch",
+  });
+
+  const command = registeredCommands.get("cmd:web-fetch-toggle");
+  assert.ok(command, "Expected toggle command to be registered");
+
+  await assert.rejects(() => when_runningCommand(command.handler, ctx), /boom/);
+
+  assert.equal(settings.enabled, true);
+  assert.deepEqual(setActiveToolsCalls, []);
+  assert.deepEqual(emittedEvents, []);
+  assert.deepEqual(notifications, []);
+});
+
+test("saveExtensionSettings GIVEN sibling and existing extension settings WHEN saving THEN enabled is updated without losing other keys", (t) => {
+  const tempHome = given_tempHome(t);
+  given_savedSettingsFile(tempHome, {
+    sessionName: "demo",
+    extensionSettings: {
+      webFetch: { retries: 2 },
+      webSearch: { enabled: false },
     },
   });
 
-  const command = registeredCommands.get("cmd:lsp-diagnostics-toggle");
-  assert.ok(command, "Expected toggle command to be registered");
+  saveExtensionSettings({
+    extensionKey: "webFetch",
+    enabled: true,
+  });
 
-  await when_runningCommand(command.handler, ctx);
-
-  assert.equal(settings.enabled, false);
-  assert.deepEqual(savedValues, [false]);
-  assert.deepEqual(setActiveToolsCalls, [["read"]]);
-  assert.deepEqual(emittedEvents, [
-    {
-      event: "custom-tool:changed",
-      payload: { tool: "lsp-diagnostics", enabled: false },
+  const actual = when_readingSavedSettingsFile(tempHome);
+  const expected = {
+    sessionName: "demo",
+    extensionSettings: {
+      webFetch: { retries: 2, enabled: true },
+      webSearch: { enabled: false },
     },
-  ]);
-  assert.deepEqual(notifications, [
-    { message: "lsp-diagnostics disabled", type: "info" },
-  ]);
+  };
+
+  assert.deepEqual(actual, expected);
+});
+
+test("saveExtensionSettings GIVEN a write failure and error label WHEN saving THEN it throws a labeled error", (t) => {
+  const tempHome = given_tempHome(t);
+  given_fileBlockingSettingsDirectory(tempHome);
+
+  assert.throws(
+    () =>
+      saveExtensionSettings({
+        extensionKey: "askUserQuestion",
+        enabled: true,
+        errorLabel: "ask-user-question",
+      }),
+    /ask-user-question: failed to save settings to .*settings\.json:/,
+  );
+});
+
+test("readExtensionSettings GIVEN a stored extension block WHEN reading THEN only that extension settings object is returned", (t) => {
+  const tempHome = given_tempHome(t);
+  given_savedSettingsFile(tempHome, {
+    extensionSettings: {
+      subagent: {
+        enabled: false,
+        maxParallel: 7,
+        sources: ["~/.pi/agent/agents"],
+      },
+      webFetch: { enabled: true },
+    },
+  });
+
+  const actual = readExtensionSettings<{
+    enabled: boolean;
+    maxParallel: number;
+    sources: string[];
+  }>("subagent");
+  const expected = {
+    enabled: false,
+    maxParallel: 7,
+    sources: ["~/.pi/agent/agents"],
+  };
+
+  assert.deepEqual(actual, expected);
+});
+
+test("loadEnabledSettings GIVEN malformed settings file WHEN loading THEN defaults are returned", (t) => {
+  const tempHome = given_tempHome(t);
+  const settingsPath = path.join(tempHome, ".pi", "agent", "settings.json");
+  fs.mkdirSync(path.dirname(settingsPath), { recursive: true });
+  fs.writeFileSync(settingsPath, "{not-json", "utf8");
+
+  const actual = loadEnabledSettings("webFetch", { enabled: true });
+  const expected = { enabled: true };
+
+  assert.deepEqual(actual, expected);
+});
+
+test("loadEnabledSettings GIVEN persisted enabled flag WHEN loading THEN stored boolean overrides defaults", (t) => {
+  const tempHome = given_tempHome(t);
+  given_savedSettingsFile(tempHome, {
+    extensionSettings: {
+      webFetch: { enabled: false },
+    },
+  });
+
+  const actual = loadEnabledSettings("webFetch", { enabled: true });
+  const expected = { enabled: false };
+
+  assert.deepEqual(actual, expected);
 });
