@@ -16,9 +16,9 @@ export type EnabledSettings = {
 
 export type RegisterEnabledToggleCommandArgs = {
   toolName: string;
+  extensionKey: string;
   description: string;
   settings: EnabledSettings;
-  saveEnabled: (enabled: boolean) => void;
 };
 
 export type SaveExtensionSettingsArgs = {
@@ -62,7 +62,10 @@ export function registerEnabledToggleCommand(
     description: args.description,
     handler: async (_commandArgs, ctx) => {
       const nextEnabled = !args.settings.enabled;
-      args.saveEnabled(nextEnabled);
+      saveExtensionSettings({
+        extensionKey: args.extensionKey,
+        enabled: nextEnabled,
+      });
       args.settings.enabled = nextEnabled;
 
       updateActiveTools(pi, {
@@ -124,16 +127,7 @@ export function saveExtensionSettings(
   };
   settings.extensionSettings = extensionSettings;
 
-  try {
-    writeSettingsFile(settings);
-  } catch (error) {
-    if (args.errorLabel) {
-      throw new Error(
-        `${args.errorLabel}: failed to save settings to ${getAgentSettingsPath()}: ${(error as Error).message}`,
-      );
-    }
-    throw error;
-  }
+  writeSettingsFile(settings);
 }
 
 function readSettingsFile(): PiSettings {

@@ -1,9 +1,6 @@
 /** Reads ~/.pi/agent/settings.json (extensionSettings.subagent property) to provide configurable defaults. */
 
-import {
-  readExtensionSettings,
-  saveExtensionSettings,
-} from "../tool-settings/index.js";
+import { readExtensionSettings } from "../tool-settings/index.js";
 
 export interface UserSystemPromptSettings {
   /** Path to a user-level system prompt prepended to every subagent's prompt. Supports ~ expansion. Default: "~/.pi/agent/AGENTS.md". */
@@ -53,13 +50,6 @@ export function loadSettings(): SubagentSettings {
     enabled:
       typeof parsed.enabled === "boolean" ? parsed.enabled : DEFAULTS.enabled,
   };
-}
-
-export function saveEnabled(enabled: boolean): void {
-  saveExtensionSettings({
-    extensionKey: SETTINGS_KEY,
-    enabled,
-  });
 }
 
 function isValidSources(value: unknown): value is string[] {

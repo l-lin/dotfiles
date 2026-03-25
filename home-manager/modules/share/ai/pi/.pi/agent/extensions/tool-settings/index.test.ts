@@ -106,20 +106,18 @@ async function when_runningCommand(
   await commandHandler("", ctx);
 }
 
-test("registerEnabledToggleCommand GIVEN a tool-backed extension WHEN toggled THEN it persists state, updates active tools, and emits a change event", async () => {
+test("registerEnabledToggleCommand GIVEN a tool-backed extension WHEN toggled THEN it persists state, updates active tools, and emits a change event", async (t) => {
+  const tempHome = given_tempHome(t);
   const { pi, registeredCommands, emittedEvents, setActiveToolsCalls } =
     given_mockPi(["read", "web-fetch"]);
   const { ctx, notifications } = given_mockContext();
   const settings = { enabled: true };
-  const savedValues: boolean[] = [];
 
   registerEnabledToggleCommand(pi as never, {
+    toolName: "web-fetch",
+    extensionKey: "webFetch",
     description: "Toggle web-fetch tool on/off",
     settings,
-    saveEnabled(enabled: boolean) {
-      savedValues.push(enabled);
-    },
-    toolName: "web-fetch",
   });
 
   const command = registeredCommands.get("cmd:web-fetch-toggle");
@@ -127,8 +125,12 @@ test("registerEnabledToggleCommand GIVEN a tool-backed extension WHEN toggled TH
 
   await when_runningCommand(command.handler, ctx);
 
+  const actualSettingsFile = when_readingSavedSettingsFile(tempHome) as {
+    extensionSettings: { webFetch: { enabled: boolean } };
+  };
+
   assert.equal(settings.enabled, false);
-  assert.deepEqual(savedValues, [false]);
+  assert.equal(actualSettingsFile.extensionSettings.webFetch.enabled, false);
   assert.deepEqual(setActiveToolsCalls, [["read"]]);
   assert.deepEqual(emittedEvents, [
     {
@@ -141,25 +143,25 @@ test("registerEnabledToggleCommand GIVEN a tool-backed extension WHEN toggled TH
   ]);
 });
 
-test("registerEnabledToggleCommand GIVEN a tool-backed extension WHEN save fails THEN it keeps in-memory state unchanged", async () => {
+test("registerEnabledToggleCommand GIVEN a save failure WHEN toggled THEN it keeps in-memory state unchanged", async (t) => {
+  const tempHome = given_tempHome(t);
+  given_fileBlockingSettingsDirectory(tempHome);
   const { pi, registeredCommands, emittedEvents, setActiveToolsCalls } =
     given_mockPi(["read", "web-fetch"]);
   const { ctx, notifications } = given_mockContext();
   const settings = { enabled: true };
 
   registerEnabledToggleCommand(pi as never, {
+    toolName: "web-fetch",
+    extensionKey: "webFetch",
     description: "Toggle web-fetch tool on/off",
     settings,
-    saveEnabled() {
-      throw new Error("boom");
-    },
-    toolName: "web-fetch",
   });
 
   const command = registeredCommands.get("cmd:web-fetch-toggle");
   assert.ok(command, "Expected toggle command to be registered");
 
-  await assert.rejects(() => when_runningCommand(command.handler, ctx), /boom/);
+  await assert.rejects(() => when_runningCommand(command.handler, ctx));
 
   assert.equal(settings.enabled, true);
   assert.deepEqual(setActiveToolsCalls, []);
@@ -192,21 +194,6 @@ test("saveExtensionSettings GIVEN sibling and existing extension settings WHEN s
   };
 
   assert.deepEqual(actual, expected);
-});
-
-test("saveExtensionSettings GIVEN a write failure and error label WHEN saving THEN it throws a labeled error", (t) => {
-  const tempHome = given_tempHome(t);
-  given_fileBlockingSettingsDirectory(tempHome);
-
-  assert.throws(
-    () =>
-      saveExtensionSettings({
-        extensionKey: "askUserQuestion",
-        enabled: true,
-        errorLabel: "ask-user-question",
-      }),
-    /ask-user-question: failed to save settings to .*settings\.json:/,
-  );
 });
 
 test("readExtensionSettings GIVEN a stored extension block WHEN reading THEN only that extension settings object is returned", (t) => {

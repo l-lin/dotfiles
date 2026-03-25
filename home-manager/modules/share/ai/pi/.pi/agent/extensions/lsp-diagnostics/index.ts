@@ -12,17 +12,22 @@ import {
 } from "@mariozechner/pi-coding-agent";
 import type { SavedConfig, LspClientEntry } from "./types.js";
 import { CONFIG_ENTRY_TYPE } from "./types.js";
-import { loadSettings, saveEnabled } from "./settings.js";
 import { LSP_SERVERS_CONFIG } from "./lsp-servers.js";
 import { resolveLspCommands } from "./resolver.js";
 import { collectDiagnostics } from "./collector.js";
 import { buildDiagnosticBlock } from "./ui/format.js";
 import { clearWidget } from "./ui/widget.js";
 import { handleCheck, handleClose, handleDetails } from "./commands/index.js";
-import { registerEnabledToggleCommand } from "../tool-settings/index.js";
+import {
+  loadEnabledSettings,
+  registerEnabledToggleCommand,
+} from "../tool-settings/index.js";
+
+const SETTINGS_KEY = "lspDiagnostics";
+const DEFAULT_SETTINGS = { enabled: true };
 
 export default function (pi: ExtensionAPI) {
-  const settings = loadSettings();
+  const settings = loadEnabledSettings(SETTINGS_KEY, DEFAULT_SETTINGS);
   const fileConfig = LSP_SERVERS_CONFIG;
 
   let savedConfig: SavedConfig | null = null;
@@ -39,9 +44,9 @@ export default function (pi: ExtensionAPI) {
 
   registerEnabledToggleCommand(pi, {
     toolName: "lsp-diagnostics",
+    extensionKey: SETTINGS_KEY,
     description: "Toggle LSP extension on/off",
     settings,
-    saveEnabled,
   });
 
   pi.registerCommand("cmd:lsp-close", {

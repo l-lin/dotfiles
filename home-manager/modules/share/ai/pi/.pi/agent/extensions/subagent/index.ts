@@ -15,7 +15,7 @@ import type {
 import { truncateToWidth } from "@mariozechner/pi-tui";
 import { Type, type Static } from "@sinclair/typebox";
 import { discoverAgents } from "./agents.js";
-import { loadSettings, saveEnabled } from "./settings.js";
+import { loadSettings } from "./settings.js";
 import * as render from "./render.js";
 import * as sessions from "./sessions.js";
 import * as tmux from "./tmux.js";
@@ -302,6 +302,7 @@ function updateSessionWidget(ctx: ExtensionContext): void {
 // ─── extension ───────────────────────────────────────────────────────────────
 
 const TOOL_NAME = "subagent";
+const SETTINGS_KEY = "subagent";
 
 export default function (pi: ExtensionAPI) {
   const settings = loadSettings();
@@ -364,9 +365,9 @@ export default function (pi: ExtensionAPI) {
 
   registerEnabledToggleCommand(pi, {
     toolName: TOOL_NAME,
+    extensionKey: SETTINGS_KEY,
     description: `Toggle ${TOOL_NAME} tool on/off`,
     settings,
-    saveEnabled,
   });
 
   pi.registerCommand("cmd:subagent-read", {

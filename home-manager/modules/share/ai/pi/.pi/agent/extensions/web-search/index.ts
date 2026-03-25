@@ -18,7 +18,6 @@ import { WebSearchParams } from "./types.js";
 import {
   loadEnabledSettings,
   registerEnabledToggleCommand,
-  saveExtensionSettings,
   updateActiveTools,
 } from "../tool-settings/index.js";
 
@@ -31,14 +30,9 @@ export default function webSearchExtension(pi: ExtensionAPI) {
 
   registerEnabledToggleCommand(pi, {
     toolName: TOOL_NAME,
+    extensionKey: SETTINGS_KEY,
     description: `Toggle ${TOOL_NAME} tool on/off`,
     settings,
-    saveEnabled(enabled: boolean) {
-      saveExtensionSettings({
-        extensionKey: SETTINGS_KEY,
-        enabled,
-      });
-    },
   });
 
   pi.registerTool({

@@ -15,7 +15,6 @@ import { buildWidget } from "./widget.js";
 import {
   loadEnabledSettings,
   registerEnabledToggleCommand,
-  saveExtensionSettings,
   updateActiveTools,
 } from "../tool-settings/index.js";
 
@@ -28,14 +27,9 @@ export default function (pi: ExtensionAPI) {
 
   registerEnabledToggleCommand(pi, {
     toolName: TOOL_NAME,
+    extensionKey: SETTINGS_KEY,
     description: `Toggle ${TOOL_NAME} tool on/off`,
     settings,
-    saveEnabled(enabled: boolean) {
-      saveExtensionSettings({
-        extensionKey: SETTINGS_KEY,
-        enabled,
-      });
-    },
   });
 
   pi.registerTool({
@@ -66,9 +60,12 @@ export default function (pi: ExtensionAPI) {
       const text = result.answers
         .map((a) => {
           const label = questions.find((q) => q.id === a.id)?.label ?? a.id;
-          return a.wasCustom
-            ? `${label}: user wrote: ${a.label}`
-            : `${label}: user selected: ${a.index != null ? `${a.index}. ` : ""}${a.label}`;
+          if (a.wasCustom) {
+            return `${label}: user wrote: ${a.label}`;
+          }
+
+          const optionIndex = a.index != null ? `${a.index}. ` : "";
+          return `${label}: user selected: ${optionIndex}${a.label}`;
         })
         .join("\n");
 
