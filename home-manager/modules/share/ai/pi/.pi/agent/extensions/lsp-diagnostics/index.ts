@@ -12,18 +12,14 @@ import {
 } from "@mariozechner/pi-coding-agent";
 import type { SavedConfig, LspClientEntry } from "./types.js";
 import { CONFIG_ENTRY_TYPE } from "./types.js";
-import { loadSettings } from "./settings.js";
+import { loadSettings, saveEnabled } from "./settings.js";
 import { LSP_SERVERS_CONFIG } from "./lsp-servers.js";
 import { resolveLspCommands } from "./resolver.js";
 import { collectDiagnostics } from "./collector.js";
 import { buildDiagnosticBlock } from "./ui/format.js";
 import { clearWidget } from "./ui/widget.js";
-import {
-  handleCheck,
-  handleToggle,
-  handleClose,
-  handleDetails,
-} from "./commands/index.js";
+import { handleCheck, handleClose, handleDetails } from "./commands/index.js";
+import { registerEnabledToggleCommand } from "../tool-settings/index.js";
 
 export default function (pi: ExtensionAPI) {
   const settings = loadSettings();
@@ -41,11 +37,11 @@ export default function (pi: ExtensionAPI) {
     },
   });
 
-  pi.registerCommand("cmd:lsp-toggle", {
+  registerEnabledToggleCommand(pi, {
+    toolName: "lsp-diagnostics",
     description: "Toggle LSP extension on/off",
-    handler: async (_args, ctx) => {
-      await handleToggle(settings, ctx);
-    },
+    settings,
+    saveEnabled,
   });
 
   pi.registerCommand("cmd:lsp-close", {

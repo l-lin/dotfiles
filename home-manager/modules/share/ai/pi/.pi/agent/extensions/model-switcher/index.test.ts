@@ -159,7 +159,6 @@ test("saveSettings GIVEN unrelated extension settings WHEN saving THEN sibling s
   );
 
   saveSettings({
-    enabled: true,
     keybind: "alt-m",
     models: ["github-copilot/gpt-4.1", "github-copilot/gpt-5.4"],
   });
@@ -168,7 +167,6 @@ test("saveSettings GIVEN unrelated extension settings WHEN saving THEN sibling s
 
   assert.deepEqual(actual.extensionSettings.webSearch, { enabled: false });
   assert.deepEqual(actual.extensionSettings.modelSelector, {
-    enabled: true,
     keybind: "alt-m",
     models: ["github-copilot/gpt-4.1", "github-copilot/gpt-5.4"],
   });
@@ -177,7 +175,6 @@ test("saveSettings GIVEN unrelated extension settings WHEN saving THEN sibling s
 test("extension GIVEN enabled settings WHEN loading THEN command and normalized shortcut are registered", (t) => {
   given_tempHome(t);
   saveSettings({
-    enabled: true,
     keybind: "alt-m",
     models: ["github-copilot/gpt-4.1", "github-copilot/gpt-5.4"],
   });
@@ -193,7 +190,6 @@ test("extension GIVEN enabled settings WHEN loading THEN command and normalized 
 test("extension GIVEN switch command WHEN invoked THEN it switches model and persists rotated order", async (t) => {
   given_tempHome(t);
   saveSettings({
-    enabled: true,
     keybind: "alt-m",
     models: ["github-copilot/gpt-4.1", "github-copilot/gpt-5.4"],
   });
@@ -227,7 +223,6 @@ test("extension GIVEN switch command WHEN invoked THEN it switches model and per
 test("extension GIVEN switch command WHEN setModel fails THEN error is notified and model order is not persisted", async (t) => {
   given_tempHome(t);
   saveSettings({
-    enabled: true,
     keybind: "alt-m",
     models: ["github-copilot/gpt-4.1", "github-copilot/gpt-5.4"],
   });

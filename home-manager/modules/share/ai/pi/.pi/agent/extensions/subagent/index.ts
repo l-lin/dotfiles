@@ -21,7 +21,10 @@ import * as sessions from "./sessions.js";
 import * as tmux from "./tmux.js";
 import { Action, ICONS } from "./types.js";
 import type { SpawnResult, SubagentDetails, ToolResult } from "./types.js";
-import { updateActiveTools } from "../tool-settings.js";
+import {
+  registerEnabledToggleCommand,
+  updateActiveTools,
+} from "../tool-settings/index.js";
 
 const ok = (text: string, details?: SubagentDetails): ToolResult => ({
   content: [{ type: "text", text }],
@@ -359,26 +362,11 @@ export default function (pi: ExtensionAPI) {
     },
   });
 
-  pi.registerCommand(`cmd:${TOOL_NAME}-toggle`, {
+  registerEnabledToggleCommand(pi, {
+    toolName: TOOL_NAME,
     description: `Toggle ${TOOL_NAME} tool on/off`,
-    handler: async (_args, ctx) => {
-      settings.enabled = !settings.enabled;
-      saveEnabled(settings.enabled);
-
-      updateActiveTools(pi, {
-        toolName: TOOL_NAME,
-        enabled: settings.enabled,
-      });
-
-      ctx.ui.notify(
-        `${TOOL_NAME} ${settings.enabled ? "enabled" : "disabled"}`,
-        "info",
-      );
-      pi.events.emit("custom-tool:changed", {
-        tool: TOOL_NAME,
-        enabled: settings.enabled,
-      });
-    },
+    settings,
+    saveEnabled,
   });
 
   pi.registerCommand("cmd:subagent-read", {

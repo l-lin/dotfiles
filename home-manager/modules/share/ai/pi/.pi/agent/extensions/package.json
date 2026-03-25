@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "tsc --outDir .test-dist && node --test .test-dist/**/*.test.js",
+    "test": "rm -rf .test-dist && tsc --outDir .test-dist && node --test .test-dist/**/*.test.js",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

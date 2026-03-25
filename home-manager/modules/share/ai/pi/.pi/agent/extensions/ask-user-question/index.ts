@@ -13,30 +13,21 @@ import { error, QuestionnaireParams } from "./types.js";
 import type { Question, Result } from "./types.js";
 import { renderCall, renderResult } from "./render.js";
 import { buildWidget } from "./widget.js";
-import { updateActiveTools } from "../tool-settings.js";
+import {
+  registerEnabledToggleCommand,
+  updateActiveTools,
+} from "../tool-settings/index.js";
 
 const TOOL_NAME = "ask-user-question";
 
 export default function (pi: ExtensionAPI) {
   const settings = loadSettings();
 
-  pi.registerCommand(`cmd:${TOOL_NAME}-toggle`, {
+  registerEnabledToggleCommand(pi, {
+    toolName: TOOL_NAME,
     description: `Toggle ${TOOL_NAME} tool on/off`,
-    handler: async (_args, ctx) => {
-      settings.enabled = !settings.enabled;
-      saveEnabled(settings.enabled);
-
-      updateActiveTools(pi, { toolName: TOOL_NAME, enabled: settings.enabled });
-
-      ctx.ui.notify(
-        `${TOOL_NAME} ${settings.enabled ? "enabled" : "disabled"}`,
-        "info",
-      );
-      pi.events.emit("custom-tool:changed", {
-        tool: "ask-user-question",
-        enabled: settings.enabled,
-      });
-    },
+    settings,
+    saveEnabled,
   });
 
   pi.registerTool({

@@ -10,33 +10,21 @@ import { executeFetch } from "./fetch.js";
 import * as render from "./render.js";
 import { loadSettings, saveEnabled } from "./settings.js";
 import { DEFAULT_MAX_LENGTH, WebFetchParams } from "./types.js";
-import { updateActiveTools } from "../tool-settings.js";
+import {
+  registerEnabledToggleCommand,
+  updateActiveTools,
+} from "../tool-settings/index.js";
 
 const TOOL_NAME = "web-fetch";
 
 export default function webFetchExtension(pi: ExtensionAPI) {
   const settings = loadSettings();
 
-  pi.registerCommand(`cmd:${TOOL_NAME}-toggle`, {
+  registerEnabledToggleCommand(pi, {
+    toolName: TOOL_NAME,
     description: `Toggle ${TOOL_NAME} tool on/off`,
-    handler: async (_args, ctx) => {
-      settings.enabled = !settings.enabled;
-      saveEnabled(settings.enabled);
-
-      updateActiveTools(pi, {
-        toolName: TOOL_NAME,
-        enabled: settings.enabled,
-      });
-
-      ctx.ui.notify(
-        `${TOOL_NAME} ${settings.enabled ? "enabled" : "disabled"}`,
-        "info",
-      );
-      pi.events.emit("custom-tool:changed", {
-        tool: TOOL_NAME,
-        enabled: settings.enabled,
-      });
-    },
+    settings,
+    saveEnabled,
   });
 
   pi.registerTool({
