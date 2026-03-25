@@ -43,7 +43,7 @@ export default function (pi: ExtensionAPI) {
   });
 
   registerEnabledToggleCommand(pi, {
-    toolName: "lsp-diagnostics",
+    toolName: "lsp",
     extensionKey: SETTINGS_KEY,
     description: "Toggle LSP extension on/off",
     settings,
