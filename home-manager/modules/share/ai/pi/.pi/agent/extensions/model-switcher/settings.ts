@@ -3,7 +3,6 @@ import * as os from "node:os";
 import * as path from "node:path";
 
 export interface ModelSelectorSettings {
-  enabled: boolean;
   models: string[];
   keybind: string;
 }
@@ -17,7 +16,6 @@ interface PiSettings {
 }
 
 const DEFAULTS: ModelSelectorSettings = {
-  enabled: true,
   models: [],
   keybind: "alt-m",
 };
@@ -54,8 +52,6 @@ export function loadSettings(): ModelSelectorSettings {
   const parsed = settings.extensionSettings?.modelSelector ?? {};
 
   return {
-    enabled:
-      typeof parsed.enabled === "boolean" ? parsed.enabled : DEFAULTS.enabled,
     models: Array.isArray(parsed.models)
       ? parsed.models.filter(
           (model): model is string =>
@@ -77,7 +73,6 @@ export function saveSettings(settings: ModelSelectorSettings): void {
   >;
 
   extensionSettings.modelSelector = {
-    enabled: settings.enabled,
     models: [...settings.models],
     keybind: settings.keybind,
   };

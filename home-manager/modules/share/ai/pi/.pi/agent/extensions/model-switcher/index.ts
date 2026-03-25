@@ -21,11 +21,6 @@ async function switchConfiguredModel(
 ): Promise<void> {
   const settings = loadSettings();
 
-  if (!settings.enabled) {
-    ctx.ui.notify("model-selector is disabled in settings.json", "warning");
-    return;
-  }
-
   if (settings.models.length === 0) {
     ctx.ui.notify(
       "No models configured in extensionSettings.modelSelector.models.",
@@ -65,8 +60,6 @@ async function switchConfiguredModel(
 
 export default function modelSelectorExtension(pi: ExtensionAPI): void {
   const settings = loadSettings();
-
-  if (!settings.enabled) return;
 
   const switchDescription = "Switch to the next configured model";
 

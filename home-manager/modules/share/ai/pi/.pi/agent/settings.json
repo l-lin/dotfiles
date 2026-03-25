@@ -1,8 +1,8 @@
 {
-  "lastChangelogVersion": "0.61.1",
+  "lastChangelogVersion": "0.62.0",
   "theme": "light",
   "defaultProvider": "github-copilot",
-  "defaultModel": "gpt-5.3-codex",
+  "defaultModel": "gpt-5.4",
   "skills": [
     "~/.config/ai/skills"
   ],
@@ -43,10 +43,9 @@
       "enabled": false
     },
     "modelSelector": {
-      "enabled": true,
       "models": [
-        "github-copilot/gpt-4.1",
-        "github-copilot/gpt-5.4"
+        "github-copilot/gpt-5.4",
+        "github-copilot/gpt-4.1"
       ],
       "keybind": "alt-m"
     }
