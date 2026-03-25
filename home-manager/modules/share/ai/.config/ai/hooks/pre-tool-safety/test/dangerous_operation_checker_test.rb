@@ -46,4 +46,40 @@ class DangerousOperationCheckerTest < Minitest::Test
     checker = DangerousOperationChecker.new(base_dir: Dir.pwd, max_script_bytes: 1024)
     assert_empty checker.check('echo hello')
   end
+
+  def test_allows_mvnw_despite_rm_rf_in_content
+    # GIVEN: a project with an mvnw that internally uses rm -rf (standard Maven Wrapper behaviour)
+    Dir.mktmpdir do |dir|
+      mvnw_path = File.join(dir, 'mvnw')
+      File.write(mvnw_path, "#!/usr/bin/env bash\nrm -rf \"$MAVEN_WRAPPER_DIR\"\n")
+      File.chmod(0o755, mvnw_path)
+
+      checker = DangerousOperationChecker.new(base_dir: dir, max_script_bytes: 65_536)
+
+      # WHEN: the agent runs a Maven test via the wrapper
+      command = "cd #{dir} && ./mvnw surefire:test -Dtest=AccountMasterPatientTest -pl account/domain -Dsurefire.failIfNoSpecifiedTests=false --no-transfer-progress 2>&1 | tail -15"
+      findings = checker.check(command)
+
+      # THEN: it is allowed — rm -rf inside mvnw is normal housekeeping, not an attack
+      assert_empty findings, "Expected no findings for mvnw but got: #{findings.map { |f| f[:reason] }}"
+    end
+  end
+
+  def test_allows_gradlew_despite_rm_rf_in_content
+    # GIVEN: a project with a gradlew that internally uses rm -rf (standard Gradle Wrapper behaviour)
+    Dir.mktmpdir do |dir|
+      gradlew_path = File.join(dir, 'gradlew')
+      File.write(gradlew_path, "#!/usr/bin/env bash\nrm -rf \"$GRADLE_WRAPPER_DIR\"\n")
+      File.chmod(0o755, gradlew_path)
+
+      checker = DangerousOperationChecker.new(base_dir: dir, max_script_bytes: 65_536)
+
+      # WHEN: the agent runs a Gradle task via the wrapper
+      command = './gradlew test'
+      findings = checker.check(command)
+
+      # THEN: it is allowed — rm -rf inside gradlew is normal housekeeping, not an attack
+      assert_empty findings, "Expected no findings for gradlew but got: #{findings.map { |f| f[:reason] }}"
+    end
+  end
 end

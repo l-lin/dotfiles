@@ -5,6 +5,10 @@ require_relative 'script_reference_extractor'
 
 # Checks commands for dangerous operations.
 class DangerousOperationChecker
+  # Build tool wrappers that legitimately contain rm -rf for housekeeping.
+  # These pass path-safety checks but skip content inspection.
+  TRUSTED_SCRIPT_NAMES = %w[mvnw gradlew mvnw.cmd gradlew.bat].freeze
+
   ALLOWED_SCRIPT_ROOTS = [
     # Project/workdir
     :base_dir,
@@ -170,6 +174,7 @@ class DangerousOperationChecker
     return [{ category: 'scripts', origin: kind, reason: 'Blocked: unable to resolve script path.' }] unless abs
     return [{ category: 'scripts', origin: kind, reason: 'Blocked: executing scripts from sensitive paths is not allowed.' }] if sensitive_path?(abs)
     return [{ category: 'scripts', origin: kind, reason: 'Blocked: executing scripts outside the workspace/temp roots is not allowed.' }] unless allowed_script_root?(abs)
+    return [] if TRUSTED_SCRIPT_NAMES.include?(File.basename(abs))
     return [{ category: 'scripts', origin: kind, reason: 'Blocked: referenced script does not exist (cannot inspect safely).' }] unless File.file?(abs)
     return [{ category: 'scripts', origin: kind, reason: 'Blocked: referenced script is too large to inspect safely.' }] if File.size(abs) > @max_script_bytes
 
