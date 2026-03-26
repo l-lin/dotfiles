@@ -38,6 +38,7 @@ alias ra="bundle exec rails"
 alias g="git"
 alias gw="git worktree"
 alias lg="lazygit"
+alias wip="git add --all && git commit --no-verify -m wip"
 # ai
 alias ai='CC_LAYOUT_OVERRIDE=buffer nvim +"CodeCompanionChat adapter=copilot model=claude-opus-4.5"'
 # mise
