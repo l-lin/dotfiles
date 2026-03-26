@@ -3,6 +3,11 @@ import type { KeyId } from "@mariozechner/pi-tui";
 const DEFAULT_KEYBIND = "alt-m";
 const MODIFIERS = new Set(["ctrl", "shift", "alt"]);
 
+export const CONFIGURED_MODELS = [
+  "github-copilot/gpt-4.1",
+  "github-copilot/gpt-5.4",
+];
+
 export interface ModelReferenceLike {
   provider: string;
   id: string;

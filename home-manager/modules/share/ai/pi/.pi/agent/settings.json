@@ -2,7 +2,7 @@
   "lastChangelogVersion": "0.62.0",
   "theme": "light",
   "defaultProvider": "github-copilot",
-  "defaultModel": "gpt-5.4",
+  "defaultModel": "gpt-4.1",
   "skills": [
     "~/.config/ai/skills"
   ],
@@ -26,7 +26,7 @@
       "enabled": true
     },
     "subagent": {
-      "enabled": true,
+      "enabled": false,
       "sources": [
         "~/.pi/agent/subagents",
         "./.pi/subagents"
@@ -43,10 +43,6 @@
       "enabled": false
     },
     "modelSelector": {
-      "models": [
-        "github-copilot/gpt-5.4",
-        "github-copilot/gpt-4.1"
-      ],
       "keybind": "alt-m"
     }
   }

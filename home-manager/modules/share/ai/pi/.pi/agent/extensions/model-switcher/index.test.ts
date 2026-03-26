@@ -5,11 +5,15 @@ import path from "node:path";
 import test from "node:test";
 import modelSelectorExtension from "./index.js";
 import {
+  CONFIGURED_MODELS,
   formatModelReference,
   normalizeKeybind,
+  resolveConfiguredModel,
   rotateModels,
 } from "./model-switching.js";
-import { loadSettings, saveSettings } from "./settings.js";
+import { loadSettings } from "./settings.js";
+
+// ─── helpers ────────────────────────────────────────────────────────────────
 
 function given_tempHome(t: test.TestContext): string {
   const previousHome = process.env.HOME;
@@ -56,12 +60,20 @@ function given_mockPi(setModelResult = true) {
   return { pi, commands, shortcuts, setModelCalls };
 }
 
+/** Builds a mock context whose registry is derived from CONFIGURED_MODELS. */
 function given_mockContext(currentModelRef: string | undefined) {
   const notifications: Array<{ message: string; type?: string }> = [];
-  const models = new Map<string, { provider: string; id: string }>([
-    ["github-copilot/gpt-4.1", { provider: "github-copilot", id: "gpt-4.1" }],
-    ["github-copilot/gpt-5.4", { provider: "github-copilot", id: "gpt-5.4" }],
-  ]);
+  const models = new Map(
+    CONFIGURED_MODELS.map((ref: string) => {
+      const slashIndex = ref.indexOf("/");
+      const provider = ref.slice(0, slashIndex);
+      const id = ref.slice(slashIndex + 1);
+      return [ref, { provider, id }] as [
+        string,
+        { provider: string; id: string },
+      ];
+    }),
+  );
 
   const model = currentModelRef
     ? (models.get(currentModelRef) ?? {
@@ -95,6 +107,22 @@ async function when_switchModelCommand(
   await commandHandler("", ctx);
 }
 
+// ─── CONFIGURED_MODELS ──────────────────────────────────────────────────────
+
+test("CONFIGURED_MODELS WHEN imported THEN it is a non-empty array of provider/model strings", () => {
+  assert.ok(
+    Array.isArray(CONFIGURED_MODELS),
+    "Expected CONFIGURED_MODELS to be an array",
+  );
+  assert.ok(CONFIGURED_MODELS.length > 1, "Expected at least two entries");
+  assert.ok(
+    CONFIGURED_MODELS.every((m) => typeof m === "string" && m.includes("/")),
+    "Expected each entry to be a provider/model string",
+  );
+});
+
+// ─── rotateModels ────────────────────────────────────────────────────────────
+
 test("rotateModels GIVEN current model in configured list WHEN rotating THEN next configured model becomes first", () => {
   const actual = rotateModels(
     ["github-copilot/gpt-4.1", "github-copilot/gpt-5.4"],
@@ -123,6 +151,23 @@ test("rotateModels GIVEN current model outside configured list WHEN rotating THE
   assert.deepEqual(actual, expected);
 });
 
+test("rotateModels GIVEN empty list WHEN rotating THEN empty list is returned", () => {
+  const actual = rotateModels([], "github-copilot/gpt-4.1");
+
+  assert.deepEqual(actual, []);
+});
+
+test("rotateModels GIVEN single model WHEN rotating THEN same single-element list is returned", () => {
+  const actual = rotateModels(
+    ["github-copilot/gpt-4.1"],
+    "github-copilot/gpt-4.1",
+  );
+
+  assert.deepEqual(actual, ["github-copilot/gpt-4.1"]);
+});
+
+// ─── normalizeKeybind ────────────────────────────────────────────────────────
+
 test("normalizeKeybind GIVEN dash-separated modifier syntax WHEN normalizing THEN pi shortcut format is returned", () => {
   const actual = normalizeKeybind("alt-m");
   const expected = "alt+m";
@@ -130,54 +175,103 @@ test("normalizeKeybind GIVEN dash-separated modifier syntax WHEN normalizing THE
   assert.equal(actual, expected);
 });
 
+test("normalizeKeybind GIVEN already plus-separated format WHEN normalizing THEN it is returned unchanged", () => {
+  const actual = normalizeKeybind("alt+m");
+
+  assert.equal(actual, "alt+m");
+});
+
+test("normalizeKeybind GIVEN undefined WHEN normalizing THEN default alt+m is returned", () => {
+  const actual = normalizeKeybind(undefined);
+
+  assert.equal(actual, "alt+m");
+});
+
+test("normalizeKeybind GIVEN multi-modifier dash syntax WHEN normalizing THEN plus-separated format is returned", () => {
+  const actual = normalizeKeybind("ctrl-shift-a");
+
+  assert.equal(actual, "ctrl+shift+a");
+});
+
+// ─── formatModelReference ────────────────────────────────────────────────────
+
 test("formatModelReference GIVEN provider and model id WHEN formatting THEN provider slash model is returned", () => {
   const actual = formatModelReference({
     provider: "github-copilot",
-    id: "gpt-5.4",
+    id: "gpt-4.1",
   });
-  const expected = "github-copilot/gpt-5.4";
+  const expected = "github-copilot/gpt-4.1";
 
   assert.equal(actual, expected);
 });
 
-test("saveSettings GIVEN unrelated extension settings WHEN saving THEN sibling settings are preserved", (t) => {
+test("formatModelReference GIVEN undefined model WHEN formatting THEN undefined is returned", () => {
+  const actual = formatModelReference(undefined);
+
+  assert.equal(actual, undefined);
+});
+
+// ─── resolveConfiguredModel ──────────────────────────────────────────────────
+
+test("resolveConfiguredModel GIVEN malformed reference with no slash WHEN resolving THEN error is thrown", () => {
+  const registry = { find: () => undefined };
+
+  assert.throws(
+    () => resolveConfiguredModel(registry, "invalid-no-slash"),
+    /Invalid model reference/,
+  );
+});
+
+test("resolveConfiguredModel GIVEN unknown model reference WHEN resolving THEN error is thrown", () => {
+  const registry = { find: () => undefined };
+
+  assert.throws(
+    () => resolveConfiguredModel(registry, "provider/unknown-model"),
+    /is not available/,
+  );
+});
+
+test("resolveConfiguredModel GIVEN valid reference WHEN resolving THEN correct model object is returned", () => {
+  const expectedModel = { provider: "github-copilot", id: "gpt-4.1" };
+  const registry = { find: () => expectedModel };
+
+  const actual = resolveConfiguredModel(registry, "github-copilot/gpt-4.1");
+
+  assert.deepEqual(actual, expectedModel);
+});
+
+// ─── loadSettings ────────────────────────────────────────────────────────────
+
+test("loadSettings GIVEN no settings file WHEN loading THEN default keybind is returned", (t) => {
+  given_tempHome(t);
+
+  const actual = loadSettings();
+
+  assert.deepEqual(actual, { keybind: "alt-m" });
+});
+
+test("loadSettings GIVEN keybind in settings WHEN loading THEN configured keybind is returned", (t) => {
   const tempHome = given_tempHome(t);
   const settingsPath = path.join(tempHome, ".pi", "agent", "settings.json");
-
   fs.mkdirSync(path.dirname(settingsPath), { recursive: true });
   fs.writeFileSync(
     settingsPath,
     JSON.stringify(
-      {
-        extensionSettings: {
-          webSearch: { enabled: false },
-        },
-      },
+      { extensionSettings: { modelSelector: { keybind: "ctrl-k" } } },
       null,
       2,
     ) + "\n",
   );
 
-  saveSettings({
-    keybind: "alt-m",
-    models: ["github-copilot/gpt-4.1", "github-copilot/gpt-5.4"],
-  });
+  const actual = loadSettings();
 
-  const actual = JSON.parse(fs.readFileSync(settingsPath, "utf8"));
-
-  assert.deepEqual(actual.extensionSettings.webSearch, { enabled: false });
-  assert.deepEqual(actual.extensionSettings.modelSelector, {
-    keybind: "alt-m",
-    models: ["github-copilot/gpt-4.1", "github-copilot/gpt-5.4"],
-  });
+  assert.deepEqual(actual, { keybind: "ctrl-k" });
 });
 
-test("extension GIVEN enabled settings WHEN loading THEN command and normalized shortcut are registered", (t) => {
+// ─── extension integration ───────────────────────────────────────────────────
+
+test("extension GIVEN default settings WHEN loading THEN command and normalized shortcut are registered", (t) => {
   given_tempHome(t);
-  saveSettings({
-    keybind: "alt-m",
-    models: ["github-copilot/gpt-4.1", "github-copilot/gpt-5.4"],
-  });
 
   const { pi, commands, shortcuts } = given_mockPi();
 
@@ -187,15 +281,11 @@ test("extension GIVEN enabled settings WHEN loading THEN command and normalized 
   assert.ok(shortcuts.has("alt+m"));
 });
 
-test("extension GIVEN switch command WHEN invoked THEN it switches model and persists rotated order", async (t) => {
+test("extension GIVEN switch command WHEN invoked THEN it switches to next configured model", async (t) => {
   given_tempHome(t);
-  saveSettings({
-    keybind: "alt-m",
-    models: ["github-copilot/gpt-4.1", "github-copilot/gpt-5.4"],
-  });
 
   const { pi, commands, setModelCalls } = given_mockPi();
-  const { ctx, notifications } = given_mockContext("github-copilot/gpt-4.1");
+  const { ctx, notifications } = given_mockContext(CONFIGURED_MODELS[0]);
 
   modelSelectorExtension(pi as never);
 
@@ -204,31 +294,23 @@ test("extension GIVEN switch command WHEN invoked THEN it switches model and per
 
   await when_switchModelCommand(command.handler, ctx);
 
+  const [firstProvider, ...firstId] = CONFIGURED_MODELS[1].split("/");
   assert.deepEqual(setModelCalls, [
-    { provider: "github-copilot", id: "gpt-5.4" },
-  ]);
-  assert.deepEqual(loadSettings().models, [
-    "github-copilot/gpt-5.4",
-    "github-copilot/gpt-4.1",
+    { provider: firstProvider, id: firstId.join("/") },
   ]);
   assert.deepEqual(notifications, [
     {
-      message:
-        "Switched model: github-copilot/gpt-4.1 → github-copilot/gpt-5.4",
+      message: `Switched model: ${CONFIGURED_MODELS[0]} → ${CONFIGURED_MODELS[1]}`,
       type: "info",
     },
   ]);
 });
 
-test("extension GIVEN switch command WHEN setModel fails THEN error is notified and model order is not persisted", async (t) => {
+test("extension GIVEN switch command WHEN setModel fails THEN error is notified", async (t) => {
   given_tempHome(t);
-  saveSettings({
-    keybind: "alt-m",
-    models: ["github-copilot/gpt-4.1", "github-copilot/gpt-5.4"],
-  });
 
   const { pi, commands } = given_mockPi(false);
-  const { ctx, notifications } = given_mockContext("github-copilot/gpt-4.1");
+  const { ctx, notifications } = given_mockContext(CONFIGURED_MODELS[0]);
 
   modelSelectorExtension(pi as never);
 
@@ -239,12 +321,67 @@ test("extension GIVEN switch command WHEN setModel fails THEN error is notified 
 
   assert.deepEqual(notifications, [
     {
-      message: "Cannot switch to github-copilot/gpt-5.4: no API key available.",
+      message: `Cannot switch to ${CONFIGURED_MODELS[1]}: no API key available.`,
       type: "error",
     },
   ]);
-  assert.deepEqual(loadSettings().models, [
-    "github-copilot/gpt-4.1",
-    "github-copilot/gpt-5.4",
-  ]);
+});
+
+test("extension GIVEN no current model WHEN switching THEN advances to second configured model", async (t) => {
+  given_tempHome(t);
+
+  const { pi, commands, setModelCalls } = given_mockPi();
+  const { ctx } = given_mockContext(undefined);
+
+  modelSelectorExtension(pi as never);
+
+  const command = commands.get("cmd:switch-model");
+  assert.ok(command, "Expected /cmd:switch-model to be registered");
+
+  await when_switchModelCommand(command.handler, ctx);
+
+  assert.equal(setModelCalls.length, 1, "Expected exactly one model switch");
+  const switched = setModelCalls[0] as { provider: string; id: string };
+  assert.equal(`${switched.provider}/${switched.id}`, CONFIGURED_MODELS[1]);
+});
+
+test("extension GIVEN current model is last in configured list WHEN switching THEN wraps to first model", async (t) => {
+  given_tempHome(t);
+
+  const lastModel = CONFIGURED_MODELS[CONFIGURED_MODELS.length - 1];
+  const { pi, commands, setModelCalls } = given_mockPi();
+  const { ctx } = given_mockContext(lastModel);
+
+  modelSelectorExtension(pi as never);
+
+  const command = commands.get("cmd:switch-model");
+  assert.ok(command, "Expected /cmd:switch-model to be registered");
+
+  await when_switchModelCommand(command.handler, ctx);
+
+  assert.equal(setModelCalls.length, 1, "Expected exactly one model switch");
+  const switched = setModelCalls[0] as { provider: string; id: string };
+  assert.equal(`${switched.provider}/${switched.id}`, CONFIGURED_MODELS[0]);
+});
+
+test("extension GIVEN shortcut WHEN invoked THEN switches to next configured model", async (t) => {
+  given_tempHome(t);
+
+  const { pi, shortcuts, setModelCalls } = given_mockPi();
+  const { ctx } = given_mockContext(CONFIGURED_MODELS[0]);
+
+  modelSelectorExtension(pi as never);
+
+  const shortcut = shortcuts.get("alt+m");
+  assert.ok(shortcut, "Expected alt+m shortcut to be registered");
+
+  await shortcut.handler(ctx);
+
+  assert.equal(
+    setModelCalls.length,
+    1,
+    "Expected exactly one model switch via shortcut",
+  );
+  const switched = setModelCalls[0] as { provider: string; id: string };
+  assert.equal(`${switched.provider}/${switched.id}`, CONFIGURED_MODELS[1]);
 });

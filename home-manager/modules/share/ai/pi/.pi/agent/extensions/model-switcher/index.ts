@@ -8,29 +8,20 @@ import type {
   ExtensionContext,
 } from "@mariozechner/pi-coding-agent";
 import {
+  CONFIGURED_MODELS,
   formatModelReference,
   normalizeKeybind,
   resolveConfiguredModel,
   rotateModels,
 } from "./model-switching.js";
-import { loadSettings, saveSettings } from "./settings.js";
+import { loadSettings } from "./settings.js";
 
 async function switchConfiguredModel(
   pi: ExtensionAPI,
   ctx: ExtensionContext,
 ): Promise<void> {
-  const settings = loadSettings();
-
-  if (settings.models.length === 0) {
-    ctx.ui.notify(
-      "No models configured in extensionSettings.modelSelector.models.",
-      "warning",
-    );
-    return;
-  }
-
   const previousModelReference = formatModelReference(ctx.model);
-  const rotatedModels = rotateModels(settings.models, previousModelReference);
+  const rotatedModels = rotateModels(CONFIGURED_MODELS, previousModelReference);
   const nextModelReference = rotatedModels[0];
 
   let nextModel;
@@ -51,7 +42,6 @@ async function switchConfiguredModel(
     return;
   }
 
-  saveSettings({ ...settings, models: rotatedModels });
   ctx.ui.notify(
     `Switched model: ${previousModelReference ?? "none"} → ${nextModelReference}`,
     "info",

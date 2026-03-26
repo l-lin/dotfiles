@@ -3,7 +3,6 @@ import * as os from "node:os";
 import * as path from "node:path";
 
 export interface ModelSelectorSettings {
-  models: string[];
   keybind: string;
 }
 
@@ -16,7 +15,6 @@ interface PiSettings {
 }
 
 const DEFAULTS: ModelSelectorSettings = {
-  models: [],
   keybind: "alt-m",
 };
 
@@ -52,33 +50,9 @@ export function loadSettings(): ModelSelectorSettings {
   const parsed = settings.extensionSettings?.modelSelector ?? {};
 
   return {
-    models: Array.isArray(parsed.models)
-      ? parsed.models.filter(
-          (model): model is string =>
-            typeof model === "string" && model.trim().length > 0,
-        )
-      : [...DEFAULTS.models],
     keybind:
       typeof parsed.keybind === "string" && parsed.keybind.trim().length > 0
         ? parsed.keybind
         : DEFAULTS.keybind,
   };
-}
-
-export function saveSettings(settings: ModelSelectorSettings): void {
-  const existing = readSettingsFile();
-  const extensionSettings = (existing.extensionSettings ?? {}) as Record<
-    string,
-    unknown
-  >;
-
-  extensionSettings.modelSelector = {
-    models: [...settings.models],
-    keybind: settings.keybind,
-  };
-  existing.extensionSettings = extensionSettings;
-
-  const settingsPath = getSettingsPath();
-  fs.mkdirSync(path.dirname(settingsPath), { recursive: true });
-  fs.writeFileSync(settingsPath, JSON.stringify(existing, null, 2) + "\n");
 }
