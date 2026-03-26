@@ -58,8 +58,6 @@
       "ghostscript"
       # Customize themes, inject extensions, and unlock the full potential of your Spotify client: https://spicetify.app/
       "spicetify-cli"
-      #  Config-driven CLI tool that compresses command output before it reaches an LLM context: https://tokf.net/
-      "mpecan/tokf/tokf"
       # Install and switch between multiple versions of Xcode: https://github.com/XcodesOrg/xcodes
       "xcodes"
     ];

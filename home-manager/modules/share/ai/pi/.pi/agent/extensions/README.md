@@ -22,7 +22,6 @@ This directory contains local Pi extensions and one shared support module. Each 
 | [`snippet`](./snippet/)                               | Expands prompt snippets before the input is sent to the agent.                                                                                    |
 | [`subagent`](./subagent/)                             | Spawns interactive Pi subagents in tmux split panes and brings their results back to the main session.                                            |
 | [`system-prompt-selector`](./system-prompt-selector/) | Lets you switch system prompts from discovered agent markdown files.                                                                              |
-| [`tokf`](./tokf/)                                     | Wraps the Bash tool with `tokf run --` and keeps the compact minimal-mode rendering.                                                              |
 | [`tool-settings`](./tool-settings/)                   | Shared helpers for enable or disable toggles and persisted extension settings. It is support infrastructure, not a user-facing feature by itself. |
 | [`web-fetch`](./web-fetch/)                           | Fetches a URL as readable text or raw page content.                                                                                               |
 | [`web-search`](./web-search/)                         | Searches the web through Tavily, with filters and AI-generated summaries.                                                                         |
