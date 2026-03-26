@@ -283,7 +283,6 @@ export default function (pi: ExtensionAPI) {
       sandboxEnabled = true;
       sandboxInitialized = true;
       pi.events.emit("sandbox:state-changed", true);
-      ctx.ui.notify("Sandbox initialized", "info");
     } catch (err) {
       sandboxEnabled = false;
       ctx.ui.notify(
