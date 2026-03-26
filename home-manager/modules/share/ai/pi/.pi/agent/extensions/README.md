@@ -10,7 +10,7 @@ This directory contains local Pi extensions and one shared support module. Each 
 | [`context`](./context/)                               | Shows a TUI overview of loaded extensions, skills, project context files, and usage totals.                                                       |
 | [`enforce-modern-cli`](./enforce-modern-cli/)         | Blocks legacy `grep` and `find` calls in Bash and points the agent to `rg` and `fd` instead.                                                      |
 | [`execution-timer`](./execution-timer/)               | Tracks each run and shows elapsed time with a simple tool-versus-agent breakdown.                                                                 |
-| [`footer`](./footer/)                                 | Replaces the default footer with richer status, directory, and usage lines.                                                                       |
+| [`footer`](./footer/)                                 | Replaces the default footer with richer status, directory, and usage lines; shows a key icon on the directory line when the sandbox extension is active. |
 | [`github-copilot`](./github-copilot/)                 | Shows Copilot premium usage and adds commands for refreshing usage and browsing Copilot models.                                                   |
 | [`lsp-diagnostics`](./lsp-diagnostics/)               | Runs LSP diagnostics after edits and writes, then surfaces problems right away.                                                                   |
 | [`minimal-mode`](./minimal-mode/)                     | Re-renders built-in tools in a compact view that can expand back to full output.                                                                  |
@@ -18,6 +18,7 @@ This directory contains local Pi extensions and one shared support module. Each 
 | [`oracle`](./oracle/)                                 | Gets a second opinion from another AI model, optionally with files in context.                                                                    |
 | [`plan-mode`](./plan-mode/)                           | Adds a read-only planning mode with safe Bash limits, todo tracking, and progress UI.                                                             |
 | [`pre-tool-safety`](./pre-tool-safety/)               | Calls an external safety hook before risky Bash commands or sensitive file reads.                                                                 |
+| [`sandbox`](./sandbox/)                               | Wraps bash commands in OS-level sandboxing (macOS sandbox-exec, Linux bubblewrap) with configurable filesystem and network restrictions.           |
 | [`session-breakdown`](./session-breakdown/)           | Analyzes Pi session history and shows activity, token, cost, and model trends in a TUI view.                                                      |
 | [`snippet`](./snippet/)                               | Expands prompt snippets before the input is sent to the agent.                                                                                    |
 | [`subagent`](./subagent/)                             | Spawns interactive Pi subagents in tmux split panes and brings their results back to the main session.                                            |
