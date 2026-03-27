@@ -15,7 +15,8 @@
  *   "enabled": true,
  *   "network": {
  *     "allowedDomains": ["github.com", "*.github.com"],
- *     "deniedDomains": []
+ *     "deniedDomains": [],
+ *     "allowUnixSockets": ["/private/tmp/tmux-501"]
  *   },
  *   "filesystem": {
  *     "denyRead": ["~/.ssh", "~/.aws"],
@@ -52,34 +53,11 @@ import {
   createBashTool,
   getAgentDir,
 } from "@mariozechner/pi-coding-agent";
+import { createDefaultConfig } from "./default-config.js";
 
 interface SandboxConfig extends SandboxRuntimeConfig {
   enabled?: boolean;
 }
-
-const DEFAULT_CONFIG: SandboxConfig = {
-  enabled: true,
-  network: {
-    allowedDomains: [
-      "npmjs.org",
-      "*.npmjs.org",
-      "registry.npmjs.org",
-      "registry.yarnpkg.com",
-      "pypi.org",
-      "*.pypi.org",
-      "github.com",
-      "*.github.com",
-      "api.github.com",
-      "raw.githubusercontent.com",
-    ],
-    deniedDomains: [],
-  },
-  filesystem: {
-    denyRead: ["~/.ssh", "~/.aws", "~/.gnupg"],
-    allowWrite: [".", "/tmp"],
-    denyWrite: [".env", ".env.*", "*.pem", "*.key"],
-  },
-};
 
 function loadConfig(cwd: string): SandboxConfig {
   const projectConfigPath = join(cwd, ".pi", "sandbox.json");
@@ -104,7 +82,10 @@ function loadConfig(cwd: string): SandboxConfig {
     }
   }
 
-  return deepMerge(deepMerge(DEFAULT_CONFIG, globalConfig), projectConfig);
+  return deepMerge(
+    deepMerge(createDefaultConfig(), globalConfig),
+    projectConfig,
+  );
 }
 
 function deepMerge(
@@ -317,6 +298,7 @@ export default function (pi: ExtensionAPI) {
         "Network:",
         `  Allowed: ${config.network?.allowedDomains?.join(", ") || "(none)"}`,
         `  Denied: ${config.network?.deniedDomains?.join(", ") || "(none)"}`,
+        `  Unix Sockets: ${config.network?.allowUnixSockets?.join(", ") || "(none)"}`,
         "",
         "Filesystem:",
         `  Deny Read: ${config.filesystem?.denyRead?.join(", ") || "(none)"}`,
