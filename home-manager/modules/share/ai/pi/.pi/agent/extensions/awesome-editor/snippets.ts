@@ -8,6 +8,11 @@
 import type { AutocompleteItem, AutocompleteProvider } from "@mariozechner/pi-tui";
 import { SNIPPETS } from "../snippet/snippets.js";
 
+type RuntimeAutocompleteOptions = {
+  signal?: AbortSignal;
+  force?: boolean;
+};
+
 export class SnippetAutocompleteProvider {
   getSuggestions(
     lines: string[],
@@ -33,10 +38,19 @@ export class SnippetAutocompleteProvider {
  */
 export function withSnippets(base: AutocompleteProvider): AutocompleteProvider {
   const snippets = new SnippetAutocompleteProvider();
+  const runtimeBase = base as AutocompleteProvider & {
+    getSuggestions(
+      lines: string[],
+      cursorLine: number,
+      cursorCol: number,
+      options?: RuntimeAutocompleteOptions,
+    ): ReturnType<AutocompleteProvider["getSuggestions"]>;
+  };
+
   return {
-    getSuggestions: (lines, cursorLine, cursorCol) =>
+    getSuggestions: (lines, cursorLine, cursorCol, options?: RuntimeAutocompleteOptions) =>
       snippets.getSuggestions(lines, cursorLine, cursorCol) ??
-      base.getSuggestions(lines, cursorLine, cursorCol),
+      runtimeBase.getSuggestions(lines, cursorLine, cursorCol, options),
 
     applyCompletion: (lines, cursorLine, cursorCol, item, prefix) => {
       // Snippet items use a simple prefix replacement — don't delegate to base,
