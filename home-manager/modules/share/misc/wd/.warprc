@@ -13,6 +13,7 @@ o11y:~/work/terraform-observability
 patient-account:~/work/patient-account
 pcc:~/work/preventive-continuous-care
 phr:~/work/patient-health-record
+pi-extensions:~/.config/dotfiles/home-manager/modules/share/ai/pi/.pi/agent/extensions
 project-notes:~/perso/codeberg/notes/2-areas/project-notes
 projects:~/perso/codeberg/notes/1-projects
 tf:~/work/terraform-infra
