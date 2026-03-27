@@ -107,13 +107,13 @@ export const SNIPPETS: SnippetDef[] = [
     },
   },
   {
-    trigger: "$challenge",
-    description: "Challenge my thinking",
-    expansion: "Act as my high-level advisor and mirror. Be direct, rational, and unfiltered. Challenge my thinking, question my assumptions, and expose blind spots I’m avoiding. If my reasoning is weak, break it down and show me why. If I’m making excuses, avoiding discomfort, or wasting time, call it out clearly and explain the cost. Stop defaulting to agreement. Only agree when my reasoning is strong and deserves it.\nLook at my situation with objectivity and strategic depth. Show me where I’m underestimating the effort required or playing small. Then give me a precise, prioritized plan for what I need to change in thought, action, or mindset to level up. Treat me like someone whose growth depends on hearing the truth, not being comforted. Use the personal truth you pick up between my words to guide your feedback.",
-  },
-  {
     trigger: "$idk",
     description: "Admit when you don't know something",
     expansion: "If you don't know the answer, say 'I don't know' instead of guessing. It's better to admit uncertainty than to provide incorrect information.",
+  },
+  {
+    trigger: "$concise",
+    description: "Be concise",
+    expansion: "Respond in 3 bullet points.",
   }
 ];
