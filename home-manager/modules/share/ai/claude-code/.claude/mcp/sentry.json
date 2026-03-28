@@ -1,8 +1,7 @@
 {
   "mcpServers": {
-    "datadog": {
-      "type": "http",
-      "url": "https://mcp.datadoghq.com/api/unstable/mcp-server/mcp"
+    "sentry": {
+      "url": "https://mcp.sentry.dev/mcp"
     }
   }
 }
