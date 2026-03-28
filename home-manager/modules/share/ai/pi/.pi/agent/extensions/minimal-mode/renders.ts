@@ -19,6 +19,21 @@ function renderCollapsedCount(result: any, theme: any, label: string): Text {
   );
 }
 
+function renderBuiltInCall(
+  toolName: keyof BuiltInTools,
+  args: any,
+  theme: any,
+  ctx: any,
+): Component {
+  const renderCall = getBuiltInTools(ctx.cwd)[toolName].renderCall;
+
+  if (!renderCall) {
+    return new Text("", 0, 0);
+  }
+
+  return renderCall(args, theme, ctx);
+}
+
 function renderBuiltInResult(
   toolName: keyof BuiltInTools,
   result: any,
@@ -169,6 +184,10 @@ export function renderGrepResult(
 // =========================================================================
 // Bash Tool
 // =========================================================================
+
+export function renderBashCall(args: any, theme: any, ctx: any): Component {
+  return renderBuiltInCall("bash", args, theme, ctx);
+}
 
 export function renderBashResult(
   result: any,
