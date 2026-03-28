@@ -19,6 +19,13 @@ When you skipped something (tests/checks), guessed, or used a workaround:
 
 Skip if nothing to confess.
 
+## Additional Available Tools (MUST)
+
+You have access to faster/better CLI tools. You MUST use these instead of their defaults:
+
+- **NEVER use `grep`** → use **`rg`** for file content searches
+- **NEVER use `find`** → use **`fd`** for file discovery
+
 ## Development Principles
 
 - **Problem-Solving Focus**: Code to solve problems, not to demonstrate programming knowledge.
