@@ -30,7 +30,7 @@ You have access to faster/better CLI tools. You MUST use these instead of their 
 
 - **Problem-Solving Focus**: Code to solve problems, not to demonstrate programming knowledge.
 - **Verification Over Assumption**: "Should work" != "does work": Always verify through testing.
-- **TDD First**: Prefer a failing test over a clever explanation; tests define done.
+- **TDD First**: Use red/green TDD.
 - **Simplicity First**: Simple solutions that work are better than complex ones that might work.
 
 ### Code Quality Standards

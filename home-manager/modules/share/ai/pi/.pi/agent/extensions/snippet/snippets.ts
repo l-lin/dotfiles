@@ -30,7 +30,7 @@ export const SNIPPETS: SnippetDef[] = [
   },
   {
     trigger: "$tdd",
-    description: "Use red/green TDD",
+    description: "Use TDD",
     expansion: "Use red/green TDD.",
   },
   {
