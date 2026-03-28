@@ -23,7 +23,7 @@ export default function (pi: ExtensionAPI) {
     if (!ctx.hasUI) return;
 
     let currentTui: TUI | undefined;
-    let sandboxActive = false;
+    let sandboxEnabled = false;
 
     // Re-render when custom tools change
     pi.events.on("custom-tool:changed", () => {
@@ -32,7 +32,7 @@ export default function (pi: ExtensionAPI) {
 
     // Re-render when sandbox state changes
     pi.events.on("sandbox:state-changed", (enabled: unknown) => {
-      sandboxActive = enabled === true;
+      sandboxEnabled = enabled === true;
       currentTui?.requestRender();
     });
 
@@ -51,9 +51,9 @@ export default function (pi: ExtensionAPI) {
             // Line 1: Stats (context, tools, cost | thinking, model)
             lines.push(buildStatsLine(width, theme, ctx, pi));
 
-            // Line 2: Directory and git branch (with sandbox icon if active)
+            // Line 2: Directory and git branch (with sandbox status icon)
             lines.push(
-              buildDirectoryLine(width, theme, footerData, sandboxActive),
+              buildDirectoryLine(width, theme, footerData, sandboxEnabled),
             );
 
             // Line 3: Extension statuses (if any)

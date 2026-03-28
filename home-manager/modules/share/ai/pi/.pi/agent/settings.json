@@ -37,13 +37,17 @@
       }
     },
     "webSearch": {
-      "enabled": false
+      "enabled": true
     },
     "webFetch": {
       "enabled": false
     },
     "modelSelector": {
       "keybind": "alt-m"
+    },
+    "sandbox": {
+      "enabled": true
     }
-  }
+  },
+  "packages": []
 }

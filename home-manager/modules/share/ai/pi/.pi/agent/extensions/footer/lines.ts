@@ -79,15 +79,16 @@ export function buildDirectoryLine(
   width: number,
   theme: Theme,
   footerData: ReadonlyFooterDataProvider,
-  sandboxActive = false,
+  sandboxEnabled = false,
 ): string {
   const pwd = formatCurrentDirectory();
   const branch = footerData.getGitBranch();
 
-  const cwdPrefix = sandboxActive
-    ? `${ICONS["sandbox"]} ${ICONS["cwd"]}`
-    : ICONS["cwd"];
-  const cwdLeft = theme.fg("dim", `${cwdPrefix} ${pwd}`);
+  const sandboxIcon = sandboxEnabled
+    ? theme.fg("dim", ICONS["sandbox-enabled"])
+    : theme.fg("error", ICONS["sandbox-disabled"]);
+  const directory = theme.fg("dim", `${ICONS["cwd"]} ${pwd}`);
+  const cwdLeft = `${sandboxIcon} ${directory}`;
   const branchRight = branch
     ? theme.fg("dim", `${ICONS["branch"]} ${branch}`)
     : "";

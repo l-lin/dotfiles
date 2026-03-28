@@ -29,6 +29,7 @@
  * Usage:
  * - `pi -e ./sandbox` - sandbox enabled with default/config settings
  * - `pi -e ./sandbox --no-sandbox` - disable sandboxing
+ * - `/sandbox-toggle` - toggle sandboxing on/off (persisted to ~/.pi/agent/settings.json)
  * - `/sandbox` - show current sandbox configuration
  *
  * Setup:
@@ -43,21 +44,24 @@
 import { spawn } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import {
-  SandboxManager,
-  type SandboxRuntimeConfig,
-} from "@anthropic-ai/sandbox-runtime";
+import { SandboxManager } from "@anthropic-ai/sandbox-runtime";
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import {
   type BashOperations,
   createBashTool,
   getAgentDir,
 } from "@mariozechner/pi-coding-agent";
+import {
+  disableSandbox,
+  ensureSandboxActive,
+  type SandboxConfig,
+} from "./activation.js";
 import { createDefaultConfig } from "./default-config.js";
-
-interface SandboxConfig extends SandboxRuntimeConfig {
-  enabled?: boolean;
-}
+import {
+  loadSandboxEnabledSettings,
+  saveSandboxEnabledSettings,
+} from "./settings.js";
+import { registerSandboxToggleCommand } from "./toggle-command.js";
 
 function loadConfig(cwd: string): SandboxConfig {
   const projectConfigPath = join(cwd, ".pi", "sandbox.json");
@@ -198,17 +202,69 @@ export default function (pi: ExtensionAPI) {
     default: false,
   });
 
+  const settings = loadSandboxEnabledSettings();
   const localCwd = process.cwd();
   const localBash = createBashTool(localCwd);
+  const sandboxState = {
+    enabled: false,
+    initialized: false,
+  };
 
-  let sandboxEnabled = false;
-  let sandboxInitialized = false;
+  function emitSandboxStateChanged(enabled: boolean): void {
+    pi.events.emit("sandbox:state-changed", enabled);
+  }
+
+  async function disableSandboxForCurrentSession(): Promise<void> {
+    await disableSandbox({
+      state: sandboxState,
+      reset: () => SandboxManager.reset(),
+      emitStateChanged: emitSandboxStateChanged,
+    });
+  }
+
+  async function enableSandboxForCurrentSession(ctx: {
+    cwd: string;
+  }): Promise<
+    { message: string; type: "info" | "warning" | "error" } | undefined
+  > {
+    return ensureSandboxActive({
+      state: sandboxState,
+      settingsEnabled: settings.enabled,
+      noSandbox: pi.getFlag("no-sandbox") as boolean,
+      platform: process.platform,
+      cwd: ctx.cwd,
+      loadConfig,
+      initialize: async (config) => {
+        await SandboxManager.initialize({
+          network: config.network,
+          filesystem: config.filesystem,
+          ignoreViolations: config.ignoreViolations,
+          enableWeakerNestedSandbox: config.enableWeakerNestedSandbox,
+        });
+      },
+      reset: () => SandboxManager.reset(),
+      emitStateChanged: emitSandboxStateChanged,
+    });
+  }
+
+  registerSandboxToggleCommand(pi, {
+    settings,
+    saveEnabled: saveSandboxEnabledSettings,
+    applySettingChange: async (enabled, ctx) => {
+      if (!enabled) {
+        await disableSandboxForCurrentSession();
+        return undefined;
+      }
+
+      return enableSandboxForCurrentSession(ctx);
+    },
+  });
 
   pi.registerTool({
     ...localBash,
     label: "bash (sandboxed)",
     async execute(id, params, signal, onUpdate, _ctx) {
-      if (!sandboxEnabled || !sandboxInitialized) {
+      if (!sandboxState.enabled || !sandboxState.initialized) {
         return localBash.execute(id, params, signal, onUpdate);
       }
 
@@ -220,73 +276,26 @@ export default function (pi: ExtensionAPI) {
   });
 
   pi.on("user_bash", () => {
-    if (!sandboxEnabled || !sandboxInitialized) return;
+    if (!sandboxState.enabled || !sandboxState.initialized) return;
     return { operations: createSandboxedBashOps() };
   });
 
   pi.on("session_start", async (_event, ctx) => {
-    const noSandbox = pi.getFlag("no-sandbox") as boolean;
+    const notification = await enableSandboxForCurrentSession(ctx);
 
-    if (noSandbox) {
-      sandboxEnabled = false;
-      ctx.ui.notify("Sandbox disabled via --no-sandbox", "warning");
-      return;
-    }
-
-    const config = loadConfig(ctx.cwd);
-
-    if (!config.enabled) {
-      sandboxEnabled = false;
-      ctx.ui.notify("Sandbox disabled via config", "info");
-      return;
-    }
-
-    const platform = process.platform;
-    if (platform !== "darwin" && platform !== "linux") {
-      sandboxEnabled = false;
-      ctx.ui.notify(`Sandbox not supported on ${platform}`, "warning");
-      return;
-    }
-
-    try {
-      const configExt = config as unknown as {
-        ignoreViolations?: Record<string, string[]>;
-        enableWeakerNestedSandbox?: boolean;
-      };
-
-      await SandboxManager.initialize({
-        network: config.network,
-        filesystem: config.filesystem,
-        ignoreViolations: configExt.ignoreViolations,
-        enableWeakerNestedSandbox: configExt.enableWeakerNestedSandbox,
-      });
-
-      sandboxEnabled = true;
-      sandboxInitialized = true;
-      pi.events.emit("sandbox:state-changed", true);
-    } catch (err) {
-      sandboxEnabled = false;
-      ctx.ui.notify(
-        `Sandbox initialization failed: ${err instanceof Error ? err.message : err}`,
-        "error",
-      );
+    if (notification) {
+      ctx.ui.notify(notification.message, notification.type);
     }
   });
 
   pi.on("session_shutdown", async () => {
-    if (sandboxInitialized) {
-      try {
-        await SandboxManager.reset();
-      } catch {
-        // Ignore cleanup errors
-      }
-    }
+    await disableSandboxForCurrentSession();
   });
 
   pi.registerCommand("cmd:sandbox", {
     description: "Show sandbox configuration",
     handler: async (_args, ctx) => {
-      if (!sandboxEnabled) {
+      if (!sandboxState.enabled) {
         ctx.ui.notify("Sandbox is disabled", "info");
         return;
       }

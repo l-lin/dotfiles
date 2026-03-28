@@ -19,8 +19,9 @@ export const ICONS: Record<string, string> = {
   model: " ",
   cwd: "",
   branch: "󰘬",
-  sandbox: "",
-}
+  "sandbox-enabled": "󰒘",
+  "sandbox-disabled": "󰦞",
+};
 
 export const TOOL_ICONS: Record<string, { enabled: string; disabled: string }> =
   {
