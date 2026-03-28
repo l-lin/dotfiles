@@ -60,7 +60,7 @@ export function createDefaultConfig(
     },
     filesystem: {
       denyRead: ["~/.ssh", "~/.aws", "~/.gnupg"],
-      allowWrite: [".", "/tmp", "/private/tmp"],
+      allowWrite: [".", "/tmp", "/private/tmp", "~/.cache"],
       denyWrite: [".env", ".env.*", "*.pem", "*.key"],
     },
   };
