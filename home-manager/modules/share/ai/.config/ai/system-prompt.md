@@ -66,9 +66,7 @@ You have access to faster/better CLI tools. You MUST use these instead of their 
 
 #### Test-Driven Development (MUST)
 
-- **Default to TDD**: Write a failing test first (Red), implement minimal code (Green), then refactor (Refactor)
 - **Tests define requirements**: If behavior is unclear, clarify by adding/adjusting tests rather than guessing
-- **Ask for tests when missing**: If the user's prompt does not explicitly mention tests, ask via the `AskUserQuestion` tool whether they want to create tests first
 - **Use BDD methodology**: Structure tests with clear GIVEN, WHEN, THEN sections
 - **Descriptive test names**: Test names should describe the scenario and expected outcome
 - **Isolate tests**: Each test should focus on a single behavior
