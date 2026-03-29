@@ -8,7 +8,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@mariozechner/pi-coding-agent": "0.63.2"
+    "@mariozechner/pi-coding-agent": "0.64.0"
   },
   "devDependencies": {
     "typescript": "^5.9.3"
