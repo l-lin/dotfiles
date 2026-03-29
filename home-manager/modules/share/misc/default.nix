@@ -50,13 +50,13 @@
     # A command-line utility for easily compressing and decompressing files and directories: https://github.com/ouch-org/ouch
     ouch
     # Process Interactive Kill: https://github.com/jacek-kurlit/pik
-    pik
+    #pik
     # Daemon for managing long running shell commands: https://github.com/Nukesor/pueue
     #pueue
     # Pretty ping: https://github.com/denilsonsa/prettyping
     prettyping
     # Modern replacement for top: https://github.com/dalance/procs
-    procs
+    #procs
     # Fastest grep in the wild: https://github.com/BurntSushi/ripgrep
     ripgrep
     # Intuitive find & replace: https://github.com/chmln/sd

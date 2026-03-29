@@ -52,7 +52,7 @@ alias daily="cd ~/perso/codeberg/notes/ && nvim 5-rituals/daily/$(date -u '+%Y-%
 # --------------------------------------------------------
 # Default options
 # --------------------------------------------------------
-alias top="procs --watch --sortd cpu"
+#alias top="procs --watch --sortd cpu"
 alias watch="viddy"
 # Prevent recursive change on root directory
 #alias chmod="chmod --preserve-root"
