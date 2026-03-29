@@ -15,6 +15,7 @@
       "Bash(pwd)",
       "Bash(tmux:*)",
       "Bash(rg:*)",
+      "Bash(fd:*)",
       "Edit",
       "Read",
       "Skill(brainstorm)",
@@ -41,6 +42,16 @@
   },
   "model": "opusplan",
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pi-sidekick hook session-start --registry .sandbox/session.json"
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Bash|Read",
@@ -423,5 +434,6 @@
       "Just as planned",
       "Rebooting dignity"
     ]
-  }
+  },
+  "effortLevel": "high"
 }

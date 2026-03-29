@@ -7,6 +7,7 @@
   xdg.configFile = {
     "mise/conf.d/claude-code.toml".source = ./.config/mise/conf.d/claude-code.toml;
     "zsh/functions/ask".source = ./.config/zsh/functions/ask;
+    "pi-sidekick/settings.json".source = ./.config/pi-sidekick/settings.json;
   };
 
   home = {

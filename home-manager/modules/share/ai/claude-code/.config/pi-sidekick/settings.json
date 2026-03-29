@@ -1,0 +1,9 @@
+{
+  "extensions": [
+    "~/.pi/agent/extensions/awesome-editor",
+    "~/.pi/agent/extensions/snippet",
+    "~/.pi/agent/extensions/execution-timer",
+    "~/.pi/agent/extensions/working-message"
+  ]
+}
+
