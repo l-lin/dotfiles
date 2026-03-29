@@ -49,10 +49,10 @@
   "app.message.followUp": ["alt+enter"],
   "app.message.dequeue": ["alt+up"],
 
-  "app.session.new": [],
-  "app.session.tree": [],
+  "app.session.new": ["alt+n"],
+  "app.session.tree": ["alt+t"],
   "app.session.fork": [],
-  "app.session.resume": [],
+  "app.session.resume": ["alt+r"],
   "app.session.toggleNamedFilter": [],
   "app.session.togglePath": [],
   "app.session.toggleSort": ["alt+s"],
