@@ -1,8 +1,8 @@
 {
-  "lastChangelogVersion": "0.62.0",
+  "lastChangelogVersion": "0.63.2",
   "theme": "light",
   "defaultProvider": "github-copilot",
-  "defaultModel": "gpt-4.1",
+  "defaultModel": "gpt-5.4",
   "skills": [
     "~/.config/ai/skills"
   ],
@@ -10,7 +10,7 @@
     "~/.config/ai/commands"
   ],
   "quietStartup": true,
-  "defaultThinkingLevel": "high",
+  "defaultThinkingLevel": "xhigh",
   "compaction": {
     "enabled": false
   },
@@ -37,7 +37,7 @@
       }
     },
     "webSearch": {
-      "enabled": true
+      "enabled": false
     },
     "webFetch": {
       "enabled": false
