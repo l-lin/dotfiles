@@ -4,6 +4,6 @@
     "~/.pi/agent/extensions/snippet",
     "~/.pi/agent/extensions/execution-timer",
     "~/.pi/agent/extensions/working-message"
-  ]
+  ],
+  "keybindingsFile": "~/.pi/agent/keybindings.json"
 }
-
