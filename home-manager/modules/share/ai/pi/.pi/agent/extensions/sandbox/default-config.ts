@@ -35,10 +35,24 @@ export function getDefaultAllowedUnixSockets(
   return [join(tmuxTmpDir, `tmux-${uid}`)];
 }
 
+export function getDefaultAllowWritePaths(
+  options: DefaultSandboxConfigOptions = {},
+): string[] {
+  const platform = options.platform ?? process.platform;
+  const common = [".", "/tmp", "/private/tmp", "~/.cache", "~/.m2"];
+
+  if (platform === "darwin") {
+    return [...common, "~/Library/Application Support/kotlin"];
+  }
+
+  return common;
+}
+
 export function createDefaultConfig(
   options: DefaultSandboxConfigOptions = {},
 ): DefaultSandboxConfig {
   const allowUnixSockets = getDefaultAllowedUnixSockets(options);
+  const allowWrite = getDefaultAllowWritePaths(options);
 
   return {
     enabled: true,
@@ -60,7 +74,7 @@ export function createDefaultConfig(
     },
     filesystem: {
       denyRead: ["~/.ssh", "~/.aws", "~/.gnupg"],
-      allowWrite: [".", "/tmp", "/private/tmp", "~/.cache"],
+      allowWrite,
       denyWrite: [".env", ".env.*", "*.pem", "*.key"],
     },
   };

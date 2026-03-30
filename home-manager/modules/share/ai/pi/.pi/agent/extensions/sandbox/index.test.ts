@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   createDefaultConfig,
   getDefaultAllowedUnixSockets,
+  getDefaultAllowWritePaths,
 } from "./default-config.js";
 
 function given_defaultConfig(options?: {
@@ -41,6 +42,26 @@ test("getDefaultAllowedUnixSockets GIVEN non-macOS platform WHEN resolving THEN 
   });
 
   assert.deepEqual(actual, []);
+});
+
+test("getDefaultAllowWritePaths GIVEN macOS WHEN resolving THEN Maven and Kotlin daemon paths are allowlisted", () => {
+  const actual = getDefaultAllowWritePaths({ platform: "darwin" });
+
+  assert.ok(actual.includes("~/.m2"), "missing ~/.m2");
+  assert.ok(
+    actual.includes("~/Library/Application Support/kotlin"),
+    "missing ~/Library/Application Support/kotlin",
+  );
+});
+
+test("getDefaultAllowWritePaths GIVEN Linux WHEN resolving THEN Maven path is allowlisted but macOS Kotlin path is not", () => {
+  const actual = getDefaultAllowWritePaths({ platform: "linux" });
+
+  assert.ok(actual.includes("~/.m2"), "missing ~/.m2");
+  assert.ok(
+    !actual.includes("~/Library/Application Support/kotlin"),
+    "macOS-only path should not appear on Linux",
+  );
 });
 
 test("createDefaultConfig GIVEN macOS defaults WHEN building THEN tmux Unix sockets are included in network configuration", () => {
