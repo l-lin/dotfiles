@@ -52,7 +52,7 @@ vim.api.nvim_create_autocmd("FileType", {
 if vim.env.NVIM_SCRATCH then
   vim.api.nvim_create_autocmd("VimLeavePre", {
     callback = function()
-      require("plugins.custom.lang.obsidian").to_html_and_yank(true)
+      vim.cmd("%y+")
     end,
   })
 end
