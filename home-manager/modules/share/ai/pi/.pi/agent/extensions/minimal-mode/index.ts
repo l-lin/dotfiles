@@ -38,8 +38,8 @@ function registerMinimalTool(
 
 export default function (pi: ExtensionAPI): void {
   registerMinimalTool(pi, "read", renderReadResult);
-  registerMinimalTool(pi, "write", renderWriteResult);
-  registerMinimalTool(pi, "edit", renderEditResult);
+  //registerMinimalTool(pi, "write", renderWriteResult);
+  //registerMinimalTool(pi, "edit", renderEditResult);
   registerMinimalTool(pi, "find", renderFindResult);
   registerMinimalTool(pi, "grep", renderGrepResult);
   registerMinimalTool(pi, "ls", renderLsResult);
