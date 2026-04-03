@@ -57,6 +57,7 @@ import {
   ensureSandboxActive,
   type SandboxConfig,
 } from "./activation.js";
+import { prepareSandboxedCommand } from "./command-adjustments.js";
 import { createDefaultConfig } from "./default-config.js";
 import {
   loadSandboxEnabledSettings,
@@ -134,7 +135,9 @@ function createSandboxedBashOps(): BashOperations {
         throw new Error(`Working directory does not exist: ${cwd}`);
       }
 
-      const wrappedCommand = await SandboxManager.wrapWithSandbox(command);
+      const wrappedCommand = await SandboxManager.wrapWithSandbox(
+        prepareSandboxedCommand(command),
+      );
 
       return new Promise((resolve, reject) => {
         const child = spawn("bash", ["-c", wrappedCommand], {
