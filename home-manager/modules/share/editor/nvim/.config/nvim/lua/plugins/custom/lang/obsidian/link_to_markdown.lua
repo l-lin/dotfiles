@@ -117,7 +117,7 @@ local function escape_markdown(text)
   text = text:gsub("\\([%*_`~\\%[%]])", "%1")
 
   -- Escape markdown special characters
-  text = text:gsub("([%*_`|<>~\\%[%]])", "\\%1")
+  text = text:gsub("([%*_`<>~\\%[%]])", "\\%1")
 
   return text
 end
