@@ -110,9 +110,7 @@ export function loadEnabledSettings<T extends EnabledSettings>(
   };
 }
 
-export function saveExtensionSettings(
-  args: SaveExtensionSettingsArgs,
-): void {
+export function saveExtensionSettings(args: SaveExtensionSettingsArgs): void {
   const settings = readSettingsFile();
   const extensionSettings = isRecord(settings.extensionSettings)
     ? { ...settings.extensionSettings }

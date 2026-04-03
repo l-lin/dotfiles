@@ -77,7 +77,8 @@ export function buildDiagnosticBlock(
   const header =
     `--- LSP Diagnostics (${lspBin}) ${summary} ---\n` +
     `File: ${relPath}\n` +
-    "─".repeat(60) + "\n";
+    "─".repeat(60) +
+    "\n";
 
   const full = header + (text.length > 0 ? text : "(no diagnostics)");
   const truncation = truncateHead(full, {

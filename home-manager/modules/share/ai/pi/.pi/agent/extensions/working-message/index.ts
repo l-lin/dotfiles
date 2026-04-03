@@ -398,9 +398,7 @@ export default function (pi: ExtensionAPI) {
     timerInterval = setInterval(() => {
       if (startTime !== null) {
         const elapsed = Date.now() - startTime;
-        ctx.ui.setWorkingMessage(
-          `${currentMessage} ${formatElapsed(elapsed)}`,
-        );
+        ctx.ui.setWorkingMessage(`${currentMessage} ${formatElapsed(elapsed)}`);
       }
     }, 100);
   });

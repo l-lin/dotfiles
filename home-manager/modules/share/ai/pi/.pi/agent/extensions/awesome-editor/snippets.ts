@@ -22,14 +22,18 @@ export class SnippetAutocompleteProvider {
     cursorLine: number,
     cursorCol: number,
   ): { items: AutocompleteItem[]; prefix: string } | null {
-    const text  = (lines[cursorLine] ?? "").slice(0, cursorCol);
+    const text = (lines[cursorLine] ?? "").slice(0, cursorCol);
     const match = text.match(/([$?][a-zA-Z0-9_]*)$/);
     if (!match) return null;
 
     const prefix = match[1]!;
-    const items  = SNIPPETS
-      .filter((s) => s.trigger.startsWith(prefix))
-      .map((s) => ({ value: s.trigger, label: s.trigger, description: s.description }));
+    const items = SNIPPETS.filter((s) => s.trigger.startsWith(prefix)).map(
+      (s) => ({
+        value: s.trigger,
+        label: s.trigger,
+        description: s.description,
+      }),
+    );
 
     return items.length > 0 ? { items, prefix } : null;
   }
@@ -59,10 +63,12 @@ export function withSnippets(base: AutocompleteProvider): AutocompleteProvider {
       // Snippet items use a simple prefix replacement — don't delegate to base,
       // which has slash-command-specific formatting (trailing spaces, etc.)
       if (/^[$?]/.test(prefix)) {
-        const line     = lines[cursorLine] ?? "";
+        const line = lines[cursorLine] ?? "";
         const newLines = [...lines];
         newLines[cursorLine] =
-          line.slice(0, cursorCol - prefix.length) + item.value + line.slice(cursorCol);
+          line.slice(0, cursorCol - prefix.length) +
+          item.value +
+          line.slice(cursorCol);
         return {
           lines: newLines,
           cursorLine,

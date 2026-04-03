@@ -36,11 +36,13 @@ export const SNIPPETS: SnippetDef[] = [
   {
     trigger: "$test_pi",
     description: "Test pi extension via tmux",
-    expansion: "Test the pi extension with tmux by spawning a new pi session with `pi --models \"github-copilot/gpt-4o\"`.",
+    expansion:
+      'Test the pi extension with tmux by spawning a new pi session with `pi --models "github-copilot/gpt-4o"`.',
   },
   {
     trigger: "$incentivize",
-    description: "Insert a random psychological prompting trick (incentive, challenge, deep breath, stakes, self-check)",
+    description:
+      "Insert a random psychological prompting trick (incentive, challenge, deep breath, stakes, self-check)",
     expansion: () => {
       const prompts = [
         // Incentive prompts
@@ -109,11 +111,12 @@ export const SNIPPETS: SnippetDef[] = [
   {
     trigger: "$idk",
     description: "Admit when you don't know something",
-    expansion: "If you don't know the answer, say 'I don't know' instead of guessing. It's better to admit uncertainty than to provide incorrect information.",
+    expansion:
+      "If you don't know the answer, say 'I don't know' instead of guessing. It's better to admit uncertainty than to provide incorrect information.",
   },
   {
     trigger: "$concise",
     description: "Be concise",
     expansion: "Respond in 3 bullet points.",
-  }
+  },
 ];

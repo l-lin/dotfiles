@@ -20,7 +20,6 @@ export function createWindow(cwd: string, name: string): string {
   return result;
 }
 
-
 /** Send literal text + Enter to a pane */
 export function sendMessage(paneId: string, text: string): void {
   execSync(`tmux send-keys -t ${esc(paneId)} -l ${esc(text)}`);
@@ -50,4 +49,3 @@ export function paneAlive(paneId: string): boolean {
     return false;
   }
 }
-

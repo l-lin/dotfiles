@@ -1,8 +1,8 @@
 {
-  "lastChangelogVersion": "0.64.0",
+  "lastChangelogVersion": "0.65.0",
   "theme": "light",
   "defaultProvider": "github-copilot",
-  "defaultModel": "gpt-5.4",
+  "defaultModel": "gpt-4.1",
   "skills": [
     "~/.config/ai/skills"
   ],
@@ -10,7 +10,7 @@
     "~/.config/ai/commands"
   ],
   "quietStartup": true,
-  "defaultThinkingLevel": "xhigh",
+  "defaultThinkingLevel": "high",
   "compaction": {
     "enabled": false
   },

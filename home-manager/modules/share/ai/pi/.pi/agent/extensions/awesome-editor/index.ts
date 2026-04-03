@@ -43,6 +43,8 @@ import { AwesomeEditor } from "./editor.js";
 
 export default function (pi: ExtensionAPI) {
   pi.on("session_start", (_event, ctx) => {
-    ctx.ui.setEditorComponent((tui, theme, kb) => new AwesomeEditor(tui, theme, kb));
+    ctx.ui.setEditorComponent(
+      (tui, theme, kb) => new AwesomeEditor(tui, theme, kb),
+    );
   });
 }

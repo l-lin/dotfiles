@@ -99,7 +99,10 @@ test("oracle GIVEN a headers-only authenticated model WHEN resolving the -m flag
 
   oracleExtension(pi as never);
 
-  await when_gettingOracleCommand()("-m missing-model Need a second opinion", ctx);
+  await when_gettingOracleCommand()(
+    "-m missing-model Need a second opinion",
+    ctx,
+  );
 
   assert.deepEqual(notifications, [
     {

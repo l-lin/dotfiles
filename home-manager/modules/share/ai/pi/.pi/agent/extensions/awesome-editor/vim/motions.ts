@@ -21,8 +21,8 @@ export function findCharMotionTarget(
   targetChar: string,
   isRepeat = false,
 ): number | null {
-  const isForward  = motion === "f" || motion === "t";
-  const isTill     = motion === "t" || motion === "T";
+  const isForward = motion === "f" || motion === "t";
+  const isTill = motion === "t" || motion === "T";
   const tillOffset = isTill && isRepeat ? 1 : 0;
 
   if (isForward) {

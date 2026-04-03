@@ -8,10 +8,9 @@ import * as os from "node:os";
 import type { CopilotUsageSettings, PiSettings } from "./types.js";
 
 // Respect XDG_CONFIG_HOME, consistent with auth.ts and pi's own config resolution.
-const PI_CONFIG_DIR =
-  process.env.XDG_CONFIG_HOME
-    ? path.join(process.env.XDG_CONFIG_HOME, "pi")
-    : path.join(os.homedir(), ".pi");
+const PI_CONFIG_DIR = process.env.XDG_CONFIG_HOME
+  ? path.join(process.env.XDG_CONFIG_HOME, "pi")
+  : path.join(os.homedir(), ".pi");
 const SETTINGS_PATH = path.join(PI_CONFIG_DIR, "agent/settings.json");
 
 export function loadSettings(): CopilotUsageSettings {

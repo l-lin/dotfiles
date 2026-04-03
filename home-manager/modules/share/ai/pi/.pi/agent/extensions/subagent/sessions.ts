@@ -8,11 +8,7 @@ import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { loadSettings } from "./settings.js";
 import * as tmux from "./tmux.js";
 import { Action } from "./types.js";
-import type {
-  AgentSettings,
-  Session,
-  SubagentDetails,
-} from "./types.js";
+import type { AgentSettings, Session, SubagentDetails } from "./types.js";
 export { Action } from "./types.js";
 export type { Session, SpawnResult, SubagentDetails } from "./types.js";
 

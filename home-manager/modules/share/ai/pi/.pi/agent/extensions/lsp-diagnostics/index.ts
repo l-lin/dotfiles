@@ -79,7 +79,10 @@ export default function (pi: ExtensionAPI) {
         parts.push(`${lang}: ${cmd.join(" ")}`);
       }
       if (parts.length > 0) {
-        ctx.ui.notify(`lsp-diagnostics extension — ${parts.join(" | ")}`, "info");
+        ctx.ui.notify(
+          `lsp-diagnostics extension — ${parts.join(" | ")}`,
+          "info",
+        );
       }
     }
   });

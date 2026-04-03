@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "format": "prettier --write \"*.{json,md}\" \"**/**/*.ts\"",
     "test": "rm -rf .test-dist && tsc --outDir .test-dist && node --test .test-dist/**/*.test.js",
     "typecheck": "tsc --noEmit"
   },
@@ -11,6 +12,7 @@
     "@mariozechner/pi-coding-agent": "0.65.0"
   },
   "devDependencies": {
+    "prettier": "^3.8.1",
     "typescript": "^5.9.3"
   }
 }

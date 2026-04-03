@@ -59,13 +59,10 @@ test("withSnippets GIVEN a pi 0.63-style autocomplete provider WHEN delegating s
       cursorLine: number,
       cursorCol: number,
       options?: unknown,
-    ): Promise<
-      | {
-          items: Array<{ value: string; label: string }>;
-          prefix: string;
-        }
-      | null
-    >;
+    ): Promise<{
+      items: Array<{ value: string; label: string }>;
+      prefix: string;
+    } | null>;
   };
   const options = {
     signal: new AbortController().signal,
