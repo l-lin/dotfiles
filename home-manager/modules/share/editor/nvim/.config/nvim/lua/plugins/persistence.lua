@@ -11,6 +11,9 @@ return {
       callback = function()
         if vim.fn.argc(-1) == 0 then
           require("persistence").load()
+          -- HACK: For some reason, the last file is opened, but without configuration, e.g. without treesitter.
+          -- So force reloading the current file will make it work.
+          vim.api.nvim_command("edit")
         end
       end,
       nested = true,
