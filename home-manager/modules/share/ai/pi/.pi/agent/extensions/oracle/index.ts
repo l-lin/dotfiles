@@ -27,15 +27,17 @@ async function resolveAvailableModels(
     if (!model) continue;
     if (ctx.model && model.id === ctx.model.id) continue;
 
-    const apiKey = await ctx.modelRegistry.getApiKey(model);
-    if (!apiKey) continue;
+    const requestAuth = await ctx.modelRegistry.getApiKeyAndHeaders(model);
+    if (!requestAuth.ok) continue;
+    if (!requestAuth.apiKey && !requestAuth.headers) continue;
 
     available.push({
       provider: m.provider,
       modelId: m.model,
       name: m.name,
       model,
-      apiKey,
+      apiKey: requestAuth.apiKey,
+      headers: requestAuth.headers,
     });
   }
   return available;

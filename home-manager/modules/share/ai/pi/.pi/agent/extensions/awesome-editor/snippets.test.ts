@@ -59,24 +59,51 @@ test("withSnippets GIVEN a pi 0.63-style autocomplete provider WHEN delegating s
       cursorLine: number,
       cursorCol: number,
       options?: unknown,
-    ):
-      | Promise<{
+    ): Promise<
+      | {
           items: Array<{ value: string; label: string }>;
           prefix: string;
-        } | null>
-      | { items: Array<{ value: string; label: string }>; prefix: string }
-      | null;
+        }
+      | null
+    >;
   };
   const options = {
     signal: new AbortController().signal,
     force: false,
   };
 
-  const actual = await provider.getSuggestions(["/"], 0, 1, options);
+  const actualPromise = provider.getSuggestions(["/"], 0, 1, options);
+
+  assert.ok(actualPromise instanceof Promise);
+
+  const actual = await actualPromise;
 
   assert.deepEqual(getReceivedOptions(), options);
   assert.deepEqual(actual, {
     items: [{ value: "help", label: "help" }],
     prefix: "/",
   });
+});
+
+test("withSnippets GIVEN a snippet prefix WHEN requesting suggestions THEN it still returns a promise", async () => {
+  const { base } = given_baseProviderExpectingOptions();
+  const provider = withSnippets(base as never);
+
+  const actualPromise = provider.getSuggestions(
+    ["ask about $td"],
+    0,
+    "ask about $td".length,
+    { signal: new AbortController().signal },
+  );
+
+  assert.ok(actualPromise instanceof Promise);
+
+  const actual = await actualPromise;
+
+  assert.ok(actual, "Expected snippet suggestions");
+  assert.equal(actual?.prefix, "$td");
+  assert.ok(
+    actual?.items.some((item) => item.value === "$tdd"),
+    "Expected matching snippet suggestion",
+  );
 });

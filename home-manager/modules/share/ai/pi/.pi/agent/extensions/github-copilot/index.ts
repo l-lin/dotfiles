@@ -66,11 +66,6 @@ export default function githubCopilotExtension(pi: ExtensionAPI) {
     }
   });
 
-  pi.on("session_switch", async (_event, ctx) => {
-    sessionStartUsage = cachedUsage;
-    if (widgetVisible) await refresh(ctx);
-  });
-
   pi.on("agent_end", async (_event, ctx) => {
     if (widgetVisible) await refresh(ctx);
   });

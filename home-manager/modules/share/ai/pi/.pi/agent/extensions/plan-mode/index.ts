@@ -447,17 +447,8 @@ You can call todo with action "list" at any time to check remaining steps.`,
     }
   });
 
-  // Clear all plan state when starting a fresh session
-  pi.on("session_switch", async (event, ctx) => {
-    if (event.reason !== "new") return;
-    planModeEnabled = false;
-    executionMode = false;
-    todoItems = [];
-    applyTools(WRITE_TOOLS, ["todo"]);
-    updateStatus(ctx);
-  });
-
-  // Restore state on session start/resume
+  // Restore state on session start/reload/resume/fork.
+  // A brand-new session gets the default in-memory state from this extension instance.
   pi.on("session_start", async (_event, ctx) => {
     if (pi.getFlag("plan") === true) {
       planModeEnabled = true;

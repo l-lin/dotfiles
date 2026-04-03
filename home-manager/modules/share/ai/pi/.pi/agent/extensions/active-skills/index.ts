@@ -12,25 +12,16 @@ import { updateSkillWidget, clearSkillWidget } from "./widget.js";
 export default function (pi: ExtensionAPI) {
   const tracker = new SkillTracker();
 
-  pi.on("session_start", (_event, _ctx) => {
-    tracker.reset();
-  });
-
-  // New session: clear state and widget.
-  // Resumed session: rebuild tracker from existing history so the widget
-  // reflects skills that were already read in previous turns.
-  pi.on("session_switch", (event, ctx) => {
+  // Fresh sessions start empty.
+  // Startup/reload/resume/fork should rebuild from session history so the
+  // widget reflects skills that were already loaded.
+  pi.on("session_start", (event, ctx) => {
     if (event.reason === "new") {
       tracker.reset();
       clearSkillWidget(ctx);
-    } else {
-      tracker.rebuildFromHistory(ctx);
-      updateSkillWidget(ctx, tracker.list());
+      return;
     }
-  });
 
-  // After /reload the extension is re-instantiated; restore widget from history.
-  pi.on("resources_discover", (_event, ctx) => {
     tracker.rebuildFromHistory(ctx);
     updateSkillWidget(ctx, tracker.list());
   });

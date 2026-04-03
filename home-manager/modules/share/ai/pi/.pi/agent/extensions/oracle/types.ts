@@ -29,5 +29,6 @@ export interface AvailableModel {
   modelId: string;
   name: string;
   model: Model<Api>;
-  apiKey: string;
+  apiKey?: string;
+  headers?: Record<string, string>;
 }

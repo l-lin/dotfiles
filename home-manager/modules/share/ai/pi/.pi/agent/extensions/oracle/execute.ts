@@ -77,6 +77,17 @@ function buildFullPrompt(
   return fullPrompt;
 }
 
+export function getOracleRequestOptions(
+  model: AvailableModel,
+  signal: AbortSignal,
+): { signal: AbortSignal; apiKey?: string; headers?: Record<string, string> } {
+  return {
+    signal,
+    apiKey: model.apiKey,
+    headers: model.headers,
+  };
+}
+
 function queryModel(
   ctx: ExtensionContext,
   model: AvailableModel,
@@ -95,7 +106,7 @@ function queryModel(
     complete(
       model.model,
       { systemPrompt: SYSTEM_PROMPT, messages: [userMessage] },
-      { apiKey: model.apiKey, signal: loader.signal },
+      getOracleRequestOptions(model, loader.signal),
     )
       .then((response) => {
         if (response.stopReason === "aborted") return done(null);
