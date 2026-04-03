@@ -12,6 +12,7 @@ export interface DefaultSandboxConfig {
     allowedDomains: string[];
     deniedDomains: string[];
     allowUnixSockets?: string[];
+    allowLocalBinding?: boolean;
   };
   filesystem: {
     denyRead: string[];
@@ -51,8 +52,10 @@ export function getDefaultAllowWritePaths(
 export function createDefaultConfig(
   options: DefaultSandboxConfigOptions = {},
 ): DefaultSandboxConfig {
+  const platform = options.platform ?? process.platform;
   const allowUnixSockets = getDefaultAllowedUnixSockets(options);
   const allowWrite = getDefaultAllowWritePaths(options);
+  const allowLocalBinding = platform === "darwin";
 
   return {
     enabled: true,
@@ -71,6 +74,7 @@ export function createDefaultConfig(
       ],
       deniedDomains: [],
       ...(allowUnixSockets.length > 0 ? { allowUnixSockets } : {}),
+      ...(allowLocalBinding ? { allowLocalBinding: true } : {}),
     },
     filesystem: {
       denyRead: ["~/.ssh", "~/.aws", "~/.gnupg"],

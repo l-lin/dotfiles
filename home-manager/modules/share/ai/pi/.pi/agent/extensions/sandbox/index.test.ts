@@ -73,3 +73,23 @@ test("createDefaultConfig GIVEN macOS defaults WHEN building THEN tmux Unix sock
 
   assert.deepEqual(actual.network?.allowUnixSockets, expected);
 });
+
+test("createDefaultConfig GIVEN macOS defaults WHEN building THEN local loopback binding is enabled for Kotlin and Maven daemons", () => {
+  const actual = given_defaultConfig({
+    platform: "darwin",
+    uid: 501,
+  });
+  const expected = true;
+
+  assert.equal(Reflect.get(actual.network, "allowLocalBinding"), expected);
+});
+
+test("createDefaultConfig GIVEN Linux defaults WHEN building THEN local loopback binding stays disabled", () => {
+  const actual = given_defaultConfig({
+    platform: "linux",
+    uid: 501,
+  });
+  const expected = undefined;
+
+  assert.equal(Reflect.get(actual.network, "allowLocalBinding"), expected);
+});

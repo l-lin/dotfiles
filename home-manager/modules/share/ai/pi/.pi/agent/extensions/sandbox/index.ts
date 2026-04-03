@@ -16,7 +16,8 @@
  *   "network": {
  *     "allowedDomains": ["github.com", "*.github.com"],
  *     "deniedDomains": [],
- *     "allowUnixSockets": ["/private/tmp/tmux-501"]
+ *     "allowUnixSockets": ["/private/tmp/tmux-501"],
+ *     "allowLocalBinding": true
  *   },
  *   "filesystem": {
  *     "denyRead": ["~/.ssh", "~/.aws"],
@@ -308,6 +309,7 @@ export default function (pi: ExtensionAPI) {
         `  Allowed: ${config.network?.allowedDomains?.join(", ") || "(none)"}`,
         `  Denied: ${config.network?.deniedDomains?.join(", ") || "(none)"}`,
         `  Unix Sockets: ${config.network?.allowUnixSockets?.join(", ") || "(none)"}`,
+        `  Local Binding: ${config.network?.allowLocalBinding ? "allowed" : "blocked"}`,
         "",
         "Filesystem:",
         `  Deny Read: ${config.filesystem?.denyRead?.join(", ") || "(none)"}`,

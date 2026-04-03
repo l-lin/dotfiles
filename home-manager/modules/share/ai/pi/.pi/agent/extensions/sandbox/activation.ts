@@ -4,6 +4,7 @@ export interface SandboxConfig {
     allowedDomains: string[];
     deniedDomains: string[];
     allowUnixSockets?: string[];
+    allowLocalBinding?: boolean;
   };
   filesystem: {
     denyRead: string[];
