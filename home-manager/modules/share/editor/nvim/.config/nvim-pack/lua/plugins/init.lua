@@ -52,6 +52,7 @@ vim.pack.add({
   "https://github.com/folke/todo-comments.nvim",
   "https://codeberg.org/l-lin/translate.nvim",
   "https://github.com/folke/trouble.nvim",
+  "https://github.com/gbprod/yanky.nvim",
 
   -- Integration
   "https://codeberg.org/l-lin/jira.nvim",
