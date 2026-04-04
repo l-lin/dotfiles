@@ -70,6 +70,10 @@ in {
     source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/editor/nvim/.config/nvim";
     recursive = true;
   };
+  xdg.configFile."nvim-pack" = {
+    source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/editor/nvim/.config/nvim-pack";
+    recursive = true;
+  };
 
   # Write colorscheme.lua to the repo directory during activation.
   # This file uses Nix variables (stylix colors) so it must be generated.
