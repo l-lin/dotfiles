@@ -1,0 +1,48 @@
+--
+-- Git integration for buffers
+--
+
+--
+-- Setup
+--
+require("gitsigns").setup({
+  preview_config = {
+    border = "rounded",
+  },
+  signs = {
+    add = { text = "▎" },
+    change = { text = "▎" },
+    delete = { text = "" },
+    topdelete = { text = "" },
+    changedelete = { text = "▎" },
+    untracked = { text = "▎" },
+  },
+  signs_staged = {
+    add = { text = "▎" },
+    change = { text = "▎" },
+    delete = { text = "" },
+    topdelete = { text = "" },
+    changedelete = { text = "▎" },
+  },
+})
+
+--
+-- Keymaps
+--
+local map = vim.keymap.set
+map("n", "<M-C-G>", "<cmd>Gitsigns preview_hunk_inline<cr>", { desc = "Preview Hunk inline (Ctrl+Alt+g)" })
+map({ "n", "v" }, "<M-C-Z>", "<cmd>Gitsigns reset_hunk<cr>", { desc = "Reset hunk (Ctrl+Alt+z)" })
+map("n", "]h", function()
+  if vim.wo.diff then
+    vim.cmd.normal({ "]c", bang = true })
+  else
+    require("gitsigns").nav_hunk("next")
+  end
+end, { desc = "Next Hunk" })
+map("n", "[h", function()
+  if vim.wo.diff then
+    vim.cmd.normal({ "[c", bang = true })
+  else
+    require("gitsigns").nav_hunk("prev")
+  end
+end, { desc = "Prev Hunk" })
