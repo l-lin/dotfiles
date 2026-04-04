@@ -1,4 +1,4 @@
-local repo_parser = require("helpers.repo_parser")
+local repo_parser = require("functions.repo_parser")
 
 describe("repo_parser.is_repo_pattern", function()
   local cases = {

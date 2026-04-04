@@ -1,4 +1,4 @@
-local HttpClient = require("helpers.http_client")
+local HttpClient = require("functions.http_client")
 
 describe("HttpClient.new", function()
   local cases = {

@@ -12,14 +12,14 @@ end
 local function smart_open()
   local line = vim.api.nvim_get_current_line()
   local col = vim.api.nvim_win_get_cursor(0)[2] + 1
-  local url = require("helpers.markdown_link_parser").extract_url_at_cursor(line, col)
+  local url = require("functions.markdown_link_parser").extract_url_at_cursor(line, col)
 
   if not url then
     local word = extract_word()
-    url = require("helpers.repo_parser").is_repo_pattern(word) and ("https://github.com/" .. word) or word
+    url = require("functions.repo_parser").is_repo_pattern(word) and ("https://github.com/" .. word) or word
   end
 
-  local success, url_parser = pcall(require("helpers.url_parser").new, url)
+  local success, url_parser = pcall(require("functions.url_parser").new, url)
   if success and url_parser:is_youtube_url() then
     local escaped = vim.fn.shellescape(url)
     local zen = (vim.fn.has("mac") == 1) and "/Applications/Zen.app/Contents/MacOS/zen" or "zen"

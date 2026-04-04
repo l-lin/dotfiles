@@ -1,4 +1,4 @@
-local markdown_link_parser = require("helpers.markdown_link_parser")
+local markdown_link_parser = require("functions.markdown_link_parser")
 
 describe("markdown_link_parser.extract_url_at_cursor", function()
   local cases = {

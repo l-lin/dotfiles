@@ -1,4 +1,4 @@
-local UrlParser = require("helpers.url_parser")
+local UrlParser = require("functions.url_parser")
 
 describe("UrlParser.new", function()
   local cases = {

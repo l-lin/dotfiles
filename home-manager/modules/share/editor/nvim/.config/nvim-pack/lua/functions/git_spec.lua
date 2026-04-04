@@ -1,4 +1,4 @@
-local git = require("helpers.git")
+local git = require("functions.git")
 
 describe("git.find_owner", function()
   local function owners(content, path)
