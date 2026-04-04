@@ -1,0 +1,45 @@
+{
+  "pause": {
+    "prefix": "pause",
+    "body": [
+      "<!-- pause -->"
+    ],
+    "description": "Presenterm: add pause."
+  },
+  "collayout": {
+    "prefix": "collayout",
+    "body": [
+      "<!-- column_layout: [${1}, ${2}] -->"
+    ],
+    "description": "Presenterm: add columns."
+  },
+  "col": {
+    "prefix": "col",
+    "body": [
+      "<!-- column: ${1} -->"
+    ],
+    "description": "Presenterm: add a column."
+  },
+  "middle": {
+    "prefix": "middle",
+    "body": [
+      "<!-- jump_to_middle -->"
+    ],
+    "description": "Presenterm: Jump to middle of screen."
+  },
+  "newline": {
+    "prefix": "newline",
+    "body": [
+      "<!-- newline -->"
+    ],
+    "description": "Presenterm: add new line."
+  },
+  "newlines": {
+    "prefix": "newlines",
+    "body": [
+      "<!-- newlines: ${1:int} -->"
+    ],
+    "description": "Presenterm: add new lines."
+  }
+}
+

@@ -1,0 +1,55 @@
+{
+  "name": "custom-snippets",
+  "contributes": {
+    "snippets": [
+      {
+        "language": ["java"],
+        "path": "./java/java.json"
+      },
+      {
+        "language": ["java"],
+        "path": "./java/junit.json"
+      },
+      {
+        "language": ["json"],
+        "path": "./json/dap.json"
+      },
+      {
+        "language": ["json"],
+        "path": "./json/snippet.json"
+      },
+      {
+        "language": ["make"],
+        "path": "./make.json"
+      },
+      {
+        "language": ["markdown"],
+        "path": "./markdown/pull-request.json"
+      },
+      {
+        "language": ["markdown"],
+        "path": "./markdown/presenterm.json"
+      },
+      {
+        "language": ["markdown"],
+        "path": "./markdown/pi.json"
+      },
+      {
+        "language": ["nix"],
+        "path": "./nix.json"
+      },
+      {
+        "language": ["ruby"],
+        "path": "./ruby/ruby.json"
+      },
+      {
+        "language": ["xml"],
+        "path": "./xml/maven.json"
+      },
+      {
+        "language": ["yaml"],
+        "path": "./yaml.json"
+      }
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "launch": {
+    "prefix": "launch",
+    "body": [
+      "{",
+      "  \"version\": \"0.2.0\",",
+      "  \"configurations\": [",
+      "    {",
+      "      \"type\": \"${1:java}\",",
+      "      \"request\": \"launch\",",
+      "      \"name\": \"Launch ${2}\",",
+      "      \"mainClass\": \"${3}\",",
+      "      \"env\": {",
+      "        ${4}",
+      "      }",
+      "    }",
+      "  ]",
+      "}"
+    ],
+    "description": "DAP: create dap configuration.\nList of options: https://github.com/microsoft/vscode-java-debug#options."
+  }
+}

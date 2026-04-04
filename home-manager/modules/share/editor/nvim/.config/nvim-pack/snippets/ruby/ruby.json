@@ -1,0 +1,10 @@
+{
+  "pry-byebug": {
+    "prefix": "pry-byebug",
+    "body": [
+      "require \"pry\"; require \"pry-byebug\"; binding.pry"
+    ],
+    "description": "Add debug point."
+  }
+}
+

@@ -1,0 +1,54 @@
+{
+  "init": {
+    "prefix": "init",
+    "body": [
+      "default: help",
+      "",
+      "PROJECT_NAME=$(shell basename \"$(PWD)\")",
+      "OUTPUT_FOLDER=out",
+      "",
+      "BLUE=\\033[1;30;44m",
+      "YELLOW=\\033[1;30;43m",
+      "RED=\\033[1;30;41m",
+      "NC=\\033[0m",
+      "",
+      "## hello: say hello",
+      "hello:",
+      "\t@if [ -z \\${AUDIENCE} ]; then \\",
+      "\t\techo 'Missing \"AUDIENCE\" argument, usage: \"make hello AUDIENCE=<audience>\"' >/dev/stderr && exit 1; \\",
+      "\tfi",
+      "\t@echo -e \"\\${BLUE} I \\${NC} Hello, \\${AUDIENCE}.\"",
+      "",
+      "## watch: watch source files",
+      "watch:",
+      "\t@echo \"  > Watching files...\"",
+      "\t@if !type \\\"entr\\\" > /dev/null 2>&1; then \\",
+      "\t\techo \"  < Please install entr: http://eradman.com/entrproject/\"; \\",
+      "\telse \\",
+      "\t\twhile sleep 1; do \\",
+      "\t\t\tfind -type f -name '*.adoc' -or -name '*.yml' \\",
+      "\t\t\t| entr -d $(MAKE) -s build; \\",
+      "\t\tdone; \\",
+      "\tfi",
+      "",
+      ".PHONY: help test",
+      "all: help",
+      "help: Makefile",
+      "\t@echo",
+      "\t@echo \\\" Choose a command run in \\\"\\${PROJECT_NAME}\\\":\\\"",
+      "\t@echo",
+      "\t@sed -n 's/^##//p' \\$< | column -t -s ':' |  sed -e 's/^/ /'",
+      "\t@echo"
+    ],
+    "description": "Initialize new Makefile."
+  },
+  "recipe": {
+    "prefix": "recipe",
+    "body": [
+      "## ${1}: ${2}",
+      "${1}:",
+      "\t@${3}"
+    ],
+    "description": "Create recipe."
+  }
+}

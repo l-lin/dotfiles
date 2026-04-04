@@ -1,0 +1,9 @@
+{
+  "lsp": {
+    "prefix": "lsp",
+    "body": [
+      "# yaml-language-server: \\$schema=${1}"
+    ],
+    "description": "Add YAML language server."
+  }
+}
