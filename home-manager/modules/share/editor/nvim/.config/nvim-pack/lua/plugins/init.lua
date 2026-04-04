@@ -21,6 +21,7 @@ vim.api.nvim_create_autocmd("PackChanged", {
 vim.pack.add({
   -- Utility
   "https://github.com/nvim-lua/plenary.nvim",
+  "https://github.com/nvim-neotest/nvim-nio",
 
   -- Treesitter
   "https://github.com/nvim-treesitter/nvim-treesitter",
@@ -60,11 +61,18 @@ vim.pack.add({
   -- VCS
   "https://github.com/lewis6991/gitsigns.nvim",
   "https://github.com/tpope/vim-fugitive",
+
+  -- Coding
+  "https://github.com/windwp/nvim-autopairs",
+  "https://github.com/rcarriga/nvim-dap-ui",
+  "https://github.com/mfussenegger/nvim-dap",
+  "https://github.com/theHamsta/nvim-dap-virtual-text",
 }, { load = true, confirm = false })
 
 -- Load plugin configurations (order matters for dependencies)
 require("plugins.treesitter")
 require("plugins.ui")
 require("plugins.editor")
-require("plugins.integration")
+require("plugins.coding")
 require("plugins.vcs")
+require("plugins.integration")
