@@ -67,6 +67,10 @@ vim.pack.add({
   "https://github.com/rcarriga/nvim-dap-ui",
   "https://github.com/mfussenegger/nvim-dap",
   "https://github.com/theHamsta/nvim-dap-virtual-text",
+
+  -- Format
+  "https://github.com/mfussenegger/nvim-lint",
+  "https://github.com/stevearc/conform.nvim",
 }, { load = true, confirm = false })
 
 -- Load plugin configurations (order matters for dependencies)
@@ -76,3 +80,4 @@ require("plugins.editor")
 require("plugins.coding")
 require("plugins.vcs")
 require("plugins.integration")
+require("plugins.format")
