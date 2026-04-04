@@ -42,13 +42,19 @@ function getDaysRemaining(resetDateStr: string): number {
   return Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
 }
 
-/** Number of days in the billing cycle ending on resetDateStr (28–31). */
-function getBillingCycleDays(resetDateStr: string): number {
-  const parts = resetDateStr.split("-").map(Number);
-  if (parts.length !== 3 || parts.some(isNaN)) return 30;
-  const [year, month] = parts;
-  // Day 0 of next month = last day of current month
-  return new Date(year, month, 0).getDate();
+function getMonthProgress() {
+  const now = new Date(Date.now());
+  const currentDay = now.getDate();
+  const daysInMonth = new Date(
+    now.getFullYear(),
+    now.getMonth() + 1,
+    0,
+  ).getDate();
+  const completedDays = Math.max(0, currentDay - 1);
+  const totalProgressDays = Math.max(1, daysInMonth - 1);
+  const percentage = Math.round((completedDays / totalProgressDays) * 100);
+
+  return { completedDays, totalProgressDays, percentage };
 }
 
 export function updateWidget(
@@ -103,16 +109,15 @@ export function updateWidget(
   const usagePart = `${usageBar} ${used}/${quota} (${percent}%)${deltaText}`;
 
   const daysRemaining = getDaysRemaining(resetDate);
-  const totalDays = getBillingCycleDays(resetDate);
-  const daysPassed = Math.max(0, totalDays - daysRemaining);
+  const monthProgress = getMonthProgress();
   const daysBar = renderProgressBar(
-    daysPassed,
-    totalDays,
+    monthProgress.completedDays,
+    monthProgress.totalProgressDays,
     BAR_WIDTH,
     theme,
     false,
   );
-  const daysPart = `${daysBar} ${daysRemaining}d left (${resetDate})`;
+  const daysPart = `${daysBar} ${daysRemaining}d left (${monthProgress.percentage}%)`;
 
   ctx.ui.setWidget(WIDGET_ID, [`${usagePart} ${daysPart}`], WIDGET_PLACEMENT);
 }

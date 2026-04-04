@@ -1,7 +1,7 @@
 /**
  * GitHub Copilot Extension
  *
- * - Usage widget: shows premium request quota + days remaining above editor
+ * - Usage widget: shows premium request quota + monthly time progress above editor
  * - /cmd:copilot-models: interactive model picker with search + multiplier info
  * - /cmd:copilot-usage: manual usage refresh
  * - /cmd:copilot-usage-toggle: show/hide the usage widget
