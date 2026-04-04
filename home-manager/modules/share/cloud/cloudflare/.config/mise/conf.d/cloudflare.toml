@@ -1,0 +1,3 @@
+[tools]
+# Create new Workers and Pages
+"npm:create-cloudflare" = "latest"
