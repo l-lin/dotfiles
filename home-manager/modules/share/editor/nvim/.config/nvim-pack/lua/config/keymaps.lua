@@ -6,9 +6,9 @@ local map = vim.keymap.set
 -- save file
 map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save File" })
 -- Toggle executable permission on current file.
-map("n", "<leader>fxt", function() require("helpers.file").toggle_executable_permission() end, { desc = "Toggle executable permission" })
+map("n", "<leader>fxt", function() require("functions.file").toggle_executable_permission() end, { desc = "Toggle executable permission" })
 -- If this is a bash script, make it executable, and execute it in a tmux pane on the right
-map("n", "<leader>fxx", function() require("helpers.file").execute_bash_script() end, { desc = "Execute bash script" })
+map("n", "<leader>fxx", function() require("functions.file").execute_bash_script() end, { desc = "Execute bash script" })
 -- new file
 map("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New File" })
 -- Scratch buffer mode: quickly exit neovim with classic keybinds.
@@ -41,9 +41,9 @@ map("n", "<F28>", "<cmd>bd<CR>", { noremap = true, silent = true, desc = "Close 
 -- Yank
 --
 -- yank file path / name
-map("n", "<leader>yf", function() require("helpers.yank").yank_relative_path() end, { noremap = true, desc = "Copy current buffer relative path to clipboard" })
-map("n", "<leader>yF", function() require("helpers.yank").yank_absolute_path() end, { noremap = true, desc = "Copy current buffer absolute path to clipboard" })
-map("n", "<leader>yn", function() require("helpers.yank").yank_filename() end, { noremap = true, desc = "Copy current buffer file name to clipboard" })
+map("n", "<leader>yf", function() require("functions.yank").yank_relative_path() end, { noremap = true, desc = "Copy current buffer relative path to clipboard" })
+map("n", "<leader>yF", function() require("functions.yank").yank_absolute_path() end, { noremap = true, desc = "Copy current buffer absolute path to clipboard" })
+map("n", "<leader>yn", function() require("functions.yank").yank_filename() end, { noremap = true, desc = "Copy current buffer file name to clipboard" })
 map("x", "<leader>yf", ":<C-u>lua require('helpers.yank').yank_relative_path_with_line_range()<CR>", { noremap = true, desc = "Copy file path with line range" })
 -- special keymap to cut to black hole, so I don't lose what I yank to my register '+'
 map({ "n", "v" }, "<M-d>", '"_d', { noremap = true })
@@ -59,8 +59,8 @@ map("n", "<S-h>", "<S-h>zz", { noremap = true })
 map("n", "<S-l>", "<S-l>zz", { noremap = true })
 map("n", "{", "{zz", { noremap = true })
 map("n", "}", "}zz", { noremap = true })
-map("n", "j", function() require("helpers.cursor").move_to_middle_of_screen("j") end, { noremap = true })
-map("n", "k", function() require("helpers.cursor").move_to_middle_of_screen("k") end, { noremap = true })
+map("n", "j", function() require("functions.cursor").move_to_middle_of_screen("j") end, { noremap = true })
+map("n", "k", function() require("functions.cursor").move_to_middle_of_screen("k") end, { noremap = true })
 map("n", "n", "nzzzv", { noremap = true })
 map("n", "N", "Nzzzv", { noremap = true })
 -- do not include white space characters when using $ in visual mode, see https://vi.stackexchange.com/q/12607/15292
@@ -85,7 +85,7 @@ map("v", "<A-k>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", {
 -- remove trailing whitespaces
 map("n", "gJ", function() vim.api.nvim_command("norm! JdiW") end, { noremap = true, silent = true, desc = "Join line without whitespace" })
 -- Open link under cursor with either browser in private window for youtube links, short reponame in browser, or fallback to gx
-map("n", "gx", function() require("helpers.open").smart_open() end, { desc = "Smart open URL or filepath" })
+map("n", "gx", function() require("functions.open").smart_open() end, { desc = "Smart open URL or filepath" })
 -- better indenting
 map("x", "<", "<gv")
 map("x", ">", ">gv")

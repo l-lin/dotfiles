@@ -96,7 +96,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
 vim.api.nvim_create_user_command(
   "Codeowner",
-  function() vim.notify(require("helpers.git").codeowner(), vim.log.levels.INFO) end,
+  function() vim.notify(require("functions.git").codeowner(), vim.log.levels.INFO) end,
   { desc = "Check file code ownership" }
 )
 
