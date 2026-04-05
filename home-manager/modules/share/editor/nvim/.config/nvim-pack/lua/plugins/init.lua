@@ -71,6 +71,12 @@ vim.pack.add({
   -- Format
   "https://github.com/mfussenegger/nvim-lint",
   "https://github.com/stevearc/conform.nvim",
+
+  -- AI
+  "https://github.com/zbirenbaum/copilot.lua",
+  "https://github.com/copilotlsp-nvim/copilot-lsp",
+  "https://github.com/fang2hou/blink-copilot",
+  "https://codeberg.org/l-lin/review-ai.nvim",
 }, { load = true, confirm = false })
 
 -- Load plugin configurations (order matters for dependencies)
@@ -82,3 +88,4 @@ require("plugins.lsp")
 require("plugins.vcs")
 require("plugins.integration")
 require("plugins.format")
+require("plugins.ai")
