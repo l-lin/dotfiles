@@ -54,6 +54,10 @@
       "rev": "43916036b84966cbda196673b73a848f6f51cc12",
       "src": "https://codeberg.org/l-lin/jira.nvim"
     },
+    "lualine.nvim": {
+      "rev": "8811f3f3f4dc09d740c67e9ce399e7a541e2e5b2",
+      "src": "https://github.com/nvim-lualine/lualine.nvim"
+    },
     "mason.nvim": {
       "rev": "44d1e90e1f66e077268191e3ee9d2ac97cc18e65",
       "src": "https://github.com/mason-org/mason.nvim"

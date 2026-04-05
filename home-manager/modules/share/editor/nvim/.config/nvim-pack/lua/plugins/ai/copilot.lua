@@ -42,6 +42,7 @@ end
 
 ---@type vim.pack.Spec[]
 return {
+  -- For NES functionality
   {
     src = "https://github.com/copilotlsp-nvim/copilot-lsp",
   },
