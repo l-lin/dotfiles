@@ -44,7 +44,7 @@ map("n", "<F28>", "<cmd>bd<CR>", { noremap = true, silent = true, desc = "Close 
 map("n", "<leader>yf", function() require("functions.yank").yank_relative_path() end, { noremap = true, desc = "Copy current buffer relative path to clipboard" })
 map("n", "<leader>yF", function() require("functions.yank").yank_absolute_path() end, { noremap = true, desc = "Copy current buffer absolute path to clipboard" })
 map("n", "<leader>yn", function() require("functions.yank").yank_filename() end, { noremap = true, desc = "Copy current buffer file name to clipboard" })
-map("x", "<leader>yf", ":<C-u>lua require('helpers.yank').yank_relative_path_with_line_range()<CR>", { noremap = true, desc = "Copy file path with line range" })
+map("x", "<leader>yf", ":<C-u>lua require('functions.yank').yank_relative_path_with_line_range()<CR>", { noremap = true, desc = "Copy file path with line range" })
 -- special keymap to cut to black hole, so I don't lose what I yank to my register '+'
 map({ "n", "v" }, "<M-d>", '"_d', { noremap = true })
 
@@ -138,12 +138,6 @@ map("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Prev Warning" })
 -- commenting
 map("n", "gco", "o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Below" })
 map("n", "gcO", "O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Above" })
--- formatting
--- TODO:
--- map({ "n", "x" }, "<leader>cf", function()
---   LazyVim.format({ force = true })
--- end, { desc = "Format" })
--- diagnostic
 
 --
 -- Quickfix list
