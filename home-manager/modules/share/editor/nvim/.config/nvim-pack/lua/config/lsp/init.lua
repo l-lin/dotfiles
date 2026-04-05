@@ -1,5 +1,5 @@
 vim.diagnostic.config({
-  float = { border = "rounded" },
+  float = { border = "rounded", source = true },
   severity_sort = true,
   underline = true,
   update_in_insert = false,
@@ -7,6 +7,14 @@ vim.diagnostic.config({
     prefix = "●",
     spacing = 4,
     source = "if_many",
+  },
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = " ",
+      [vim.diagnostic.severity.WARN] = " ",
+      [vim.diagnostic.severity.INFO] = " ",
+      [vim.diagnostic.severity.HINT] = "󰌵 ",
+    },
   },
 })
 
