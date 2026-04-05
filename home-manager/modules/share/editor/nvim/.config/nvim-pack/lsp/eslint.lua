@@ -1,5 +1,3 @@
-local common = require("config.lsp")
-
 local eslint_config_filenames = {
   ".eslintrc",
   ".eslintrc.js",
@@ -33,7 +31,7 @@ return {
   },
   workspace_required = true,
   on_attach = function(client, bufnr)
-    common.on_attach(client, bufnr)
+    require("config.lsp.common").on_attach(client, bufnr)
 
     vim.api.nvim_buf_create_user_command(bufnr, "LspEslintFixAll", function()
       client:request_sync("workspace/executeCommand", {
