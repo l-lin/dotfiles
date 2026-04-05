@@ -24,43 +24,55 @@ local function find_sub_module()
   return vim.api.nvim_buf_get_name(0)
 end
 
---
--- Setup
---
-require("mini.files").setup({
-  windows = {
-    preview = true,
-    width_focus = 50,
-    width_preview = 100,
-  },
-  options = {
-    use_as_default_explorer = true,
-  },
-  mappings = {
-    go_in = "",
-    go_out = "",
-    synchronize = "<C-s>",
-  },
-})
+local function setup()
+  require("mini.files").setup({
+    windows = {
+      preview = true,
+      width_focus = 50,
+      width_preview = 100,
+    },
+    options = {
+      use_as_default_explorer = true,
+    },
+    mappings = {
+      go_in = "",
+      go_out = "",
+      synchronize = "<C-s>",
+    },
+  })
+end
+
+---@param map fun(mode: string, lhs: string, rhs: string|function, opts?: table)
+local function keymaps(map)
+  map("n", "<M-1>", function()
+    local path = vim.api.nvim_buf_get_name(0)
+    if path:match("^minifiles://") then
+      require("mini.files").open(vim.uv.cwd(), true)
+    else
+      require("mini.files").open(path, true)
+    end
+  end, {
+    desc = "Open mini.files (directory of current file) (Alt+1)",
+    noremap = true,
+  })
+
+  map("n", "<leader>fh", function()
+    require("mini.files").open(find_sub_module(), true)
+  end, {
+    desc = "Open mini.files in current sub-module/sub-project",
+    remap = true,
+  })
+end
 
 --
--- Keymaps
+-- Navigate and manipulate file system.
 --
-vim.keymap.set("n", "<M-1>", function()
-  local path = vim.api.nvim_buf_get_name(0)
-  if path:match("^minifiles://") then
-    require("mini.files").open(vim.uv.cwd(), true)
-  else
-    require("mini.files").open(path, true)
-  end
-end, {
-  desc = "Open mini.files (directory of current file) (Alt+1)",
-  noremap = true,
-})
 
-vim.keymap.set("n", "<leader>fh", function()
-  require("mini.files").open(find_sub_module(), true)
-end, {
-  desc = "Open mini.files in current sub-module/sub-project",
-  remap = true,
-})
+---@type vim.pack.Spec
+return {
+  src = "https://github.com/nvim-mini/mini.files",
+  data = {
+    setup = setup,
+    keymaps = keymaps,
+  },
+}
