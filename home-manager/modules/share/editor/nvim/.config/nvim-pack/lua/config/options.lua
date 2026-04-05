@@ -24,7 +24,7 @@ o.shiftwidth = vim.o.tabstop
 o.winborder = "rounded"
 
 -- Experimental UI2: floating cmdline and messages
-o.cmdheight = 0
+o.cmdheight = 1
 require('vim._core.ui2').enable({ targets = "msg" })
 
 opt.autowrite = true -- Enable auto write

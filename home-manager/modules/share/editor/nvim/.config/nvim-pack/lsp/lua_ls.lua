@@ -6,6 +6,7 @@ return {
     { ".luacheckrc", ".stylua.toml", "stylua.toml", "selene.toml", "selene.yml" },
     { ".git" },
   },
+  ---@type lspconfig.settings.lua_ls
   settings = {
     Lua = {
       workspace = {
@@ -21,6 +22,9 @@ return {
         paramName = "Disable",
         semicolon = "Disable",
         arrayIndex = "Disable",
+      },
+      diagnostics = {
+        globals = { "vim", "Snacks" },
       },
     },
   },
