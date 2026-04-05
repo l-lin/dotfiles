@@ -43,6 +43,7 @@ vim.pack.add({
   -- UI
   "https://github.com/folke/snacks.nvim",
   "https://github.com/folke/which-key.nvim",
+  "https://github.com/folke/trouble.nvim",
 
   -- Editor
   "https://github.com/l-lin/emoji.nvim",
@@ -52,7 +53,6 @@ vim.pack.add({
   "https://github.com/christoomey/vim-tmux-navigator",
   "https://github.com/folke/todo-comments.nvim",
   "https://codeberg.org/l-lin/translate.nvim",
-  "https://github.com/folke/trouble.nvim",
   "https://github.com/gbprod/yanky.nvim",
 
   -- Integration
