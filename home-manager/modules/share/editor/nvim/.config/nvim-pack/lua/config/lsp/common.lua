@@ -50,6 +50,14 @@ local function on_attach(client, bufnr)
     map(bufnr, "n", "<leader>cl", function()
       Snacks.picker.lsp_config()
     end, "Lsp Info")
+    if client.server_capabilities.documentHighlightProvider and Snacks.words ~= nil then
+      map(bufnr, "n", "<M-n>", function()
+        Snacks.words.jump(vim.v.count1, true)
+      end, "Next Reference")
+      map(bufnr, "n", "<M-p>", function()
+        Snacks.words.jump(-vim.v.count1, true)
+      end, "Prev Reference")
+    end
   end
 
   if client.server_capabilities.inlayHintProvider then
