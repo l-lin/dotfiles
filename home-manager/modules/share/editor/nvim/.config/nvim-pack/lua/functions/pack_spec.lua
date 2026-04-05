@@ -1,6 +1,6 @@
-local array = require("functions.array")
+local pack = require("functions.pack")
 
-describe("array.flatten", function()
+describe("pack.to_pack_specs", function()
   local function given_plugin_spec(src, data)
     local plugin_spec = { src = src }
     if data ~= nil then
@@ -17,56 +17,63 @@ describe("array.flatten", function()
     }
 
     -- WHEN
-    local actual = array.flatten(expected)
+    local actual = pack.to_pack_specs(expected)
 
     -- THEN
     assert.are.same(expected, actual)
   end)
 
-  it("flattens nested plugin groups that mix plugin arrays and plugin specs", function()
+  it("unwraps helper-backed plugin modules and ignores helper-only modules", function()
     -- GIVEN
-    local emoji_dependencies = {
-      given_plugin_spec("https://github.com/nvim-lua/plenary.nvim"),
-      given_plugin_spec("https://github.com/l-lin/emoji.nvim"),
-    }
-    local mini_files = given_plugin_spec("https://github.com/nvim-mini/mini.files", {
+    local blink_sources = given_plugin_spec("https://github.com/example/friendly-snippets")
+    local blink = given_plugin_spec("https://github.com/example/blink.cmp", {
       setup = function() end,
     })
-    local expected = {
-      emoji_dependencies[1],
-      emoji_dependencies[2],
-      mini_files,
+    local emoji = given_plugin_spec("https://github.com/example/emoji.nvim")
+    local helper_backed_module = {
+      spec = {
+        blink_sources,
+        blink,
+      },
+      add_provider = function() end,
     }
-
-    -- WHEN
-    local actual = array.flatten({
-      emoji_dependencies,
-      mini_files,
-    })
-
-    -- THEN
-    assert.are.same(expected, actual)
-  end)
-
-  it("does not add duplicate plugin specs with the same src", function()
-    -- GIVEN
-    local first_plenary = given_plugin_spec("https://github.com/nvim-lua/plenary.nvim", {
-      priority = "first",
-    })
-    local duplicated_plenary = given_plugin_spec("https://github.com/nvim-lua/plenary.nvim", {
-      priority = "second",
-    })
-    local emoji = given_plugin_spec("https://github.com/l-lin/emoji.nvim")
+    local helper_only_module = {
+      setup_dap = function() end,
+    }
     local expected = {
-      first_plenary,
+      blink_sources,
+      blink,
       emoji,
     }
 
     -- WHEN
-    local actual = array.flatten({
-      { first_plenary, emoji },
-      duplicated_plenary,
-      first_plenary,
+    local actual = pack.to_pack_specs({
+      helper_backed_module,
+      helper_only_module,
+      emoji,
+    })
+
+    -- THEN
+    assert.are.same(expected, actual)
+  end)
+
+  it("does not add duplicate plugin specs across helper modules and nested groups", function()
+    -- GIVEN
+    local schemastore = given_plugin_spec("https://github.com/b0o/SchemaStore.nvim")
+    local json = given_plugin_spec("https://github.com/example/json-plugin")
+    local yaml = given_plugin_spec("https://github.com/example/yaml-plugin")
+    local expected = {
+      schemastore,
+      json,
+      yaml,
+    }
+
+    -- WHEN
+    local actual = pack.to_pack_specs({
+      {
+        { spec = { schemastore, json } },
+        { spec = { given_plugin_spec("https://github.com/b0o/SchemaStore.nvim"), yaml } },
+      },
     })
 
     -- THEN

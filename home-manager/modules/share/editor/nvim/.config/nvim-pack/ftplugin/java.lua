@@ -1,5 +1,6 @@
--- Java convention is 4 spaces
 vim.o.tabstop = 4
 vim.o.shiftwidth = vim.o.tabstop
 
-require("jdtls").start_or_attach(require("functions.lang.java").create_config())
+if vim.fn.executable("java") == 1 and vim.fn.executable("jdtls") == 1 then
+  vim.lsp.enable("jdtls")
+end

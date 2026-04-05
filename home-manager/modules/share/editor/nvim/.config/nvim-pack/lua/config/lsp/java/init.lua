@@ -1,7 +1,5 @@
 local java_cmds = vim.api.nvim_create_augroup("java_cmds", { clear = true })
 
-local root_markers = { ".git", "mvnw", "gradlew" }
-
 local home = os.getenv("HOME")
 
 -- Path to java binary to use when starting up the LS server.
@@ -159,27 +157,10 @@ end
 ---@return table init_options initial options used to configure JDTLS
 local function create_init_options()
   local bundles = {}
-  vim.list_extend(bundles, require("functions.lang.java-dap").create_bundles() or {})
-  vim.list_extend(bundles, require("functions.lang.java-test").create_bundles() or {})
+  vim.list_extend(bundles, require("config.lsp.java.java-dap").create_bundles() or {})
+  vim.list_extend(bundles, require("config.lsp.java.java-test").create_bundles() or {})
 
   return { bundles = bundles }
-end
-
----Create the capabilities used in JDTLS.
----@return lsp.ClientCapabilities lsp_capabilities LSP capabilities, e.g. auto-completion
-local function create_capabilities()
-  require("jdtls").extendedClientCapabilities.resolveAdditionalTextEditsSupport = true
-  local has_blink, blink = pcall(require, "blink.cmp")
-  return vim.tbl_deep_extend(
-    "force",
-    vim.lsp.protocol.make_client_capabilities(),
-    has_blink and blink.get_lsp_capabilities() or {}
-  )
-end
-
----@return string root_dir path to the root directory.
-local function get_root_dir()
-  return require("jdtls.setup").find_root(root_markers)
 end
 
 ---Setup keymap after the JDTLS is fully attached.
@@ -190,58 +171,114 @@ end
 local function attach_keymaps(bufnr)
   local jdtls = require("jdtls")
 
-  vim.keymap.set("n", "<M-C-V>", jdtls.extract_variable_all, { buffer = bufnr, noremap = true, silent = true, desc = "Extract variable" })
-  vim.keymap.set("v", "<M-C-V>", [[<ESC><CMD>lua require("jdtls").extract_variable_all(true)<CR>]], { buffer = bufnr, noremap = true, silent = true, desc = "Extract variable" })
-  vim.keymap.set("i", "<M-C-V>", [[<ESC><CMD>lua require("jdtls").extract_variable_all()<CR>]], { buffer = bufnr, noremap = true, silent = true, desc = "Extract variable" })
+  vim.keymap.set(
+    "n",
+    "<M-C-V>",
+    jdtls.extract_variable_all,
+    { buffer = bufnr, noremap = true, silent = true, desc = "Extract variable" }
+  )
+  vim.keymap.set(
+    "v",
+    "<M-C-V>",
+    [[<ESC><CMD>lua require("jdtls").extract_variable_all(true)<CR>]],
+    { buffer = bufnr, noremap = true, silent = true, desc = "Extract variable" }
+  )
+  vim.keymap.set(
+    "i",
+    "<M-C-V>",
+    [[<ESC><CMD>lua require("jdtls").extract_variable_all()<CR>]],
+    { buffer = bufnr, noremap = true, silent = true, desc = "Extract variable" }
+  )
 
-  vim.keymap.set("n", "<M-C-C>", jdtls.extract_constant, { buffer = bufnr, noremap = true, silent = true, desc = "Extract constant" })
-  vim.keymap.set("v", "<M-C-C>", [[<ESC><CMD>lua require("jdtls").extract_constant(true)<CR>]], { buffer = bufnr, noremap = true, silent = true, desc = "Extract constant" })
-  vim.keymap.set("i", "<M-C-C>", [[<ESC><CMD>lua require("jdtls").extract_constant()<CR>]], { buffer = bufnr, noremap = true, silent = true, desc = "Extract constant" })
+  vim.keymap.set(
+    "n",
+    "<M-C-C>",
+    jdtls.extract_constant,
+    { buffer = bufnr, noremap = true, silent = true, desc = "Extract constant" }
+  )
+  vim.keymap.set(
+    "v",
+    "<M-C-C>",
+    [[<ESC><CMD>lua require("jdtls").extract_constant(true)<CR>]],
+    { buffer = bufnr, noremap = true, silent = true, desc = "Extract constant" }
+  )
+  vim.keymap.set(
+    "i",
+    "<M-C-C>",
+    [[<ESC><CMD>lua require("jdtls").extract_constant()<CR>]],
+    { buffer = bufnr, noremap = true, silent = true, desc = "Extract constant" }
+  )
 
-  vim.keymap.set("v", "<M-C-N>", [[<ESC><CMD>lua require("jdtls").extract_method(true)<CR>]], { buffer = bufnr, noremap = true, silent = true, desc = "Extract method" })
+  vim.keymap.set(
+    "v",
+    "<M-C-N>",
+    [[<ESC><CMD>lua require("jdtls").extract_method(true)<CR>]],
+    { buffer = bufnr, noremap = true, silent = true, desc = "Extract method" }
+  )
 
-  vim.keymap.set("n", "<F33>", jdtls.compile, { buffer = bufnr, noremap = true, silent = true, desc = "Compile (Ctrl+F9)" })
-  vim.keymap.set("n", "<M-C-O>", jdtls.organize_imports, { buffer = bufnr, noremap = true, silent = true, desc = "Organize imports (Ctrl+Alt+o)" })
+  vim.keymap.set(
+    "n",
+    "<F33>",
+    jdtls.compile,
+    { buffer = bufnr, noremap = true, silent = true, desc = "Compile (Ctrl+F9)" }
+  )
+  vim.keymap.set(
+    "n",
+    "<M-C-O>",
+    jdtls.organize_imports,
+    { buffer = bufnr, noremap = true, silent = true, desc = "Organize imports (Ctrl+Alt+o)" }
+  )
 
-  vim.keymap.set("n", "]E", function() vim.fn.search('^Caused by:', 'W') end, { noremap = true, silent = true, desc = "Find next Java exception" })
-  vim.keymap.set("n", "[E", function() vim.fn.search('^Caused by:', 'bW') end, { noremap = true, silent = true, desc = "Find previous Java exception" })
+  vim.keymap.set("n", "]E", function()
+    vim.fn.search("^Caused by:", "W")
+  end, { noremap = true, silent = true, desc = "Find next Java exception" })
+  vim.keymap.set("n", "[E", function()
+    vim.fn.search("^Caused by:", "bW")
+  end, { noremap = true, silent = true, desc = "Find previous Java exception" })
 
-  local wk = require("which-key")
-  wk.add({
-    {
-      mode = "n",
-      buffer = bufnr,
-      { "<leader>cx", group = "extract" },
-      { "<leader>cxv", require("jdtls").extract_variable_all, desc = "Extract Variable" },
-      { "<leader>cxc", require("jdtls").extract_constant, desc = "Extract Constant" },
-      { "gs", require("jdtls").super_implementation, desc = "Goto Super" },
-      { "<leader>co", require("jdtls").organize_imports, desc = "Organize Imports" },
-    },
-  })
-  wk.add({
-    {
-      mode = "v",
-      buffer = bufnr,
-      { "<leader>cx", group = "extract" },
-      { "<leader>cxm", [[<ESC><CMD>lua require('jdtls').extract_method(true)<CR>]], desc = "Extract Method" },
-      { "<leader>cxv", [[<ESC><CMD>lua require('jdtls').extract_variable_all(true)<CR>]], desc = "Extract Variable" },
-      { "<leader>cxc", [[<ESC><CMD>lua require('jdtls').extract_constant(true)<CR>]], desc = "Extract Constant" },
-    },
-  })
+  local has_wk, wk = pcall(require, "which-key")
+  if has_wk then
+    wk.add({
+      {
+        mode = "n",
+        buffer = bufnr,
+        { "<leader>cx", group = "extract" },
+        { "<leader>cxv", require("jdtls").extract_variable_all, desc = "Extract Variable" },
+        { "<leader>cxc", require("jdtls").extract_constant, desc = "Extract Constant" },
+        -- { "gs", require("jdtls").super_implementation, desc = "Goto Super" },
+        { "<leader>co", require("jdtls").organize_imports, desc = "Organize Imports" },
+      },
+    })
+    wk.add({
+      {
+        mode = "v",
+        buffer = bufnr,
+        { "<leader>cx", group = "extract" },
+        { "<leader>cxm", [[<ESC><CMD>lua require('jdtls').extract_method(true)<CR>]], desc = "Extract Method" },
+        { "<leader>cxv", [[<ESC><CMD>lua require('jdtls').extract_variable_all(true)<CR>]], desc = "Extract Variable" },
+        { "<leader>cxc", [[<ESC><CMD>lua require('jdtls').extract_constant(true)<CR>]], desc = "Extract Constant" },
+      },
+    })
+  end
 end
 
 ---Enable codelens to display the number of references.
 ---Can be useful to find dead code.
 ---@param bufnr number current buffer
-local function enable_codelens(bufnr)
-  pcall(vim.lsp.codelens.refresh)
+---@param enabled boolean whether to enable codelens or not
+local function enable_codelens(bufnr, enabled)
+  if not enabled then
+    return
+  end
+
+  vim.lsp.codelens.enable(true)
 
   vim.api.nvim_create_autocmd("BufWritePost", {
     buffer = bufnr,
     group = java_cmds,
     desc = "Refresh codelens",
     callback = function()
-      pcall(vim.lsp.codelens.refresh)
+      vim.lsp.codelens.enable(true)
     end,
   })
 end
@@ -253,26 +290,16 @@ local function on_attach(client, bufnr)
   attach_keymaps(bufnr)
 
   -- Disabling codelens as it slows down the editor after all...
-  -- enable_codelens(bufnr)
+  enable_codelens(bufnr, false)
 
   -- Attach DAP and java-test only after JDTLS is fully started.
-  require("functions.lang.java-dap").setup()
-  require("functions.lang.java-test").attach_keymaps(bufnr)
-end
-
-local function create_config()
-  return {
-    capabilities = create_capabilities(),
-    cmd = create_cmd(),
-    flags = { allow_incremental_sync = true },
-    init_options = create_init_options(),
-    on_attach = on_attach,
-    root_dir = get_root_dir(),
-    settings = create_settings(),
-  }
+  require("config.lsp.java.java-dap").setup()
+  require("config.lsp.java.java-test").attach_keymaps(bufnr)
 end
 
 local M = {}
-M.root_markers = root_markers
-M.create_config = create_config
+M.create_cmd = create_cmd
+M.create_init_options = create_init_options
+M.create_settings = create_settings
+M.on_attach = on_attach
 return M

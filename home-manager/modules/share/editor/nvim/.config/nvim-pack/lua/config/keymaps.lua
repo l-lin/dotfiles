@@ -112,10 +112,6 @@ map("n", "#", "#N", { noremap = true, silent = true })
 --
 -- LSP
 --
--- TODO: move to lsp?
-map("n", "<leader>ci", vim.lsp.buf.implementation, { desc = "Goto implementation" })
-map("n", "<leader>ct", vim.lsp.buf.type_definition, { desc = "Goto Type definition" })
-map("n", "<leader>cu", vim.lsp.buf.references, { desc = "References / Usages" })
 -- diagnostics
 local diagnostic_goto = function(next, severity)
   return function()

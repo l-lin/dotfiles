@@ -342,14 +342,12 @@ end
 
 ---@param create_autocmd fun(event: string, opts: table)
 local function autocmds(create_autocmd)
-  if package.loaded["mini.files"] then
-    create_autocmd("User", {
-      pattern = "MiniFilesActionRename",
-      callback = function(event)
-        Snacks.rename.on_rename_file(event.data.from, event.data.to)
-      end,
-    })
-  end
+  create_autocmd("User", {
+    pattern = "MiniFilesActionRename",
+    callback = function(event)
+      Snacks.rename.on_rename_file(event.data.from, event.data.to)
+    end,
+  })
 end
 
 ---@type vim.pack.Spec

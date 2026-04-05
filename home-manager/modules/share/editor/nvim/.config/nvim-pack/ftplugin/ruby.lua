@@ -1,3 +1,16 @@
+if vim.fn.executable("ruby-lsp") == 1 then
+  vim.lsp.enable("ruby_lsp")
+end
+
+if vim.fn.executable("rubocop") == 1 then
+  vim.lsp.enable("rubocop")
+end
+
+local fuzzy_ls_path = vim.fn.expand(vim.fn.stdpath("data") .. "/site/pack/core/opt/fuzzy_ruby_server/bin/fuzzy_darwin-arm64")
+if vim.fn.filereadable(fuzzy_ls_path) == 1 then
+  vim.lsp.enable("fuzzy_ls")
+end
+
 vim.keymap.set(
   "n",
   "<leader>fxr",
