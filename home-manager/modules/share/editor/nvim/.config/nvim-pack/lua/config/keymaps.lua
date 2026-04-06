@@ -18,19 +18,6 @@ if vim.env.NVIM_SCRATCH then
 end
 
 --
--- Plugins
---
-map("n", "<leader>ll", function()
-  require("functions.pack_manager").list_plugins()
-end, { desc = "List nvim-pack plugins" })
-map("n", "<leader>lu", function()
-  require("functions.pack_manager").update_plugins()
-end, { desc = "Update nvim-pack plugins" })
-map("n", "<leader>lc", function()
-  require("functions.pack_manager").clean_inactive_plugins()
-end, { desc = "Clean inactive nvim-pack plugins" })
-
---
 -- Windows
 --
 -- Move to window using the <ctrl> hjkl keys

@@ -34,6 +34,7 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = {
     -- nvim
     "nvim-pack",
+    "nvim-pack-ui",
     "checkhealth",
     "help",
     "lspinfo",
