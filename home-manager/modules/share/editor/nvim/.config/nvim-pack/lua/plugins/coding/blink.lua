@@ -1,6 +1,7 @@
 local default_sources = { "lsp", "snippets", "path", "buffer", "copilot" }
 local per_filetype = {
   markdown = { "wiki_links", inherit_defaults = true },
+  lua = { "lazydev", inherit_defaults = true }
 }
 local providers = {
   copilot = {
@@ -8,6 +9,11 @@ local providers = {
     module = "blink-copilot",
     name = "copilot",
     score_offset = 100,
+  },
+  lazydev = {
+    module = "lazydev.integrations.blink",
+    name = "lazydev",
+    score_offset = 99,
   },
   wiki_links = {
     module = "blink-cmp-wiki-links",

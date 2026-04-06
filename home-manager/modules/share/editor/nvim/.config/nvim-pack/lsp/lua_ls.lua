@@ -11,6 +11,8 @@ return {
     Lua = {
       workspace = {
         checkThirdParty = false,
+        -- NOTE: Uncomment the following if you don't want to use lazydev.
+        -- library = vim.api.nvim_get_runtime_file("", true),
       },
       completion = {
         callSnippet = "Replace",
@@ -24,7 +26,8 @@ return {
         arrayIndex = "Disable",
       },
       diagnostics = {
-        globals = { "vim", "Snacks" },
+        -- NOTE: You can add your own global variables here.
+        -- globals = { "LazyVim", "Snacks" },
       },
     },
   },
