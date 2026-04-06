@@ -332,6 +332,9 @@ local function setup()
   map("n", "<leader>N", function()
     Snacks.picker.notifications()
   end, { desc = "Notification History" })
+  map("n", "<leader>si", function()
+    Snacks.picker.icons()
+  end, { desc = "Notification History" })
 
   vim.api.nvim_create_autocmd("User", {
     pattern = "MiniFilesActionRename",
