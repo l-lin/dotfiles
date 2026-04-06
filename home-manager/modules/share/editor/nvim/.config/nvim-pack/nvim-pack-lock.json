@@ -38,7 +38,7 @@
       "src": "https://github.com/pheen/fuzzy_ruby_server"
     },
     "gitsigns.nvim": {
-      "rev": "f2ce545601fdeb755e91470b25a55705639586a4",
+      "rev": "db486b42299b2e3f5831809617af21becf268a39",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "global-note.nvim": {
@@ -79,7 +79,7 @@
       "src": "https://github.com/windwp/nvim-autopairs"
     },
     "nvim-dap": {
-      "rev": "4f5deb110d9ff8994d96c21df95e2271d11214f9",
+      "rev": "45a69eba683a2c448dd9ecfc4de89511f0646b5f",
       "src": "https://github.com/mfussenegger/nvim-dap"
     },
     "nvim-dap-ui": {
