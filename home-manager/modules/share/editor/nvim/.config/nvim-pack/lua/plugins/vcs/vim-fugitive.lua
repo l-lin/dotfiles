@@ -68,7 +68,11 @@ local function setup()
 end
 
 ---@type vim.pack.Spec
-return {
+return
+-- fugitive.vim: A Git wrapper so awesome, it should be illegal
+{
   src = "https://github.com/tpope/vim-fugitive",
-  data = { setup = setup },
+  data = { setup = function ()
+    vim.schedule(setup)
+  end },
 }

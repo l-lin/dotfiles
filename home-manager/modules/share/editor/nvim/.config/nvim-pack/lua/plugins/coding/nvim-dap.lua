@@ -36,11 +36,17 @@ end
 
 ---@type vim.pack.Spec[]
 return {
+  -- Debug Adapter Protocol client implementation for Neovim.
   {
     src = "https://github.com/mfussenegger/nvim-dap",
   },
+  -- Add virtual text.
   {
     src = "https://github.com/theHamsta/nvim-dap-virtual-text",
-    data = { setup = setup },
+    data = {
+      setup = function()
+        vim.schedule(setup)
+      end,
+    },
   },
 }

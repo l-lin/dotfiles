@@ -6,7 +6,7 @@
     },
     "blink-cmp-wiki-links": {
       "rev": "fafdb57384d834954397f0b1491000b0c87ecbee",
-      "src": "https://github.com/l-lin/blink-cmp-wiki-links"
+      "src": "https://codeberg.org/l-lin/blink-cmp-wiki-links"
     },
     "blink-copilot": {
       "rev": "7ad8209b2f880a2840c94cdcd80ab4dc511d4f39",
@@ -16,6 +16,10 @@
       "rev": "78336bc89ee5365633bcf754d93df01678b5c08f",
       "src": "https://github.com/saghen/blink.cmp",
       "version": "1.0.0 - 2.0.0"
+    },
+    "conform.nvim": {
+      "rev": "086a40dc7ed8242c03be9f47fbcee68699cc2395",
+      "src": "https://github.com/stevearc/conform.nvim"
     },
     "copilot-lsp": {
       "rev": "1b6d8273594643f51bb4c0c1d819bdb21b42159d",

@@ -75,6 +75,7 @@ local function setup()
     },
   })
 
+  -- stylua: ignore start
   local map = vim.keymap.set
   map("n", "<leader>oy", "<cmd>Obsidian yesterday<cr>", { desc = "Open yesterday's note", noremap = true })
   map("n", "<leader>oo", "<cmd>Obsidian today<cr>", { desc = "Open today's note", noremap = true })
@@ -90,15 +91,11 @@ local function setup()
   map("n", "<leader>oP", require("functions.lang.obsidian.article_to_markdown").paste_url, { desc = "Generate note from URL in clipboard", noremap = true })
   map("n", "<leader>om", require("functions.lang.obsidian").open_current_monthly_note, { desc = "Open current monthly note", noremap = true })
   map("n", "<leader>og", require("functions.lang.obsidian").search_pending_todos, { desc = "Search pending todos", noremap = true })
-  map("n", "<leader>os", function()
-    require("functions.lang.obsidian.article_summarizer").paste_url(true)
-  end, { desc = "Short summarize article from URL in clipboard", noremap = true })
-  map("n", "<leader>oS", function()
-    require("functions.lang.obsidian.article_summarizer").paste_url(false)
-  end, { desc = "Summarize article from URL in clipboard", noremap = true })
+  map("n", "<leader>os", function() require("functions.lang.obsidian.article_summarizer").paste_url(true) end, { desc = "Short summarize article from URL in clipboard", noremap = true })
+  map("n", "<leader>oS", function() require("functions.lang.obsidian.article_summarizer").paste_url(false) end, { desc = "Summarize article from URL in clipboard", noremap = true })
   map("v", "<leader>oy", require("functions.lang.obsidian").sanitize_and_yank, { desc = "Yank selection without wiki links", noremap = true })
   map("v", "<leader>oY", require("functions.lang.obsidian").to_html_and_yank, { desc = "Yank selection in HTML format", noremap = true })
-
+  -- stylua: ignore end
 
   local has_wk, wk = pcall(require, "which-key")
   if has_wk then
@@ -108,11 +105,17 @@ end
 
 ---@type vim.pack.Spec[]
 return {
+  -- plenary: full; complete; entire; absolute; unqualified. All the lua functions I don't want to write twice.
   {
     src = "https://github.com/nvim-lua/plenary.nvim",
   },
+  -- Obsidian 🤝 Neovim
   {
     src = "https://github.com/l-lin/obsidian.nvim",
-    data = { setup = setup },
+    data = {
+      setup = function()
+        vim.schedule(setup)
+      end,
+    },
   },
 }

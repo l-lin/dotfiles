@@ -95,7 +95,13 @@ local function setup()
 end
 
 ---@type vim.pack.Spec
-return {
+return
+-- Lightweight yet powerful formatter plugin for Neovim.
+{
   src = "https://github.com/stevearc/conform.nvim",
-  data = { setup = setup },
+  data = {
+    setup = function()
+      vim.schedule(setup)
+    end,
+  },
 }

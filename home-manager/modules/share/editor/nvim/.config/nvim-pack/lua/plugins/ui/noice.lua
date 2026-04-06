@@ -1,12 +1,10 @@
---
--- nice UI for messages, cmdline and popupmenu
---
-
 ---@type vim.pack.Spec[]
 return {
+  -- UI Component Library for Neovim.
   {
     src = "https://github.com/MunifTanjim/nui.nvim",
   },
+  -- nice UI for messages, cmdline and popupmenu
   {
     src = "https://github.com/folke/noice.nvim",
     data = {

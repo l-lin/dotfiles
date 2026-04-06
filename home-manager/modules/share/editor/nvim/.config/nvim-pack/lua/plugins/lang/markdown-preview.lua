@@ -19,7 +19,9 @@ local function setup()
 end
 
 ---@type vim.pack.Spec
-return {
+return
+-- markdown preview plugin for (neo)vim
+{
   src = "https://github.com/iamcco/markdown-preview.nvim",
   data = { setup = setup },
 }

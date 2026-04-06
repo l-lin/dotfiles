@@ -1,5 +1,7 @@
 ---@type vim.pack.Spec
-return {
+return
+-- 💾 Simple session management for Neovim.
+{
   src = "https://github.com/folke/persistence.nvim",
   data = {
     setup = function()

@@ -62,7 +62,9 @@ local function setup()
 end
 
 ---@type vim.pack.Spec
-return {
+return
+-- A blazing fast and easy to configure neovim statusline plugin written in pure lua.
+{
   src = "https://github.com/nvim-lualine/lualine.nvim",
   data = { setup = setup },
 }

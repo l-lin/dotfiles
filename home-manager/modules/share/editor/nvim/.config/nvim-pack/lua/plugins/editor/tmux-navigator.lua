@@ -1,7 +1,9 @@
 vim.g.tmux_navigator_no_mappings = 1
 
 ---@type vim.pack.Spec
-return {
+return
+-- Seamless navigation between tmux panes and vim splits.
+{
   src = "https://github.com/christoomey/vim-tmux-navigator",
   data = {
     setup = function()

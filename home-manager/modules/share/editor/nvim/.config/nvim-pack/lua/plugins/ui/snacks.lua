@@ -1,7 +1,3 @@
---
--- 🍿 A collection of QoL plugins for Neovim
---
-
 ---Switch mode from files to grep.
 ---src: https://github.com/folke/snacks.nvim/discussions/499
 ---@param picker snacks.Picker the current picker
@@ -346,7 +342,9 @@ local function setup()
 end
 
 ---@type vim.pack.Spec
-return {
+return
+-- 🍿 A collection of QoL plugins for Neovim.
+{
   src = "https://github.com/folke/snacks.nvim",
   data = { setup = setup },
 }

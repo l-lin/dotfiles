@@ -65,7 +65,13 @@ local function setup()
 end
 
 ---@type vim.pack.Spec
-return {
+return
+-- An asynchronous linter plugin for Neovim complementary to the built-in Language Server Protocol support.
+{
   src = "https://github.com/mfussenegger/nvim-lint",
-  data = { setup = setup },
+  data = {
+    setup = function()
+      vim.schedule(setup)
+    end,
+  },
 }

@@ -56,11 +56,17 @@ end
 
 ---@type vim.pack.Spec[]
 return {
+  -- A library for asynchronous IO in Neovim
   {
     src = "https://github.com/nvim-neotest/nvim-nio",
   },
+  -- A UI for nvim-dap
   {
     src = "https://github.com/rcarriga/nvim-dap-ui",
-    data = { setup = setup },
+    data = {
+      setup = function()
+        vim.schedule(setup)
+      end,
+    },
   },
 }

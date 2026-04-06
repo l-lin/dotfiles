@@ -94,12 +94,15 @@ end
 
 ---@type vim.pack.Spec[]
 return {
+  -- Nvim Treesitter configurations and abstraction layer.
   {
     src = "https://github.com/nvim-treesitter/nvim-treesitter",
   },
+  -- Syntax aware text-objects, select, move, swap, and peek support.
   {
     src = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
   },
+  -- Show code context.
   {
     src = "https://github.com/nvim-treesitter/nvim-treesitter-context",
     data = { setup = setup },

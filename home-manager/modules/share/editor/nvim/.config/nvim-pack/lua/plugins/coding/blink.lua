@@ -83,15 +83,19 @@ end
 
 ---@type vim.pack.Spec[]
 return {
+  -- Set of preconfigured snippets for different languages.
   {
     src = "https://github.com/rafamadriz/friendly-snippets",
   },
+  -- provides fuzzy matching for markdown file names and automatically formats them as wiki links
   {
-    src = "https://github.com/l-lin/blink-cmp-wiki-links",
+    src = "https://codeberg.org/l-lin/blink-cmp-wiki-links",
   },
+  -- ⚙️ Configurable GitHub Copilot blink.cmp source for Neovim
   {
     src = "https://github.com/fang2hou/blink-copilot",
   },
+  -- Performant, batteries-included completion plugin for Neovim
   {
     src = "https://github.com/saghen/blink.cmp",
     version = vim.version.range("1.x"),
@@ -99,9 +103,7 @@ return {
       setup = function()
         vim.api.nvim_create_autocmd({ "InsertEnter", "CmdlineEnter" }, {
           once = true,
-          callback = function()
-            setup()
-          end,
+          callback = setup,
         })
       end,
     },

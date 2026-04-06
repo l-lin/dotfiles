@@ -1,3 +1,17 @@
+-- Build hooks must be registered before `vim.pack.add`.
+-- src: https://echasnovski.com/blog/2026-03-13-a-guide-to-vim-pack#hooks
+vim.api.nvim_create_autocmd("PackChanged", {
+  callback = function(ev)
+    local name, kind = ev.data.spec.name, ev.data.kind
+    if name == "nvim-treesitter" and kind == "update" then
+      if not ev.data.active then
+        vim.cmd.packadd("nvim-treesitter")
+      end
+      vim.cmd("TSUpdate")
+    end
+  end,
+})
+
 local plugins = require("functions.pack").to_pack_specs({
   require("plugins.ui"),
   require("plugins.editor"),

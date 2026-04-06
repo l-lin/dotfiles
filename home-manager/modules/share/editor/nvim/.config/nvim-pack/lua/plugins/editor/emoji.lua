@@ -1,12 +1,10 @@
 ---@type vim.pack.Spec[]
 return {
-  -- dependency for plenary's async functions and popup API
+  -- Dependency for plenary's async functions and popup API.
   {
     src = "https://github.com/nvim-lua/plenary.nvim",
   },
-  --
-  -- A plugin to search for and insert emojis/kaomojis, with auto-completion support, right from Neovim 😀
-  --
+  -- A plugin to search for and insert emojis/kaomojis, with auto-completion support, right from Neovim 😀.
   {
     src = "https://github.com/l-lin/emoji.nvim",
     data = {

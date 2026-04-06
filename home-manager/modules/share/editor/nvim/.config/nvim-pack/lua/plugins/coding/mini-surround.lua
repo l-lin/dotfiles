@@ -1,19 +1,23 @@
 ---@type vim.pack.Spec
-return {
+return
+-- Neovim Lua plugin with fast and feature-rich surround actions.
+{
   src = "https://github.com/nvim-mini/mini.surround",
   data = {
     setup = function()
-      require("mini.surround").setup({
-        mappings = {
-          add = "gsa",
-          delete = "gsd",
-          find = "gsf",
-          find_left = "gsF",
-          highlight = "gsh",
-          replace = "gsr",
-          update_n_lines = "gsn",
-        },
-      })
+      vim.schedule(function ()
+        require("mini.surround").setup({
+          mappings = {
+            add = "sa",
+            delete = "sd",
+            find = "sf",
+            find_left = "sF",
+            highlight = "sh",
+            replace = "sr",
+            update_n_lines = "sn",
+          },
+        })
+      end)
     end,
   },
 }

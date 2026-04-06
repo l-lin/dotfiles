@@ -26,7 +26,9 @@ local tools = {
 }
 
 ---@type vim.pack.Spec
-return {
+return
+-- Portable package manager for Neovim that runs everywhere Neovim runs. Easily install and manage LSP servers, DAP servers, linters, and formatters.
+{
   src = "https://github.com/mason-org/mason.nvim",
   data = {
     setup = function()

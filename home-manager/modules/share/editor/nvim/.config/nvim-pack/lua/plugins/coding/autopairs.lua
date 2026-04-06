@@ -1,5 +1,7 @@
 ---@type vim.pack.Spec
-return {
+return
+-- autopairs for neovim written in lua
+{
   src = "https://github.com/windwp/nvim-autopairs",
   data = {
     setup = function()

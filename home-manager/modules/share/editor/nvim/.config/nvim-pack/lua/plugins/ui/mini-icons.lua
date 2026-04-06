@@ -1,9 +1,7 @@
---
--- Icon provider.
---
-
 ---@type vim.pack.Spec
-return {
+return
+-- Icon provider.
+{
   src = "https://github.com/nvim-mini/mini.icons",
   data = {
     setup = function()

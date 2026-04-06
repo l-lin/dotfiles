@@ -1,7 +1,3 @@
---
--- Opens global note in a float window
---
-
 ---@return string
 local function get_notes_directory()
   return vim.fn.expand(vim.g.notes_dir) .. "/2-areas/project-notes"
@@ -196,18 +192,22 @@ local function disable_swap_for_dirs()
 end
 
 ---@type vim.pack.Spec
-return {
+return
+-- Opens global note in a float window
+{
   src = "https://github.com/backdround/global-note.nvim",
   data = {
     setup = function()
-      disable_swap_for_dirs()
-      require("global-note").setup(global_opts())
+      vim.schedule(function ()
+        disable_swap_for_dirs()
+        require("global-note").setup(global_opts())
 
-      local map = vim.keymap.set
-      map("n", "<leader>nd", "<cmd>DailyNote<cr>", { desc = "Open daily notes", noremap = true, silent = true })
-      map("n", "<leader>np", note_picker, { desc = "Open project notes", noremap = true, silent = true })
-      map("n", "<leader>nn", "<cmd>ProjectNote<cr>", { desc = "Open project note", noremap = true, silent = true })
-      map("n", "<leader>ng", "<cmd>GlobalNote<cr>", { desc = "Open global notes", noremap = true, silent = true })
+        local map = vim.keymap.set
+        map("n", "<leader>nd", "<cmd>DailyNote<cr>", { desc = "Open daily notes", noremap = true, silent = true })
+        map("n", "<leader>np", note_picker, { desc = "Open project notes", noremap = true, silent = true })
+        map("n", "<leader>nn", "<cmd>ProjectNote<cr>", { desc = "Open project note", noremap = true, silent = true })
+        map("n", "<leader>ng", "<cmd>GlobalNote<cr>", { desc = "Open global notes", noremap = true, silent = true })
+      end)
     end,
   }
 }

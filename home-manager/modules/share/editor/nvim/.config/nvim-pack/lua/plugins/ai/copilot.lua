@@ -43,8 +43,13 @@ return {
   {
     src = "https://github.com/copilotlsp-nvim/copilot-lsp",
   },
+  -- Fully featured & enhanced replacement for copilot.vim complete with API for interacting with Github Copilot
   {
     src = "https://github.com/zbirenbaum/copilot.lua",
-    data = { setup = setup },
+    data = {
+      setup = function()
+        vim.schedule(setup)
+      end,
+    },
   },
 }

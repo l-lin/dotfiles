@@ -61,12 +61,12 @@ local function setup()
   })
 end
 
---
--- Navigate and manipulate file system.
---
-
 ---@type vim.pack.Spec
-return {
+return
+-- Navigate and manipulate file system.
+{
   src = "https://github.com/nvim-mini/mini.files",
-  data = { setup = setup },
+  data = { setup = function ()
+    vim.schedule(setup)
+  end },
 }

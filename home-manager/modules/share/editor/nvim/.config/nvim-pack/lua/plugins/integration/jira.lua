@@ -98,7 +98,13 @@ local function setup()
 end
 
 ---@type vim.pack.Spec
-return {
+return
+-- Neovim plugin for browsing and managing JIRA issues with a fuzzy-finding interface.
+{
   src = "https://codeberg.org/l-lin/jira.nvim",
-  data = { setup = setup },
+  data = {
+    setup = function()
+      vim.schedule(setup)
+    end,
+  },
 }

@@ -32,20 +32,22 @@ local function setup()
     },
   })
 
-  Snacks.toggle({
-    name = "Render Markdown",
-    get = function()
-      return require("render-markdown.state").enabled
-    end,
-    set = function(enabled)
-      local render_markdown = require("render-markdown")
-      if enabled then
-        render_markdown.enable()
-      else
-        render_markdown.disable()
-      end
-    end,
-  }):map("<leader>um")
+  if package.loaded["snacks"] then
+    Snacks.toggle({
+      name = "Render Markdown",
+      get = function()
+        return require("render-markdown.state").enabled
+      end,
+      set = function(enabled)
+        local render_markdown = require("render-markdown")
+        if enabled then
+          render_markdown.enable()
+        else
+          render_markdown.disable()
+        end
+      end,
+    }):map("<leader>um")
+  end
 
   local map = vim.keymap.set
   map({ "n", "i" }, "<M-l>", require("functions.lang.markdown").convert_or_toggle_task, {
@@ -75,7 +77,13 @@ local function setup()
 end
 
 ---@type vim.pack.Spec
-return {
+return
+-- Plugin to improve viewing Markdown files in Neovim
+{
   src = "https://github.com/MeanderingProgrammer/render-markdown.nvim",
-  data = { setup = setup },
+  data = {
+    setup = function()
+      vim.schedule(setup)
+    end,
+  },
 }

@@ -40,7 +40,11 @@ local function setup()
 end
 
 ---@type vim.pack.Spec
-return {
+return
+-- Git integration for buffers.
+{
   src = "https://github.com/lewis6991/gitsigns.nvim",
-  data = { setup = setup },
+  data = { setup = function ()
+    vim.schedule(setup)
+  end },
 }
