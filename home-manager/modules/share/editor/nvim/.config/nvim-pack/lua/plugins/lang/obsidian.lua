@@ -17,6 +17,7 @@ local function setup()
     },
     frontmatter = { enabled = false },
     footer = { enabled = false },
+    legacy_commands = false,
     log_level = vim.log.levels.ERROR,
     new_notes_location = "notes_subdir",
     note_id_func = function(title)
