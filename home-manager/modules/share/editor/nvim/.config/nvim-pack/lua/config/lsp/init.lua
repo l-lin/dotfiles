@@ -1,5 +1,33 @@
 local icons = require("config.constants").icons
 
+local diagnostic_levels = {
+  { key = "ERROR", highlight = "DiagnosticSignError", icon = icons.diagnostics.error },
+  { key = "WARN", highlight = "DiagnosticSignWarn", icon = icons.diagnostics.warn },
+  { key = "INFO", highlight = "DiagnosticSignInfo", icon = icons.diagnostics.info },
+  { key = "HINT", highlight = "DiagnosticSignHint", icon = icons.diagnostics.hint },
+}
+
+---@param counts table<number, integer>
+---@param severity table<string, integer>
+---@return string
+local function format(counts, severity)
+  local parts = {}
+
+  for _, diagnostic_level in ipairs(diagnostic_levels) do
+    local count = counts[severity[diagnostic_level.key]]
+    if count ~= nil and count > 0 then
+      table.insert(parts, string.format(
+        "%%#%s#%s %d",
+        diagnostic_level.highlight,
+        diagnostic_level.icon,
+        count
+      ))
+    end
+  end
+
+  return table.concat(parts, " ")
+end
+
 vim.diagnostic.config({
   float = { border = "rounded", source = true },
   severity_sort = true,
@@ -17,6 +45,11 @@ vim.diagnostic.config({
       [vim.diagnostic.severity.INFO] = icons.diagnostics.info,
       [vim.diagnostic.severity.HINT] = icons.diagnostics.hint,
     },
+  },
+  status = {
+    format = function(counts)
+      return format(counts, vim.diagnostic.severity)
+    end,
   },
 })
 

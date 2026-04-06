@@ -1,17 +1,14 @@
 local icons = {
   diagnostics = {
-    error = " ",
-    warn = " ",
-    hint = "󰌵 ",
-    info = " ",
+    error = "",
+    warn = "",
+    hint = "󰌵",
+    info = "",
   },
   git = {
-    added = " ",
-    modified = " ",
-    removed = " ",
-  },
-  kinds = {
-    copilot = " ",
+    added = "",
+    modified = "",
+    removed = "",
   },
 }
 
