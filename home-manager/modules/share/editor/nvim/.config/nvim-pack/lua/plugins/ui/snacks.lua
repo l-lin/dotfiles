@@ -100,10 +100,10 @@ local function setup()
     lazygit = { enabled = true, win = { width = 0, height = 0 } },
     layout = { enabled = false },
     image = { enabled = true },
-    indent = { enabled = true, scope = { hl = "NormalFloat" } },
+    indent = { enabled = true, animate = { enabled = false }, scope = { hl = "NormalFloat" } },
     input = { enabled = true },
     matcher = { enabled = true, fuzzy = true, cwd_bonus = true },
-    notifier = { enabled = true, top_down = true },
+    notifier = { enabled = true, top_down = false },
     notify = { enabled = false },
     picker = {
       enabled = true,
