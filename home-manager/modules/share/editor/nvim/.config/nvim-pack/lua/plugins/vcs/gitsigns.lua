@@ -20,17 +20,16 @@ local function setup()
     },
   })
 
-  local map = vim.keymap.set
-  map("n", "<M-C-G>", "<cmd>Gitsigns preview_hunk_inline<cr>", { desc = "Preview Hunk inline (Ctrl+Alt+g)" })
-  map({ "n", "v" }, "<M-C-Z>", "<cmd>Gitsigns reset_hunk<cr>", { desc = "Reset hunk (Ctrl+Alt+z)" })
-  map("n", "]h", function()
+  vim.keymap.set("n", "<M-C-G>", "<cmd>Gitsigns preview_hunk_inline<cr>", { desc = "Preview Hunk inline (Ctrl+Alt+g)" })
+  vim.keymap.set({ "n", "v" }, "<M-C-Z>", "<cmd>Gitsigns reset_hunk<cr>", { desc = "Reset hunk (Ctrl+Alt+z)" })
+  vim.keymap.set("n", "]h", function()
     if vim.wo.diff then
       vim.cmd.normal({ "]c", bang = true })
     else
       require("gitsigns").nav_hunk("next")
     end
   end, { desc = "Next Hunk" })
-  map("n", "[h", function()
+  vim.keymap.set("n", "[h", function()
     if vim.wo.diff then
       vim.cmd.normal({ "[c", bang = true })
     else

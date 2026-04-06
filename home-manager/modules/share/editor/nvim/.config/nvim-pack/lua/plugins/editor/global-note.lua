@@ -202,11 +202,10 @@ return
         disable_swap_for_dirs()
         require("global-note").setup(global_opts())
 
-        local map = vim.keymap.set
-        map("n", "<leader>nd", "<cmd>DailyNote<cr>", { desc = "Open daily notes", noremap = true, silent = true })
-        map("n", "<leader>np", note_picker, { desc = "Open project notes", noremap = true, silent = true })
-        map("n", "<leader>nn", "<cmd>ProjectNote<cr>", { desc = "Open project note", noremap = true, silent = true })
-        map("n", "<leader>ng", "<cmd>GlobalNote<cr>", { desc = "Open global notes", noremap = true, silent = true })
+        vim.keymap.set("n", "<leader>nd", "<cmd>DailyNote<cr>", { desc = "Open daily notes", noremap = true, silent = true })
+        vim.keymap.set("n", "<leader>np", note_picker, { desc = "Open project notes", noremap = true, silent = true })
+        vim.keymap.set("n", "<leader>nn", "<cmd>ProjectNote<cr>", { desc = "Open project note", noremap = true, silent = true })
+        vim.keymap.set("n", "<leader>ng", "<cmd>GlobalNote<cr>", { desc = "Open global notes", noremap = true, silent = true })
       end)
     end,
   }

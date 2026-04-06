@@ -36,22 +36,13 @@ local function setup()
     },
   })
 
-  local map = vim.keymap.set
-  map("n", "<M-C-\\>", function()
-    require("dapui").toggle({ layout = 2, reset = true })
-  end, { desc = "Open DAP UI REPL (Ctrl+Alt+4)" })
-  map("n", "<M-4>", function()
-    require("dapui").toggle({ layout = 3, reset = true })
-  end, { desc = "Open DAP UI Console (Alt+4)" })
-  map("n", "<M-5>", function()
-    require("dapui").toggle({ reset = true })
-  end, { desc = "Open DAP UI (Alt+5)" })
-  map("n", "<leader>du", function()
-    require("dapui").toggle({ reset = true })
-  end, { desc = "Open DAP UI (Alt+5)" })
-  map({ "n", "v" }, "<M-BS>", function()
-    require("dapui").eval()
-  end, { desc = "Eval (Ctrl+Alt+8)" })
+  -- stylua: ignore start
+  vim.keymap.set("n", "<M-C-\\>", function() require("dapui").toggle({ layout = 2, reset = true }) end, { desc = "Open DAP UI REPL (Ctrl+Alt+4)" })
+  vim.keymap.set("n", "<M-4>", function() require("dapui").toggle({ layout = 3, reset = true }) end, { desc = "Open DAP UI Console (Alt+4)" })
+  vim.keymap.set("n", "<M-5>", function() require("dapui").toggle({ reset = true }) end, { desc = "Open DAP UI (Alt+5)" })
+  vim.keymap.set("n", "<leader>du", function() require("dapui").toggle({ reset = true }) end, { desc = "Open DAP UI (Alt+5)" })
+  vim.keymap.set({ "n", "v" }, "<M-BS>", function() require("dapui").eval() end, { desc = "Eval (Ctrl+Alt+8)" })
+  -- stylua: ignore end
 end
 
 ---@type vim.pack.Spec[]

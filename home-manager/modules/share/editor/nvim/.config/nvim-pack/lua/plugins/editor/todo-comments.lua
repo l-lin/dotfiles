@@ -5,19 +5,16 @@ return
   src = "https://github.com/folke/todo-comments.nvim",
   data = {
     setup = function()
-      vim.schedule(function ()
+      vim.schedule(function()
         require("todo-comments").setup({})
 
-        local map = vim.keymap.set
-        map("n", "]t", function()
-          require("todo-comments").jump_next()
-        end, { desc = "Next Todo Comment" })
-        map("n", "[t", function()
-          require("todo-comments").jump_prev()
-        end, { desc = "Previous Todo Comment" })
+        -- stylua: ignore start
+        vim.keymap.set("n", "]t", function() require("todo-comments").jump_next() end, { desc = "Next Todo Comment" })
+        vim.keymap.set("n", "[t", function() require("todo-comments").jump_prev() end, { desc = "Previous Todo Comment" })
+        -- stylua: ignore end
 
         if package.loaded["snacks"] then
-          map("n", "<M-2>", function()
+          vim.keymap.set("n", "<M-2>", function()
             Snacks.picker.todo_comments()
           end, { noremap = true, desc = "Find TODO (Alt+2)" })
         end

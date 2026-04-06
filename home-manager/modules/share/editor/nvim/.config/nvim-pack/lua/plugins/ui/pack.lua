@@ -539,7 +539,14 @@ open = function()
   })
 end
 
-vim.api.nvim_create_user_command("Pack", open, { desc = "Open vim.pack plugin manager UI" })
-vim.keymap.set("n", "<leader>p", "<cmd>Pack<cr>", { desc = "List nvim-pack plugins" })
+vim.schedule(function ()
+  vim.api.nvim_create_user_command("Pack", open, { desc = "Open vim.pack plugin manager UI" })
+  vim.keymap.set("n", "<leader>p", "<cmd>Pack<cr>", { desc = "List nvim-pack plugins" })
+
+  local has_wk, wk = pcall(require, "which-key")
+  if has_wk then
+    wk.add({ "<leader>p", group = "pack" })
+  end
+end)
 
 return {}

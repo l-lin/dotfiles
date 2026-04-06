@@ -237,46 +237,13 @@ local function setup()
   })
 
   local selector = require("functions.selector")
-  local map = vim.keymap.set
-  map("n", "<leader>bo", function()
-    Snacks.bufdelete.other()
-  end, { desc = "Delete Other Buffers" })
-  map("n", "<C-g>", function()
-    Snacks.picker.files({ focus = "input" })
-  end, {
-    noremap = true,
-    silent = true,
-    desc = "Find file (Ctrl+g)",
-  })
-  map("v", "<C-g>", function()
-    Snacks.picker.files({ pattern = selector.get_selected_text() })
-  end, {
-    noremap = true,
-    silent = true,
-    desc = "Find file (Ctrl+g)",
-  })
-  map("n", "<C-t>", function()
-    Snacks.picker.files({ pattern = require("functions.coding.subject").find_subject() })
-  end, {
-    desc = "Find associated test file (Ctrl+t)",
-    noremap = true,
-    silent = true,
-  })
-  map("n", "<M-f>", function()
-    Snacks.picker.grep({ focus = "input" })
-  end, {
-    noremap = true,
-    silent = true,
-    desc = "Find pattern in all files (Alt+f)",
-  })
-  map("v", "<M-f>", function()
-    Snacks.picker.grep({ search = selector.get_selected_text() })
-  end, {
-    noremap = true,
-    silent = true,
-    desc = "Find pattern in all files (Alt+f)",
-  })
-  map("n", "<M-e>", function()
+  vim.keymap.set("n", "<leader>bo", function() Snacks.bufdelete.other() end, { desc = "Delete Other Buffers" })
+  vim.keymap.set("n", "<C-g>", function() Snacks.picker.files({ focus = "input" }) end, { noremap = true, silent = true, desc = "Find file (Ctrl+g)" })
+  vim.keymap.set("v", "<C-g>", function() Snacks.picker.files({ pattern = selector.get_selected_text() }) end, { noremap = true, silent = true, desc = "Find file (Ctrl+g)" })
+  vim.keymap.set("n", "<C-t>", function() Snacks.picker.files({ pattern = require("functions.coding.subject").find_subject() }) end, { desc = "Find associated test file (Ctrl+t)", noremap = true, silent = true })
+  vim.keymap.set("n", "<M-f>", function() Snacks.picker.grep({ focus = "input" }) end, { noremap = true, silent = true, desc = "Find pattern in all files (Alt+f)" })
+  vim.keymap.set("v", "<M-f>", function() Snacks.picker.grep({ search = selector.get_selected_text() }) end, { noremap = true, silent = true, desc = "Find pattern in all files (Alt+f)" })
+  vim.keymap.set("n", "<M-e>", function()
     Snacks.picker.buffers({
       current = false,
       win = {
@@ -308,33 +275,11 @@ local function setup()
     silent = true,
     desc = "Find file in buffer (Ctrl+e)",
   })
-  map("n", "<C-x>", function()
-    Snacks.picker.resume()
-  end, {
-    noremap = true,
-    silent = true,
-    desc = "Resume search",
-  })
-  map("n", "<M-6>", function()
-    Snacks.picker.diagnostics()
-  end, {
-    noremap = true,
-    silent = true,
-    desc = "Diagnostic (Alt+6)",
-  })
-  map("n", "<leader>su", function()
-    Snacks.picker.undo()
-  end, {
-    noremap = true,
-    silent = true,
-    desc = "Undo",
-  })
-  map("n", "<leader>N", function()
-    Snacks.picker.notifications()
-  end, { desc = "Notification History" })
-  map("n", "<leader>si", function()
-    Snacks.picker.icons()
-  end, { desc = "Notification History" })
+  vim.keymap.set("n", "<C-x>", function() Snacks.picker.resume() end, { noremap = true, silent = true, desc = "Resume search" })
+  vim.keymap.set("n", "<M-6>", function() Snacks.picker.diagnostics() end, { noremap = true, silent = true, desc = "Diagnostic (Alt+6)" })
+  vim.keymap.set("n", "<leader>su", function() Snacks.picker.undo() end, { noremap = true, silent = true, desc = "Undo" })
+  vim.keymap.set("n", "<leader>N", function() Snacks.picker.notifications() end, { desc = "Notification History" })
+  vim.keymap.set("n", "<leader>si", function() Snacks.picker.icons() end, { desc = "Notification History" })
 
   vim.api.nvim_create_autocmd("User", {
     pattern = "MiniFilesActionRename",

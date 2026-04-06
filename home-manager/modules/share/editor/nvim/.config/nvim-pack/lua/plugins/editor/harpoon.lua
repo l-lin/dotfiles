@@ -8,17 +8,16 @@ local function setup()
     },
   })
 
-  local map = vim.keymap.set
-  map("n", "<leader>H", function()
+  vim.keymap.set("n", "<leader>H", function()
     require("harpoon"):list():add()
   end, { desc = "Harpoon File" })
-  map("n", "<leader>h", function()
+  vim.keymap.set("n", "<leader>h", function()
     local harpoon = require("harpoon")
     harpoon.ui:toggle_quick_menu(harpoon:list())
   end, { desc = "Harpoon Quick Menu" })
 
   for index = 1, 9 do
-    map("n", "<leader>" .. index, function()
+    vim.keymap.set("n", "<leader>" .. index, function()
       require("harpoon"):list():select(index)
     end, { desc = "Harpoon to File " .. index })
   end
