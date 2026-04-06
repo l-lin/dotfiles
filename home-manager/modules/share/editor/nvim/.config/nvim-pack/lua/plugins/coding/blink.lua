@@ -1,7 +1,7 @@
 local default_sources = { "lsp", "snippets", "path", "buffer", "copilot" }
 local per_filetype = {
   markdown = { "wiki_links", inherit_defaults = true },
-  lua = { "lazydev", inherit_defaults = true }
+  lua = { "lazydev", inherit_defaults = true },
 }
 local providers = {
   copilot = {
@@ -21,6 +21,12 @@ local providers = {
     score_offset = 85,
   },
 }
+local menu_winhighlight = table.concat({
+  "Normal:NormalFloat",
+  "FloatBorder:NormalFloat",
+  "CursorLine:BlinkCmpMenuSelection",
+  "Search:None",
+}, ",")
 
 local function setup()
   require("blink.cmp").setup({
@@ -51,6 +57,7 @@ local function setup()
       accept = {
         auto_brackets = { enabled = true },
       },
+      menu = { winhighlight = menu_winhighlight },
       documentation = {
         auto_show = true,
         auto_show_delay_ms = 200,
@@ -86,6 +93,15 @@ return {
   {
     src = "https://github.com/saghen/blink.cmp",
     version = vim.version.range("1.x"),
-    data = { setup = setup },
+    data = {
+      setup = function()
+        vim.api.nvim_create_autocmd({ "InsertEnter", "CmdlineEnter" }, {
+          once = true,
+          callback = function()
+            setup()
+          end,
+        })
+      end,
+    },
   },
 }
