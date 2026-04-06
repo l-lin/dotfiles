@@ -43,6 +43,7 @@ opt.fillchars = {
   foldsep = " ",
   diff = "╱",
   eob = " ",
+  msgsep = "─",
 }
 opt.foldlevel = 99
 opt.foldmethod = "indent"
