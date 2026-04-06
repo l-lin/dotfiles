@@ -98,6 +98,12 @@ local function setup()
   end, { desc = "Summarize article from URL in clipboard", noremap = true })
   map("v", "<leader>oy", require("functions.lang.obsidian").sanitize_and_yank, { desc = "Yank selection without wiki links", noremap = true })
   map("v", "<leader>oY", require("functions.lang.obsidian").to_html_and_yank, { desc = "Yank selection in HTML format", noremap = true })
+
+
+  local has_wk, wk = pcall(require, "which-key")
+  if has_wk then
+    wk.add({ "<leader>o", group = "obsidian" })
+  end
 end
 
 ---@type vim.pack.Spec[]

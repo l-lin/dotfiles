@@ -90,6 +90,11 @@ local function setup()
   map("n", "<leader>j1", "<cmd>JiraEpic P3C-5883<cr>", { desc = "Jira P3C-5883" })
   map("n", "<leader>j2", "<cmd>JiraEpic P3C-5861<cr>", { desc = "Jira P3C-5861" })
   map("n", "<leader>j3", "<cmd>JiraEpic P3C-5885<cr>", { desc = "Jira P3C-5885" })
+
+  local has_wk, wk = pcall(require, "which-key")
+  if has_wk then
+    wk.add({ "<leader>j", group = "jira" })
+  end
 end
 
 ---@type vim.pack.Spec
