@@ -287,7 +287,6 @@ local function setup()
   vim.keymap.set("n", "<leader>fg", function() Snacks.picker.git_files() end, { desc = "Find Files (git-files)" })
   -- git
   vim.keymap.set("n", "<M-9>", function() Snacks.picker.git_log({ current_file = true, follow = true }) end, { noremap = true, silent = true, desc = "Check current file git history (Alt+9)" })
-  vim.keymap.set("n", "<M-)>", function() Snacks.lazygit({ cwd = vim.fs.root(0, ".git") or vim.uv.cwd() }) end, { desc = "LazyGit open history", noremap = true })
   vim.keymap.set("n", "<leader>G", function() Snacks.picker.gh_pr() end, { desc = "GitHub Pull Requests (open)" })
   vim.keymap.set("n", "<leader>gb", function() Snacks.picker.git_log_line({ current_line = true, current_file = true, follow = true }) end, { desc = "Git Blame Line" })
   vim.keymap.set("n", "<leader>gd", function() Snacks.picker.git_diff() end, { desc = "Git Diff (hunks)" })
@@ -300,6 +299,11 @@ local function setup()
   vim.keymap.set("n", "<leader>gP", function() Snacks.picker.gh_pr({ state = "all" }) end, { desc = "GitHub Pull Requests (all)" })
   vim.keymap.set("n", "<leader>gs", function() Snacks.picker.git_status({ layout = "sidebar" }) end, { desc = "Git Status" })
   vim.keymap.set("n", "<leader>gS", function() Snacks.picker.git_stash() end, { desc = "Git Stash" })
+  if vim.fn.executable("lazygit") == 1 then
+    vim.keymap.set("n", "<leader>gg", function() Snacks.lazygit({ cwd = vim.fs.root(0, ".git") or vim.uv.cwd() }) end, { desc = "Lazygit (Root Dir)" })
+    vim.keymap.set("n", "<leader>gG", function() Snacks.lazygit() end, { desc = "Lazygit (cwd)" })
+    vim.keymap.set("n", "<M-)>", function() Snacks.lazygit({ cwd = vim.fs.root(0, ".git") or vim.uv.cwd() }) end, { desc = "LazyGit open history", noremap = true })
+  end
   -- Grep
   vim.keymap.set("n", "<leader>sb", function() Snacks.picker.lines() end, { desc = "Buffer Lines" })
   vim.keymap.set("n", "<leader>sB", function() Snacks.picker.grep_buffers() end, { desc = "Grep Open Buffers" })
@@ -323,7 +327,16 @@ local function setup()
   vim.keymap.set("n", "<leader>sR", function() Snacks.picker.resume() end, { desc = "Resume" })
   vim.keymap.set("n", "<leader>sq", function() Snacks.picker.qflist() end, { desc = "Quickfix List" })
   vim.keymap.set("n", "<leader>su", function() Snacks.picker.undo() end, { desc = "Undotree" })
+  -- tabs
+  vim.keymap.set("n", "<leader><tab>l", "<cmd>tablast<cr>", { desc = "Last Tab" })
+  vim.keymap.set("n", "<leader><tab>o", "<cmd>tabonly<cr>", { desc = "Close Other Tabs" })
+  vim.keymap.set("n", "<leader><tab>f", "<cmd>tabfirst<cr>", { desc = "First Tab" })
+  vim.keymap.set("n", "<leader><tab><tab>", "<cmd>tabnew<cr>", { desc = "New Tab" })
+  vim.keymap.set("n", "<leader><tab>]", "<cmd>tabnext<cr>", { desc = "Next Tab" })
+  vim.keymap.set("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close Tab" })
+  vim.keymap.set("n", "<leader><tab>[", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
 
+  -- toggle ui
   Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>us")
   Snacks.toggle.option("wrap", { name = "Wrap" }):map("<leader>uw")
   Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>uL")

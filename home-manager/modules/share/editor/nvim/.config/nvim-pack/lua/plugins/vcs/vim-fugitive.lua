@@ -20,26 +20,14 @@ local function setup()
       vim.api.nvim_win_set_cursor(0, { 6, 0 })
     end
   end, { silent = true, noremap = true, desc = "git status (Alt+0)" })
-  vim.keymap.set("n", "<leader>gB", function()
-    require("functions.git").browse_with_branch_select()
-  end, { desc = "Git Browse (open)", noremap = true })
-  vim.keymap.set(
-    "x",
-    "<leader>gB",
-    ":<C-u>lua require('functions.git').browse_with_branch_select({ visual = true })<CR>",
-    { desc = "Git Browse (open)", noremap = true }
-  )
-  vim.keymap.set("n", "<leader>gY", function()
-    require("functions.git").browse_with_branch_select({ yank = true })
-  end, { desc = "Git Browse (yank)", noremap = true })
-  vim.keymap.set(
-    "x",
-    "<leader>gY",
-    ":<C-u>lua require('functions.git').browse_with_branch_select({ yank = true, visual = true })<CR>",
-    { desc = "Git Browse (yank)", noremap = true }
-  )
+  -- stylua: ignore start
+  vim.keymap.set("n", "<leader>gB", function() require("functions.git").browse_with_branch_select() end, { desc = "Git Browse (open)", noremap = true })
+  vim.keymap.set( "x", "<leader>gB", ":<C-u>lua require('functions.git').browse_with_branch_select({ visual = true })<CR>", { desc = "Git Browse (open)", noremap = true })
+  vim.keymap.set("n", "<leader>gY", function() require("functions.git").browse_with_branch_select({ yank = true }) end, { desc = "Git Browse (yank)", noremap = true })
+  vim.keymap.set( "x", "<leader>gY", ":<C-u>lua require('functions.git').browse_with_branch_select({ yank = true, visual = true })<CR>", { desc = "Git Browse (yank)", noremap = true })
   vim.keymap.set("n", "<leader>go", "<cmd>!gh repo view --web<cr>", { desc = "Open GitHub repository in browser", noremap = true })
   vim.keymap.set("n", "<leader>gO", "<cmd>!gh pr view --web<cr>", { desc = "Open GitHub pull request in browser", noremap = true })
+  -- stylua: ignore end
 end
 
 ---@type vim.pack.Spec
@@ -47,7 +35,9 @@ return
 -- fugitive.vim: A Git wrapper so awesome, it should be illegal
 {
   src = "https://github.com/tpope/vim-fugitive",
-  data = { setup = function ()
-    vim.schedule(setup)
-  end },
+  data = {
+    setup = function()
+      vim.schedule(setup)
+    end,
+  },
 }
