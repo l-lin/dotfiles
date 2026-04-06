@@ -21,12 +21,6 @@ local providers = {
     score_offset = 85,
   },
 }
-local menu_winhighlight = table.concat({
-  "Normal:NormalFloat",
-  "FloatBorder:NormalFloat",
-  "CursorLine:BlinkCmpMenuSelection",
-  "Search:None",
-}, ",")
 
 local function setup()
   require("blink.cmp").setup({
@@ -57,12 +51,20 @@ local function setup()
       accept = {
         auto_brackets = { enabled = true },
       },
-      menu = { winhighlight = menu_winhighlight },
+      menu = {
+        border = "rounded",
+        scrollbar = false,
+        winhighlight = "Normal:None,FloatBorder:None,CursorLine:BlinkCmpMenuSelection,Search:None",
+      },
       documentation = {
         auto_show = true,
         auto_show_delay_ms = 200,
+        window = {
+          border = "rounded",
+          scrollbar = false,
+        },
       },
-      ghost_text = { enabled = false },
+      ghost_text = { enabled = true },
     },
     keymap = {
       preset = "enter",
