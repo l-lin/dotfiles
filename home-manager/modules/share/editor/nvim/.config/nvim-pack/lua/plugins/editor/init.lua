@@ -7,5 +7,5 @@ return {
   require("plugins.editor.tmux-navigator"),
   -- require("plugins.editor.todo-comments"),
   require("plugins.editor.translate"),
-  require("plugins.editor.yanky"),
+  -- require("plugins.editor.yanky"),
 }
