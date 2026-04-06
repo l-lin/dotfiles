@@ -5,21 +5,6 @@ local home = os.getenv("HOME")
 -- Path to java binary to use when starting up the LS server.
 local java_path = home .. "/.local/share/mise/shims/java"
 
----List of Java runtimes, which can be useful if you're starting jdtls with a
----Java version that's different from the one the project uses.
----The field `name` must be a valid `ExecutionEnvironment`,
----you can find the list here:
----https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
----@return table runtimes table of Java runtimes to use
-local function create_runtimes()
-  return {
-    {
-      name = "JavaSE-21",
-      path = java_path,
-    },
-  }
-end
-
 ---@return table cmd command to execute JDTLS
 local function create_cmd()
   -- Path to config depending on the platform: $HOME/.local/share/nvim/mason/share/jdtls/config
@@ -101,7 +86,7 @@ local function create_settings()
       },
       configuration = {
         updateBuildConfiguration = "interactive",
-        runtimes = create_runtimes(),
+        -- runtimes = create_runtimes(),
       },
       contentProvider = {
         preferred = "fernflower",
