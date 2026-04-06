@@ -46,7 +46,9 @@ opt.fillchars = {
   msgsep = "─",
 }
 opt.foldlevel = 99
-opt.foldmethod = "indent"
+-- Fold based on treesitter.
+opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+opt.foldmethod = "expr"
 opt.foldtext = ""
 opt.formatoptions = "jcroqlnt" -- tcqj
 opt.grepformat = "%f:%l:%c:%m"
@@ -56,7 +58,7 @@ opt.inccommand = "nosplit" -- preview incremental substitute
 opt.jumpoptions = "view"
 opt.laststatus = 3 -- global statusline
 opt.linebreak = true -- Wrap lines at convenient points
--- Show some invisible characters (tabs...
+-- Show some invisible characters (tabs...)
 opt.list = true
 opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 opt.mouse = "a" -- Enable mouse mode
