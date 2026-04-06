@@ -236,8 +236,8 @@ local function setup()
     zen = { enabled = false },
   })
 
-  local selector = require("functions.selector")
   -- stylua: ignore start
+  local selector = require("functions.selector")
   vim.keymap.set("n", "<leader>bo", function() Snacks.bufdelete.other() end, { desc = "Delete Other Buffers" })
   vim.keymap.set("n", "<C-g>", function() Snacks.picker.files({ focus = "input" }) end, { noremap = true, silent = true, desc = "Find file (Ctrl+g)" })
   vim.keymap.set("v", "<C-g>", function() Snacks.picker.files({ pattern = selector.get_selected_text() }) end, { noremap = true, silent = true, desc = "Find file (Ctrl+g)" })
@@ -323,6 +323,13 @@ local function setup()
   vim.keymap.set("n", "<leader>sR", function() Snacks.picker.resume() end, { desc = "Resume" })
   vim.keymap.set("n", "<leader>sq", function() Snacks.picker.qflist() end, { desc = "Quickfix List" })
   vim.keymap.set("n", "<leader>su", function() Snacks.picker.undo() end, { desc = "Undotree" })
+
+  Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>us")
+  Snacks.toggle.option("wrap", { name = "Wrap" }):map("<leader>uw")
+  Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>uL")
+  Snacks.toggle.diagnostics():map("<leader>ud")
+  Snacks.toggle.line_number():map("<leader>ul")
+  Snacks.toggle.treesitter():map("<leader>uT")
   -- stylua: ignore end
 
   vim.api.nvim_create_autocmd("User", {
