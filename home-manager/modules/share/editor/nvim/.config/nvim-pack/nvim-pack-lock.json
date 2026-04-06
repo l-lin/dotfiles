@@ -29,10 +29,6 @@
       "rev": "07aa57148ac28986bab9f55e87ee3d929e2726b1",
       "src": "https://github.com/zbirenbaum/copilot.lua"
     },
-    "emoji.nvim": {
-      "rev": "4bc22cd220a2a657af3564386e6a281f8334605e",
-      "src": "https://github.com/l-lin/emoji.nvim"
-    },
     "friendly-snippets": {
       "rev": "6cd7280adead7f586db6fccbd15d2cac7e2188b9",
       "src": "https://github.com/rafamadriz/friendly-snippets"
@@ -42,7 +38,7 @@
       "src": "https://github.com/pheen/fuzzy_ruby_server"
     },
     "gitsigns.nvim": {
-      "rev": "db486b42299b2e3f5831809617af21becf268a39",
+      "rev": "77b813d1aa6a180d903dc744fc81d7e05b138ac2",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "global-note.nvim": {
