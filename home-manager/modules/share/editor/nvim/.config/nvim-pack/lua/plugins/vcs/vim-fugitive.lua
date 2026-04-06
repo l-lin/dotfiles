@@ -40,30 +40,6 @@ local function setup()
   )
   vim.keymap.set("n", "<leader>go", "<cmd>!gh repo view --web<cr>", { desc = "Open GitHub repository in browser", noremap = true })
   vim.keymap.set("n", "<leader>gO", "<cmd>!gh pr view --web<cr>", { desc = "Open GitHub pull request in browser", noremap = true })
-
-  if package.loaded["snacks"] then
-    vim.keymap.set("n", "<leader>gb", function()
-      Snacks.picker.git_log_line({ current_line = true, current_file = true, follow = true })
-    end, { desc = "Git Blame Line" })
-    vim.keymap.set("n", "<leader>gs", function()
-      Snacks.picker.git_status({ layout = "sidebar" })
-    end, { desc = "Git Status" })
-    vim.keymap.set("n", "<leader>gl", function()
-      Snacks.picker.git_log({ cwd = vim.fs.root(0, ".git") or vim.uv.cwd() })
-    end, { desc = "Git Log" })
-    vim.keymap.set("n", "<leader>gL", function()
-      Snacks.picker.git_log()
-    end, { desc = "Git Log (cwd)" })
-    vim.keymap.set("n", "<M-9>", function()
-      Snacks.picker.git_log({ current_file = true, follow = true })
-    end, { noremap = true, silent = true, desc = "Check current file git history (Alt+9)" })
-    vim.keymap.set("n", "<leader>G", function()
-      Snacks.picker.gh_pr()
-    end, { desc = "GitHub Pull Requests (open)" })
-    vim.keymap.set("n", "<M-)>", function()
-      Snacks.lazygit({ cwd = vim.fs.root(0, ".git") or vim.uv.cwd() })
-    end, { desc = "LazyGit open history", noremap = true })
-  end
 end
 
 ---@type vim.pack.Spec
