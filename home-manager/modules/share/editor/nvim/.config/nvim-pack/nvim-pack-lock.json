@@ -1,5 +1,9 @@
 {
   "plugins": {
+    "SchemaStore.nvim": {
+      "rev": "6d0329adb9c8cbe51b9a28299890a5eb104db7dc",
+      "src": "https://github.com/b0o/SchemaStore.nvim"
+    },
     "blink-cmp-wiki-links": {
       "rev": "fafdb57384d834954397f0b1491000b0c87ecbee",
       "src": "https://github.com/l-lin/blink-cmp-wiki-links"

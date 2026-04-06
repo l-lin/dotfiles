@@ -9,7 +9,11 @@ return {
     new_config.settings = new_config.settings or {}
     new_config.settings.json = new_config.settings.json or {}
     new_config.settings.json.schemas = new_config.settings.json.schemas or {}
-    vim.list_extend(new_config.settings.json.schemas, require("schemastore").json.schemas())
+
+    local has_schemastore, schemastore = pcall(require, "schemastore")
+    if has_schemastore then
+      vim.list_extend(new_config.settings.json.schemas, schemastore.json.schemas())
+    end
   end,
   settings = {
     json = {
