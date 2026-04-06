@@ -40,11 +40,8 @@ local function setup()
       synchronize = "<C-s>",
     },
   })
-end
 
----@param map fun(mode: string, lhs: string, rhs: string|function, opts?: table)
-local function keymaps(map)
-  map("n", "<M-1>", function()
+  vim.keymap.set("n", "<M-1>", function()
     local path = vim.api.nvim_buf_get_name(0)
     if path:match("^minifiles://") then
       require("mini.files").open(vim.uv.cwd(), true)
@@ -56,7 +53,7 @@ local function keymaps(map)
     noremap = true,
   })
 
-  map("n", "<leader>fh", function()
+  vim.keymap.set("n", "<leader>fh", function()
     require("mini.files").open(find_sub_module(), true)
   end, {
     desc = "Open mini.files in current sub-module/sub-project",
@@ -71,8 +68,5 @@ end
 ---@type vim.pack.Spec
 return {
   src = "https://github.com/nvim-mini/mini.files",
-  data = {
-    setup = setup,
-    keymaps = keymaps,
-  },
+  data = { setup = setup },
 }

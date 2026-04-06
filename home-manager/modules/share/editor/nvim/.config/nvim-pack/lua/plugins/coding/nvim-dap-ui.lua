@@ -35,10 +35,8 @@ local function setup()
       toggle = "t",
     },
   })
-end
 
----@param map fun(mode: string|string[], lhs: string, rhs: string|function, opts?: table)
-local function keymaps(map)
+  local map = vim.keymap.set
   map("n", "<M-C-\\>", function()
     require("dapui").toggle({ layout = 2, reset = true })
   end, { desc = "Open DAP UI REPL (Ctrl+Alt+4)" })
@@ -63,9 +61,6 @@ return {
   },
   {
     src = "https://github.com/rcarriga/nvim-dap-ui",
-    data = {
-      setup = setup,
-      keymaps = keymaps,
-    },
+    data = { setup = setup },
   },
 }

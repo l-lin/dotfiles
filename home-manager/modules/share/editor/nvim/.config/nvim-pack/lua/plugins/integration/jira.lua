@@ -83,10 +83,8 @@ local function setup()
       },
     },
   })
-end
 
----@param map fun(mode: string|string[], lhs: string, rhs: string|function, opts?: table)
-local function keymaps(map)
+  local map = vim.keymap.set
   map("n", "<leader>ji", "<cmd>JiraIssues<cr>", { desc = "Jira current issues" })
   map("n", "<leader>je", "<cmd>JiraEpic<cr>", { desc = "Jira epics" })
   map("n", "<leader>j1", "<cmd>JiraEpic P3C-5883<cr>", { desc = "Jira P3C-5883" })
@@ -97,8 +95,5 @@ end
 ---@type vim.pack.Spec
 return {
   src = "https://codeberg.org/l-lin/jira.nvim",
-  data = {
-    setup = setup,
-    keymaps = keymaps,
-  },
+  data = { setup = setup },
 }

@@ -46,10 +46,8 @@ local function setup()
       end
     end,
   }):map("<leader>um")
-end
 
----@param map fun(mode: string|string[], lhs: string, rhs: string|function, opts?: table)
-local function keymaps(map)
+  local map = vim.keymap.set
   map({ "n", "i" }, "<M-l>", require("functions.lang.markdown").convert_or_toggle_task, {
     desc = "Convert bullet to task or toggle task",
     noremap = true,
@@ -79,8 +77,5 @@ end
 ---@type vim.pack.Spec
 return {
   src = "https://github.com/MeanderingProgrammer/render-markdown.nvim",
-  data = {
-    setup = setup,
-    keymaps = keymaps,
-  },
+  data = { setup = setup },
 }

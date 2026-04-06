@@ -16,9 +16,8 @@ return {
           save_on_toggle = true,
         },
       })
-    end,
-    ---@param map fun(mode: string, lhs: string, rhs: string|function, opts?: table)
-    keymaps = function(map)
+
+      local map = vim.keymap.set
       map("n", "<leader>H", function()
         require("harpoon"):list():add()
       end, { desc = "Harpoon File" })

@@ -82,11 +82,8 @@ local function setup()
       yaml = { "prettier" },
     },
   })
-end
 
----@param map fun(mode: string|string[], lhs: string, rhs: string|function, opts?: table)
-local function keymaps(map)
-  map({ "n", "x" }, "<leader>cf", function()
+  vim.keymap.set({ "n", "x" }, "<leader>cf", function()
     require("conform").format({ async = false, lsp_format = "fallback" }, function(err)
       if not err then
         vim.notify("File formatted", vim.log.levels.INFO)
@@ -100,8 +97,5 @@ end
 ---@type vim.pack.Spec
 return {
   src = "https://github.com/stevearc/conform.nvim",
-  data = {
-    setup = setup,
-    keymaps = keymaps,
-  },
+  data = { setup = setup },
 }

@@ -73,10 +73,8 @@ local function setup()
       },
     },
   })
-end
 
----@param map fun(mode: string|string[], lhs: string, rhs: string|function, opts?: table)
-local function keymaps(map)
+  local map = vim.keymap.set
   map("n", "<leader>oy", "<cmd>Obsidian yesterday<cr>", { desc = "Open yesterday's note", noremap = true })
   map("n", "<leader>oo", "<cmd>Obsidian today<cr>", { desc = "Open today's note", noremap = true })
   map("n", "<leader>ot", "<cmd>Obsidian tomorrow<cr>", { desc = "Open tomorrow's note", noremap = true })
@@ -108,9 +106,6 @@ return {
   },
   {
     src = "https://github.com/l-lin/obsidian.nvim",
-    data = {
-      setup = setup,
-      keymaps = keymaps,
-    },
+    data = { setup = setup },
   },
 }

@@ -1,5 +1,3 @@
-local M = {}
-
 local function setup_dap()
   vim.schedule(function()
     local ok, dap = pcall(require, "dap")
@@ -86,6 +84,6 @@ local function setup_dap()
   end)
 end
 
+local M = {}
 M.setup_dap = setup_dap
-
 return M

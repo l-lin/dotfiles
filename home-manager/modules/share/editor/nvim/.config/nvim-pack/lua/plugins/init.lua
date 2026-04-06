@@ -18,14 +18,6 @@ vim.pack.add(plugins, {
     if setup ~= nil and type(setup) == "function" then
       setup()
     end
-    local keymaps = data.keymaps
-    if keymaps ~= nil and type(keymaps) == "function" then
-      keymaps(vim.keymap.set)
-    end
-    local autocmds = data.autocmds
-    if autocmds ~= nil and type(autocmds) == "function" then
-      autocmds(vim.api.nvim_create_autocmd)
-    end
   end,
   confirm = false,
 })

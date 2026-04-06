@@ -57,11 +57,8 @@ local function setup()
     "parsable",
     "-",
   }
-end
 
----@param create_autocmd fun(event: string|string[], opts: table)
-local function autocmds(create_autocmd)
-  create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave" }, {
+  vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave" }, {
     group = vim.api.nvim_create_augroup("nvim-lint", { clear = true }),
     callback = debounce(100, run_lint),
   })
@@ -70,8 +67,5 @@ end
 ---@type vim.pack.Spec
 return {
   src = "https://github.com/mfussenegger/nvim-lint",
-  data = {
-    setup = setup,
-    autocmds = autocmds,
-  },
+  data = { setup = setup },
 }

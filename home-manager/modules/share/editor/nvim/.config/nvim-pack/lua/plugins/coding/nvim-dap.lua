@@ -8,14 +8,12 @@ local function setup()
   vim.fn.sign_define("DapLogPoint", { text = ".>", texthl = "DiagnosticInfo" })
   vim.fn.sign_define("DapStopped", { text = "󰁕", texthl = "DiagnosticInfo", linehl = "DapStoppedLine" })
 
-  local typescript = require("plugins.lang.typescript")
+  local typescript = require("functions.lang.typescript")
   if typescript.setup_dap then
     typescript.setup_dap()
   end
-end
 
----@param map fun(mode: string|string[], lhs: string, rhs: string|function, opts?: table)
-local function keymaps(map)
+  local map = vim.keymap.set
   map("n", "<F9>", function()
     require("dap").continue()
   end, { desc = "Begin debug session (F9)", noremap = true, silent = true })
@@ -43,9 +41,6 @@ return {
   },
   {
     src = "https://github.com/theHamsta/nvim-dap-virtual-text",
-    data = {
-      setup = setup,
-      keymaps = keymaps,
-    },
+    data = { setup = setup },
   },
 }

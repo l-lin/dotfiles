@@ -202,9 +202,8 @@ return {
     setup = function()
       disable_swap_for_dirs()
       require("global-note").setup(global_opts())
-    end,
-    ---@param map fun(mode: string, lhs: string, rhs: string|function, opts?: table)
-    keymaps = function(map)
+
+      local map = vim.keymap.set
       map("n", "<leader>nd", "<cmd>DailyNote<cr>", { desc = "Open daily notes", noremap = true, silent = true })
       map("n", "<leader>np", note_picker, { desc = "Open project notes", noremap = true, silent = true })
       map("n", "<leader>nn", "<cmd>ProjectNote<cr>", { desc = "Open project note", noremap = true, silent = true })

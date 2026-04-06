@@ -49,11 +49,8 @@ return {
           end
         end
       end)
-    end,
 
-    ---@param map fun(mode: string|string[], lhs: string, rhs: string|function, opts?: table)
-    keymaps = function(map)
-      map("n", "<leader>cm", "<cmd>Mason<cr>", { desc = "Mason" })
+      vim.keymap.set("n", "<leader>cm", "<cmd>Mason<cr>", { desc = "Mason" })
     end,
   },
 }

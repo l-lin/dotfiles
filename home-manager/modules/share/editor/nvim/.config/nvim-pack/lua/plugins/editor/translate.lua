@@ -4,9 +4,8 @@ return {
   data = {
     setup = function()
       require("translate").setup({ default_lang = "en" })
-    end,
-    ---@param map fun(mode: string|string[], lhs: string, rhs: string|function, opts?: table)
-    keymaps = function(map)
+
+      local map = vim.keymap.set
       map("v", "<leader>oD", function()
         require("translate").replace_selection()
       end, { desc = "Translate & replace" })

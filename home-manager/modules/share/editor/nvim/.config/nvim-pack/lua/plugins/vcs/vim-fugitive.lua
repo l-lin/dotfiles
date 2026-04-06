@@ -1,5 +1,5 @@
----@param map fun(mode: string|string[], lhs: string, rhs: string|function, opts?: table)
-local function keymaps(map)
+local function setup()
+  local map = vim.keymap.set
   map("n", "<leader>gc", "<cmd>G commit --no-verify<cr>", { desc = "git commit" })
   map("n", "<leader>gF", "<cmd>G push --force-with-lease<cr>", { desc = "git push --force-with-lease" })
   map("n", "<leader>gp", "<cmd>G pull<cr>", { silent = true, noremap = true, desc = "git pull" })
@@ -70,5 +70,5 @@ end
 ---@type vim.pack.Spec
 return {
   src = "https://github.com/tpope/vim-fugitive",
-  data = { keymaps = keymaps },
+  data = { setup = setup },
 }

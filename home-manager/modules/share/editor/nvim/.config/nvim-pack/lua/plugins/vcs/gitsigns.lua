@@ -19,10 +19,8 @@ local function setup()
       changedelete = { text = "▎" },
     },
   })
-end
 
----@param map fun(mode: string|string[], lhs: string, rhs: string|function, opts?: table)
-local function keymaps(map)
+  local map = vim.keymap.set
   map("n", "<M-C-G>", "<cmd>Gitsigns preview_hunk_inline<cr>", { desc = "Preview Hunk inline (Ctrl+Alt+g)" })
   map({ "n", "v" }, "<M-C-Z>", "<cmd>Gitsigns reset_hunk<cr>", { desc = "Reset hunk (Ctrl+Alt+z)" })
   map("n", "]h", function()
@@ -44,8 +42,5 @@ end
 ---@type vim.pack.Spec
 return {
   src = "https://github.com/lewis6991/gitsigns.nvim",
-  data = {
-    setup = setup,
-    keymaps = keymaps,
-  },
+  data = { setup = setup },
 }

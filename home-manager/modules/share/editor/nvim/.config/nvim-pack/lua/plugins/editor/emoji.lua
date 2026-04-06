@@ -10,13 +10,13 @@ return {
   {
     src = "https://github.com/l-lin/emoji.nvim",
     data = {
-      keymaps = function(map)
-        map("n", "<leader>se", "<cmd>Emoji<cr>", {
+      setup = function()
+        vim.keymap.set("n", "<leader>se", "<cmd>Emoji<cr>", {
           desc = "Emoji",
           noremap = true,
           silent = true,
         })
-        map("i", "<M-;>", "<cmd>Emoji<cr>", { desc = "Emoji" })
+        vim.keymap.set("i", "<M-;>", "<cmd>Emoji<cr>", { desc = "Emoji" })
       end,
     },
   },

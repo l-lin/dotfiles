@@ -64,7 +64,5 @@ end
 ---@type vim.pack.Spec
 return {
   src = "https://github.com/nvim-lualine/lualine.nvim",
-  data = {
-    setup = setup,
-  },
+  data = { setup = setup },
 }

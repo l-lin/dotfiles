@@ -239,11 +239,9 @@ local function setup()
     words = { enabled = true },
     zen = { enabled = false },
   })
-end
 
----@arg map fun(mode: string, lhs: string, rhs: string|function, opts?: vim.keymap.set.Opts)
-local function keymaps(map)
   local selector = require("functions.selector")
+  local map = vim.keymap.set
   map("n", "<leader>bo", function()
     Snacks.bufdelete.other()
   end, { desc = "Delete Other Buffers" })
@@ -338,11 +336,8 @@ local function keymaps(map)
   map("n", "<leader>N", function()
     Snacks.picker.notifications()
   end, { desc = "Notification History" })
-end
 
----@param create_autocmd fun(event: string, opts: table)
-local function autocmds(create_autocmd)
-  create_autocmd("User", {
+  vim.api.nvim_create_autocmd("User", {
     pattern = "MiniFilesActionRename",
     callback = function(event)
       Snacks.rename.on_rename_file(event.data.from, event.data.to)
@@ -353,9 +348,5 @@ end
 ---@type vim.pack.Spec
 return {
   src = "https://github.com/folke/snacks.nvim",
-  data = {
-    setup = setup,
-    keymaps = keymaps,
-    autocmds = autocmds,
-  },
+  data = { setup = setup },
 }

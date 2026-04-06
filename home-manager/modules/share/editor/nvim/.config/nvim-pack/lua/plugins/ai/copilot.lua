@@ -26,15 +26,12 @@ local function setup()
   })
 
   vim.cmd("silent! Copilot disable")
-end
 
----@param map fun(mode: string|string[], lhs: string, rhs: string|function, opts?: table)
-local function keymaps(map)
-  map("n", "<leader>ad", "<cmd>Copilot disable<cr>", {
+  vim.keymap.set("n", "<leader>ad", "<cmd>Copilot disable<cr>", {
     desc = "Disable (Copilot)",
     silent = true,
   })
-  map("n", "<leader>ae", "<cmd>Copilot enable<cr>", {
+  vim.keymap.set("n", "<leader>ae", "<cmd>Copilot enable<cr>", {
     desc = "Enable (Copilot)",
     silent = true,
   })
@@ -48,9 +45,6 @@ return {
   },
   {
     src = "https://github.com/zbirenbaum/copilot.lua",
-    data = {
-      setup = setup,
-      keymaps = keymaps,
-    },
+    data = { setup = setup },
   },
 }

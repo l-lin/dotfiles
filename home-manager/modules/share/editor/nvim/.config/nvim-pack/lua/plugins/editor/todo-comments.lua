@@ -4,9 +4,8 @@ return {
   data = {
     setup = function()
       require("todo-comments").setup({})
-    end,
-    ---@param map fun(mode: string|string[], lhs: string, rhs: string|function, opts?: table)
-    keymaps = function(map)
+
+      local map = vim.keymap.set
       map("n", "]t", function()
         require("todo-comments").jump_next()
       end, { desc = "Next Todo Comment" })

@@ -1,6 +1,5 @@
----@param create_autocmd fun(event: string|string[], opts: table)
-local function autocmds(create_autocmd)
-  create_autocmd("PackChanged", {
+local function setup()
+  vim.api.nvim_create_autocmd("PackChanged", {
     callback = function(event)
       local name = event.data.spec.name
       local kind = event.data.kind
@@ -12,11 +11,8 @@ local function autocmds(create_autocmd)
       end
     end,
   })
-end
 
----@param map fun(mode: string|string[], lhs: string, rhs: string|function, opts?: table)
-local function keymaps(map)
-  map("n", "<leader>oB", "<cmd>MarkdownPreviewToggle<cr>", {
+  vim.keymap.set("n", "<leader>oB", "<cmd>MarkdownPreviewToggle<cr>", {
     desc = "Markdown Preview",
     noremap = true,
   })
@@ -25,8 +21,5 @@ end
 ---@type vim.pack.Spec
 return {
   src = "https://github.com/iamcco/markdown-preview.nvim",
-  data = {
-    autocmds = autocmds,
-    keymaps = keymaps,
-  },
+  data = { setup = setup },
 }

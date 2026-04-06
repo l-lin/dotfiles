@@ -9,9 +9,8 @@ return {
           sync_with_ring = false,
         },
       })
-    end,
-    ---@param map fun(mode: string|string[], lhs: string, rhs: string|function, opts?: table)
-    keymaps = function(map)
+
+      local map = vim.keymap.set
       map({ "n", "x" }, "y", "<Plug>(YankyYank)", { desc = "Yank Text" })
       map({ "n", "x" }, "p", "<Plug>(YankyPutAfter)", { desc = "Put Text After Cursor" })
       map({ "n", "x" }, "P", "<Plug>(YankyPutBefore)", { desc = "Put Text Before Cursor" })

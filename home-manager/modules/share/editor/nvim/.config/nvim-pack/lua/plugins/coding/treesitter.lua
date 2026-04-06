@@ -52,10 +52,8 @@ local function setup()
   vim.schedule(function()
     require("nvim-treesitter").install(parsers)
   end)
-end
 
----@param map fun(mode: string|string[], lhs: string, rhs: string|function, opts?: table)
-local function keymaps(map)
+  local map = vim.keymap.set
   map({ "n", "x", "o" }, "]f", function()
     require("nvim-treesitter-textobjects.move").goto_next_start("@function.outer", "textobjects")
     vim.api.nvim_command("norm! zz")
@@ -104,9 +102,6 @@ return {
   },
   {
     src = "https://github.com/nvim-treesitter/nvim-treesitter-context",
-    data = {
-      setup = setup,
-      keymaps = keymaps,
-    },
+    data = { setup = setup },
   },
 }
