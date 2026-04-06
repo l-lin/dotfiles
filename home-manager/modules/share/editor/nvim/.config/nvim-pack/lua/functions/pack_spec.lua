@@ -80,3 +80,114 @@ describe("pack.to_pack_specs", function()
     assert.are.same(expected, actual)
   end)
 end)
+
+describe("pack.group_plugin_names", function()
+  local function given_plugin_info(name, is_active)
+    return {
+      active = is_active,
+      spec = { name = name },
+    }
+  end
+
+  it("groups installed plugins into active and inactive lists", function()
+    -- GIVEN
+    local plugin_infos = {
+      given_plugin_info("snacks.nvim", true),
+      given_plugin_info("blink.cmp", true),
+      given_plugin_info("nvim-dap-ui", false),
+    }
+    local expected = {
+      installed = { "blink.cmp", "nvim-dap-ui", "snacks.nvim" },
+      active = { "blink.cmp", "snacks.nvim" },
+      inactive = { "nvim-dap-ui" },
+    }
+
+    -- WHEN
+    local actual = pack.group_plugin_names(plugin_infos)
+
+    -- THEN
+    assert.are.same(expected, actual)
+  end)
+
+  it("deduplicates plugin names and ignores entries without a resolved name", function()
+    -- GIVEN
+    local plugin_infos = {
+      given_plugin_info("blink.cmp", true),
+      given_plugin_info("blink.cmp", false),
+      { active = false, spec = {} },
+      { active = true },
+    }
+    local expected = {
+      installed = { "blink.cmp" },
+      active = { "blink.cmp" },
+      inactive = {},
+    }
+
+    -- WHEN
+    local actual = pack.group_plugin_names(plugin_infos)
+
+    -- THEN
+    assert.are.same(expected, actual)
+  end)
+end)
+
+describe("pack.plugin_report_lines", function()
+  local function given_plugin_info(name, src, is_active)
+    return {
+      active = is_active,
+      spec = { name = name, src = src },
+    }
+  end
+
+  it("formats installed plugins into a single markdown list with status icons", function()
+    -- GIVEN
+    local plugin_infos = {
+      given_plugin_info("snacks.nvim", "https://github.com/folke/snacks.nvim", true),
+      given_plugin_info("blink.cmp", "https://github.com/saghen/blink.cmp", true),
+      given_plugin_info("nvim-dap-ui", "https://github.com/rcarriga/nvim-dap-ui", false),
+    }
+    local expected = {
+      "# nvim-pack plugins",
+      "",
+      "- Installed directory: `~/.local/share/nvim-pack/site/pack/core/opt`",
+      "- Installed: 3",
+      "- Active: 2",
+      "- Inactive: 1",
+      "",
+      "## Plugins (3)",
+      "-  [blink.cmp](https://github.com/saghen/blink.cmp)",
+      "-  [nvim-dap-ui](https://github.com/rcarriga/nvim-dap-ui)",
+      "-  [snacks.nvim](https://github.com/folke/snacks.nvim)",
+    }
+
+    -- WHEN
+    local actual = pack.plugin_report_lines(plugin_infos, "~/.local/share/nvim-pack/site/pack/core/opt")
+
+    -- THEN
+    assert.are.same(expected, actual)
+  end)
+
+  it("falls back to the plugin name when the source URL is missing", function()
+    -- GIVEN
+    local plugin_infos = {
+      given_plugin_info("blink.cmp", nil, true),
+    }
+    local expected = {
+      "# nvim-pack plugins",
+      "",
+      "- Installed directory: `~/.local/share/nvim-pack/site/pack/core/opt`",
+      "- Installed: 1",
+      "- Active: 1",
+      "- Inactive: 0",
+      "",
+      "## Plugins (1)",
+      "-  blink.cmp",
+    }
+
+    -- WHEN
+    local actual = pack.plugin_report_lines(plugin_infos, "~/.local/share/nvim-pack/site/pack/core/opt")
+
+    -- THEN
+    assert.are.same(expected, actual)
+  end)
+end)
