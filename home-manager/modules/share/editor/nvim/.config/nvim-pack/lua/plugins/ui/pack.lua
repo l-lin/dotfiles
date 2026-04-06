@@ -123,7 +123,7 @@ local function build_content()
   add(sep, "PackUiSeparator")
 
   -- Action bar
-  local bar = " [U]pdate All  [u]pdate  [c]lean  [d]elete  [l]og  [?] Help"
+  local bar = " [U]pdate All  [u]pdate  [C]lean  [D]elete  [L]og  [?] Help"
   add(bar)
   -- Highlight the bracket keys (gmatch () captures are 1-based;
   -- the end capture points one past the match, which is exactly
@@ -139,9 +139,9 @@ local function build_content()
     add(" Keymaps:", "PackUiHelp")
     add("   U       Update all plugins", "PackUiHelp")
     add("   u       Update plugin under cursor", "PackUiHelp")
-    add("   c       Clean non-active plugins", "PackUiHelp")
-    add("   d       Delete plugin under cursor (non-active only)", "PackUiHelp")
-    add("   l       Open update log file", "PackUiHelp")
+    add("   C       Clean non-active plugins", "PackUiHelp")
+    add("   D       Delete plugin under cursor (non-active only)", "PackUiHelp")
+    add("   L       Open update log file", "PackUiHelp")
     add("   <CR>    Toggle plugin details", "PackUiHelp")
     add("   ]]      Jump to next plugin", "PackUiHelp")
     add("   [[      Jump to previous plugin", "PackUiHelp")
@@ -434,10 +434,6 @@ local function setup_keymaps()
   local buf = state.bufnr
   local opts = { buffer = buf, silent = true, nowait = true }
 
-  -- Close
-  -- vim.keymap.set("n", "q", close, opts)
-  -- vim.keymap.set("n", "<Esc>", close, opts)
-
   -- Update all
   vim.keymap.set("n", "U", update_all, opts)
 
@@ -445,13 +441,13 @@ local function setup_keymaps()
   vim.keymap.set("n", "u", function() update_plugin(plugin_at_cursor()) end, opts)
 
   -- Clean non-active plugins
-  vim.keymap.set("n", "c", clean_inactive_plugins, opts)
+  vim.keymap.set("n", "C", clean_inactive_plugins, opts)
 
   -- Delete plugin under cursor
-  vim.keymap.set("n", "d", function() delete_plugin(plugin_at_cursor()) end, opts)
+  vim.keymap.set("n", "D", function() delete_plugin(plugin_at_cursor()) end, opts)
 
   -- Open log
-  vim.keymap.set("n", "l", open_log, opts)
+  vim.keymap.set("n", "L", open_log, opts)
 
   -- Toggle details
   vim.keymap.set("n", "<CR>", function()
