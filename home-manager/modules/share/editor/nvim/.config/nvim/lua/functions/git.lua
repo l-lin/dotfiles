@@ -258,8 +258,9 @@ local function codeowner()
   if bufname == "" then
     return ""
   end
+  local bufnr = vim.api.nvim_get_current_buf()
 
-  local root = LazyVim.root()
+  local root = vim.fs.root(bufnr, { ".git" }) or vim.fn.getcwd()
   local rel_path = vim.fn.fnamemodify(bufname, ":p"):sub(#root + 2)
 
   local f = io.open(root .. "/CODEOWNERS", "r")
