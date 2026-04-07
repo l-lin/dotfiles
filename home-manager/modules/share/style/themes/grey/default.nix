@@ -11,7 +11,7 @@ in {
   theme = {
     inherit polarity;
     nvimColorScheme = "grey";
-    nvimColorSchemePluginLua = "{ 'l-lin/nvim-grey' }";
+    nvimColorSchemePluginLua = "https://github.com/l-lin/nvim-grey";
   };
 
   stylix = {
