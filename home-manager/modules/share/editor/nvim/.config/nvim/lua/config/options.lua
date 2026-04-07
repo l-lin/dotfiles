@@ -12,9 +12,8 @@ g.notes_dir = "~/perso/codeberg/notes"
 -- disable auto-formatting
 g.autoformat = false
 
--- Fix markdown indentation settings
--- TODO: Is it really necessary?
---g.markdown_recommended_style = 0
+-- Keep builtin markdown ftplugin from forcing 4-space indents.
+g.markdown_recommended_style = 0
 
 -- set to 2 spaces
 o.tabstop = 2
