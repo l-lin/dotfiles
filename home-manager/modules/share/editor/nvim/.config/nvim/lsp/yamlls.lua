@@ -6,11 +6,11 @@ return {
     new_config.settings = new_config.settings or {}
     new_config.settings.yaml = new_config.settings.yaml or {}
     local has_schemastore, schemastore = pcall(require, "schemastore")
-    if has_schemastore then
+    if has_schemastore and schemastore.yaml ~= nil and type(schemastore.yaml.schemas) == "function" then
       new_config.settings.yaml.schemas = vim.tbl_deep_extend(
         "force",
         new_config.settings.yaml.schemas or {},
-        schemastore.yaml_schemas()
+        schemastore.yaml.schemas()
       )
     end
   end,
