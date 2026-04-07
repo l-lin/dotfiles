@@ -123,7 +123,7 @@ end
 ---Make the selected text bold by wrapping it with **.
 ---Requires mini-surround to work.
 local function bold_selected_text()
-  vim.cmd("normal 2gsa*")
+  vim.cmd("normal 2sa*")
 end
 
 ---Single word/line bold
@@ -144,10 +144,10 @@ local function bold_word_under_cursor()
   local after = line:sub(col + 1)
   local inside_surround = before:match("%*%*[^%*]*$") and after:match("^[^%*]*%*%*")
   if inside_surround then
-    vim.cmd("normal gsd*.")
+    vim.cmd("normal sd*.")
   else
     vim.cmd("normal viw")
-    vim.cmd("normal 2gsa*")
+    vim.cmd("normal 2sa*")
   end
 end
 
