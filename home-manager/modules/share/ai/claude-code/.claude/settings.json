@@ -83,5 +83,6 @@
     "code-simplifier@claude-plugins-official": true,
     "doctolib-productivity@doctolib": true
   },
-  "effortLevel": "high"
+  "effortLevel": "high",
+  "showClearContextOnPlanAccept": true
 }
