@@ -10,6 +10,7 @@
     # pi may edit the settings.json, so let allow write on this file.
     ".pi/agent/settings.json".source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/ai/pi/.pi/agent/settings.json";
     ".pi/agent/keybindings.json".source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/ai/pi/.pi/agent/keybindings.json";
+    ".pi/agent/models.json".source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/ai/pi/.pi/agent/models.json";
 
     ".pi/agent/APPEND_SYSTEM.md".source = ../.config/ai/system-prompt.md;
     ".pi/agent/extensions" = {
