@@ -6,6 +6,7 @@
   imports = [
     ./claude-code
     ./dust
+    ./ollama
     #./opencode
     ./pi
   ];

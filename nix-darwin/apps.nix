@@ -79,6 +79,8 @@
       "ghostty"
       # Free and open-source image editor: https://www.gimp.org/
       "gimp"
+      # Get up and running with large language models locally: https://github.com/ollama/ollama
+      "ollama"
       # Java IDE by Jetbrains: https://www.jetbrains.com/idea/
       "intellij-idea"
       # Jellyfin is the volunteer-built media solution that puts you in control of your media: https://jellyfin.org/
