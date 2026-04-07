@@ -66,12 +66,12 @@ in {
 
   # mkOutOfStoreSymlink creates a mutable symlink (writable at runtime).
   # nvim config needs to be writable because I'm tweaking it everyday.
-  xdg.configFile."nvim" = {
-    source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/editor/nvim/.config/nvim";
+  xdg.configFile."nvim-lazy" = {
+    source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/editor/nvim/.config/nvim-lazy";
     recursive = true;
   };
-  xdg.configFile."nvim-pack" = {
-    source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/editor/nvim/.config/nvim-pack";
+  xdg.configFile."nvim" = {
+    source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/editor/nvim/.config/nvim";
     recursive = true;
   };
 
