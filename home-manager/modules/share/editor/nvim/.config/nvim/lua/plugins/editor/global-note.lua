@@ -198,8 +198,9 @@ return
   src = "https://github.com/backdround/global-note.nvim",
   data = {
     setup = function()
+      disable_swap_for_dirs()
+
       vim.schedule(function ()
-        disable_swap_for_dirs()
         require("global-note").setup(global_opts())
 
         vim.keymap.set("n", "<leader>nd", "<cmd>DailyNote<cr>", { desc = "Open daily notes", noremap = true, silent = true })
