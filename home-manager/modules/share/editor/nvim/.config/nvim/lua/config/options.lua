@@ -20,7 +20,7 @@ vim.o.winborder = "rounded"
 
 -- Experimental UI2: floating cmdline and messages
 vim.o.cmdheight = 1
-require('vim._core.ui2').enable({ targets = "msg" })
+require('vim._core.ui2').enable({})
 
 vim.opt.autowrite = true -- Enable auto write
 -- only set clipboard if not in ssh, to make sure the OSC 52
