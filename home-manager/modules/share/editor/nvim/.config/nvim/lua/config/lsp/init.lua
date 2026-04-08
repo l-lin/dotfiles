@@ -79,7 +79,7 @@ vim.lsp.enable({
   "yamlls",
 })
 
-vim.keymap.set("n", "<leader>li", "<cmd>checkhealth vim.lsp<cr>", { desc = "LSP Info" })
+vim.keymap.set("n", "<leader>lI", "<cmd>checkhealth vim.lsp<cr>", { desc = "LSP Info" })
 vim.keymap.set("n", "<leader>ll", function()
   local lsp_log_path = vim.fn.stdpath("state") .. "/lsp.log"
 

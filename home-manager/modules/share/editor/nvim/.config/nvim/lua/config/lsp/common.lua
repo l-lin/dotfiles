@@ -50,7 +50,7 @@ local function on_attach(client, bufnr)
       Snacks.picker.lsp_type_definitions()
     end, "Goto Type Definition")
 
-    map(bufnr, "n", "<leader>cl", function()
+    map(bufnr, "n", "<leader>li", function()
       Snacks.picker.lsp_config()
     end, "Lsp Info")
 
