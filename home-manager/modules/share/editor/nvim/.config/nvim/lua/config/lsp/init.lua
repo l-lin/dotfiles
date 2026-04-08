@@ -28,12 +28,6 @@ local function format(counts, severity)
   return table.concat(parts, " ")
 end
 
----@param value unknown
----@return string|nil
-local function string_or_nil(value)
-  return type(value) == "string" and value or nil
-end
-
 vim.diagnostic.config({
   float = { border = "rounded", source = true },
   severity_sort = true,
@@ -71,6 +65,8 @@ vim.lsp.config("*", {
   on_attach = require("config.lsp.common").on_attach,
 })
 
+require("config.lsp.status").setup()
+
 vim.lsp.enable({
   "bashls",
   "eslint",
@@ -88,28 +84,3 @@ vim.lsp.enable({
   "yamlls",
 })
 
-vim.api.nvim_create_autocmd("LspProgress", {
-  callback = function(ev)
-    local value = ev.data.params.value
-    if type(value) ~= "table" then
-      return
-    end
-
-    local opts = {
-      id = "lsp." .. ev.data.client_id,
-      kind = "progress",
-      source = "vim.lsp",
-      status = value.kind ~= "end" and "running" or "success",
-    }
-    local message = string_or_nil(value.message) or "done"
-    local title = string_or_nil(value.title)
-    if title ~= nil then
-      opts.title = title
-    end
-    if type(value.percentage) == "number" then
-      opts.percent = value.percentage
-    end
-
-    vim.api.nvim_echo({ { message } }, false, opts)
-  end,
-})

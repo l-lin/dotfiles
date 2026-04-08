@@ -10,6 +10,9 @@ local icons = {
     modified = "",
     removed = "",
   },
+  lsp = {
+    ready = "",
+  },
 }
 
 local M = {}

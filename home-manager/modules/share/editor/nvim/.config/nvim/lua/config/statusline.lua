@@ -41,20 +41,20 @@ local function get_diagnostics()
 
   local result = ""
   if errors > 0 then
-    result = result .. "%#DiagnosticError# " .. constants.icons.diagnostics.error .. " " .. errors
+    result = result .. "%#DiagnosticError#" .. constants.icons.diagnostics.error .. " " .. errors
   end
   if warnings > 0 then
-    result = result .. "%#DiagnosticWarn# " .. constants.icons.diagnostics.warn .. " " .. warnings
+    result = result .. "%#DiagnosticWarn#" .. constants.icons.diagnostics.warn .. " " .. warnings
   end
   if info > 0 then
-    result = result .. "%#DiagnosticInfo# " .. constants.icons.diagnostics.info .. " " .. info
+    result = result .. "%#DiagnosticInfo#" .. constants.icons.diagnostics.info .. " " .. info
   end
   if hints > 0 then
-    result = result .. "%#DiagnosticHint# " .. constants.icons.diagnostics.hint .. " " .. hints
+    result = result .. "%#DiagnosticHint#" .. constants.icons.diagnostics.hint .. " " .. hints
   end
 
   -- reset to StatusLine for following text
-  return result .. " %#StatusLine#"
+  return result .. "%#StatusLine#"
 end
 
 ---File icon
@@ -73,7 +73,7 @@ end
 ---Copilot enabled/disabled indicator
 ---@return string
 local function get_copilot_status()
-  local icon = " "
+  local icon = ""
   -- TODO: coupled to copilot.lua plugin, which is not great.
   -- Must find a better way to check if copilot is enabled without depending on the plugin's internal API
   local client = package.loaded["copilot.client"]
@@ -81,39 +81,46 @@ local function get_copilot_status()
     return ""
   end
 
-  local is_enabled = not client.is_disabled()
-  if is_enabled then
-    return icon
+  return not client.is_disabled() and icon or ""
+end
+
+---@return string
+local function get_lsp_status()
+  local ok, lsp_status = pcall(require, "config.lsp.status")
+  if not ok or type(lsp_status.get_statusline) ~= "function" then
+    return ""
   end
-  return ""
+
+  return lsp_status.get_statusline(vim.api.nvim_get_current_buf())
+end
+
+---@param segments string[]
+---@return string
+local function join_segments(segments)
+  local result = {}
+
+  for _, segment in ipairs(segments) do
+    if segment ~= "" then
+      table.insert(result, segment)
+    end
+  end
+
+  return table.concat(result, " ")
 end
 
 local M = {}
 function M.build()
-  local statusline = ""
-
-  -- A: diagnostics
-  local diagnostics = get_diagnostics()
-  if diagnostics ~= "" then
-    statusline = statusline .. diagnostics
-  end
-  -- right align
-  statusline = statusline .. "%="
-
-  -- X: copilot status
-  statusline = statusline .. get_copilot_status() .. " "
-  -- Y: filetype
   local ft = vim.bo.filetype
-  if ft ~= "" then
-    statusline = statusline .. get_file_icon() .. ft
-  end
-  -- Z: git branch
   local git_branch = get_git_branch()
-  if git_branch ~= "" then
-    statusline = statusline .. "  " .. git_branch .. " "
-  end
 
-  return statusline
+  local left = join_segments({ get_copilot_status(), get_diagnostics() })
+  local right = join_segments({
+    get_lsp_status(),
+    ft ~= "" and get_file_icon() .. ft or "",
+    git_branch ~= "" and " " .. git_branch or "",
+  })
+
+  return left .. "%=" .. right
 end
 
 vim.opt.laststatus = 3 -- global statusline
