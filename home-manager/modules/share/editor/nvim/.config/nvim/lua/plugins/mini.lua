@@ -104,6 +104,12 @@ local function setup_ai()
   require("mini.ai").setup()
 end
 
+--
+-- Minimal and fast pairs
+local function setup_pairs()
+  require("mini.pairs").setup()
+end
+
 ---@type vim.pack.Spec[]
 return {
   {
@@ -115,6 +121,7 @@ return {
           setup_files()
           setup_surround()
           setup_ai()
+          setup_pairs()
         end)
       end,
     },

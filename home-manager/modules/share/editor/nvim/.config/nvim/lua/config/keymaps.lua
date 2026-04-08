@@ -99,12 +99,12 @@ vim.keymap.set("x", "<", "<gv")
 vim.keymap.set("x", ">", ">gv")
 
 -- Auto-close pairs (simple, no plugin needed)
-vim.keymap.set("i", "`", "``<left>")
-vim.keymap.set("i", '"', '""<left>')
-vim.keymap.set("i", "(", "()<left>")
-vim.keymap.set("i", "[", "[]<left>")
-vim.keymap.set("i", "{", "{}<left>")
-vim.keymap.set("i", "<", "<><left>")
+-- vim.keymap.set("i", "`", "``<left>")
+-- vim.keymap.set("i", '"', '""<left>')
+-- vim.keymap.set("i", "(", "()<left>")
+-- vim.keymap.set("i", "[", "[]<left>")
+-- vim.keymap.set("i", "{", "{}<left>")
+-- vim.keymap.set("i", "<", "<><left>")
 
 --
 -- Search
