@@ -18,7 +18,7 @@ local function setup()
         { "<leader>f", group = "file/find" },
         { "<leader>fx", group = "execute" },
         { "<leader>g", group = "git" },
-        { "<leader>l", group = "plugins" },
+        { "<leader>l", group = "lsp" },
         { "<leader>n", group = "notes" },
         { "<leader>s", group = "search" },
         { "<leader>t", group = "test" },
