@@ -73,6 +73,7 @@ vim.opt.signcolumn = "yes" -- Always show the signcolumn, otherwise it would shi
 vim.opt.smartcase = true -- Don't ignore case with capitals
 vim.opt.smartindent = true -- Insert indents automatically
 vim.opt.smoothscroll = true
+vim.opt.softtabstop = 2 -- Soft tab stop
 vim.opt.spelllang = { "en" }
 vim.opt.splitbelow = true -- Put new windows below current
 vim.opt.splitkeep = "screen"
