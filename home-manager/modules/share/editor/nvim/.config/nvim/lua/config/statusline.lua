@@ -70,6 +70,24 @@ local function get_file_icon()
   return icon and icon .. " " or ""
 end
 
+---Copilot enabled/disabled indicator
+---@return string
+local function get_copilot_status()
+  local icon = " "
+  -- TODO: coupled to copilot.lua plugin, which is not great.
+  -- Must find a better way to check if copilot is enabled without depending on the plugin's internal API
+  local client = package.loaded["copilot.client"]
+  if type(client) ~= "table" or type(client.is_disabled) ~= "function" then
+    return ""
+  end
+
+  local is_enabled = not client.is_disabled()
+  if is_enabled then
+    return icon
+  end
+  return ""
+end
+
 local M = {}
 function M.build()
   local statusline = ""
@@ -82,19 +100,18 @@ function M.build()
   -- right align
   statusline = statusline .. "%="
 
-  -- X: filetype
+  -- X: copilot status
+  statusline = statusline .. get_copilot_status() .. " "
+  -- Y: filetype
   local ft = vim.bo.filetype
   if ft ~= "" then
     statusline = statusline .. get_file_icon() .. ft
   end
-  -- Y: git branch
+  -- Z: git branch
   local git_branch = get_git_branch()
   if git_branch ~= "" then
     statusline = statusline .. "  " .. git_branch .. " "
   end
-
-  -- Z: copilot status
-  -- TODO: implement me
 
   return statusline
 end
