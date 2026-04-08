@@ -52,6 +52,13 @@ vim.diagnostic.config({
       [vim.diagnostic.severity.HINT] = icons.diagnostics.hint,
     },
   },
+  -- dim whole line
+  linehl = {
+    [vim.diagnostic.severity.ERROR] = "DiagnosticErrorLine",
+    [vim.diagnostic.severity.WARN] = "DiagnosticWarnLine",
+    [vim.diagnostic.severity.INFO] = "DiagnosticInfoLine",
+    [vim.diagnostic.severity.HINT] = "DiagnosticHintLine",
+  },
   status = {
     format = function(counts)
       return format(counts, vim.diagnostic.severity)
