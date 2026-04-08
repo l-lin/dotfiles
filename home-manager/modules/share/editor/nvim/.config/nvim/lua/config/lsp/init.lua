@@ -69,6 +69,7 @@ vim.lsp.enable({
   "html",
   "jdtls",
   "jsonls",
+  "kotlin_lsp",
   "lemminx",
   "lua_ls",
   "nil_ls",

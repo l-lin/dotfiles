@@ -1,0 +1,3 @@
+[tools]
+# Fast, low-memory LSP server for Kotlin and Java, written in Rust: https://github.com/Hessesian/kotlin-lsp
+"cargo:kotlin-lsp" = "latest"
