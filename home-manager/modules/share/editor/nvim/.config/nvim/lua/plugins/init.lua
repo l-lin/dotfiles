@@ -13,6 +13,7 @@ vim.api.nvim_create_autocmd("PackChanged", {
 })
 
 local plugins = require("functions.pack").to_pack_specs({
+  require("plugins.mini"),
   require("plugins.ui"),
   require("plugins.editor"),
   require("plugins.coding"),

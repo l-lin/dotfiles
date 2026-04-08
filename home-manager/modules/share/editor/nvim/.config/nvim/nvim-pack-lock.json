@@ -62,17 +62,9 @@
       "rev": "b03fb0f20bc1d43daf558cda981a2be22e73ac42",
       "src": "git@github.com:mason-org/mason.nvim"
     },
-    "mini.files": {
-      "rev": "ced297546b8fdb8e215d416d4753a735514a2fe0",
-      "src": "git@github.com:nvim-mini/mini.files"
-    },
-    "mini.icons": {
-      "rev": "7fdae2443a0e2910015ca39ad74b50524ee682d3",
-      "src": "git@github.com:nvim-mini/mini.icons"
-    },
-    "mini.surround": {
-      "rev": "2715e04bea3ec9244f15b421dc5b18c0fe326210",
-      "src": "git@github.com:nvim-mini/mini.surround"
+    "mini.nvim": {
+      "rev": "2431902e78b76f435542d1e606f08475360068ca",
+      "src": "https://github.com/nvim-mini/mini.nvim"
     },
     "nvim-dap": {
       "rev": "45a69eba683a2c448dd9ecfc4de89511f0646b5f",

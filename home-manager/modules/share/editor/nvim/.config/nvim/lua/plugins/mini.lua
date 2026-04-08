@@ -1,3 +1,20 @@
+--
+-- Icon provider.
+--
+local function setup_icon()
+  require("mini.icons").setup()
+
+  -- Mock nvim-web-devicons to avoid loading it as a dependency,
+  -- since it's only used for icons in the statusline and file explorer.
+  package.preload["nvim-web-devicons"] = function()
+    require("mini.icons").mock_nvim_web_devicons()
+    return package.loaded["nvim-web-devicons"]
+  end
+end
+
+--
+-- Navigate and manipulate file system.
+--
 local function find_sub_module()
   local relative_filepath = vim.fn.expand("%:.")
   local _, extension = relative_filepath:match("(.+)%.(.+)$")
@@ -24,7 +41,7 @@ local function find_sub_module()
   return vim.api.nvim_buf_get_name(0)
 end
 
-local function setup()
+local function setup_files()
   require("mini.files").setup({
     windows = {
       preview = true,
@@ -61,12 +78,45 @@ local function setup()
   })
 end
 
----@type vim.pack.Spec
-return
--- Navigate and manipulate file system.
-{
-  src = "https://github.com/nvim-mini/mini.files",
-  data = { setup = function ()
-    vim.schedule(setup)
-  end },
+--
+-- Neovim Lua plugin with fast and feature-rich surround actions.
+--
+local function setup_surround()
+  vim.schedule(function()
+    require("mini.surround").setup({
+      mappings = {
+        add = "sa",
+        delete = "sd",
+        find = "sf",
+        find_left = "sF",
+        highlight = "sh",
+        replace = "sr",
+        update_n_lines = "sn",
+      },
+    })
+  end)
+end
+
+--
+-- Neovim Lua plugin to extend and create `a`/`i` textobjects.
+--
+local function setup_ai()
+  require("mini.ai").setup()
+end
+
+---@type vim.pack.Spec[]
+return {
+  {
+    src = "https://github.com/nvim-mini/mini.nvim",
+    data = {
+      setup = function()
+        setup_icon()
+        vim.schedule(function()
+          setup_files()
+          setup_surround()
+          setup_ai()
+        end)
+      end,
+    },
+  },
 }
