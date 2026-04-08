@@ -40,6 +40,7 @@ vim.api.nvim_create_autocmd("FileType", {
     "lspinfo",
     "qf",
     "notify",
+    "lsp-log",
     -- dbui
     "dbout",
     "neotest-output",

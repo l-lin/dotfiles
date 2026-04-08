@@ -16,12 +16,7 @@ local function format(counts, severity)
   for _, diagnostic_level in ipairs(diagnostic_levels) do
     local count = counts[severity[diagnostic_level.key]]
     if count ~= nil and count > 0 then
-      table.insert(parts, string.format(
-        "%%#%s#%s %d",
-        diagnostic_level.highlight,
-        diagnostic_level.icon,
-        count
-      ))
+      table.insert(parts, string.format("%%#%s#%s %d", diagnostic_level.highlight, diagnostic_level.icon, count))
     end
   end
 
@@ -84,3 +79,18 @@ vim.lsp.enable({
   "yamlls",
 })
 
+vim.keymap.set("n", "<leader>li", "<cmd>checkhealth vim.lsp<cr>", { desc = "LSP Info" })
+vim.keymap.set("n", "<leader>ll", function()
+  local lsp_log_path = vim.fn.stdpath("state") .. "/lsp.log"
+
+  vim.cmd("noswapfile tabedit " .. vim.fn.fnameescape(lsp_log_path))
+  vim.bo.filetype = "lsp-log"
+  vim.bo.readonly = true
+  vim.bo.swapfile = false
+end, { desc = "LSP logs" })
+vim.keymap.set(
+  "n",
+  "<leader>lc",
+  "<cmd>!echo > " .. vim.fn.stdpath("state") .. "/lsp.log<cr>",
+  { desc = "Clear LSP logs" }
+)
