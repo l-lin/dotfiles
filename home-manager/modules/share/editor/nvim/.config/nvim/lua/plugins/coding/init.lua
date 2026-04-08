@@ -1,5 +1,5 @@
 return {
-  require("plugins.coding.autopairs"),
+  --require("plugins.coding.autopairs"),
   require("plugins.coding.blink"),
   require("plugins.coding.mason"),
   require("plugins.coding.mini-surround"),

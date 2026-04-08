@@ -26,14 +26,15 @@ vim.keymap.set("n", "<M-C-l>", "<C-w>l", { desc = "Go to Right Window", remap = 
 -- Resize window using <ctrl> arrow keys
 vim.keymap.set("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase Window Height" })
 vim.keymap.set("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease Window Height" })
-vim.keymap.set("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease Window Width" })
-vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase Window Width" })
+vim.keymap.set("n", "<C-Left>", "<cmd>vertical resize +2<cr>", { desc = "Decrease Window Width" })
+vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize -2<cr>", { desc = "Increase Window Width" })
 
 --
 -- Buffer
 --
 -- Same behavior as browsers (muscle memory).
 vim.keymap.set("n", "<F28>", "<cmd>bd<CR>", { noremap = true, silent = true, desc = "Close current buffer (Ctrl+F4)" })
+vim.keymap.set("n", "<leader>bb", "<cmd>e #<CR>", { noremap = true, silent = true, desc = "Switch to Other Buffer" })
 
 --
 -- Yank
@@ -65,6 +66,12 @@ vim.keymap.set("n", "N", "Nzzzv", { noremap = true })
 vim.keymap.set("x", "$", "g_")
 
 --
+-- Fold
+--
+-- Close all folds except current one (great for focus)
+vim.keymap.set("n", "zv", "zMzvzz", { desc = "Close all folds except the current one" })
+
+--
 -- Tab
 --
 vim.keymap.set("n", "]<tab>", "<cmd>tabnext<cr>", { noremap = true, desc = "Next Tab" })
@@ -80,6 +87,9 @@ vim.keymap.set("i", "<A-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move Down" })
 vim.keymap.set("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move Up" })
 vim.keymap.set("v", "<A-j>", ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv", { desc = "Move Down" })
 vim.keymap.set("v", "<A-k>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", { desc = "Move Up" })
+-- Smart j/k: moves by visual lines when no count, real lines with count
+vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
+vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
 -- remove trailing whitespaces
 vim.keymap.set("n", "gJ", function() vim.api.nvim_command("norm! JdiW") end, { noremap = true, silent = true, desc = "Join line without whitespace" })
 -- Open link under cursor with either browser in private window for youtube links, short reponame in browser, or fallback to gx
@@ -87,6 +97,14 @@ vim.keymap.set("n", "gx", function() require("functions.open").smart_open() end,
 -- better indenting
 vim.keymap.set("x", "<", "<gv")
 vim.keymap.set("x", ">", ">gv")
+
+-- Auto-close pairs (simple, no plugin needed)
+vim.keymap.set("i", "`", "``<left>")
+vim.keymap.set("i", '"', '""<left>')
+vim.keymap.set("i", "(", "()<left>")
+vim.keymap.set("i", "[", "[]<left>")
+vim.keymap.set("i", "{", "{}<left>")
+vim.keymap.set("i", "<", "<><left>")
 
 --
 -- Search
@@ -136,12 +154,23 @@ vim.keymap.set("n", "gcO", "O<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = 
 --
 -- Quickfix list
 --
-vim.keymap.set("n", "<leader>xq", function()
+local function toggle_quickfix_list()
   local success, err = pcall(vim.fn.getqflist({ winid = 0 }).winid ~= 0 and vim.cmd.cclose or vim.cmd.copen)
   if not success and err then
     vim.notify(err, vim.log.levels.ERROR)
   end
-end, { desc = "Quickfix List" })
-
+end
+vim.keymap.set("n", "<leader>xq", toggle_quickfix_list, { desc = "Quickfix List" })
+vim.keymap.set("n", "<M-3>", toggle_quickfix_list, { desc = "Quickfix list"})
 vim.keymap.set("n", "[q", vim.cmd.cprev, { desc = "Previous Quickfix" })
 vim.keymap.set("n", "]q", vim.cmd.cnext, { desc = "Next Quickfix" })
+
+--
+-- Location list
+--
+vim.keymap.set("n", "<leader>xl", function()
+  local success, err = pcall(vim.fn.getloclist(0, { winid = 0 }).winid ~= 0 and vim.cmd.lclose or vim.cmd.lopen)
+  if not success and err then
+    vim.notify(err, vim.log.levels.ERROR)
+  end
+end, { desc = "Location List" })
