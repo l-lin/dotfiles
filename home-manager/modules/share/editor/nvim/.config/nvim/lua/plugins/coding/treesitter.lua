@@ -89,6 +89,28 @@ local function setup()
     require("treesitter-context").go_to_context()
     vim.api.nvim_command("norm! zt")
   end, { desc = "go to context" })
+
+  -- Fold based on treesitter.
+  vim.wo.foldmethod = "expr"
+  vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+  -- Indent based on treesitter
+  vim.bo.indentexpr = "v:lua.vim.treesitter.indentexpr()"
+
+  -- Auto-start treesitter
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "*" },
+    callback = function()
+      local filetype = vim.bo.filetype
+      if filetype and filetype ~= "" then
+        local success = pcall(function()
+          vim.treesitter.start()
+        end)
+        if not success then
+          return
+        end
+      end
+    end,
+  })
 end
 
 ---@type vim.pack.Spec[]

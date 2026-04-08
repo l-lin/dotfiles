@@ -41,9 +41,6 @@ vim.opt.fillchars = {
   msgsep = "─",
 }
 vim.opt.foldlevel = 99
--- Fold based on treesitter.
-vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-vim.opt.foldmethod = "expr"
 vim.opt.foldtext = ""
 vim.opt.formatoptions = "jcroqlnt" -- tcqj
 vim.opt.grepformat = "%f:%l:%c:%m"
