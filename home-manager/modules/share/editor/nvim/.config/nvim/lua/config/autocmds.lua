@@ -95,11 +95,9 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
-vim.api.nvim_create_user_command(
-  "Codeowner",
-  function() vim.notify(require("functions.git").codeowner(), vim.log.levels.INFO) end,
-  { desc = "Check file code ownership" }
-)
+vim.api.nvim_create_user_command("Codeowner", function()
+  vim.notify(require("functions.git").codeowner(), vim.log.levels.INFO)
+end, { desc = "Check file code ownership" })
 
 -- Scratch buffer mode, yank all the file content on exit.
 if vim.env.NVIM_SCRATCH then
@@ -110,3 +108,10 @@ if vim.env.NVIM_SCRATCH then
   })
 end
 
+-- Auto create dir when saving a file
+vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+  callback = function(event)
+    local file = vim.uv.fs_realpath(event.match) or event.match
+    vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
+  end,
+})
