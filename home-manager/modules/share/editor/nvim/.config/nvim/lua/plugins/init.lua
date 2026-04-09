@@ -13,7 +13,9 @@ vim.api.nvim_create_autocmd("PackChanged", {
 })
 
 local plugins = require("functions.pack").to_pack_specs({
-  require("plugins.mini"),
+  -- load plugins that might be used by other plugins
+  require("plugins.first"),
+
   require("plugins.ui"),
   require("plugins.editor"),
   require("plugins.coding"),
