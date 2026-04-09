@@ -43,7 +43,8 @@ vim.keymap.set("n", "<leader>bb", "<cmd>e #<CR>", { noremap = true, silent = tru
 vim.keymap.set("n", "<leader>yf", function() require("functions.yank").yank_relative_path() end, { noremap = true, desc = "Copy current buffer relative path to clipboard" })
 vim.keymap.set("n", "<leader>yF", function() require("functions.yank").yank_absolute_path() end, { noremap = true, desc = "Copy current buffer absolute path to clipboard" })
 vim.keymap.set("n", "<leader>yn", function() require("functions.yank").yank_filename() end, { noremap = true, desc = "Copy current buffer file name to clipboard" })
-vim.keymap.set("x", "<leader>yf", ":<C-u>lua require('functions.yank').yank_relative_path_with_line_range()<CR>", { noremap = true, desc = "Copy file path with line range" })
+vim.keymap.set("x", "<leader>yf", ":<C-u>lua require('functions.yank').yank_relative_path_with_line_range()<CR>", { noremap = true, desc = "Copy relative file path with line range" })
+vim.keymap.set("x", "<leader>yF", ":<C-u>lua require('functions.yank').yank_absolute_path_with_line_range()<CR>", { noremap = true, desc = "Copy absolute file path with line range" })
 -- special keymap to cut to black hole, so I don't lose what I yank to my register '+'
 vim.keymap.set({ "n", "v" }, "<M-d>", '"_d', { noremap = true })
 
