@@ -10,6 +10,7 @@ monolith:~/work/monolith
 navi:~/.local/share/navi/cheats/l-lin__cheats
 notes:~/perso/codeberg/notes
 nvim-pack:~/.config/dotfiles/home-manager/modules/share/editor/nvim/.config/nvim-pack
+nvim-plugins:~/.local/share/nvim/site/pack/core/opt
 nvim:~/.config/dotfiles/home-manager/modules/share/editor/nvim/.config/nvim
 o11y:~/work/terraform-observability
 patient-account:~/work/patient-account
