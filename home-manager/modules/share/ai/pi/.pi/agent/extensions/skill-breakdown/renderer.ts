@@ -20,6 +20,7 @@ import {
   ALL_MODELS_LABEL,
   DEFAULT_BG,
   EMPTY_CELL_BG,
+  LEAST_USED_SKILLS_LIMIT,
   LIGHT_BG,
   LIGHT_EMPTY_CELL_BG,
   TOP_SKILLS_LIMIT,
@@ -30,6 +31,7 @@ import {
   getProjectCountsForSkill,
   getSkillCount,
   rangeSummary,
+  sortMapByValueAsc,
   sortMapByValueDesc,
 } from "./aggregation.js";
 import { findSkillMatches } from "./search.js";
@@ -182,11 +184,28 @@ function renderLegendItems(
   return items;
 }
 
+function mergedSkillCounts(
+  range: SkillRangeAgg,
+  knownSkillNames: SkillName[] = [],
+): Map<SkillName, number> {
+  const skillCounts = new Map(range.skillCounts);
+
+  for (const skillName of knownSkillNames) {
+    if (!skillCounts.has(skillName)) skillCounts.set(skillName, 0);
+  }
+
+  return skillCounts;
+}
+
 export function renderSkillTable(
   range: SkillRangeAgg,
   maxRows = TOP_SKILLS_LIMIT,
+  order: "desc" | "asc" = "desc",
+  knownSkillNames: SkillName[] = [],
 ): string[] {
-  const rows = sortMapByValueDesc(range.skillCounts).slice(0, maxRows);
+  const rows = (order === "asc" ? sortMapByValueAsc : sortMapByValueDesc)(
+    mergedSkillCounts(range, knownSkillNames),
+  ).slice(0, maxRows);
   const countWidth = 8;
   const skillWidth = Math.min(
     50,
@@ -379,6 +398,41 @@ function renderProjectTable(
   return lines;
 }
 
+function renderLeastUsedSkillsView(
+  range: SkillRangeAgg,
+  selectedDays: number,
+  inner: number,
+  globalUserSkillNames: SkillName[],
+): string[] {
+  const lines: string[] = [];
+  lines.push(truncateToWidth(rangeSummary(range, selectedDays), inner));
+
+  if (globalUserSkillNames.length > 0) {
+    const neverInvokedSkillCount = globalUserSkillNames.filter(
+      (skillName) => !range.skillCounts.has(skillName),
+    ).length;
+    lines.push(
+      truncateToWidth(
+        `global skills: ${formatCount(globalUserSkillNames.length)} known · ${formatCount(neverInvokedSkillCount)} never invoked in this range`,
+        inner,
+      ),
+    );
+  }
+
+  lines.push("");
+
+  for (const tableLine of renderSkillTable(
+    range,
+    LEAST_USED_SKILLS_LIMIT,
+    "asc",
+    globalUserSkillNames,
+  )) {
+    lines.push(truncateToWidth(tableLine, inner));
+  }
+
+  return lines;
+}
+
 function renderProjectsView(
   range: SkillRangeAgg,
   inner: number,
@@ -438,12 +492,12 @@ export function renderBreakdownBody(
     const label = `${days}d`;
     return index === rangeIndex ? bold(`[${label}]`) : dim(` ${label} `);
   };
-  const viewTab = (candidate: SkillBreakdownView): string => {
-    return candidate === view ? bold(`[${candidate}]`) : dim(` ${candidate} `);
+  const viewTab = (candidate: SkillBreakdownView, label: string): string => {
+    return candidate === view ? bold(`[${label}]`) : dim(` ${label} `);
   };
 
   const lines: string[] = [];
-  const tabs = `${rangeTab(7, 0)} ${rangeTab(30, 1)} ${rangeTab(90, 2)}  ${viewTab("skills")} ${viewTab("projects")}`;
+  const tabs = `${rangeTab(7, 0)} ${rangeTab(30, 1)} ${rangeTab(90, 2)}  ${viewTab("skills", "skills")} ${viewTab("least-used", "least-used")} ${viewTab("projects", "projects")}`;
   lines.push(truncateToWidth(tabs, inner));
 
   if (isSearchMode) {
@@ -464,7 +518,14 @@ export function renderBreakdownBody(
   const bodyLines =
     view === "projects"
       ? renderProjectsView(range, inner, selectedSkill, selectedModel)
-      : renderGlobalSkillsView(range, selectedDays, data, isLight, inner);
+      : view === "least-used"
+        ? renderLeastUsedSkillsView(
+            range,
+            selectedDays,
+            inner,
+            data.globalUserSkillNames,
+          )
+        : renderGlobalSkillsView(range, selectedDays, data, isLight, inner);
 
   for (const line of bodyLines) {
     lines.push(truncateToWidth(line, inner));

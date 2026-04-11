@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
 import test from "node:test";
 import { SkillBreakdownComponent } from "./component.js";
 import {
@@ -8,6 +10,7 @@ import {
   given_sessionFile,
   given_sessionStartEntry,
   given_tempDirectory,
+  given_tempHome,
   given_theme,
   given_tui,
   when_computingBreakdown,
@@ -154,4 +157,85 @@ test("SkillBreakdownComponent GIVEN fuzzy search mode and editor delete keybindi
 
   const afterLineDelete = component.render(120).join("\n");
   assert.match(afterLineDelete, /search: …/i);
+});
+
+test("SkillBreakdownComponent GIVEN the default view WHEN cycling downward THEN it visits the least-used skills view before the projects view", async (t) => {
+  const component = await given_component(t);
+
+  component.handleInput("j");
+
+  const afterFirstDown = component.render(120).join("\n");
+  assert.match(afterFirstDown, /\[least-used\]/i);
+  assert.doesNotMatch(afterFirstDown, /\[projects\]/i);
+
+  component.handleInput("j");
+
+  const afterSecondDown = component.render(120).join("\n");
+  assert.match(afterSecondDown, /\[projects\]/i);
+});
+
+test("SkillBreakdownComponent GIVEN a custom down keybinding outside search WHEN cycling views THEN it honors that remap", async (t) => {
+  const component = await given_component(t, {
+    "tui.select.down": ["ctrl+n"],
+  });
+
+  component.handleInput("ctrl+n");
+
+  const actual = component.render(120).join("\n");
+
+  assert.match(actual, /\[least-used\]/i);
+});
+
+test("SkillBreakdownComponent GIVEN more than twenty global user skills with no invocations WHEN opening the least-used view THEN it includes never-invoked global skills and caps the table at twenty rows", async (t) => {
+  const tempHome = given_tempHome(t);
+  const sessionRoot = path.join(tempHome, ".pi", "agent", "sessions");
+  const skillNames = Array.from({ length: 22 }, (_value, index) => {
+    return `global-skill-${String(index + 1).padStart(2, "0")}`;
+  });
+
+  for (const skillName of skillNames) {
+    const skillPath = path.join(
+      tempHome,
+      ".config",
+      "ai",
+      "skills",
+      skillName,
+      "SKILL.md",
+    );
+    fs.mkdirSync(path.dirname(skillPath), { recursive: true });
+    fs.writeFileSync(
+      skillPath,
+      `---\nname: ${skillName}\ndescription: Test skill ${skillName}\n---\n`,
+    );
+  }
+
+  const actualData = await when_computingBreakdown(
+    sessionRoot,
+    new Date("2026-04-11T12:00:00.000Z"),
+    {
+      globalUserSkillRoot: path.join(tempHome, ".config", "ai", "skills"),
+    },
+  );
+  const component = new SkillBreakdownComponent(
+    actualData,
+    given_tui() as never,
+    () => {},
+    given_theme(),
+  );
+
+  component.handleInput("j");
+
+  const actual = component
+    .render(120)
+    .join("\n")
+    .replace(/\x1B\[[0-9;]*m/g, "");
+  const renderedRows = actual
+    .split("\n")
+    .filter((line) => /global-skill-\d+/i.test(line));
+
+  assert.equal(renderedRows.length, 20);
+  assert.match(actual, /global-skill-01/i);
+  assert.match(actual, /global-skill-20/i);
+  assert.doesNotMatch(actual, /global-skill-21/i);
+  assert.doesNotMatch(actual, /global-skill-22/i);
 });

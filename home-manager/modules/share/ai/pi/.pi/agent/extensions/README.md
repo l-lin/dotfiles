@@ -20,7 +20,7 @@ This directory contains local Pi extensions and one shared support module. Each 
 | [`pre-tool-safety`](./pre-tool-safety/)               | Calls an external safety hook before risky Bash commands or sensitive file reads.                                                                 |
 | [`sandbox`](./sandbox/)                               | Wraps bash commands in OS-level sandboxing (macOS sandbox-exec, Linux bubblewrap) with configurable filesystem and network restrictions.          |
 | [`session-breakdown`](./session-breakdown/)           | Analyzes Pi session history and shows activity, token, cost, and model trends in a TUI view.                                                      |
-| [`skill-breakdown`](./skill-breakdown/)               | Analyzes Pi session history and shows the top skills invoked over the last 7, 30, or 90 days.                                                     |
+| [`skill-breakdown`](./skill-breakdown/)               | Analyzes Pi session history and shows top skills, less-used skills, and per-project skill summaries over the last 7, 30, or 90 days.              |
 | [`snippet`](./snippet/)                               | Expands prompt snippets before the input is sent to the agent.                                                                                    |
 | [`subagent`](./subagent/)                             | Spawns interactive Pi subagents in tmux split panes and brings their results back to the main session.                                            |
 | [`system-prompt-selector`](./system-prompt-selector/) | Lets you switch system prompts from discovered agent markdown files.                                                                              |

@@ -23,6 +23,7 @@ type SearchKeybindings = {
 const SEARCH_SEGMENTER = new Intl.Segmenter(undefined, {
   granularity: "grapheme",
 });
+const VIEW_ORDER: SkillBreakdownView[] = ["skills", "least-used", "projects"];
 
 function matchesBinding(
   keybindings: SearchKeybindings | undefined,
@@ -100,19 +101,13 @@ function isCancelInput(data: string, keybindings?: SearchKeybindings): boolean {
   );
 }
 
-function isSearchUpInput(
-  data: string,
-  keybindings?: SearchKeybindings,
-): boolean {
+function isUpInput(data: string, keybindings?: SearchKeybindings): boolean {
   return !!(
     matchesBinding(keybindings, data, "tui.select.up") || matchesKey(data, "up")
   );
 }
 
-function isSearchDownInput(
-  data: string,
-  keybindings?: SearchKeybindings,
-): boolean {
+function isDownInput(data: string, keybindings?: SearchKeybindings): boolean {
   return !!(
     matchesBinding(keybindings, data, "tui.select.down") ||
     matchesKey(data, "down")
@@ -354,6 +349,17 @@ export class SkillBreakdownComponent implements Component {
     this.requestRender();
   }
 
+  private cycleView(direction: 1 | -1): void {
+    const currentIndex = VIEW_ORDER.indexOf(this.view);
+    const normalizedCurrentIndex = currentIndex === -1 ? 0 : currentIndex;
+    const nextIndex =
+      (normalizedCurrentIndex + VIEW_ORDER.length + direction) %
+      VIEW_ORDER.length;
+
+    this.view = VIEW_ORDER[nextIndex] ?? "skills";
+    this.requestRender();
+  }
+
   invalidate(): void {
     // No cached state to clear.
   }
@@ -368,11 +374,11 @@ export class SkillBreakdownComponent implements Component {
         this.confirmSearch();
         return;
       }
-      if (isSearchUpInput(data, this.keybindings)) {
+      if (isUpInput(data, this.keybindings)) {
         this.moveSearchSelection(-1);
         return;
       }
-      if (isSearchDownInput(data, this.keybindings)) {
+      if (isDownInput(data, this.keybindings)) {
         this.moveSearchSelection(1);
         return;
       }
@@ -416,23 +422,17 @@ export class SkillBreakdownComponent implements Component {
       return;
     }
 
-    if (
-      matchesKey(data, "escape") ||
-      matchesKey(data, "ctrl+c") ||
-      data.toLowerCase() === "q"
-    ) {
+    if (isCancelInput(data, this.keybindings) || data.toLowerCase() === "q") {
       this.onDone();
       return;
     }
 
-    if (matchesKey(data, "up") || data.toLowerCase() === "k") {
-      this.view = this.view === "skills" ? "projects" : "skills";
-      this.requestRender();
+    if (isUpInput(data, this.keybindings) || data.toLowerCase() === "k") {
+      this.cycleView(-1);
       return;
     }
-    if (matchesKey(data, "down") || data.toLowerCase() === "j") {
-      this.view = this.view === "skills" ? "projects" : "skills";
-      this.requestRender();
+    if (isDownInput(data, this.keybindings) || data.toLowerCase() === "j") {
+      this.cycleView(1);
       return;
     }
 

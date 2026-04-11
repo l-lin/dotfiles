@@ -163,8 +163,18 @@ async function when_parsingSkillSession(
   return actual.skillFirstLoadedAt;
 }
 
-async function when_computingBreakdown(root: string, now: Date) {
-  return computeSkillBreakdown({ root, now });
+async function when_computingBreakdown(
+  root: string,
+  now: Date,
+  options?: {
+    globalUserSkillRoot?: string | null;
+  },
+) {
+  return computeSkillBreakdown({
+    root,
+    now,
+    globalUserSkillRoot: options?.globalUserSkillRoot ?? null,
+  });
 }
 
 async function when_runningNonInteractiveCommand(

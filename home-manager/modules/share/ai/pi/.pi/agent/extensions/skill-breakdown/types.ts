@@ -1,7 +1,7 @@
 export type SkillName = string;
 export type ProjectKey = string;
 export type ModelKey = string;
-export type SkillBreakdownView = "skills" | "projects";
+export type SkillBreakdownView = "skills" | "least-used" | "projects";
 
 export interface RGB {
   r: number;
@@ -40,6 +40,7 @@ export interface SkillRangeAgg {
 export interface SkillBreakdownData {
   generatedAt: Date;
   ranges: Map<number, SkillRangeAgg>;
+  globalUserSkillNames: SkillName[];
   palette: {
     skillColors: Map<SkillName, RGB>;
     orderedSkills: SkillName[];

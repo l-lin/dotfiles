@@ -11,6 +11,7 @@ export {
 } from "../session-breakdown/constants.js";
 
 export const TOP_SKILLS_LIMIT = 10;
+export const LEAST_USED_SKILLS_LIMIT = 20;
 export const SEARCH_MATCH_LIMIT = 5;
 export const OTHER_COLOR = { r: 160, g: 160, b: 160 };
 export const LOADER_BASE_MESSAGE = "Analyzing skill usage (last 90 days)…";

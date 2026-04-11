@@ -189,8 +189,15 @@ export function given_mockPi() {
 export async function when_computingBreakdown(
   root: string,
   now: Date,
+  options?: {
+    globalUserSkillRoot?: string | null;
+  },
 ): Promise<SkillBreakdownData> {
-  return computeSkillBreakdown({ root, now });
+  return computeSkillBreakdown({
+    root,
+    now,
+    globalUserSkillRoot: options?.globalUserSkillRoot ?? null,
+  });
 }
 
 export function then_expectParsedSession(actual: unknown): asserts actual {

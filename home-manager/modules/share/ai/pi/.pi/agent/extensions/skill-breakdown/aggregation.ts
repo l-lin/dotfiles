@@ -14,6 +14,7 @@ import {
   UNKNOWN_PROJECT_LABEL,
   getSessionRoot,
 } from "./constants.js";
+import { loadGlobalUserSkillNames } from "./global-skills.js";
 import {
   parseSkillSessionFile,
   walkRecentSessionFiles,
@@ -144,6 +145,17 @@ export function sortMapByValueDesc<K extends string>(
     });
 }
 
+export function sortMapByValueAsc<K extends string>(
+  values: Map<K, number>,
+): Array<{ key: K; value: number }> {
+  return [...values.entries()]
+    .map(([key, value]) => ({ key, value }))
+    .sort((left, right) => {
+      if (left.value !== right.value) return left.value - right.value;
+      return left.key.localeCompare(right.key);
+    });
+}
+
 export function choosePaletteFromLast30Days(
   range30: SkillRangeAgg,
   topN = TOP_SKILLS_LIMIT,
@@ -175,11 +187,15 @@ export async function computeSkillBreakdown(options?: {
   now?: Date;
   signal?: AbortSignal;
   onProgress?: (update: Partial<SkillBreakdownProgressState>) => void;
+  globalUserSkillRoot?: string | null;
 }): Promise<SkillBreakdownData> {
   const now = options?.now ?? new Date();
   const root = options?.root ?? getSessionRoot();
   const signal = options?.signal;
   const onProgress = options?.onProgress;
+  const globalUserSkillNames = loadGlobalUserSkillNames(
+    options?.globalUserSkillRoot,
+  );
 
   const ranges = new Map<number, SkillRangeAgg>();
   const sessionsPerRange = new Map<number, Set<string>>();
@@ -260,6 +276,7 @@ export async function computeSkillBreakdown(options?: {
   return {
     generatedAt: now,
     ranges,
+    globalUserSkillNames,
     palette: choosePaletteFromLast30Days(ranges.get(30)!, TOP_SKILLS_LIMIT),
   };
 }

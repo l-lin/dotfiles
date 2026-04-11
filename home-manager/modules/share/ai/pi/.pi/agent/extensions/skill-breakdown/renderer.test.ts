@@ -38,6 +38,7 @@ function given_data(now: Date) {
   const data: SkillBreakdownData = {
     generatedAt: now,
     ranges: new Map([[30, range]]),
+    globalUserSkillNames: [],
     palette: {
       skillColors: new Map([
         ["skill-alpha", { r: 64, g: 196, b: 99 }],
@@ -94,4 +95,68 @@ test("renderBreakdownBody GIVEN search mode and a selected match index WHEN rend
 
   assert.match(plainText, /> skill-alpha/i);
   assert.doesNotMatch(plainText, /> skill-beta/i);
+});
+
+test("renderBreakdownBody GIVEN the least-used skills view WHEN rendering THEN it shows the lowest-count skills instead of the top skills table", () => {
+  const now = new Date("2026-04-11T12:00:00.000Z");
+  const range = buildRangeAgg(30, now);
+  const skillNames = [
+    "skill-a",
+    "skill-b",
+    "skill-c",
+    "skill-d",
+    "skill-e",
+    "skill-f",
+    "skill-g",
+    "skill-h",
+    "skill-i",
+    "skill-j",
+    "skill-k",
+  ];
+
+  skillNames.forEach((skillName, index) => {
+    const count = skillNames.length - index;
+    for (let invocation = 0; invocation < count; invocation++) {
+      addSkillToRange(
+        range,
+        skillName,
+        new Date("2026-04-10T08:00:00.000Z"),
+        null,
+        null,
+      );
+    }
+  });
+
+  const data: SkillBreakdownData = {
+    generatedAt: now,
+    ranges: new Map([[30, range]]),
+    globalUserSkillNames: [],
+    palette: {
+      skillColors: new Map(),
+      orderedSkills: [],
+      otherColor: { r: 160, g: 160, b: 160 },
+    },
+  };
+
+  const actual = (renderBreakdownBody as any)(
+    range,
+    30,
+    data,
+    false,
+    120,
+    1,
+    "least-used",
+    null,
+    null,
+    false,
+    "",
+    0,
+  ).join("\n");
+  const plainText = actual.replace(/\x1B\[[0-9;]*m/g, "");
+
+  assert.match(plainText, /\[least-used\]/i);
+  assert.match(plainText, /skill-k/i);
+  assert.match(plainText, /skill-b/i);
+  assert.match(plainText, /skill-a\b/i);
+  assert.match(plainText, /skill-k\s+1\s+2%/i);
 });

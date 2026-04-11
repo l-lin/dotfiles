@@ -29,7 +29,7 @@ function setBorderedLoaderMessage(
 export default function skillBreakdownExtension(pi: ExtensionAPI) {
   pi.registerCommand("cmd:skill-breakdown", {
     description:
-      "Interactive breakdown of the top skills invoked over the last 7, 30, or 90 days",
+      "Interactive breakdown of skill usage over the last 7, 30, or 90 days",
     handler: async (_args: string, ctx: ExtensionContext) => {
       if (!ctx.hasUI) {
         const data = await computeSkillBreakdown();
