@@ -1,19 +1,19 @@
-return {
-  -- linter
-  {
-    "sonarlint",
-    url = "https://gitlab.com/schrieveslaach/sonarlint.nvim",
-    ft = { "go", "js", "java", "xml" },
-    opts = function()
+---@type vim.pack.Spec
+return
+-- linter
+{
+  src = "https://gitlab.com/schrieveslaach/sonarlint.nvim",
+  data = {
+    setup = function()
       local jars = vim.fn.globpath("$MASON/share/sonarlint-language-server", "*.jar", true, true)
-      return {
+      require("sonarlint").setup({
         server = {
           cmd = {
             "sonarlint-language-server",
             -- Ensure that sonarlint-language-server uses stdio channel
             "-stdio",
             "-analyzers",
-            jars
+            jars,
           },
         },
         filetypes = {
@@ -22,15 +22,7 @@ return {
           "js",
           "xml",
         },
-      }
+      })
     end,
-  },
-
-  -- LSP/DAP/Linter manager
-  {
-    "mason-org/mason.nvim",
-    opts = {
-      ensure_installed = { "sonarlint-language-server" },
-    },
   },
 }

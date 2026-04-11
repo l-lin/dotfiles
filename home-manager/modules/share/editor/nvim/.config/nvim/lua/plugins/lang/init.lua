@@ -1,4 +1,5 @@
 return {
+  -- require("plugins.lang.adoc"),
   require("plugins.lang.java"),
   require("plugins.lang.json"),
   require("plugins.lang.lua"),

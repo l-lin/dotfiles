@@ -17,6 +17,7 @@ local tools = {
   "selene",
   "shellcheck",
   "shfmt",
+  -- "sonarlint-language-server",
   "stylua",
   "taplo",
   "vtsls",
