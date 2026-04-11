@@ -1,8 +1,8 @@
 {
-  "lastChangelogVersion": "0.65.2",
+  "lastChangelogVersion": "0.66.1",
   "theme": "light",
   "defaultProvider": "github-copilot",
-  "defaultModel": "gpt-4.1",
+  "defaultModel": "gpt-5.4",
   "skills": [
     "~/.config/ai/skills"
   ],
@@ -23,7 +23,7 @@
       "visible": false
     },
     "lspDiagnostics": {
-      "enabled": true
+      "enabled": false
     },
     "subagent": {
       "enabled": false,
@@ -37,7 +37,7 @@
       }
     },
     "webSearch": {
-      "enabled": true
+      "enabled": false
     },
     "webFetch": {
       "enabled": true
