@@ -72,6 +72,10 @@ local function setup()
           notes_subdir = "6-triage",
         },
       },
+      {
+        name = "state-of-ai",
+        path = "~/perso/codeberg/state-of-ai",
+      }
     },
   })
 
