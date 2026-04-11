@@ -75,7 +75,7 @@ local function setup()
       {
         name = "state-of-ai",
         path = "~/perso/codeberg/state-of-ai",
-      }
+      },
     },
   })
 
@@ -106,19 +106,14 @@ local function setup()
   end
 end
 
----@type vim.pack.Spec[]
-return {
-  -- plenary: full; complete; entire; absolute; unqualified. All the lua functions I don't want to write twice.
-  {
-    src = "https://github.com/nvim-lua/plenary.nvim",
-  },
-  -- Obsidian 🤝 Neovim
-  {
-    src = "https://github.com/l-lin/obsidian.nvim",
-    data = {
-      setup = function()
-        vim.schedule(setup)
-      end,
-    },
+---@type vim.pack.Spec
+return
+-- Obsidian 🤝 Neovim
+{
+  src = "https://github.com/l-lin/obsidian.nvim",
+  data = {
+    setup = function()
+      vim.schedule(setup)
+    end,
   },
 }

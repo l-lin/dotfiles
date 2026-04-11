@@ -23,15 +23,20 @@ local function setup()
   end
 end
 
----@type vim.pack.Spec
-return
--- Getting you where you want with the fewest keystrokes.
-{
-  src = "https://github.com/ThePrimeagen/harpoon",
-  version = "harpoon2",
-  data = {
-    setup = function()
-      vim.schedule(setup)
-    end,
+---@type vim.pack.Spec[]
+return {
+  -- plenary: full; complete; entire; absolute; unqualified. All the lua functions I don't want to write twice.
+  {
+    src = "https://github.com/nvim-lua/plenary.nvim",
+  },
+  -- Getting you where you want with the fewest keystrokes.
+  {
+    src = "https://github.com/ThePrimeagen/harpoon",
+    version = "harpoon2",
+    data = {
+      setup = function()
+        vim.schedule(setup)
+      end,
+    },
   },
 }
