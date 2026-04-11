@@ -26,7 +26,6 @@ alias n="nix"
 alias ns="nix-shell --command zsh -p"
 # editor
 alias v="nvim"
-alias lv="NVIM_APPNAME=nvim-lazy nvim"
 # sudo
 alias sudo="sudo"
 alias _="sudo"
