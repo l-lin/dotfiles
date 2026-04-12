@@ -3,9 +3,22 @@ import type { KeyId } from "@mariozechner/pi-tui";
 const DEFAULT_KEYBIND = "alt-m";
 const MODIFIERS = new Set(["ctrl", "shift", "alt"]);
 
-export const CONFIGURED_MODELS = [
-  "github-copilot/gpt-4.1",
-  "github-copilot/gpt-5.4",
+export type ConfiguredThinkingLevel =
+  | "minimal"
+  | "low"
+  | "medium"
+  | "high"
+  | "xhigh";
+
+export interface ConfiguredModel {
+  reference: string;
+  thinkingLevel?: ConfiguredThinkingLevel;
+}
+
+export const CONFIGURED_MODELS: ConfiguredModel[] = [
+  { reference: "github-copilot/gpt-4.1" },
+  { reference: "github-copilot/gpt-5.4", thinkingLevel: "xhigh" },
+  { reference: "ollama/gemma4:26b", thinkingLevel: "high" },
 ];
 
 export interface ModelReferenceLike {
@@ -63,6 +76,14 @@ function parseModelReference(
   };
 }
 
+function rotateList<T>(items: T[], currentIndex: number): T[] {
+  if (items.length <= 1) return [...items];
+
+  const nextIndex = currentIndex >= 0 ? (currentIndex + 1) % items.length : 1;
+
+  return [...items.slice(nextIndex), ...items.slice(0, nextIndex)];
+}
+
 export function rotateModels(
   models: string[],
   currentModelReference: string | undefined,
@@ -70,19 +91,28 @@ export function rotateModels(
   const configuredModels = models.filter(
     (model) => typeof model === "string" && model.trim().length > 0,
   );
-
-  if (configuredModels.length <= 1) return [...configuredModels];
-
   const currentIndex = currentModelReference
     ? configuredModels.indexOf(currentModelReference)
     : -1;
-  const nextIndex =
-    currentIndex >= 0 ? (currentIndex + 1) % configuredModels.length : 1;
 
-  return [
-    ...configuredModels.slice(nextIndex),
-    ...configuredModels.slice(0, nextIndex),
-  ];
+  return rotateList(configuredModels, currentIndex);
+}
+
+export function rotateConfiguredModels(
+  models: ConfiguredModel[],
+  currentModelReference: string | undefined,
+): ConfiguredModel[] {
+  const configuredModels = models.filter(
+    (model) =>
+      typeof model.reference === "string" && model.reference.trim().length > 0,
+  );
+  const currentIndex = currentModelReference
+    ? configuredModels.findIndex(
+        (model) => model.reference === currentModelReference,
+      )
+    : -1;
+
+  return rotateList(configuredModels, currentIndex);
 }
 
 export function resolveConfiguredModel<TModel>(

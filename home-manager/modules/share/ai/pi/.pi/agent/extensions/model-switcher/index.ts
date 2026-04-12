@@ -12,7 +12,7 @@ import {
   formatModelReference,
   normalizeKeybind,
   resolveConfiguredModel,
-  rotateModels,
+  rotateConfiguredModels,
 } from "./model-switching.js";
 import { loadSettings } from "./settings.js";
 
@@ -21,8 +21,18 @@ async function switchConfiguredModel(
   ctx: ExtensionContext,
 ): Promise<void> {
   const previousModelReference = formatModelReference(ctx.model);
-  const rotatedModels = rotateModels(CONFIGURED_MODELS, previousModelReference);
-  const nextModelReference = rotatedModels[0];
+  const rotatedModels = rotateConfiguredModels(
+    CONFIGURED_MODELS,
+    previousModelReference,
+  );
+  const nextConfiguredModel = rotatedModels[0];
+
+  if (!nextConfiguredModel) {
+    ctx.ui.notify("No configured models are available.", "error");
+    return;
+  }
+
+  const nextModelReference = nextConfiguredModel.reference;
 
   let nextModel;
   try {
@@ -40,6 +50,10 @@ async function switchConfiguredModel(
       "error",
     );
     return;
+  }
+
+  if (nextConfiguredModel.thinkingLevel) {
+    pi.setThinkingLevel(nextConfiguredModel.thinkingLevel);
   }
 
   ctx.ui.notify(

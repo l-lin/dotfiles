@@ -36,10 +36,54 @@ function given_tempHome(t: test.TestContext): string {
   return tempHome;
 }
 
+type ConfiguredModelTestShape = {
+  reference: string;
+  thinkingLevel?: string;
+};
+
+function given_configuredModel(
+  configuredModel: unknown,
+): ConfiguredModelTestShape {
+  if (typeof configuredModel === "string") {
+    return { reference: configuredModel };
+  }
+
+  if (
+    configuredModel &&
+    typeof configuredModel === "object" &&
+    "reference" in configuredModel
+  ) {
+    const candidate = configuredModel as {
+      reference?: unknown;
+      thinkingLevel?: unknown;
+    };
+
+    if (typeof candidate.reference === "string") {
+      const thinkingLevel =
+        typeof candidate.thinkingLevel === "string"
+          ? candidate.thinkingLevel
+          : undefined;
+
+      return thinkingLevel
+        ? { reference: candidate.reference, thinkingLevel }
+        : { reference: candidate.reference };
+    }
+  }
+
+  throw new Error("Expected configured model to expose a reference string");
+}
+
+function given_configuredModelReferences(): string[] {
+  return CONFIGURED_MODELS.map(
+    (configuredModel) => given_configuredModel(configuredModel).reference,
+  );
+}
+
 function given_mockPi(setModelResult = true) {
   const commands = new Map<string, { handler: Function }>();
   const shortcuts = new Map<string, { handler: Function }>();
   const setModelCalls: unknown[] = [];
+  const setThinkingLevelCalls: string[] = [];
 
   const pi = {
     on() {
@@ -55,16 +99,25 @@ function given_mockPi(setModelResult = true) {
       setModelCalls.push(model);
       return setModelResult;
     },
+    setThinkingLevel(level: string) {
+      setThinkingLevelCalls.push(level);
+    },
   };
 
-  return { pi, commands, shortcuts, setModelCalls };
+  return {
+    pi,
+    commands,
+    shortcuts,
+    setModelCalls,
+    setThinkingLevelCalls,
+  };
 }
 
 /** Builds a mock context whose registry is derived from CONFIGURED_MODELS. */
 function given_mockContext(currentModelRef: string | undefined) {
   const notifications: Array<{ message: string; type?: string }> = [];
   const models = new Map(
-    CONFIGURED_MODELS.map((ref: string) => {
+    given_configuredModelReferences().map((ref) => {
       const slashIndex = ref.indexOf("/");
       const provider = ref.slice(0, slashIndex);
       const id = ref.slice(slashIndex + 1);
@@ -109,16 +162,17 @@ async function when_switchModelCommand(
 
 // ─── CONFIGURED_MODELS ──────────────────────────────────────────────────────
 
-test("CONFIGURED_MODELS WHEN imported THEN it is a non-empty array of provider/model strings", () => {
-  assert.ok(
-    Array.isArray(CONFIGURED_MODELS),
-    "Expected CONFIGURED_MODELS to be an array",
+test("CONFIGURED_MODELS WHEN imported THEN it includes the requested model references and thinking levels", () => {
+  const actual = CONFIGURED_MODELS.map((configuredModel) =>
+    given_configuredModel(configuredModel),
   );
-  assert.ok(CONFIGURED_MODELS.length > 1, "Expected at least two entries");
-  assert.ok(
-    CONFIGURED_MODELS.every((m) => typeof m === "string" && m.includes("/")),
-    "Expected each entry to be a provider/model string",
-  );
+  const expected = [
+    { reference: "github-copilot/gpt-4.1" },
+    { reference: "github-copilot/gpt-5.4", thinkingLevel: "xhigh" },
+    { reference: "ollama/gemma4:26b", thinkingLevel: "high" },
+  ];
+
+  assert.deepEqual(actual, expected);
 });
 
 // ─── rotateModels ────────────────────────────────────────────────────────────
@@ -284,8 +338,13 @@ test("extension GIVEN default settings WHEN loading THEN command and normalized 
 test("extension GIVEN switch command WHEN invoked THEN it switches to next configured model", async (t) => {
   given_tempHome(t);
 
-  const { pi, commands, setModelCalls } = given_mockPi();
-  const { ctx, notifications } = given_mockContext(CONFIGURED_MODELS[0]);
+  const configuredModels = CONFIGURED_MODELS.map((configuredModel) =>
+    given_configuredModel(configuredModel),
+  );
+  const { pi, commands, setModelCalls, setThinkingLevelCalls } = given_mockPi();
+  const { ctx, notifications } = given_mockContext(
+    configuredModels[0].reference,
+  );
 
   modelSelectorExtension(pi as never);
 
@@ -294,23 +353,54 @@ test("extension GIVEN switch command WHEN invoked THEN it switches to next confi
 
   await when_switchModelCommand(command.handler, ctx);
 
-  const [firstProvider, ...firstId] = CONFIGURED_MODELS[1].split("/");
+  const [firstProvider, ...firstId] = configuredModels[1].reference.split("/");
   assert.deepEqual(setModelCalls, [
     { provider: firstProvider, id: firstId.join("/") },
   ]);
+  assert.deepEqual(setThinkingLevelCalls, ["xhigh"]);
   assert.deepEqual(notifications, [
     {
-      message: `Switched model: ${CONFIGURED_MODELS[0]} → ${CONFIGURED_MODELS[1]}`,
+      message: `Switched model: ${configuredModels[0].reference} → ${configuredModels[1].reference}`,
       type: "info",
     },
   ]);
 });
 
+test("extension GIVEN current model with configured thinking WHEN switching THEN next model thinking level is updated", async (t) => {
+  given_tempHome(t);
+
+  const configuredModels = CONFIGURED_MODELS.map((configuredModel) =>
+    given_configuredModel(configuredModel),
+  );
+  const { pi, commands, setModelCalls, setThinkingLevelCalls } = given_mockPi();
+  const { ctx } = given_mockContext(configuredModels[1].reference);
+
+  modelSelectorExtension(pi as never);
+
+  const command = commands.get("cmd:switch-model");
+  assert.ok(command, "Expected /cmd:switch-model to be registered");
+
+  await when_switchModelCommand(command.handler, ctx);
+
+  assert.equal(setModelCalls.length, 1, "Expected exactly one model switch");
+  const switched = setModelCalls[0] as { provider: string; id: string };
+  assert.equal(
+    `${switched.provider}/${switched.id}`,
+    configuredModels[2].reference,
+  );
+  assert.deepEqual(setThinkingLevelCalls, ["high"]);
+});
+
 test("extension GIVEN switch command WHEN setModel fails THEN error is notified", async (t) => {
   given_tempHome(t);
 
+  const configuredModels = CONFIGURED_MODELS.map((configuredModel) =>
+    given_configuredModel(configuredModel),
+  );
   const { pi, commands } = given_mockPi(false);
-  const { ctx, notifications } = given_mockContext(CONFIGURED_MODELS[0]);
+  const { ctx, notifications } = given_mockContext(
+    configuredModels[0].reference,
+  );
 
   modelSelectorExtension(pi as never);
 
@@ -321,7 +411,7 @@ test("extension GIVEN switch command WHEN setModel fails THEN error is notified"
 
   assert.deepEqual(notifications, [
     {
-      message: `Cannot switch to ${CONFIGURED_MODELS[1]}: no API key available.`,
+      message: `Cannot switch to ${configuredModels[1].reference}: no API key available.`,
       type: "error",
     },
   ]);
@@ -330,7 +420,10 @@ test("extension GIVEN switch command WHEN setModel fails THEN error is notified"
 test("extension GIVEN no current model WHEN switching THEN advances to second configured model", async (t) => {
   given_tempHome(t);
 
-  const { pi, commands, setModelCalls } = given_mockPi();
+  const configuredModels = CONFIGURED_MODELS.map((configuredModel) =>
+    given_configuredModel(configuredModel),
+  );
+  const { pi, commands, setModelCalls, setThinkingLevelCalls } = given_mockPi();
   const { ctx } = given_mockContext(undefined);
 
   modelSelectorExtension(pi as never);
@@ -342,14 +435,21 @@ test("extension GIVEN no current model WHEN switching THEN advances to second co
 
   assert.equal(setModelCalls.length, 1, "Expected exactly one model switch");
   const switched = setModelCalls[0] as { provider: string; id: string };
-  assert.equal(`${switched.provider}/${switched.id}`, CONFIGURED_MODELS[1]);
+  assert.equal(
+    `${switched.provider}/${switched.id}`,
+    configuredModels[1].reference,
+  );
+  assert.deepEqual(setThinkingLevelCalls, ["xhigh"]);
 });
 
-test("extension GIVEN current model is last in configured list WHEN switching THEN wraps to first model", async (t) => {
+test("extension GIVEN current model is last in configured list WHEN switching THEN wraps to first model without changing thinking level", async (t) => {
   given_tempHome(t);
 
-  const lastModel = CONFIGURED_MODELS[CONFIGURED_MODELS.length - 1];
-  const { pi, commands, setModelCalls } = given_mockPi();
+  const configuredModels = CONFIGURED_MODELS.map((configuredModel) =>
+    given_configuredModel(configuredModel),
+  );
+  const lastModel = configuredModels[configuredModels.length - 1].reference;
+  const { pi, commands, setModelCalls, setThinkingLevelCalls } = given_mockPi();
   const { ctx } = given_mockContext(lastModel);
 
   modelSelectorExtension(pi as never);
@@ -361,14 +461,22 @@ test("extension GIVEN current model is last in configured list WHEN switching TH
 
   assert.equal(setModelCalls.length, 1, "Expected exactly one model switch");
   const switched = setModelCalls[0] as { provider: string; id: string };
-  assert.equal(`${switched.provider}/${switched.id}`, CONFIGURED_MODELS[0]);
+  assert.equal(
+    `${switched.provider}/${switched.id}`,
+    configuredModels[0].reference,
+  );
+  assert.deepEqual(setThinkingLevelCalls, []);
 });
 
-test("extension GIVEN shortcut WHEN invoked THEN switches to next configured model", async (t) => {
+test("extension GIVEN shortcut WHEN invoked THEN switches to next configured model and thinking level", async (t) => {
   given_tempHome(t);
 
-  const { pi, shortcuts, setModelCalls } = given_mockPi();
-  const { ctx } = given_mockContext(CONFIGURED_MODELS[0]);
+  const configuredModels = CONFIGURED_MODELS.map((configuredModel) =>
+    given_configuredModel(configuredModel),
+  );
+  const { pi, shortcuts, setModelCalls, setThinkingLevelCalls } =
+    given_mockPi();
+  const { ctx } = given_mockContext(configuredModels[0].reference);
 
   modelSelectorExtension(pi as never);
 
@@ -383,5 +491,9 @@ test("extension GIVEN shortcut WHEN invoked THEN switches to next configured mod
     "Expected exactly one model switch via shortcut",
   );
   const switched = setModelCalls[0] as { provider: string; id: string };
-  assert.equal(`${switched.provider}/${switched.id}`, CONFIGURED_MODELS[1]);
+  assert.equal(
+    `${switched.provider}/${switched.id}`,
+    configuredModels[1].reference,
+  );
+  assert.deepEqual(setThinkingLevelCalls, ["xhigh"]);
 });
