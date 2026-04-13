@@ -326,7 +326,7 @@ local function setup()
   end, {
     noremap = true,
     silent = true,
-    desc = "Find file in buffer (Ctrl+e)",
+    desc = "Find file in buffer (Alt+e)",
   })
   vim.keymap.set("n", "<C-x>", function() Snacks.picker.resume() end, { noremap = true, silent = true, desc = "Resume search" })
   vim.keymap.set("n", "<M-6>", function() Snacks.picker.diagnostics() end, { noremap = true, silent = true, desc = "Diagnostic (Alt+6)" })
