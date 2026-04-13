@@ -1,3 +1,25 @@
+if type(describe) ~= "function" then
+  local spec_path = debug.getinfo(1, "S").source:sub(2)
+  local lua_root = spec_path:match("^(.*)/functions/")
+  local busted_lua_root = "/opt/homebrew/opt/busted/libexec/share/lua/5.5"
+  local busted_c_root = "/opt/homebrew/opt/busted/libexec/lib/lua/5.5"
+
+  package.path = table.concat({
+    lua_root .. "/?.lua",
+    lua_root .. "/?/init.lua",
+    busted_lua_root .. "/?.lua",
+    busted_lua_root .. "/?/init.lua",
+    package.path,
+  }, ";")
+
+  package.cpath = table.concat({
+    busted_c_root .. "/?.so",
+    package.cpath,
+  }, ";")
+
+  require("busted.runner")()
+end
+
 local git = require("functions.git")
 
 describe("git.find_owner", function()
@@ -151,5 +173,55 @@ describe("git.find_owner", function()
         assert.are.equal(case.expect, owners(case.content, case.path))
       end)
     end
+  end)
+end)
+
+describe("git.get_current_repo_name", function()
+  local original_vim
+
+  local function given_git_remote_url(remote_url, shell_error)
+    _G.vim = {
+      fn = {
+        system = function(command)
+          assert.are.equal("git remote get-url origin", command)
+          return remote_url
+        end,
+      },
+      v = { shell_error = shell_error or 0 },
+    }
+  end
+
+  before_each(function()
+    original_vim = _G.vim
+  end)
+
+  after_each(function()
+    _G.vim = original_vim
+  end)
+
+  it("GIVEN an SSH origin URL WHEN get_current_repo_name runs THEN it returns owner/repo", function()
+    given_git_remote_url("git@github.com:l-lin/dotfiles.git\n")
+
+    local actual = git.get_current_repo_name()
+    local expected = "l-lin/dotfiles"
+
+    assert.are.equal(expected, actual)
+  end)
+
+  it("GIVEN an HTTPS origin URL WHEN get_current_repo_name runs THEN it returns owner/repo", function()
+    given_git_remote_url("https://github.com/l-lin/dotfiles.git\n")
+
+    local actual = git.get_current_repo_name()
+    local expected = "l-lin/dotfiles"
+
+    assert.are.equal(expected, actual)
+  end)
+
+  it("GIVEN git fails WHEN get_current_repo_name runs THEN it returns nil", function()
+    given_git_remote_url("", 1)
+
+    local actual = git.get_current_repo_name()
+
+    assert.is_nil(actual)
   end)
 end)

@@ -31,6 +31,34 @@ local function resolve_sha()
   return sha
 end
 
+---Parse owner/repo from a git remote URL.
+---@param remote_url string
+---@return string|nil repo name like owner/repo, or nil when unparseable
+local function parse_repo_name(remote_url)
+  local normalized_url = remote_url:gsub("%s+$", "")
+  if normalized_url == "" then
+    return nil
+  end
+
+  local repo_name = normalized_url:match("[/:]([%w%._%-]+/[%w%._%-]+)%.git$")
+  if repo_name then
+    return repo_name
+  end
+
+  return normalized_url:match("[/:]([%w%._%-]+/[%w%._%-]+)$")
+end
+
+---Resolve the current repository name from git origin.
+---@return string|nil repo name like owner/repo, or nil if unavailable
+local function get_current_repo_name()
+  local remote_url = vim.fn.system("git remote get-url origin"):gsub("%s+$", "")
+  if vim.v.shell_error ~= 0 or remote_url == "" then
+    return nil
+  end
+
+  return parse_repo_name(remote_url)
+end
+
 ---When yanking a URL for a main/master branch, prompt the user to choose between
 ---a branch URL (mutable) or a permalink (immutable SHA-based URL).
 ---@param branch_opts table|nil Options with branch key to pass to execute_gitbrowse
@@ -274,8 +302,9 @@ local function codeowner()
   return find_owner(content, rel_path)
 end
 
-return {
-  browse_with_branch_select = browse_with_branch_select,
-  find_owner = find_owner,
-  codeowner = codeowner,
-}
+local M = {}
+M.browse_with_branch_select = browse_with_branch_select
+M.get_current_repo_name = get_current_repo_name
+M.find_owner = find_owner
+M.codeowner = codeowner
+return M
