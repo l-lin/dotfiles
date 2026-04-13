@@ -225,3 +225,35 @@ describe("git.get_current_repo_name", function()
     assert.is_nil(actual)
   end)
 end)
+
+describe("git.extract_repo_name_and_pr_id_from_url", function()
+  local cases = {
+    {
+      name = "GIVEN a GitHub pull request URL WHEN extracting THEN it returns owner/repo and PR id",
+      input = "https://github.com/doctolib/preventive-continuous-care/pull/1625",
+      expect_repo_name = "doctolib/preventive-continuous-care",
+      expect_pr_id = 1625,
+    },
+    {
+      name = "GIVEN a GitHub pull request changes URL WHEN extracting THEN it returns owner/repo and PR id",
+      input = "https://github.com/doctolib/preventive-continuous-care/pull/1625/changes",
+      expect_repo_name = "doctolib/preventive-continuous-care",
+      expect_pr_id = 1625,
+    },
+    {
+      name = "GIVEN a non-pull-request URL WHEN extracting THEN it returns nil values",
+      input = "https://github.com/doctolib/preventive-continuous-care/issues/1625",
+      expect_repo_name = nil,
+      expect_pr_id = nil,
+    },
+  }
+
+  for _, case in ipairs(cases) do
+    it(case.name, function()
+      local actual_repo_name, actual_pr_id = git.extract_repo_name_and_pr_id_from_url(case.input)
+
+      assert.are.equal(case.expect_repo_name, actual_repo_name)
+      assert.are.equal(case.expect_pr_id, actual_pr_id)
+    end)
+  end
+end)

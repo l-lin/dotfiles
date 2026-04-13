@@ -59,6 +59,26 @@ local function get_current_repo_name()
   return parse_repo_name(remote_url)
 end
 
+---Extract repo name and PR id from a pull request URL.
+---@param input_url string
+---@return string|nil repo_name repo name like owner/repo, or nil when unparseable
+---@return number|nil pr_id pull request id, or nil when unparseable
+local function extract_repo_name_and_pr_id_from_url(input_url)
+  local normalized_url = input_url:gsub("%s+$", "")
+
+  local repo_name, pr_id = normalized_url:match("^https?://[^/]+/([%w%._%-]+/[%w%._%-]+)/pull/(%d+)$")
+  if repo_name and pr_id then
+    return repo_name, tonumber(pr_id)
+  end
+
+  repo_name, pr_id = normalized_url:match("^https?://[^/]+/([%w%._%-]+/[%w%._%-]+)/pull/(%d+)[/?#].*$")
+  if repo_name and pr_id then
+    return repo_name, tonumber(pr_id)
+  end
+
+  return nil, nil
+end
+
 ---When yanking a URL for a main/master branch, prompt the user to choose between
 ---a branch URL (mutable) or a permalink (immutable SHA-based URL).
 ---@param branch_opts table|nil Options with branch key to pass to execute_gitbrowse
@@ -305,6 +325,7 @@ end
 local M = {}
 M.browse_with_branch_select = browse_with_branch_select
 M.get_current_repo_name = get_current_repo_name
+M.extract_repo_name_and_pr_id_from_url = extract_repo_name_and_pr_id_from_url
 M.find_owner = find_owner
 M.codeowner = codeowner
 return M
