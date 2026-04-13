@@ -1,3 +1,4 @@
+---@type vim.lsp.Config
 return {
   cmd = function(dispatchers, config)
     return vim.lsp.rpc.start(

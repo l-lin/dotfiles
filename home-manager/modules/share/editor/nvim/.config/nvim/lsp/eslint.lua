@@ -21,6 +21,7 @@ local function package_json_has_eslint_config(path)
   return ok and type(package_json) == "table" and package_json.eslintConfig ~= nil
 end
 
+---@type vim.lsp.Config
 return {
   cmd = { "vscode-eslint-language-server", "--stdio" },
   filetypes = {

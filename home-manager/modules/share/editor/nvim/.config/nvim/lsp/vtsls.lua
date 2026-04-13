@@ -1,3 +1,4 @@
+---@type vim.lsp.Config
 return {
   cmd = { "vtsls", "--stdio" },
   init_options = {

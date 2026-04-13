@@ -8,6 +8,7 @@ if not vim.fn.executable(cmd) then
   return {}
 end
 
+---@type vim.lsp.Config
 return {
   cmd = {
     vim.fn.expand(vim.fn.stdpath("data") .. "/site/pack/core/opt/fuzzy_ruby_server/bin/fuzzy_darwin-arm64"),

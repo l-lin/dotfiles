@@ -3,6 +3,8 @@
 --   rm -rf $XDG_CACHE_HOME/501/rubocop_cache/
 -- You can check which config files are used by executing the following command:
 --   bundle exec rubocop --debug
+
+---@type vim.lsp.Config
 return {
   cmd = { "rubocop", "--lsp" },
   filetypes = { "ruby" },

@@ -8,6 +8,7 @@ local java_config = require("config.lsp.java")
 
 jdtls.extendedClientCapabilities.resolveAdditionalTextEditsSupport = true
 
+---@type vim.lsp.Config
 return {
   cmd = java_config.create_cmd(),
   filetypes = { "java" },
