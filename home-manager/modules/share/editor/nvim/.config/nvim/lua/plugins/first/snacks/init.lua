@@ -122,6 +122,8 @@ local function deduplicate_lsp_items(item, ctx)
 end
 
 local function setup()
+  local gh_diff_tree = require("plugins.first.snacks.gh_diff_tree")
+
   require("snacks").setup({
     animate = { enabled = false },
     bigfile = { enabled = true },
@@ -220,7 +222,30 @@ local function setup()
         gh_diff = {
           layout = "sidebar",
           focus = "list",
+          finder = gh_diff_tree.finder,
+          format = gh_diff_tree.format,
+          preview = gh_diff_tree.preview,
+          confirm = gh_diff_tree.confirm,
+          actions = {
+            gh_diff_tree_close = gh_diff_tree.close,
+            gh_diff_tree_open = gh_diff_tree.open,
+            gh_diff_tree_toggle = gh_diff_tree.toggle,
+          },
+          formatters = {
+            file = {
+              filename_only = true,
+            },
+          },
           win = {
+            list = {
+              keys = {
+                ["h"] = "gh_diff_tree_close",
+                ["l"] = "gh_diff_tree_open",
+                ["za"] = "gh_diff_tree_toggle",
+                ["zc"] = "gh_diff_tree_close",
+                ["zo"] = "gh_diff_tree_open",
+              },
+            },
             preview = {
               keys = {
                 ["<M-c>"] = { "gh_comment", mode = { "n", "x" } },
