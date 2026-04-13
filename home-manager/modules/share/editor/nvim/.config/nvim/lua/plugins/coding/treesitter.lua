@@ -4,6 +4,7 @@ local parsers = {
   "diff",
   "editorconfig",
   "fish",
+  "go",
   "git_config",
   "git_rebase",
   "gitattributes",

@@ -67,6 +67,7 @@ vim.lsp.enable({
   "eslint",
   "fuzzy_ls",
   "html",
+  "gopls",
   "jdtls",
   "jsonls",
   "kotlin_lsp",

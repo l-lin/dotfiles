@@ -2,6 +2,7 @@ local tools = {
   "bash-language-server",
   "eslint-lsp",
   "html-lsp",
+  "gopls",
   "java-debug-adapter",
   "java-test",
   "jdtls",
