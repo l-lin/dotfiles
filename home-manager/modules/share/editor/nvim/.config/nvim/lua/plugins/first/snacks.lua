@@ -1,3 +1,44 @@
+-- Local variables to store the PR ID and repo name for resuming PR review.
+-- Poor man implementation of state management for PR review.
+-- This allows the user to resume reviewing the same PR after closing the picker or switching to another picker.
+local pr_id = nil
+local repo_name = nil
+
+---Review a PR by ID. The repo is determined by the current git repository.
+local function review_pr()
+  vim.ui.input({ prompt = "PR ID: " }, function(input)
+    pr_id = tonumber(input)
+    repo_name = require("functions.git").get_current_repo_name()
+    if not pr_id or not repo_name then
+      return
+    end
+    Snacks.picker.gh_diff({ pr = pr_id, repo = repo_name })
+  end)
+end
+
+---Resume reviewing the PR if the PR ID and repo name are available.
+local function resume_review_pr()
+  if not pr_id or not repo_name then
+    review_pr()
+    return
+  end
+  Snacks.picker.gh_diff({ pr = pr_id, repo = repo_name })
+end
+
+---Open the pull request from the clipboard URL in a new tab.
+local function open_pr_from_clipboard()
+  local clipboard_content = vim.fn.getreg("+"):gsub("%s+$", "")
+  repo_name, pr_id = require("functions.git").extract_repo_name_and_pr_id_from_url(
+    clipboard_content
+  )
+  if not repo_name or not pr_id then
+    vim.notify("Clipboard does not contain a pull request URL", vim.log.levels.ERROR)
+    return
+  end
+
+  vim.cmd.tabedit(("gh://%s/pr/%d"):format(repo_name, pr_id))
+end
+
 ---Switch mode from files to grep.
 ---src: https://github.com/folke/snacks.nvim/discussions/499
 ---@param picker snacks.Picker the current picker
@@ -123,7 +164,7 @@ local function setup()
         },
         select = { cycle = true },
       },
-      layout = "vertical",
+      layout = "ivy_split",
       focus = "input",
       formatters = {
         file = { truncate = 150 },
@@ -172,6 +213,18 @@ local function setup()
             list = {
               keys = {
                 ["<C-s>"] = "edit_file",
+              },
+            },
+          },
+        },
+        gh_diff = {
+          layout = "sidebar",
+          focus = "list",
+          win = {
+            preview = {
+              keys = {
+                ["<M-c>"] = { "gh_comment", mode = { "n", "x" } },
+                ["<cr>"] = { "gh_actions", mode = { "n", "x" } },
               },
             },
           },
@@ -269,7 +322,6 @@ local function setup()
           },
         },
       },
-      layout = "ivy_split",
     })
   end, {
     noremap = true,
@@ -287,16 +339,15 @@ local function setup()
   vim.keymap.set("n", "<leader>fg", function() Snacks.picker.git_files() end, { desc = "Find Files (git-files)" })
   -- git
   vim.keymap.set("n", "<M-9>", function() Snacks.picker.git_log({ current_file = true, follow = true }) end, { noremap = true, silent = true, desc = "Check current file git history (Alt+9)" })
-  vim.keymap.set("n", "<leader>G", function() Snacks.picker.gh_pr() end, { desc = "GitHub Pull Requests (open)" })
   vim.keymap.set("n", "<leader>gb", function() Snacks.picker.git_log_line({ current_line = true, current_file = true, follow = true }) end, { desc = "Git Blame Line" })
   vim.keymap.set("n", "<leader>gd", function() Snacks.picker.git_diff() end, { desc = "Git Diff (hunks)" })
   vim.keymap.set("n", "<leader>gD", function() Snacks.picker.git_diff({ base = "origin", group = true }) end, { desc = "Git Diff (origin)" })
   vim.keymap.set("n", "<leader>gl", function() Snacks.picker.git_log({ cwd = vim.fs.root(0, ".git") or vim.uv.cwd() }) end, { desc = "Git Log" })
   vim.keymap.set("n", "<leader>gL", function() Snacks.picker.git_log() end, { desc = "Git Log (cwd)" })
-  vim.keymap.set("n", "<leader>gi", function() Snacks.picker.gh_issue() end, { desc = "GitHub Issues (open)" })
-  vim.keymap.set("n", "<leader>gI", function() Snacks.picker.gh_issue({ state = "all" }) end, { desc = "GitHub Issues (all)" })
-  vim.keymap.set("n", "<leader>gp", function() Snacks.picker.gh_pr() end, { desc = "GitHub Pull Requests (open)" })
-  vim.keymap.set("n", "<leader>gP", function() Snacks.picker.gh_pr({ state = "all" }) end, { desc = "GitHub Pull Requests (all)" })
+  -- vim.keymap.set("n", "<leader>gi", function() Snacks.picker.gh_issue() end, { desc = "GitHub Issues (open)" })
+  -- vim.keymap.set("n", "<leader>gI", function() Snacks.picker.gh_issue({ state = "all" }) end, { desc = "GitHub Issues (all)" })
+  -- vim.keymap.set("n", "<leader>gp", function() Snacks.picker.gh_pr() end, { desc = "GitHub Pull Requests (open)" })
+  -- vim.keymap.set("n", "<leader>gP", function() Snacks.picker.gh_pr({ state = "all" }) end, { desc = "GitHub Pull Requests (all)" })
   vim.keymap.set("n", "<leader>gs", function() Snacks.picker.git_status({ layout = "sidebar" }) end, { desc = "Git Status" })
   vim.keymap.set("n", "<leader>gS", function() Snacks.picker.git_stash() end, { desc = "Git Stash" })
   if vim.fn.executable("lazygit") == 1 then
@@ -304,6 +355,13 @@ local function setup()
     vim.keymap.set("n", "<leader>gG", function() Snacks.lazygit() end, { desc = "Lazygit (cwd)" })
     vim.keymap.set("n", "<M-)>", function() Snacks.lazygit({ cwd = vim.fs.root(0, ".git") or vim.uv.cwd() }) end, { desc = "LazyGit open history", noremap = true })
   end
+  vim.keymap.set("n", "<leader>grl", function()
+    vim.api.nvim_command("tabnew")
+    Snacks.picker.gh_pr()
+  end, { desc = "GitHub list open Pull Requests (open)" })
+  vim.keymap.set("n", "<leader>grp", open_pr_from_clipboard, { desc = "Open GitHub Pull Request from clipboard" })
+  vim.keymap.set("n", "<leader>grr", review_pr, { desc = "Review PR diff" })
+  vim.keymap.set("n", "<leader>grx", resume_review_pr, { desc = "Resume review PR diff" })
   -- Grep
   vim.keymap.set("n", "<leader>sb", function() Snacks.picker.lines() end, { desc = "Buffer Lines" })
   vim.keymap.set("n", "<leader>sB", function() Snacks.picker.grep_buffers() end, { desc = "Grep Open Buffers" })
@@ -328,14 +386,6 @@ local function setup()
   vim.keymap.set("n", "<leader>sR", function() Snacks.picker.resume() end, { desc = "Resume" })
   vim.keymap.set("n", "<leader>sq", function() Snacks.picker.qflist() end, { desc = "Quickfix List" })
   vim.keymap.set("n", "<leader>su", function() Snacks.picker.undo() end, { desc = "Undotree" })
-  -- tabs
-  vim.keymap.set("n", "<leader><tab>l", "<cmd>tablast<cr>", { desc = "Last Tab" })
-  vim.keymap.set("n", "<leader><tab>o", "<cmd>tabonly<cr>", { desc = "Close Other Tabs" })
-  vim.keymap.set("n", "<leader><tab>f", "<cmd>tabfirst<cr>", { desc = "First Tab" })
-  vim.keymap.set("n", "<leader><tab><tab>", "<cmd>tabnew<cr>", { desc = "New Tab" })
-  vim.keymap.set("n", "<leader><tab>]", "<cmd>tabnext<cr>", { desc = "Next Tab" })
-  vim.keymap.set("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close Tab" })
-  vim.keymap.set("n", "<leader><tab>[", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
 
   -- toggle ui
   Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>us")
