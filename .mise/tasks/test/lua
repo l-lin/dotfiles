@@ -6,6 +6,3 @@
 busted --pattern=_spec \
   -m "home-manager/modules/share/editor/nvim/.config/nvim/lua/?.lua;home-manager/modules/share/editor/nvim/.config/nvim/lua/?/init.lua" \
   home-manager/modules/share/editor/nvim/.config/nvim/lua/
-busted --pattern=_spec \
-  -m "home-manager/modules/share/editor/nvim/.config/nvim-pack/lua/?.lua;home-manager/modules/share/editor/nvim/.config/nvim-pack/lua/?/init.lua" \
-  home-manager/modules/share/editor/nvim/.config/nvim-pack/lua/

@@ -55,6 +55,8 @@ local function setup()
   vim.keymap.set("v", "<leader>of", require("functions.lang.markdown").fence_selected_text, { desc = "Fence selected text with triple backticks", noremap = true })
   vim.keymap.set("v", "<leader>ob", require("functions.lang.markdown").bold_selected_text, { desc = "Make selected text bold", noremap = true })
   vim.keymap.set("n", "<leader>ob", require("functions.lang.markdown").bold_word_under_cursor, { desc = "Make word under cursor bold/unbold", noremap = true })
+  vim.keymap.set("n", "<leader>oB", require("functions.lang.markdown").bold_current_line, { desc = "Make current line bold", noremap = true })
+  vim.keymap.set("i", "<M-c>", require("functions.lang.markdown").insert_codeblock, { buffer = true, desc = "Add codeblock" })
 end
 
 ---@type vim.pack.Spec

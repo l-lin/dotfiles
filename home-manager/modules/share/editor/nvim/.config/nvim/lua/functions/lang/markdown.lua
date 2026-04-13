@@ -120,13 +120,30 @@ local function fence_selected_text()
   vim.api.nvim_win_set_cursor(0, { start_row + 1, 0 })
 end
 
+local BOLD_MARKER = "**"
+local FULLY_BOLD_LINE_PATTERN = "^%*%*.*%*%*$"
+local BOLD_MARKER_WIDTH = #BOLD_MARKER
+
 ---Make the selected text bold by wrapping it with **.
 ---Requires mini-surround to work.
 local function bold_selected_text()
   vim.cmd("normal 2sa*")
 end
 
----Single word/line bold
+---In normal mode, make the current line bold.
+local function bold_current_line()
+  local cursor_pos = vim.api.nvim_win_get_cursor(0)
+  local row, col = cursor_pos[1], cursor_pos[2]
+  local line = vim.api.nvim_get_current_line()
+
+  if line:match("^%s*$") or line:match(FULLY_BOLD_LINE_PATTERN) then
+    return
+  end
+
+  vim.api.nvim_set_current_line(BOLD_MARKER .. line .. BOLD_MARKER)
+  vim.api.nvim_win_set_cursor(0, { row, col + BOLD_MARKER_WIDTH })
+end
+
 ---In normal mode, bold the current word under the cursor
 ---If already bold, it will unbold the word under the cursor
 ---Requires mini-surround to work.
@@ -158,5 +175,6 @@ M.smart_indent = smart_indent
 M.smart_dedent = smart_dedent
 M.fence_selected_text = fence_selected_text
 M.bold_selected_text = bold_selected_text
+M.bold_current_line = bold_current_line
 M.bold_word_under_cursor = bold_word_under_cursor
 return M
