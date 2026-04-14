@@ -4,11 +4,29 @@
 local pr_id = nil
 local repo_name = nil
 
+---@param next_repo_name string|nil
+---@param next_pr_id number|string|nil
+local function set_review_target(next_repo_name, next_pr_id)
+  repo_name = next_repo_name
+  pr_id = next_pr_id and tonumber(next_pr_id) or nil
+end
+
+---Sync the review target from the buffer name.
+---@param buffer_name string
+local function sync_review_target_from_buffer_name(buffer_name)
+  local next_repo_name, next_pr_id = buffer_name:match("^gh://([^/]+/[^/]+)/pr/(%d+)$")
+  if next_repo_name and next_pr_id then
+    set_review_target(next_repo_name, next_pr_id)
+  end
+end
+
 ---Review a PR by ID. The repo is determined by the current git repository.
 local function review_pr()
   vim.ui.input({ prompt = "PR ID: " }, function(input)
-    pr_id = tonumber(input)
-    repo_name = require("functions.git").get_current_repo_name()
+    local next_pr_id = tonumber(input)
+    local next_repo_name = require("functions.git").get_current_repo_name()
+    set_review_target(next_repo_name, next_pr_id)
+
     if not pr_id or not repo_name then
       return
     end
@@ -28,9 +46,9 @@ end
 ---Open the pull request from the clipboard URL in a new tab.
 local function open_pr_from_clipboard()
   local clipboard_content = vim.fn.getreg("+"):gsub("%s+$", "")
-  repo_name, pr_id = require("functions.git").extract_repo_name_and_pr_id_from_url(
-    clipboard_content
-  )
+  local next_repo_name, next_pr_id = require("functions.git").extract_repo_name_and_pr_id_from_url(clipboard_content)
+  set_review_target(next_repo_name, next_pr_id)
+
   if not repo_name or not pr_id then
     vim.notify("Clipboard does not contain a pull request URL", vim.log.levels.ERROR)
     return
@@ -451,6 +469,21 @@ local function setup()
     pattern = "MiniFilesActionRename",
     callback = function(event)
       Snacks.rename.on_rename_file(event.data.from, event.data.to)
+    end,
+  })
+
+  -- autocmd to save the repo_name and pr_id
+  vim.api.nvim_create_autocmd("BufEnter", {
+    pattern = "gh://*",
+    callback = function(event)
+      if vim.api.nvim_get_current_buf() ~= event.buf then
+        return
+      end
+      if vim.api.nvim_win_get_config(0).relative ~= "" then
+        return
+      end
+
+      sync_review_target_from_buffer_name(vim.api.nvim_buf_get_name(event.buf))
     end,
   })
 end
