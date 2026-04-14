@@ -41,16 +41,16 @@ local function get_diagnostics()
 
   local result = ""
   if errors > 0 then
-    result = result .. "%#DiagnosticError#" .. constants.icons.diagnostics.error .. " " .. errors
+    result = result .. "%#DiagnosticError#" .. constants.icons.diagnostics.error .. " " .. errors .. " "
   end
   if warnings > 0 then
-    result = result .. "%#DiagnosticWarn#" .. constants.icons.diagnostics.warn .. " " .. warnings
+    result = result .. "%#DiagnosticWarn#" .. constants.icons.diagnostics.warn .. " " .. warnings .. " "
   end
   if info > 0 then
-    result = result .. "%#DiagnosticInfo#" .. constants.icons.diagnostics.info .. " " .. info
+    result = result .. "%#DiagnosticInfo#" .. constants.icons.diagnostics.info .. " " .. info .. " "
   end
   if hints > 0 then
-    result = result .. "%#DiagnosticHint#" .. constants.icons.diagnostics.hint .. " " .. hints
+    result = result .. "%#DiagnosticHint#" .. constants.icons.diagnostics.hint .. " " .. hints .. " "
   end
 
   -- reset to StatusLine for following text
@@ -73,7 +73,7 @@ end
 ---Copilot enabled/disabled indicator
 ---@return string
 local function get_copilot_status()
-  local icon = ""
+  local icon = " "
   -- TODO: coupled to copilot.lua plugin, which is not great.
   -- Must find a better way to check if copilot is enabled without depending on the plugin's internal API
   local client = package.loaded["copilot.client"]
