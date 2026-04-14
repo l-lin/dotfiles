@@ -71,7 +71,7 @@
       "src": "https://github.com/nvim-mini/mini.files"
     },
     "mini.icons": {
-      "rev": "7fdae2443a0e2910015ca39ad74b50524ee682d3",
+      "rev": "bac6317300e205335df425296570d84322730067",
       "src": "https://github.com/nvim-mini/mini.icons"
     },
     "mini.pairs": {
@@ -95,7 +95,7 @@
       "src": "https://github.com/theHamsta/nvim-dap-virtual-text"
     },
     "nvim-grey": {
-      "rev": "85e53a4d5766ac01b97ac6ebe8b385d16c210f68",
+      "rev": "9af41d00eb1b235d3c3ff62694a1df56dadb25c8",
       "src": "https://github.com/l-lin/nvim-grey"
     },
     "nvim-jdtls": {
@@ -135,7 +135,7 @@
       "src": "https://codeberg.org/l-lin/private-ruby.nvim"
     },
     "render-markdown.nvim": {
-      "rev": "54d4b5431e9634ee3d8d30784e017239b5b89d41",
+      "rev": "0fd43fb4b1f073931c4b481f5f3b7cea3749e190",
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
     "review-ai.nvim": {
