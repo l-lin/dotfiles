@@ -266,6 +266,7 @@ local function setup()
             },
             preview = {
               keys = {
+                ["H"] = { "focus_list", mode = { "n" } },
                 ["<M-c>"] = { "gh_comment", mode = { "n", "x" } },
                 ["<cr>"] = { "gh_actions", mode = { "n", "x" } },
                 ["<M-a>"] = { "gh_actions", mode = { "n", "x" } },
@@ -426,6 +427,7 @@ local function setup()
   end
   -- github
   vim.keymap.set("n", "<leader>grl", gh_pr_review_requested.open, { desc = "GitHub list Pull Requests requiring my review" })
+  vim.keymap.set("n", "<leader>grL", function() gh_pr_review_requested.open({ all_repos = true }) end, { desc = "GitHub list Pull Requests requiring my review (all repos)" })
   vim.keymap.set("n", "<leader>grp", open_pr_from_clipboard, { desc = "Open GitHub Pull Request from clipboard" })
   vim.keymap.set("n", "<leader>grr", review_pr, { desc = "Review PR diff" })
   vim.keymap.set("n", "<leader>grx", resume_review_pr, { desc = "Resume review PR diff" })

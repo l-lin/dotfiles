@@ -273,14 +273,29 @@ local function finder(opts, ctx)
   end
 end
 
-local function open()
-  local current_repo_name = require("functions.git").get_current_repo_name()
-  if not current_repo_name then
-    vim.notify("Not in a git repository", vim.log.levels.ERROR)
-    return
+---@class dotfiles.snacks_gh_pr_review_requested.OpenOpts
+---@field all_repos boolean|nil fetch PRs from all repositories instead of just the current one. Ignored if `repo` is provided.
+---@field repo string|nil fetch PRs from this repository. Should be in the format "owner/repo". If not provided, defaults to the current repository. If `all_repos` is true, this is ignored.
+
+---Open the "PRs Review Requested" picker.
+---@param opts dotfiles.snacks_gh_pr_review_requested.OpenOpts|nil
+local function open(opts)
+  opts = opts or {}
+
+  local picker_opts = {}
+  if opts.repo and opts.repo ~= "" then
+    picker_opts.repo = opts.repo
+  elseif not opts.all_repos then
+    local current_repo_name = require("functions.git").get_current_repo_name()
+    if not current_repo_name then
+      vim.notify("Not in a git repository", vim.log.levels.ERROR)
+      return
+    end
+
+    picker_opts.repo = current_repo_name
   end
 
-  Snacks.picker.gh_pr_review_requested({ repo = current_repo_name })
+  Snacks.picker.gh_pr_review_requested(picker_opts)
 end
 
 local M = {}

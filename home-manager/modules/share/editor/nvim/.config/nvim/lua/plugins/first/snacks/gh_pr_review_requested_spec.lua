@@ -244,6 +244,26 @@ describe("gh_pr_review_requested.open", function()
     assert.are.same({ repo = "doctolib/preventive-continuous-care" }, actual_opts)
   end)
 
+  it("GIVEN all repos are requested WHEN opening THEN it skips repo lookup and opens an unscoped picker", function()
+    local actual_opts = nil
+    package.loaded["functions.git"] = {
+      get_current_repo_name = function()
+        error("open({ all_repos = true }) must not query the current git repo")
+      end,
+    }
+    _G.Snacks = {
+      picker = {
+        gh_pr_review_requested = function(opts)
+          actual_opts = opts
+        end,
+      },
+    }
+
+    gh_pr_review_requested.open({ all_repos = true })
+
+    assert.are.same({}, actual_opts)
+  end)
+
   it("GIVEN the current repo is unknown WHEN opening THEN it notifies and does not open the picker", function()
     local picker_called = false
     local notified_message = nil
