@@ -123,6 +123,7 @@ end
 
 local function setup()
   local gh_diff_tree = require("plugins.first.snacks.gh_diff_tree")
+  local gh_pr_review_requested = require("plugins.first.snacks.gh_pr_review_requested")
 
   require("snacks").setup({
     animate = { enabled = false },
@@ -251,6 +252,32 @@ local function setup()
               keys = {
                 ["<M-c>"] = { "gh_comment", mode = { "n", "x" } },
                 ["<cr>"] = { "gh_actions", mode = { "n", "x" } },
+                ["<M-a>"] = { "gh_actions", mode = { "n", "x" } },
+              },
+            },
+          },
+        },
+        gh_pr_review_requested = {
+          title = "  Pull Requests Requiring My Review",
+          finder = gh_pr_review_requested.finder,
+          format = "gh_format",
+          preview = "gh_preview",
+          sort = { fields = { "score:desc", "idx" } },
+          supports_live = false,
+          live = false,
+          confirm = "gh_actions",
+          win = {
+            input = {
+              keys = {
+                ["<M-a>"] = { "gh_actions", mode = { "n", "x" } },
+                ["<M-b>"] = { "gh_browse", mode = { "n", "i" } },
+                ["<M-y>"] = { "gh_yank", mode = { "n", "i" } },
+              },
+            },
+            list = {
+              keys = {
+                ["<M-a>"] = { "gh_actions", mode = { "n", "x" } },
+                ["<M-y>"] = { "gh_yank", mode = { "n", "x" } },
               },
             },
           },
@@ -381,14 +408,12 @@ local function setup()
     vim.keymap.set("n", "<leader>gG", function() Snacks.lazygit() end, { desc = "Lazygit (cwd)" })
     vim.keymap.set("n", "<M-)>", function() Snacks.lazygit({ cwd = vim.fs.root(0, ".git") or vim.uv.cwd() }) end, { desc = "LazyGit open history", noremap = true })
   end
-  vim.keymap.set("n", "<leader>grl", function()
-    vim.api.nvim_command("tabnew")
-    Snacks.picker.gh_pr()
-  end, { desc = "GitHub list open Pull Requests (open)" })
+  -- github
+  vim.keymap.set("n", "<leader>grl", gh_pr_review_requested.open, { desc = "GitHub list Pull Requests requiring my review" })
   vim.keymap.set("n", "<leader>grp", open_pr_from_clipboard, { desc = "Open GitHub Pull Request from clipboard" })
   vim.keymap.set("n", "<leader>grr", review_pr, { desc = "Review PR diff" })
   vim.keymap.set("n", "<leader>grx", resume_review_pr, { desc = "Resume review PR diff" })
-  -- Grep
+  -- grep
   vim.keymap.set("n", "<leader>sb", function() Snacks.picker.lines() end, { desc = "Buffer Lines" })
   vim.keymap.set("n", "<leader>sB", function() Snacks.picker.grep_buffers() end, { desc = "Grep Open Buffers" })
   vim.keymap.set("n", "<leader>sp", function() Snacks.picker.lazy() end, { desc = "Search for Plugin Spec" })
