@@ -1,5 +1,3 @@
-local M = {}
-
 local state_by_picker = setmetatable({}, { __mode = "k" })
 
 ---@class dotfiles.snacks_gh_diff_tree.State
@@ -171,7 +169,7 @@ end
 ---@param diff_items table[]
 ---@param open_paths table<string, boolean>|nil
 ---@return table[]
-function M.to_tree_items(diff_items, open_paths)
+local function to_tree_items(diff_items, open_paths)
   open_paths = open_paths or {}
 
   local root = build_raw_tree(diff_items)
@@ -322,13 +320,13 @@ end
 ---@param opts snacks.picker.gh.diff.Config
 ---@param ctx snacks.picker.finder.ctx
 ---@return snacks.picker.finder
-function M.finder(opts, ctx)
+local function finder(opts, ctx)
   ctx.picker.matcher.opts.keep_parents = true
   local state = get_state(ctx.picker)
 
   return function(cb)
     local diff_items = state:get_diff_items(opts, ctx)
-    for _, item in ipairs(M.to_tree_items(diff_items, state.open_paths)) do
+    for _, item in ipairs(to_tree_items(diff_items, state.open_paths)) do
       cb(item)
     end
   end
@@ -337,7 +335,7 @@ end
 ---@param item snacks.picker.finder.Item
 ---@param picker snacks.Picker
 ---@return snacks.picker.Highlight[]
-function M.format(item, picker)
+local function format(item, picker)
   if not item.dir then
     return Snacks.picker.format.file(item, picker)
   end
@@ -363,7 +361,7 @@ end
 
 ---Preview PR diff items while keeping directory rows empty.
 ---@param ctx snacks.picker.preview.ctx
-function M.preview(ctx)
+local function preview(ctx)
   if ctx.item.dir then
     ctx.item.preview = { text = "", ft = "diff", loc = false }
     return require("snacks.picker.preview").preview(ctx)
@@ -375,26 +373,27 @@ end
 ---Toggle a directory row in the GH diff tree.
 ---@param picker snacks.Picker
 ---@param item snacks.picker.finder.Item|nil
-function M.toggle(picker, item)
+local function toggle(picker, item)
   update_directory_state(picker, item, nil)
 end
 
----Open a directory row in the GH diff tree, or jump for files.
+---Open a directory row in the GH diff tree, or focus preview for files.
 ---@param picker snacks.Picker
 ---@param item snacks.picker.finder.Item|nil
 ---@param action snacks.picker.jump.Action|nil
-function M.open(picker, item, action)
+---@diagnostic disable-next-line: unused-local
+local function open(picker, item, action)
   if update_directory_state(picker, item, true) then
     return
   end
 
-  return require("snacks.picker.actions").jump(picker, item, action or {})
+  picker:focus("preview", { show = true })
 end
 
 ---Close a directory row in the GH diff tree.
 ---@param picker snacks.Picker
 ---@param item snacks.picker.finder.Item|nil
-function M.close(picker, item)
+local function close(picker, item)
   if update_directory_state(picker, item, false) then
     return
   end
@@ -408,7 +407,7 @@ end
 ---@param picker snacks.Picker
 ---@param item snacks.picker.finder.Item|nil
 ---@param action snacks.picker.jump.Action|nil
-function M.confirm(picker, item, action)
+local function confirm(picker, item, action)
   if update_directory_state(picker, item, nil) then
     return
   end
@@ -416,4 +415,13 @@ function M.confirm(picker, item, action)
   return require("snacks.picker.actions").jump(picker, item, action or {})
 end
 
+local M = {}
+M.to_tree_items = to_tree_items
+M.finder = finder
+M.format = format
+M.preview = preview
+M.toggle = toggle
+M.open = open
+M.close = close
+M.confirm = confirm
 return M

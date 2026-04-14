@@ -1,6 +1,6 @@
 if type(describe) ~= "function" then
   local spec_path = debug.getinfo(1, "S").source:sub(2)
-  local lua_root = spec_path:match("^(.*)/functions/")
+  local lua_root = spec_path:match("^(.*)/plugins/") or spec_path:match("^(.*)/functions/")
   local busted_lua_root = "/opt/homebrew/opt/busted/libexec/share/lua/5.5"
   local busted_c_root = "/opt/homebrew/opt/busted/libexec/lib/lua/5.5"
 
@@ -91,5 +91,23 @@ describe("snacks_gh_diff_tree.to_tree_items", function()
     assert.are.equal("renamed diff", actual_leaf.diff)
     assert.are.equal("lua/functions/old_git.lua", actual_leaf.rename)
     assert.are.same({ 12, 0 }, actual_leaf.pos)
+  end)
+end)
+
+describe("snacks_gh_diff_tree.open", function()
+  it("GIVEN a file item WHEN open runs THEN it focuses the preview window", function()
+    local actual_target = nil
+    local actual_opts = nil
+    local picker = {
+      focus = function(_, target, opts)
+        actual_target = target
+        actual_opts = opts
+      end,
+    }
+
+    gh_diff_tree.open(picker, { dir = false, file = "lua/functions/git.lua" })
+
+    assert.are.equal("preview", actual_target)
+    assert.are.same({ show = true }, actual_opts)
   end)
 end)

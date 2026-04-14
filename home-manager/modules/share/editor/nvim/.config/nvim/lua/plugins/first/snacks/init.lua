@@ -239,11 +239,12 @@ local function setup()
           win = {
             list = {
               keys = {
-                ["h"] = "gh_diff_tree_close",
-                ["l"] = "gh_diff_tree_open",
+                ["H"] = "gh_diff_tree_close",
+                ["L"] = "gh_diff_tree_open",
                 ["za"] = "gh_diff_tree_toggle",
                 ["zc"] = "gh_diff_tree_close",
                 ["zo"] = "gh_diff_tree_open",
+                ["<M-a>"] = { "gh_actions", mode = { "n", "x" } },
               },
             },
             preview = {
