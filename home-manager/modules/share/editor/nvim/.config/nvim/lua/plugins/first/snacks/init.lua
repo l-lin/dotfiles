@@ -261,8 +261,6 @@ local function setup()
                 ["H"] = "gh_diff_tree_close",
                 ["L"] = "gh_diff_tree_open",
                 ["za"] = "gh_diff_tree_toggle",
-                ["zc"] = "gh_diff_tree_close",
-                ["zo"] = "gh_diff_tree_open",
                 ["<M-a>"] = { "gh_actions", mode = { "n", "x" } },
               },
             },
@@ -276,7 +274,7 @@ local function setup()
           },
         },
         gh_pr_review_requested = {
-          title = "  Pull Requests Requiring My Review",
+          title = " Pull Requests Requiring My Review",
           finder = gh_pr_review_requested.finder,
           format = "gh_format",
           preview = "gh_preview",

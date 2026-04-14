@@ -195,6 +195,7 @@ local function to_tree_items(diff_items, open_paths)
         dir = true,
         display_name = node.display_name,
         file = node.path,
+        first_child_path = node.children[1] and node.children[1].path or nil,
         open = node.open,
         text = node.display_name,
       }
@@ -281,8 +282,9 @@ end
 ---@param picker snacks.Picker
 ---@param item snacks.picker.finder.Item|nil
 ---@param open boolean|nil
+---@param target string|nil
 ---@return boolean
-local function update_directory_state(picker, item, open)
+local function update_directory_state(picker, item, open, target)
   if not item or not item.dir then
     return false
   end
@@ -293,7 +295,7 @@ local function update_directory_state(picker, item, open)
     next_open = not is_open(state.open_paths, item.file)
   end
   state.open_paths[item.file] = next_open
-  refresh(picker, item.file)
+  refresh(picker, target or item.file)
   return true
 end
 
@@ -383,7 +385,8 @@ end
 ---@param action snacks.picker.jump.Action|nil
 ---@diagnostic disable-next-line: unused-local
 local function open(picker, item, action)
-  if update_directory_state(picker, item, true) then
+  if item and item.dir then
+    update_directory_state(picker, item, true, item.first_child_path or item.file)
     return
   end
 
@@ -394,7 +397,8 @@ end
 ---@param picker snacks.Picker
 ---@param item snacks.picker.finder.Item|nil
 local function close(picker, item)
-  if update_directory_state(picker, item, false) then
+  if item and item.dir then
+    update_directory_state(picker, item, false, item.parent and item.parent.file or nil)
     return
   end
 

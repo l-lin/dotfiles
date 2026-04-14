@@ -94,20 +94,98 @@ describe("snacks_gh_diff_tree.to_tree_items", function()
   end)
 end)
 
+local function given_item_by_file(items, path)
+  for _, item in ipairs(items) do
+    if item.file == path then
+      return item
+    end
+  end
+
+  error("missing item: " .. path)
+end
+
+local function given_picker(items, refreshed_items)
+  local actual_index = nil
+  local actual_target = nil
+  local actual_opts = nil
+  local current_items = items
+
+  return {
+    list = {
+      set_target = function() end,
+      view = function(_, index)
+        actual_index = index
+      end,
+    },
+    find = function(_, opts)
+      current_items = refreshed_items or current_items
+      if opts.on_done then
+        opts.on_done()
+      end
+    end,
+    focus = function(_, target, opts)
+      actual_target = target
+      actual_opts = opts
+    end,
+    iter = function()
+      local index = 0
+
+      return function()
+        index = index + 1
+        local item = current_items[index]
+        if item then
+          return item, index
+        end
+      end
+    end,
+  }, {
+    viewed_index = function()
+      return actual_index
+    end,
+    focused_target = function()
+      return actual_target
+    end,
+    focused_opts = function()
+      return actual_opts
+    end,
+  }
+end
+
 describe("snacks_gh_diff_tree.open", function()
   it("GIVEN a file item WHEN open runs THEN it focuses the preview window", function()
-    local actual_target = nil
-    local actual_opts = nil
-    local picker = {
-      focus = function(_, target, opts)
-        actual_target = target
-        actual_opts = opts
-      end,
-    }
+    local picker, actual = given_picker({})
 
     gh_diff_tree.open(picker, { dir = false, file = "lua/functions/git.lua" })
 
-    assert.are.equal("preview", actual_target)
-    assert.are.same({ show = true }, actual_opts)
+    assert.are.equal("preview", actual.focused_target())
+    assert.are.same({ show = true }, actual.focused_opts())
+  end)
+
+  it("GIVEN a closed directory WHEN open runs THEN it moves the cursor to the first child", function()
+    local diff_items = {
+      { file = "lua/functions/git.lua", cwd = "/repo", status = "M", diff = "git diff" },
+      { file = "lua/plugins/first/snacks.lua", cwd = "/repo", status = "M", diff = "snacks diff" },
+    }
+    local items = gh_diff_tree.to_tree_items(diff_items, { ["lua"] = false })
+    local refreshed_items = gh_diff_tree.to_tree_items(diff_items)
+    local picker, actual = given_picker(items, refreshed_items)
+
+    gh_diff_tree.open(picker, given_item_by_file(items, "lua"))
+
+    assert.are.equal(2, actual.viewed_index())
+  end)
+end)
+
+describe("snacks_gh_diff_tree.close", function()
+  it("GIVEN a nested directory WHEN close runs THEN it moves the cursor to the parent directory", function()
+    local items = gh_diff_tree.to_tree_items({
+      { file = "lua/functions/git.lua", cwd = "/repo", status = "M", diff = "git diff" },
+      { file = "lua/plugins/first/snacks.lua", cwd = "/repo", status = "M", diff = "snacks diff" },
+    })
+    local picker, actual = given_picker(items)
+
+    gh_diff_tree.close(picker, given_item_by_file(items, "lua/plugins/first"))
+
+    assert.are.equal(1, actual.viewed_index())
   end)
 end)
