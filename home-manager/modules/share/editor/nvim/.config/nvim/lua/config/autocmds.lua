@@ -53,6 +53,7 @@ vim.api.nvim_create_autocmd("FileType", {
     "fugitiveblame",
     "git",
     "gitsigns-blame",
+    "markdown.gh",
     -- dap-ui
     "dap-float",
     "dap-repl",
