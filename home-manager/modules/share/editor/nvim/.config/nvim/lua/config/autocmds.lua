@@ -90,7 +90,7 @@ vim.api.nvim_create_autocmd("FileType", {
 -- wrap and check for spell in text filetypes
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup("wrap_spell"),
-  pattern = { "text", "plaintex", "typst", "gitcommit", "markdown", "codecompanion", "markdown", "text" },
+  pattern = { "text", "plaintex", "typst", "gitcommit", "markdown", "codecompanion", "markdown", "text", "markdown.snacks_picker_preview", "markdown.gh" },
   callback = function()
     vim.wo.wrap = true
     vim.wo.spell = true
