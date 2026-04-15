@@ -141,7 +141,9 @@ end
 
 local function setup()
   local gh_diff_tree = require("plugins.first.snacks.gh_diff_tree")
+  local gh_pr_authored = require("plugins.first.snacks.gh_pr_authored")
   local gh_pr_review_requested = require("plugins.first.snacks.gh_pr_review_requested")
+  local gh_pr_story = require("plugins.first.snacks.gh_pr_story")
 
   require("snacks").setup({
     animate = { enabled = false },
@@ -274,6 +276,34 @@ local function setup()
             },
           },
         },
+        gh_pr_authored = {
+          title = " My Pull Requests",
+          finder = gh_pr_authored.finder,
+          format = "gh_format",
+          preview = "gh_preview",
+          sort = { fields = { "score:desc", "idx" } },
+          supports_live = false,
+          live = false,
+          confirm = "gh_pr_authored_actions",
+          actions = {
+            gh_pr_authored_actions = gh_pr_authored.gh_actions,
+          },
+          win = {
+            input = {
+              keys = {
+                ["<M-a>"] = { "gh_pr_authored_actions", mode = { "n", "x" } },
+                ["<M-b>"] = { "gh_browse", mode = { "n", "i" } },
+                ["<M-y>"] = { "gh_yank", mode = { "n", "i" } },
+              },
+            },
+            list = {
+              keys = {
+                ["<M-a>"] = { "gh_pr_authored_actions", mode = { "n", "x" } },
+                ["<M-y>"] = { "gh_yank", mode = { "n", "x" } },
+              },
+            },
+          },
+        },
         gh_pr_review_requested = {
           title = " Pull Requests Requiring My Review",
           finder = gh_pr_review_requested.finder,
@@ -282,18 +312,21 @@ local function setup()
           sort = { fields = { "score:desc", "idx" } },
           supports_live = false,
           live = false,
-          confirm = "gh_actions",
+          confirm = "gh_pr_review_requested_actions",
+          actions = {
+            gh_pr_review_requested_actions = gh_pr_review_requested.gh_actions,
+          },
           win = {
             input = {
               keys = {
-                ["<M-a>"] = { "gh_actions", mode = { "n", "x" } },
+                ["<M-a>"] = { "gh_pr_review_requested_actions", mode = { "n", "x" } },
                 ["<M-b>"] = { "gh_browse", mode = { "n", "i" } },
                 ["<M-y>"] = { "gh_yank", mode = { "n", "i" } },
               },
             },
             list = {
               keys = {
-                ["<M-a>"] = { "gh_actions", mode = { "n", "x" } },
+                ["<M-a>"] = { "gh_pr_review_requested_actions", mode = { "n", "x" } },
                 ["<M-y>"] = { "gh_yank", mode = { "n", "x" } },
               },
             },
@@ -428,6 +461,7 @@ local function setup()
   -- github
   vim.keymap.set("n", "<leader>grl", gh_pr_review_requested.open, { desc = "GitHub list Pull Requests requiring my review" })
   vim.keymap.set("n", "<leader>grL", function() gh_pr_review_requested.open({ all_repos = true }) end, { desc = "GitHub list Pull Requests requiring my review (all repos)" })
+  vim.keymap.set("n", "<leader>grm", gh_pr_authored.open, { desc = "GitHub list My Pull Requests (all repos)" })
   vim.keymap.set("n", "<leader>grp", open_pr_from_clipboard, { desc = "Open GitHub Pull Request from clipboard" })
   vim.keymap.set("n", "<leader>grr", review_pr, { desc = "Review PR diff" })
   vim.keymap.set("n", "<leader>grx", resume_review_pr, { desc = "Resume review PR diff" })
