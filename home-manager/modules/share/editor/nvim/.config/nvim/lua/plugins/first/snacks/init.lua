@@ -57,6 +57,11 @@ local function open_pr_from_clipboard()
   vim.cmd.tabedit(("gh://%s/pr/%d"):format(repo_name, pr_id))
 end
 
+---Review the pull request from the clipboard URL as a chaptered story.
+local function review_pr_story_from_clipboard()
+  require("plugins.first.snacks.gh_pr_story").open_from_clipboard(set_review_target)
+end
+
 ---Switch mode from files to grep.
 ---src: https://github.com/folke/snacks.nvim/discussions/499
 ---@param picker snacks.Picker the current picker
@@ -332,6 +337,47 @@ local function setup()
             },
           },
         },
+        gh_pr_story = {
+          title = " Pull Request Story",
+          layout = "sidebar",
+          focus = "list",
+          supports_live = false,
+          live = false,
+          finder = gh_pr_story.finder,
+          format = gh_pr_story.format,
+          preview = gh_pr_story.preview,
+          confirm = gh_pr_story.confirm,
+          actions = {
+            gh_pr_story_actions = gh_pr_story.gh_actions,
+            gh_pr_story_close = gh_pr_story.close,
+            gh_pr_story_comment = gh_pr_story.gh_comment,
+            gh_pr_story_open = gh_pr_story.open,
+            gh_pr_story_toggle = gh_pr_story.toggle,
+          },
+          formatters = {
+            file = {
+              filename_only = true,
+            },
+          },
+          win = {
+            list = {
+              keys = {
+                ["H"] = "gh_pr_story_close",
+                ["L"] = "gh_pr_story_open",
+                ["za"] = "gh_pr_story_toggle",
+                ["<M-a>"] = { "gh_pr_story_actions", mode = { "n", "x" } },
+              },
+            },
+            preview = {
+              keys = {
+                ["H"] = { "focus_list", mode = { "n" } },
+                ["<M-c>"] = { "gh_pr_story_comment", mode = { "n", "x" } },
+                ["<cr>"] = { "gh_pr_story_actions", mode = { "n", "x" } },
+                ["<M-a>"] = { "gh_pr_story_actions", mode = { "n", "x" } },
+              },
+            },
+          },
+        },
         grep = {
           actions = {
             append_file_search = append_file_search,
@@ -463,6 +509,7 @@ local function setup()
   vim.keymap.set("n", "<leader>grL", function() gh_pr_review_requested.open({ all_repos = true }) end, { desc = "GitHub list Pull Requests requiring my review (all repos)" })
   vim.keymap.set("n", "<leader>grm", gh_pr_authored.open, { desc = "GitHub list My Pull Requests (all repos)" })
   vim.keymap.set("n", "<leader>grp", open_pr_from_clipboard, { desc = "Open GitHub Pull Request from clipboard" })
+  vim.keymap.set("n", "<leader>grP", review_pr_story_from_clipboard, { desc = "GitHub review Pull Request story from clipboard" })
   vim.keymap.set("n", "<leader>grr", review_pr, { desc = "Review PR diff" })
   vim.keymap.set("n", "<leader>grx", resume_review_pr, { desc = "Resume review PR diff" })
   -- grep
