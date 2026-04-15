@@ -6,45 +6,51 @@ end
 local gh_pr_story = require("plugins.first.snacks.gh_pr_story")
 
 describe("gh_pr_story.normalize_story", function()
-  it("GIVEN duplicate and unknown files WHEN normalizing THEN it keeps real files once and appends unassigned changes", function()
-    local actual = gh_pr_story.normalize_story({
-      summary = "A guided arc",
-      chapters = {
-        {
-          id = "chapter-1",
-          title = "Opening move",
-          narrative = "Look at the setup first.",
-          files = { "lua/a.lua", "lua/ghost.lua", "lua/a.lua" },
+  it(
+    "GIVEN duplicate and unknown files WHEN normalizing THEN it keeps real files once and appends unassigned changes",
+    function()
+      local actual = gh_pr_story.normalize_story({
+        summary = "A guided arc",
+        chapters = {
+          {
+            id = "chapter-1",
+            title = "Opening move",
+            narrative = "Look at the setup first.",
+            files = { "lua/a.lua", "lua/ghost.lua", "lua/a.lua" },
+          },
         },
-      },
-    }, {
-      { file = "lua/a.lua", diff = "diff a", status = "M", pos = { 10, 0 } },
-      { file = "lua/b.lua", diff = "diff b", status = "A", pos = { 20, 0 } },
-    })
+      }, {
+        { file = "lua/a.lua", diff = "diff a", status = "M", pos = { 10, 0 } },
+        { file = "lua/b.lua", diff = "diff b", status = "A", pos = { 20, 0 } },
+      })
 
-    assert.are.equal(2, #actual.chapters)
-    assert.are.same({ "lua/a.lua" }, actual.chapters[1].files)
-    assert.are.equal("Unassigned Changes", actual.chapters[2].title)
-    assert.are.same({ "lua/b.lua" }, actual.chapters[2].files)
-  end)
+      assert.are.equal(2, #actual.chapters)
+      assert.are.same({ "lua/a.lua" }, actual.chapters[1].files)
+      assert.are.equal("Unassigned Changes", actual.chapters[2].title)
+      assert.are.same({ "lua/b.lua" }, actual.chapters[2].files)
+    end
+  )
 
-  it("GIVEN no diff items and a fallback chapter WHEN normalizing THEN it preserves a chapter so the picker can explain the failure", function()
-    local actual = gh_pr_story.normalize_story({
-      summary = "Automatic chaptering failed: boom",
-      chapters = {
-        {
-          id = "chapter-1",
-          title = "Entire Diff",
-          narrative = "Automatic chaptering failed: boom Review the raw file diff directly.",
-          files = {},
+  it(
+    "GIVEN no diff items and a fallback chapter WHEN normalizing THEN it preserves a chapter so the picker can explain the failure",
+    function()
+      local actual = gh_pr_story.normalize_story({
+        summary = "Automatic chaptering failed: boom",
+        chapters = {
+          {
+            id = "chapter-1",
+            title = "Entire Diff",
+            narrative = "Automatic chaptering failed: boom Review the raw file diff directly.",
+            files = {},
+          },
         },
-      },
-    }, {})
+      }, {})
 
-    assert.are.equal(1, #actual.chapters)
-    assert.are.equal("Entire Diff", actual.chapters[1].title)
-    assert.are.same({}, actual.chapters[1].files)
-  end)
+      assert.are.equal(1, #actual.chapters)
+      assert.are.equal("Entire Diff", actual.chapters[1].title)
+      assert.are.same({}, actual.chapters[1].files)
+    end
+  )
 end)
 
 describe("gh_pr_story.open_from_clipboard", function()
@@ -134,6 +140,40 @@ describe("gh_pr_story.open_from_clipboard", function()
       level = 9,
     }, actual_notified)
   end)
+end)
+
+describe("gh_pr_story.build_story_prompt", function()
+  it(
+    "GIVEN PR metadata WHEN building the story prompt THEN it asks for recurring protagonists, subtle hooks, and fenced ASCII art",
+    function()
+      local actual = gh_pr_story.build_story_prompt(
+        {
+          number = 42,
+          title = "Epic change",
+          author = "l-lin",
+          base = "main",
+          head = "feature/story-review",
+          url = "https://github.com/acme/widgets/pull/42",
+          additions = 10,
+          deletions = 4,
+          changed_files = 1,
+          body = "Add a story review mode.",
+        },
+        {
+          { file = "lua/a.lua" },
+        },
+        [[diff --git a/lua/a.lua b/lua/a.lua
++new]]
+      )
+
+      assert.truthy(actual:match("Choose one or two protagonists"))
+      assert.truthy(actual:match("Keep those protagonists active across the full PR story"))
+      assert.truthy(actual:match("End each chapter with a subtle cliffhanger, open question, or quiet reveal"))
+      assert.truthy(actual:match("ASCII art"))
+      assert.truthy(actual:match("triple backticks"))
+      assert.is_nil(actual:match("reviewer should watch"))
+    end
+  )
 end)
 
 describe("gh_pr_story.build_pi_command", function()

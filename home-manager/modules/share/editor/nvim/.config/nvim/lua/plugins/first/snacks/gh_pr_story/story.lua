@@ -244,15 +244,15 @@ function M.build_story_prompt(metadata, diff_items, diff_text)
     "Do not imitate Brandon Sanderson directly, do not mention him, and do not quote existing works.",
     "",
     "## What to produce",
-    "Return JSON only. No markdown fences. No commentary outside the JSON.",
+    "Return JSON only for the outer response. No markdown fences or commentary outside the JSON. Markdown inside the narrative string is allowed.",
     "Use this exact schema:",
     [[{
-  "summary": "<2-3 sentence overview of the PR arc>",
+  "summary": "<2-3 sentence overview of the PR arc that introduces the protagonist(s)>",
   "chapters": [
     {
       "id": "chapter-1",
       "title": "<short chapter title>",
-      "narrative": "<markdown review guidance for this chapter: why it matters, what changed at a high level, and what the reviewer should watch>",
+      "narrative": "<markdown chapter narrative: follow the chosen protagonist(s), explain why this beat matters, and end on a subtle cliffhanger, question, or quiet reveal>",
       "files": ["path/to/file.lua"]
     }
   ]
@@ -263,7 +263,11 @@ function M.build_story_prompt(metadata, diff_items, diff_text)
     "- Every changed file must appear exactly once across all chapters.",
     "- Prefer 2-7 chapters unless the PR is tiny.",
     "- Group mechanical or cleanup edits together instead of scattering them.",
+    "- Choose one or two protagonists for the whole PR story, such as a module, workflow, bug, or data path.",
+    "- Keep those protagonists active across the full PR story, even as the setting changes from chapter to chapter.",
     "- The narrative should guide a reviewer toward the important ideas, not perform the review for them.",
+    "- Do not end chapters with an explicit watch-for checklist. End each chapter with a subtle cliffhanger, open question, or quiet reveal instead.",
+    "- The narrative is rendered as Markdown. You may include short ASCII art when it genuinely helps. Fence ASCII art with triple backticks and keep it compact.",
     "- Keep titles vivid but readable.",
     "",
     ("# Pull Request #%d: %s"):format(metadata.number or 0, metadata.title or "PR"),
