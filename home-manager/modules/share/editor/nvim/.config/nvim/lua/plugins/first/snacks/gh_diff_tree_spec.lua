@@ -23,20 +23,23 @@ end
 local gh_diff_tree = require("plugins.first.snacks.gh_diff_tree")
 
 describe("snacks_gh_diff_tree.to_tree_items", function()
-  it("GIVEN a single nested directory chain WHEN building tree items THEN it compacts intermediate directories", function()
-    local actual = gh_diff_tree.to_tree_items({
-      { file = "lua/plugins/first/snacks.lua", cwd = "/repo", status = "M", diff = "snacks diff" },
-    })
+  it(
+    "GIVEN a single nested directory chain WHEN building tree items THEN it compacts intermediate directories",
+    function()
+      local actual = gh_diff_tree.to_tree_items({
+        { file = "lua/plugins/first/snacks.lua", cwd = "/repo", status = "M", diff = "snacks diff" },
+      })
 
-    local actual_dir = actual[1]
-    local actual_file = actual[2]
+      local actual_dir = actual[1]
+      local actual_file = actual[2]
 
-    assert.are.equal("lua/plugins/first", actual_dir.file)
-    assert.are.equal("lua/plugins/first", actual_dir.display_name)
-    assert.is_true(actual_dir.dir)
-    assert.are.equal("lua/plugins/first/snacks.lua", actual_file.file)
-    assert.are.equal("lua/plugins/first", actual_file.parent.file)
-  end)
+      assert.are.equal("lua/plugins/first", actual_dir.file)
+      assert.are.equal("lua/plugins/first", actual_dir.display_name)
+      assert.is_true(actual_dir.dir)
+      assert.are.equal("lua/plugins/first/snacks.lua", actual_file.file)
+      assert.are.equal("lua/plugins/first", actual_file.parent.file)
+    end
+  )
 
   it("GIVEN branching directories WHEN building tree items THEN it keeps the branching parent visible", function()
     local actual = gh_diff_tree.to_tree_items({
@@ -187,5 +190,104 @@ describe("snacks_gh_diff_tree.close", function()
     gh_diff_tree.close(picker, given_item_by_file(items, "lua/plugins/first"))
 
     assert.are.equal(1, actual.viewed_index())
+  end)
+end)
+
+describe("snacks_gh_diff_tree gh action delegation", function()
+  local original_gh_source
+  local original_vim
+
+  before_each(function()
+    original_gh_source = package.loaded["snacks.picker.source.gh"]
+    original_vim = _G.vim
+  end)
+
+  after_each(function()
+    package.loaded["snacks.picker.source.gh"] = original_gh_source
+    _G.vim = original_vim
+  end)
+
+  it("GIVEN a diff file WHEN adding a gh comment THEN it restores the list cursor to that file", function()
+    local diff_items = {
+      {
+        file = "lua/plugins/first/snacks.lua",
+        cwd = "/repo",
+        status = "M",
+        diff = "snacks diff",
+        gh_item = { repo = "acme/widgets", number = 42, type = "pr" },
+      },
+    }
+    local items = gh_diff_tree.to_tree_items(diff_items)
+    local picker, actual = given_picker(items, gh_diff_tree.to_tree_items(diff_items))
+    local actual_stopped = false
+
+    package.loaded["snacks.picker.source.gh"] = {
+      actions = {
+        gh_comment = {
+          action = function(forwarded_picker)
+            forwarded_picker:refresh()
+            forwarded_picker:focus()
+          end,
+        },
+      },
+    }
+    _G.vim = {
+      cmd = {
+        stopinsert = function()
+          actual_stopped = true
+        end,
+      },
+      schedule = function(fn)
+        fn()
+      end,
+    }
+
+    gh_diff_tree.gh_comment(picker, given_item_by_file(items, "lua/plugins/first/snacks.lua"), {})
+
+    assert.are.equal(2, actual.viewed_index())
+    assert.are.equal("list", actual.focused_target())
+    assert.is_true(actual_stopped)
+  end)
+
+  it("GIVEN a diff file WHEN opening gh actions THEN downstream refreshes still restore the list cursor", function()
+    local diff_items = {
+      {
+        file = "lua/plugins/first/snacks.lua",
+        cwd = "/repo",
+        status = "M",
+        diff = "snacks diff",
+        gh_item = { repo = "acme/widgets", number = 42, type = "pr" },
+      },
+    }
+    local items = gh_diff_tree.to_tree_items(diff_items)
+    local picker, actual = given_picker(items, gh_diff_tree.to_tree_items(diff_items))
+    local actual_stopped = false
+
+    package.loaded["snacks.picker.source.gh"] = {
+      actions = {
+        gh_actions = {
+          action = function(forwarded_picker)
+            forwarded_picker:refresh()
+            forwarded_picker:focus()
+          end,
+        },
+      },
+    }
+    _G.vim = {
+      cmd = {
+        stopinsert = function()
+          actual_stopped = true
+        end,
+      },
+      schedule = function(fn)
+        fn()
+      end,
+    }
+
+    gh_diff_tree.gh_actions(picker, given_item_by_file(items, "lua/plugins/first/snacks.lua"), {})
+
+    assert.are.equal(2, actual.viewed_index())
+    assert.are.equal("list", actual.focused_target())
+    assert.is_true(actual_stopped)
   end)
 end)

@@ -265,9 +265,15 @@ local function reveal(picker, path)
   return false
 end
 
+---@class dotfiles.snacks_gh_diff_tree.RefreshOpts
+---@field restore_list_focus boolean|nil
+
 ---@param picker snacks.Picker
 ---@param target string|nil
-local function refresh(picker, target)
+---@param opts dotfiles.snacks_gh_diff_tree.RefreshOpts|nil
+local function refresh(picker, target, opts)
+  opts = opts or {}
+
   picker.list:set_target()
   picker:find({
     refresh = true,
@@ -275,6 +281,48 @@ local function refresh(picker, target)
       if target then
         reveal(picker, target)
       end
+      if opts.restore_list_focus then
+        vim.schedule(function()
+          if picker.closed then
+            return
+          end
+          picker:focus("list")
+          pcall(vim.cmd.stopinsert)
+        end)
+      end
+    end,
+  })
+end
+
+-- Snacks GH actions refresh the picker and re-enter insert mode; wrap the picker so
+-- the diff tree can reveal the current file again and hand focus back to the list.
+---@param picker snacks.Picker
+---@param target string|nil
+---@return snacks.Picker
+local function with_restored_list_focus(picker, target)
+  return setmetatable({}, {
+    __index = function(_, key)
+      if key == "focus" then
+        return function(_, win, opts)
+          return picker:focus(win or "list", opts)
+        end
+      end
+      if key == "refresh" then
+        return function()
+          refresh(picker, target, { restore_list_focus = true })
+        end
+      end
+
+      local value = picker[key]
+      if type(value) == "function" then
+        return function(_, ...)
+          return value(picker, ...)
+        end
+      end
+      return value
+    end,
+    __newindex = function(_, key, value)
+      picker[key] = value
     end,
   })
 end
@@ -419,6 +467,17 @@ local function confirm(picker, item, action)
   return require("snacks.picker.actions").jump(picker, item, action or {})
 end
 
+---@param action_name string
+---@param picker snacks.Picker
+---@param item snacks.picker.finder.Item|nil
+---@param action snacks.picker.Action|nil
+local function delegate_gh_action(action_name, picker, item, action)
+  local gh_action = require("snacks.picker.source.gh").actions[action_name]
+  if gh_action and gh_action.action then
+    return gh_action.action(with_restored_list_focus(picker, item and item.file or nil), item, action)
+  end
+end
+
 local M = {}
 M.to_tree_items = to_tree_items
 M.finder = finder
@@ -428,4 +487,10 @@ M.toggle = toggle
 M.open = open
 M.close = close
 M.confirm = confirm
+M.gh_comment = function(picker, item, action)
+  return delegate_gh_action("gh_comment", picker, item, action)
+end
+M.gh_actions = function(picker, item, action)
+  return delegate_gh_action("gh_actions", picker, item, action)
+end
 return M
