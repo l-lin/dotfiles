@@ -1,6 +1,6 @@
 ---@return string
 local function daily_note_filepath()
-  return vim.g.notes_dir .. "/5-rituals/daily/" .. tostring(os.date("%Y-%m-%d")) .. ".md"
+  return vim.fs.joinpath(vim.fn.expand(vim.g.notes_dir), "5-rituals", "daily", string.format("%s.md", os.date("%Y-%m-%d")))
 end
 
 ---@type jira.StartWorkDoneCallback?
@@ -24,7 +24,7 @@ local function append_task_to_daily_notes(ctx)
 
   local key_pattern = vim.pesc(key)
   for _, line in ipairs(lines) do
-    if line:match("^%- %[[ xX]?%] %s*" .. key_pattern) then
+    if line:match("^%- %[[ xX]?%] %s*" .. key_pattern .. "%s*:") then
       vim.notify("Task " .. key .. " already registered", vim.log.levels.INFO)
       return
     end
@@ -38,6 +38,11 @@ local function append_task_to_daily_notes(ctx)
       next_header = index
       break
     end
+  end
+
+  if not header_line then
+    vim.notify("Section ## 🎯 Today's objectives not found in " .. path, vim.log.levels.ERROR)
+    return
   end
 
   local section_end = next_header and (next_header - 1) or #lines
