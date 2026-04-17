@@ -56,6 +56,8 @@
       "doxx"
       # Interpreter for PostScript and PDF: https://www.ghostscript.com/
       "ghostscript"
+      # LLM inference in C/C++: https://github.com/ggml-org/llama.cpp
+      "llama.cpp"
       # Customize themes, inject extensions, and unlock the full potential of your Spotify client: https://spicetify.app/
       "spicetify-cli"
       # Install and switch between multiple versions of Xcode: https://github.com/XcodesOrg/xcodes
@@ -79,8 +81,6 @@
       "ghostty"
       # Free and open-source image editor: https://www.gimp.org/
       "gimp"
-      # Get up and running with large language models locally: https://github.com/ollama/ollama
-      "ollama-app"
       # Java IDE by Jetbrains: https://www.jetbrains.com/idea/
       "intellij-idea"
       # Jellyfin is the volunteer-built media solution that puts you in control of your media: https://jellyfin.org/
@@ -93,6 +93,8 @@
       "minisim"
       # Knowledge base that works on top of a local folder of plain text Markdown files: https://obsidian.md/
       "obsidian"
+      # Get up and running with large language models locally: https://github.com/ollama/ollama
+      "ollama-app"
       # Open-source colour picker app for macOS: https://superhighfives.com/pika
       "pika"
       # Music streaming service: https://www.spotify.com/https://www.spotify.com/
