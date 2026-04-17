@@ -97,6 +97,15 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+-- keymaps for markdown-like file types
+vim.api.nvim_create_autocmd("FileType", {
+  group = augroup("markdown_keymap"),
+  pattern = { "text", "plaintex", "typst", "gitcommit", "markdown", "codecompanion", "markdown", "text", "markdown.snacks_picker_preview", "markdown.gh" },
+  callback = function()
+    vim.keymap.set("i", "<M-c>", require("functions.lang.markdown").insert_codeblock, { buffer = true, desc = "Add codeblock" })
+  end,
+})
+
 vim.api.nvim_create_user_command("Codeowner", function()
   vim.notify(require("functions.git").codeowner(), vim.log.levels.INFO)
 end, { desc = "Check file code ownership" })
