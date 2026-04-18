@@ -9,7 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@mariozechner/pi-coding-agent": "0.66.1"
+    "@mariozechner/pi-coding-agent": "0.67.68"
   },
   "devDependencies": {
     "prettier": "^3.8.1",
