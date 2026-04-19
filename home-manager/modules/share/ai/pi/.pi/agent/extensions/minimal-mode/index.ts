@@ -1,7 +1,10 @@
 /**
- * Minimal Mode - overrides built-in tools with custom rendering:
+ * Minimal Mode - re-renders the built-in `read` tool with compact output and
+ * disables search and listing helpers that do not fit this mode:
  * - Collapsed: Shows only the tool call summary (path, pattern, etc.)
- * - Expanded: Shows full output like the built-in renderers
+ * - Expanded: Shows full output like the built-in renderer
+ *
+ * Disabled tools: find, grep, ls
  *
  * Use ctrl+o to toggle between collapsed and expanded views.
  *
@@ -10,17 +13,12 @@
 
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { Clone } from "@sinclair/typebox/value";
-import {
-  renderEditResult,
-  renderFindResult,
-  renderGrepResult,
-  renderLsResult,
-  renderReadResult,
-  renderWriteResult,
-} from "./renders.js";
+import { renderReadResult } from "./renders.js";
 import { type BuiltInTools, getBuiltInTools } from "./tool-cache.js";
 
 type ToolName = keyof BuiltInTools;
+
+const DISABLED_TOOL_NAMES = new Set(["find", "grep", "ls"]);
 
 function registerMinimalTool(
   pi: ExtensionAPI,
@@ -36,11 +34,30 @@ function registerMinimalTool(
   } as any);
 }
 
+function removeDisabledTools(pi: ExtensionAPI): void {
+  const activeTools = pi.getActiveTools();
+  const nextActiveTools = activeTools.filter(
+    (toolName) => !DISABLED_TOOL_NAMES.has(toolName),
+  );
+
+  if (nextActiveTools.length === activeTools.length) return;
+  pi.setActiveTools(nextActiveTools);
+}
+
 export default function (pi: ExtensionAPI): void {
   registerMinimalTool(pi, "read", renderReadResult);
-  //registerMinimalTool(pi, "write", renderWriteResult);
-  //registerMinimalTool(pi, "edit", renderEditResult);
-  registerMinimalTool(pi, "find", renderFindResult);
-  registerMinimalTool(pi, "grep", renderGrepResult);
-  registerMinimalTool(pi, "ls", renderLsResult);
+
+  pi.on("session_start", async () => {
+    removeDisabledTools(pi);
+  });
+
+  // We should no need to guard, but I'm being paranoid, so let's keep this snippet just in case.
+  // pi.on("tool_call", async (event) => {
+  //   if (!DISABLED_TOOL_NAMES.has(event.toolName)) return undefined;
+  //
+  //   return {
+  //     block: true,
+  //     reason: `${event.toolName} is disabled`,
+  //   };
+  // });
 }

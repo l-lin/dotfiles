@@ -14,7 +14,7 @@ This directory contains local Pi extensions and one shared support module. Each 
 | [`footer`](./footer/)                                 | Replaces the default footer with richer status, directory, and usage lines...                                                                     |
 | [`github-copilot`](./github-copilot/)                 | Shows Copilot premium usage and adds commands for refreshing usage and browsing Copilot models.                                                   |
 | [`lsp-diagnostics`](./lsp-diagnostics/)               | Runs LSP diagnostics after edits and writes, then surfaces problems right away.                                                                   |
-| [`minimal-mode`](./minimal-mode/)                     | Re-renders built-in tools in a compact view that can expand back to full output.                                                                  |
+| [`minimal-mode`](./minimal-mode/)                     | Re-renders the built-in `read` tool in a compact view and removes `find`, `grep`, and `ls` from minimal-mode sessions.                            |
 | [`model-switcher`](./model-switcher/)                 | Rotates through configured models with a command and keyboard shortcut.                                                                           |
 | [`oracle`](./oracle/)                                 | Gets a second opinion from another AI model, optionally with files in context.                                                                    |
 | [`plan-mode`](./plan-mode/)                           | Adds a read-only planning mode with safe Bash limits, todo tracking, and progress UI.                                                             |
