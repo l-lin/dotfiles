@@ -22,6 +22,11 @@ import {
   buildToolIcons,
 } from "./data.js";
 
+export interface DirectoryLineState {
+  sandboxEnabled?: boolean;
+  damageControlEnabled?: boolean;
+}
+
 export function buildStatsLine(
   width: number,
   theme: Theme,
@@ -79,16 +84,19 @@ export function buildDirectoryLine(
   width: number,
   theme: Theme,
   footerData: ReadonlyFooterDataProvider,
-  sandboxEnabled = false,
+  state: DirectoryLineState = {},
 ): string {
   const pwd = formatCurrentDirectory();
   const branch = footerData.getGitBranch();
 
-  const sandboxIcon = sandboxEnabled
+  const sandboxIcon = state.sandboxEnabled
     ? theme.fg("dim", ICONS["sandbox-enabled"])
     : theme.fg("error", ICONS["sandbox-disabled"]);
+  const damageControlIcon = state.damageControlEnabled
+    ? theme.fg("dim", ICONS["damage-control-enabled"])
+    : theme.fg("error", ICONS["damage-control-disabled"]);
   const directory = theme.fg("dim", `${ICONS["cwd"]} ${pwd}`);
-  const cwdLeft = `${sandboxIcon} ${directory}`;
+  const cwdLeft = `${sandboxIcon} ${damageControlIcon} ${directory}`;
   const branchRight = branch
     ? theme.fg("dim", `${ICONS["branch"]} ${branch}`)
     : "";

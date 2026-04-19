@@ -46,6 +46,9 @@
       "keybind": "alt-m"
     },
     "sandbox": {
+      "enabled": false
+    },
+    "damageControl": {
       "enabled": true
     }
   },

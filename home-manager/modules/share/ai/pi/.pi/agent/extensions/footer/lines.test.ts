@@ -22,13 +22,17 @@ function given_footerData(branch: string | null = "main") {
 function when_buildingDirectoryLine(options?: {
   width?: number;
   sandboxEnabled?: boolean;
+  damageControlEnabled?: boolean;
   branch?: string | null;
 }) {
   return buildDirectoryLine(
     options?.width ?? 120,
     given_theme() as never,
     given_footerData(options?.branch) as never,
-    options?.sandboxEnabled ?? false,
+    {
+      sandboxEnabled: options?.sandboxEnabled ?? false,
+      damageControlEnabled: options?.damageControlEnabled ?? false,
+    },
   );
 }
 
@@ -37,15 +41,28 @@ test("buildDirectoryLine GIVEN sandbox enabled WHEN rendering THEN it shows the 
   const expected = `<dim>${ICONS["sandbox-enabled"]}</dim>`;
 
   assert.ok(actual.includes(expected));
+  assert.ok(
+    actual.includes(`<error>${ICONS["damage-control-disabled"]}</error>`),
+  );
   assert.ok(actual.includes(ICONS["cwd"]));
   assert.ok(!actual.includes(ICONS["sandbox-disabled"]));
 });
 
-test("buildDirectoryLine GIVEN sandbox disabled WHEN rendering THEN it shows the disabled sandbox icon in red", () => {
-  const actual = when_buildingDirectoryLine({ sandboxEnabled: false });
-  const expected = `<error>${ICONS["sandbox-disabled"]}</error>`;
+test("buildDirectoryLine GIVEN damage control enabled WHEN rendering THEN it shows the enabled damage-control icon beside the sandbox icon", () => {
+  const actual = when_buildingDirectoryLine({ damageControlEnabled: true });
+  const expected = `<dim>${ICONS["damage-control-enabled"]}</dim>`;
+
+  assert.ok(actual.includes(`<error>${ICONS["sandbox-disabled"]}</error>`));
+  assert.ok(actual.includes(expected));
+  assert.ok(actual.includes(ICONS["cwd"]));
+  assert.ok(!actual.includes(ICONS["damage-control-disabled"]));
+});
+
+test("buildDirectoryLine GIVEN damage control disabled WHEN rendering THEN it shows the disabled damage-control icon in red", () => {
+  const actual = when_buildingDirectoryLine({ damageControlEnabled: false });
+  const expected = `<error>${ICONS["damage-control-disabled"]}</error>`;
 
   assert.ok(actual.includes(expected));
   assert.ok(actual.includes(ICONS["cwd"]));
-  assert.ok(!actual.includes(ICONS["sandbox-enabled"]));
+  assert.ok(!actual.includes(ICONS["damage-control-enabled"]));
 });

@@ -19,22 +19,28 @@ import {
 } from "./lines.js";
 
 export default function (pi: ExtensionAPI) {
+  let currentTui: TUI | undefined;
+  const runtimeState = {
+    sandboxEnabled: false,
+    damageControlEnabled: false,
+  };
+
+  pi.events.on("custom-tool:changed", () => {
+    currentTui?.requestRender();
+  });
+
+  pi.events.on("sandbox:state-changed", (enabled: unknown) => {
+    runtimeState.sandboxEnabled = enabled === true;
+    currentTui?.requestRender();
+  });
+
+  pi.events.on("damage-control:state-changed", (enabled: unknown) => {
+    runtimeState.damageControlEnabled = enabled === true;
+    currentTui?.requestRender();
+  });
+
   pi.on("session_start", (_event, ctx) => {
     if (!ctx.hasUI) return;
-
-    let currentTui: TUI | undefined;
-    let sandboxEnabled = false;
-
-    // Re-render when custom tools change
-    pi.events.on("custom-tool:changed", () => {
-      currentTui?.requestRender();
-    });
-
-    // Re-render when sandbox state changes
-    pi.events.on("sandbox:state-changed", (enabled: unknown) => {
-      sandboxEnabled = enabled === true;
-      currentTui?.requestRender();
-    });
 
     ctx.ui.setFooter(
       (
@@ -51,9 +57,9 @@ export default function (pi: ExtensionAPI) {
             // Line 1: Stats (context, tools, cost | thinking, model)
             lines.push(buildStatsLine(width, theme, ctx, pi));
 
-            // Line 2: Directory and git branch (with sandbox status icon)
+            // Line 2: Directory and git branch (with sandbox and damage-control status icons)
             lines.push(
-              buildDirectoryLine(width, theme, footerData, sandboxEnabled),
+              buildDirectoryLine(width, theme, footerData, runtimeState),
             );
 
             // Line 3: Extension statuses (if any)

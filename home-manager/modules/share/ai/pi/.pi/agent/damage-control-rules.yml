@@ -236,15 +236,8 @@ readOnlyPaths:
   - "*.min.css"
   - "*.bundle.js"
   - "*.chunk.js"
-  - dist/
-  - build/
   - .next/
   - .nuxt/
-  - .output/
-  - __pycache__/
-  - .venv/
-  - venv/
-  - target/
 
 noDeletePaths:
   - ~/.claude/

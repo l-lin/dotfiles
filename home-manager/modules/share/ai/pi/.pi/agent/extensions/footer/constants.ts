@@ -19,8 +19,10 @@ export const ICONS: Record<string, string> = {
   model: " ",
   cwd: "",
   branch: "󰘬",
-  "sandbox-enabled": "󰒘",
-  "sandbox-disabled": "󰦞",
+  "sandbox-enabled": "󰆦",
+  "sandbox-disabled": "󱐜",
+  "damage-control-enabled": "󰒘",
+  "damage-control-disabled": "󰦞",
 };
 
 export const TOOL_ICONS: Record<string, { enabled: string; disabled: string }> =
@@ -52,5 +54,7 @@ export interface SettingsStructure {
     webSearch?: { enabled?: boolean };
     subagent?: { enabled?: boolean };
     askUserQuestion?: { enabled?: boolean };
+    sandbox?: { enabled?: boolean };
+    damageControl?: { enabled?: boolean };
   };
 }

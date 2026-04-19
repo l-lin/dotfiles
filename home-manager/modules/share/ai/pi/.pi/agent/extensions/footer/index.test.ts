@@ -101,7 +101,7 @@ function when_renderingDirectoryLine(footerFactory: Function): string {
   return component.render(120)[1];
 }
 
-test("footer GIVEN no sandbox runtime event WHEN rendering after session start THEN it defaults to the disabled sandbox icon", async () => {
+test("footer GIVEN no runtime state events WHEN rendering after session start THEN it defaults to disabled sandbox and damage-control icons", async () => {
   const { pi, when_startingSession } = given_mockPi();
   const { ctx, when_gettingFooterFactory } = given_footerContext();
 
@@ -112,6 +112,10 @@ test("footer GIVEN no sandbox runtime event WHEN rendering after session start T
 
   assert.ok(actual.includes(`<error>${ICONS["sandbox-disabled"]}</error>`));
   assert.ok(!actual.includes(ICONS["sandbox-enabled"]));
+  assert.ok(
+    actual.includes(`<error>${ICONS["damage-control-disabled"]}</error>`),
+  );
+  assert.ok(!actual.includes(ICONS["damage-control-enabled"]));
 });
 
 test("footer GIVEN a sandbox enabled runtime event WHEN rendering THEN it shows the enabled sandbox icon", async () => {
@@ -126,4 +130,18 @@ test("footer GIVEN a sandbox enabled runtime event WHEN rendering THEN it shows 
 
   assert.ok(actual.includes(`<dim>${ICONS["sandbox-enabled"]}</dim>`));
   assert.ok(!actual.includes(ICONS["sandbox-disabled"]));
+});
+
+test("footer GIVEN a damage-control enabled runtime event before session start WHEN rendering THEN it shows the enabled damage-control icon", async () => {
+  const { pi, when_startingSession, when_emitting } = given_mockPi();
+  const { ctx, when_gettingFooterFactory } = given_footerContext();
+
+  footerExtension(pi as never);
+  when_emitting("damage-control:state-changed", true);
+  await when_startingSession(ctx as never);
+
+  const actual = when_renderingDirectoryLine(when_gettingFooterFactory());
+
+  assert.ok(actual.includes(`<dim>${ICONS["damage-control-enabled"]}</dim>`));
+  assert.ok(!actual.includes(ICONS["damage-control-disabled"]));
 });
