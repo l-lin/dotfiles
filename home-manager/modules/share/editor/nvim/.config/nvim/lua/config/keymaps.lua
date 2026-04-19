@@ -55,6 +55,8 @@ vim.keymap.set({ "n", "v" }, "<M-d>", '"_d', { noremap = true })
 -- Cursor at middle of screen
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { noremap = true })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { noremap = true })
+vim.keymap.set("n", "<C-f>", "<C-f>zz", { noremap = true })
+vim.keymap.set("n", "<C-b>", "<C-b>zz", { noremap = true })
 vim.keymap.set("n", "<S-h>", "<S-h>zz", { noremap = true })
 vim.keymap.set("n", "<S-l>", "<S-l>zz", { noremap = true })
 vim.keymap.set("n", "{", "{zz", { noremap = true })
