@@ -1,8 +1,9 @@
 {
-  "lastChangelogVersion": "0.66.1",
+  "lastChangelogVersion": "0.67.68",
   "theme": "light",
   "defaultProvider": "github-copilot",
   "defaultModel": "gpt-5.4",
+  "enableInstallTelemetry": false,
   "skills": [
     "~/.config/ai/skills"
   ],
@@ -37,7 +38,7 @@
       }
     },
     "webSearch": {
-      "enabled": false
+      "enabled": true
     },
     "webFetch": {
       "enabled": true
