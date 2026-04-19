@@ -11,7 +11,9 @@
 import {
   streamSimple,
   completeSimple,
+  type AssistantMessage,
   type Message,
+  type ThinkingLevel as SimpleThinkingLevel,
 } from "@mariozechner/pi-ai";
 import type {
   ExtensionAPI,
@@ -44,6 +46,35 @@ const emptyUsage = {
   totalTokens: 0,
   cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 },
 };
+
+type RequestAuth = Awaited<
+  ReturnType<ExtensionContext["modelRegistry"]["getApiKeyAndHeaders"]>
+>;
+type AgentThinkingLevel = ReturnType<ExtensionAPI["getThinkingLevel"]>;
+
+export function getRequestAuthOptions(auth: RequestAuth): {
+  apiKey?: string;
+  headers?: Record<string, string>;
+} {
+  if (!auth.ok) {
+    throw new Error(auth.error);
+  }
+
+  return {
+    apiKey: auth.apiKey,
+    headers: auth.headers,
+  };
+}
+
+export function normalizeReasoningLevel(
+  thinkingLevel: AgentThinkingLevel,
+): SimpleThinkingLevel | undefined {
+  return thinkingLevel === "off" ? undefined : thinkingLevel;
+}
+
+export function getAssistantErrorMessage(message: AssistantMessage): string {
+  return message.errorMessage?.trim() || "Request failed";
+}
 
 export default function (pi: ExtensionAPI) {
   let btwThreadStart = 0;
@@ -289,7 +320,7 @@ export default function (pi: ExtensionAPI) {
       return;
     }
 
-    const thinkingLevel = pi.getThinkingLevel();
+    const reasoning = normalizeReasoningLevel(pi.getThinkingLevel());
     const modelLabel = `${model.provider}/${model.id}`;
     const allMessages = buildBtwMessages(ctx, model, question);
 
@@ -306,13 +337,9 @@ export default function (pi: ExtensionAPI) {
 
     (async () => {
       try {
-        const apiKey = await ctx.modelRegistry.getApiKey(model);
-        if (!apiKey) {
-          slot.answer = "❌ No API key";
-          slot.done = true;
-          renderWidget(ctx);
-          return;
-        }
+        const requestOptions = getRequestAuthOptions(
+          await ctx.modelRegistry.getApiKeyAndHeaders(model),
+        );
 
         const eventStream = streamSimple(
           model,
@@ -321,7 +348,7 @@ export default function (pi: ExtensionAPI) {
               "You are having an aside conversation with the user, separate from their main working session. The main session messages are provided for context only — that work is being handled by another agent. Focus on answering the user's side questions, helping them think through ideas, or planning next steps. Do not act as if you need to complete or continue the main session's work.",
             messages: allMessages,
           },
-          { apiKey, reasoning: thinkingLevel },
+          { ...requestOptions, reasoning },
         );
 
         for await (const event of eventStream) {
@@ -332,7 +359,7 @@ export default function (pi: ExtensionAPI) {
             slot.answer += event.delta;
             renderWidget(ctx);
           } else if (event.type === "error") {
-            slot.answer += `\n❌ ${event.error.message}`;
+            slot.answer += `\n❌ ${getAssistantErrorMessage(event.error)}`;
             slot.done = true;
             renderWidget(ctx);
             return;
@@ -439,9 +466,13 @@ export default function (pi: ExtensionAPI) {
         return;
       }
 
-      const apiKey = await ctx.modelRegistry.getApiKey(model);
-      if (!apiKey) {
-        ctx.ui.notify(`No API key for ${model.provider}/${model.id}`, "error");
+      let requestOptions: ReturnType<typeof getRequestAuthOptions>;
+      try {
+        requestOptions = getRequestAuthOptions(
+          await ctx.modelRegistry.getApiKeyAndHeaders(model),
+        );
+      } catch (error: any) {
+        ctx.ui.notify(error.message, "error");
         return;
       }
 
@@ -473,7 +504,7 @@ export default function (pi: ExtensionAPI) {
               },
             ],
           },
-          { apiKey, reasoning: "low" },
+          { ...requestOptions, reasoning: "low" },
         );
 
         const summary = response.content

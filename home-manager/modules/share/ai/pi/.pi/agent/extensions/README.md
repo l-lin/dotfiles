@@ -7,7 +7,7 @@ This directory contains local Pi extensions and one shared support module. Each 
 | [`active-skills`](./active-skills/)                   | Shows a widget with the `SKILL.md` files loaded in the current session.                                                                           |
 | [`ask-user-question`](./ask-user-question/)           | Adds an interactive TUI prompt for asking the user one or more multiple-choice questions.                                                         |
 | [`awesome-editor`](./awesome-editor/)                 | Replaces the editor with Vim-style modal editing and snippet autocomplete.                                                                        |
-| [`btw`](./btw/) | A pi extension that lets you have a separate, parallel conversation with the LLM while the main agent is working. |
+| [`btw`](./btw/)                                       | A pi extension that lets you have a separate, parallel conversation with the LLM while the main agent is working.                                 |
 | [`context`](./context/)                               | Shows a TUI overview of loaded extensions, skills, project context files, and usage totals.                                                       |
 | [`enforce-modern-cli`](./enforce-modern-cli/)         | Blocks legacy `grep` and `find` calls in Bash and points the agent to `rg` and `fd` instead.                                                      |
 | [`execution-timer`](./execution-timer/)               | Tracks each run and shows elapsed time with a simple tool-versus-agent breakdown.                                                                 |
