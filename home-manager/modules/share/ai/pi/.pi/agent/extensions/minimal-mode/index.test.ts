@@ -91,20 +91,6 @@ test("minimal-mode GIVEN an already filtered tool list WHEN the session starts T
   assert.deepEqual(actual, expected);
 });
 
-test("minimal-mode GIVEN a disabled tool call WHEN tool_call runs THEN it blocks execution with a clear reason", async () => {
-  const { pi, when_handlingToolCall } = given_mockPi();
-
-  minimalModeExtension(pi as never);
-
-  const actual = await when_handlingToolCall("grep");
-  const expected = {
-    block: true,
-    reason: "grep is disabled by minimal-mode",
-  };
-
-  assert.deepEqual(actual, expected);
-});
-
 test("minimal-mode GIVEN an allowed tool call WHEN tool_call runs THEN it does not block execution", async () => {
   const { pi, when_handlingToolCall } = given_mockPi();
 

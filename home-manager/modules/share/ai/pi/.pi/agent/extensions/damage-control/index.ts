@@ -31,7 +31,6 @@ const ICON = "";
 interface Rule {
   pattern: string;
   reason: string;
-  ask?: boolean;
 }
 
 interface Rules {
@@ -213,7 +212,6 @@ export default function (pi: ExtensionAPI) {
     }
 
     let violationReason: string | null = null;
-    let shouldAsk = false;
 
     const checkPaths = (pathsToCheck: string[]) => {
       for (const pathToCheck of pathsToCheck) {
@@ -266,7 +264,6 @@ export default function (pi: ExtensionAPI) {
           const regex = new RegExp(rule.pattern);
           if (regex.test(command)) {
             violationReason = rule.reason;
-            shouldAsk = !!rule.ask;
             break;
           }
         }
@@ -323,51 +320,53 @@ export default function (pi: ExtensionAPI) {
     }
 
     if (violationReason) {
-      if (shouldAsk) {
-        const confirmed = await ctx.ui.confirm(
-          `${ICON} Confirmation`,
-          `Dangerous command detected: ${violationReason}\n\nCommand: ${isToolCallEventType("bash", event) ? event.input.command : JSON.stringify(event.input)}\n\nDo you want to proceed?`,
-          { timeout: 30000 },
-        );
+      const blockedReasonBase = `${ICON} BLOCKED: ${violationReason}`;
 
-        if (!confirmed) {
-          ctx.ui.notify(`⚠️ Violation Blocked: ${violationReason}`);
-          pi.appendEntry("damage-control-log", {
-            tool: event.toolName,
-            input: event.input,
-            rule: violationReason,
-            action: "blocked_by_user",
-          });
-          ctx.abort();
-          return {
-            block: true,
-            reason: `${ICON} BLOCKED: ${violationReason} (User denied)\n\nDO NOT attempt to work around this restriction. DO NOT retry with alternative commands, paths, or approaches that achieve the same result. Report this block to the user exactly as stated and ask how they would like to proceed.`,
-          };
-        }
-
+      if (!ctx.hasUI) {
         pi.appendEntry("damage-control-log", {
           tool: event.toolName,
           input: event.input,
           rule: violationReason,
-          action: "confirmed_by_user",
+          action: "blocked",
         });
-        return { block: false };
+        ctx.abort();
+        return {
+          block: true,
+          reason: `${blockedReasonBase} (User approval required, but UI is unavailable)\n\nDO NOT attempt to work around this restriction. DO NOT retry with alternative commands, paths, or approaches that achieve the same result. Report this block to the user exactly as stated and ask how they would like to proceed.`,
+        };
       }
 
-      ctx.ui.notify(
-        `${ICON} BLOCKED: ${event.toolName} due to ${violationReason}`,
+      const inputSummary = isToolCallEventType("bash", event)
+        ? `Command: ${event.input.command}`
+        : `Input: ${JSON.stringify(event.input, null, 2)}`;
+      const confirmed = await ctx.ui.confirm(
+        `${ICON} Permission required`,
+        `Damage-control flagged this ${event.toolName} call: ${violationReason}\n\n${inputSummary}\n\nAllow it to continue?`,
+        { timeout: 30000 },
       );
+
+      if (!confirmed) {
+        ctx.ui.notify(`⚠️ Violation Blocked: ${violationReason}`);
+        pi.appendEntry("damage-control-log", {
+          tool: event.toolName,
+          input: event.input,
+          rule: violationReason,
+          action: "blocked_by_user",
+        });
+        ctx.abort();
+        return {
+          block: true,
+          reason: `${blockedReasonBase} (User denied)\n\nDO NOT attempt to work around this restriction. DO NOT retry with alternative commands, paths, or approaches that achieve the same result. Report this block to the user exactly as stated and ask how they would like to proceed.`,
+        };
+      }
+
       pi.appendEntry("damage-control-log", {
         tool: event.toolName,
         input: event.input,
         rule: violationReason,
-        action: "blocked",
+        action: "confirmed_by_user",
       });
-      ctx.abort();
-      return {
-        block: true,
-        reason: `${ICON} BLOCKED: ${violationReason}\n\nDO NOT attempt to work around this restriction. DO NOT retry with alternative commands, paths, or approaches that achieve the same result. Report this block to the user exactly as stated and ask how they would like to proceed.`,
-      };
+      return { block: false };
     }
 
     return { block: false };

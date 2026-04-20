@@ -35,22 +35,16 @@ bashToolPatterns:
     reason: git filter-branch (rewrites entire history)
   - pattern: '\bgit\s+checkout\s+--\s*\.'
     reason: Discards all uncommitted changes
-    ask: true
   - pattern: '\bgit\s+restore\s+\.'
     reason: Discards all uncommitted changes
-    ask: true
   - pattern: '\bgit\s+stash\s+drop\b'
     reason: Permanently deletes a stash
-    ask: true
   - pattern: '\bgit\s+branch\s+(-[^\s]*)*-D'
     reason: Force deletes branch (even if unmerged)
-    ask: true
   - pattern: '\bgit\s+push\s+\S+\s+--delete\b'
     reason: Deletes remote branch
-    ask: true
   - pattern: '\bgit\s+push\s+\S+\s+:\S+'
     reason: Deletes remote branch (old syntax)
-    ask: true
   - pattern: '\bmkfs\.'
     reason: filesystem format command
   - pattern: '\bdd\s+.*of=/dev/'
@@ -107,7 +101,6 @@ bashToolPatterns:
     reason: gcloud iam roles delete (deletes IAM role)
   - pattern: '\bgcloud\s+iam\s+policies\b'
     reason: gcloud iam policies (modifies IAM policies)
-    ask: true
   - pattern: '\bfirebase\s+projects:delete\b'
     reason: firebase projects:delete (deletes entire project)
   - pattern: '\bfirebase\s+firestore:delete\s+.*--all-collections'
@@ -158,7 +151,6 @@ bashToolPatterns:
     reason: DROP SCHEMA
   - pattern: '\bDELETE\s+FROM\s+\w+\s+WHERE\b.*\bid\s*='
     reason: SQL DELETE with specific ID
-    ask: true
 
 zeroAccessPaths:
   - ".env"
