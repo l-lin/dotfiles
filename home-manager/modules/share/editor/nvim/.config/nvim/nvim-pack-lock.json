@@ -1,7 +1,7 @@
 {
   "plugins": {
     "SchemaStore.nvim": {
-      "rev": "b2e84d00db4d5432f471d58898e796b478f075a7",
+      "rev": "250aed7415ddd6cb3ea321490c7b35094ed9148d",
       "src": "https://github.com/b0o/SchemaStore.nvim"
     },
     "blink-cmp-wiki-links": {
@@ -26,7 +26,7 @@
       "src": "https://github.com/copilotlsp-nvim/copilot-lsp"
     },
     "copilot.lua": {
-      "rev": "ad7e729e9a6348f7da482be0271d452dbc4c8e2c",
+      "rev": "aeca454727486d488a6ecbcde30db72e741e3524",
       "src": "https://github.com/zbirenbaum/copilot.lua"
     },
     "friendly-snippets": {
@@ -38,7 +38,7 @@
       "src": "https://github.com/pheen/fuzzy_ruby_server"
     },
     "gitsigns.nvim": {
-      "rev": "8d82c240f190fc33723d48c308ccc1ed8baad69d",
+      "rev": "6d808f99bd63303646794406e270bd553ad7792e",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "global-note.nvim": {
@@ -51,7 +51,7 @@
       "version": "'harpoon2'"
     },
     "jira.nvim": {
-      "rev": "43916036b84966cbda196673b73a848f6f51cc12",
+      "rev": "92a26ed464a16cca65d9a9ccf038f7279085f9dc",
       "src": "https://codeberg.org/l-lin/jira.nvim"
     },
     "lazydev.nvim": {
