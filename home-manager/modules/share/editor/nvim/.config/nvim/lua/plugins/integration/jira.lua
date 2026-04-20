@@ -90,6 +90,7 @@ local function setup()
   })
 
   vim.keymap.set("n", "<leader>ji", "<cmd>JiraIssues<cr>", { desc = "Jira current issues" })
+  vim.keymap.set("n", "<leader>jm", "<cmd>JiraMyIssues<cr>", { desc = "Jira my issues" })
   vim.keymap.set("n", "<leader>je", "<cmd>JiraEpic<cr>", { desc = "Jira epics" })
   vim.keymap.set("n", "<leader>j1", "<cmd>JiraEpic P3C-6999<cr>", { desc = "Jira P3C-6999" })
 
