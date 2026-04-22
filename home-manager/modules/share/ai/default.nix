@@ -8,6 +8,7 @@
     ./dust
     ./ollama
     #./opencode
+    ./openspec
     ./pi
   ];
 
