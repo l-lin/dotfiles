@@ -68,6 +68,8 @@ export const SNIPPETS: SnippetDef[] = [
         "This is harder than it looks. I challenge you to get it right.",
         "Every other attempt failed. I expect the same — unless you're different.",
         "I've seen AI fumble this repeatedly. Impress me this time.",
+        "DO THE WORK. DON’T GUESS. IMPRESS ME WITH YOUR THOUGHTFULNESS.",
+        "I'll be judging you on accuracy, speed, quality",
 
         // Deep breath prompts
         "Take a deep breath and solve this step by step.",
