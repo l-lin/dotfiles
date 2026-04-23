@@ -58,6 +58,8 @@
       "ghostscript"
       # LLM inference in C/C++: https://github.com/ggml-org/llama.cpp
       "llama.cpp"
+      # 🐹 Deep clean and optimize your Mac: https://github.com/tw93/mole
+      "mole"
       # Customize themes, inject extensions, and unlock the full potential of your Spotify client: https://spicetify.app/
       "spicetify-cli"
       # Install and switch between multiple versions of Xcode: https://github.com/XcodesOrg/xcodes
