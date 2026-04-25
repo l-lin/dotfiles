@@ -18,7 +18,7 @@ export interface ConfiguredModel {
 export const CONFIGURED_MODELS: ConfiguredModel[] = [
   { reference: "github-copilot/gpt-4.1" },
   { reference: "github-copilot/gpt-5.4", thinkingLevel: "xhigh" },
-  { reference: "ollama/gemma4:26b", thinkingLevel: "high" },
+  { reference: "mlx-lm/unsloth/Qwen3.6-27B-UD-MLX-4bit", thinkingLevel: "high" },
 ];
 
 export interface ModelReferenceLike {
