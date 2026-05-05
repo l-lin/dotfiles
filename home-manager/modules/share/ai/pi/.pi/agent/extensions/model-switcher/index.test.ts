@@ -169,7 +169,10 @@ test("CONFIGURED_MODELS WHEN imported THEN it includes the requested model refer
   const expected = [
     { reference: "github-copilot/gpt-4.1" },
     { reference: "github-copilot/gpt-5.4", thinkingLevel: "xhigh" },
-    { reference: "ollama/gemma4:26b", thinkingLevel: "high" },
+    {
+      reference: "mlx-lm/unsloth/Qwen3.6-27B-UD-MLX-4bit",
+      thinkingLevel: "high",
+    },
   ];
 
   assert.deepEqual(actual, expected);

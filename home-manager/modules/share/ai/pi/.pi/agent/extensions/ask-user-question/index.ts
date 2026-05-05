@@ -9,7 +9,7 @@
 
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { error, QuestionnaireParams } from "./types.js";
-import type { Question, Result } from "./types.js";
+import type { Question, QuestionnaireInput, Result } from "./types.js";
 import { renderCall, renderResult } from "./render.js";
 import { buildWidget } from "./widget.js";
 import {
@@ -39,7 +39,13 @@ export default function (pi: ExtensionAPI) {
       "Ask the user one or more questions. Single question shows options list; multiple questions show tab-based interface.",
     parameters: QuestionnaireParams,
 
-    async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
+    async execute(
+      _toolCallId,
+      params: QuestionnaireInput,
+      _signal,
+      _onUpdate,
+      ctx,
+    ) {
       if (!ctx.hasUI) return error("UI not available");
       if (!params.questions.length) return error("No questions provided");
 

@@ -23,7 +23,7 @@ import {
   ModelSelectorComponent,
   SettingsManager,
 } from "@mariozechner/pi-coding-agent";
-import { Type } from "@sinclair/typebox";
+import { Type } from "typebox";
 import { extractTodoItems, isSafeCommand, type TodoItem } from "./utils.js";
 
 interface PlanModeState {

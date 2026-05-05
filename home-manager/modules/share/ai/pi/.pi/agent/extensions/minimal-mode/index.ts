@@ -12,7 +12,7 @@
  */
 
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
-import { Clone } from "@sinclair/typebox/value";
+import { Clone } from "typebox/value";
 import { renderReadResult } from "./renders.js";
 import { type BuiltInTools, getBuiltInTools } from "./tool-cache.js";
 

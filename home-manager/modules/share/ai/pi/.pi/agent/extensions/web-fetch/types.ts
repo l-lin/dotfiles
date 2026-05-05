@@ -1,4 +1,4 @@
-import { Type } from "@sinclair/typebox";
+import { Type } from "typebox";
 
 export const DEFAULT_MAX_LENGTH = 50_000;
 export const FETCH_TIMEOUT_MS = 30_000;

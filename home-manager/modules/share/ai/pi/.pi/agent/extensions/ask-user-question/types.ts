@@ -2,7 +2,7 @@
 // Ask-User-Question Extension — Type Definitions & Schema
 // ============================================================================
 
-import { Type } from "@sinclair/typebox";
+import { Type, type Static } from "typebox";
 
 export interface Question {
   id: string;
@@ -49,6 +49,8 @@ export const QuestionnaireParams = Type.Object({
     { description: "Questions to ask" },
   ),
 });
+
+export type QuestionnaireInput = Static<typeof QuestionnaireParams>;
 
 export function error(msg: string) {
   return {

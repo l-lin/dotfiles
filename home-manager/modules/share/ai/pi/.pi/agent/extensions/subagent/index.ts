@@ -13,7 +13,7 @@ import type {
   ThemeColor,
 } from "@mariozechner/pi-coding-agent";
 import { truncateToWidth } from "@mariozechner/pi-tui";
-import { Type, type Static } from "@sinclair/typebox";
+import { Type, type Static } from "typebox";
 import { discoverAgents } from "./agents.js";
 import { loadSettings } from "./settings.js";
 import * as render from "./render.js";
