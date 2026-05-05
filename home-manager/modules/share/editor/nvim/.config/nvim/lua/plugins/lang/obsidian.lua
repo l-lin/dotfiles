@@ -98,6 +98,7 @@ local function setup()
   vim.keymap.set("n", "<leader>oS", function() require("functions.lang.obsidian.article_summarizer").paste_url(false) end, { desc = "Summarize article from URL in clipboard", noremap = true })
   vim.keymap.set("v", "<leader>oy", require("functions.lang.obsidian").sanitize_and_yank, { desc = "Yank selection without wiki links", noremap = true })
   vim.keymap.set("v", "<leader>oY", require("functions.lang.obsidian").to_html_and_yank, { desc = "Yank selection in HTML format", noremap = true })
+  vim.keymap.set("n", "gd", "<cmd>Obsidian follow_link<cr>", { desc = "Go to the note under cursor", noremap = true })
   -- stylua: ignore end
 
   local has_wk, wk = pcall(require, "which-key")

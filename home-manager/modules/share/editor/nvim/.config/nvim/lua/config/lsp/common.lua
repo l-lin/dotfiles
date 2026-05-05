@@ -27,7 +27,7 @@ local function on_attach(client, bufnr)
   if package.loaded["snacks"] then
     map(bufnr, "n", "gd", function()
       Snacks.picker.lsp_definitions()
-    end, "Goto Definition (Ctrl+b)")
+    end, "Goto Definition")
     -- map(bufnr, { "n", "i" }, "<C-b>", function()
     --   Snacks.picker.lsp_definitions()
     -- end, "Goto definition (Ctrl+b)")
