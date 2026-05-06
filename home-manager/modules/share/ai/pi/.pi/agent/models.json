@@ -17,22 +17,6 @@
         }
       ]
     },
-    "llama-cpp": {
-      "api": "openai-completions",
-      "apiKey": "none",
-      "baseUrl": "http://127.0.0.1:11435/v1",
-      "models": [
-        {
-          "contextWindow": 262144,
-          "id": "gemma4:26b",
-          "input": [
-            "text",
-            "image"
-          ],
-          "reasoning": true
-        }
-      ]
-    },
     "mlx-lm": {
       "baseUrl": "http://localhost:18080/v1",
       "api": "openai-completions",
@@ -40,9 +24,6 @@
       "models": [
         {
           "id": "unsloth/Qwen3.6-35B-A3B-UD-MLX-4bit"
-        },
-        {
-          "id": "unsloth/Qwen3.6-27B-UD-MLX-4bit"
         }
       ]
     }
