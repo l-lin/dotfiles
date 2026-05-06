@@ -82,6 +82,10 @@
       "rev": "2715e04bea3ec9244f15b421dc5b18c0fe326210",
       "src": "https://github.com/nvim-mini/mini.surround"
     },
+    "nvim-colorizer.lua": {
+      "rev": "5cfe7fffbd01e17b3c1e14af85d5febdef88bd8c",
+      "src": "https://github.com/catgoose/nvim-colorizer.lua"
+    },
     "nvim-dap": {
       "rev": "45a69eba683a2c448dd9ecfc4de89511f0646b5f",
       "src": "https://github.com/mfussenegger/nvim-dap"
