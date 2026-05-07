@@ -43,7 +43,9 @@ return
 -- Git integration for buffers.
 {
   src = "https://github.com/lewis6991/gitsigns.nvim",
-  data = { setup = function ()
-    vim.schedule(setup)
-  end },
+  data = {
+    setup = function()
+      vim.schedule(setup)
+    end,
+  },
 }

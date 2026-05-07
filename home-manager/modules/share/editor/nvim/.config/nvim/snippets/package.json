@@ -19,6 +19,10 @@
         "path": "./json/snippet.json"
       },
       {
+        "language": ["lua"],
+        "path": "./lua/nvim.json"
+      },
+      {
         "language": ["make"],
         "path": "./make.json"
       },

@@ -1,0 +1,20 @@
+{
+  "plugin": {
+    "prefix": "plugin",
+    "body": [
+      "---@type vim.pack.Spec",
+      "return",
+      "-- $1",
+      "{",
+      "  src = \"$2\",",
+      "  data = {",
+      "    setup = function()",
+      "      $3",
+      "    end,",
+      "},",
+      "}"
+    ],
+    "description": "Declare new neovim plugin"
+  }
+}
+
