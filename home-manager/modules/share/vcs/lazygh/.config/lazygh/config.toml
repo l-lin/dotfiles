@@ -1,0 +1,17 @@
+[[pull_requests.searches]]
+label = "My PRs"
+command = ["search", "prs", "--author", "@me", "--state", "open", "--sort", "updated", "--order", "desc"]
+
+[[pull_requests.searches]]
+label = "My reviews"
+command = ["search", "prs", "--reviewed-by", "@me", "--state", "open", "--sort", "updated", "--order", "desc"]
+
+[[pull_requests.searches]]
+label = "Requested"
+command = ["search", "prs", "--review-requested", "@me", "--limit", "100", "--state", "open", "--sort", "updated", "--order", "desc", "--repo", "doctolib/health-content", "--repo", "doctolib/preventive-continuous-care", "--repo", "doctolib/doctolib", "--repo", "doctolib/patient-account"]
+
+[story_review]
+agent_command = ["pi", "--models", "github-copilot/gpt-4.1", "--no-session", "-p", "@{{prompt_file}}"]
+
+[theme]
+preset = "system"
