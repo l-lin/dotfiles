@@ -38,6 +38,18 @@ import {
 } from "./session.js";
 import { ContextView, makePlainTextView } from "./view.js";
 
+function formatExtensionName(sourcePath: string): string {
+  if (sourcePath === "<unknown>") return sourcePath;
+
+  const baseName = path.basename(sourcePath);
+  if (/^index\.[cm]?[jt]sx?$/i.test(baseName)) {
+    const parentName = path.basename(path.dirname(sourcePath));
+    return parentName || baseName;
+  }
+
+  return baseName;
+}
+
 export default function contextExtension(pi: ExtensionAPI) {
   let lastSessionId: string | null = null;
   let cachedLoadedSkills = new Set<string>();
@@ -91,7 +103,7 @@ export default function contextExtension(pi: ExtensionAPI) {
         extensionsByPath.set(commandPath, namesAtPath);
       }
       const extensionFiles = [...extensionsByPath.keys()]
-        .map((p) => (p === "<unknown>" ? p : path.basename(p)))
+        .map(formatExtensionName)
         .sort((a, b) => a.localeCompare(b));
 
       const skills = skillCmds
