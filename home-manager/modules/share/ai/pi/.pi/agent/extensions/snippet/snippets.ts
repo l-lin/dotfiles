@@ -121,4 +121,9 @@ export const SNIPPETS: SnippetDef[] = [
     description: "Be concise",
     expansion: "Respond in 3 bullet points.",
   },
+  {
+    trigger: "$commit",
+    description: "Commit changes",
+    expansion: "Use conventional commit for each task/fix implemented."
+  }
 ];
