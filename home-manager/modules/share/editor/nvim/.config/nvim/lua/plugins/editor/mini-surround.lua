@@ -1,6 +1,12 @@
 local function setup_surround()
   vim.schedule(function()
     require("mini.surround").setup({
+      custom_surroundings = {
+        ["("] = { output = { left = "(", right = ")" } },
+        [")"] = { output = { left = "(", right = ")" } },
+        ["["] = { output = { left = "[", right = "]" } },
+        ["]"] = { output = { left = "[", right = "]" } },
+      },
       mappings = {
         add = "sa",
         delete = "sd",
