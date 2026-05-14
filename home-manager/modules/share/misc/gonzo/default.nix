@@ -5,6 +5,7 @@
 # src: https://gonzo.controltheory.com/
 #
 
-{
-  xdg.configFile."mise/conf.d/gonzo.toml".source = ./.config/mise/conf.d/gonzo.toml;
-}
+{}
+# {
+#   xdg.configFile."mise/conf.d/gonzo.toml".source = ./.config/mise/conf.d/gonzo.toml;
+# }
