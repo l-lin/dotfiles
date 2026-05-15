@@ -77,5 +77,6 @@
   "effortLevel": "high",
   "showClearContextOnPlanAccept": true,
   "theme": "light",
-  "autoCompactEnabled": false
+  "autoCompactEnabled": false,
+  "tui": "fullscreen"
 }
