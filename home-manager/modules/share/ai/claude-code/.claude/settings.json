@@ -40,7 +40,7 @@
     ],
     "deny": []
   },
-  "model": "opusplan",
+  "model": "opus[1m]",
   "hooks": {
     "SessionStart": [
       {
@@ -61,17 +61,6 @@
           }
         ]
       }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "Bash|Read",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.config/ai/hooks/pre-tool-safety/main.rb"
-          }
-        ]
-      }
     ]
   },
   "statusLine": {
@@ -81,8 +70,12 @@
   },
   "enabledPlugins": {
     "code-simplifier@claude-plugins-official": true,
-    "doctolib-productivity@doctolib": true
+    "doctolib-productivity@doctolib": true,
+    "doctolib-c3@doctolib": true,
+    "claude-md-management@claude-plugins-official": true
   },
   "effortLevel": "high",
-  "showClearContextOnPlanAccept": true
+  "showClearContextOnPlanAccept": true,
+  "theme": "light",
+  "autoCompactEnabled": false
 }
