@@ -44,6 +44,11 @@ in {
     withNodeJs = true;
     withPython3 = true;
 
+    # nixpkgs now generates an init.lua for provider/package injection instead
+    # of using the wrapper script. Disable it since we manage .config/nvim/ as
+    # an mkOutOfStoreSymlink (the parent dir is already a symlink to the repo).
+    sideloadInitLua = true;
+
     # Add imagemagick to support rendering images with NeoVim: https://github.com/3rd/image.nvim
     # NOTE: extraLuaPackages is NOT used here because it generates an init.lua
     # that conflicts with our xdg.configFile."nvim" symlink (recursive = true).

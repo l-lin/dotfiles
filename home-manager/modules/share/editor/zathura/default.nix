@@ -7,7 +7,8 @@
   programs = {
     zathura = {
       # Enabling using `programs` instead of `home.packages` so stylix can parameterized its colorscheme.
-      enable = true;
+      # TODO: re-enable once https://github.com/nixos/nixpkgs/issues/514738 is fixed.
+      enable = false;
     };
   };
 
