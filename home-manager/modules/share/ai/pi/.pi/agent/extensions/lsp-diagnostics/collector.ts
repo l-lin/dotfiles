@@ -3,12 +3,14 @@
  * Used by both the tool_result event handler and the lsp-check command.
  */
 import * as path from "node:path";
-import type { ExtensionContext } from "@mariozechner/pi-coding-agent";
+import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
 import type { LspDiagnostic, LspClientEntry, TimingInfo } from "./types.js";
-import type { ResolvedLspCommand } from "./resolver.js";
-import { resolveRootDir } from "./resolver.js";
-import { PersistentLspClient } from "./client/persistent-client.js";
-import { setLspWidget, clearWidget, syncLspServers } from "./ui/widget.js";
+import { setLspWidget, syncLspServers } from "./ui/widget.js";
+import {
+  getOrCreateLspClient,
+  handleLspClientError,
+} from "./client-registry.js";
+import type { ResolvedTargetCommand } from "./targets.js";
 
 const DIAGNOSTICS_TIMEOUT_MS = 5_000;
 
@@ -23,66 +25,13 @@ export interface CollectResult {
   servers: ServerResult[];
 }
 
-async function getOrCreateClient(
-  resolved: ResolvedLspCommand,
-  rootDir: string,
-  commandKey: string,
-  lspBin: string,
-  ctx: ExtensionContext,
-  lspClients: Map<string, LspClientEntry>,
-): Promise<LspClientEntry> {
-  setLspWidget(ctx, lspBin, "starting");
-
-  const existing = lspClients.get(commandKey);
-  if (existing) return existing;
-
-  const client = await PersistentLspClient.create(
-    resolved.command,
-    ctx.cwd,
-    (msg, severity = "info") => ctx.ui.notify(msg, severity),
-    rootDir,
-    resolved.settings,
-    resolved.capabilities,
-  );
-
-  const entry: LspClientEntry = {
-    client,
-    bin: lspBin,
-    command: resolved.command,
-    rootDir,
-    settings: resolved.settings,
-    startedAt: new Date(),
-  };
-  lspClients.set(commandKey, entry);
-  return entry;
-}
-
-function handleLspError(
-  err: unknown,
-  commandKey: string,
-  ctx: ExtensionContext,
-  lspClients: Map<string, LspClientEntry>,
-): void {
-  lspClients.delete(commandKey);
-  if (lspClients.size === 0) {
-    clearWidget(ctx);
-  } else {
-    const [survivingEntry] = lspClients.values();
-    setLspWidget(ctx, survivingEntry!.bin, "idle");
-  }
-  ctx.ui.notify(
-    `lsp-diagnostics: ${err instanceof Error ? err.message : String(err)}`,
-    "warning",
-  );
-}
-
 /**
  * Fan out diagnostics requests to all matching LSP servers, merge results.
- * Shared by the tool_result handler and lsp-check command.
+ * Shared by the lsp tool and the lsp-check command.
  */
 export async function collectDiagnostics(
   files: string[],
-  resolvedList: ResolvedLspCommand[],
+  resolvedList: ResolvedTargetCommand[],
   lspClients: Map<string, LspClientEntry>,
   ctx: ExtensionContext,
 ): Promise<CollectResult> {
@@ -90,31 +39,29 @@ export async function collectDiagnostics(
 
   const merged = new Map<string, LspDiagnostic[]>();
   const servers: ServerResult[] = [];
-  const orderedBins = resolvedList.map((r) => path.basename(r.command[0]!));
+  const orderedBins = resolvedList.map(({ resolved }) =>
+    path.basename(resolved.command[0]!),
+  );
 
   syncLspServers(ctx, orderedBins);
 
   await Promise.all(
-    resolvedList.map(async (resolved) => {
-      const rootDir =
-        resolved.rootMarkers.length > 0
-          ? resolveRootDir(files[0]!, resolved.rootMarkers, ctx.cwd)
-          : ctx.cwd;
-      const commandKey = `${resolved.command.join(" ")}::${rootDir}`;
+    resolvedList.map(async ({ resolved, rootSourcePath }) => {
       const lspBin = path.basename(resolved.command[0]!);
 
       let entry: LspClientEntry;
+      let commandKey: string;
       try {
-        entry = await getOrCreateClient(
+        const activeClient = await getOrCreateLspClient(
           resolved,
-          rootDir,
-          commandKey,
-          lspBin,
+          rootSourcePath,
           ctx,
           lspClients,
         );
+        entry = activeClient.entry;
+        commandKey = activeClient.commandKey;
       } catch (err) {
-        handleLspError(err, commandKey, ctx, lspClients);
+        handleLspClientError(err, "", ctx, lspClients);
         return;
       }
 
@@ -129,7 +76,7 @@ export async function collectDiagnostics(
           AbortSignal.timeout(DIAGNOSTICS_TIMEOUT_MS),
         );
       } catch (err) {
-        handleLspError(err, commandKey, ctx, lspClients);
+        handleLspClientError(err, commandKey, ctx, lspClients);
         return;
       }
 

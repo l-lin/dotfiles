@@ -7,7 +7,7 @@ import {
   type TUI,
   truncateToWidth,
   visibleWidth,
-} from "@mariozechner/pi-tui";
+} from "@earendil-works/pi-tui";
 import type { LspDiagnostic, LspClientEntry } from "../types.js";
 import {
   ICON_LSP,

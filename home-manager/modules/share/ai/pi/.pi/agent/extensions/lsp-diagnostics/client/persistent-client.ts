@@ -10,6 +10,15 @@ import {
   StreamMessageWriter,
 } from "vscode-jsonrpc/node.js";
 import type { LspDiagnostic, PublishDiagnosticsParams } from "../types.js";
+import type {
+  LspDocumentSymbol,
+  LspLocation,
+  LspLocationLink,
+  LspPosition,
+  LspSymbolInformation,
+  LspWorkspaceEdit,
+  LspWorkspaceSymbol,
+} from "../protocol.js";
 import {
   pathToFileUri,
   pathToCanonicalUri,
@@ -64,6 +73,10 @@ interface FileInfo {
   canonicalUri: string;
   rawUri: string;
 }
+
+type DocumentSymbolResult = Array<LspDocumentSymbol | LspSymbolInformation>;
+
+type LocationResult = LspLocation | LspLocation[] | LspLocationLink[] | null;
 
 export class PersistentLspClient {
   private connection;
@@ -266,6 +279,75 @@ export class PersistentLspClient {
     }
   }
 
+  private syncFiles(filePaths: string[], cwd: string): FileInfo[] {
+    const fileInfo = this.resolveFileInfo(filePaths, cwd);
+    this.sendFileNotifications(fileInfo);
+    return fileInfo;
+  }
+
+  private async sendRequestWithTimeout<T>(
+    method: string,
+    params: unknown,
+    timeoutMs: number,
+    signal?: AbortSignal,
+  ): Promise<T> {
+    const timeoutSignal = AbortSignal.timeout(timeoutMs);
+    const combinedSignal = signal
+      ? AbortSignal.any([signal, timeoutSignal])
+      : timeoutSignal;
+
+    let abortListener: (() => void) | undefined;
+
+    try {
+      const abortPromise = new Promise<never>((_, reject) => {
+        abortListener = () => {
+          if (signal?.aborted && !timeoutSignal.aborted) {
+            reject(new Error(`${method} aborted`));
+            return;
+          }
+
+          reject(new Error(`${method} timed out after ${timeoutMs}ms`));
+        };
+
+        if (combinedSignal.aborted) {
+          abortListener();
+          return;
+        }
+
+        combinedSignal.addEventListener("abort", abortListener, { once: true });
+      });
+
+      return await Promise.race([
+        this.connection.sendRequest(method, params) as Promise<T>,
+        abortPromise,
+      ]);
+    } finally {
+      if (abortListener) {
+        combinedSignal.removeEventListener("abort", abortListener);
+      }
+    }
+  }
+
+  private async sendTextDocumentRequest<T>(
+    method: string,
+    filePath: string,
+    cwd: string,
+    params: Record<string, unknown>,
+    timeoutMs: number,
+    signal?: AbortSignal,
+  ): Promise<T> {
+    const [fileInfo] = this.syncFiles([filePath], cwd);
+    return this.sendRequestWithTimeout<T>(
+      method,
+      {
+        textDocument: { uri: fileInfo!.canonicalUri },
+        ...params,
+      },
+      timeoutMs,
+      signal,
+    );
+  }
+
   private buildResult(
     uris: string[],
     rawUris: string[],
@@ -399,8 +481,27 @@ export class PersistentLspClient {
     const client = new PersistentLspClient(proc, connection, settings, onError);
 
     const defaultCapabilities = {
-      textDocument: { publishDiagnostics: { relatedInformation: false } },
-      workspace: { workspaceFolders: true, configuration: true },
+      textDocument: {
+        publishDiagnostics: { relatedInformation: false },
+        definition: { linkSupport: true },
+        references: {},
+        rename: { prepareSupport: false },
+        documentSymbol: {
+          hierarchicalDocumentSymbolSupport: true,
+        },
+      },
+      workspace: {
+        workspaceFolders: true,
+        configuration: true,
+        applyEdit: true,
+        symbol: {},
+        workspaceEdit: {
+          documentChanges: true,
+          resourceOperations: ["create", "rename", "delete"],
+          failureHandling: "abort",
+          normalizesLineEndings: true,
+        },
+      },
     };
     const initCapabilities = capabilities
       ? deepMerge(defaultCapabilities, capabilities)
@@ -486,6 +587,100 @@ export class PersistentLspClient {
       resolvedUris,
       startTime,
       receivedResponse,
+    );
+  }
+
+  async getDocumentSymbols(
+    filePath: string,
+    cwd: string,
+    timeoutMs: number,
+    signal?: AbortSignal,
+  ): Promise<DocumentSymbolResult> {
+    return (
+      (await this.sendTextDocumentRequest<DocumentSymbolResult | null>(
+        "textDocument/documentSymbol",
+        filePath,
+        cwd,
+        {},
+        timeoutMs,
+        signal,
+      )) ?? []
+    );
+  }
+
+  async getWorkspaceSymbols(
+    query: string,
+    timeoutMs: number,
+    signal?: AbortSignal,
+  ): Promise<LspWorkspaceSymbol[]> {
+    return (
+      (await this.sendRequestWithTimeout<LspWorkspaceSymbol[] | null>(
+        "workspace/symbol",
+        { query },
+        timeoutMs,
+        signal,
+      )) ?? []
+    );
+  }
+
+  async getDefinition(
+    filePath: string,
+    position: LspPosition,
+    cwd: string,
+    timeoutMs: number,
+    signal?: AbortSignal,
+  ): Promise<LocationResult> {
+    return this.sendTextDocumentRequest<LocationResult>(
+      "textDocument/definition",
+      filePath,
+      cwd,
+      { position },
+      timeoutMs,
+      signal,
+    );
+  }
+
+  async getReferences(
+    filePath: string,
+    position: LspPosition,
+    includeDeclaration: boolean,
+    cwd: string,
+    timeoutMs: number,
+    signal?: AbortSignal,
+  ): Promise<LspLocation[]> {
+    return (
+      (await this.sendTextDocumentRequest<LspLocation[] | null>(
+        "textDocument/references",
+        filePath,
+        cwd,
+        {
+          position,
+          context: { includeDeclaration },
+        },
+        timeoutMs,
+        signal,
+      )) ?? []
+    );
+  }
+
+  async renameSymbol(
+    filePath: string,
+    position: LspPosition,
+    newName: string,
+    cwd: string,
+    timeoutMs: number,
+    signal?: AbortSignal,
+  ): Promise<LspWorkspaceEdit | null> {
+    return this.sendTextDocumentRequest<LspWorkspaceEdit | null>(
+      "textDocument/rename",
+      filePath,
+      cwd,
+      {
+        position,
+        newName,
+      },
+      timeoutMs,
+      signal,
     );
   }
 

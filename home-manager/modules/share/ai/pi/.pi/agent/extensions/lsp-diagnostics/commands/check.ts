@@ -4,40 +4,14 @@
 import type {
   ExtensionContext,
   ExtensionAPI,
-} from "@mariozechner/pi-coding-agent";
+} from "@earendil-works/pi-coding-agent";
 import * as path from "node:path";
 import * as fs from "node:fs";
 import type { LspClientEntry, SavedConfig } from "../types.js";
 import { LSP_SERVERS_CONFIG } from "../lsp-servers.js";
-import type { ResolvedLspCommand } from "../resolver.js";
-import { resolveLspCommands } from "../resolver.js";
 import { collectDiagnostics } from "../collector.js";
+import { resolveTargetContext } from "../targets.js";
 import { formatDiagnostics } from "../ui/format.js";
-
-const IGNORED_DIRS = new Set([
-  "node_modules",
-  ".git",
-  "dist",
-  "build",
-  ".next",
-]);
-
-function collectFiles(dir: string): string[] {
-  const files: string[] = [];
-  try {
-    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-      const fullPath = path.join(dir, entry.name);
-      if (entry.isDirectory() && !IGNORED_DIRS.has(entry.name)) {
-        files.push(...collectFiles(fullPath));
-      } else if (entry.isFile()) {
-        files.push(fullPath);
-      }
-    }
-  } catch {
-    // Skip directories we can't read
-  }
-  return files;
-}
 
 /**
  * Check diagnostics for a file or directory.
@@ -62,43 +36,26 @@ export async function handleCheck(
     return;
   }
 
-  const stat = fs.statSync(targetPath);
-  const filesToCheck = stat.isDirectory()
-    ? collectFiles(targetPath)
-    : [targetPath];
+  const resolvedTarget = resolveTargetContext(
+    input,
+    ctx.cwd,
+    savedConfig,
+    fileConfig,
+  );
+  const filesToCheck = resolvedTarget.files;
 
   if (filesToCheck.length === 0) {
-    ctx.ui.notify("No files found to check", "warning");
+    ctx.ui.notify("No supported files found to check", "warning");
     return;
   }
 
-  // Collect unique resolved LSP servers across all files.
-  // We gather one entry per distinct server command so that collectDiagnostics
-  // can fan-out to ALL matching servers in a single Promise.all, keeping the
-  // widget in sync for every server simultaneously.
-  const serverMap = new Map<string, ResolvedLspCommand>();
-  for (const file of filesToCheck) {
-    const resolved = resolveLspCommands(
-      [file],
-      undefined,
-      savedConfig,
-      fileConfig,
-    );
-    for (const resolvedServer of resolved) {
-      const serverKey = resolvedServer.command.join(" ");
-      if (!serverMap.has(serverKey)) {
-        serverMap.set(serverKey, resolvedServer);
-      }
-    }
-  }
-
-  if (serverMap.size === 0) {
+  if (resolvedTarget.commands.length === 0) {
     ctx.ui.notify("No LSP servers configured for these files", "warning");
     return;
   }
 
   ctx.ui.notify(
-    `Checking diagnostics for ${filesToCheck.length} file(s) with ${serverMap.size} server(s)...`,
+    `Checking diagnostics for ${filesToCheck.length} file(s) with ${resolvedTarget.commands.length} server(s)...`,
     "info",
   );
 
@@ -106,7 +63,7 @@ export async function handleCheck(
   // widget entries alive concurrently (syncLspServers sees the full list).
   const { merged } = await collectDiagnostics(
     filesToCheck,
-    [...serverMap.values()],
+    resolvedTarget.commands,
     lspClients,
     ctx,
   );

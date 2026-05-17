@@ -1,7 +1,7 @@
 /**
  * Manually shut down one or all active LSP server(s)
  */
-import type { ExtensionContext } from "@mariozechner/pi-coding-agent";
+import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
 import type { LspClientEntry } from "../types.js";
 import { clearWidget, LSP_ICON } from "../ui/widget.js";
 

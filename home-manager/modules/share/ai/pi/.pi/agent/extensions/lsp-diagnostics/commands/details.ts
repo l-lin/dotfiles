@@ -1,8 +1,8 @@
 /**
  * Show detailed debug info for all active LSP server(s) in an interactive TUI
  */
-import type { ExtensionContext } from "@mariozechner/pi-coding-agent";
-import type { TUI } from "@mariozechner/pi-tui";
+import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
+import type { TUI } from "@earendil-works/pi-tui";
 import type { LspClientEntry } from "../types.js";
 import { LspDetailsComponent } from "../ui/details.js";
 

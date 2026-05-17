@@ -9,6 +9,7 @@ import { fileUriToPath } from "../resolver.js";
 export function formatDiagnostics(
   allDiagnostics: Map<string, LspDiagnostic[]>,
   cwd: string,
+  options: { includeCleanFiles?: boolean } = {},
 ): {
   text: string;
   errorCount: number;
@@ -26,7 +27,9 @@ export function formatDiagnostics(
     const relPath = path.relative(cwd, fileUriToPath(uri));
 
     if (diagnostics.length === 0) {
-      lines.push(`${relPath}: no diagnostics`);
+      if (options.includeCleanFiles) {
+        lines.push(`${relPath}: no diagnostics`);
+      }
       continue;
     }
 
@@ -60,7 +63,7 @@ import {
   truncateHead,
   DEFAULT_MAX_BYTES,
   DEFAULT_MAX_LINES,
-} from "@mariozechner/pi-coding-agent";
+} from "@earendil-works/pi-coding-agent";
 
 export function buildDiagnosticBlock(
   diagnostics: Map<string, LspDiagnostic[]>,
