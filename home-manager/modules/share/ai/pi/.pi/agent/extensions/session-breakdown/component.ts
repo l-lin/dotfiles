@@ -4,7 +4,7 @@ import {
   visibleWidth,
   type Component,
   type TUI,
-} from "@mariozechner/pi-tui";
+} from "@earendil-works/pi-tui";
 import type { BreakdownData, BreakdownView, MeasurementMode } from "./types.js";
 import { RANGE_DAYS } from "./constants.js";
 import { toLocalDayKey } from "./date-utils.js";

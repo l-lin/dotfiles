@@ -1,5 +1,5 @@
 import { dirname, basename } from "path";
-import type { ExtensionContext } from "@mariozechner/pi-coding-agent";
+import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
 import type { ActivatedSkill } from "./types.js";
 import { SKILL_MD_FILENAME } from "./types.js";
 

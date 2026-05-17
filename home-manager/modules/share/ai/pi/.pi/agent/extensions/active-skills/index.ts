@@ -4,8 +4,8 @@
  * Watches for read tool calls that load a SKILL.md file and displays a widget
  * below the editor listing every skill activated in the current session.
  */
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
-import { isReadToolResult } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import { isReadToolResult } from "@earendil-works/pi-coding-agent";
 import { SkillTracker, isSkillPath } from "./tracker.js";
 import { updateSkillWidget, clearSkillWidget } from "./widget.js";
 

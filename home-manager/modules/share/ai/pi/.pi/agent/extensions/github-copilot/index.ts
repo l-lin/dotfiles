@@ -10,7 +10,7 @@
 import type {
   ExtensionAPI,
   ExtensionContext,
-} from "@mariozechner/pi-coding-agent";
+} from "@earendil-works/pi-coding-agent";
 import { getOAuthToken } from "./auth.js";
 import { fetchUsage, fetchCopilotModels } from "./api.js";
 import { loadSettings, saveSettings } from "./settings.js";

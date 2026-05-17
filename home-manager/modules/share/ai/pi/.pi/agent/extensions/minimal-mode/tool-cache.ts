@@ -6,7 +6,7 @@ import {
   createLsToolDefinition,
   createReadToolDefinition,
   createWriteToolDefinition,
-} from "@mariozechner/pi-coding-agent";
+} from "@earendil-works/pi-coding-agent";
 
 type BuiltInToolFactories = {
   bash: typeof createBashToolDefinition;

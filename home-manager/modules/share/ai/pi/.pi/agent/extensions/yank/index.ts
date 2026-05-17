@@ -5,7 +5,7 @@
  * Listens for message_end events and caches the last assistant message text.
  * Call /yank to push it to pbcopy.
  */
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { spawn } from "node:child_process";
 
 function extractTextFromMessage(message: unknown): string | undefined {

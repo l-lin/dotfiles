@@ -2,7 +2,7 @@
 // GitHub Copilot Extension — Usage Widget Rendering
 // ============================================================================
 
-import type { ExtensionContext } from "@mariozechner/pi-coding-agent";
+import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
 import type { AuthStatus, UsageData } from "./types.js";
 
 export const WIDGET_ID = "copilot-usage";

@@ -11,7 +11,7 @@
  * src: https://github.com/badlogic/pi-mono/blob/3a3e37d39014acc4269171be2a51518f6a71be1f/packages/coding-agent/examples/extensions/minimal-mode.ts
  */
 
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { Clone } from "typebox/value";
 import { renderReadResult } from "./renders.js";
 import { type BuiltInTools, getBuiltInTools } from "./tool-cache.js";

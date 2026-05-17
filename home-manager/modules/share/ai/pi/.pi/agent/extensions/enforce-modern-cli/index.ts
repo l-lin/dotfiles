@@ -13,8 +13,8 @@ import type {
   ExtensionAPI,
   ExtensionContext,
   ToolCallEvent,
-} from "@mariozechner/pi-coding-agent";
-import { isToolCallEventType } from "@mariozechner/pi-coding-agent";
+} from "@earendil-works/pi-coding-agent";
+import { isToolCallEventType } from "@earendil-works/pi-coding-agent";
 
 interface BlockedTool {
   /** Regex that matches the forbidden usage in a bash command */

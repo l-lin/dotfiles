@@ -18,7 +18,7 @@ import type {
   ExtensionCommandContext,
   ExtensionContext,
   ToolResultEvent,
-} from "@mariozechner/pi-coding-agent";
+} from "@earendil-works/pi-coding-agent";
 import path from "node:path";
 import { loadSettings } from "../subagent/settings.js";
 import { discoverAgents } from "../subagent/agents.js";

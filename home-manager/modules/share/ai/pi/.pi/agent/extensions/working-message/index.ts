@@ -4,7 +4,7 @@
  * src: https://github.com/mitsuhiko/agent-stuff/blob/7495ba7e5280e997a018e1c4e28cf29a635e9179/pi-extensions/whimsical.ts
  * Adapted to add my own verbs.
  */
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 const messages = [
   "Reluctantly executing...",

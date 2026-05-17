@@ -4,15 +4,15 @@
  *   - Snippet trigger autocomplete ($date, $tdd, ?q, …)
  */
 
-import { CustomEditor } from "@mariozechner/pi-coding-agent";
+import { CustomEditor } from "@earendil-works/pi-coding-agent";
 import {
   Key,
   matchesKey,
   parseKey,
   truncateToWidth,
   visibleWidth,
-} from "@mariozechner/pi-tui";
-import type { AutocompleteProvider } from "@mariozechner/pi-tui";
+} from "@earendil-works/pi-tui";
+import type { AutocompleteProvider } from "@earendil-works/pi-tui";
 
 import { withSnippets } from "./snippets.js";
 import { SNIPPETS } from "../snippet/snippets.js";

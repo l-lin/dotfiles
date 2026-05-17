@@ -4,7 +4,7 @@ import {
   visibleWidth,
   type Component,
   type TUI,
-} from "@mariozechner/pi-tui";
+} from "@earendil-works/pi-tui";
 import { getOrderedModelsForSkill } from "./aggregation.js";
 import { RANGE_DAYS } from "./constants.js";
 import { renderBreakdownBody } from "./renderer.js";

@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { matchesKey, type KeyId } from "@mariozechner/pi-tui";
-import type { KeybindingsManager } from "@mariozechner/pi-coding-agent";
+import { matchesKey, type KeyId } from "@earendil-works/pi-tui";
+import type { KeybindingsManager } from "@earendil-works/pi-coding-agent";
 import { computeSkillBreakdown } from "./aggregation.js";
 import type { SkillBreakdownData } from "./types.js";
 

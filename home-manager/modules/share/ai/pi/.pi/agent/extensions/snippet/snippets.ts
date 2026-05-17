@@ -124,6 +124,6 @@ export const SNIPPETS: SnippetDef[] = [
   {
     trigger: "$commit",
     description: "Commit changes",
-    expansion: "Use conventional commit for each task/fix implemented."
-  }
+    expansion: "Use conventional commit for each task/fix implemented.",
+  },
 ];

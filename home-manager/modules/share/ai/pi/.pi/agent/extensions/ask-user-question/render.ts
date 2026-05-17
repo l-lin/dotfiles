@@ -5,8 +5,8 @@ import type {
   Theme,
   ThemeColor,
   ToolRenderResultOptions,
-} from "@mariozechner/pi-coding-agent";
-import { Text } from "@mariozechner/pi-tui";
+} from "@earendil-works/pi-coding-agent";
+import { Text } from "@earendil-works/pi-tui";
 import type { Question, Result } from "./types.js";
 
 /**

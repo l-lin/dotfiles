@@ -1,4 +1,4 @@
-import { Key, matchesKey, visibleWidth } from "@mariozechner/pi-tui";
+import { Key, matchesKey, visibleWidth } from "@earendil-works/pi-tui";
 
 // ANSI helpers — attribute-specific resets to allow nesting
 export const dim = (s: string): string => `\x1b[2m${s}\x1b[22m`;

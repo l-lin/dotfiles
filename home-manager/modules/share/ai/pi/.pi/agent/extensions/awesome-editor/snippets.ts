@@ -8,7 +8,7 @@
 import type {
   AutocompleteItem,
   AutocompleteProvider,
-} from "@mariozechner/pi-tui";
+} from "@earendil-works/pi-tui";
 import { SNIPPETS } from "../snippet/snippets.js";
 
 type RuntimeAutocompleteOptions = {

@@ -1,9 +1,9 @@
 import type {
   EditToolDetails,
   ToolRenderResultOptions,
-} from "@mariozechner/pi-coding-agent";
-import { renderDiff } from "@mariozechner/pi-coding-agent";
-import { Component, Text } from "@mariozechner/pi-tui";
+} from "@earendil-works/pi-coding-agent";
+import { renderDiff } from "@earendil-works/pi-coding-agent";
+import { Component, Text } from "@earendil-works/pi-tui";
 import { type BuiltInTools, getBuiltInTools } from "./tool-cache.js";
 
 /** Returns a collapsed count summary (e.g. "→ 5 files") or empty text. */

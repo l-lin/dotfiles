@@ -10,8 +10,8 @@
  *
  * src: https://github.com/disler/pi-vs-claude-code/blob/46f15dbb09067fc3287b55949e93ed4d0625c4d2/extensions/damage-control.ts
  */
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
-import { isToolCallEventType } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import { isToolCallEventType } from "@earendil-works/pi-coding-agent";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";

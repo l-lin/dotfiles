@@ -21,8 +21,8 @@
 import type {
   ExtensionAPI,
   ExtensionContext,
-} from "@mariozechner/pi-coding-agent";
-import { BorderedLoader } from "@mariozechner/pi-coding-agent";
+} from "@earendil-works/pi-coding-agent";
+import { BorderedLoader } from "@earendil-works/pi-coding-agent";
 import type { BreakdownData, BreakdownProgressState } from "./types.js";
 import { formatCount } from "./color-utils.js";
 import { computeBreakdown } from "./aggregation.js";

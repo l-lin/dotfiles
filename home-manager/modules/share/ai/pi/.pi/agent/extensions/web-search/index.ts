@@ -9,7 +9,7 @@
  * State is persisted to ~/.pi/agent/settings.json under extensionSettings.webSearch.
  */
 
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { searchTavily } from "./api.js";
 import { formatResultsAsMarkdown } from "./format.js";
 import * as render from "./render.js";

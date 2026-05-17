@@ -2,7 +2,7 @@
  * Data gathering functions
  */
 
-import type { Theme } from "@mariozechner/pi-coding-agent";
+import type { Theme } from "@earendil-works/pi-coding-agent";
 import { TOOL_ORDER, TOOL_ICONS, ICONS } from "./constants.js";
 import { getToolStatus } from "./settings.js";
 import { formatTokens } from "./formatting.js";

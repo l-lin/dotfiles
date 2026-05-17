@@ -5,7 +5,7 @@
  * ~/.pi/agent/settings.json under extensionSettings.webFetch.
  */
 
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { executeFetch } from "./fetch.js";
 import * as render from "./render.js";
 import { DEFAULT_MAX_LENGTH, WebFetchParams } from "./types.js";

@@ -1,7 +1,7 @@
 import type {
   ExtensionCommandContext,
   ExtensionContext,
-} from "@mariozechner/pi-coding-agent";
+} from "@earendil-works/pi-coding-agent";
 import type { SkillLoadedEntryData, SkillIndexEntry } from "./types.js";
 import { SKILL_LOADED_ENTRY } from "./types.js";
 

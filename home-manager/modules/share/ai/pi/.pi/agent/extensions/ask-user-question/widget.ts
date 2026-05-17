@@ -8,7 +8,7 @@ import {
   matchesKey,
   truncateToWidth,
   wrapTextWithAnsi,
-} from "@mariozechner/pi-tui";
+} from "@earendil-works/pi-tui";
 import type { Answer, Question, Result } from "./types.js";
 
 /**

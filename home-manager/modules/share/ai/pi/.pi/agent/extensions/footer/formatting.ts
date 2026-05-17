@@ -2,7 +2,7 @@
  * Formatting and color utilities
  */
 
-import type { Theme } from "@mariozechner/pi-coding-agent";
+import type { Theme } from "@earendil-works/pi-coding-agent";
 import type { ThinkingLevel } from "./constants.js";
 
 export function formatTokens(count: number): string {

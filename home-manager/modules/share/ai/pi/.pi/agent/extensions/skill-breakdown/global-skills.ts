@@ -1,6 +1,6 @@
 import os from "node:os";
 import path from "node:path";
-import { loadSkillsFromDir } from "@mariozechner/pi-coding-agent";
+import { loadSkillsFromDir } from "@earendil-works/pi-coding-agent";
 import type { SkillName } from "./types.js";
 
 export function getGlobalUserSkillsRoot(): string {

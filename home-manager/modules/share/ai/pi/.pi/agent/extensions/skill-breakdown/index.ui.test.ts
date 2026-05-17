@@ -18,7 +18,7 @@ import {
 test("extension GIVEN interactive mode and custom search keybindings WHEN navigating fuzzy matches THEN the selected search result follows those keybindings", async (t) => {
   const tempHome = given_tempHome(t);
   const sessionRoot = path.join(tempHome, ".pi", "agent", "sessions");
-  const now = new Date();
+  const now = new Date("2026-04-11T12:00:00.000Z");
 
   given_sessionFile({
     root: sessionRoot,

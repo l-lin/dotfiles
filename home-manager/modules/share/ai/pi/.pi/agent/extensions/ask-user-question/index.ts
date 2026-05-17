@@ -7,7 +7,7 @@
  * - use keymaps from keybindings.json instead of hard coded keymaps (arrows, Esc, Enter)
  */
 
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { error, QuestionnaireParams } from "./types.js";
 import type { Question, QuestionnaireInput, Result } from "./types.js";
 import { renderCall, renderResult } from "./render.js";

@@ -4,9 +4,9 @@
  * Uses the factory form of setWidget so the component is registered once and
  * renders dynamically without rebuilding the widget container on every update.
  */
-import type { ExtensionContext } from "@mariozechner/pi-coding-agent";
-import type { TUI } from "@mariozechner/pi-tui";
-import { truncateToWidth } from "@mariozechner/pi-tui";
+import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
+import type { TUI } from "@earendil-works/pi-tui";
+import { truncateToWidth } from "@earendil-works/pi-tui";
 import type { ActivatedSkill } from "./types.js";
 import { ICON_SKILL } from "./types.js";
 

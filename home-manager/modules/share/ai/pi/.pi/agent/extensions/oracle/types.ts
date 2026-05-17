@@ -1,4 +1,4 @@
-import type { Model, Api } from "@mariozechner/pi-ai";
+import type { Model, Api } from "@earendil-works/pi-ai";
 
 export const ORACLE_MODELS = [
   { provider: "github-copilot", model: "gpt-4o", name: "GPT-4o" },

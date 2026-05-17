@@ -6,7 +6,7 @@
  * LLM time and tool execution times.
  */
 
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 interface ToolTiming {
   name: string;

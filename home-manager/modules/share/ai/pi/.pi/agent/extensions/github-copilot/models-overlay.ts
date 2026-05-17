@@ -16,9 +16,9 @@ import {
   matchesKey,
   truncateToWidth,
   visibleWidth,
-} from "@mariozechner/pi-tui";
-import type { Component, TUI } from "@mariozechner/pi-tui";
-import type { ExtensionContext } from "@mariozechner/pi-coding-agent";
+} from "@earendil-works/pi-tui";
+import type { Component, TUI } from "@earendil-works/pi-tui";
+import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
 import type { CopilotModel } from "./types.js";
 
 type Theme = ExtensionContext["ui"]["theme"];

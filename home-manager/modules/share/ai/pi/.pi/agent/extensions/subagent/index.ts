@@ -5,14 +5,14 @@
  * file-based IPC + fs.watch that auto-triggers the main agent.
  */
 
-import { StringEnum } from "@mariozechner/pi-ai";
+import { StringEnum } from "@earendil-works/pi-ai";
 import type {
   ExtensionAPI,
   ExtensionContext,
   Theme,
   ThemeColor,
-} from "@mariozechner/pi-coding-agent";
-import { truncateToWidth } from "@mariozechner/pi-tui";
+} from "@earendil-works/pi-coding-agent";
+import { truncateToWidth } from "@earendil-works/pi-tui";
 import { Type, type Static } from "typebox";
 import { discoverAgents } from "./agents.js";
 import { loadSettings } from "./settings.js";

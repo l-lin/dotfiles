@@ -6,8 +6,8 @@ import type {
   ExtensionAPI,
   ReadonlyFooterDataProvider,
   Theme,
-} from "@mariozechner/pi-coding-agent";
-import { truncateToWidth, visibleWidth } from "@mariozechner/pi-tui";
+} from "@earendil-works/pi-coding-agent";
+import { truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
 import { ICONS, type ThinkingLevel } from "./constants.js";
 import {
   formatCurrentDirectory,

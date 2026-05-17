@@ -1,7 +1,7 @@
 /** Rendering for subagent tool calls, results, and notifications */
 
-import { getMarkdownTheme } from "@mariozechner/pi-coding-agent";
-import { Box, Container, Markdown, Spacer, Text } from "@mariozechner/pi-tui";
+import { getMarkdownTheme } from "@earendil-works/pi-coding-agent";
+import { Box, Container, Markdown, Spacer, Text } from "@earendil-works/pi-tui";
 import { Action, ICONS } from "./types.js";
 import type { SubagentDetails } from "./types.js";
 

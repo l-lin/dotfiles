@@ -12,8 +12,8 @@
 import type {
   ExtensionAPI,
   ExtensionContext,
-} from "@mariozechner/pi-coding-agent";
-import { Text } from "@mariozechner/pi-tui";
+} from "@earendil-works/pi-coding-agent";
+import { Text } from "@earendil-works/pi-tui";
 import { executeOracle, showModelPicker } from "./execute.js";
 import { type AvailableModel, ORACLE_MODELS } from "./types.js";
 

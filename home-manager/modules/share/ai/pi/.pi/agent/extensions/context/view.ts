@@ -3,7 +3,7 @@ import {
   truncateToWidth,
   visibleWidth,
   type Component,
-} from "@mariozechner/pi-tui";
+} from "@earendil-works/pi-tui";
 import type { ContextViewData } from "./types.js";
 import {
   SYSTEM_FG,
