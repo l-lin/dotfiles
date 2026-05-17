@@ -15,9 +15,6 @@ This directory contains local Pi extensions and one shared support module. Each 
 | [`github-copilot`](./github-copilot/)                 | Shows Copilot premium usage and adds commands for refreshing usage and browsing Copilot models.                                                   |
 | [`lsp`](./lsp/)                                       | Adds an on-demand LSP tool for diagnostics, symbol search, go-to-definition, references, and semantic rename.                                     |
 | [`minimal-mode`](./minimal-mode/)                     | Re-renders the built-in `read` tool in a compact view and removes `find`, `grep`, and `ls` from minimal-mode sessions.                            |
-| [`model-switcher`](./model-switcher/)                 | Rotates through configured models with a command and keyboard shortcut.                                                                           |
-| [`oracle`](./oracle/)                                 | Gets a second opinion from another AI model, optionally with files in context.                                                                    |
-| [`plan-mode`](./plan-mode/)                           | Adds a read-only planning mode with safe Bash limits, todo tracking, and progress UI.                                                             |
 | [`pre-tool-safety`](./pre-tool-safety/)               | Calls an external safety hook before risky Bash commands or sensitive file reads.                                                                 |
 | [`sandbox`](./sandbox/)                               | Wraps bash commands in OS-level sandboxing (macOS sandbox-exec, Linux bubblewrap) with configurable filesystem and network restrictions.          |
 | [`session-breakdown`](./session-breakdown/)           | Analyzes Pi session history and shows activity, token, cost, and model trends in a TUI view.                                                      |
