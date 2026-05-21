@@ -40,29 +40,8 @@
     ],
     "deny": []
   },
-  "model": "opus[1m]",
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "pi-sidekick hook session-start --registry .sandbox/session.json"
-          }
-        ]
-      }
-    ],
-    "PermissionRequest": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "pi-sidekick hook permission-request --registry .sandbox/session.json"
-          }
-        ]
-      }
-    ]
-  },
+  "model": "sonnet[1m]",
+  "hooks": {},
   "statusLine": {
     "type": "command",
     "command": "$HOME/.claude/cc_statusline.rb",
@@ -76,7 +55,7 @@
   },
   "effortLevel": "high",
   "showClearContextOnPlanAccept": true,
+  "tui": "fullscreen",
   "theme": "light",
-  "autoCompactEnabled": false,
-  "tui": "fullscreen"
+  "autoCompactEnabled": false
 }
