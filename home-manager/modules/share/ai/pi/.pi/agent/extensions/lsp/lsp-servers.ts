@@ -179,5 +179,15 @@ export const LSP_SERVERS_CONFIG: LspDiagnosticsFileConfig = {
         },
       },
     },
+
+    // ── Golang ────────────────────────────────────────────────────────────────────
+    // official Go language server developed by the Go team. It provides IDE features
+    // to any LSP-compatible editor.
+    gopls: {
+      enabled: true,
+      command: "gopls",
+      fileTypes: [".go"],
+      rootMarkers: ["go.mod", ".git"],
+    },
   },
 };
