@@ -9,7 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@earendil-works/pi-coding-agent": "0.74.0"
+    "@earendil-works/pi-coding-agent": "0.75.4"
   },
   "devDependencies": {
     "prettier": "^3.8.1",
