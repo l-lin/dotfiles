@@ -96,7 +96,7 @@
       # Knowledge base that works on top of a local folder of plain text Markdown files: https://obsidian.md/
       "obsidian"
       # Get up and running with large language models locally: https://github.com/ollama/ollama
-      "ollama-app"
+      #"ollama-app"
       # Open-source colour picker app for macOS: https://superhighfives.com/pika
       "pika"
       # Music streaming service: https://www.spotify.com/https://www.spotify.com/
