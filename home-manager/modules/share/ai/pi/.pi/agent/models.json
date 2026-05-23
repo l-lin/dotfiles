@@ -1,5 +1,15 @@
 {
   "providers": {
+    "llama-cpp": {
+      "baseUrl": "http://localhost:11435/v1",
+      "api": "openai-completions",
+      "apiKey": "none",
+      "models": [
+        {
+          "id": "unsloth/gemma-4-26B-A4B-it-GGUF:UD-Q4_K_M"
+        }
+      ]
+    },
     "mlx-lm": {
       "baseUrl": "http://localhost:18080/v1",
       "api": "openai-completions",
