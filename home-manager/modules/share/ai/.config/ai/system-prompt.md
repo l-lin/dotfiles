@@ -81,3 +81,20 @@ You have access to faster/better CLI tools. You MUST use these instead of their 
 - **Meaningful variables**: Use `actual` for results, `expected` for expectations
 - **Helper methods**: Prefix with `given_` for setup, `when_` for action, `then_` for assertions
 
+## Journaling
+
+At the start of a session, create a new journal file at `.sandbox/journals/` directory: `journal-N.md`, where N is one higher than the highest existing `journal-*.md` (start at 1 if none exist).
+
+Append an entry for every non-trivial action you take. Write it as you do the work, not as a summary at the end.
+
+Each entry should include:
+- ISO timestamp (`YYYY-MM-DD HH:MM`)
+- One-line summary
+- The exact command, if one was run, and the actual result or output (not a paraphrase)
+- Files edited and why
+- Hypotheses and whether they held up
+- Dead-ends, with a note on why the thing didn't work
+- Links read during research
+- Decisions made and the reasoning behind them
+
+Before starting new work, or after a context compaction, read the current journal to orient yourself. If this is a fresh attempt at a task you've tried before, skim the previous `journal-*.md` files too.
