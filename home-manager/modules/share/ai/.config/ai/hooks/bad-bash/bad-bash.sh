@@ -9,17 +9,7 @@ set -eu pipefail
 
 cmd=$(jq -r '.tool_input.command // ""')
 
-# Rule 1: `cd <subdir> && git ...`
-if printf '%s' "$cmd" | grep -qE '^[[:space:]]*cd[[:space:]]+[^&]+&&[[:space:]]*git([[:space:]]|$)'; then
-  {
-    echo "Blocked:"
-    echo "  Pattern \`cd <path> && git ...\` triggers a permission prompt."
-    echo "  Use \`git -C <path> <args>\` instead, and split into separate Bash calls (run independent ones in parallel)."
-  } >&2
-  exit 2
-fi
-
-# Rule 2: 3+ commands chained with `&&` (i.e. 2+ `&&` operators)
+# Rule: 3+ commands chained with `&&` (i.e. 2+ `&&` operators)
 amp_count=$(printf '%s' "$cmd" | grep -oE '&&' | wc -l | tr -d '[:space:]' || echo 0)
 if [ "${amp_count:-0}" -ge 2 ]; then
   {
