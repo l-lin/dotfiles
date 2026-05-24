@@ -6,7 +6,7 @@
   imports = [
     ./claude-code
     ./dust
-    ./mlx
+    #./mlx
     ./ollama
     #./opencode
     ./openspec
