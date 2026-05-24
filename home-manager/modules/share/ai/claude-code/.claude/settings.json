@@ -41,7 +41,15 @@
     "deny": []
   },
   "model": "sonnet[1m]",
-  "hooks": {},
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": "Bash",
+      "hooks": [{
+        "type": "command",
+        "command": "$HOME/.config/ai/hooks/bad-bash/bad-bash.sh"
+      }]
+    }]
+  },
   "statusLine": {
     "type": "command",
     "command": "$HOME/.claude/cc_statusline.rb",
@@ -51,7 +59,8 @@
     "code-simplifier@claude-plugins-official": true,
     "doctolib-productivity@doctolib": true,
     "doctolib-c3@doctolib": true,
-    "claude-md-management@claude-plugins-official": true
+    "claude-md-management@claude-plugins-official": true,
+    "doctolib-analytics-agent@doctolib": true
   },
   "effortLevel": "high",
   "showClearContextOnPlanAccept": true,
