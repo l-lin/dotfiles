@@ -36,50 +36,11 @@ You have access to faster/better CLI tools. You MUST use these instead of their 
 
 ## Development Principles
 
-- **Problem-Solving Focus**: Code to solve problems, not to demonstrate programming knowledge.
-- **Verification Over Assumption**: "Should work" != "does work": Always verify through testing.
-- **TDD First**: Use red/green TDD.
-- **Simplicity First**: Simple solutions that work are better than complex ones that might work.
-
-### Code Quality Standards
-
-#### Simplicity & Maintainability (MUST)
-
-- **Prefer simple solutions**: Use SOLID principles pragmatically, not religiously
-- **Eliminate duplication**: Check for similar code/functionality before implementing
-- **Keep files manageable**: Refactor when files exceed 200-300 lines
-- **Follow existing patterns**: Check codebase conventions before introducing new dependencies
-
-#### Naming & Constants (MUST)
-
+- **TDD First**: Use red/green TDD. Tests define requirements; clarify behavior by adjusting tests, not guessing
+- **Verify don't assume**: "Should work" ≠ "does work". Always verify through testing
+- **BDD structure**: Tests use GIVEN/WHEN/THEN. Variables: `actual` for results, `expected` for expectations. Helpers: `given_`/`when_`/`then_` prefixes
 - **Use meaningful names**: Variables, functions, classes should reveal their purpose
-- **Replace magic numbers**: Use named constants with descriptive names
-- **Avoid abbreviations** unless universally understood
-- **Keep constants organized**: At file top or in dedicated constants file
-
-#### Documentation (SHOULD)
-
-- **Don't comment the obvious**: Make code self-documenting
-- **Explain the why**: Use comments for reasoning, not descriptions
-- **Document complexity**: APIs, algorithms, and non-obvious side effects
-
-### Development Workflow
-
-#### Scope Management (MUST)
-
-- **Focus on relevant code**: Only touch code related to the task
-- **Understand before changing**: Make changes you're confident about
-- **Exhaust existing options**: Don't introduce new patterns without trying existing implementation first
-- **Clean up after yourself**: Remove old implementation when introducing new patterns
-
-#### Test-Driven Development (MUST)
-
-- **Tests define requirements**: If behavior is unclear, clarify by adding/adjusting tests rather than guessing
-- **Use BDD methodology**: Structure tests with clear GIVEN, WHEN, THEN sections
-- **Descriptive test names**: Test names should describe the scenario and expected outcome
-- **Isolate tests**: Each test should focus on a single behavior
-- **Meaningful variables**: Use `actual` for results, `expected` for expectations
-- **Helper methods**: Prefix with `given_` for setup, `when_` for action, `then_` for assertions
+- **Explain the why**: Use comments for reasoning, not descriptions, don't comment the obvious
 
 ## Journaling
 
@@ -88,7 +49,7 @@ At the start of a session, create a new journal file at `.sandbox/journals/` dir
 Append an entry for every non-trivial action you take. Write it as you do the work, not as a summary at the end.
 
 Each entry should include:
-- ISO timestamp (`YYYY-MM-DD HH:MM`)
+- ISO timestamp (`YYYY-MM-DD HH:MM`, use `date '+%F %H:%M'` to get this information)
 - One-line summary
 - The exact command, if one was run, and the actual result or output (not a paraphrase)
 - Files edited and why
@@ -98,3 +59,7 @@ Each entry should include:
 - Decisions made and the reasoning behind them
 
 Before starting new work, or after a context compaction, read the current journal to orient yourself. If this is a fresh attempt at a task you've tried before, skim the previous `journal-*.md` files too.
+
+## Napkin
+
+At session start, read and curate runbook `.sandbox/napkin.md` (not a log). Apply its contents silently. The `napkin` skill manages the full format and curation policy.
