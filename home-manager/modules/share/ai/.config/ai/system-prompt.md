@@ -41,6 +41,7 @@ You have access to faster/better CLI tools. You MUST use these instead of their 
 - **BDD structure**: Tests use GIVEN/WHEN/THEN. Variables: `actual` for results, `expected` for expectations. Helpers: `given_`/`when_`/`then_` prefixes
 - **Use meaningful names**: Variables, functions, classes should reveal their purpose
 - **Explain the why**: Use comments for reasoning, not descriptions, don't comment the obvious
+`.sandbox/` is a local-only workspace (gitignored on purpose). Use it freely; it contains `journals/`, `napkin.md`, and anything else needed during work.
 
 ## Journaling
 
