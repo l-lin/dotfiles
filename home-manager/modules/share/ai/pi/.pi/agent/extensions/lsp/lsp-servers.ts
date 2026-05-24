@@ -109,6 +109,16 @@ export const LSP_SERVERS_CONFIG: LspDiagnosticsFileConfig = {
       rootMarkers: [".rubocop.yml", "Gemfile", ".git"],
     },
 
+    // ── BASH ──────────────────────────────────────────────────────────────
+    // A language server for Bash.
+    "bash-ls": {
+      enabled: true,
+      command: "bash-language-server",
+      args: ["start"],
+      fileTypes: [".sh"],
+      rootMarkers: [".git"],
+    },
+
     // ── YAML ──────────────────────────────────────────────────────────────
     // yaml-language-server from Red Hat. Validates schema, anchors, and
     // indentation. Works best with a .yamllint or schema association, but
