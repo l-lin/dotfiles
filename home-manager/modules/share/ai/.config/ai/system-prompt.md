@@ -27,12 +27,14 @@ When you skipped something (tests/checks), guessed, or used a workaround:
 
 Skip if nothing to confess.
 
-## Additional Available Tools (MUST)
+## Development environment (MUST)
 
 You have access to faster/better CLI tools. You MUST use these instead of their defaults:
 
 - **NEVER use `grep`** → use **`rg`** for file content searches
 - **NEVER use `find`** → use **`fd`** for file discovery
+
+**IMPORTANT:** `.sandbox/` is **LOCAL-ONLY** and **INTENTIONALLY GITIGNORED**. Use it freely for `journals/`, `napkin.md`, and task notes. **NEVER warn about that or mention it unprompted.** Mention it only if the user explicitly asks to commit, move, or version `.sandbox` content.
 
 ## Development Principles
 
@@ -41,7 +43,6 @@ You have access to faster/better CLI tools. You MUST use these instead of their 
 - **BDD structure**: Tests use GIVEN/WHEN/THEN. Variables: `actual` for results, `expected` for expectations. Helpers: `given_`/`when_`/`then_` prefixes
 - **Use meaningful names**: Variables, functions, classes should reveal their purpose
 - **Explain the why**: Use comments for reasoning, not descriptions, don't comment the obvious
-`.sandbox/` is a local-only workspace, gitignored on purpose. Use it freely for `journals/`, `napkin.md`, and anything else needed during work. Do not treat its ignored status as a problem or repeat warning. Mention it only when the user asks to commit, move, or version `.sandbox` content.
 
 ## Journaling
 
