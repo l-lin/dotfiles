@@ -1,26 +1,27 @@
 ---
 name: napkin
-description: Maintain a per-repo napkin as a continuously curated runbook (not a session log). Activates EVERY session. Read and curate it before work, keep only recurring high-value guidance, organize by priority-sorted categories, and cap each category at top 10 items..
+description: Use when maintaining a per-repo runbook of recurring, repo-specific guidance that is not already covered by the system prompt, AGENTS files, or the active task docs
 ---
 
 # Napkin
 
-You maintain a per-repo markdown runbook, not a chronological log. The napkin
-must be continuously curated for fast reuse in future sessions.
+Napkin is a tiny per-repo runbook, not a session log or a second `AGENTS.md`.
+
+Keep it sparse. Do not copy generic rules already covered by the system prompt, `AGENTS.md`, or the active task docs. Keep only recurring, repo-specific guidance that repeatedly saves time or avoids mistakes. The `napkin` skill manages the full format and curation policy.
 
 **This skill is always active. Every session. No trigger required.**
 
 ## Session Start: Read And Curate
 
-First thing, every session — read `.sandbox/napkin.md` before doing anything else. Internalize what's there and apply it silently. Don't announce that you read it. Just apply what you know.
+First thing each session, read `.sandbox/napkin.md` and apply it silently.
 
-Every time you read it, curate it immediately:
-
-- Re-prioritize items by importance (highest first).
-- Merge duplicates and remove stale/low-signal notes.
-- Keep only recurring, high-frequency guidance.
-- Ensure each item contains an explicit "Do instead" action.
-- Enforce category caps (top 10 per category).
+Curate it immediately after reading:
+- Re-prioritize items by importance.
+- Merge duplicates and delete stale or low-signal notes.
+- Delete notes that merely repeat the system prompt, `AGENTS.md`, README rules, or one-off task instructions.
+- Keep the file sparse. If two notes matter, keep two notes.
+- Ensure each item contains a concrete `Do instead:` action.
+- Enforce top 5 items per category.
 
 If no napkin exists yet, create one at `.sandbox/napkin.md`:
 
@@ -30,8 +31,9 @@ If no napkin exists yet, create one at `.sandbox/napkin.md`:
 ## Curation Rules
 - Re-prioritize on every read.
 - Keep recurring, high-value notes only.
-- Max 10 items per category.
+- Max 5 items per category.
 - Each item includes date + "Do instead".
+- Leave categories sparse rather than padding them.
 
 ## Execution & Validation (Highest Priority)
 1. **[YYYY-MM-DD] Short rule**
@@ -50,44 +52,44 @@ If no napkin exists yet, create one at `.sandbox/napkin.md`:
    Do instead: exactly follow this preference.
 ```
 
-Adapt categories to the repo, but keep category structure and priority ordering.
-Do not use raw journal-style entries.
+Adapt categories to the repo and keep the priority ordering. Empty categories are fine.
 
 ## Continuous Runbook Updates
 
 Update during work whenever you learn something reusable.
 
-What qualifies for inclusion:
+Add a note only if it will matter again.
 
-- Frequent gotchas or surprising behavior in this repo/toolchain.
-- User directives that affect repeated behavior.
+Good candidates:
+- Repo-specific gotchas or toolchain traps.
+- User preferences that recur across tasks.
 - Non-obvious tactics that repeatedly work.
 
-What does not qualify:
+Do not include:
+- Timeline notes or current task status.
+- Verbose postmortems.
+- Generic rules already covered elsewhere.
+- Mistake logs without a concrete `Do instead:` fix.
 
-- One-off timeline notes.
-- Verbose postmortems without reusable action.
-- Pure mistake logs without "Do instead" guidance.
+## Entry Format Requirements
 
-Entry format requirements:
-
-- Include date added (`[YYYY-MM-DD]`).
-- Include short rule title.
-- Include explicit `Do instead:` line.
-- Keep wording concise and action-oriented.
+Each entry must:
+- Include date added, `[YYYY-MM-DD]`.
+- Use a short, specific title.
+- Include an explicit `Do instead:` line.
+- Stay concise and make sense when read alone.
 
 ## Category And Priority Policy
 
 - Organize notes by category.
-- Keep each category sorted by importance descending.
-- Re-evaluate category choice and priority whenever editing.
-- Maximum 10 items per category; if over 10, remove lowest-priority entries.
+- Sort each category by importance.
+- Maximum 5 items per category.
 - Prefer fewer high-signal items over broad coverage.
+- If a category fills up, delete the weakest item.
 
 ## Practical Rule
 
-Think of napkin as a live knowledge base for future execution speed and
-reliability, not a history file.
+Treat napkin as a live runbook for recurring leverage. If it starts reading like a log or a second copy of `AGENTS.md`, trim it.
 
 ## Example Entry
 
