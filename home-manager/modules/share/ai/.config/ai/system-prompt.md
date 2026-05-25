@@ -45,7 +45,7 @@ You have access to faster/better CLI tools. You MUST use these instead of their 
 
 ## Journaling
 
-At the start of a session, create a new journal file at `.sandbox/journals/` directory: `journal-NNN.md`, where NNN is one higher than the highest existing `journal-*.md` (start at 001 if none exist).
+At the start of a session, create a new journal file at `.sandbox/journals/` directory: `journal-NNN-description.md`, where NNN is one higher than the highest existing `journal-*.md` (start at 001 if none exist), and `description` is a brief kebab-case description of the task.
 
 Append an entry for every non-trivial action you take. Write it as you do the work, not as a summary at the end.
 
