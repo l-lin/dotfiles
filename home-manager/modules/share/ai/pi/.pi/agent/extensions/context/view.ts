@@ -17,7 +17,6 @@ import {
   ICON_AGENTS,
   ICON_EXTENSIONS,
   ICON_SKILLS,
-  ICON_SUBAGENTS,
   ICON_SESSION,
 } from "./types.js";
 import { formatUsd, joinComma } from "./utils.js";
@@ -262,15 +261,6 @@ export class ContextView implements Component {
       lines.push(...wrapped);
     }
 
-    lines.push(
-      label(ICON_SUBAGENTS, `Subagents (${this.data.subagents.length}):`),
-    );
-    if (this.data.subagents.length === 0) {
-      lines.push("  " + dim("(none)"));
-    } else {
-      const wrapped = wrapItems(this.data.subagents.map(dim), maxWidth);
-      lines.push(...wrapped);
-    }
     lines.push("");
     lines.push(
       label(ICON_SESSION, "Session:") +
@@ -334,9 +324,6 @@ export function makePlainTextView(data: ContextViewData): string {
   );
   lines.push(
     `Extensions (${data.extensions.length}): ${data.extensions.length ? joinComma(data.extensions) : "(none)"}`,
-  );
-  lines.push(
-    `Subagents (${data.subagents.length}): ${data.subagents.length ? joinComma(data.subagents) : "(none)"}`,
   );
   lines.push(
     `Session: ${data.session.totalTokens.toLocaleString()} tok · ${formatUsd(data.session.totalCost)}`,

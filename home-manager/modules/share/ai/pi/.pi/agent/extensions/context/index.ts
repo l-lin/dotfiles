@@ -20,8 +20,6 @@ import type {
   ToolResultEvent,
 } from "@earendil-works/pi-coding-agent";
 import path from "node:path";
-import { loadSettings } from "../subagent/settings.js";
-import { discoverAgents } from "../subagent/agents.js";
 import type { ContextViewData, SkillIndexEntry } from "./types.js";
 import { SKILL_LOADED_ENTRY } from "./types.js";
 import {
@@ -152,15 +150,6 @@ export default function contextExtension(pi: ExtensionAPI) {
 
       const sessionUsage = sumSessionUsage(ctx);
 
-      const subagentConfig = loadSettings();
-      const { agents: discoveredAgents } = discoverAgents(
-        subagentConfig.sources,
-        ctx.cwd,
-      );
-      const subagents = discoveredAgents
-        .map((a) => a.name)
-        .sort((a, b) => a.localeCompare(b));
-
       const loadedSkills = Array.from(getLoadedSkillsFromSession(ctx)).sort(
         (a, b) => a.localeCompare(b),
       );
@@ -183,7 +172,6 @@ export default function contextExtension(pi: ExtensionAPI) {
         skills,
         skillDescTokens,
         loadedSkills,
-        subagents,
         activeToolNames,
         session: {
           totalTokens: sessionUsage.totalTokens,

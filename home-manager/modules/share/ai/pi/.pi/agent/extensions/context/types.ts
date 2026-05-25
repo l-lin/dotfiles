@@ -25,7 +25,6 @@ export type ContextViewData = {
   skills: string[];
   skillDescTokens: number;
   loadedSkills: string[];
-  subagents: string[];
   activeToolNames: string[];
   session: { totalTokens: number; totalCost: number };
 };
@@ -44,5 +43,4 @@ export const ICON_TOOLS = "";
 export const ICON_AGENTS = "󰎚";
 export const ICON_EXTENSIONS = "";
 export const ICON_SKILLS = "";
-export const ICON_SUBAGENTS = "󰚩";
 export const ICON_SESSION = "";

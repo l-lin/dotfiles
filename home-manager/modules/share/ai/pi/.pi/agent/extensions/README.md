@@ -12,13 +12,11 @@ This directory contains local Pi extensions and one shared support module. Each 
 | [`execution-timer`](./execution-timer/)               | Tracks each run and shows elapsed time with a simple tool-versus-agent breakdown.                                                                 |
 | [`footer`](./footer/)                                 | Replaces the default footer with richer status, directory, and usage lines...                                                                     |
 | [`github-copilot`](./github-copilot/)                 | Shows Copilot premium usage and adds commands for refreshing usage and browsing Copilot models.                                                   |
-| [`lsp`](./lsp/)                                       | Adds an on-demand LSP tool for diagnostics, symbol search, go-to-definition, references, and semantic rename.                                     |
 | [`minimal-mode`](./minimal-mode/)                     | Re-renders the built-in `read` tool in a compact view and removes `find`, `grep`, and `ls` from minimal-mode sessions.                            |
 | [`sandbox`](./sandbox/)                               | Wraps bash commands in OS-level sandboxing (macOS sandbox-exec, Linux bubblewrap) with configurable filesystem and network restrictions.          |
 | [`session-breakdown`](./session-breakdown/)           | Analyzes Pi session history and shows activity, token, cost, and model trends in a TUI view.                                                      |
 | [`skill-breakdown`](./skill-breakdown/)               | Analyzes Pi session history and shows top skills, less-used skills, and per-project skill summaries over the last 7, 30, or 90 days.              |
 | [`snippet`](./snippet/)                               | Expands prompt snippets before the input is sent to the agent.                                                                                    |
-| [`subagent`](./subagent/)                             | Spawns interactive Pi subagents in tmux split panes and brings their results back to the main session.                                            |
 | [`system-prompt-selector`](./system-prompt-selector/) | Lets you switch system prompts from discovered agent markdown files.                                                                              |
 | [`tool-settings`](./tool-settings/)                   | Shared helpers for enable or disable toggles and persisted extension settings. It is support infrastructure, not a user-facing feature by itself. |
 | [`web-fetch`](./web-fetch/)                           | Fetches a URL as readable text or raw page content.                                                                                               |
