@@ -28,13 +28,6 @@ If no napkin exists yet, create one at `.sandbox/napkin.md`:
 ```markdown
 # Napkin Runbook
 
-## Curation Rules
-- Re-prioritize on every read.
-- Keep recurring, high-value notes only.
-- Max 5 items per category.
-- Each item includes date + "Do instead".
-- Leave categories sparse rather than padding them.
-
 ## Execution & Validation (Highest Priority)
 1. **[YYYY-MM-DD] Short rule**
    Do instead: concrete repeatable action.
