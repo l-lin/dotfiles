@@ -3,9 +3,11 @@ local function setup_surround()
     require("mini.surround").setup({
       custom_surroundings = {
         ["("] = { output = { left = "(", right = ")" } },
-        [")"] = { output = { left = "(", right = ")" } },
+        [")"] = { output = { left = "( ", right = " )" } },
         ["["] = { output = { left = "[", right = "]" } },
-        ["]"] = { output = { left = "[", right = "]" } },
+        ["]"] = { output = { left = "[ ", right = " ]" } },
+        ["<"] = { output = { left = "<", right = ">" } },
+        [">"] = { output = { left = "< ", right = " >" } },
       },
       mappings = {
         add = "sa",
