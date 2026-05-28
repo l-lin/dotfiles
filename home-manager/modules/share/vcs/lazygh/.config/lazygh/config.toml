@@ -15,3 +15,9 @@ agent_command = ["pi", "--models", "github-copilot/gpt-4.1", "--no-session", "-p
 
 [theme]
 preset = "system"
+
+[keymaps.global]
+open_actions_popup = "alt+a"
+
+[keymaps.pull_requests]
+comment_on_pull_request = "alt+c"
