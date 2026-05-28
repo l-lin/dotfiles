@@ -87,6 +87,17 @@ local function setup()
         on_done = append_task_to_daily_notes,
       },
     },
+    keymaps = {
+      input = {
+        ["<M-a>"] = { "action_jira_list_actions", mode = { "i", "n" } },
+      },
+      list = {
+        ["<M-a>"] = "action_jira_list_actions",
+      },
+      preview = {
+        ["<M-a>"] = "action_jira_list_actions",
+      },
+    },
   })
 
   vim.keymap.set("n", "<leader>ji", "<cmd>JiraIssues<cr>", { desc = "Jira current issues" })
