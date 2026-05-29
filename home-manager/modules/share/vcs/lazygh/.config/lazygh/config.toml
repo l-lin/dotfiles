@@ -19,5 +19,8 @@ preset = "system"
 [keymaps.global]
 open_actions_popup = "alt+a"
 
+[keymaps.actions_popup]
+submit_selected_picker = ["alt+enter", "ctrl+s"]
+
 [keymaps.pull_requests]
 comment_on_pull_request = "alt+c"
