@@ -18,8 +18,6 @@ return
             ["("] = { action = "open", pair = "()", neigh_pattern = "^[^\\][^%w_]" },
             ["["] = { action = "open", pair = "[]", neigh_pattern = "^[^\\][^%w_]" },
             ["{"] = { action = "open", pair = "{}", neigh_pattern = "^[^\\][^%w_]" },
-            ["<"] = { action = "open", pair = "<>", neigh_pattern = "^[^\\][^%w_]" },
-            [">"] = { action = "close", pair = "<>", neigh_pattern = "^[^\\]" },
           },
         })
       end)
