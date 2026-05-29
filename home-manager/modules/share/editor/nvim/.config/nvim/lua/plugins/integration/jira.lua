@@ -1,6 +1,11 @@
 ---@return string
 local function daily_note_filepath()
-  return vim.fs.joinpath(vim.fn.expand(vim.g.notes_dir), "5-rituals", "daily", string.format("%s.md", os.date("%Y-%m-%d")))
+  return vim.fs.joinpath(
+    vim.fn.expand(vim.g.notes_dir),
+    "5-rituals",
+    "daily",
+    string.format("%s.md", os.date("%Y-%m-%d"))
+  )
 end
 
 ---@type jira.StartWorkDoneCallback?
@@ -100,11 +105,13 @@ local function setup()
     },
   })
 
-  vim.keymap.set("n", "<leader>ji", "<cmd>JiraIssues<cr>", { desc = "Jira current issues" })
-  vim.keymap.set("n", "<leader>jm", "<cmd>JiraMyIssues<cr>", { desc = "Jira my issues" })
-  vim.keymap.set("n", "<leader>je", "<cmd>JiraEpic<cr>", { desc = "Jira epics" })
-  vim.keymap.set("n", "<leader>j1", "<cmd>JiraEpic P3C-6999<cr>", { desc = "Jira P3C-6999" })
-  vim.keymap.set("n", "<leader>j2", "<cmd>JiraEpic P3C-7226<cr>", { desc = "Jira P3C-7226" })
+  vim.keymap.set("n", "<leader>ji", "<cmd>Jira issues<cr>", { desc = "Jira current issues" })
+  vim.keymap.set("n", "<leader>jv", "<cmd>Jira view-issue<cr>", { desc = "Jira view issue" })
+  vim.keymap.set("n", "<leader>jm", "<cmd>Jira my-issues<cr>", { desc = "Jira my issues" })
+  vim.keymap.set("n", "<leader>jn", "<cmd>Jira create-issue<cr>", { desc = "Jira create issue" })
+  vim.keymap.set("n", "<leader>je", "<cmd>Jira epic<cr>", { desc = "Jira epics" })
+  vim.keymap.set("n", "<leader>j1", "<cmd>Jira epic P3C-6999<cr>", { desc = "Jira P3C-6999" })
+  vim.keymap.set("n", "<leader>j2", "<cmd>Jira epic P3C-7226<cr>", { desc = "Jira P3C-7226" })
 
   local has_wk, wk = pcall(require, "which-key")
   if has_wk then
@@ -117,6 +124,7 @@ return
 -- Neovim plugin for browsing and managing JIRA issues with a fuzzy-finding interface.
 {
   src = "https://codeberg.org/l-lin/jira.nvim",
+  -- src = "file://" .. os.getenv("HOME") .. "/perso/codeberg/jira.nvim",
   data = {
     setup = function()
       vim.schedule(setup)
