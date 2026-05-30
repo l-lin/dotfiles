@@ -7,9 +7,6 @@
  * - project context files (AGENTS.md / CLAUDE.md)
  * - current context window usage + session totals (tokens/cost)
  *
- * Dependencies:
- * - ../subagent
- *
  * src: https://github.com/mitsuhiko/agent-stuff/blob/7e67a9684f066435dd996a5b98c6850ecf3c8c6d/pi-extensions/context.ts
  */
 

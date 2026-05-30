@@ -28,14 +28,12 @@ export const ICONS: Record<string, string> = {
 export const TOOL_ICONS: Record<string, { enabled: string; disabled: string }> =
   {
     "ask-user-question": { enabled: "󰍡", disabled: "󱙍" },
-    subagent: { enabled: "󰚩", disabled: "󱚧" },
     "web-fetch": { enabled: "󰩄", disabled: "󱛮" },
     "web-search": { enabled: "󰖟", disabled: "󰪎" },
   };
 
 export const TOOL_ORDER: Array<keyof typeof TOOL_ICONS> = [
   "ask-user-question",
-  "subagent",
   "web-fetch",
   "web-search",
 ];
@@ -52,7 +50,6 @@ export interface SettingsStructure {
   extensionSettings?: {
     webFetch?: { enabled?: boolean };
     webSearch?: { enabled?: boolean };
-    subagent?: { enabled?: boolean };
     askUserQuestion?: { enabled?: boolean };
     sandbox?: { enabled?: boolean };
     damageControl?: { enabled?: boolean };

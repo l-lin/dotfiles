@@ -20,7 +20,6 @@ export function getToolStatus(): Map<string, boolean> {
 
   return new Map([
     ["ask-user-question", ext.askUserQuestion?.enabled !== false],
-    ["subagent", ext.subagent?.enabled !== false],
     ["web-fetch", ext.webFetch?.enabled !== false],
     ["web-search", ext.webSearch?.enabled !== false],
   ]);

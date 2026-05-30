@@ -196,33 +196,6 @@ test("saveExtensionSettings GIVEN sibling and existing extension settings WHEN s
   assert.deepEqual(actual, expected);
 });
 
-test("readExtensionSettings GIVEN a stored extension block WHEN reading THEN only that extension settings object is returned", (t) => {
-  const tempHome = given_tempHome(t);
-  given_savedSettingsFile(tempHome, {
-    extensionSettings: {
-      subagent: {
-        enabled: false,
-        maxParallel: 7,
-        sources: ["~/.pi/agent/agents"],
-      },
-      webFetch: { enabled: true },
-    },
-  });
-
-  const actual = readExtensionSettings<{
-    enabled: boolean;
-    maxParallel: number;
-    sources: string[];
-  }>("subagent");
-  const expected = {
-    enabled: false,
-    maxParallel: 7,
-    sources: ["~/.pi/agent/agents"],
-  };
-
-  assert.deepEqual(actual, expected);
-});
-
 test("loadEnabledSettings GIVEN malformed settings file WHEN loading THEN defaults are returned", (t) => {
   const tempHome = given_tempHome(t);
   const settingsPath = path.join(tempHome, ".pi", "agent", "settings.json");

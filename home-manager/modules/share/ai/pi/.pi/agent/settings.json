@@ -23,20 +23,6 @@
     "copilotUsage": {
       "visible": false
     },
-    "lspDiagnostics": {
-      "enabled": false
-    },
-    "subagent": {
-      "enabled": false,
-      "sources": [
-        "~/.pi/agent/subagents",
-        "./.pi/subagents"
-      ],
-      "maxParallel": 5,
-      "userSystemPrompt": {
-        "path": "~/.config/ai/system-prompt.md"
-      }
-    },
     "webSearch": {
       "enabled": true
     },
