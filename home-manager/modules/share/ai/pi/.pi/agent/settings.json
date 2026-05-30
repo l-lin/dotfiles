@@ -1,9 +1,10 @@
 {
-  "lastChangelogVersion": "0.75.4",
+  "lastChangelogVersion": "0.78.0",
   "theme": "light",
   "defaultProvider": "github-copilot",
   "defaultModel": "gpt-5.4",
   "enableInstallTelemetry": false,
+  "treeFilterMode": "user-only",
   "skills": [
     "~/.config/ai/skills"
   ],
