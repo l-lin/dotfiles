@@ -42,8 +42,6 @@ export function buildStatsLine(
     leftParts.push(toolIcons);
   }
 
-  leftParts.push(" ");
-
   if (contextData.display) {
     leftParts.push(
       colorByPercent(contextData.percent, contextData.display, theme),
