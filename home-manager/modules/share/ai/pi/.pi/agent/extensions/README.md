@@ -12,7 +12,6 @@ This directory contains local Pi extensions and one shared support module. Each 
 | [`execution-timer`](./execution-timer/)       | Tracks each run and shows elapsed time with a simple tool-versus-agent breakdown.                                                                 |
 | [`footer`](./footer/)                         | Replaces the default footer with richer status, directory, and usage lines...                                                                     |
 | [`github-copilot`](./github-copilot/)         | Shows Copilot premium usage and adds commands for refreshing usage and browsing Copilot models.                                                   |
-| [`minimal-mode`](./minimal-mode/)             | Re-renders the built-in `read` tool in a compact view and removes `find`, `grep`, and `ls` from minimal-mode sessions.                            |
 | [`sandbox`](./sandbox/)                       | Wraps bash commands in OS-level sandboxing (macOS sandbox-exec, Linux bubblewrap) with configurable filesystem and network restrictions.          |
 | [`session-breakdown`](./session-breakdown/)   | Analyzes Pi session history and shows activity, token, cost, and model trends in a TUI view.                                                      |
 | [`skill-breakdown`](./skill-breakdown/)       | Analyzes Pi session history and shows top skills, less-used skills, and per-project skill summaries over the last 7, 30, or 90 days.              |
