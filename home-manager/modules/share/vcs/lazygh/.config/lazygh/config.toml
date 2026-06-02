@@ -11,7 +11,7 @@ label = "Requested"
 command = ["--review-requested", "@me", "--limit", "100", "--state", "open", "--sort", "updated", "--order", "desc", "--repo", "doctolib/health-content", "--repo", "doctolib/preventive-continuous-care", "--repo", "doctolib/doctolib", "--repo", "doctolib/patient-account"]
 
 [story_review]
-agent_command = ["pi", "--models", "github-copilot/gpt-4.1", "--no-session", "-p", "@{{prompt_file}}"]
+agent_command = ["pi", "--models", "unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q4_K_M", "--no-session", "-p", "@{{prompt_file}}"]
 
 [theme]
 preset = "system"
