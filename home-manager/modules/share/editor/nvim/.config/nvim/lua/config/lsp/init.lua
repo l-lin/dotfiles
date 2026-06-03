@@ -70,7 +70,7 @@ vim.lsp.enable({
   "gopls",
   "jdtls",
   "jsonls",
-  "kotlin_lsp",
+  "kmp_lsp",
   "lemminx",
   "lua_ls",
   "nil_ls",
