@@ -1,6 +1,6 @@
 vim.keymap.set(
   "n",
-  "<leader>fxr",
+  "<leader>fxx",
   function()
     require("functions.lang.ruby").execute_file({
       cmd = "ruby",
@@ -8,7 +8,7 @@ vim.keymap.set(
       include_line_number = false,
     })
   end,
-  { buffer = true, desc = "Ruby" }
+  { buffer = true, desc = "Execute Ruby file" }
 )
 vim.keymap.set(
   "n",

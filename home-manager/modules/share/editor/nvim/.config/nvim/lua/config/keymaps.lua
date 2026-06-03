@@ -5,8 +5,6 @@
 vim.keymap.set({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save File" })
 -- Toggle executable permission on current file.
 vim.keymap.set("n", "<leader>fxt", function() require("functions.file").toggle_executable_permission() end, { desc = "Toggle executable permission" })
--- If this is a bash script, make it executable, and execute it in a tmux pane on the right
-vim.keymap.set("n", "<leader>fxx", function() require("functions.file").execute_bash_script() end, { desc = "Execute bash script" })
 -- new file
 vim.keymap.set("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New File" })
 -- Scratch buffer mode: quickly exit neovim with classic keybinds.
