@@ -37,6 +37,7 @@ local parsers = {
   "xml",
   "yaml",
   "yang",
+  "zig",
 }
 
 local function setup()

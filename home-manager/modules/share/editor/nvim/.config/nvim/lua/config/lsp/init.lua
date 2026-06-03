@@ -79,6 +79,7 @@ vim.lsp.enable({
   "taplo",
   "vtsls",
   "yamlls",
+  "zls",
 })
 
 vim.keymap.set("n", "<leader>lI", "<cmd>checkhealth vim.lsp<cr>", { desc = "LSP Info" })

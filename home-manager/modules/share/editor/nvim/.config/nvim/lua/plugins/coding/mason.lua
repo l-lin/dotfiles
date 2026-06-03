@@ -25,6 +25,7 @@ local tools = {
   "xmlformatter",
   "yaml-language-server",
   "yamllint",
+  "zls",
 }
 
 ---@type vim.pack.Spec

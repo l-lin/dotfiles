@@ -64,6 +64,8 @@
       "spicetify-cli"
       # Install and switch between multiple versions of Xcode: https://github.com/XcodesOrg/xcodes
       "xcodes"
+      # General-purpose programming language: https://ziglang.org/
+      "zig"
     ];
 
     # `brew install --cask`
