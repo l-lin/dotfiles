@@ -1,7 +1,7 @@
 ---@type vim.lsp.Config
 return {
   cmd = { "yaml-language-server", "--stdio" },
-  filetypes = { "yaml", "yaml.docker-compose", "yaml.gitlab", "yaml.helm-values" },
+  filetypes = { "yaml" },
   root_markers = { ".git" },
   before_init = function(_, new_config)
     new_config.settings = new_config.settings or {}
