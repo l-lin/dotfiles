@@ -112,6 +112,7 @@ local function setup()
   vim.keymap.set("n", "<leader>je", "<cmd>Jira epic<cr>", { desc = "Jira epics" })
   vim.keymap.set("n", "<leader>j1", "<cmd>Jira epic P3C-6999<cr>", { desc = "Jira P3C-6999" })
   vim.keymap.set("n", "<leader>j2", "<cmd>Jira epic P3C-7226<cr>", { desc = "Jira P3C-7226" })
+  vim.keymap.set("n", "<leader>j3", "<cmd>Jira epic P3C-6911<cr>", { desc = "Jira P3C-6911" })
 
   local has_wk, wk = pcall(require, "which-key")
   if has_wk then
