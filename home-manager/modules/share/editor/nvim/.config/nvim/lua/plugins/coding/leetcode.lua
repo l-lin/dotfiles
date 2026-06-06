@@ -1,16 +1,16 @@
 ---@type vim.pack.Spec[]
 return {
-  { src = "nvim-lua/plenary.nvim" },
-  { src = "MunifTanjim/nui.nvim" },
-  { src = "rcarriga/nvim-notify" },
-  { src = "nvim-tree/nvim-web-devicons" },
+  { src = "https://github.com/nvim-lua/plenary.nvim" },
+  { src = "https://github.com/MunifTanjim/nui.nvim" },
   -- A Neovim plugin enabling you to solve LeetCode problems.
   {
-    src = "kawre/leetcode.nvim",
+    src = "https://github.com/kawre/leetcode.nvim",
     data = {
       setup = function()
-        require("leetcode").setup({ lang = "java", image_support = true })
+        require("leetcode").setup({ lang = "golang", image_support = true, plugins = { non_standalone = true } })
         -- stylua: ignore start
+        require("which-key").add({ mode = "n", { "<leader>L", group = "Leetcode" } })
+
         vim.keymap.set("n", "<leader>Lc", "<cmd>Leet console<cr>", { silent = true, noremap = true, desc = "LeetCode console" })
         vim.keymap.set("n", "<leader>Ld", "<cmd>Leet desc<cr>", { silent = true, noremap = true, desc = "LeetCode toggle description" })
         vim.keymap.set("n", "<leader>Lh", "<cmd>Leet hints<cr>", { silent = true, noremap = true, desc = "LeetCode hints" })
