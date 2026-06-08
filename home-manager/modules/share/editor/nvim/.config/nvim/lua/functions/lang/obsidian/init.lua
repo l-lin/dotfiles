@@ -69,6 +69,9 @@ end
 local function todo(ctx)
   local today_iso = id_to_date(ctx.partial_note)
   local t = {}
+  if os.date("%u", today_iso) == "1" then
+    table.insert(t, "- [ ] check self-improved AI PRs")
+  end
   if os.date("%u", today_iso) == "3" then
     table.insert(t, "- [ ] [[1o1 - " .. os.date("%Y-%m", today_iso) .. "]]")
   end
