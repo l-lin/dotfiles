@@ -491,7 +491,7 @@ local function setup()
   vim.keymap.set("n", "<leader>fg", function() Snacks.picker.git_files() end, { desc = "Find Files (git-files)" })
   -- git
   vim.keymap.set("n", "<M-9>", function() Snacks.picker.git_log({ current_file = true, follow = true }) end, { noremap = true, silent = true, desc = "Check current file git history (Alt+9)" })
-  vim.keymap.set("n", "<leader>gb", function() Snacks.picker.git_log_line({ current_line = true, current_file = true, follow = true }) end, { desc = "Git Blame Line" })
+  vim.keymap.set("n", "<leader>gB", function() Snacks.picker.git_log_line({ current_line = true, current_file = true, follow = true }) end, { desc = "Git Blame Line" })
   vim.keymap.set("n", "<leader>gd", function() Snacks.picker.git_diff() end, { desc = "Git Diff (hunks)" })
   vim.keymap.set("n", "<leader>gD", function() Snacks.picker.git_diff({ base = "origin", group = true }) end, { desc = "Git Diff (origin)" })
   vim.keymap.set("n", "<leader>gl", function() Snacks.picker.git_log({ cwd = vim.fs.root(0, ".git") or vim.uv.cwd() }) end, { desc = "Git Log" })
