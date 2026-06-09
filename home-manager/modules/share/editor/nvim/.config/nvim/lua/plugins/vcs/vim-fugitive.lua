@@ -21,10 +21,10 @@ local function setup()
     end
   end, { silent = true, noremap = true, desc = "git status (Alt+0)" })
   -- stylua: ignore start
-  vim.keymap.set("n", "<leader>gB", function() require("functions.git").browse_with_branch_select() end, { desc = "Git Browse (open)", noremap = true })
-  vim.keymap.set( "x", "<leader>gB", ":<C-u>lua require('functions.git').browse_with_branch_select({ visual = true })<CR>", { desc = "Git Browse (open)", noremap = true })
-  vim.keymap.set("n", "<leader>gY", function() require("functions.git").browse_with_branch_select({ yank = true }) end, { desc = "Git Browse (yank)", noremap = true })
-  vim.keymap.set( "x", "<leader>gY", ":<C-u>lua require('functions.git').browse_with_branch_select({ yank = true, visual = true })<CR>", { desc = "Git Browse (yank)", noremap = true })
+  vim.keymap.set("n", "<leader>gB", function() require("functions.gitbrowse").browse_with_branch_select() end, { desc = "Git Browse (open)", noremap = true })
+  vim.keymap.set( "x", "<leader>gB", ":<C-u>lua require('functions.gitbrowse').browse_with_branch_select({ visual = true })<CR>", { desc = "Git Browse (open)", noremap = true })
+  vim.keymap.set("n", "<leader>gY", function() require("functions.gitbrowse").browse_with_branch_select({ yank = true }) end, { desc = "Git Browse (yank)", noremap = true })
+  vim.keymap.set( "x", "<leader>gY", ":<C-u>lua require('functions.gitbrowse').browse_with_branch_select({ yank = true, visual = true })<CR>", { desc = "Git Browse (yank)", noremap = true })
   vim.keymap.set("n", "<leader>go", "<cmd>!gh repo view --web<cr>", { desc = "Open GitHub repository in browser", noremap = true })
   vim.keymap.set("n", "<leader>gO", "<cmd>!gh pr view --web<cr>", { desc = "Open GitHub pull request in browser", noremap = true })
   -- stylua: ignore end
