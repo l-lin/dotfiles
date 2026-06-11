@@ -46,24 +46,25 @@ You have access to faster/better CLI tools. You MUST use these instead of their 
 
 ## Journaling
 
-At the start of a session, create a new journal file at `.sandbox/journals/` directory: `journal-NNN-description.md`, where NNN is one higher than the highest existing `journal-*.md` (start at 001 if none exist), and `description` is a brief kebab-case description of the task.
+**Session start:** create `.sandbox/journals/journal-NNN-description.md`
+- NNN = highest existing +1 (start at 001); description in kebab-case
+- Read the current journal to orient before starting work or after context compaction
 
-Append an entry when a non-trivial step changes the code, plan, or understanding. Batch closely related micro-steps into one entry. Write it as you go, not as an end-of-session summary. Keep entries terse and high-signal. Prefer decisive excerpts, counts, and saved paths over full command transcripts.
+**When to append:** any non-trivial change to code, plan, or understanding
+- Batch related micro-steps into one entry; write as you go
+- Skip routine steps; prefer decisive excerpts and counts over full transcripts
 
-Each entry should include, when relevant:
-- ISO timestamp (`YYYY-MM-DD HH:MM`, use `date '+%F %H:%M'` to get this information)
+**Each entry includes (when relevant):**
+- ISO timestamp — `date '+%F %H:%M'`
 - One-line summary
-- The exact command, if one was run, and the decisive output. For long output, include the exact command, a focused excerpt or count, and the saved path if the tool produced one.
+- Exact command + decisive output (excerpt or count for long output)
 - Files edited and why
-- Hypotheses and whether they held up
-- Dead-ends, with a note on why the thing didn't work
-- Links read during research
-- Decisions made and the reasoning behind them
+- Hypotheses, dead-ends, links, decisions
 
-Skip empty sections. If a step was routine and taught nothing, omit it or roll it into the surrounding entry. Do not pad the journal just to satisfy a template.
-
-Before starting new work, or after a context compaction, read the current journal to orient yourself. For older journals, search by task or topic first, then skim only the relevant sections.
+**When an entry reverses a prior decision**, mark both sides:
+  > ⚠️ Supersedes: journal-NNN (reason)   ← new entry
+  > ⚠️ Superseded by: journal-NNN          ← old entry
 
 ## Napkin
 
-At session start, read and curate runbook `.sandbox/napkin.md` (not a log). The `napkin` skill manages the full format and curation policy.
+At session start, load the `napkin` skill, then read and curate `.sandbox/napkin.md` (not a log). The skill defines the format and curation policy — load it before touching the file.

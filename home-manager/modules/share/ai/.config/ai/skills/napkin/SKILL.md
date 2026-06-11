@@ -1,6 +1,6 @@
 ---
 name: napkin
-description: Use when maintaining a per-repo runbook of recurring, repo-specific guidance that is not already covered by the system prompt, AGENTS files, or the active task docs
+description: Use at session start and whenever updating `.sandbox/napkin.md`. Defines the format and curation policy for the per-repo runbook of recurring, repo-specific guidance not covered by the system prompt, AGENTS files, or active task docs.
 ---
 
 # Napkin
