@@ -1,3 +1,6 @@
+[display]
+repository_style = "name"
+
 [story_review]
 agent_command = ["pi", "--models", "unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q4_K_M", "--no-session", "-p", "@{{prompt_file}}"]
 
