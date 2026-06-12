@@ -7,9 +7,28 @@ import {
   Key,
   matchesKey,
   truncateToWidth,
+  visibleWidth,
   wrapTextWithAnsi,
 } from "@earendil-works/pi-tui";
 import type { Answer, Question, Result } from "./types.js";
+
+function addWrappedText(
+  text: string,
+  width: number,
+  addLine: (line: string) => void,
+  firstPrefix = "",
+  continuationPrefix = firstPrefix,
+) {
+  const contentWidth = Math.max(
+    1,
+    width -
+      Math.max(visibleWidth(firstPrefix), visibleWidth(continuationPrefix)),
+  );
+
+  wrapTextWithAnsi(text, contentWidth).forEach((line, index) => {
+    addLine(`${index === 0 ? firstPrefix : continuationPrefix}${line}`);
+  });
+}
 
 /**
  * Returns the `ctx.ui.custom<Result>()` callback for the questionnaire widget.
@@ -190,15 +209,32 @@ export function buildWidget(questions: Question[]) {
 
     const renderOptions = (
       options: ReturnType<typeof currentOptions>,
+      width: number,
       addLine: (s: string) => void,
     ) => {
       options.forEach((option, i) => {
         const isSelected = i === selectedIndex;
         const prefix = isSelected ? theme.fg("accent", "> ") : "  ";
-        const label = `${i + 1}. ${option.label}${option.value === "__other__" && inputMode ? " ✎" : ""}`;
-        addLine(prefix + theme.fg(isSelected ? "accent" : "text", label));
-        if (option.description)
-          addLine(`     ${theme.fg("muted", option.description)}`);
+        const optionNumber = `${i + 1}. `;
+        const continuationPrefix = " ".repeat(
+          visibleWidth(prefix) + visibleWidth(optionNumber),
+        );
+        const suffix = option.value === "__other__" && inputMode ? " ✎" : "";
+        const label = theme.fg(
+          isSelected ? "accent" : "text",
+          `${optionNumber}${option.label}${suffix}`,
+        );
+
+        addWrappedText(label, width, addLine, prefix, continuationPrefix);
+
+        if (option.description) {
+          addWrappedText(
+            theme.fg("muted", option.description),
+            width,
+            addLine,
+            continuationPrefix,
+          );
+        }
       });
     };
 
@@ -244,7 +280,7 @@ export function buildWidget(questions: Question[]) {
           addLine(theme.fg("text", ` ${line}`)),
         );
         lines.push("");
-        renderOptions(options, addLine);
+        renderOptions(options, width, addLine);
         lines.push("");
         addLine(theme.fg("muted", " Your answer:"));
         editor.render(width - 2).forEach((line) => addLine(` ${line}`));
@@ -278,7 +314,7 @@ export function buildWidget(questions: Question[]) {
           addLine(theme.fg("text", ` ${line}`)),
         );
         lines.push("");
-        renderOptions(options, addLine);
+        renderOptions(options, width, addLine);
       }
 
       lines.push("");
