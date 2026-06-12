@@ -1,0 +1,29 @@
+#!/usr/bin/env zsh
+#
+# interactive git rebase
+#
+
+emulate -L zsh
+setopt pipefail
+
+local selection commit
+
+# Keep the full SHA in a hidden first field so fzf can preview prettified lines
+# without forcing us to parse colored output back into a rebase target.
+selection=$(
+  git log --color=always --format='%H%x09%C(auto)%h%d %s %C(black)%C(bold)- %an, %ar' \
+    | fzf \
+        --ansi \
+        --delimiter=$'\t' \
+        --with-nth=2.. \
+        --no-sort \
+        --reverse \
+        --header='Commit to rebase onto' \
+        --preview='git show --color=always {1}' \
+        --preview-window='right:60%:wrap'
+) || return $?
+
+commit=${selection%%$'\t'*}
+[[ -n "$commit" ]] || return 0
+
+git rebase -i "$commit"
