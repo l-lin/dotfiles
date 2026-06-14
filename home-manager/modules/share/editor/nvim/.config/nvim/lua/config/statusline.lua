@@ -94,6 +94,14 @@ local function get_lsp_status()
   return lsp_status.get_statusline(vim.api.nvim_get_current_buf())
 end
 
+---@return string
+local function get_cursor_position()
+  local line = vim.fn.line(".")
+  local column = vim.fn.virtcol(".")
+
+  return " " .. line .. ":" .. column
+end
+
 ---@param segments string[]
 ---@return string
 local function join_segments(segments)
@@ -118,6 +126,7 @@ function M.build()
     get_lsp_status(),
     ft ~= "" and get_file_icon() .. ft or "",
     git_branch ~= "" and " " .. git_branch or "",
+    get_cursor_position(),
   })
 
   return left .. "%=" .. right
