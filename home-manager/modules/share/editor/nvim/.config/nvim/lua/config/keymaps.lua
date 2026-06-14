@@ -123,13 +123,6 @@ vim.keymap.set({ "i", "n", "s" }, "<esc>", function()
   vim.cmd("noh")
   return "<esc>"
 end, { expr = true, desc = "Escape and Clear hlsearch" })
--- https://github.com/mhinz/vim-galore#saner-behavior-of-n-and-n
-vim.keymap.set("n", "n", "'Nn'[v:searchforward].'zv'", { expr = true, desc = "Next Search Result" })
-vim.keymap.set("x", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next Search Result" })
-vim.keymap.set("o", "n", "'Nn'[v:searchforward]", { expr = true, desc = "Next Search Result" })
-vim.keymap.set("n", "N", "'nN'[v:searchforward].'zv'", { expr = true, desc = "Prev Search Result" })
-vim.keymap.set("x", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev Search Result" })
-vim.keymap.set("o", "N", "'nN'[v:searchforward]", { expr = true, desc = "Prev Search Result" })
 -- Do not select the next search element, so that I can easily do `cgn`.
 vim.keymap.set("n", "*", "*N", { noremap = true, silent = true })
 vim.keymap.set("n", "#", "#N", { noremap = true, silent = true })
