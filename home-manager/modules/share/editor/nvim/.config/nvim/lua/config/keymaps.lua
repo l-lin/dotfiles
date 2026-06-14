@@ -56,7 +56,6 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz", { noremap = true })
 vim.keymap.set("n", "<C-f>", "<C-f>zz", { noremap = true })
 vim.keymap.set("n", "<C-b>", "<C-b>zz", { noremap = true })
 vim.keymap.set("n", "<S-h>", "<S-h>zz", { noremap = true })
-vim.keymap.set("n", "<S-l>", "<S-l>zz", { noremap = true })
 vim.keymap.set("n", "{", "{zz", { noremap = true })
 vim.keymap.set("n", "}", "}zz", { noremap = true })
 vim.keymap.set("n", "j", function() require("functions.cursor").move_to_middle_of_screen("j") end, { noremap = true })
@@ -65,6 +64,8 @@ vim.keymap.set("n", "n", "nzzzv", { noremap = true })
 vim.keymap.set("n", "N", "Nzzzv", { noremap = true })
 -- do not include white space characters when using $ in visual mode, see https://vi.stackexchange.com/q/12607/15292
 vim.keymap.set("x", "$", "g_")
+-- C-^ makes my fingers hurt, let's use the same keymaps as tmux
+vim.keymap.set("n", "<S-l>", "<C-^>", { noremap = true })
 
 --
 -- Fold
