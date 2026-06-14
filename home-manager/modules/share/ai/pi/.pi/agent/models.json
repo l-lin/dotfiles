@@ -6,7 +6,7 @@
       "apiKey": "none",
       "models": [
         {
-          "id": "unsloth/gemma-4-26B-A4B-it-GGUF:UD-Q4_K_M",
+          "id": "unsloth/diffusiongemma-26B-A4B-it:Q4_K_M",
           "contextWindow": 262144,
           "input": ["text", "image"],
           "reasoning": true
