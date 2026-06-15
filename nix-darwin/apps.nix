@@ -46,6 +46,10 @@
     # `brew install`
     # To get the list of installed apps with brew: `brew list`
     brews = [
+      # Use AWS IAM credentials to authenticate to Kubernetes: https://github.com/kubernetes-sigs/aws-iam-authenticator
+      "aws-iam-authenticator"
+      # Securely store and access AWS credentials in development environments: https://github.com/ByteNess/aws-vault
+      "aws-vault"
       # Terminal epub reader: https://bugzmanov.github.io/bookokrat/index.html
       "bookokrat"
       # Elegant Lua unit testing: https://lunarmodules.github.io/busted/
