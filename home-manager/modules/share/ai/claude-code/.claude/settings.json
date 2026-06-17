@@ -6,7 +6,6 @@
   },
   "includeCoAuthoredBy": false,
   "permissions": {
-    "defaultMode": "auto",
     "allow": [
       "Bash(backlog:*)",
       "Bash(gh:*)",
@@ -38,7 +37,8 @@
       "mcp__sentry__*",
       "mcp__fe4102e0-e2ea-4246-8736-e9872b03890c__slack_send_message"
     ],
-    "deny": []
+    "deny": [],
+    "defaultMode": "auto"
   },
   "model": "sonnet[1m]",
   "hooks": {
