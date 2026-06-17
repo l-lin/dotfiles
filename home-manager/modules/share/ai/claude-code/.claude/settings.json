@@ -6,6 +6,7 @@
   },
   "includeCoAuthoredBy": false,
   "permissions": {
+    "defaultMode": "auto",
     "allow": [
       "Bash(backlog:*)",
       "Bash(gh:*)",
@@ -34,21 +35,24 @@
       "mcp__atlassian__getJiraIssue",
       "mcp__atlassian__getConfluencePage",
       "mcp__datadog__*",
-      "mcp__memory__*",
       "mcp__sentry__*",
-      "mcp__sequentialthinking__*"
+      "mcp__fe4102e0-e2ea-4246-8736-e9872b03890c__slack_send_message"
     ],
     "deny": []
   },
   "model": "sonnet[1m]",
   "hooks": {
-    "PreToolUse": [{
-      "matcher": "Bash",
-      "hooks": [{
-        "type": "command",
-        "command": "$HOME/.config/ai/hooks/bad-bash/bad-bash.sh"
-      }]
-    }]
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.config/ai/hooks/bad-bash/bad-bash.sh"
+          }
+        ]
+      }
+    ]
   },
   "statusLine": {
     "type": "command",
@@ -60,7 +64,8 @@
     "doctolib-productivity@doctolib": true,
     "doctolib-c3@doctolib": true,
     "claude-md-management@claude-plugins-official": true,
-    "doctolib-analytics-agent@doctolib": true
+    "doctolib-analytics-agent@doctolib": true,
+    "doctolib-doctoboot@doctolib": true
   },
   "effortLevel": "high",
   "showClearContextOnPlanAccept": true,
