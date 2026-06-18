@@ -46,6 +46,8 @@
     # `brew install`
     # To get the list of installed apps with brew: `brew list`
     brews = [
+      # Get stuff done with container-native workflows for Kubernetes: https://argoproj.io/
+      "argo"
       # Use AWS IAM credentials to authenticate to Kubernetes: https://github.com/kubernetes-sigs/aws-iam-authenticator
       "aws-iam-authenticator"
       # Securely store and access AWS credentials in development environments: https://github.com/ByteNess/aws-vault
