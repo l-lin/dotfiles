@@ -12,7 +12,7 @@
           "reasoning": true
         },
         {
-          "id": "unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q4_K_M",
+          "id": "qwen3.6",
           "contextWindow": 262144,
           "input": ["text", "image"],
           "reasoning": true

@@ -1,8 +1,8 @@
 {
   "lastChangelogVersion": "0.79.6",
   "theme": "light",
-  "defaultProvider": "github-copilot",
-  "defaultModel": "gpt-5.4",
+  "defaultProvider": "llama-cpp",
+  "defaultModel": "qwen3.6",
   "enableInstallTelemetry": false,
   "treeFilterMode": "user-only",
   "skills": [
@@ -12,7 +12,7 @@
     "~/.config/ai/commands"
   ],
   "quietStartup": true,
-  "defaultThinkingLevel": "xhigh",
+  "defaultThinkingLevel": "high",
   "compaction": {
     "enabled": false
   },
