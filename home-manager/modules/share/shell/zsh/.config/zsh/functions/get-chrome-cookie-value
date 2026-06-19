@@ -1,0 +1,36 @@
+#!/usr/bin/env zsh
+#
+# Get a single Google Chrome cookie value (macOS only).
+#
+# Cookies live in an encrypted SQLite DB per Chrome profile; browser_cookie3
+# reads it and decrypts values using the "Chrome Safe Storage" Keychain key.
+#
+# Usage: get-chrome-cookie-value <profile> <domain> <cookie>
+#   <profile>  Chrome profile directory, e.g. "Default" or "Profile 1"
+#   <domain>   cookie domain, e.g. "www.example.org"
+#   <cookie>   cookie name, e.g. "_cookie_foobar"
+#
+
+if [[ $# -ne 3 ]]; then
+  print -u2 "Usage: get-chrome-cookie-value <profile> <domain> <cookie>"
+  return 1
+fi
+
+uv run --quiet --with browser_cookie3 python3 - "$@" <<'PY'
+import os
+import sys
+
+import browser_cookie3
+
+profile, domain, name = sys.argv[1:4]
+cookie_file = os.path.expanduser(
+    f"~/Library/Application Support/Google/Chrome/{profile}/Cookies"
+)
+jar = browser_cookie3.chrome(cookie_file=cookie_file, domain_name=domain)
+value = next((cookie.value for cookie in jar if cookie.name == name), None)
+
+if value is None:
+    sys.exit(f"cookie '{name}' not found for '{domain}' in profile '{profile}'")
+
+print(value)
+PY
