@@ -7,11 +7,12 @@
   #imports = fileExplorer.allSubdirs ./.;
   imports = [
     ./k9s
+    ./ku
   ];
 
   home.packages = with pkgs; [
     # A helper to run k3s (Lightweight Kubernetes. 5 less than k8s) in a docker container: https://github.com/k3d-io/k3d/
-    k3d
+    #k3d
 
     # Kubernetes CLI: https://github.com/kubernetes/kubectl
     kubectl
