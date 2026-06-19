@@ -68,3 +68,9 @@ You have access to faster/better CLI tools. You MUST use these instead of their 
 ## Napkin
 
 At session start, load the `napkin` skill, then read and curate `.sandbox/napkin.md` (not a log). The skill defines the format and curation policy — load it before touching the file.
+
+## Learning Opportunities
+
+Load `learning-opportunities` when finishing a feature or bugfix with new files or modules, schema changes, refactors, architectural decisions, or unfamiliar patterns, or when the user asks to learn, practice, understand the reasoning, or says `teach me`, `help me understand`, `walk me through`, or `quiz me`.
+
+If any of those signals appear, load the skill; do not wait for the user to mention it by name. After relevant work, offer one brief optional exercise and obey the skill's hard-stop rule: ask, then end the message and wait.
