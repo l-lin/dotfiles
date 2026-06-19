@@ -7,7 +7,7 @@ local LIGHT_SUMMARY_PROMPT = "Fetch the content of the article %s, and return on
 local function summarize_url_with_claude_code(url, light_summary)
   local prompt = light_summary and LIGHT_SUMMARY_PROMPT or SUMMARY_PROMPT
 
-  local cmd = string.format('pi --models unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q4_K_M -p "%s"', string.format(prompt, url))
+  local cmd = string.format('pi --models qwen3.6 -p "%s"', string.format(prompt, url))
 
   local handle = io.popen(cmd)
   if not handle then
