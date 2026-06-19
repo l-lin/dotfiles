@@ -46,6 +46,8 @@
     # `brew install`
     # To get the list of installed apps with brew: `brew list`
     brews = [
+      # Automate deployment, configuration, and upgrading: https://www.ansible.com/
+      "ansible"
       # Get stuff done with container-native workflows for Kubernetes: https://argoproj.io/
       "argo"
       # Use AWS IAM credentials to authenticate to Kubernetes: https://github.com/kubernetes-sigs/aws-iam-authenticator
