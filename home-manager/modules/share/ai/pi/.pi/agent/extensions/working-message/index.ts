@@ -3,8 +3,15 @@
  *
  * src: https://github.com/mitsuhiko/agent-stuff/blob/7495ba7e5280e997a018e1c4e28cf29a635e9179/pi-extensions/whimsical.ts
  * Adapted to add my own verbs.
+ *
+ * Dependencies:
+ * - ../token-metric/
  */
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import {
+  isTokenMetricSnapshot,
+  TOKEN_METRIC_CHANGED_EVENT,
+} from "../token-metric/events.js";
 
 const messages = [
   "Reluctantly executing...",
@@ -378,6 +385,12 @@ export default function (pi: ExtensionAPI) {
   let startTime: number | null = null;
   let timerInterval: NodeJS.Timeout | null = null;
   let currentMessage: string = "";
+  let currentTokenTps: number | null = null;
+
+  pi.events.on(TOKEN_METRIC_CHANGED_EVENT, (payload: unknown) => {
+    if (!isTokenMetricSnapshot(payload)) return;
+    currentTokenTps = payload.tps;
+  });
 
   function formatElapsed(ms: number): string {
     if (ms < 1000) return `${ms}ms`;
@@ -389,6 +402,7 @@ export default function (pi: ExtensionAPI) {
 
   pi.on("agent_start", async (_event, ctx) => {
     currentMessage = pickRandom();
+    currentTokenTps = null;
     startTime = Date.now();
 
     // Update immediately
@@ -398,7 +412,13 @@ export default function (pi: ExtensionAPI) {
     timerInterval = setInterval(() => {
       if (startTime !== null) {
         const elapsed = Date.now() - startTime;
-        ctx.ui.setWorkingMessage(`${currentMessage} ${formatElapsed(elapsed)}`);
+        const tokenTps =
+          currentTokenTps === null
+            ? ""
+            : ` @ ${currentTokenTps.toFixed(1)}tok/s`;
+        ctx.ui.setWorkingMessage(
+          `${currentMessage} ${formatElapsed(elapsed)}${tokenTps}`,
+        );
       }
     }, 100);
   });
@@ -412,6 +432,7 @@ export default function (pi: ExtensionAPI) {
 
     startTime = null;
     currentMessage = "";
+    currentTokenTps = null;
     ctx.ui.setWorkingMessage(); // Reset for next time
   });
 }

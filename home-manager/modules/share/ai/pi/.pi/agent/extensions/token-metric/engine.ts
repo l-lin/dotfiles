@@ -1,0 +1,207 @@
+import { SlidingWindow } from "./sliding-window.js";
+
+export class TokenSpeedEngine {
+  private _isStreaming = false;
+  private _tokenCount = 0;
+  private _startTime = 0;
+  private _endTime = 0;
+  private _ttftStart = 0;
+  private _ttftEnd = 0;
+  private _countedUsageOutput = 0;
+
+  private _slidingWindow!: SlidingWindow;
+  private _windowMs!: number;
+  private _useProviderTokens!: boolean;
+  private _countStrategy!: "estimate" | "direct";
+
+  /**
+   * Loads configuration from disk. Must be called before any other method.
+   */
+  async initialize(): Promise<void> {
+    // sliding window duration (ms) for time-based TPS calculation
+    this._windowMs = 1_000;
+    this._slidingWindow = new SlidingWindow(this._windowMs);
+    // counting strategy for the extension
+    this._countStrategy = "direct";
+    // selection for extension vs provider's counter
+    this._useProviderTokens = true;
+  }
+
+  /**
+   * Records a streaming delta.
+   *
+   * Uses provider-reported output-token count when available.
+   * Otherwise, falls back to this extension's counter.
+   *
+   * Counting behavior:
+   * - `direct`: Counts 1 token per delta (text, thinking, toolcall)
+   * - `estimate`: Approximates tokens from delta text using word-boundary regex
+   *
+   * @param delta The text/thinking delta string.
+   * @param usageOutput Provider-reported cumulative output-token count (optional).
+   */
+  recordDelta(delta: string, usageOutput?: number): void {
+    if (!this._isStreaming) return;
+
+    const shouldUseProviderTokens =
+      this._useProviderTokens &&
+      usageOutput !== undefined &&
+      usageOutput > this._countedUsageOutput;
+
+    if (shouldUseProviderTokens) {
+      this.recordTokens(usageOutput - this._countedUsageOutput);
+      this._countedUsageOutput = usageOutput;
+      return;
+    }
+
+    // Fallback: estimate or direct counting
+    if (this._countStrategy === "estimate") {
+      this.recordTokens(this.estimateTokens(delta));
+    } else {
+      this.recordTokens(1);
+    }
+  }
+
+  /**
+   * Snap the total to the authoritative usage so the final average is exact.
+   *
+   * @param tokens The authoritative token count from the message end event.
+   */
+  reconcileTotal(tokens: number): void {
+    if (tokens > 0) this._tokenCount = tokens;
+  }
+
+  /**
+   * Whether a streaming session is currently active
+   */
+  get isStreaming() {
+    return this._isStreaming;
+  }
+
+  /**
+   * Total number of tokens recorded since stream start
+   */
+  get tokenCount() {
+    return this._tokenCount;
+  }
+
+  /**
+   * Returns elapsed milliseconds since stream start (0 if not started)
+   */
+  get elapsedMs(): number {
+    if (this._startTime === 0) return 0;
+    if (this.isStreaming) return Date.now() - this._startTime;
+    return this._endTime - this._startTime;
+  }
+
+  /** Returns elapsed seconds since stream start (0 if not started). */
+  get elapsedSeconds(): number {
+    return this.elapsedMs / 1000;
+  }
+
+  /**
+   * Returns tokens-per-second based on a time-based sliding window.
+   * Falls back to the overall average during the first window period.
+   */
+  get tps(): number {
+    // While the window is still filling, use the average instead
+    if (this.elapsedMs < this._windowMs) return this.tps_avg;
+
+    // While we're stopped, return our last calculation
+    if (!this.isStreaming) return this.tps_avg;
+
+    return this._slidingWindow.getTps(Date.now());
+  }
+
+  /**
+   * Returns average tokens-per-second
+   */
+  private get tps_avg(): number {
+    if (this.elapsedSeconds === 0) return 0;
+    return this.tokenCount / this.elapsedSeconds;
+  }
+
+  /**
+   * Returns time to first token in milliseconds
+   */
+  get ttft(): number {
+    return Math.max(this._ttftEnd - this._ttftStart, 0);
+  }
+
+  /**
+   * Starts a new streaming session.
+   */
+  start(): void {
+    this._tokenCount = 0;
+    this._isStreaming = true;
+    this._startTime = Date.now();
+    this._endTime = Date.now();
+    this._slidingWindow.reset();
+    this._countedUsageOutput = 0;
+  }
+
+  /**
+   * Records the start timestamp for TTFT measurement.
+   */
+  startTTFT(): void {
+    this._ttftStart = Date.now();
+    this._ttftEnd = 0;
+  }
+
+  /**
+   * Records the end timestamp for TTFT measurement.
+   * Only captures once per stream (guarded by _ttftEnd).
+   *
+   * Also resets _startTime to this moment, because TTFT represents the
+   * gap before tokens start flowing — TPS calculations should only measure
+   * the period during which tokens are actually being produced.
+   */
+  stopTTFT(): void {
+    if (this._ttftEnd !== 0) return;
+
+    // Record the timestamp
+    this._ttftEnd = Date.now();
+
+    // Align streaming window start with the first token arrival
+    this._startTime = Date.now();
+  }
+
+  /**
+   * Stops streaming.
+   */
+  stop(): void {
+    this._isStreaming = false;
+    this._endTime = Date.now();
+    this._slidingWindow.reset();
+  }
+
+  /**
+   * Records a batch of tokens, pushing a timestamped event for TPS calculation.
+   *
+   * @param tokens The number of tokens to record.
+   */
+  private recordTokens(tokens: number): void {
+    if (!this._isStreaming || tokens <= 0) return;
+
+    this._tokenCount += tokens;
+    this._slidingWindow.record(tokens);
+  }
+
+  /**
+   * Estimates tokens in a text string using a word-boundary regex.
+   * Used as a fallback when the provider doesn't report token counts.
+   *
+   * The regex matches word characters and non-whitespace punctuation:
+   * `/\w+|[\^\s\w]/g` — counts words and punctuation separately
+   *
+   * @param text The text to estimate token count for.
+   * @returns The estimated number of tokens.
+   */
+  private estimateTokens(text: string): number {
+    if (!text) return 0;
+    const matches = text.match(/\w+|[^\s\w]/g);
+    return matches ? matches.length : 0;
+  }
+}
+
+export const engine = new TokenSpeedEngine();

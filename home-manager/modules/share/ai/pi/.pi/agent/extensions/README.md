@@ -15,6 +15,7 @@ This directory contains local Pi extensions and one shared support module. Each 
 | [`session-breakdown`](./session-breakdown/)   | Analyzes Pi session history and shows activity, token, cost, and model trends in a TUI view.                                                      |
 | [`skill-breakdown`](./skill-breakdown/)       | Analyzes Pi session history and shows top skills, less-used skills, and per-project skill summaries over the last 7, 30, or 90 days.              |
 | [`snippet`](./snippet/)                       | Expands prompt snippets before the input is sent to the agent.                                                                                    |
+| [`token-metric`](./token-metric/)             | Tracks assistant token speed and publishes live `tok/s` snapshots over the extension event bus.                                                   |
 | [`tool-settings`](./tool-settings/)           | Shared helpers for enable or disable toggles and persisted extension settings. It is support infrastructure, not a user-facing feature by itself. |
 | [`web-fetch`](./web-fetch/)                   | Fetches a URL as readable text or raw page content.                                                                                               |
 | [`web-search`](./web-search/)                 | Searches the web through Tavily, with filters and AI-generated summaries.                                                                         |

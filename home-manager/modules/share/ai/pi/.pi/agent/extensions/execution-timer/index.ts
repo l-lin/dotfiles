@@ -4,9 +4,16 @@
  * Tracks wall-clock time for each agent run and displays a summary notification
  * when the agent finishes. Shows total elapsed time broken down into estimated
  * LLM time and tool execution times.
+ *
+ * Dependencies:
+ * - ../token-metric/
  */
 
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import {
+  isTokenMetricSnapshot,
+  TOKEN_METRIC_CHANGED_EVENT,
+} from "../token-metric/events.js";
 
 interface ToolTiming {
   name: string;
@@ -21,6 +28,14 @@ interface RunState {
 
 export default function (pi: ExtensionAPI) {
   let run: RunState | null = null;
+  let latestTokenTps: number | null = null;
+
+  pi.events.on(TOKEN_METRIC_CHANGED_EVENT, (payload: unknown) => {
+    if (!isTokenMetricSnapshot(payload)) return;
+    if (payload.tps !== null) {
+      latestTokenTps = payload.tps;
+    }
+  });
 
   function formatMs(ms: number): string {
     if (ms < 1000) return `${ms}ms`;
@@ -32,6 +47,7 @@ export default function (pi: ExtensionAPI) {
 
   pi.on("agent_start", (_event, _ctx) => {
     run = { agentStart: Date.now(), toolStarts: new Map(), toolTimings: [] };
+    latestTokenTps = null;
   });
 
   pi.on("tool_execution_start", (event, _ctx) => {
@@ -56,7 +72,11 @@ export default function (pi: ExtensionAPI) {
 
     const breakdown = [`󰧑 ${formatMs(llmMs)}`];
     if (toolMs > 0) breakdown.push(` ${formatMs(toolMs)}`);
-    const message = ` ${formatMs(totalMs)} (${breakdown.join(" + ")})`;
+
+    const tokenSpeedMsg =
+      latestTokenTps === null ? "" : ` 󰓅 ${latestTokenTps.toFixed(1)}tok/s`;
+
+    const message = ` ${formatMs(totalMs)} (${breakdown.join(" + ")})${tokenSpeedMsg}`;
 
     ctx.ui.notify(message, "info");
     run = null;
