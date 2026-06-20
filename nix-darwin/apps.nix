@@ -35,11 +35,20 @@
       #   - In other words, brew uninstall --zap is run for all those formulae.
       # Do not cleanup, because some formulae are automatically installed by company dev tools.
       cleanup = "none";
+      extraEnv = {
+        # Need this extra env because otherwise, homebrew won't know which taps/casks are trusted
+        # as it will not look at ~/.config/homebrew/trust.json file but elsewhere.
+        # We cannot use `config.xdg.configHome` because it seems this file is evaluated earlier.
+        XDG_CONFIG_HOME = "/Users/${userSettings.username}/.config";
+      };
     };
 
     taps = [
+      # For dox: https://github.com/bgreenwell/doxx
       "bgreenwell/doxx"
-      "datadog-labs/pack"
+      # For aerospace: https://github.com/nikitabobko/AeroSpace
+      "nikitabobko/tap"
+      # For xcodes: https://github.com/XcodesOrg/xcodes
       "xcodesorg/made"
     ];
 
@@ -82,7 +91,7 @@
     # To get the list of installed apps with brew casks: `brew list --casks`
     casks = [
       # i3-like tiling window manager for macOS: https://github.com/nikitabobko/AeroSpace
-      "aerospace"
+      "nikitabobko/tap/aerospace"
       # Tools for building Android applications: https://developer.android.com/studio/
       "android-studio"
       # Web security testing toolkit: https://portswigger.net/burp/
