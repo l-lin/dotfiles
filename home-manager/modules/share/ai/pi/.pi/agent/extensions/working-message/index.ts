@@ -11,7 +11,7 @@ import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import {
   isTokenMetricSnapshot,
   TOKEN_METRIC_CHANGED_EVENT,
-} from "../token-metric/events.js";
+} from "../token-speed/events.js";
 
 const messages = [
   "Reluctantly executing...",

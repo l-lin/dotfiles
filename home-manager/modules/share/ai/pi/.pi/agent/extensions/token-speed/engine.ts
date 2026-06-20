@@ -24,7 +24,7 @@ export class TokenSpeedEngine {
     // counting strategy for the extension
     this._countStrategy = "direct";
     // selection for extension vs provider's counter
-    this._useProviderTokens = true;
+    this._useProviderTokens = false;
   }
 
   /**
@@ -204,4 +204,4 @@ export class TokenSpeedEngine {
   }
 }
 
-export const engine = new TokenSpeedEngine();
+export const engine = new TokenSpeedEngine()
