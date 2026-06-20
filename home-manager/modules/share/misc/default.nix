@@ -11,7 +11,7 @@
     # Client for cheat.sh: https://github.com/chubin/cheat.sh
     cht-sh
     # Syntax highlighting for diff: https://www.colordiff.org/
-    colordiff
+    #colordiff
     # Scan Nix files for dead code: https://github.com/astro/deadnix
     deadnix
     # Search DuckDuckGo from the terminal: https://github.com/jarun/ddgr
