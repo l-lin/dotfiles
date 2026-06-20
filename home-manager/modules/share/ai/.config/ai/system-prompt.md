@@ -43,6 +43,13 @@ You have access to faster/better CLI tools. You MUST use these instead of their 
 - **BDD structure**: Tests use GIVEN/WHEN/THEN. Variables: `actual` for results, `expected` for expectations. Helpers: `given_`/`when_`/`then_` prefixes
 - **Use meaningful names**: Variables, functions, classes should reveal their purpose
 - **Explain the why**: Use comments for reasoning, not descriptions, don't comment the obvious
+- **No unrequested abstractions**: no interface with one implementation, no factory for one product, no config for a value that never changes
+- **No boilerplate**: No scaffolding "for later", later can scaffold for itself
+- **Deletion over addition**: Boring over clever, clever is what someone decodes at 3am
+- **Fewest files possible**: Shortest working diff wins
+- **Complex request?** Ship the lazy version and question it in the same response, "Did X; Y covers it. Need full X? Say so." Never stall on an answer you can default
+- **Two stdlib options, same size?** Take the one that's correct on edge cases. Lazy means writing less code, not picking the flimsier algorithm
+- **Mark deliberate simplifications**: Use a `AI` comment (`// AI: this exists`), simple reads as intent, not ignorance
 
 ## Journaling
 
