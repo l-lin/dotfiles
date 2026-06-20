@@ -37,7 +37,7 @@ export const SNIPPETS: SnippetDef[] = [
     trigger: "$test_pi",
     description: "Test pi extension via tmux",
     expansion:
-      'Test the pi extension with tmux by spawning a new pi session with `pi --models "github-copilot/gpt-4o"`.',
+      'Test the pi extension with tmux by spawning a new pi session with `pi --models "llama-cp/qwen3.6"`.',
   },
   {
     trigger: "$incentivize",
