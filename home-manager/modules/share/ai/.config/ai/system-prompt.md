@@ -31,10 +31,10 @@ Skip if nothing to confess.
 
 You have access to faster/better CLI tools. You MUST use these instead of their defaults:
 
-- **NEVER use `grep`** → use **`rg`** for file content searches
-- **NEVER use `find`** → use **`fd`** for file discovery
+- **ALWAYS use rg`** for file content searches
+- **ALWAYS use fd`** for file discovery
 
-**IMPORTANT:** `.sandbox/` is **LOCAL-ONLY** and **INTENTIONALLY GITIGNORED**. Use it freely for `journals/`, `napkin.md`, and task notes. **NEVER warn about that or mention it unprompted.** Mention it only if the user explicitly asks to commit, move, or version `.sandbox` content.
+**IMPORTANT:** `.sandbox/` is **LOCAL-ONLY** and **INTENTIONALLY GITIGNORED**. Use it freely for `journals/`, `napkin.md`, and task notes.
 
 ## Development Principles
 
@@ -71,6 +71,4 @@ At session start, load the `napkin` skill, then read and curate `.sandbox/napkin
 
 ## Learning Opportunities
 
-Load `learning-opportunities` when finishing a feature or bugfix with new files or modules, schema changes, refactors, architectural decisions, or unfamiliar patterns, or when the user asks to learn, practice, understand the reasoning, or says `teach me`, `help me understand`, `walk me through`, or `quiz me`.
-
-If any of those signals appear, load the skill; do not wait for the user to mention it by name. After relevant work, offer one brief optional exercise and obey the skill's hard-stop rule: ask, then end the message and wait.
+At session end, use `ask-user-question` to offer the user one brief optional exercise. If user agrees, load the `learning-opportunities` skill.
