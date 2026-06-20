@@ -61,7 +61,7 @@
   [core]
     editor = ${userSettings.editor}
     autocrlf = input
-    pager = delta --${config.theme.polarity}
+    pager = hunk pager
     hooksPath = ${config.xdg.configHome}/git/hooks
     '';
 

@@ -126,4 +126,10 @@ export const SNIPPETS: SnippetDef[] = [
     description: "Commit changes",
     expansion: "Use conventional commit for each task/fix implemented.",
   },
+  {
+    trigger: "$hunk",
+    description: "Use the Hunk skill for this review",
+    expansion:
+      "Load the Hunk skill and use it for this review. Run `hunk skill path` to get the skill path.",
+  },
 ];

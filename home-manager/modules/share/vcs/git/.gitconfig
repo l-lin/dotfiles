@@ -102,11 +102,6 @@
   diffFilter = delta --color-only --features=interactive
 [log]
   date = iso
-[pager]
-  blame  = delta
-  diff   = delta
-  reflog = delta
-  show   = delta
 [pretty]
   # reflog, with relative date (but for commits, not reflog entries!):
   reflog = %Cred%h%Creset - %Cblue%gd%Creset -%C(yellow)%d%Creset %s %Cgreen(%ci) %C(bold blue)<%an>%Creset
