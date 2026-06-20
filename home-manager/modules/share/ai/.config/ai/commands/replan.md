@@ -47,6 +47,17 @@ Repeat steps 3-5 at least **three times**, asking for user feedback at each iter
 
 Assemble the best features from all iterations into a robust final plan.
 
+### 8. Write plan
+
+Write the plan to `.sandbox/plans/YYYY-MM-DD-JIRA-XXXX-description.md`:
+
+- YYYY-MM-DD is today's date
+- JIRA-XXXX is the ticket number (omit if no ticket)
+- description is a brief kebab-case description
+- Examples:
+  - with ticket: `2025-01-08-JIRA-1478-parent-child-tracking.md`
+  - without ticket: `2025-01-08-improve-error-handling.md`
+
 ## Output Format
 
 For each iteration, present options with pros/cons:
