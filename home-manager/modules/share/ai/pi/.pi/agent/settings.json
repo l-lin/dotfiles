@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.79.8",
+  "lastChangelogVersion": "0.79.9",
   "theme": "light",
   "defaultProvider": "llama-cpp",
   "defaultModel": "qwen3.6",
