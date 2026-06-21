@@ -342,7 +342,6 @@ export default function (pi: ExtensionAPI) {
       const confirmed = await ctx.ui.confirm(
         `${ICON} Permission required`,
         `Damage-control flagged this ${event.toolName} call: ${violationReason}\n\n${inputSummary}\n\nAllow it to continue?`,
-        { timeout: 30000 },
       );
 
       if (!confirmed) {
