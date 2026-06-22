@@ -35,9 +35,9 @@ Pause points follow this pattern:
 
 Use explicit markers:
 
-> **Your turn:** What do you think happens when [specific scenario]?
-> 
-> (Take your best guess—wrong predictions are useful data.)
+```
+❓ What do you think happens when [specific scenario]?
+```
 
 Wait for their response before continuing.
 

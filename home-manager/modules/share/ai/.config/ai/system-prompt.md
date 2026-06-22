@@ -31,10 +31,11 @@ Skip if nothing to confess.
 
 You have access to faster/better CLI tools. You MUST use these instead of their defaults:
 
-- **ALWAYS use rg`** for file content searches
-- **ALWAYS use fd`** for file discovery
+- **ALWAYS use `rg`** for file content searches
+- **ALWAYS use `fd`** for file discovery
+- **ALWAYS use `gh`** for Github operations
 
-**IMPORTANT:** `.sandbox/` is **LOCAL-ONLY** and **INTENTIONALLY GITIGNORED**. Use it freely for `journals/`, `napkin.md`, and task notes.
+**IMPORTANT:** `.sandbox/` is **LOCAL-ONLY** and **INTENTIONALLY GITIGNORED**. Use it freely for `journals/`, `napkin.md`, task notes, and temporary scripts.
 
 ## Development Principles
 
