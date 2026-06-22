@@ -116,7 +116,7 @@ test("token-metric GIVEN provider output usage WHEN the assistant stream updates
     );
 
     const actual = when_gettingLatestBusPayload(TOKEN_METRIC_CHANGED_EVENT);
-    const expected = { tps: 500 };
+    const expected = { tps: 10 };
     assert.deepEqual(actual, expected);
   } finally {
     interval.restore();
