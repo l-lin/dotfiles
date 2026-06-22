@@ -8,7 +8,6 @@ This directory contains local Pi extensions and one shared support module. Each 
 | [`ask-user-question`](./ask-user-question/)   | Adds an interactive TUI prompt for asking the user one or more multiple-choice questions.                                                         |
 | [`awesome-editor`](./awesome-editor/)         | Replaces the editor with Vim-style modal editing and snippet autocomplete.                                                                        |
 | [`context`](./context/)                       | Shows a TUI overview of loaded extensions, skills, project context files, and usage totals.                                                       |
-| [`enforce-modern-cli`](./enforce-modern-cli/) | Blocks legacy `grep` and `find` calls in Bash and points the agent to `rg` and `fd` instead.                                                      |
 | [`execution-timer`](./execution-timer/)       | Tracks each run and shows elapsed time with a simple tool-versus-agent breakdown.                                                                 |
 | [`footer`](./footer/)                         | Replaces the default footer with richer status, directory, and usage lines...                                                                     |
 | [`sandbox`](./sandbox/)                       | Wraps bash commands in OS-level sandboxing (macOS sandbox-exec, Linux bubblewrap) with configurable filesystem and network restrictions.          |
