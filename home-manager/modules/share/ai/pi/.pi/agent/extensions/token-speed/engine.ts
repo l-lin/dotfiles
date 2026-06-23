@@ -204,4 +204,4 @@ export class TokenSpeedEngine {
   }
 }
 
-export const engine = new TokenSpeedEngine()
+export const engine = new TokenSpeedEngine();

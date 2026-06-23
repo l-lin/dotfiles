@@ -61,6 +61,7 @@ export function createDefaultConfig(
     enabled: true,
     network: {
       allowedDomains: [
+        "127.0.0.1",
         "localhost",
         "npmjs.org",
         "*.npmjs.org",
