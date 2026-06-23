@@ -25,6 +25,12 @@
         # Suppress the following warning for now:
         # mise WARN  env value contains '$' which will be expanded in a future release. Set `env_shell_expand = true` to opt in or `env_shell_expand = false` to keep current behavior and suppress this warning.
         env_shell_expand = true;
+
+        # Authenticate GitHub API requests via the gh CLI to avoid anonymous
+        # rate limits (403). Must live in the GLOBAL config: mise ignores
+        # `github.credential_command` set in project-local mise.toml files for
+        # security reasons.
+        github.credential_command = "gh auth token";
       };
     };
   };
