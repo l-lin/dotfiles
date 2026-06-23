@@ -1,7 +1,7 @@
 {
   "plugins": {
     "SchemaStore.nvim": {
-      "rev": "c73e2b170a4927d1dc1b48e878bba6cf0ed9b07c",
+      "rev": "e034560c0266d5a99d811f595b04ce839ab868ff",
       "src": "https://github.com/b0o/SchemaStore.nvim"
     },
     "blink-cmp-wiki-links": {
@@ -71,7 +71,7 @@
       "src": "https://github.com/nvim-mini/mini.ai"
     },
     "mini.files": {
-      "rev": "a5689dae6b732955e33eec225b798d6815063179",
+      "rev": "8bfdad2e32dc2fe9451acca9caafcf8564658669",
       "src": "https://github.com/nvim-mini/mini.files"
     },
     "mini.icons": {
