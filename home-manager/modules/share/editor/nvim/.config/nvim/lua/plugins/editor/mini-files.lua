@@ -54,7 +54,7 @@ local function setup_files()
   })
 
   vim.keymap.set("n", "<leader>fh", function()
-    require("mini.files").open(find_sub_module(), true)
+    require("mini.files").open(find_sub_module(), false)
   end, {
     desc = "Open mini.files in current sub-module/sub-project",
     remap = true,
