@@ -44,7 +44,7 @@ local function setup_files()
   vim.keymap.set("n", "<M-1>", function()
     local path = vim.api.nvim_buf_get_name(0)
     if path:match("^minifiles://") then
-      require("mini.files").open(vim.uv.cwd(), true)
+      require("mini.files").open(vim.uv.cwd(), false)
     else
       require("mini.files").open(path, true)
     end
