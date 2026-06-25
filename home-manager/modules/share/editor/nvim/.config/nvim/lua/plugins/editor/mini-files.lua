@@ -9,7 +9,7 @@ local function find_sub_module()
     end
   end
 
-  if extension == "java" then
+  if extension == "java" or extension == "kt" then
     local filepath = vim.fn.expand("%:.")
     local dir = vim.fn.fnamemodify(filepath, ":h")
     while dir ~= "/" do
