@@ -77,6 +77,11 @@ You have access to faster/better CLI tools. You MUST use these instead of their 
 
 At session start, load the `napkin` skill, then read and curate `.sandbox/napkin.md` (not a log). The skill defines the format and curation policy — load it before touching the file.
 
+## Continuous Learning
+
+At session end, before the optional exercise, review the work for durable knowledge. If the session produced a reusable technique, pitfall, debugging flow, tool pattern, or repo-specific rule, load `continuous-learning`  skill and follow it.
+Do not wait for the user to name the command. That workflow must ask before it creates or updates any skill or `AGENTS.md` file.
+
 ## Learning Opportunities
 
-At session end, use `ask-user-question` to offer the user one brief optional exercise. If user agrees, load the `learning-opportunities` skill.
+After the continuous-learning check, use `ask-user-question` to offer the user one brief optional exercise. If the user agrees, load the `learning-opportunities` skill.
