@@ -73,6 +73,7 @@ export function createDefaultConfig(
         "*.github.com",
         "api.github.com",
         "raw.githubusercontent.com",
+        "*.atlassian.net",
       ],
       deniedDomains: [],
       ...(allowUnixSockets.length > 0 ? { allowUnixSockets } : {}),
