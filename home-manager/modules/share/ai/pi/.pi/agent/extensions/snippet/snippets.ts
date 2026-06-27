@@ -40,6 +40,33 @@ export const SNIPPETS: SnippetDef[] = [
       'Test the pi extension with tmux by spawning a new pi session with `pi --models "llama-cp/qwen3.6"`.',
   },
   {
+    trigger: "$idk",
+    description: "Admit when you don't know something",
+    expansion:
+      "If you don't know the answer, say 'I don't know' instead of guessing. It's better to admit uncertainty than to provide incorrect information.",
+  },
+  {
+    trigger: "$concise",
+    description: "Be concise",
+    expansion: "Respond in 3 bullet points.",
+  },
+  {
+    trigger: "$commit",
+    description: "Commit changes",
+    expansion: "Use conventional commit for each task/fix implemented.",
+  },
+  {
+    trigger: "$hunk",
+    description: "Use the Hunk skill for this review",
+    expansion:
+      "Load the Hunk skill and use it for this review. Run `hunk skill path` to get the skill path.",
+  },
+  {
+    trigger: "$pr_description",
+    description: "Update the PR description with diagrams",
+    expansion: "Update PR description with gh CLI with diagrams to help reviewers.",
+  },
+  {
     trigger: "$incentivize",
     description:
       "Insert a random psychological prompting trick (incentive, challenge, deep breath, stakes, self-check)",
@@ -109,27 +136,5 @@ export const SNIPPETS: SnippetDef[] = [
       ];
       return prompts[Math.floor(Math.random() * prompts.length)];
     },
-  },
-  {
-    trigger: "$idk",
-    description: "Admit when you don't know something",
-    expansion:
-      "If you don't know the answer, say 'I don't know' instead of guessing. It's better to admit uncertainty than to provide incorrect information.",
-  },
-  {
-    trigger: "$concise",
-    description: "Be concise",
-    expansion: "Respond in 3 bullet points.",
-  },
-  {
-    trigger: "$commit",
-    description: "Commit changes",
-    expansion: "Use conventional commit for each task/fix implemented.",
-  },
-  {
-    trigger: "$hunk",
-    description: "Use the Hunk skill for this review",
-    expansion:
-      "Load the Hunk skill and use it for this review. Run `hunk skill path` to get the skill path.",
   },
 ];
