@@ -12,6 +12,7 @@
     ".pi/agent/keybindings.json".source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/ai/pi/.pi/agent/keybindings.json";
     ".pi/agent/models.json".source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/ai/pi/.pi/agent/models.json";
     ".pi/agent/damage-control-rules.yml".source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/ai/pi/.pi/agent/damage-control-rules.yml";
+    ".pi/agent/mcp.json".source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/ai/pi/.pi/agent/mcp.json";
 
     ".pi/agent/APPEND_SYSTEM.md".source = ../.config/ai/system-prompt.md;
     ".pi/agent/extensions" = {
