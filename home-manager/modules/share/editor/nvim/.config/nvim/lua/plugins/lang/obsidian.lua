@@ -76,6 +76,10 @@ local function setup()
         name = "state-of-ai",
         path = "~/perso/codeberg/state-of-ai",
       },
+      {
+        name = "wiki",
+        path = "~/work/wiki",
+      },
     },
   })
 
