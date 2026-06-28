@@ -34,9 +34,11 @@ This repo contains local Pi extensions. In practice, each top-level directory wi
 
 1. **Follow the local toggle pattern.**
    Do instead: when an extension can be enabled or disabled, reuse `tool-settings/` and persist state under `~/.pi/agent/settings.json`.
-2. **Match the repo structure.**
+2. **Match package-owned tools by source metadata.**
+   Do instead: when a local extension needs to disable tools from an installed package, collect them from `pi.getAllTools()` by `sourceInfo.source`, apply `pi.setActiveTools(...)` on `session_start`, and emit a companion event if footer or other UI state must stay in sync.
+3. **Match the repo structure.**
    Do instead: keep each extension in its own top-level folder, with `index.ts` as the main entrypoint.
-3. **Prefer narrow edits.**
+4. **Prefer narrow edits.**
    Do instead: extend the nearest existing pattern before inventing a new one.
 
 ## When you add, remove, or rename an extension
