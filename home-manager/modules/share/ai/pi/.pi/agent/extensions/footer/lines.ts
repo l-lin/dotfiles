@@ -22,9 +22,10 @@ import {
   buildToolIcons,
 } from "./data.js";
 
-export interface DirectoryLineState {
+export interface FooterRuntimeState {
   sandboxEnabled?: boolean;
   damageControlEnabled?: boolean;
+  mcpAdapterEnabled?: boolean;
 }
 
 export function buildStatsLine(
@@ -82,7 +83,7 @@ export function buildDirectoryLine(
   width: number,
   theme: Theme,
   footerData: ReadonlyFooterDataProvider,
-  state: DirectoryLineState = {},
+  state: FooterRuntimeState = {},
 ): string {
   const pwd = formatCurrentDirectory();
   const branch = footerData.getGitBranch();
@@ -93,8 +94,11 @@ export function buildDirectoryLine(
   const damageControlIcon = state.damageControlEnabled
     ? theme.fg("dim", ICONS["damage-control-enabled"])
     : theme.fg("error", ICONS["damage-control-disabled"]);
+  const mcpIcon = state.mcpAdapterEnabled
+    ? theme.fg("dim", ICONS["mcp-enabled"])
+    : theme.fg("error", ICONS["mcp-disabled"]);
   const directory = theme.fg("dim", `${ICONS["cwd"]} ${pwd}`);
-  const cwdLeft = `${sandboxIcon} ${damageControlIcon} ${directory}`;
+  const cwdLeft = `${sandboxIcon} ${damageControlIcon} ${mcpIcon} ${directory}`;
   const branchRight = branch
     ? theme.fg("dim", `${ICONS["branch"]} ${branch}`)
     : "";
@@ -123,16 +127,18 @@ export function buildStatusLine(
   width: number,
   theme: Theme,
   footerData: ReadonlyFooterDataProvider,
+  state: FooterRuntimeState = {},
 ): string | null {
-  const statuses = footerData.getExtensionStatuses();
+  const statuses = Array.from(footerData.getExtensionStatuses().entries())
+    .filter(([key]) => state.mcpAdapterEnabled !== false || key !== "mcp")
+    .sort(([a], [b]) => a.localeCompare(b));
 
-  if (statuses.size === 0) {
+  if (statuses.length === 0) {
     return null;
   }
 
-  const statusLine = Array.from(statuses.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([, v]) => v.replace(/[\r\n\t]/g, " ").trim())
+  const statusLine = statuses
+    .map(([, value]) => value.replace(/[\r\n\t]/g, " ").trim())
     .join("  ");
 
   return truncateToWidth(statusLine, width, theme.fg("dim", "…"));

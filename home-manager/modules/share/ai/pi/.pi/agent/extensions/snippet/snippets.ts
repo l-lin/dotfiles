@@ -64,7 +64,8 @@ export const SNIPPETS: SnippetDef[] = [
   {
     trigger: "$pr_description",
     description: "Update the PR description with diagrams",
-    expansion: "Update PR description with gh CLI with diagrams to help reviewers.",
+    expansion:
+      "Update PR description with gh CLI with diagrams to help reviewers.",
   },
   {
     trigger: "$incentivize",

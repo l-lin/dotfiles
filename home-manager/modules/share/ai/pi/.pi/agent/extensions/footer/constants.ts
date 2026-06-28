@@ -23,6 +23,8 @@ export const ICONS: Record<string, string> = {
   "sandbox-disabled": "󱐜",
   "damage-control-enabled": "󰒘",
   "damage-control-disabled": "󰦞",
+  "mcp-enabled": "󰛳",
+  "mcp-disabled": "󰲛",
 };
 
 export const TOOL_ICONS: Record<string, { enabled: string; disabled: string }> =
@@ -53,5 +55,6 @@ export interface SettingsStructure {
     askUserQuestion?: { enabled?: boolean };
     sandbox?: { enabled?: boolean };
     damageControl?: { enabled?: boolean };
+    mcpAdapter?: { enabled?: boolean };
   };
 }

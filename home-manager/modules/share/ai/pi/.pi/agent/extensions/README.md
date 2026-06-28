@@ -10,6 +10,7 @@ This directory contains local Pi extensions and one shared support module. Each 
 | [`context`](./context/)                     | Shows a TUI overview of loaded extensions, skills, project context files, and usage totals.                                                       |
 | [`execution-timer`](./execution-timer/)     | Tracks each run and shows elapsed time with a simple tool-versus-agent breakdown.                                                                 |
 | [`footer`](./footer/)                       | Replaces the default footer with richer status, directory, and usage lines...                                                                     |
+| [`mcp-toggle`](./mcp-toggle/)               | Lets you turn `pi-mcp-adapter` tools on or off while keeping the adapter's `/mcp` and `/mcp-auth` commands available.                             |
 | [`sandbox`](./sandbox/)                     | Wraps bash commands in OS-level sandboxing (macOS sandbox-exec, Linux bubblewrap) with configurable filesystem and network restrictions.          |
 | [`session-breakdown`](./session-breakdown/) | Analyzes Pi session history and shows activity, token, cost, and model trends in a TUI view.                                                      |
 | [`skill-breakdown`](./skill-breakdown/)     | Analyzes Pi session history and shows top skills, less-used skills, and per-project skill summaries over the last 7, 30, or 90 days.              |

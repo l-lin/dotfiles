@@ -38,6 +38,9 @@
     },
     "damageControl": {
       "enabled": true
+    },
+    "mcpAdapter": {
+      "enabled": false
     }
   },
   "packages": [
