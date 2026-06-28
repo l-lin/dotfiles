@@ -4,7 +4,10 @@
  * Watches for read tool calls that load a SKILL.md file and displays a widget
  * below the editor listing every skill activated in the current session.
  */
-import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import type {
+  ExtensionAPI,
+  ExtensionContext,
+} from "@earendil-works/pi-coding-agent";
 import { isReadToolResult } from "@earendil-works/pi-coding-agent";
 import { SkillTracker, isSkillPath } from "./tracker.js";
 import { updateSkillWidget, clearSkillWidget } from "./widget.js";
@@ -12,9 +15,14 @@ import { updateSkillWidget, clearSkillWidget } from "./widget.js";
 export default function (pi: ExtensionAPI) {
   const tracker = new SkillTracker();
 
+  const rebuildWidgetFromBranch = (ctx: ExtensionContext) => {
+    tracker.rebuildFromHistory(ctx);
+    updateSkillWidget(ctx, tracker.list());
+  };
+
   // Fresh sessions start empty.
-  // Startup/reload/resume/fork should rebuild from session history so the
-  // widget reflects skills that were already loaded.
+  // Startup/reload/resume/fork should rebuild from the active branch so the
+  // widget reflects skills that are still in scope.
   pi.on("session_start", (event, ctx) => {
     if (event.reason === "new") {
       tracker.reset();
@@ -22,8 +30,13 @@ export default function (pi: ExtensionAPI) {
       return;
     }
 
-    tracker.rebuildFromHistory(ctx);
-    updateSkillWidget(ctx, tracker.list());
+    rebuildWidgetFromBranch(ctx);
+  });
+
+  // /tree keeps the same session file but changes the active branch, so
+  // branch-scoped widget state must be reconstructed.
+  pi.on("session_tree", (_event, ctx) => {
+    rebuildWidgetFromBranch(ctx);
   });
 
   pi.on("session_shutdown", (_event, ctx) => {

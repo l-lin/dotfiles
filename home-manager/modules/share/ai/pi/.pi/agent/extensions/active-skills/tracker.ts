@@ -57,15 +57,15 @@ export class SkillTracker {
   }
 
   /**
-   * Reconstructs activated skills by scanning existing session message history.
-   * Used when resuming a session or after /reload.
+   * Reconstructs activated skills by scanning the current branch history.
+   * Used when resuming, reloading, or navigating the session tree.
    *
-   * @param ctx The extension context, providing access to session history.
+   * @param ctx The extension context, providing access to the active branch.
    */
   rebuildFromHistory(ctx: ExtensionContext): void {
     this.reset();
 
-    for (const entry of ctx.sessionManager.getEntries()) {
+    for (const entry of ctx.sessionManager.getBranch()) {
       if (entry.type !== "message") continue;
 
       const msg = (entry as HistoryMessageEntry).message;
