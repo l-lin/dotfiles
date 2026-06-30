@@ -6,8 +6,8 @@
       "apiKey": "none",
       "models": [
         {
-          "id": "unsloth/diffusiongemma-26B-A4B-it:Q4_K_M",
-          "contextWindow": 262144,
+          "id": "ornith1.0",
+          "contextWindow": 65536,
           "input": ["text", "image"],
           "reasoning": true
         },
