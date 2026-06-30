@@ -22,8 +22,7 @@
  *   Alt+Shift+O    open line above (insert mode shortcut)
  *
  * Snippet autocomplete:
- *   $              Auto-trigger autocomplete for $-prefixed snippets
- *   ?              Manually trigger with Tab for ?-prefixed snippets
+ *   $ / ?          Auto-trigger autocomplete for $- and ?-prefixed snippets
  *   Tab/Enter      Apply selected completion (keeps trigger, e.g. "$date")
  *   Ctrl-E         Apply + expand immediately (e.g. "$da" → "2026-03-07")
  *

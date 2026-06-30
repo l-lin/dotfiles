@@ -114,8 +114,8 @@ export class AwesomeEditor extends CustomEditor {
 
       super.handleInput(data);
 
-      // Auto-trigger snippet autocomplete as soon as "$" is typed.
-      if (data === "$" && !(this as any).autocompleteState) {
+      // Auto-trigger snippet autocomplete as soon as "$" or "?" is typed.
+      if ((data === "$" || data === "?") && !(this as any).autocompleteState) {
         (this as any).tryTriggerAutocomplete();
       }
       return;
