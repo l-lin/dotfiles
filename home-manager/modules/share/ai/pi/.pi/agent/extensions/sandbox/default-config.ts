@@ -74,6 +74,8 @@ export function createDefaultConfig(
         "api.github.com",
         "raw.githubusercontent.com",
         "*.atlassian.net",
+        "datadoghq.com",
+        "*.datadoghq.com",
       ],
       deniedDomains: [],
       ...(allowUnixSockets.length > 0 ? { allowUnixSockets } : {}),
