@@ -107,7 +107,3 @@ Always provide your review in this structured format:
 ## 💡 **Medium Priority Suggestions (Consider for Follow-up)**
 
 [List suggestions for improving clarity, naming, or documentation.]
-
-## ✅ **Good Practices Observed**
-
-[Briefly acknowledge well-written code, good test coverage, or clever solutions to promote positive reinforcement.]
