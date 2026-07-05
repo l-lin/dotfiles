@@ -18,4 +18,4 @@ fi
 mise run update:mise
 mise run update:brew
 mise run update:flake
-mise run home:apply
+mise run home:apply --online

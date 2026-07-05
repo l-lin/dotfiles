@@ -1,20 +1,26 @@
 #!/usr/bin/env bash
 #
 #MISE description="Apply home-manager configuration"
+#USAGE flag "--online" help="Apply using internet"
 #
 
-set -eu
+set -euo pipefail
 
-# unrice before switching to avoid issues with ricing and home-manager fighting over the same files
-if type hmrice >/dev/null 2>&1; then \
-  RICING=$(hmrice status | grep RICING | wc -l)
-  if [ $RICING -gt 0 ]; then
+# Unrice before switching to avoid ricing and home-manager fighting over the same files
+if command -v hmrice &>/dev/null; then
+  if hmrice status | grep -q RICING; then
     hmrice unrice
   fi
 fi
 
-if type nh >/dev/null 2>&1; then \
-  nh home switch --backup-extension bak --configuration "$(whoami)" . -- --show-trace; \
-else \
-  home-manager switch -b bak --flake ".#$(whoami)"; \
+ONLINE_FLAG="${usage_online:-false}"
+
+if command -v nh &>/dev/null; then
+  NH_OPTS=(--backup-extension bak --configuration "$(whoami)" . -- --show-trace)
+  [[ "$ONLINE_FLAG" != "true" ]] && NH_OPTS+=(--offline)
+  nh home switch "${NH_OPTS[@]}"
+else
+  HM_OPTS=(-b bak --flake ".#$(whoami)")
+  [[ "$ONLINE_FLAG" != "true" ]] && HM_OPTS+=(--option substituters "")
+  home-manager switch "${HM_OPTS[@]}"
 fi
