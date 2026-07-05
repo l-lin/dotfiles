@@ -45,7 +45,7 @@ mattmc3/zephyr path:plugins/completion
 # Override and fill in the gaps of the default keybinds.
 mattmc3/zephyr path:plugins/editor
 # Better vi mode.
-jeffreytse/zsh-vi-mode kind:defer
+#jeffreytse/zsh-vi-mode kind:defer
 
 #
 # Fish-like

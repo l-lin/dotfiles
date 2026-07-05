@@ -28,10 +28,12 @@ zstyle ':zephyr:plugin:prompt' theme p10k lean
 #
 
 # Set the key mapping style to 'emacs' or 'vi'.
-zstyle ':zephyr:plugin:editor' key-bindings 'vi'
+zstyle ':zephyr:plugin:editor' key-bindings 'emacs'
+zstyle ':zephyr:plugin:editor:main' cursor block
+zstyle ':zephyr:plugin:editor:emacs' cursor block
 
 # Auto convert .... to ../..
-zstyle ':zephyr:plugin:editor' dot-expansion 'yes'
+zstyle ':zephyr:plugin:editor' dot-expansion 'no'
 
 # Use ^z to return background processes to foreground.
 zstyle ':zephyr:plugin:editor' symmetric-ctrl-z 'yes'
