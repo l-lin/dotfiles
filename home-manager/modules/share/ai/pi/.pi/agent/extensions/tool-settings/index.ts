@@ -26,6 +26,13 @@ export type SaveExtensionSettingsArgs = {
   enabled: boolean;
 };
 
+export type SaveExtensionSettingsPatchArgs<
+  T extends object = Record<string, unknown>,
+> = {
+  extensionKey: string;
+  patch: Partial<T>;
+};
+
 type PiSettings = Record<string, unknown> & {
   extensionSettings?: Record<string, unknown>;
 };
@@ -110,7 +117,9 @@ export function loadEnabledSettings<T extends EnabledSettings>(
   };
 }
 
-export function saveExtensionSettings(args: SaveExtensionSettingsArgs): void {
+export function saveExtensionSettingsPatch<
+  T extends object = Record<string, unknown>,
+>(args: SaveExtensionSettingsPatchArgs<T>): void {
   const settings = readSettingsFile();
   const extensionSettings = isRecord(settings.extensionSettings)
     ? { ...settings.extensionSettings }
@@ -121,11 +130,18 @@ export function saveExtensionSettings(args: SaveExtensionSettingsArgs): void {
 
   extensionSettings[args.extensionKey] = {
     ...existingSettings,
-    enabled: args.enabled,
+    ...args.patch,
   };
   settings.extensionSettings = extensionSettings;
 
   writeSettingsFile(settings);
+}
+
+export function saveExtensionSettings(args: SaveExtensionSettingsArgs): void {
+  saveExtensionSettingsPatch<EnabledSettings>({
+    extensionKey: args.extensionKey,
+    patch: { enabled: args.enabled },
+  });
 }
 
 function readSettingsFile(): PiSettings {

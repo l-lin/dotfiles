@@ -41,6 +41,9 @@
     },
     "mcpAdapter": {
       "enabled": false
+    },
+    "awesomeEditor": {
+      "mode": "emacs"
     }
   },
   "packages": [

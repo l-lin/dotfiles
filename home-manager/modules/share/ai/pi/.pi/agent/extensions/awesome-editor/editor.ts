@@ -4,17 +4,23 @@
  *   - Snippet trigger autocomplete ($date, $tdd, ?q, …)
  */
 
-import { CustomEditor } from "@earendil-works/pi-coding-agent";
+import {
+  CustomEditor,
+  type KeybindingsManager,
+} from "@earendil-works/pi-coding-agent";
 import {
   Key,
   matchesKey,
   parseKey,
   truncateToWidth,
   visibleWidth,
+  type AutocompleteProvider,
+  type EditorTheme,
+  type TUI,
 } from "@earendil-works/pi-tui";
-import type { AutocompleteProvider } from "@earendil-works/pi-tui";
 
 import { withSnippets } from "./snippets.js";
+import type { AwesomeEditorMode } from "./settings.js";
 import { SNIPPETS } from "../snippet/snippets.js";
 import {
   type Mode,
@@ -83,11 +89,22 @@ function normalizeExtendedSequences(data: string): string {
 }
 
 export class AwesomeEditor extends CustomEditor {
-  private mode: Mode = "insert";
+  private editorMode: AwesomeEditorMode;
+  private viMode: Mode = "insert";
   private pendingMotion: PendingMotion = null;
   private pendingOperator: PendingOperator = null;
   private pendingG: PendingG = null;
   private lastCharMotion: LastCharMotion | null = null;
+
+  constructor(
+    tui: TUI,
+    theme: EditorTheme,
+    keybindings: KeybindingsManager,
+    editorMode: AwesomeEditorMode = "vi",
+  ) {
+    super(tui, theme, keybindings);
+    this.editorMode = editorMode;
+  }
 
   // InteractiveMode calls this after construction with its CombinedAutocompleteProvider.
   // We wrap it to prepend snippet suggestions while preserving slash-commands + file paths.
@@ -100,9 +117,14 @@ export class AwesomeEditor extends CustomEditor {
     // so all downstream checks and readline passthrough use the expected bytes.
     data = normalizeExtendedSequences(data);
 
+    if (this.editorMode === "emacs") {
+      this.handleStandardInputMode(data);
+      return;
+    }
+
     if (matchesKey(data, "escape")) return this.handleEscape();
 
-    if (this.mode === "insert") {
+    if (this.viMode === "insert") {
       // Ctrl-E in autocomplete mode: apply + expand snippet
       if (data === "\x05" && (this as any).autocompleteState) {
         this.applyAndExpandSnippet();
@@ -127,6 +149,19 @@ export class AwesomeEditor extends CustomEditor {
     if (this.pendingOperator === "c") return this.handlePendingChange(data);
 
     this.handleNormalMode(data);
+  }
+
+  private handleStandardInputMode(data: string): void {
+    if (data === "\x05" && (this as any).autocompleteState) {
+      this.applyAndExpandSnippet();
+      return;
+    }
+
+    super.handleInput(data);
+
+    if (data === "$" && !(this as any).autocompleteState) {
+      (this as any).tryTriggerAutocomplete();
+    }
   }
 
   // ─── Escape / mode transitions ───────────────────────────────────────────────
@@ -160,8 +195,8 @@ export class AwesomeEditor extends CustomEditor {
       this.pendingOperator = null;
       return;
     }
-    if (this.mode === "insert") {
-      this.mode = "normal";
+    if (this.viMode === "insert") {
+      this.viMode = "normal";
     } else {
       super.handleInput("\x1b"); // pass through to abort agent
     }
@@ -177,7 +212,7 @@ export class AwesomeEditor extends CustomEditor {
       } else if (this.pendingOperator === "c") {
         this.deleteWithCharMotion(this.pendingMotion!, data);
         this.pendingOperator = null;
-        this.mode = "insert";
+        this.viMode = "insert";
       } else {
         this.executeCharMotion(this.pendingMotion!, data);
       }
@@ -206,7 +241,7 @@ export class AwesomeEditor extends CustomEditor {
     if (data === "c") {
       this.deleteLine();
       this.pendingOperator = null;
-      this.mode = "insert";
+      this.viMode = "insert";
       return;
     }
 
@@ -218,7 +253,7 @@ export class AwesomeEditor extends CustomEditor {
     // Unknown motion: cancel operator (vim behaviour)
     this.pendingOperator = null;
     if (this.deleteWithMotion(data)) {
-      this.mode = "insert";
+      this.viMode = "insert";
     }
   }
 
@@ -319,7 +354,7 @@ export class AwesomeEditor extends CustomEditor {
 
   private handleMappedKey(key: string): void {
     const enterInsertMode = () => {
-      this.mode = "insert";
+      this.viMode = "insert";
     };
 
     switch (key) {
@@ -491,7 +526,7 @@ export class AwesomeEditor extends CustomEditor {
 
   render(width: number): string[] {
     const lines = super.render(width);
-    if (lines.length === 0) return lines;
+    if (this.editorMode === "emacs" || lines.length === 0) return lines;
     const label = this.getModeLabel();
     if (visibleWidth(lines[0]!) >= label.length) {
       lines[0] = label + truncateToWidth(lines[0]!, width - label.length, "");
@@ -500,7 +535,7 @@ export class AwesomeEditor extends CustomEditor {
   }
 
   private getModeLabel(): string {
-    if (this.mode === "insert") return "❯ ";
+    if (this.viMode === "insert") return "❯ ";
     if (this.pendingOperator && this.pendingMotion)
       return `❮ ${this.pendingOperator}${this.pendingMotion}_ `;
     if (this.pendingOperator) return `❮ ${this.pendingOperator}_ `;
