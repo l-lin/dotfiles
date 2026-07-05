@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 #
-#
+# Suggestion commands based on command history.
 #
 
 # Must choose a value greater than 8, see https://github.com/zsh-users/zsh-autosuggestions/issues/698.
