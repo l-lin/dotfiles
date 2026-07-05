@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 #
 # Simple script that get quick answer from the command line.
-# It's using the `direct-answer-engine` system prompt to generate the short anwser.
+# It's using the `direct-answer-engine` system prompt to generate the short answer.
 # inspired from: https://github.com/kagisearch/ask
 #
 
@@ -12,10 +12,10 @@ error() {
   >&2 echo -e "${red} E ${escape} ${1}"
 }
 
-if !type -q claude &>/dev/null; then
-  error "claude-code not installed"
+if !type -q pi &>/dev/null; then
+  error "pi not installed"
   return
 fi
 
-claude --model haiku -p "/direct-answer $@"
+pi --model 'llama-cpp/ornith1.0' -p "/direct-answer $@"
 return

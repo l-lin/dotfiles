@@ -6,7 +6,6 @@
 { config, symlinkRoot, ... }: {
   xdg.configFile = {
     "mise/conf.d/claude-code.toml".source = ./.config/mise/conf.d/claude-code.toml;
-    "zsh/functions/ask".source = ./.config/zsh/functions/ask;
   };
 
   home = {

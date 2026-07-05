@@ -4,7 +4,10 @@
 #
 
 { config, symlinkRoot, ... }: {
-  xdg.configFile."mise/conf.d/pi.toml".source = ./.config/mise/conf.d/pi.toml;
+  xdg.configFile = {
+    "mise/conf.d/pi.toml".source = ./.config/mise/conf.d/pi.toml;
+    "zsh/functions/ask".source = ./.config/zsh/functions/ask;
+  };
 
   home.file = {
     # pi may edit the settings.json, so let allow write on this file.
