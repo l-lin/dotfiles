@@ -40,6 +40,8 @@ This repo contains local Pi extensions. In practice, each top-level directory wi
    Do instead: keep each extension in its own top-level folder, with `index.ts` as the main entrypoint.
 4. **Prefer narrow edits.**
    Do instead: extend the nearest existing pattern before inventing a new one.
+5. **Shared snippet triggers are hyphenated, and discovery is separate from expansion.**
+   Do instead: allow `-` when parsing snippet prefixes in `awesome-editor/`, keep fuzzy autocomplete changes local there, and leave exact send-time replacement in `snippet/` alone unless expansion semantics must change.
 
 ## When you add, remove, or rename an extension
 
