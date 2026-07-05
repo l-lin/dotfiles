@@ -110,7 +110,7 @@ bindkey -M vicmd '\ec' fzf-cd-widget
 bindkey -M viins '\ec' fzf-cd-widget
 
 #
-# ALT-F - Grep file content
+# ALT-G - Grep file content
 #
 __fsel_grep() {
   local cmd="${FZF_ALT_F_COMMAND:-"rg --column --line-number --no-heading --color=always --smart-case "}"
@@ -145,9 +145,9 @@ fzf-grep-widget() {
   return $ret
 }
 zle     -N            fzf-grep-widget
-bindkey -M emacs '\ef' fzf-grep-widget
-bindkey -M vicmd '\ef' fzf-grep-widget
-bindkey -M viins '\ef' fzf-grep-widget
+bindkey -M emacs '\eg' fzf-grep-widget
+bindkey -M vicmd '\eg' fzf-grep-widget
+bindkey -M viins '\eg' fzf-grep-widget
 
 } always {
   eval $__fzf_key_bindings_options
