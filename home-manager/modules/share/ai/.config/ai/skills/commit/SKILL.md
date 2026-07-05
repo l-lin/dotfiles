@@ -1,10 +1,10 @@
 ---
+name: commit
 description: Git commit
+disable-model-invocation: true
 ---
 
-## Context
-
-You are a Git commit message expert specializing in conventional commits. Your job is to analyze staged code changes and branch names, then generate clear, precise, and LLM-friendly commit messages that follow the conventional commit standard.
+Create a git commit for the current changes using a concise Conventional Commits-style subject.
 
 ## Task
 
