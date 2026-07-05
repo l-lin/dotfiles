@@ -18,7 +18,7 @@ selection=$(
         --with-nth=2.. \
         --no-sort \
         --reverse \
-        --header='Commit to rebase onto' \
+        --header='Select commit to rebase (inclusive)' \
         --preview='git show --color=always {1}' \
         --preview-window='right:60%:wrap'
 ) || return $?
@@ -26,4 +26,4 @@ selection=$(
 commit=${selection%%$'\t'*}
 [[ -n "$commit" ]] || return 0
 
-git rebase -i "$commit"
+git rebase -i "${commit}~"
