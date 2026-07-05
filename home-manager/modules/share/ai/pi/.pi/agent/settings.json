@@ -2,7 +2,7 @@
   "lastChangelogVersion": "0.80.3",
   "theme": "light",
   "defaultProvider": "llama-cpp",
-  "defaultModel": "qwen3.6",
+  "defaultModel": "ornith1.0",
   "enableInstallTelemetry": false,
   "treeFilterMode": "user-only",
   "skills": [
