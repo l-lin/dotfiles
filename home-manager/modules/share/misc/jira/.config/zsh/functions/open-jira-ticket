@@ -11,11 +11,11 @@ error() {
   >&2 echo -e "${red} E ${escape} ${1}"
 }
 
-if !type git &>/dev/null; then
+if ! type git &>/dev/null; then
   error "git is not installed"
   return
 fi
-if !type jira &>/dev/null; then
+if ! type jira &>/dev/null; then
   error "jira cli is not installed"
   return
 fi

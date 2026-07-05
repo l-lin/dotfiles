@@ -27,7 +27,6 @@ alias ns="nix-shell --command zsh -p"
 # editor
 alias v="nvim"
 # sudo
-alias sudo="sudo"
 alias _="sudo"
 alias please="sudo"
 # ruby
