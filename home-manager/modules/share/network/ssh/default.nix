@@ -79,15 +79,10 @@ EOF
 }
 
 add_ssh_keys() {
-  for ssh_key_filepath in $(\
-    ls ~/.ssh/* \
-    | grep -v config \
-    | grep -v allowed_signers \
-    | grep -v known_hosts \
-    | grep -v pub \
-    | grep -v authorized_keys \
-  ); do
-    add_ssh_key "$ssh_key_filepath";
+  for ssh_pub_filepath in ~/.ssh/*.pub; do
+    [ -e "$ssh_pub_filepath" ] || continue  # handle no-match glob
+    ssh_key_filepath="''${ssh_pub_filepath%.pub}"
+    add_ssh_key "$ssh_key_filepath"
   done
 }
 
