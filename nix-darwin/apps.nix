@@ -45,7 +45,7 @@
 
     taps = [
       # For dox: https://github.com/bgreenwell/doxx
-      "bgreenwell/doxx"
+      #"bgreenwell/doxx"
       # For aerospace: https://github.com/nikitabobko/AeroSpace
       "nikitabobko/tap"
       # For xcodes: https://github.com/XcodesOrg/xcodes
@@ -64,7 +64,7 @@
       # Securely store and access AWS credentials in development environments: https://github.com/ByteNess/aws-vault
       "aws-vault"
       # Terminal epub reader: https://bugzmanov.github.io/bookokrat/index.html
-      "bookokrat"
+      #"bookokrat"
       # Elegant Lua unit testing: https://lunarmodules.github.io/busted/
       "busted"
       # Give your AI agent a Pup — a CLI companion with 200+ commands across 33+ Datadog products: https://github.com/datadog-labs/pup
@@ -72,7 +72,7 @@
       # Pack, ship and run any application as a lightweight container: https://www.docker.com/
       "docker"
       # Expose the contents of .docx files without leaving your terminal. Fast, safe, and smart — no Office required! https://github.com/bgreenwell/doxx
-      "doxx"
+      #"doxx"
       # Interpreter for PostScript and PDF: https://www.ghostscript.com/
       "ghostscript"
       # LLM inference in C/C++: https://github.com/ggml-org/llama.cpp
@@ -82,9 +82,9 @@
       # Customize themes, inject extensions, and unlock the full potential of your Spotify client: https://spicetify.app/
       "spicetify-cli"
       # Install and switch between multiple versions of Xcode: https://github.com/XcodesOrg/xcodes
-      "xcodes"
+      #"xcodes"
       # General-purpose programming language: https://ziglang.org/
-      "zig"
+      #"zig"
     ];
 
     # `brew install --cask`
