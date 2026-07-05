@@ -15,3 +15,5 @@ Rules:
 - Assume output will be piped or executed directly
 - For multi-step commands, use && or ; to chain them
 - Make commands robust and handle edge cases silently"
+
+$ARGUMENTS
