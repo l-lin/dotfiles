@@ -14,7 +14,7 @@ _wd_browse() {
 
   if [ -n "${TMUX_PANE-}" ]; then
     # Not the best result, as it will display the command sent to the tmux pane, but it does the job.
-    tmux popup -x C -y 0 -w 50% -h 50% -E "result=\$(${cmd} | awk '{ print \$1 }') && tmux send-keys \"wd \$result\" Enter"
+    tmux popup -x C -y 0 -w 50% -h 50% -E "result=\$(${cmd} | awk '{ print \$1 }') && tmux send-keys \"wd \$result && tmux rename-window \$result\" Enter"
   fi
 }
 
