@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-#MISE description: Toggle rice mode for faster iteration.
+#MISE description="Toggle rice mode for faster iteration."
 #
 
 set -eu
