@@ -21,11 +21,9 @@ Create a GitHub PR via `gh` CLI with a structured, reviewer-friendly description
 ```
 ## [JIRA-123](https://atlassian.net/browse/JIRA-123)
 
-### Summary
-
 One-paragraph description of what this PR does and why.
 
-### Architecture
+### Architecture / Flows
 
 Diagrams (mermaid, ASCII, or links) showing key design decisions.
 Use `mermaid` code blocks for flowcharts, sequence diagrams, or component maps.
