@@ -16,7 +16,7 @@ nvim-plugins:~/.local/share/nvim/site/pack/core/opt
 nvim:~/.config/dotfiles/home-manager/modules/share/editor/nvim/.config/nvim
 o11y:~/work/terraform-observability
 pack:~/work/patient-context
-patient-account:~/work/patient-account
+paac:~/work/patient-account
 pcc:~/work/preventive-continuous-care
 phr:~/work/patient-health-record
 pi-extensions:~/.config/dotfiles/home-manager/modules/share/ai/pi/.pi/agent/extensions
