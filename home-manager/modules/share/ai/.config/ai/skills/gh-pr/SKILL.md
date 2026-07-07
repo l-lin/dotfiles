@@ -11,7 +11,7 @@ Create a GitHub PR via `gh` CLI with a structured, reviewer-friendly description
 ## Workflow
 
 1. Determine the Jira ticket from the branch name (e.g. `FEAT-456-add-auth`).
-2. Fetch the ticket URL using `/skill:jira` (`jira issue view <KEY>`).
+2. Invoke the `jira` skill then run `jira issue view <KEY>`.
 3. Draft the PR description using the template below.
 4. Create the PR as draft: `gh pr create --draft --title "<type>(<scope>): <desc>" --body-file -` (paste the description).
 5. Assign reviewers if appropriate.

@@ -38,7 +38,7 @@ When the destination includes a skill, classify it as one of these types:
 - `tool-usage`
 - `domain`
 
-Use that type when naming the skill directory, for example `.ai/skills/debugging-postgres-connection-pool/SKILL.md`.
+Use that type when naming the skill directory, for example `~/.config/.ai/skills/debugging-postgres-connection-pool/SKILL.md`.
 
 ## 3. Pause for consent
 

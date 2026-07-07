@@ -5,7 +5,7 @@ argument-hint: "What will the next session be used for?"
 disable-model-invocation: true
 ---
 
-Write a handoff document summarising the current conversation so a fresh agent can continue the work. Save to `.sandbox/handoffs/[timestamp]-[slug].md` where [timestamp] is the current date in format YYYY-MM-DD and the slug is what we defined before.
+Write a handoff document summarising the current conversation so a fresh agent can continue the work. Save to `.sandbox/handoffs/[timestamp]-[slug].md` where [timestamp] is the current date in format YYYY-MM-DD and the slug is kebab-case summary of the next session's focus.
 
 Include a "suggested skills" section in the document, which suggests skills that the agent should invoke.
 
