@@ -1,5 +1,5 @@
 ---
-name: grill-me
+name: plan
 description: Interview the user relentlessly about a plan or design until reaching shared understanding, resolving each branch of the decision tree.
 disable-model-invocation: true
 ---
@@ -8,9 +8,11 @@ Interview me relentlessly about every aspect of this plan until we reach a share
 
 Ask the questions one at a time using `ask-user-question` tool.
 
-If a question can be answered by exploring the codebase, explore the codebase instead.
+If a *fact* can be found by exploring the codebase, look it up rather than asking me. The *decisions*, though, are mine — put each one to me and wait for my answer.
 
-After plan approval, write the plan to `.sandbox/plans/YYYY-MM-DD-JIRA-XXXX-description.md` where:
+After plan approval, consider what could go wrong, then look for mitigations.
+
+Then write the final plan to `.sandbox/plans/YYYY-MM-DD-JIRA-XXXX-description.md` where:
 
 - YYYY-MM-DD is today's date
 - JIRA-XXXX is the ticket number (omit if no ticket)
