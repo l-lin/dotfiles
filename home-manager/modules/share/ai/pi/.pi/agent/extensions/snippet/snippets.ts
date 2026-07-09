@@ -65,7 +65,7 @@ export const SNIPPETS: SnippetDef[] = [
     trigger: "$pr-description",
     description: "Update the PR description with diagrams",
     expansion:
-      "Update PR description with gh CLI with diagrams to help reviewers.",
+      "Update PR description with gh CLI with diagrams to help reviewers; use clear-writing skill for the prose.",
   },
 
   // ── When we're trying to understand something ──────────────────────
