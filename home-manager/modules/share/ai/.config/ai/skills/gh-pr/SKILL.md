@@ -29,7 +29,6 @@ Use a `mermaid` block, or ASCII for something simple. Skip this section otherwis
 
 - Focus areas: where reviewers should look most carefully
 - Trade-offs and rejected alternatives
-- Test coverage notes
 - Follow-up items
 ```
 
