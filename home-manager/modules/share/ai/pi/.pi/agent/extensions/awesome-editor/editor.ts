@@ -21,7 +21,12 @@ import {
 
 import { withSnippets } from "./snippets.js";
 import type { AwesomeEditorMode } from "./settings.js";
-import { SNIPPETS } from "../snippet/snippets.js";
+import { SNIPPETS, type SnippetDef } from "../snippet/snippets.js";
+import {
+  formatParsedSnippetExpansion,
+  parseSnippetExpansion,
+  type ParsedSnippetExpansion,
+} from "../snippet/tabstops.js";
 import {
   type Mode,
   type CharMotion,
@@ -88,6 +93,27 @@ function normalizeExtendedSequences(data: string): string {
   return data;
 }
 
+interface PlaceholderRange {
+  index: number;
+  start: number;
+  end: number;
+}
+
+interface PlaceholderSession {
+  line: number;
+  ranges: PlaceholderRange[];
+  activeRangeIndex: number;
+  finalStop: number;
+  pendingReplacement: boolean;
+}
+
+interface PlaceholderSnapshot {
+  session: PlaceholderSession;
+  beforeLine: string;
+  beforeLinesLength: number;
+  beforeCursor: { line: number; col: number };
+}
+
 export class AwesomeEditor extends CustomEditor {
   private editorMode: AwesomeEditorMode;
   private viMode: Mode = "insert";
@@ -95,6 +121,7 @@ export class AwesomeEditor extends CustomEditor {
   private pendingOperator: PendingOperator = null;
   private pendingG: PendingG = null;
   private lastCharMotion: LastCharMotion | null = null;
+  private placeholderSession: PlaceholderSession | null = null;
 
   constructor(
     tui: TUI,
@@ -125,6 +152,11 @@ export class AwesomeEditor extends CustomEditor {
     if (matchesKey(data, "escape")) return this.handleEscape();
 
     if (this.viMode === "insert") {
+      const placeholderInput = this.preparePlaceholderInput(data);
+      if (placeholderInput.handled) {
+        return;
+      }
+
       // Ctrl-E in autocomplete mode: apply + expand snippet
       if (data === "\x05" && (this as any).autocompleteState) {
         this.applyAndExpandSnippet();
@@ -132,7 +164,10 @@ export class AwesomeEditor extends CustomEditor {
       }
 
       // Alt shortcuts for insert mode
-      if (this.handleInsertModeShortcut(data)) return;
+      if (this.handleInsertModeShortcut(data)) {
+        this.reconcilePlaceholderInput(placeholderInput.snapshot);
+        return;
+      }
 
       super.handleInput(data);
 
@@ -140,6 +175,8 @@ export class AwesomeEditor extends CustomEditor {
       if (data === "$" && !(this as any).autocompleteState) {
         (this as any).tryTriggerAutocomplete();
       }
+
+      this.reconcilePlaceholderInput(placeholderInput.snapshot);
       return;
     }
 
@@ -152,6 +189,11 @@ export class AwesomeEditor extends CustomEditor {
   }
 
   private handleStandardInputMode(data: string): void {
+    const placeholderInput = this.preparePlaceholderInput(data);
+    if (placeholderInput.handled) {
+      return;
+    }
+
     if (data === "\x05" && (this as any).autocompleteState) {
       this.applyAndExpandSnippet();
       return;
@@ -162,6 +204,279 @@ export class AwesomeEditor extends CustomEditor {
     if (data === "$" && !(this as any).autocompleteState) {
       (this as any).tryTriggerAutocomplete();
     }
+
+    this.reconcilePlaceholderInput(placeholderInput.snapshot);
+  }
+
+  // ─── Placeholder navigation ──────────────────────────────────────────────────
+
+  private preparePlaceholderInput(data: string): {
+    handled: boolean;
+    snapshot: PlaceholderSnapshot | null;
+  } {
+    const session = this.placeholderSession;
+    if (!session) {
+      return { handled: false, snapshot: null };
+    }
+
+    if (matchesKey(data, "tab")) {
+      this.advancePlaceholderSession();
+      return { handled: true, snapshot: null };
+    }
+
+    const replacementText = this.getDirectPlaceholderText(data);
+    if (session.pendingReplacement && replacementText !== null) {
+      this.replacePendingPlaceholderWithText(replacementText);
+      return { handled: true, snapshot: null };
+    }
+
+    return {
+      handled: false,
+      snapshot: this.capturePlaceholderSnapshot(),
+    };
+  }
+
+  private getDirectPlaceholderText(data: string): string | null {
+    if (matchesKey(data, "shift+space")) {
+      return " ";
+    }
+
+    if (data.includes("\x1b") || data.includes("\n") || data.includes("\r")) {
+      return null;
+    }
+
+    return [...data].every((character) => character.charCodeAt(0) >= 32)
+      ? data
+      : null;
+  }
+
+  private capturePlaceholderSnapshot(): PlaceholderSnapshot | null {
+    const session = this.placeholderSession;
+    if (!session) {
+      return null;
+    }
+
+    const activeRange = session.ranges[session.activeRangeIndex];
+    const cursor = this.getCursor();
+    if (
+      !activeRange ||
+      cursor.line !== session.line ||
+      cursor.col < activeRange.start ||
+      cursor.col > activeRange.end
+    ) {
+      this.placeholderSession = null;
+      return null;
+    }
+
+    const lines = this.getLines();
+
+    return {
+      session: {
+        line: session.line,
+        ranges: session.ranges.map((range) => ({ ...range })),
+        activeRangeIndex: session.activeRangeIndex,
+        finalStop: session.finalStop,
+        pendingReplacement: session.pendingReplacement,
+      },
+      beforeLine: lines[session.line] ?? "",
+      beforeLinesLength: lines.length,
+      beforeCursor: cursor,
+    };
+  }
+
+  private replacePendingPlaceholderWithText(text: string): void {
+    const session = this.placeholderSession;
+    const activeRange = session?.ranges[session.activeRangeIndex];
+    if (!session || !activeRange) {
+      this.placeholderSession = null;
+      return;
+    }
+
+    const editor = this as any;
+    const previousRange = { ...activeRange };
+    const currentLine = editor.state.lines[session.line] ?? "";
+
+    editor.exitHistoryBrowsing();
+    editor.pushUndoSnapshot();
+    editor.lastAction = "type-word";
+    editor.state.lines[session.line] =
+      currentLine.slice(0, previousRange.start) +
+      text +
+      currentLine.slice(previousRange.end);
+    editor.state.cursorLine = session.line;
+    editor.setCursorCol(previousRange.start + text.length);
+
+    this.updatePlaceholderSessionAfterEdit(
+      previousRange,
+      text.length - (previousRange.end - previousRange.start),
+    );
+    session.pendingReplacement = false;
+
+    if (editor.onChange) {
+      editor.onChange(this.getText());
+    }
+  }
+
+  private reconcilePlaceholderInput(
+    snapshot: PlaceholderSnapshot | null,
+  ): void {
+    if (!snapshot || !this.placeholderSession) {
+      return;
+    }
+
+    const session = this.placeholderSession;
+    const currentCursor = this.getCursor();
+    const lines = this.getLines();
+    if (
+      lines.length !== snapshot.beforeLinesLength ||
+      currentCursor.line !== session.line
+    ) {
+      this.placeholderSession = null;
+      return;
+    }
+
+    const currentLine = lines[session.line] ?? "";
+    if (currentLine === snapshot.beforeLine) {
+      if (currentCursor.col !== snapshot.beforeCursor.col) {
+        this.placeholderSession = null;
+      }
+      return;
+    }
+
+    const previousRange =
+      snapshot.session.ranges[snapshot.session.activeRangeIndex];
+    if (
+      !previousRange ||
+      snapshot.beforeCursor.col < previousRange.start ||
+      snapshot.beforeCursor.col > previousRange.end
+    ) {
+      this.placeholderSession = null;
+      return;
+    }
+
+    const change = this.findSingleLineChange(snapshot.beforeLine, currentLine);
+    if (
+      !change ||
+      change.beforeStart < previousRange.start ||
+      change.beforeEnd > previousRange.end
+    ) {
+      this.placeholderSession = null;
+      return;
+    }
+
+    const delta =
+      change.afterEnd -
+      change.afterStart -
+      (change.beforeEnd - change.beforeStart);
+    this.updatePlaceholderSessionAfterEdit(previousRange, delta);
+    session.pendingReplacement = false;
+
+    const activeRange = session.ranges[session.activeRangeIndex];
+    if (
+      !activeRange ||
+      currentCursor.col < activeRange.start ||
+      currentCursor.col > activeRange.end
+    ) {
+      this.placeholderSession = null;
+    }
+  }
+
+  private findSingleLineChange(
+    beforeLine: string,
+    afterLine: string,
+  ): {
+    beforeStart: number;
+    beforeEnd: number;
+    afterStart: number;
+    afterEnd: number;
+  } | null {
+    if (beforeLine === afterLine) {
+      return null;
+    }
+
+    let prefixLength = 0;
+    while (
+      prefixLength < beforeLine.length &&
+      prefixLength < afterLine.length &&
+      beforeLine[prefixLength] === afterLine[prefixLength]
+    ) {
+      prefixLength += 1;
+    }
+
+    let suffixLength = 0;
+    while (
+      suffixLength < beforeLine.length - prefixLength &&
+      suffixLength < afterLine.length - prefixLength &&
+      beforeLine[beforeLine.length - 1 - suffixLength] ===
+        afterLine[afterLine.length - 1 - suffixLength]
+    ) {
+      suffixLength += 1;
+    }
+
+    return {
+      beforeStart: prefixLength,
+      beforeEnd: beforeLine.length - suffixLength,
+      afterStart: prefixLength,
+      afterEnd: afterLine.length - suffixLength,
+    };
+  }
+
+  private updatePlaceholderSessionAfterEdit(
+    previousRange: PlaceholderRange,
+    delta: number,
+  ): void {
+    const session = this.placeholderSession;
+    const activeRange = session?.ranges[session.activeRangeIndex];
+    if (!session || !activeRange) {
+      this.placeholderSession = null;
+      return;
+    }
+
+    activeRange.end = previousRange.end + delta;
+
+    for (
+      let rangeIndex = session.activeRangeIndex + 1;
+      rangeIndex < session.ranges.length;
+      rangeIndex += 1
+    ) {
+      session.ranges[rangeIndex]!.start += delta;
+      session.ranges[rangeIndex]!.end += delta;
+    }
+
+    if (session.finalStop >= previousRange.end) {
+      session.finalStop += delta;
+    }
+  }
+
+  private advancePlaceholderSession(): void {
+    const session = this.placeholderSession;
+    if (!session) {
+      return;
+    }
+
+    const nextRange = session.ranges[session.activeRangeIndex + 1];
+    if (!nextRange) {
+      this.setCursorPosition(session.line, session.finalStop);
+      this.placeholderSession = null;
+      return;
+    }
+
+    session.activeRangeIndex += 1;
+    session.pendingReplacement = true;
+    this.setCursorPosition(
+      session.line,
+      this.getPlaceholderCursorCol(nextRange),
+    );
+  }
+
+  private getPlaceholderCursorCol(range: PlaceholderRange): number {
+    return Math.min(range.end - 1, range.start + 1);
+  }
+
+  private setCursorPosition(line: number, col: number): void {
+    const editor = this as any;
+    editor.state.cursorLine = line;
+    editor.setCursorCol(col);
   }
 
   // ─── Escape / mode transitions ───────────────────────────────────────────────
@@ -197,6 +512,7 @@ export class AwesomeEditor extends CustomEditor {
     }
     if (this.viMode === "insert") {
       this.viMode = "normal";
+      this.placeholderSession = null;
     } else {
       super.handleInput("\x1b"); // pass through to abort agent
     }
@@ -601,7 +917,7 @@ export class AwesomeEditor extends CustomEditor {
   }
 
   private expandSnippet(
-    snippet: any,
+    snippet: SnippetDef,
     completionResult: any,
     triggerValue: string,
   ): void {
@@ -627,17 +943,65 @@ export class AwesomeEditor extends CustomEditor {
         return;
       }
 
+      const parsedExpansion = parseSnippetExpansion(expansion);
+      const formattedExpansion =
+        parsedExpansion.kind === "parsed"
+          ? formatParsedSnippetExpansion(parsedExpansion, "bracketed")
+          : parsedExpansion;
+
+      this.placeholderSession = null;
       this.replaceTextAtCursor(
         completionResult,
         triggerStart,
         triggerValue.length,
-        expansion,
+        formattedExpansion.text,
       );
+      if (formattedExpansion.kind === "parsed") {
+        this.startPlaceholderSession(
+          completionResult.cursorLine,
+          triggerStart,
+          formattedExpansion,
+        );
+      }
       this.notifyChange();
     } catch (error) {
       console.error("Snippet expansion failed:", error);
       this.notifyChange();
     }
+  }
+
+  private startPlaceholderSession(
+    line: number,
+    startCol: number,
+    expansion: ParsedSnippetExpansion,
+  ): void {
+    if (expansion.tabstops.length === 0) {
+      if (expansion.hasExplicitFinalStop) {
+        this.setCursorPosition(line, startCol + expansion.finalStop);
+      }
+      return;
+    }
+
+    this.placeholderSession = {
+      line,
+      ranges: expansion.tabstops.map((tabstop) => ({
+        index: tabstop.index,
+        start: startCol + tabstop.start,
+        end: startCol + tabstop.end,
+      })),
+      activeRangeIndex: 0,
+      finalStop: startCol + expansion.finalStop,
+      pendingReplacement: true,
+    };
+
+    this.setCursorPosition(
+      line,
+      this.getPlaceholderCursorCol(
+        this.placeholderSession.ranges[
+          this.placeholderSession.activeRangeIndex
+        ]!,
+      ),
+    );
   }
 
   private isValidCursorPosition(result: any): boolean {

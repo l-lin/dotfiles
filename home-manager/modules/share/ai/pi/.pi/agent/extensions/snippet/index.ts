@@ -9,6 +9,7 @@
  */
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { SNIPPETS, type SnippetDef } from "./snippets.js";
+import { renderSnippetExpansion } from "./tabstops.js";
 
 function escapeRegex(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -33,7 +34,7 @@ export default function (pi: ExtensionAPI) {
       if (text.includes(snippet.trigger)) {
         text = text.replace(
           new RegExp(escapeRegex(snippet.trigger), "g"),
-          resolveExpansion(snippet),
+          renderSnippetExpansion(resolveExpansion(snippet), "bracketed"),
         );
       }
     }

@@ -21,7 +21,8 @@ export const SNIPPETS: SnippetDef[] = [
   {
     trigger: "?q",
     description: "Ask for clarification points",
-    expansion: "Use ask-user-question tool if there are any points to clarify.",
+    expansion:
+      "Use ask-user-question tool to reletenlessly interview me about every aspect of what I want until we reach a shared understanding.",
   },
   {
     trigger: "$date",
@@ -73,25 +74,25 @@ export const SNIPPETS: SnippetDef[] = [
     trigger: "$understanding-overview",
     description: "Overview + main debates/open questions",
     expansion:
-      "Give me an overview of [topic], then tell me what the main debates or open questions are.",
+      "Give me an overview of ${1:topic}, then tell me what the main debates or open questions are.",
   },
   {
     trigger: "$understanding-misconceptions",
     description: "Common misconceptions and why people hold them",
     expansion:
-      "What are the most common misconceptions about [topic], and why do people hold them?",
+      "What are the most common misconceptions about ${1:topic}, and why do people hold them?",
   },
   {
     trigger: "$understanding-next-steps",
     description: "What to read next based on current knowledge",
     expansion:
-      "Here's what I know so far about [topic]: [what we know]. What should I be reading or looking into next?",
+      "Here's what I know so far about ${1:topic}: ${2:what we know}. What should I be reading or looking into next?",
   },
   {
     trigger: "$understanding-beginner-questions",
     description: "Important questions a beginner wouldn't think to ask",
     expansion:
-      "What are the most important questions about [topic] that a beginner wouldn't think to ask?",
+      "What are the most important questions about ${1:topic} that a beginner wouldn't think to ask?",
   },
 
   // ── When we're writing or building something ──────────────────────
@@ -99,7 +100,7 @@ export const SNIPPETS: SnippetDef[] = [
     trigger: "$writing-think-before",
     description: "Questions to think through before writing",
     expansion:
-      "I'm going to write about [topic]. Before I start, what questions should I be thinking through?",
+      "I'm going to write about ${1:topic}. Before I start, what questions should I be thinking through?",
   },
   {
     trigger: "$writing-gaps",
@@ -111,7 +112,7 @@ export const SNIPPETS: SnippetDef[] = [
     trigger: "$writing-reader-perspective",
     description: "Read as a specific audience and surface questions",
     expansion:
-      "Read this as if you were [my manager / a skeptical investor / someone encountering this topic for the first time]. What questions would you have?",
+      "Read this as if you were ${1:my manager / a skeptical investor / someone encountering this topic for the first time}. What questions would you have?",
   },
   {
     trigger: "$writing-loses-reader",
@@ -124,13 +125,13 @@ export const SNIPPETS: SnippetDef[] = [
     trigger: "$decision-best-worst",
     description: "Best case + worst case for each option, plus blind spots",
     expansion:
-      "Here are my options: [list]. For each one, give me the best case and the worst case. Then tell me what I'm not considering.",
+      "Here are my options: ${1:list}. For each one, give me the best case and the worst case. Then tell me what I'm not considering.",
   },
   {
     trigger: "$decision-regret",
     description: "Three reasons I might regret this in a year",
     expansion:
-      "I'm leaning toward [option]. Give me three reasons I might regret this in a year.",
+      "I'm leaning toward ${1:option}. Give me three reasons I might regret this in a year.",
   },
   {
     trigger: "$decision-premortem",
@@ -141,7 +142,7 @@ export const SNIPPETS: SnippetDef[] = [
     trigger: "$decision-other-side",
     description: "What would someone who chose the other option know?",
     expansion:
-      "What would a person who chose [the option I'm not leaning toward] know that I don't?",
+      "What would a person who chose ${1:the option I'm not leaning toward} know that I don't?",
   },
 
   // ── When we want feedback ─────────────────────────────────────────
@@ -154,14 +155,14 @@ export const SNIPPETS: SnippetDef[] = [
     trigger: "$feedback-expert-view",
     description: "What a specific expert would say about this approach",
     expansion:
-      "What would someone with [specific expertise: a financial analyst / a user researcher] say about this approach?",
+      "What would someone with ${1:specific expertise: a financial analyst / a user researcher} say about this approach?",
   },
   {
     trigger: "$feedback-skeptic",
     description:
       "If I had to defend to a specific skeptic, what would they challenge?",
     expansion:
-      "If I had to defend this to [specific skeptic or tough audience], what would they challenge first?",
+      "If I had to defend this to ${1:specific skeptic or tough audience}, what would they challenge first?",
   },
   {
     trigger: "$feedback-over-under",
@@ -175,19 +176,19 @@ export const SNIPPETS: SnippetDef[] = [
     trigger: "$evaluating-overlooked",
     description: "What should I pay attention to that I might miss?",
     expansion:
-      "Here's a summary of [a job offer / a contract / a proposal]. What should I be paying attention to that I might miss?",
+      "Here's a summary of ${1:a job offer / a contract / a proposal}. What should I be paying attention to that I might miss?",
   },
   {
     trigger: "$evaluating-implicit",
     description: "What's it assuming that it doesn't say out loud?",
     expansion:
-      "Here's [someone's argument / a sales pitch / a news article]. What's it assuming that it doesn't say out loud?",
+      "Here's ${1:someone's argument / a sales pitch / a news article}. What's it assuming that it doesn't say out loud?",
   },
   {
     trigger: "$evaluating-standard",
     description: "How does this compare to what's standard?",
     expansion:
-      "How does this compare to what's standard for [this type of contract / offer / proposal]?",
+      "How does this compare to what's standard for ${1:this type of contract / offer / proposal}?",
   },
   {
     trigger: "$evaluating-red-flags",
@@ -201,21 +202,21 @@ export const SNIPPETS: SnippetDef[] = [
     trigger: "$preparing-hard-questions",
     description: "Hardest questions audience will ask + strong answers",
     expansion:
-      "I'm about to [present to / meet with / pitch] [audience]. What are the hardest questions they're likely to ask, and what would a strong answer to each one sound like?",
+      "I'm about to ${1:present to / meet with / pitch} ${2:audience}. What are the hardest questions they're likely to ask, and what would a strong answer to each one sound like?",
   },
   {
     trigger: "$preparing-explain-clearly",
     description:
       "Clearest way to explain a complex topic to a specific audience",
     expansion:
-      "I need to explain [complex topic] to [specific audience who doesn't have my background]. What's the clearest way to frame it?",
+      "I need to explain ${1:complex topic} to ${2:specific audience who doesn't have my background}. What's the clearest way to frame it?",
   },
   {
     trigger: "$preparing-audience-care",
     description:
       "What audience cares about most that I might not be emphasizing",
     expansion:
-      "What does [this audience] care about most that I might not be emphasizing enough?",
+      "What does ${1:this audience} care about most that I might not be emphasizing enough?",
   },
   {
     trigger: "$preparing-proactive-objection",
@@ -230,13 +231,13 @@ export const SNIPPETS: SnippetDef[] = [
     trigger: "$stuck-blindspot",
     description: "What am I not seeing? (after listing considered approaches)",
     expansion:
-      "Here are three approaches I've already considered for [problem]: [list]. What am I not seeing?",
+      "Here are three approaches I've already considered for ${1:problem}: ${2:list}. What am I not seeing?",
   },
   {
     trigger: "$stuck-next-question",
     description: "What's the next question I should be asking myself?",
     expansion:
-      "I'm stuck on [project/problem]. Here's where I am: [current state]. What's the next question I should be asking myself?",
+      "I'm stuck on ${1:project/problem}. Here's where I am: ${2:current state}. What's the next question I should be asking myself?",
   },
   {
     trigger: "$stuck-right-problem",
