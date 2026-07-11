@@ -38,7 +38,7 @@ export default function (pi: ExtensionAPI): void {
       const rule: TipRule | undefined = findRuleForInput(text);
       if (rule) {
         // Wrap tip in dim ANSI codes so it renders muted in the footer.
-        setStatus(ctx, `${DIM_START}${rule.tip}${DIM_END}`);
+        setStatus(ctx, `${DIM_START}󰛨 ${rule.tip}${DIM_END}`);
       }
     },
   );
