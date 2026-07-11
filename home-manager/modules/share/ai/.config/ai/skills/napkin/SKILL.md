@@ -1,90 +1,69 @@
 ---
 name: napkin
-description: Use at session start and whenever updating `.sandbox/napkin.md`. Defines the format and curation policy for the per-repo runbook of recurring, repo-specific guidance not covered by the system prompt, AGENTS files, or active task docs.
+description: "Use at session start and whenever updating `.sandbox/napkin.md`. Owns the durable runbook: what belongs there, what stays out, and how hard to prune it."
 ---
 
-# Napkin
+Napkin is the durable runbook for this repo and this user. It is not session memory and not generalized reusable learning.
 
-Napkin is a tiny per-repo runbook, not a session log or a second `AGENTS.md`.
+## Session start
 
-Keep it sparse. Do not copy generic rules already covered by the system prompt, `AGENTS.md`, or the active task docs. Keep only recurring, repo-specific guidance that repeatedly saves time or avoids mistakes. The `napkin` skill manages the full format and curation policy.
+1. Read `.sandbox/napkin.md` if it exists and apply it silently.
+2. If it does not exist, do nothing unless the session uncovers something worth keeping.
+3. Do not treat curation as ritual. Clean it up only when you add to it or when noise is getting in the way.
 
-**This skill is always active. Every session. No trigger required.**
+## What belongs
 
-## Session Start: Read And Curate
+Add a note only if it is likely to matter again:
+- repo-specific gotcha or toolchain trap
+- recurring user preference
+- non-obvious tactic that repeatedly saves time
+- stable workflow guidance not already covered by the prompt, `AGENTS.md`, or task docs
 
-First thing each session, read `.sandbox/napkin.md` and apply it silently.
+## What stays out
 
-Curate it immediately after reading:
-- Re-prioritize items by importance.
-- Merge duplicates and delete stale or low-signal notes.
-- Delete notes that merely repeat the system prompt, `AGENTS.md`, README rules, or one-off task instructions.
-- Keep the file sparse. If two notes matter, keep two notes.
-- Ensure each item contains a concrete `Do instead:` action.
-- Enforce top 5 items per category.
+Do not put these in `napkin`:
+- session timelines, handoffs, or current task status
+- long transcripts or postmortems
+- generic rules already covered elsewhere
+- one-off facts with no likely reuse
+- notes without a concrete action
 
-If no napkin exists yet, create one at `.sandbox/napkin.md`:
+## Note shape
+
+Keep notes short, standalone, and actionable.
+
+```markdown
+1. **[YYYY-MM-DD] Short rule**
+   Do instead: concrete repeatable action.
+```
+
+Use categories only if they help. Do not invent structure for its own sake.
+
+If you create a new file, start with:
 
 ```markdown
 # Napkin Runbook
 
-## Execution & Validation (Highest Priority)
-1. **[YYYY-MM-DD] Short rule**
-   Do instead: concrete repeatable action.
-
-## Shell & Command Reliability
-1. **[YYYY-MM-DD] Short rule**
-   Do instead: concrete repeatable action.
-
-## Domain Behavior Guardrails
+## Repo Guardrails
 1. **[YYYY-MM-DD] Short rule**
    Do instead: concrete repeatable action.
 
 ## User Directives
-1. **[YYYY-MM-DD] Directive**
-   Do instead: exactly follow this preference.
+1. **[YYYY-MM-DD] Preference**
+   Do instead: exact behavior.
 ```
 
-Adapt categories to the repo and keep the priority ordering. Empty categories are fine.
+## Curation
 
-## Continuous Runbook Updates
+If you touch `napkin`, prune aggressively:
+- merge duplicates
+- delete stale, weak, or obvious notes
+- delete notes that duplicate the prompt, `AGENTS.md`, or task docs
+- prefer a few high-signal notes over broad coverage
+- move task-specific material to the `journal`
+- move broadly reusable lessons to the reusable-learning flow
 
-Update during work whenever you learn something reusable.
-
-Add a note only if it will matter again.
-
-Good candidates:
-- Repo-specific gotchas or toolchain traps.
-- User preferences that recur across tasks.
-- Non-obvious tactics that repeatedly work.
-
-Do not include:
-- Timeline notes or current task status.
-- Verbose postmortems.
-- Generic rules already covered elsewhere.
-- Mistake logs without a concrete `Do instead:` fix.
-
-## Entry Format Requirements
-
-Each entry must:
-- Include date added, `[YYYY-MM-DD]`.
-- Use a short, specific title.
-- Include an explicit `Do instead:` line.
-- Stay concise and make sense when read alone.
-
-## Category And Priority Policy
-
-- Organize notes by category.
-- Sort each category by importance.
-- Maximum 5 items per category.
-- Prefer fewer high-signal items over broad coverage.
-- If a category fills up, delete the weakest item.
-
-## Practical Rule
-
-Treat napkin as a live runbook for recurring leverage. If it starts reading like a log or a second copy of `AGENTS.md`, trim it.
-
-## Example Entry
+## Example
 
 ```markdown
 1. **[2026-02-21] `rg` fails on giant expanded path lists**

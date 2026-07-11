@@ -1,24 +1,27 @@
 ---
 description: Iterative deep planning with critiques and alternatives.
+argument-hint: "<plan-file-path>"
 ---
-
-# Replan
 
 You are going to **replan** - an iterative process of designing, critiquing, and refining a plan.
 
 ## Process
 
-### 1. Understand & Clarify
+### 1. Read plan to replan
+
+Read the plan in $1.
+
+### 2. Understand & Clarify
 
 - Read relevant code, documentation, and constraints
 - State any assumptions you're making
 - Ask clarifying questions with `ask-user-question` tool before proceeding
 
-### 2. Initial Plan
+### 3. Initial Plan
 
 Design your first approach, considering requirements and existing solutions.
 
-### 3. Critique
+### 4. Critique
 
 Generate thorough critiques of your plan:
 
@@ -27,7 +30,7 @@ Generate thorough critiques of your plan:
 - Scrutinize for "hand-wavy" aspects - don't assume how things work, study the code
 - Note uncertainties as risks
 
-### 4. Alternatives
+### 5. Alternatives
 
 Brainstorm alternatives based on critiques. Goals:
 
@@ -35,19 +38,19 @@ Brainstorm alternatives based on critiques. Goals:
 - Reduce complexity and risk
 - Improve code quality and maintainability
 
-### 5. Develop Best Alternative
+### 6. Develop Best Alternative
 
 Select the most promising alternative and develop it fully.
 
-### 6. Iterate
+### 7. Iterate
 
 Repeat steps 3-5 at least **three times**, asking for user feedback at each iteration.
 
-### 7. Final Plan
+### 8. Final Plan
 
 Assemble the best features from all iterations into a robust final plan.
 
-### 8. Write plan
+### 9. Write plan
 
 Write the plan to `.sandbox/plans/YYYY-MM-DD-JIRA-XXXX-description.md`:
 

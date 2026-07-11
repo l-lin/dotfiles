@@ -1,7 +1,5 @@
 ---
-name: gh-pr
-description: Use when creating a GitHub Pull Request with `gh` CLI.
-disable-model-invocation: true
+description: Create GitHub Pull Request with `gh` CLI.
 ---
 
 Create a GitHub PR via `gh` CLI with a clear, reviewer-friendly description. Follow the `clear-writing` skill for the prose.

@@ -1,7 +1,5 @@
 ---
-name: commit
 description: Git commit
-disable-model-invocation: true
 ---
 
 Create a git commit for the current changes using a concise Conventional Commits-style subject.

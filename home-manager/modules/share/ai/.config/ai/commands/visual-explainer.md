@@ -4,9 +4,11 @@ description: Generate self-contained HTML visual explanations for systems, code 
 disable-model-invocation: true
 ---
 
-# Visual Explainer
-
 Generate self-contained HTML pages that explain systems, code changes, plans, data, and technical concepts visually. Use this skill for diagram requests, architecture overviews, diff/plan reviews, project recaps, comparison tables, slide decks, and any visual explanation.
+
+## Input
+
+$ARGUMENTS
 
 ## Delivery rules
 

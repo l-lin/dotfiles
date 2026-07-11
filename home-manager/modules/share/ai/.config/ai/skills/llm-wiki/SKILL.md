@@ -4,8 +4,6 @@ description: Use when initializing a new personal knowledge base (wiki) from the
 disable-model-invocation: true
 ---
 
-# LLM Wiki
-
 Initialize a personal knowledge base using the LLM Wiki pattern: the LLM reads raw sources, builds a persistent wiki of summaries/entities/concepts/analyses, and keeps it current. You curate sources; the LLM does the bookkeeping.
 
 **Core principle:** The wiki is a compounding artifact — cross-references, contradictions, and synthesis are already done. No embedding-based RAG needed.
