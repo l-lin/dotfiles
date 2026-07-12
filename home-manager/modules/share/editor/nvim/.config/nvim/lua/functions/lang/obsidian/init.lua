@@ -69,19 +69,28 @@ end
 local function todo(ctx)
   local today_iso = id_to_date(ctx.partial_note)
   local t = {}
-  if os.date("%u", today_iso) == "1" then
+  local day_of_week = os.date("%u", today_iso)
+  local month = os.date("%Y-%m", today_iso)
+  if day_of_week == "1" then
     table.insert(t, "- [ ] check self-improved AI PRs")
   end
-  if os.date("%u", today_iso) == "3" then
-    table.insert(t, "- [ ] [[1o1 - " .. os.date("%Y-%m", today_iso) .. "]]")
+  if day_of_week == "3" then
+    table.insert(t, "- [ ] [[1o1 - " .. month .. "]]")
   end
-  if os.date("%u", today_iso) == "5" then
+  if day_of_week == "5" then
     table.insert(t, "- [ ] update [[career progress]] with `/project-checkpoint`")
     table.insert(t, "- [ ] [[workday]]: enter your time")
   end
-  if os.date("%u", today_iso) == "7" then
-    table.insert(t, "- [ ] weekly journal with `/weekly`")
+  if day_of_week == "6" then
+    table.insert(t, "- [ ] run weekly AI skill evaluation")
+  end
+  if day_of_week == "7" then
+    table.insert(t, "- [ ] [[" .. month .. "]]: weekly journal with `/weekly`")
     table.insert(t, "- [ ] update main quests")
+  end
+
+  if day_of_week ~= "6" and day_of_week ~= "7" then
+    table.insert(t, "- [ ] [[patient-subscription]]: run daily subscription AI analysis")
   end
   return table.concat(t, "\n")
 end
