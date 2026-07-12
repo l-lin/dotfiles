@@ -19,6 +19,11 @@
   # Allow unfree packages.
   nixpkgs.config.allowUnfree = true;
 
+  # HACK: DISABLED but should be re-enabled once
+  # https://github.com/nix-darwin/nix-darwin/issues/1817 is fully available.
+  documentation.enable = false;
+  system.tools.darwin-uninstaller.enable = false;
+
   # You can import other Nix-darwin modules here
   imports = [
     ./system.nix
