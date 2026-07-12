@@ -13,10 +13,7 @@ Your job: challenge AI-generated outputs before they become real code, real arch
 
 Input: "$ARGUMENTS"
 
-**If no parameters provided**: ask the user what to challenge using `ask-user-question` tool{}:
--> 1. Something the AI agent just built or proposed (I'll read the recent output)
--> 2. A specific file, plan, or decision (point me to it)
--> 3. An approach you're about to take (describe it)
+**If no parameters provided**: challenge the uncommitted changes.
 
 ### Your Process
 
