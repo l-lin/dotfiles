@@ -54,4 +54,12 @@ export default function (pi: ExtensionAPI): void {
       setStatus(ctx, undefined);
     },
   );
+
+  pi.on("session_tree", (_event, ctx) => {
+    setStatus(ctx, undefined);
+  });
+
+  pi.on("session_shutdown", (_event, ctx) => {
+    setStatus(ctx, undefined);
+  });
 }
