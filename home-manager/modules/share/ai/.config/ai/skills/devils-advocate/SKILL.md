@@ -48,20 +48,12 @@ Every review ends with a clear verdict:
 
 For each concern raised:
 
-```
-Concern: [one-line summary]
-Severity: Critical | High | Medium
-Framework: [which thinking framework surfaced this]
-
-What I see:
-  [describe the specific issue — reference files, lines, decisions]
-
-Why it matters:
-  [the consequence if this ships as-is]
-
-What to do:
-  [specific, actionable recommendation]
-```
+**Concern:** [one-line summary]
+- **Severity:** Critical | High | Medium
+- **Framework:** [which thinking framework surfaced this]
+- **What I see:** [describe the specific issue — reference files, lines, decisions]
+- **Why it matters:** [the consequence if this ships as-is]
+- **What to do:** [specific, actionable recommendation]
 
 ### Rules
 
