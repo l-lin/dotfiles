@@ -24,5 +24,6 @@ pi-extensions:~/.config/dotfiles/home-manager/modules/share/ai/pi/.pi/agent/exte
 project-notes:~/perso/codeberg/notes/2-areas/project-notes
 projects:~/perso/codeberg/notes/1-projects
 tf:~/work/terraform-infra
+uhdp:~/work/unified-healthcare-data-platform-infra
 work-dotfiles:~/.config/work-dotfiles
 work-navi:~/.local/share/navi/cheats/l-lin__work-cheats
