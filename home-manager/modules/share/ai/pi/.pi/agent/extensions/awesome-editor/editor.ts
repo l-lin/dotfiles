@@ -100,7 +100,6 @@ interface PlaceholderRange {
 }
 
 interface PlaceholderSession {
-  line: number;
   ranges: PlaceholderRange[];
   activeRangeIndex: number;
   finalStop: number;
@@ -109,9 +108,8 @@ interface PlaceholderSession {
 
 interface PlaceholderSnapshot {
   session: PlaceholderSession;
-  beforeLine: string;
-  beforeLinesLength: number;
-  beforeCursor: { line: number; col: number };
+  beforeText: string;
+  beforeCursorOffset: number;
 }
 
 export class AwesomeEditor extends CustomEditor {
@@ -122,6 +120,8 @@ export class AwesomeEditor extends CustomEditor {
   private pendingG: PendingG = null;
   private lastCharMotion: LastCharMotion | null = null;
   private placeholderSession: PlaceholderSession | null = null;
+  private placeholderPasteBuffer = "";
+  private isInPlaceholderPaste = false;
 
   constructor(
     tui: TUI,
@@ -216,7 +216,12 @@ export class AwesomeEditor extends CustomEditor {
   } {
     const session = this.placeholderSession;
     if (!session) {
+      this.resetPlaceholderPasteState();
       return { handled: false, snapshot: null };
+    }
+
+    if (this.handlePlaceholderPasteInput(data)) {
+      return { handled: true, snapshot: null };
     }
 
     if (matchesKey(data, "tab")) {
@@ -230,10 +235,47 @@ export class AwesomeEditor extends CustomEditor {
       return { handled: true, snapshot: null };
     }
 
+    const chunkedText = this.getChunkedPlaceholderText(data);
+    if (chunkedText !== null) {
+      this.insertChunkedPlaceholderText(chunkedText);
+      return { handled: true, snapshot: null };
+    }
+
     return {
       handled: false,
       snapshot: this.capturePlaceholderSnapshot(),
     };
+  }
+
+  private handlePlaceholderPasteInput(data: string): boolean {
+    if (data.includes("\x1b[200~")) {
+      this.isInPlaceholderPaste = true;
+      this.placeholderPasteBuffer = "";
+      data = data.replace("\x1b[200~", "");
+    }
+
+    if (!this.isInPlaceholderPaste) {
+      return false;
+    }
+
+    this.placeholderPasteBuffer += data;
+    const endIndex = this.placeholderPasteBuffer.indexOf("\x1b[201~");
+    if (endIndex === -1) {
+      return true;
+    }
+
+    const pastedText = this.placeholderPasteBuffer.slice(0, endIndex);
+    const remaining = this.placeholderPasteBuffer.slice(endIndex + 6);
+    this.resetPlaceholderPasteState();
+
+    if (pastedText.length > 0) {
+      this.applyPlaceholderPasteText(pastedText);
+    }
+    if (remaining.length > 0) {
+      this.handleInput(remaining);
+    }
+
+    return true;
   }
 
   private getDirectPlaceholderText(data: string): string | null {
@@ -250,6 +292,22 @@ export class AwesomeEditor extends CustomEditor {
       : null;
   }
 
+  private getChunkedPlaceholderText(data: string): string | null {
+    if (data.length <= 1 || data.includes("\x1b")) {
+      return null;
+    }
+
+    const normalizedText = data.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+    return [...normalizedText].every(
+      (character) =>
+        character === "\n" ||
+        character === "\t" ||
+        character.charCodeAt(0) >= 32,
+    )
+      ? normalizedText
+      : null;
+  }
+
   private capturePlaceholderSnapshot(): PlaceholderSnapshot | null {
     const session = this.placeholderSession;
     if (!session) {
@@ -257,30 +315,28 @@ export class AwesomeEditor extends CustomEditor {
     }
 
     const activeRange = session.ranges[session.activeRangeIndex];
-    const cursor = this.getCursor();
+    const cursorOffset = this.getCursorOffset();
     if (
       !activeRange ||
-      cursor.line !== session.line ||
-      cursor.col < activeRange.start ||
-      cursor.col > activeRange.end
+      !this.isCursorWithinRange(
+        cursorOffset,
+        activeRange,
+        session.pendingReplacement,
+      )
     ) {
-      this.placeholderSession = null;
+      this.clearPlaceholderSession();
       return null;
     }
 
-    const lines = this.getLines();
-
     return {
       session: {
-        line: session.line,
         ranges: session.ranges.map((range) => ({ ...range })),
         activeRangeIndex: session.activeRangeIndex,
         finalStop: session.finalStop,
         pendingReplacement: session.pendingReplacement,
       },
-      beforeLine: lines[session.line] ?? "",
-      beforeLinesLength: lines.length,
-      beforeCursor: cursor,
+      beforeText: this.getText(),
+      beforeCursorOffset: cursorOffset,
     };
   }
 
@@ -288,33 +344,139 @@ export class AwesomeEditor extends CustomEditor {
     const session = this.placeholderSession;
     const activeRange = session?.ranges[session.activeRangeIndex];
     if (!session || !activeRange) {
-      this.placeholderSession = null;
+      this.clearPlaceholderSession();
+      return;
+    }
+
+    this.applyPlaceholderTextChange(
+      activeRange,
+      activeRange.start,
+      activeRange.end,
+      text,
+      "type-word",
+    );
+  }
+
+  private insertChunkedPlaceholderText(text: string): void {
+    const session = this.placeholderSession;
+    const activeRange = session?.ranges[session.activeRangeIndex];
+    if (!session || !activeRange) {
+      this.clearPlaceholderSession();
+      return;
+    }
+
+    const cursorOffset = this.getCursorOffset();
+    if (
+      !this.isCursorWithinRange(
+        cursorOffset,
+        activeRange,
+        session.pendingReplacement,
+      )
+    ) {
+      this.clearPlaceholderSession();
+      return;
+    }
+
+    const changeStart = session.pendingReplacement
+      ? activeRange.start
+      : cursorOffset;
+    const changeEnd = session.pendingReplacement
+      ? activeRange.end
+      : cursorOffset;
+    this.applyPlaceholderTextChange(
+      activeRange,
+      changeStart,
+      changeEnd,
+      text,
+      null,
+    );
+  }
+
+  private applyPlaceholderPasteText(pastedText: string): void {
+    const normalizedText = this.normalizePlaceholderPasteText(pastedText);
+    if (normalizedText.length === 0) {
+      return;
+    }
+
+    const marker = this.getLargePlaceholderPasteMarker(normalizedText);
+    this.insertChunkedPlaceholderText(marker ?? normalizedText);
+  }
+
+  private normalizePlaceholderPasteText(pastedText: string): string {
+    const decodedText = pastedText.replace(/\x1b\[(\d+);5u/g, (match, code) => {
+      const codePoint = Number(code);
+      if (codePoint >= 97 && codePoint <= 122) {
+        return String.fromCharCode(codePoint - 96);
+      }
+      if (codePoint >= 65 && codePoint <= 90) {
+        return String.fromCharCode(codePoint - 64);
+      }
+      return match;
+    });
+
+    return decodedText
+      .replace(/\r\n/g, "\n")
+      .replace(/\r/g, "\n")
+      .split("")
+      .filter(
+        (character) =>
+          character === "\n" ||
+          character === "\t" ||
+          character.charCodeAt(0) >= 32,
+      )
+      .join("");
+  }
+
+  private getLargePlaceholderPasteMarker(pastedText: string): string | null {
+    const pastedLines = pastedText.split("\n");
+    const totalChars = pastedText.length;
+    if (pastedLines.length <= 10 && totalChars <= 1000) {
+      return null;
+    }
+
+    const editor = this as any;
+    editor.pasteCounter += 1;
+    const pasteId = editor.pasteCounter;
+    editor.pastes.set(pasteId, pastedText);
+
+    return pastedLines.length > 10
+      ? `[paste #${pasteId} +${pastedLines.length} lines]`
+      : `[paste #${pasteId} ${totalChars} chars]`;
+  }
+
+  private applyPlaceholderTextChange(
+    previousRange: PlaceholderRange,
+    changeStart: number,
+    changeEnd: number,
+    replacementText: string,
+    lastAction: "type-word" | null,
+  ): void {
+    const session = this.placeholderSession;
+    if (!session) {
+      this.clearPlaceholderSession();
       return;
     }
 
     const editor = this as any;
-    const previousRange = { ...activeRange };
-    const currentLine = editor.state.lines[session.line] ?? "";
+    const currentText = this.getText();
+    const nextText =
+      currentText.slice(0, changeStart) +
+      replacementText +
+      currentText.slice(changeEnd);
 
+    if (editor.cancelAutocomplete) {
+      editor.cancelAutocomplete();
+    }
     editor.exitHistoryBrowsing();
     editor.pushUndoSnapshot();
-    editor.lastAction = "type-word";
-    editor.state.lines[session.line] =
-      currentLine.slice(0, previousRange.start) +
-      text +
-      currentLine.slice(previousRange.end);
-    editor.state.cursorLine = session.line;
-    editor.setCursorCol(previousRange.start + text.length);
+    editor.lastAction = lastAction;
+    this.setDocumentText(nextText, changeStart + replacementText.length);
 
     this.updatePlaceholderSessionAfterEdit(
-      previousRange,
-      text.length - (previousRange.end - previousRange.start),
+      { ...previousRange },
+      replacementText.length - (changeEnd - changeStart),
     );
     session.pendingReplacement = false;
-
-    if (editor.onChange) {
-      editor.onChange(this.getText());
-    }
   }
 
   private reconcilePlaceholderInput(
@@ -325,20 +487,23 @@ export class AwesomeEditor extends CustomEditor {
     }
 
     const session = this.placeholderSession;
-    const currentCursor = this.getCursor();
-    const lines = this.getLines();
-    if (
-      lines.length !== snapshot.beforeLinesLength ||
-      currentCursor.line !== session.line
-    ) {
-      this.placeholderSession = null;
+    const currentText = this.getText();
+    const currentCursorOffset = this.getCursorOffset();
+    const activeRange = session.ranges[session.activeRangeIndex];
+    if (!activeRange) {
+      this.clearPlaceholderSession();
       return;
     }
 
-    const currentLine = lines[session.line] ?? "";
-    if (currentLine === snapshot.beforeLine) {
-      if (currentCursor.col !== snapshot.beforeCursor.col) {
-        this.placeholderSession = null;
+    if (currentText === snapshot.beforeText) {
+      if (
+        !this.isCursorWithinRange(
+          currentCursorOffset,
+          activeRange,
+          session.pendingReplacement,
+        )
+      ) {
+        this.clearPlaceholderSession();
       }
       return;
     }
@@ -347,20 +512,23 @@ export class AwesomeEditor extends CustomEditor {
       snapshot.session.ranges[snapshot.session.activeRangeIndex];
     if (
       !previousRange ||
-      snapshot.beforeCursor.col < previousRange.start ||
-      snapshot.beforeCursor.col > previousRange.end
+      !this.isCursorWithinRange(
+        snapshot.beforeCursorOffset,
+        previousRange,
+        snapshot.session.pendingReplacement,
+      )
     ) {
-      this.placeholderSession = null;
+      this.clearPlaceholderSession();
       return;
     }
 
-    const change = this.findSingleLineChange(snapshot.beforeLine, currentLine);
+    const change = this.findTextChange(snapshot.beforeText, currentText);
     if (
       !change ||
       change.beforeStart < previousRange.start ||
       change.beforeEnd > previousRange.end
     ) {
-      this.placeholderSession = null;
+      this.clearPlaceholderSession();
       return;
     }
 
@@ -371,53 +539,56 @@ export class AwesomeEditor extends CustomEditor {
     this.updatePlaceholderSessionAfterEdit(previousRange, delta);
     session.pendingReplacement = false;
 
-    const activeRange = session.ranges[session.activeRangeIndex];
+    const updatedRange = session.ranges[session.activeRangeIndex];
     if (
-      !activeRange ||
-      currentCursor.col < activeRange.start ||
-      currentCursor.col > activeRange.end
+      !updatedRange ||
+      !this.isCursorWithinRange(
+        currentCursorOffset,
+        updatedRange,
+        session.pendingReplacement,
+      )
     ) {
-      this.placeholderSession = null;
+      this.clearPlaceholderSession();
     }
   }
 
-  private findSingleLineChange(
-    beforeLine: string,
-    afterLine: string,
+  private findTextChange(
+    beforeText: string,
+    afterText: string,
   ): {
     beforeStart: number;
     beforeEnd: number;
     afterStart: number;
     afterEnd: number;
   } | null {
-    if (beforeLine === afterLine) {
+    if (beforeText === afterText) {
       return null;
     }
 
     let prefixLength = 0;
     while (
-      prefixLength < beforeLine.length &&
-      prefixLength < afterLine.length &&
-      beforeLine[prefixLength] === afterLine[prefixLength]
+      prefixLength < beforeText.length &&
+      prefixLength < afterText.length &&
+      beforeText[prefixLength] === afterText[prefixLength]
     ) {
       prefixLength += 1;
     }
 
     let suffixLength = 0;
     while (
-      suffixLength < beforeLine.length - prefixLength &&
-      suffixLength < afterLine.length - prefixLength &&
-      beforeLine[beforeLine.length - 1 - suffixLength] ===
-        afterLine[afterLine.length - 1 - suffixLength]
+      suffixLength < beforeText.length - prefixLength &&
+      suffixLength < afterText.length - prefixLength &&
+      beforeText[beforeText.length - 1 - suffixLength] ===
+        afterText[afterText.length - 1 - suffixLength]
     ) {
       suffixLength += 1;
     }
 
     return {
       beforeStart: prefixLength,
-      beforeEnd: beforeLine.length - suffixLength,
+      beforeEnd: beforeText.length - suffixLength,
       afterStart: prefixLength,
-      afterEnd: afterLine.length - suffixLength,
+      afterEnd: afterText.length - suffixLength,
     };
   }
 
@@ -428,7 +599,7 @@ export class AwesomeEditor extends CustomEditor {
     const session = this.placeholderSession;
     const activeRange = session?.ranges[session.activeRangeIndex];
     if (!session || !activeRange) {
-      this.placeholderSession = null;
+      this.clearPlaceholderSession();
       return;
     }
 
@@ -456,27 +627,109 @@ export class AwesomeEditor extends CustomEditor {
 
     const nextRange = session.ranges[session.activeRangeIndex + 1];
     if (!nextRange) {
-      this.setCursorPosition(session.line, session.finalStop);
-      this.placeholderSession = null;
+      this.setCursorOffset(session.finalStop);
+      this.clearPlaceholderSession();
       return;
     }
 
     session.activeRangeIndex += 1;
     session.pendingReplacement = true;
-    this.setCursorPosition(
-      session.line,
-      this.getPlaceholderCursorCol(nextRange),
-    );
+    this.setCursorOffset(this.getPlaceholderCursorOffset(nextRange));
   }
 
-  private getPlaceholderCursorCol(range: PlaceholderRange): number {
+  private getPlaceholderCursorOffset(range: PlaceholderRange): number {
+    if (range.end <= range.start) {
+      return range.start;
+    }
+
     return Math.min(range.end - 1, range.start + 1);
+  }
+
+  private isCursorWithinRange(
+    cursorOffset: number,
+    range: PlaceholderRange,
+    pendingReplacement: boolean,
+  ): boolean {
+    if (!pendingReplacement) {
+      return cursorOffset >= range.start && cursorOffset <= range.end;
+    }
+
+    const editableStart = Math.min(range.start + 1, range.end);
+    const editableEnd = Math.max(editableStart, range.end - 1);
+    return cursorOffset >= editableStart && cursorOffset <= editableEnd;
+  }
+
+  private getCursorOffset(): number {
+    return this.getDocumentOffset(this.getCursor());
+  }
+
+  private getDocumentOffset(position: { line: number; col: number }): number {
+    const lines = this.getLines();
+    let offset = position.col;
+
+    for (let lineIndex = 0; lineIndex < position.line; lineIndex += 1) {
+      offset += (lines[lineIndex] ?? "").length + 1;
+    }
+
+    return offset;
+  }
+
+  private getPositionForOffset(
+    lines: string[],
+    offset: number,
+  ): { line: number; col: number } {
+    let remainingOffset = Math.max(0, offset);
+
+    for (let lineIndex = 0; lineIndex < lines.length; lineIndex += 1) {
+      const line = lines[lineIndex] ?? "";
+      if (remainingOffset <= line.length) {
+        return { line: lineIndex, col: remainingOffset };
+      }
+
+      remainingOffset -= line.length;
+      if (lineIndex === lines.length - 1) {
+        return { line: lineIndex, col: line.length };
+      }
+
+      remainingOffset -= 1;
+    }
+
+    return { line: 0, col: 0 };
+  }
+
+  private setDocumentText(text: string, cursorOffset: number): void {
+    const editor = this as any;
+    const nextLines = text.split("\n");
+    const position = this.getPositionForOffset(nextLines, cursorOffset);
+
+    editor.state.lines = nextLines.length === 0 ? [""] : nextLines;
+    editor.state.cursorLine = position.line;
+    editor.setCursorCol(position.col);
+
+    if (editor.onChange) {
+      editor.onChange(this.getText());
+    }
+  }
+
+  private setCursorOffset(offset: number): void {
+    const position = this.getPositionForOffset(this.getLines(), offset);
+    this.setCursorPosition(position.line, position.col);
   }
 
   private setCursorPosition(line: number, col: number): void {
     const editor = this as any;
     editor.state.cursorLine = line;
     editor.setCursorCol(col);
+  }
+
+  private clearPlaceholderSession(): void {
+    this.placeholderSession = null;
+    this.resetPlaceholderPasteState();
+  }
+
+  private resetPlaceholderPasteState(): void {
+    this.placeholderPasteBuffer = "";
+    this.isInPlaceholderPaste = false;
   }
 
   // ─── Escape / mode transitions ───────────────────────────────────────────────
@@ -512,7 +765,7 @@ export class AwesomeEditor extends CustomEditor {
     }
     if (this.viMode === "insert") {
       this.viMode = "normal";
-      this.placeholderSession = null;
+      this.clearPlaceholderSession();
     } else {
       super.handleInput("\x1b"); // pass through to abort agent
     }
@@ -949,7 +1202,7 @@ export class AwesomeEditor extends CustomEditor {
           ? formatParsedSnippetExpansion(parsedExpansion, "bracketed")
           : parsedExpansion;
 
-      this.placeholderSession = null;
+      this.clearPlaceholderSession();
       this.replaceTextAtCursor(
         completionResult,
         triggerStart,
@@ -975,28 +1228,28 @@ export class AwesomeEditor extends CustomEditor {
     startCol: number,
     expansion: ParsedSnippetExpansion,
   ): void {
+    const documentStart = this.getDocumentOffset({ line, col: startCol });
+
     if (expansion.tabstops.length === 0) {
       if (expansion.hasExplicitFinalStop) {
-        this.setCursorPosition(line, startCol + expansion.finalStop);
+        this.setCursorOffset(documentStart + expansion.finalStop);
       }
       return;
     }
 
     this.placeholderSession = {
-      line,
       ranges: expansion.tabstops.map((tabstop) => ({
         index: tabstop.index,
-        start: startCol + tabstop.start,
-        end: startCol + tabstop.end,
+        start: documentStart + tabstop.start,
+        end: documentStart + tabstop.end,
       })),
       activeRangeIndex: 0,
-      finalStop: startCol + expansion.finalStop,
+      finalStop: documentStart + expansion.finalStop,
       pendingReplacement: true,
     };
 
-    this.setCursorPosition(
-      line,
-      this.getPlaceholderCursorCol(
+    this.setCursorOffset(
+      this.getPlaceholderCursorOffset(
         this.placeholderSession.ranges[
           this.placeholderSession.activeRangeIndex
         ]!,

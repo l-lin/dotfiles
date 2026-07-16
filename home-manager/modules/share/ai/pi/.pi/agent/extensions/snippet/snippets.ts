@@ -71,7 +71,8 @@ export const SNIPPETS: SnippetDef[] = [
   {
     trigger: "$implement",
     description: "Implement a piece of work.",
-    expansion: "Implement the work described in ${1:plan}. Run the full test suite once at the end. Use `ask-user-question` tool if there are any points to clarify.",
+    expansion:
+      "Implement the work described in ${1:plan}. Run the full test suite once at the end. Use `ask-user-question` tool if there are any points to clarify.",
   },
 
   // ── When we're trying to understand something ──────────────────────
