@@ -59,3 +59,5 @@ Structure your response as follows:
 - chore: maintenance, dependencies
 - perf: performance
 - ci: CI/CD
+
+$ARGUMENTS

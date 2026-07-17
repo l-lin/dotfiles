@@ -1,5 +1,6 @@
 ---
 description: Continue previous work by looking at git history
+argument-hint: "[additional-info]"
 ---
 
 1. Check git status and current branch

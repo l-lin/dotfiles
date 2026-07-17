@@ -1,5 +1,6 @@
 ---
 description: Create GitHub Pull Request with `gh` CLI.
+argument-hint: "[additional-info]"
 ---
 
 Create a GitHub PR via `gh` CLI with a clear, reviewer-friendly description. Follow the `clear-writing` skill for the prose.
@@ -37,3 +38,5 @@ Use a `mermaid` block, or ASCII for something simple. Skip this section otherwis
 - **Diagram**: add one only when it clarifies; mermaid preferred, ASCII for simple cases
 - **Notes**: flag non-obvious decisions, edge cases, and where reviewers should focus
 - **Concise**: no one wants to read wall of texts, be concise
+
+$ARGUMENTS
