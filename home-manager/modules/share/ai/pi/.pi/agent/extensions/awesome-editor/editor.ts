@@ -157,9 +157,7 @@ export class AwesomeEditor extends CustomEditor {
         return;
       }
 
-      // Ctrl-E in autocomplete mode: apply + expand snippet
-      if (data === "\x05" && (this as any).autocompleteState) {
-        this.applyAndExpandSnippet();
+      if (this.handleSnippetExpansionShortcut(data)) {
         return;
       }
 
@@ -194,8 +192,7 @@ export class AwesomeEditor extends CustomEditor {
       return;
     }
 
-    if (data === "\x05" && (this as any).autocompleteState) {
-      this.applyAndExpandSnippet();
+    if (this.handleSnippetExpansionShortcut(data)) {
       return;
     }
 
@@ -1114,6 +1111,71 @@ export class AwesomeEditor extends CustomEditor {
   }
 
   // ─── Snippet expansion ───────────────────────────────────────────────────────
+
+  private handleSnippetExpansionShortcut(data: string): boolean {
+    if (data !== "\x05") {
+      return false;
+    }
+
+    if ((this as any).autocompleteState) {
+      this.applyAndExpandSnippet();
+      return true;
+    }
+
+    return this.expandExactSnippetAtCursor();
+  }
+
+  private expandExactSnippetAtCursor(): boolean {
+    const snippet = this.getExactSnippetAtCursor();
+    if (!snippet) {
+      return false;
+    }
+
+    const cursor = this.getCursor();
+    (this as any).pushUndoSnapshot();
+    (this as any).lastAction = null;
+    this.expandSnippet(
+      snippet,
+      {
+        lines: this.getLines(),
+        cursorLine: cursor.line,
+        cursorCol: cursor.col,
+      },
+      snippet.trigger,
+    );
+    return true;
+  }
+
+  private getExactSnippetAtCursor(): SnippetDef | null {
+    const cursor = this.getCursor();
+    const currentLine = this.getLines()[cursor.line] ?? "";
+    const textBeforeCursor = currentLine.slice(0, cursor.col);
+
+    let actual: SnippetDef | null = null;
+
+    for (const snippet of SNIPPETS) {
+      if (!textBeforeCursor.endsWith(snippet.trigger)) {
+        continue;
+      }
+
+      const triggerStart = textBeforeCursor.length - snippet.trigger.length;
+      const charBeforeTrigger = textBeforeCursor[triggerStart - 1] ?? "";
+      const startsOwnToken =
+        triggerStart === 0 ||
+        charBeforeTrigger === " " ||
+        charBeforeTrigger === "\t";
+
+      if (!startsOwnToken) {
+        continue;
+      }
+
+      if (!actual || snippet.trigger.length > actual.trigger.length) {
+        actual = snippet;
+      }
+    }
+
+    return actual;
+  }
 
   /**
    * Apply selected autocomplete item AND expand the snippet to its final value.

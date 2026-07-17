@@ -1,8 +1,8 @@
 /**
  * Snippet autocomplete provider.
  *
- * Trigger/description data lives in snippet/snippets.ts — shared with the
- * input-transform extension so both stay in sync automatically.
+ * Trigger/description data lives in snippet/snippets.ts so Ctrl-E expansion,
+ * autocomplete, and the compatibility shim share one catalog.
  */
 
 import type {
@@ -124,8 +124,13 @@ export class SnippetAutocompleteProvider {
  */
 export function withSnippets(base: AutocompleteProvider): AutocompleteProvider {
   const snippets = new SnippetAutocompleteProvider();
+  const triggerCharacters = Array.from(
+    new Set([...(base.triggerCharacters ?? []), "$", "?"]),
+  );
 
   return {
+    triggerCharacters,
+    shouldTriggerFileCompletion: base.shouldTriggerFileCompletion?.bind(base),
     async getSuggestions(
       lines,
       cursorLine,

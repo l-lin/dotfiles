@@ -30,16 +30,24 @@ function given_mockPi() {
   };
 }
 
-test("snippet transform GIVEN a shared snippet with tabstops WHEN processing input THEN it strips placeholder syntax and keeps bracketed defaults", async () => {
+test("snippet extension GIVEN a dollar snippet trigger WHEN processing input THEN it leaves the text alone", async () => {
   const { pi, when_processingInput } = given_mockPi();
 
   snippetExtension(pi as never);
 
   const actual = await when_processingInput("$understanding-next-steps");
-  const expected = {
-    action: "transform",
-    text: "Here's what I know so far about [topic]: [what we know]. What should I be reading or looking into next?",
-  };
+  const expected = { action: "continue" };
+
+  assert.deepEqual(actual, expected);
+});
+
+test("snippet extension GIVEN a question-mark snippet trigger WHEN processing input THEN it leaves the text alone", async () => {
+  const { pi, when_processingInput } = given_mockPi();
+
+  snippetExtension(pi as never);
+
+  const actual = await when_processingInput("?q");
+  const expected = { action: "continue" };
 
   assert.deepEqual(actual, expected);
 });

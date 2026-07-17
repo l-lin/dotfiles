@@ -7,8 +7,9 @@
  *  - expansion   — the replacement text, or a thunk for dynamic values
  *
  * Consumed by:
- *  - snippet/index.ts        (input-transform extension)
- *  - custom-editor/snippets.ts (autocomplete provider)
+ *  - snippet/index.ts            (compatibility shim; submitted prompts stay literal)
+ *  - awesome-editor/snippets.ts  (autocomplete provider)
+ *  - awesome-editor/editor.ts    (Ctrl-E expansion)
  */
 
 export interface SnippetDef {

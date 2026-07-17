@@ -125,6 +125,29 @@ function given_placeholderSession(editor: AwesomeEditor) {
     .placeholderSession;
 }
 
+test("awesome-editor GIVEN a question-mark snippet trigger typed as its own token WHEN pressing Ctrl-E THEN it expands the snippet", async () => {
+  const editor = given_editor();
+
+  editor.setAutocompleteProvider(
+    withSnippets(given_baseAutocompleteProvider() as never) as never,
+  );
+  when_typing(editor, "?q");
+  editor.handleInput(CTRL_E);
+
+  const expectedText =
+    "Use ask-user-question tool to reletenlessly interview me about every aspect of what I want until we reach a shared understanding.";
+  const actual = {
+    text: editor.getText(),
+    cursor: editor.getCursor(),
+  };
+  const expected = {
+    text: expectedText,
+    cursor: { line: 0, col: expectedText.length },
+  };
+
+  assert.deepEqual(actual, expected);
+});
+
 test("awesome-editor GIVEN a snippet with one tabstop WHEN expanding it with Ctrl-E THEN it inserts bracketed placeholder text and moves the cursor inside the first field", async () => {
   const editor = await given_editorWithSelectedSnippet(
     "$understanding-overview",
