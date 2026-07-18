@@ -150,10 +150,6 @@
       "rev": "f422cb5c6855f150e2ddcfaf44e7157b98b34f6a",
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
-    "review-ai.nvim": {
-      "rev": "96895fbcd0f61b340948547887ad43522cbc20aa",
-      "src": "https://codeberg.org/l-lin/review-ai.nvim"
-    },
     "snacks.nvim": {
       "rev": "882c996cf28183f4d63640de0b4c02ec886d01f2",
       "src": "https://github.com/folke/snacks.nvim"
