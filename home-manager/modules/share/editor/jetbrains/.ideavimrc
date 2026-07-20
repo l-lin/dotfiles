@@ -75,6 +75,8 @@ vnoremap > >gv
 " Always put cursor at middle of screen.
 nnoremap <C-d> <C-d>zz
 nnoremap <C-u> <C-u>zz
+nnoremap } }zz
+nnoremap { {zz
 " Do not select the next search element, so that I can easily do `cgn`.
 nnoremap * *N
 nnoremap # #N
@@ -106,6 +108,7 @@ nmap <leader>bd :action CloseContent<CR>
 nmap <leader>bo :action UnsplitAll<CR>
 nnoremap ]b :tabnext<CR>
 nnoremap [b :tabprev<CR>
+nnoremap L <C-6>
 
 "
 " VCS
@@ -136,9 +139,9 @@ inoremap <A-C-l> <Esc><C-w>l
 " LSP
 "
 nnoremap gd :action GotoDeclaration<CR>
-nmap <leader>ci :action GotoImplementation<CR>
-nmap <leader>ct :action GotoTypeDeclaration<CR>
-nmap <leader>cu :action ShowUsages<CR>
+nmap gri :action GotoImplementation<CR>
+nmap grt :action GotoTypeDeclaration<CR>
+nmap grr :action ShowUsages<CR>
 nmap ]e :action GotoNextError<CR>
 nmap [e :action GotoPreviousError<CR>
 
