@@ -176,3 +176,9 @@ vim.keymap.set("n", "<leader>xl", function()
     vim.notify(err, vim.log.levels.ERROR)
   end
 end, { desc = "Location List" })
+
+--
+-- VCS
+--
+vim.keymap.set("n", "]H", function() require("functions.git").navigate_changed_file("next") end, { silent = true, desc = "Next changed file" })
+vim.keymap.set("n", "[H", function() require("functions.git").navigate_changed_file("prev") end, { silent = true, desc = "Prev changed file" })

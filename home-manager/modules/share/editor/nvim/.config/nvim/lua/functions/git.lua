@@ -166,9 +166,165 @@ local function codeowner()
   return find_owner(content, rel_path)
 end
 
+---@param nul_output string
+---@return string[]
+local function split_nul_output(nul_output)
+  if nul_output == "" then
+    return {}
+  end
+
+  local paths = {}
+  local start_index = 1
+
+  while true do
+    local separator_index = nul_output:find("\0", start_index, true)
+    if separator_index == nil then
+      break
+    end
+
+    table.insert(paths, nul_output:sub(start_index, separator_index - 1))
+    start_index = separator_index + 1
+  end
+
+  return paths
+end
+
+---@param staged_output string
+---@param unstaged_output string
+---@param untracked_output string
+---@return string[]
+local function list_changed_files(staged_output, unstaged_output, untracked_output)
+  local changed_file_lookup = {}
+
+  for _, output in ipairs({ staged_output, unstaged_output, untracked_output }) do
+    for _, path in ipairs(split_nul_output(output)) do
+      changed_file_lookup[path] = true
+    end
+  end
+
+  local changed_files = {}
+  for path in pairs(changed_file_lookup) do
+    table.insert(changed_files, path)
+  end
+
+  table.sort(changed_files)
+  return changed_files
+end
+
+---@param changed_files string[]
+---@param current_relative_path string|nil
+---@param direction "next"|"prev"
+---@return string|nil
+local function find_changed_file_target(changed_files, current_relative_path, direction)
+  if #changed_files == 0 then
+    return nil
+  end
+
+  if current_relative_path == nil or current_relative_path == "" then
+    return direction == "next" and changed_files[1] or changed_files[#changed_files]
+  end
+
+  if direction == "next" then
+    for _, path in ipairs(changed_files) do
+      if path > current_relative_path then
+        return path
+      end
+    end
+
+    return changed_files[1]
+  end
+
+  for index = #changed_files, 1, -1 do
+    if changed_files[index] < current_relative_path then
+      return changed_files[index]
+    end
+  end
+
+  return changed_files[#changed_files]
+end
+
+---@return string|nil
+local function get_current_repo_root()
+  local current_buffer_path = vim.api.nvim_buf_get_name(0)
+  local start_directory = current_buffer_path ~= "" and vim.fn.fnamemodify(current_buffer_path, ":p:h")
+    or vim.fn.getcwd()
+  local system_result = vim
+    .system({ "git", "rev-parse", "--show-toplevel" }, { cwd = start_directory, text = true })
+    :wait()
+
+  if system_result.code ~= 0 then
+    return nil
+  end
+
+  return system_result.stdout:gsub("%s+$", "")
+end
+
+---@param repo_root string
+---@return string[]
+local function get_repo_changed_files(repo_root)
+  local staged_result = vim
+    .system({ "git", "diff", "--name-only", "--cached", "-z" }, { cwd = repo_root, text = true })
+    :wait()
+  local unstaged_result = vim.system({ "git", "diff", "--name-only", "-z" }, { cwd = repo_root, text = true }):wait()
+  local untracked_result = vim
+    .system({ "git", "ls-files", "--others", "--exclude-standard", "-z" }, { cwd = repo_root, text = true })
+    :wait()
+
+  return list_changed_files(staged_result.stdout, unstaged_result.stdout, untracked_result.stdout)
+end
+
+---@param repo_root string
+---@return string|nil
+local function get_current_relative_path(repo_root)
+  local current_buffer_path = vim.api.nvim_buf_get_name(0)
+  if current_buffer_path == "" then
+    return nil
+  end
+
+  local absolute_buffer_path = vim.fn.fnamemodify(current_buffer_path, ":p")
+  local repo_prefix = repo_root .. "/"
+  if absolute_buffer_path:sub(1, #repo_prefix) ~= repo_prefix then
+    return nil
+  end
+
+  return absolute_buffer_path:sub(#repo_prefix + 1)
+end
+
+---@param repo_root string
+---@param relative_path string
+local function open_changed_file(repo_root, relative_path)
+  local absolute_path = repo_root .. "/" .. relative_path
+  if vim.fn.filereadable(absolute_path) == 1 then
+    vim.cmd.edit(vim.fn.fnameescape(absolute_path))
+    return
+  end
+
+  vim.cmd("Git --paginate show HEAD:" .. vim.fn.fnameescape(relative_path))
+end
+
+---@param direction "next"|"prev"
+local function navigate_changed_file(direction)
+  -- AI: use synchronous git calls here; this mapping runs on demand and the repo-wide path list is tiny.
+  local repo_root = get_current_repo_root()
+  if repo_root == nil then
+    vim.notify("Not in a Git repository", vim.log.levels.WARN)
+    return
+  end
+
+  local changed_files = get_repo_changed_files(repo_root)
+  local target_relative_path = find_changed_file_target(changed_files, get_current_relative_path(repo_root), direction)
+  if target_relative_path == nil then
+    vim.notify("No changed files", vim.log.levels.INFO)
+    return
+  end
+
+  open_changed_file(repo_root, target_relative_path)
+end
+
 local M = {}
 M.get_current_repo_name = get_current_repo_name
 M.extract_repo_name_and_pr_id_from_url = extract_repo_name_and_pr_id_from_url
 M.find_owner = find_owner
 M.codeowner = codeowner
+M.navigate_changed_file = navigate_changed_file
 return M

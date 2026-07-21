@@ -226,6 +226,101 @@ describe("git.get_current_repo_name", function()
   end)
 end)
 
+describe("git.list_changed_files", function()
+  it(
+    "GIVEN staged unstaged and untracked outputs WHEN listing changed files THEN it returns a unique sorted list",
+    function()
+      local actual = git.list_changed_files("b.txt\0a.txt\0", "a.txt\0c.txt\0", "z.txt\0a.txt\0")
+      local expected = { "a.txt", "b.txt", "c.txt", "z.txt" }
+
+      assert.are.same(expected, actual)
+    end
+  )
+
+  it("GIVEN empty command outputs WHEN listing changed files THEN it returns an empty list", function()
+    local actual = git.list_changed_files("", "", "")
+    local expected = {}
+
+    assert.are.same(expected, actual)
+  end)
+end)
+
+describe("git.find_changed_file_target", function()
+  it("GIVEN the current file is changed WHEN moving next THEN it returns the next changed file", function()
+    local actual = git.find_changed_file_target({ "a.txt", "c.txt", "z.txt" }, "c.txt", "next")
+    local expected = "z.txt"
+
+    assert.are.equal(expected, actual)
+  end)
+
+  it("GIVEN the current file is changed WHEN moving previous THEN it returns the previous changed file", function()
+    local actual = git.find_changed_file_target({ "a.txt", "c.txt", "z.txt" }, "c.txt", "prev")
+    local expected = "a.txt"
+
+    assert.are.equal(expected, actual)
+  end)
+
+  it(
+    "GIVEN the current file is unchanged WHEN moving next THEN it returns the next lexicographic changed file",
+    function()
+      local actual = git.find_changed_file_target({ "a.txt", "c.txt", "z.txt" }, "b.txt", "next")
+      local expected = "c.txt"
+
+      assert.are.equal(expected, actual)
+    end
+  )
+
+  it(
+    "GIVEN the current file is unchanged WHEN moving previous THEN it returns the previous lexicographic changed file",
+    function()
+      local actual = git.find_changed_file_target({ "a.txt", "c.txt", "z.txt" }, "b.txt", "prev")
+      local expected = "a.txt"
+
+      assert.are.equal(expected, actual)
+    end
+  )
+
+  it("GIVEN no current file WHEN moving next THEN it returns the first changed file", function()
+    local actual = git.find_changed_file_target({ "a.txt", "c.txt", "z.txt" }, nil, "next")
+    local expected = "a.txt"
+
+    assert.are.equal(expected, actual)
+  end)
+
+  it("GIVEN no current file WHEN moving previous THEN it returns the last changed file", function()
+    local actual = git.find_changed_file_target({ "a.txt", "c.txt", "z.txt" }, nil, "prev")
+    local expected = "z.txt"
+
+    assert.are.equal(expected, actual)
+  end)
+
+  it(
+    "GIVEN the current file sorts after the last changed file WHEN moving next THEN it wraps to the first changed file",
+    function()
+      local actual = git.find_changed_file_target({ "a.txt", "c.txt", "z.txt" }, "zz.txt", "next")
+      local expected = "a.txt"
+
+      assert.are.equal(expected, actual)
+    end
+  )
+
+  it(
+    "GIVEN the current file sorts before the first changed file WHEN moving previous THEN it wraps to the last changed file",
+    function()
+      local actual = git.find_changed_file_target({ "a.txt", "c.txt", "z.txt" }, "0.txt", "prev")
+      local expected = "z.txt"
+
+      assert.are.equal(expected, actual)
+    end
+  )
+
+  it("GIVEN no changed files WHEN finding a target THEN it returns nil", function()
+    local actual = git.find_changed_file_target({}, "a.txt", "next")
+
+    assert.is_nil(actual)
+  end)
+end)
+
 describe("git.extract_repo_name_and_pr_id_from_url", function()
   local cases = {
     {
