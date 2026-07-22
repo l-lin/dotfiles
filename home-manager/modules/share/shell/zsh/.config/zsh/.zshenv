@@ -38,8 +38,8 @@ skip_global_compinit=1
 export ZDOTDIR="${HOME}/.config/zsh"
 
 # Ensure that a non-login, non-interactive shell has a defined environment.
-if [[ ! -o LOGIN && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
-  source "${ZDOTDIR:-$HOME}/.zprofile"
+if [[ ! -o LOGIN ]] && [[ -s "${ZDOTDIR}/.zprofile" ]]; then
+  source "${ZDOTDIR}/.zprofile"
 fi
 
 # vim: ft=zsh
