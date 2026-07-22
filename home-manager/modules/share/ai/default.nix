@@ -6,8 +6,9 @@
   imports = [
     ./claude-code
     ./dust
+    ./llama-cpp
     #./mlx
-    ./ollama
+    #./ollama
     #./opencode
     ./openspec
     ./pi

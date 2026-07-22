@@ -4,15 +4,13 @@
 #
 
 { pkgs, ... }: {
-  # services.ollama = {
-  #   # Only useful for Linux.
-  #   #acceleration = "rocm";
-  #   enable = true;
-  # };
+  services.ollama = {
+    # Only useful for Linux.
+    #acceleration = "rocm";
+    enable = true;
+  };
   home.packages = with pkgs; [
     # Go manage your Ollama models: https://github.com/sammcj/gollama
-    #gollama
-    # Find what runs on your hardware: https://github.com/AlexsJones/llmfit
-    llmfit
+    gollama
   ];
 }
