@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.80.10",
+  "lastChangelogVersion": "0.81.1",
   "theme": "light",
   "defaultProvider": "llama-cpp",
   "defaultModel": "ornith1.0",
