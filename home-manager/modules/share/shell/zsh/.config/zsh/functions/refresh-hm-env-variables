@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+#
+# Refresh home-manager env variable in tmux.
+#
+
+tmux set-environment -g -r __HM_SESS_VARS_SOURCED
+echo 'Your new tmux sessions should have their HM env variables refreshed!'
