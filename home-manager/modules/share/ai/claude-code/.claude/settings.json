@@ -40,7 +40,7 @@
     "deny": [],
     "defaultMode": "auto"
   },
-  "model": "sonnet[1m]",
+  "model": "sonnet",
   "hooks": {
     "PreToolUse": [
       {
@@ -60,9 +60,10 @@
     "padding": 0
   },
   "enabledPlugins": {
-    "doctolib-productivity@doctolib": true
+    "doctolib-productivity@doctolib": true,
+    "doctolib-postmortems@doctolib": true
   },
-  "effortLevel": "high",
+  "effortLevel": "medium",
   "showClearContextOnPlanAccept": true,
   "tui": "fullscreen",
   "theme": "light",

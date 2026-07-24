@@ -1,8 +1,8 @@
 {
   "lastChangelogVersion": "0.81.1",
   "theme": "light",
-  "defaultProvider": "llama-cpp",
-  "defaultModel": "ornith1.0",
+  "defaultProvider": "anthropic",
+  "defaultModel": "claude-opus-4-8",
   "enableInstallTelemetry": false,
   "treeFilterMode": "user-only",
   "skills": [
@@ -37,7 +37,7 @@
       "enabled": true
     },
     "damageControl": {
-      "enabled": true
+      "enabled": false
     },
     "mcpAdapter": {
       "enabled": false
