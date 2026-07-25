@@ -74,13 +74,9 @@ When rules conflict:
 
 ## Session workflow
 
-At session start, run this sequence:
-
-1. Load the `journal` skill and follow it.
-   - The skill decides whether this session needs a journal file.
-   - It owns startup orientation, related-journal reads, file naming, ongoing entries, supersession markers, compaction recovery, and handoff quality.
-2. Load the `napkin` skill and follow it.
-   - The skill owns `.sandbox/napkin.md` curation and what belongs in that runbook.
+At session start, run this sequence load the `journal` skill and follow it:
+- The skill decides whether this session needs a journal file.
+- It owns startup orientation, related-journal reads, file naming, ongoing entries, supersession markers, compaction recovery, and handoff quality.
 
 At session end, run this sequence:
 
