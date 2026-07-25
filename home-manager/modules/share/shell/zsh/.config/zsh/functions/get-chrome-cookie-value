@@ -5,6 +5,10 @@
 # Cookies live in an encrypted SQLite DB per Chrome profile; browser_cookie3
 # reads it and decrypts values using the "Chrome Safe Storage" Keychain key.
 #
+# A value is considered usable when it is either:
+# - a JWT with numeric `exp` later than now + 60 seconds
+# - a trimmed `Bearer v2:...` token with any non-empty remainder
+#
 # Usage: get-chrome-cookie-value <profile> <domain> <cookie>
 #   <profile>  Chrome profile directory, e.g. "Default" or "Profile 1"
 #   <domain>   cookie domain, e.g. "www.example.org"
@@ -60,6 +64,19 @@ def decode_jwt_expiration(cookie_value: str):
     return float(expiration)
 
 
+def normalize_bearer_v2_value(cookie_value: str):
+    trimmed_value = cookie_value.strip()
+    prefix = "Bearer v2:"
+
+    if not trimmed_value.startswith(prefix):
+        return None
+
+    if len(trimmed_value) == len(prefix):
+        return None
+
+    return trimmed_value
+
+
 def get_usable_cookie_value():
     jar = browser_cookie3.chrome(cookie_file=cookie_file, domain_name=domain)
     now = time.time()
@@ -70,11 +87,14 @@ def get_usable_cookie_value():
             continue
 
         expiration = decode_jwt_expiration(cookie.value)
-        if expiration is None:
+        if expiration is not None:
+            if expiration > now + JWT_EXPIRATION_LEEWAY_SECONDS:
+                usable_value = cookie.value
             continue
 
-        if expiration > now + JWT_EXPIRATION_LEEWAY_SECONDS:
-            usable_value = cookie.value
+        bearer_v2_value = normalize_bearer_v2_value(cookie.value)
+        if bearer_v2_value is not None:
+            usable_value = bearer_v2_value
 
     return usable_value
 
