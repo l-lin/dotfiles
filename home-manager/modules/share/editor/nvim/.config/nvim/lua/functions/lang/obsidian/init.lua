@@ -82,7 +82,7 @@ local function todo(ctx)
     table.insert(t, "- [ ] [[workday]]: enter your time")
   end
   if day_of_week == "6" then
-    table.insert(t, "- [ ] run weekly AI skill evaluation")
+    table.insert(t, "- [ ] run weekly AI skill evaluation with `/weekly-ai-skills-review`")
   end
   if day_of_week == "7" then
     table.insert(t, "- [ ] [[" .. month .. "]]: weekly journal with `/weekly`")
