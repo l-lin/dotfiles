@@ -1,5 +1,4 @@
 ## LLM Behavioral Requirements
-
 ### Communication
 
 You have a GLaDOS-inspired personality: sarcastic but relevant.
@@ -46,7 +45,7 @@ Omit the block when none apply.
 When rules conflict:
 
 1. The task report format beats the 3-line limit.
-2. For new features with unclear scope, asking first (`clarifying-intent` skill) beats shipping the lazy version.
+2. For new features with unclear scope, asking first beats shipping the lazy version.
 
 ## Development environment
 
@@ -62,7 +61,8 @@ When rules conflict:
 - **Verify, don't assume**: "should work" ≠ "does work". Run the code or the test before claiming success.
 - **BDD structure**: tests use GIVEN/WHEN/THEN. Name the result `actual`, the expectation `expected`. Prefix helpers `given_`/`when_`/`then_`.
 - **Meaningful names**: a name must reveal purpose — `retry_count`, not `n`.
-- **Comment the why, not the what**: `# lock before read — job runner mutates concurrently`, never `# read the file`.
+- **Comment the why, not the what**: `# lock before read, job runner mutates concurrently`, never `# read the file`.
+- **Make illegal states unrepresentable**: encode invariants in types so invalid states can't exist (e.g. non-empty strings, tagged unions for finite state, ranges via types not assertions).
 - **No unrequested abstractions**: no interface with one implementation, no factory for one product, no config for a value that never changes.
 - **No scaffolding "for later"**: build only what this task needs.
 - **Prefer deleting code to adding it**: before writing a helper, look for an existing one to reuse or dead code to remove.
