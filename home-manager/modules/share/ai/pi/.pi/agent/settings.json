@@ -4,6 +4,8 @@
   "defaultProvider": "anthropic",
   "defaultModel": "claude-opus-4-8",
   "enableInstallTelemetry": false,
+  "enableAnalytics": false,
+  "outputPad": 0,
   "treeFilterMode": "user-only",
   "skills": [
     "~/.config/ai/skills"
@@ -37,7 +39,7 @@
       "enabled": true
     },
     "damageControl": {
-      "enabled": false
+      "enabled": true
     },
     "mcpAdapter": {
       "enabled": false
