@@ -12,3 +12,6 @@ submit_selected_picker = ["alt+enter", "ctrl+s"]
 
 [keymaps.pull_requests]
 comment_on_pull_request = "alt+c"
+
+[theme]
+preset = "grey"
