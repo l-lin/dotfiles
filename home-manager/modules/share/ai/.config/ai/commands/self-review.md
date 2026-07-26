@@ -57,3 +57,5 @@ After reporting issues, use the `ask-user-question` tool to ask the user whether
 - Be honest — report bugs even if embarrassing
 - **Do NOT auto-fix** — always ask the user via `ask-user-question` before making changes
 - Only flag issues that appear in the uncommitted diff
+
+$ARGUMENTS
