@@ -7,7 +7,7 @@
 #
 # A value is considered usable when it is either:
 # - a JWT with numeric `exp` later than now + 60 seconds
-# - a trimmed `Bearer v2:...` token with any non-empty remainder
+# - a trimmed, optionally double-quoted `Bearer v2:...` token with any non-empty remainder
 #
 # Usage: get-chrome-cookie-value <profile> <domain> <cookie>
 #   <profile>  Chrome profile directory, e.g. "Default" or "Profile 1"
@@ -66,8 +66,10 @@ def decode_jwt_expiration(cookie_value: str):
 
 def normalize_bearer_v2_value(cookie_value: str):
     trimmed_value = cookie_value.strip()
-    prefix = "Bearer v2:"
+    if len(trimmed_value) >= 2 and trimmed_value.startswith('"') and trimmed_value.endswith('"'):
+        trimmed_value = trimmed_value[1:-1].strip()
 
+    prefix = "Bearer v2:"
     if not trimmed_value.startswith(prefix):
         return None
 
