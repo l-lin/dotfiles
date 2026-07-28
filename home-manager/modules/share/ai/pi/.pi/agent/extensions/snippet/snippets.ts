@@ -63,18 +63,6 @@ export const SNIPPETS: SnippetDef[] = [
     expansion:
       "Load the Hunk skill and use it for this review. Run `hunk skill path` to get the skill path.",
   },
-  {
-    trigger: "$pr-description",
-    description: "Update the PR description with diagrams",
-    expansion:
-      "Update PR description with gh CLI with diagrams to help reviewers; use clear-writing skill for the prose.",
-  },
-  {
-    trigger: "$implement",
-    description: "Implement a piece of work.",
-    expansion:
-      "Implement the work described in ${1:plan}. Run the full test suite once at the end. Use `ask-user-question` tool if there are any points to clarify.",
-  },
 
   // ── When we're trying to understand something ──────────────────────
   {
