@@ -8,12 +8,13 @@
     packages = with pkgs; [ jira-cli-go ];
 
     file.".claude/skills/jira/SKILL.md".source = ./.config/ai/skills/jira/SKILL.md;
+    file.".claude/skills/jira/references/COMMANDS.md".source = ./.config/ai/skills/jira/references/COMMANDS.md;
   };
 
   xdg.configFile = {
     "zsh/completions/_jira".source = ./.config/zsh/completions/_jira;
     "zsh/functions/open-jira-ticket".source = ./.config/zsh/functions/open-jira-ticket;
-    "opencode/skills/jira/SKILL.md".source =  ./.config/ai/skills/jira/SKILL.md;
-    "ai/skills/jira/SKILL.md".source =  ./.config/ai/skills/jira/SKILL.md;
+    "ai/skills/jira/SKILL.md".source = ./.config/ai/skills/jira/SKILL.md;
+    "ai/skills/jira/references/COMMANDS.md".source = ./.config/ai/skills/jira/references/COMMANDS.md;
   };
 }
