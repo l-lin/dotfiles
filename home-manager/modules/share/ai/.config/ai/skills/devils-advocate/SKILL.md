@@ -17,9 +17,9 @@ Start with:
 
 `Here's what this gets right: ...`
 
-Then list up to 7 concerns, highest severity first:
+Then list concerns, highest severity first:
 
-**Concern:** [one-line summary]
+**Concern #[number]:** [one-line summary]
 - **Severity:** Critical | High | Medium
 - **Framework:** [how you found it]
 - **What I see:** [specific file, decision, assumption, or gap]
