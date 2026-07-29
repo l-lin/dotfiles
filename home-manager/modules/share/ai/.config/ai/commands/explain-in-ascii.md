@@ -12,7 +12,7 @@ $ARGUMENTS
 
 - The final output must be a Markdown file, not HTML.
 - Prefer ASCII diagrams over Mermaid, SVG, canvas, or image output.
-- Write files to `.sandbox/diagrams/YYYY-MM-DD-description/` or the explicit eval output path. Use descriptive filenames ending in `.md`.
+- Write files to `.sandbox/diagrams/YYYY-MM-DD-description.md`. Use descriptive filenames ending in `.md`.
 - Keep the document self-contained: all explanation, legend, assumptions, and diagram labels live in the Markdown file.
 - Put every ASCII diagram inside fenced code blocks.
 - If a table would become unreadable in plain Markdown, replace it with a compact list plus an ASCII matrix or diagram rather than switching to HTML.
