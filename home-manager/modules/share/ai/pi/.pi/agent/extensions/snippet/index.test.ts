@@ -18,36 +18,19 @@ function given_mockPi() {
         }
       },
     },
-    async when_processingInput(text: string, source = "user") {
-      const handler = inputHandlers[0];
-      assert.ok(
-        handler,
-        "Expected the snippet extension to register an input handler",
-      );
-
-      return await handler({ source, text });
+    when_listingInputHandlers() {
+      return [...inputHandlers];
     },
   };
 }
 
-test("snippet extension GIVEN a dollar snippet trigger WHEN processing input THEN it leaves the text alone", async () => {
-  const { pi, when_processingInput } = given_mockPi();
+test("snippet extension GIVEN initialization WHEN loading THEN it does not register an input handler", () => {
+  const { pi, when_listingInputHandlers } = given_mockPi();
 
   snippetExtension(pi as never);
 
-  const actual = await when_processingInput("$understanding-next-steps");
-  const expected = { action: "continue" };
-
-  assert.deepEqual(actual, expected);
-});
-
-test("snippet extension GIVEN a question-mark snippet trigger WHEN processing input THEN it leaves the text alone", async () => {
-  const { pi, when_processingInput } = given_mockPi();
-
-  snippetExtension(pi as never);
-
-  const actual = await when_processingInput("?q");
-  const expected = { action: "continue" };
+  const actual = when_listingInputHandlers();
+  const expected: InputEventHandler[] = [];
 
   assert.deepEqual(actual, expected);
 });

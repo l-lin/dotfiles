@@ -65,8 +65,10 @@ export const SNIPPETS: SnippetDef[] = [
   },
   {
     trigger: "$wait-what",
-    description: "Restate the last message in plain human language, with no jargon.",
-    expansion: "Restate your last message. Stop using jargon and speak coherently. State it more simply and concisely, like one human talking to another."
+    description:
+      "Restate the last message in plain human language, with no jargon.",
+    expansion:
+      "Restate your last message. Stop using jargon and speak coherently. State it more simply and concisely, like one human talking to another.",
   },
 
   // ── When we're trying to understand something ──────────────────────
