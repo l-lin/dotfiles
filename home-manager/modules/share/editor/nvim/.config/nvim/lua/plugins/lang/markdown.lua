@@ -1,5 +1,15 @@
 local function setup()
+  -- local mermaid = require("functions.lang.mermaid")
+
   require("render-markdown").setup({
+    -- debounce = 0,
+    -- render_modes = { "n" },
+    -- custom_handlers = {
+    --   markdown = {
+    --     extends = true,
+    --     parse = mermaid.parse,
+    --   },
+    -- },
     checkbox = {
       enabled = true,
       right_pad = 0,
@@ -31,6 +41,8 @@ local function setup()
       icons = { "󰎤 ", "󰎧 ", "󰎪 ", "󰎭 ", "󰎱 ", "󰎳 " },
     },
   })
+
+  mermaid.setup()
 
   if package.loaded["snacks"] then
     Snacks.toggle({
