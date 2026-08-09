@@ -5,6 +5,7 @@ import path from "node:path";
 import test from "node:test";
 import damageControlExtension from "./index.js";
 import { DAMAGE_CONTROL_TOGGLE_COMMAND } from "./toggle-command.js";
+import { YOLO_SET_DAMAGE_CONTROL_ENABLED_EVENT } from "../yolo/events.js";
 
 const DEFAULT_RULES_YAML = `bashToolPatterns:\n  - pattern: "^rm"\n    reason: "No rm"\n`;
 const READ_ONLY_RULES_YAML = `readOnlyPaths:\n  - "package-lock.json"\n`;
@@ -33,6 +34,7 @@ type AppendedEntry = {
 function given_mockPi() {
   const sessionStartHandlers: Function[] = [];
   const toolCallHandlers: Function[] = [];
+  const customEventHandlers = new Map<string, Function[]>();
   const registeredCommands = new Map<string, RegisteredCommand>();
   const emittedEvents: Array<{ event: string; payload: unknown }> = [];
   const appendedEntries: AppendedEntry[] = [];
@@ -59,6 +61,11 @@ function given_mockPi() {
         emit(event: string, payload: unknown) {
           emittedEvents.push({ event, payload });
         },
+        on(event: string, handler: Function) {
+          const existing = customEventHandlers.get(event) ?? [];
+          existing.push(handler);
+          customEventHandlers.set(event, existing);
+        },
       },
     },
     registeredCommands,
@@ -77,6 +84,13 @@ function given_mockPi() {
       }
 
       return actual;
+    },
+    async when_emittingCustomEvent(event: string, payload: unknown) {
+      const handlers = customEventHandlers.get(event) ?? [];
+
+      for (const handler of handlers) {
+        await handler(payload);
+      }
     },
   };
 }
@@ -330,6 +344,61 @@ test("damage-control GIVEN an enabled session WHEN toggled off THEN matching com
   assert.deepEqual(emittedEvents, [
     { event: "damage-control:state-changed", payload: true },
     { event: "damage-control:state-changed", payload: false },
+  ]);
+});
+
+test("damage-control GIVEN a persisted disabled setting WHEN receiving a yolo enable request THEN matching commands are blocked in the current session", async (t) => {
+  const tempHome = given_tempHome(t);
+  const projectDir = fs.mkdtempSync(
+    path.join(os.tmpdir(), "damage-control-project-"),
+  );
+  t.after(() => fs.rmSync(projectDir, { recursive: true, force: true }));
+  given_projectRulesFile(projectDir);
+  given_savedSettingsFile(tempHome, {
+    extensionSettings: {
+      damageControl: { enabled: false },
+    },
+  });
+
+  const {
+    pi,
+    emittedEvents,
+    when_startingSession,
+    when_handlingToolCall,
+    when_emittingCustomEvent,
+  } = given_mockPi();
+  const { ctx, confirmCalls, when_gettingAbortCount } = given_runtimeContext(
+    projectDir,
+    { confirmResults: [false] },
+  );
+
+  damageControlExtension(pi as never);
+  await when_startingSession(ctx as never);
+
+  const allowedBeforeToggle = await when_handlingToolCall(
+    given_bashToolCall("rm -rf build"),
+    ctx as never,
+  );
+  assert.equal(allowedBeforeToggle?.block, false);
+  assert.equal(when_gettingAbortCount(), 0);
+  assert.equal(confirmCalls.length, 0);
+
+  await when_emittingCustomEvent(YOLO_SET_DAMAGE_CONTROL_ENABLED_EVENT, {
+    enabled: true,
+    cwd: projectDir,
+  });
+
+  const blockedAfterToggle = await when_handlingToolCall(
+    given_bashToolCall("rm -rf build"),
+    ctx as never,
+  );
+
+  assert.equal(blockedAfterToggle?.block, true);
+  assert.equal(when_gettingAbortCount(), 1);
+  assert.equal(confirmCalls.length, 1);
+  assert.deepEqual(emittedEvents, [
+    { event: "damage-control:state-changed", payload: false },
+    { event: "damage-control:state-changed", payload: true },
   ]);
 });
 

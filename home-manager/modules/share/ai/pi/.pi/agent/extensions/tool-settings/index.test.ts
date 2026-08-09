@@ -9,6 +9,7 @@ import {
   registerEnabledToggleCommand,
   registerExtensionToggleCommand,
   saveExtensionSettings,
+  saveExtensionSettingsPatches,
 } from "./index.js";
 
 function given_mockPi(activeTools: string[] = []) {
@@ -218,6 +219,41 @@ test("registerEnabledToggleCommand GIVEN a save failure WHEN toggled THEN it kee
   assert.deepEqual(setActiveToolsCalls, []);
   assert.deepEqual(emittedEvents, []);
   assert.deepEqual(notifications, []);
+});
+
+test("saveExtensionSettingsPatches GIVEN multiple extension toggles WHEN saving THEN both enabled flags are updated in one write without losing sibling keys", (t) => {
+  const tempHome = given_tempHome(t);
+  given_savedSettingsFile(tempHome, {
+    sessionName: "demo",
+    extensionSettings: {
+      sandbox: { enabled: true, mode: "strict" },
+      damageControl: { enabled: false, prompt: true },
+      webSearch: { enabled: false },
+    },
+  });
+
+  saveExtensionSettingsPatches([
+    {
+      extensionKey: "sandbox",
+      patch: { enabled: false },
+    },
+    {
+      extensionKey: "damageControl",
+      patch: { enabled: false },
+    },
+  ]);
+
+  const actual = when_readingSavedSettingsFile(tempHome);
+  const expected = {
+    sessionName: "demo",
+    extensionSettings: {
+      sandbox: { enabled: false, mode: "strict" },
+      damageControl: { enabled: false, prompt: true },
+      webSearch: { enabled: false },
+    },
+  };
+
+  assert.deepEqual(actual, expected);
 });
 
 test("saveExtensionSettings GIVEN sibling and existing extension settings WHEN saving THEN enabled is updated without losing other keys", (t) => {

@@ -24,6 +24,10 @@ import {
   registerDamageControlToggleCommand,
   type DamageControlToggleNotification,
 } from "./toggle-command.js";
+import {
+  readYoloToggleStateChangedEvent,
+  YOLO_SET_DAMAGE_CONTROL_ENABLED_EVENT,
+} from "../yolo/events.js";
 
 const RULE_FILENAME = "damage-control-rules.yml";
 const ICON = "";
@@ -181,18 +185,37 @@ export default function (pi: ExtensionAPI) {
     return loaded.notification;
   }
 
+  async function applyEnabledSettingChange(
+    enabled: boolean,
+    ctx: { cwd: string },
+  ): Promise<DamageControlToggleNotification | undefined> {
+    settings.enabled = enabled;
+
+    if (!enabled) {
+      disableForCurrentSession();
+      return undefined;
+    }
+
+    return enableForCurrentSession(ctx);
+  }
+
   registerDamageControlToggleCommand(pi, {
     settings,
     saveEnabled: saveDamageControlEnabledSettings,
-    applySettingChange: async (enabled, ctx) => {
-      if (!enabled) {
-        disableForCurrentSession();
-        return undefined;
+    applySettingChange: applyEnabledSettingChange,
+  });
+
+  pi.events.on(
+    YOLO_SET_DAMAGE_CONTROL_ENABLED_EVENT,
+    async (payload: unknown) => {
+      const actual = readYoloToggleStateChangedEvent(payload);
+      if (!actual) {
+        return;
       }
 
-      return enableForCurrentSession(ctx);
+      await applyEnabledSettingChange(actual.enabled, { cwd: actual.cwd });
     },
-  });
+  );
 
   pi.on("session_start", async (_event, ctx) => {
     if (!settings.enabled) {

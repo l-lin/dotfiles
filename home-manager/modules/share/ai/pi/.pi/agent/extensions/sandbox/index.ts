@@ -67,6 +67,10 @@ import {
   saveSandboxEnabledSettings,
 } from "./settings.js";
 import { registerSandboxToggleCommand } from "./toggle-command.js";
+import {
+  readYoloToggleStateChangedEvent,
+  YOLO_SET_SANDBOX_ENABLED_EVENT,
+} from "../yolo/events.js";
 
 function loadConfig(cwd: string): SandboxConfig {
   const projectConfigPath = join(cwd, ".pi", "sandbox.json");
@@ -256,17 +260,35 @@ export default function (pi: ExtensionAPI) {
     });
   }
 
+  async function applyEnabledSettingChange(
+    enabled: boolean,
+    ctx: { cwd: string },
+  ): Promise<
+    { message: string; type: "info" | "warning" | "error" } | undefined
+  > {
+    settings.enabled = enabled;
+
+    if (!enabled) {
+      await disableSandboxForCurrentSession();
+      return undefined;
+    }
+
+    return enableSandboxForCurrentSession(ctx);
+  }
+
   registerSandboxToggleCommand(pi, {
     settings,
     saveEnabled: saveSandboxEnabledSettings,
-    applySettingChange: async (enabled, ctx) => {
-      if (!enabled) {
-        await disableSandboxForCurrentSession();
-        return undefined;
-      }
+    applySettingChange: applyEnabledSettingChange,
+  });
 
-      return enableSandboxForCurrentSession(ctx);
-    },
+  pi.events.on(YOLO_SET_SANDBOX_ENABLED_EVENT, async (payload: unknown) => {
+    const actual = readYoloToggleStateChangedEvent(payload);
+    if (!actual) {
+      return;
+    }
+
+    await applyEnabledSettingChange(actual.enabled, { cwd: actual.cwd });
   });
 
   pi.registerTool({
