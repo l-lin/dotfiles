@@ -14,6 +14,35 @@ export type EnabledSettings = {
   enabled: boolean;
 };
 
+export type ToggleCommandContext = {
+  cwd?: string;
+  ui: {
+    notify: (message: string, type?: string) => void;
+  };
+};
+
+export type ToggleCommandNotification = {
+  message: string;
+  type: "info" | "warning" | "error";
+};
+
+export type RegisterExtensionToggleCommandArgs = {
+  commandName: string;
+  description: string;
+  label: string;
+  settings: EnabledSettings;
+  saveEnabled: (enabled: boolean) => void;
+  applyEnabledState?: (
+    enabled: boolean,
+    ctx: ToggleCommandContext,
+    pi: Pick<ExtensionAPI, "getActiveTools" | "setActiveTools" | "events">,
+  ) =>
+    | Promise<ToggleCommandNotification | undefined | void>
+    | ToggleCommandNotification
+    | undefined
+    | void;
+};
+
 export type RegisterEnabledToggleCommandArgs = {
   toolName: string;
   extensionKey: string;
@@ -42,7 +71,7 @@ export function getAgentSettingsPath(): string {
 }
 
 export function updateActiveTools(
-  pi: ExtensionAPI,
+  pi: Pick<ExtensionAPI, "getActiveTools" | "setActiveTools">,
   args: ToggleToolsArgs,
 ): void {
   const current = pi.getActiveTools();
@@ -59,35 +88,62 @@ export function updateActiveTools(
   pi.setActiveTools(updated);
 }
 
-export function registerEnabledToggleCommand(
-  pi: ExtensionAPI,
-  args: RegisterEnabledToggleCommandArgs,
+export function registerExtensionToggleCommand(
+  pi: Pick<
+    ExtensionAPI,
+    "registerCommand" | "getActiveTools" | "setActiveTools" | "events"
+  >,
+  args: RegisterExtensionToggleCommandArgs,
 ): void {
-  const commandName = `cmd:${args.toolName}-toggle`;
-
-  pi.registerCommand(commandName, {
+  pi.registerCommand(args.commandName, {
     description: args.description,
     handler: async (_commandArgs, ctx) => {
       const nextEnabled = !args.settings.enabled;
-      saveExtensionSettings({
-        extensionKey: args.extensionKey,
-        enabled: nextEnabled,
-      });
+      args.saveEnabled(nextEnabled);
       args.settings.enabled = nextEnabled;
 
-      updateActiveTools(pi, {
-        toolName: args.toolName,
-        enabled: nextEnabled,
-      });
-      pi.events.emit("custom-tool:changed", {
-        tool: args.toolName,
-        enabled: nextEnabled,
-      });
-
-      ctx.ui.notify(
-        `${args.toolName} ${nextEnabled ? "enabled" : "disabled"}`,
-        "info",
+      const notification = await args.applyEnabledState?.(
+        nextEnabled,
+        ctx as ToggleCommandContext,
+        pi,
       );
+
+      const message =
+        notification?.message ??
+        `${args.label} ${nextEnabled ? "enabled" : "disabled"}`;
+
+      ctx.ui.notify(message, notification?.type ?? "info");
+    },
+  });
+}
+
+export function registerEnabledToggleCommand(
+  pi: Pick<
+    ExtensionAPI,
+    "registerCommand" | "getActiveTools" | "setActiveTools" | "events"
+  >,
+  args: RegisterEnabledToggleCommandArgs,
+): void {
+  registerExtensionToggleCommand(pi, {
+    commandName: `cmd:${args.toolName}-toggle`,
+    description: args.description,
+    label: args.toolName,
+    settings: args.settings,
+    saveEnabled(enabled) {
+      saveExtensionSettings({
+        extensionKey: args.extensionKey,
+        enabled,
+      });
+    },
+    applyEnabledState(enabled, _ctx, commandPi) {
+      updateActiveTools(commandPi, {
+        toolName: args.toolName,
+        enabled,
+      });
+      commandPi.events.emit("custom-tool:changed", {
+        tool: args.toolName,
+        enabled,
+      });
     },
   });
 }

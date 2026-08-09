@@ -7,6 +7,7 @@ import {
   loadEnabledSettings,
   readExtensionSettings,
   registerEnabledToggleCommand,
+  registerExtensionToggleCommand,
   saveExtensionSettings,
 } from "./index.js";
 
@@ -105,6 +106,56 @@ async function when_runningCommand(
 ): Promise<void> {
   await commandHandler("", ctx);
 }
+
+test("registerExtensionToggleCommand GIVEN a runtime extension WHEN toggled THEN it persists state and leaves active tools alone", async (t) => {
+  const tempHome = given_tempHome(t);
+  const { pi, registeredCommands, emittedEvents, setActiveToolsCalls } =
+    given_mockPi(["read", "bash"]);
+  const { ctx, notifications } = given_mockContext();
+  const settings = { enabled: false };
+  const appliedValues: boolean[] = [];
+
+  registerExtensionToggleCommand(pi as never, {
+    commandName: "cmd:damage-control-toggle",
+    description: "Toggle damage-control extension on/off",
+    label: "Damage control",
+    settings,
+    saveEnabled(enabled: boolean) {
+      saveExtensionSettings({
+        extensionKey: "damageControl",
+        enabled,
+      });
+    },
+    async applyEnabledState(enabled: boolean) {
+      appliedValues.push(enabled);
+      return {
+        message: "Damage control enabled without rules",
+        type: "warning",
+      };
+    },
+  });
+
+  const command = registeredCommands.get("cmd:damage-control-toggle");
+  assert.ok(command, "Expected toggle command to be registered");
+
+  await when_runningCommand(command.handler, ctx);
+
+  const actualSettingsFile = when_readingSavedSettingsFile(tempHome) as {
+    extensionSettings: { damageControl: { enabled: boolean } };
+  };
+
+  assert.equal(settings.enabled, true);
+  assert.equal(
+    actualSettingsFile.extensionSettings.damageControl.enabled,
+    true,
+  );
+  assert.deepEqual(appliedValues, [true]);
+  assert.deepEqual(setActiveToolsCalls, []);
+  assert.deepEqual(emittedEvents, []);
+  assert.deepEqual(notifications, [
+    { message: "Damage control enabled without rules", type: "warning" },
+  ]);
+});
 
 test("registerEnabledToggleCommand GIVEN a tool-backed extension WHEN toggled THEN it persists state, updates active tools, and emits a change event", async (t) => {
   const tempHome = given_tempHome(t);
