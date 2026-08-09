@@ -326,5 +326,7 @@ M.get_current_repo_name = get_current_repo_name
 M.extract_repo_name_and_pr_id_from_url = extract_repo_name_and_pr_id_from_url
 M.find_owner = find_owner
 M.codeowner = codeowner
+M.list_changed_files = list_changed_files
+M.find_changed_file_target = find_changed_file_target
 M.navigate_changed_file = navigate_changed_file
 return M
