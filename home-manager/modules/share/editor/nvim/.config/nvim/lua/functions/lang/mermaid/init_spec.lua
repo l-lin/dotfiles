@@ -4,12 +4,13 @@ if type(describe) ~= "function" then
 end
 
 local mermaid = require("functions.lang.mermaid")
+local testdata = require("functions.lang.mermaid.testdata")
 
 describe("mermaid.build_marks", function()
-  it("GIVEN an indented mermaid block WHEN building marks THEN it leaves source visible and adds preview below the closing fence", function()
+  it("GIVEN an indented Mermaid block WHEN building marks THEN it keeps the source visible and places the Unicode preview below the closing fence", function()
     local markdown_lines = {
       "  ```mermaid",
-      "  flowchart TD",
+      "  graph LR",
       "  A --> B",
       "  ```",
       "  after",
@@ -24,10 +25,19 @@ describe("mermaid.build_marks", function()
         opts = {
           virt_lines = {
             {
-              { "  [A]", "Normal" },
+              { "  ┌───┐     ┌───┐", "Normal" },
             },
             {
-              { "  `- [B]", "Normal" },
+              { "  │   │     │   │", "Normal" },
+            },
+            {
+              { "  │ A ├────►│ B │", "Normal" },
+            },
+            {
+              { "  │   │     │   │", "Normal" },
+            },
+            {
+              { "  └───┘     └───┘", "Normal" },
             },
           },
           virt_lines_above = true,
@@ -38,13 +48,14 @@ describe("mermaid.build_marks", function()
     assert.are.same(expected, actual)
   end)
 
-  it("GIVEN partially supported flowchart syntax WHEN building marks THEN it appends an unsupported-syntax note below the preview", function()
+  it("GIVEN partially supported syntax WHEN building marks THEN it appends raw unsupported lines below the preview", function()
     local markdown_lines = {
       "```mermaid",
-      "flowchart TD",
-      "A --> B",
-      "click A callback",
-      "B --> C",
+      "sequenceDiagram",
+      "participant A",
+      "participant B",
+      "autonumber",
+      "A->>B: Hello",
       "```",
     }
 
@@ -52,24 +63,45 @@ describe("mermaid.build_marks", function()
     local expected = {
       {
         conceal = false,
-        start_row = 5,
+        start_row = 6,
         start_col = 0,
         opts = {
           virt_lines = {
             {
-              { "[A]", "Normal" },
+              { " ┌───┐      ┌───┐", "Normal" },
             },
             {
-              { "`- [B]", "Normal" },
+              { " │ A │      │ B │", "Normal" },
             },
             {
-              { "   `- [C]", "Normal" },
+              { " └─┬─┘      └─┬─┘", "Normal" },
+            },
+            {
+              { "   │          │", "Normal" },
+            },
+            {
+              { "   │  Hello   │", "Normal" },
+            },
+            {
+              { "   │──────────▶", "Normal" },
+            },
+            {
+              { "   │          │", "Normal" },
+            },
+            {
+              { " ┌─┴─┐      ┌─┴─┐", "Normal" },
+            },
+            {
+              { " │ A │      │ B │", "Normal" },
+            },
+            {
+              { " └───┘      └───┘", "Normal" },
             },
             {
               { "", "Normal" },
             },
             {
-              { "[unsupported: click A callback]", "Normal" },
+              { "[unsupported: autonumber]", "Normal" },
             },
           },
         },
@@ -81,10 +113,10 @@ describe("mermaid.build_marks", function()
 end)
 
 describe("mermaid.render", function()
-  it("GIVEN an unsupported diagram kind WHEN rendering THEN it falls back to raw source", function()
+  it("GIVEN an unsupported diagram family WHEN rendering THEN it falls back to raw source", function()
     local source = table.concat({
       "classDiagram",
-      "    Animal <|-- Duck",
+      "  Animal <|-- Duck",
     }, "\n")
 
     local actual, reason = mermaid.render(source)

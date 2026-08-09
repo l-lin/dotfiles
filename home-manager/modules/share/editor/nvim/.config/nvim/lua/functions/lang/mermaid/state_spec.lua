@@ -4,74 +4,70 @@ if type(describe) ~= "function" then
 end
 
 local state = require("functions.lang.mermaid.state")
+local testdata = require("functions.lang.mermaid.testdata")
+
+local function then_rendered_output_matches_fixture(fixture_name)
+  local fixture = testdata.load_golden(fixture_name)
+
+  local actual_lines = assert(state.render(fixture.mermaid))
+  local actual = table.concat(actual_lines, "\n")
+  local expected = fixture.expected
+
+  assert.are.equal(testdata.normalize_whitespace(expected), testdata.normalize_whitespace(actual))
+end
 
 describe("mermaid.state.render", function()
-  it("GIVEN a simple state machine WHEN rendering THEN it keeps repeated transitions readable", function()
+  local upstream_fixtures = {
+    "state_basic",
+    "state_cjk",
+    "state_composite_lr",
+  }
+
+  for _, fixture_name in ipairs(upstream_fixtures) do
+    it(string.format("GIVEN upstream fixture `%s` WHEN rendering THEN output matches the Unicode snapshot", fixture_name), function()
+      then_rendered_output_matches_fixture(fixture_name)
+    end)
+  end
+
+  it("GIVEN unsupported state note syntax WHEN rendering THEN it preserves the supported state graph and appends raw unsupported lines", function()
     local source = table.concat({
       "stateDiagram-v2",
-      "    [*] --> Still",
-      "    Still --> [*]",
-      "    Still --> Moving",
-      "    Moving --> Still",
-      "    Moving --> Crash",
-      "    Crash --> [*]",
+      "  [*] --> Paid",
+      "  Paid --> [*]",
+      "  note right of Paid",
+      "    Payment can be card",
+      "  end note",
     }, "\n")
 
-    local actual = state.render(source)
+    local actual = assert(state.render(source))
     local expected = {
-      "(*)",
-      "`- [Still]",
-      "   |- (*)",
-      "   `- [Moving]",
-      "      `- [Crash]",
-      "         `- (*)",
+      "●──────●",
+      "│      │",
+      "●──────●",
+      "    │",
+      "    │",
+      "    │",
+      "    │",
+      "    ▼",
+      "╭──────╮",
+      "│      │",
+      "│ Paid │",
+      "│      │",
+      "╰───┬──╯",
+      "    │",
+      "    │",
+      "    │",
+      "    │",
+      "    ▼",
+      "╔══════╗",
+      "║      ║",
+      "╚══════╝",
       "",
-      "[extra]",
-      "[Moving] -> [Still]",
+      "[unsupported: note right of Paid]",
+      "[unsupported: Payment can be card]",
+      "[unsupported: end note]",
     }
 
-    assert.are.same(expected, actual)
-  end)
-
-  it("GIVEN the checkout state diagram WHEN rendering THEN it honors direction, keeps the nested state, and shows the note", function()
-    local source = table.concat({
-      "stateDiagram-v2",
-      "    direction LR",
-      "    [*] --> Placed",
-      "    Placed --> Paid : payment received",
-      "    Placed --> Cancelled : customer cancels",
-      "    Paid --> Fulfilment",
-      "",
-      "    state Fulfilment {",
-      "        [*] --> Packing",
-      "        Packing --> Shipped : handed to courier",
-      "        Shipped --> [*]",
-      "    }",
-      "",
-      "    Fulfilment --> Delivered : courier confirms",
-      "    Delivered --> [*]",
-      "    Cancelled --> [*]",
-      "",
-      "    note right of Paid",
-      "        Payment can be card,",
-      "        wallet, or bank transfer",
-      "    end note",
-    }, "\n")
-
-    local actual = state.render(source)
-    local expected = {
-      "[Fulfilment]",
-      "  (*) -> [Packing] -handed to courier-> [Shipped] -> (*)",
-      "",
-      "(*) -> [Placed]",
-      "           |- payment received -> [Paid] -> [Fulfilment] -courier confirms-> [Delivered] -> (*)",
-      "           `- customer cancels -> [Cancelled] -> (*)",
-      "",
-      "[note right of Paid]",
-      "  Payment can be card,",
-      "  wallet, or bank transfer",
-    }
-
-    assert.are.same(expected, actual)
+    assert.are.equal(testdata.normalize_whitespace(table.concat(expected, "\n")), testdata.normalize_whitespace(table.concat(actual, "\n")))
   end)
 end)

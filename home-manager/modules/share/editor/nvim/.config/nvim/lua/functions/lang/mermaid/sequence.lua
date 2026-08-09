@@ -1,293 +1,610 @@
+local canvas = require("functions.lang.mermaid.canvas")
 local parser = require("functions.lang.mermaid.parser")
+local text = require("functions.lang.mermaid.text")
 
-local function render(source)
-  local participant_labels = {}
-  local participant_order = {}
-  local events = {}
-  local warnings = {}
-  local auto_number = false
-  local message_count = 0
+local MESSAGE_OPERATORS = {
+  "-->>",
+  "->>",
+  "--)",
+  "-)",
+  "--x",
+  "-x",
+  "-->",
+  "->",
+}
 
-  local function add_warning(statement)
-    warnings[#warnings + 1] = statement
-  end
+local BLOCK_TYPES = {
+  loop = true,
+  alt = true,
+  opt = true,
+  par = true,
+  critical = true,
+  break_ = true,
+  rect = true,
+}
 
-  local function ensure_participant(identifier, explicit_label)
-    if not participant_labels[identifier] then
-      participant_order[#participant_order + 1] = identifier
+local function escape_pattern(value)
+  return (value:gsub("([%%%(%)%.%+%-%*%?%[%]%^%$])", "%%%1"))
+end
+
+local function preprocess_sequence_source(source)
+  local lines = {}
+  for _, raw_line in ipairs(text.split_lines(source)) do
+    local normalized = text.trim(raw_line)
+    if normalized ~= "" and normalized:sub(1, 2) ~= "%%" then
+      lines[#lines + 1] = normalized
     end
-    participant_labels[identifier] = explicit_label or participant_labels[identifier] or identifier
-    return participant_labels[identifier]
   end
+  return lines
+end
 
-  local function participant_label(identifier)
-    return ensure_participant(identifier)
-  end
-
-  local function add_note(text)
-    events[#events + 1] = {
-      kind = "note",
-      text = text,
+local function ensure_actor(diagram, actor_id)
+  if not diagram.actor_ids[actor_id] then
+    diagram.actor_ids[actor_id] = true
+    diagram.actors[#diagram.actors + 1] = {
+      id = actor_id,
+      label = actor_id,
+      type = "participant",
     }
   end
+end
 
-  local function add_activation(identifier, active)
-    ensure_participant(identifier)
-    events[#events + 1] = {
-      kind = active and "activate" or "deactivate",
-      participant = identifier,
-    }
+local function parse_sequence_diagram(source)
+  local lines = preprocess_sequence_source(source)
+  if #lines == 0 then
+    return nil, "Empty mermaid diagram"
+  end
+  if lines[1] ~= "sequenceDiagram" then
+    return nil, "unsupported diagram kind"
   end
 
-  local function add_message(from_identifier, to_identifier, arrow, message_label)
-    ensure_participant(from_identifier)
-    ensure_participant(to_identifier)
+  local diagram = {
+    actors = {},
+    actor_ids = {},
+    messages = {},
+    blocks = {},
+    notes = {},
+    warnings = {},
+  }
 
-    if auto_number then
-      message_count = message_count + 1
-      message_label = string.format("%d. %s", message_count, message_label)
+  local block_stack = {}
+
+  for index = 2, #lines do
+    local line = lines[index]
+
+    local keyword, rest = line:match("^(%S+)%s+(.+)$")
+    if keyword == "participant" or keyword == "actor" then
+      local actor_id, raw_actor_label = rest:match("^([^%s]+)%s+as%s+(.+)$")
+      if actor_id and raw_actor_label then
+        if not diagram.actor_ids[actor_id] then
+          diagram.actor_ids[actor_id] = true
+          diagram.actors[#diagram.actors + 1] = {
+            id = actor_id,
+            label = text.normalize_br_tags(text.trim(raw_actor_label)),
+            type = keyword,
+          }
+        end
+        goto continue
+      end
+
+      actor_id = rest:match("^([^%s]+)$")
+      if actor_id then
+        if not diagram.actor_ids[actor_id] then
+          diagram.actor_ids[actor_id] = true
+          diagram.actors[#diagram.actors + 1] = {
+            id = actor_id,
+            label = actor_id,
+            type = keyword,
+          }
+        end
+        goto continue
+      end
     end
 
-    events[#events + 1] = {
-      kind = "message",
-      from = from_identifier,
-      to = to_identifier,
-      fill = (arrow:find("%-%-") or arrow:find("%.")) and "." or "-",
-      label = message_label,
-    }
-  end
+    local note_rest = line:match("^[Nn]ote%s+(.+)$")
+    if note_rest then
+      local note_position, note_actors, raw_note_text = nil, nil, nil
+      if note_rest:match("^left of%s+") then
+        note_position = "left"
+        note_actors, raw_note_text = note_rest:match("^left of%s+([^:]+):%s*(.+)$")
+      elseif note_rest:match("^right of%s+") then
+        note_position = "right"
+        note_actors, raw_note_text = note_rest:match("^right of%s+([^:]+):%s*(.+)$")
+      elseif note_rest:match("^over%s+") then
+        note_position = "over"
+        note_actors, raw_note_text = note_rest:match("^over%s+([^:]+):%s*(.+)$")
+      end
 
-  local lines = parser.split_lines(source)
-  for line_number = 2, #lines do
-    local statement = parser.strip_comment(lines[line_number])
-    if statement == "" then
+      if note_position and note_actors and raw_note_text then
+        local actor_ids = {}
+        for actor_name in note_actors:gmatch("[^,]+") do
+          local normalized_actor_id = text.trim(actor_name)
+          ensure_actor(diagram, normalized_actor_id)
+          actor_ids[#actor_ids + 1] = normalized_actor_id
+        end
+
+        diagram.notes[#diagram.notes + 1] = {
+          actor_ids = actor_ids,
+          text = text.normalize_br_tags(text.trim(raw_note_text)),
+          position = note_position,
+          after_index = #diagram.messages - 1,
+        }
+        goto continue
+      end
+    end
+
+    local block_keyword, block_label = line:match("^(%S+)%s*(.*)$")
+    if block_keyword then
+      local normalized_keyword = block_keyword == "break" and "break_" or block_keyword
+      if BLOCK_TYPES[normalized_keyword] then
+        block_stack[#block_stack + 1] = {
+          type = block_keyword,
+          label = text.normalize_br_tags(text.trim(block_label or "")),
+          start_index = #diagram.messages,
+          dividers = {},
+        }
+        goto continue
+      end
+    end
+
+    local divider_keyword, divider_label = line:match("^(%S+)%s*(.*)$")
+    if (divider_keyword == "else" or divider_keyword == "and") and #block_stack > 0 then
+      local current_block = block_stack[#block_stack]
+      current_block.dividers[#current_block.dividers + 1] = {
+        index = #diagram.messages,
+        label = text.normalize_br_tags(text.trim(divider_label or "")),
+      }
       goto continue
     end
 
-    if statement == "autonumber" then
-      auto_number = true
+    if line == "end" and #block_stack > 0 then
+      local completed = table.remove(block_stack)
+      diagram.blocks[#diagram.blocks + 1] = {
+        type = completed.type,
+        label = completed.label,
+        start_index = completed.start_index,
+        end_index = math.max(#diagram.messages - 1, completed.start_index),
+        dividers = completed.dividers,
+      }
       goto continue
     end
 
-    local actor_identifier, actor_alias = statement:match("^actor%s+(%S+)%s+as%s+(.+)$")
-    if actor_identifier then
-      ensure_participant(actor_identifier, parser.trim(actor_alias))
-      goto continue
+    local raw_head, raw_message_label = line:match("^(.-)%s*:%s*(.+)$")
+    if raw_head and raw_message_label then
+      local from_actor_id, activation_mark, to_actor_id, matched_operator = nil, nil, nil, nil
+      for _, operator in ipairs(MESSAGE_OPERATORS) do
+        local escaped_operator = escape_pattern(operator)
+        local candidate_from, candidate_activation, candidate_to = raw_head:match(
+          "^([^%s]+)%s*" .. escaped_operator .. "%s*([+-]?)([^%s]+)%s*$"
+        )
+        if candidate_from and candidate_to then
+          from_actor_id = candidate_from
+          activation_mark = candidate_activation
+          to_actor_id = candidate_to
+          matched_operator = operator
+          break
+        end
+      end
+
+      if from_actor_id and to_actor_id and matched_operator then
+        ensure_actor(diagram, from_actor_id)
+        ensure_actor(diagram, to_actor_id)
+
+        local line_style = matched_operator:sub(1, 2) == "--" and "dashed" or "solid"
+        local arrow_head = (matched_operator:find(">>", 1, true) or matched_operator:find("x", 1, true)) and "filled" or "open"
+        local message = {
+          from = from_actor_id,
+          to = to_actor_id,
+          label = text.normalize_br_tags(text.trim(raw_message_label)),
+          line_style = line_style,
+          arrow_head = arrow_head,
+        }
+        if activation_mark == "+" then
+          message.activate = true
+        elseif activation_mark == "-" then
+          message.deactivate = true
+        end
+        diagram.messages[#diagram.messages + 1] = message
+        goto continue
+      end
     end
 
-    actor_identifier = statement:match("^actor%s+(%S+)$")
-    if actor_identifier then
-      ensure_participant(actor_identifier)
-      goto continue
-    end
-
-    local participant_identifier, participant_alias = statement:match("^participant%s+(%S+)%s+as%s+(.+)$")
-    if participant_identifier then
-      ensure_participant(participant_identifier, parser.trim(participant_alias))
-      goto continue
-    end
-
-    participant_identifier = statement:match("^participant%s+(%S+)$")
-    if participant_identifier then
-      ensure_participant(participant_identifier)
-      goto continue
-    end
-
-    local activation_identifier = statement:match("^activate%s+(%S+)$")
-    if activation_identifier then
-      add_activation(activation_identifier, true)
-      goto continue
-    end
-
-    local deactivation_identifier = statement:match("^deactivate%s+(%S+)$")
-    if deactivation_identifier then
-      add_activation(deactivation_identifier, false)
-      goto continue
-    end
-
-    local alt_label = statement:match("^alt%s+(.+)$")
-    if alt_label then
-      add_note("[alt] " .. parser.trim(alt_label))
-      goto continue
-    end
-
-    local opt_label = statement:match("^opt%s+(.+)$")
-    if opt_label then
-      add_note("[opt] " .. parser.trim(opt_label))
-      goto continue
-    end
-
-    local loop_label = statement:match("^loop%s+(.+)$")
-    if loop_label then
-      add_note("[loop] " .. parser.trim(loop_label))
-      goto continue
-    end
-
-    local else_label = statement:match("^else%s*(.*)$")
-    if else_label then
-      add_note(parser.trim("[else] " .. else_label))
-      goto continue
-    end
-
-    local inline_note = statement:match("^[Nn]ote%s+.+:%s*(.+)$")
-    if inline_note then
-      add_note("[note] " .. parser.trim(inline_note))
-      goto continue
-    end
-
-    if statement == "end" then
-      goto continue
-    end
-
-    local head, message_label = statement:match("^(.-)%s*:%s*(.+)$")
-    if not head then
-      add_warning(statement)
-      goto continue
-    end
-
-    local from_identifier, arrow, to_identifier = head:match("^([%w_.]+)%s*([<>%.=xo()%-]+)%s*([%w_.]+)$")
-    if not from_identifier then
-      add_warning(statement)
-      goto continue
-    end
-
-    add_message(from_identifier, to_identifier, arrow, parser.trim(message_label))
+    diagram.warnings[#diagram.warnings + 1] = line
 
     ::continue::
   end
 
-  if #events == 0 or #participant_order == 0 then
+  return diagram
+end
+
+local function actor_index_map(diagram)
+  local index_map = {}
+  for index, actor in ipairs(diagram.actors) do
+    index_map[actor.id] = index
+  end
+  return index_map
+end
+
+local function render(source)
+  if parser.diagram_kind(source) ~= "sequence" then
+    return nil, "unsupported diagram kind"
+  end
+
+  local diagram, parse_error = parse_sequence_diagram(source)
+  if not diagram then
+    return nil, parse_error
+  end
+  if #diagram.actors == 0 then
     return nil, "sequence parser found no renderable messages"
   end
 
-  local gap_width = 5
-  local left_columns = {}
-  local centers = {}
-  local box_widths = {}
-  local total_width = 0
+  local H = "─"
+  local V = "│"
+  local TL = "┌"
+  local TR = "┐"
+  local BL = "└"
+  local BR = "┘"
+  local JT = "┬"
+  local JB = "┴"
+  local JL = "├"
+  local JR = "┤"
 
-  for _, identifier in ipairs(participant_order) do
-    local label = participant_label(identifier)
-    local box_width = #label + 4
-    local left_column = total_width == 0 and 1 or total_width + gap_width + 1
+  local actor_indexes = actor_index_map(diagram)
+  local actor_box_widths = {}
+  local actor_box_heights = {}
+  local half_boxes = {}
+  local adjacency_widths = {}
 
-    left_columns[identifier] = left_column
-    centers[identifier] = left_column + math.floor((box_width - 1) / 2)
-    box_widths[identifier] = box_width
-    total_width = left_column + box_width - 1
+  for index = 1, math.max(#diagram.actors - 1, 0) do
+    adjacency_widths[index] = 0
   end
 
-  for _, event in ipairs(events) do
-    if event.kind == "message" then
-      local label_start = math.min(centers[event.from], centers[event.to]) + 2
-      total_width = math.max(total_width, label_start + #event.label - 1)
-    end
+  for index, actor in ipairs(diagram.actors) do
+    actor_box_widths[index] = text.max_line_width(actor.label) + 4
+    half_boxes[index] = math.ceil(actor_box_widths[index] / 2)
+    actor_box_heights[index] = text.line_count(actor.label) + 2
   end
 
-  local function blank_chars()
-    local chars = {}
-    for index = 1, total_width do
-      chars[index] = " "
-    end
-    return chars
+  local actor_box_height = 3
+  for _, height in ipairs(actor_box_heights) do
+    actor_box_height = math.max(actor_box_height, height)
   end
 
-  local function write_text(chars, start_column, text)
-    for offset = 1, #text do
-      chars[start_column + offset - 1] = text:sub(offset, offset)
-    end
-  end
-
-  local function join_chars(chars)
-    return table.concat(chars):gsub("%s+$", "")
-  end
-
-  local active_counts = {}
-
-  local function lane_chars()
-    local chars = blank_chars()
-    for _, identifier in ipairs(participant_order) do
-      chars[centers[identifier]] = (active_counts[identifier] or 0) > 0 and "!" or "|"
-    end
-    return chars
-  end
-
-  local output = {}
-  local top_chars = blank_chars()
-  local middle_chars = blank_chars()
-  local bottom_chars = blank_chars()
-
-  for _, identifier in ipairs(participant_order) do
-    local label = participant_label(identifier)
-    local left_column = left_columns[identifier]
-    local box_width = box_widths[identifier]
-    local center_column = centers[identifier]
-
-    write_text(top_chars, left_column, "+" .. string.rep("-", box_width - 2) .. "+")
-    write_text(middle_chars, left_column, "| " .. label .. " |")
-
-    for column = left_column, left_column + box_width - 1 do
-      if column == left_column or column == left_column + box_width - 1 or column == center_column then
-        bottom_chars[column] = "+"
-      else
-        bottom_chars[column] = "-"
+  for _, message in ipairs(diagram.messages) do
+    local from_index = actor_indexes[message.from]
+    local to_index = actor_indexes[message.to]
+    if from_index ~= to_index then
+      local low = math.min(from_index, to_index)
+      local high = math.max(from_index, to_index)
+      local needed = text.max_line_width(message.label) + 4
+      local gaps = high - low
+      local per_gap = math.ceil(needed / gaps)
+      for gap = low, high - 1 do
+        adjacency_widths[gap] = math.max(adjacency_widths[gap], per_gap)
       end
     end
   end
 
-  output[#output + 1] = join_chars(top_chars)
-  output[#output + 1] = join_chars(middle_chars)
-  output[#output + 1] = join_chars(bottom_chars)
-  output[#output + 1] = join_chars(lane_chars())
+  local lifeline_x = {}
+  lifeline_x[1] = half_boxes[1]
+  for index = 2, #diagram.actors do
+    local gap = math.max(
+      half_boxes[index - 1] + half_boxes[index] + 2,
+      (adjacency_widths[index - 1] or 0) + 2,
+      10
+    )
+    lifeline_x[index] = lifeline_x[index - 1] + gap
+  end
 
-  for _, event in ipairs(events) do
-    if event.kind == "note" then
-      output[#output + 1] = event.text
-    elseif event.kind == "activate" then
-      active_counts[event.participant] = (active_counts[event.participant] or 0) + 1
-      output[#output + 1] = join_chars(lane_chars())
-    elseif event.kind == "deactivate" then
-      active_counts[event.participant] = math.max((active_counts[event.participant] or 0) - 1, 0)
-      output[#output + 1] = join_chars(lane_chars())
+  local message_arrow_y = {}
+  local message_label_y = {}
+  local block_start_y = {}
+  local block_end_y = {}
+  local divider_y = {}
+  local note_positions = {}
+  local cursor_y = actor_box_height
+
+  for message_index = 1, #diagram.messages do
+    for block_index, block in ipairs(diagram.blocks) do
+      if block.start_index == message_index - 1 then
+        cursor_y = cursor_y + 2
+        block_start_y[block_index] = cursor_y - 1
+      end
+    end
+
+    for block_index, block in ipairs(diagram.blocks) do
+      for divider_index, divider in ipairs(block.dividers) do
+        if divider.index == message_index - 1 then
+          cursor_y = cursor_y + 1
+          divider_y[string.format("%d:%d", block_index, divider_index)] = cursor_y
+          cursor_y = cursor_y + 1
+        end
+      end
+    end
+
+    cursor_y = cursor_y + 1
+    local message = diagram.messages[message_index]
+    local is_self = message.from == message.to
+    local message_line_count = text.line_count(message.label)
+
+    if is_self then
+      message_label_y[message_index] = cursor_y + 1
+      message_arrow_y[message_index] = cursor_y
+      cursor_y = cursor_y + 2 + message_line_count
     else
-      local label_chars = lane_chars()
-      local arrow_chars = lane_chars()
-      local spacer_chars = lane_chars()
-      local from_center = centers[event.from]
-      local to_center = centers[event.to]
-      local left_center = math.min(from_center, to_center)
-      local right_center = math.max(from_center, to_center)
+      message_label_y[message_index] = cursor_y
+      message_arrow_y[message_index] = cursor_y + message_line_count
+      cursor_y = cursor_y + message_line_count + 1
+    end
 
-      write_text(label_chars, left_center + 2, event.label)
+    for _, note in ipairs(diagram.notes) do
+      if note.after_index == message_index - 1 then
+        cursor_y = cursor_y + 1
+        local note_lines = text.split_label_lines(note.text)
+        local note_width = 4
+        for _, note_line in ipairs(note_lines) do
+          note_width = math.max(note_width, text.char_len(note_line) + 4)
+        end
+        local note_height = #note_lines + 2
 
-      if from_center == to_center then
-        write_text(arrow_chars, from_center, "+--+")
-        write_text(spacer_chars, from_center, "|<+")
-      elseif from_center < to_center then
-        arrow_chars[from_center] = "+"
-        for column = from_center + 1, to_center - 2 do
-          arrow_chars[column] = event.fill
+        local actor_position = actor_indexes[note.actor_ids[1]] or 1
+        local note_x
+        if note.position == "left" then
+          note_x = lifeline_x[actor_position] - note_width - 1
+        elseif note.position == "right" then
+          note_x = lifeline_x[actor_position] + 2
+        else
+          if #note.actor_ids >= 2 then
+            local second_position = actor_indexes[note.actor_ids[2]] or actor_position
+            note_x = math.floor((lifeline_x[actor_position] + lifeline_x[second_position]) / 2) - math.floor(note_width / 2)
+          else
+            note_x = lifeline_x[actor_position] - math.floor(note_width / 2)
+          end
         end
-        arrow_chars[to_center - 1] = ">"
-        arrow_chars[to_center] = "|"
-      else
-        arrow_chars[left_center] = "|"
-        arrow_chars[left_center + 1] = "<"
-        for column = left_center + 2, right_center - 1 do
-          arrow_chars[column] = event.fill
-        end
-        arrow_chars[right_center] = "+"
+        note_x = math.max(0, note_x)
+
+        note_positions[#note_positions + 1] = {
+          x = note_x,
+          y = cursor_y,
+          width = note_width,
+          height = note_height,
+          lines = note_lines,
+        }
+        cursor_y = cursor_y + note_height
       end
+    end
 
-      output[#output + 1] = join_chars(label_chars)
-      output[#output + 1] = join_chars(arrow_chars)
-      output[#output + 1] = join_chars(spacer_chars)
+    for block_index, block in ipairs(diagram.blocks) do
+      if block.end_index == message_index - 1 then
+        cursor_y = cursor_y + 1
+        block_end_y[block_index] = cursor_y
+        cursor_y = cursor_y + 1
+      end
     end
   end
 
-  return parser.append_unsupported_lines(output, warnings)
+  cursor_y = cursor_y + 1
+  local footer_y = cursor_y
+  local total_height = footer_y + actor_box_height
+  local last_lifeline = lifeline_x[#lifeline_x] or 0
+  local last_half_box = half_boxes[#half_boxes] or 0
+  local total_width = last_lifeline + last_half_box + 2
+
+  for message_index, message in ipairs(diagram.messages) do
+    if message.from == message.to then
+      local actor_position = actor_indexes[message.from]
+      total_width = math.max(total_width, lifeline_x[actor_position] + 8 + text.max_line_width(message.label))
+    end
+  end
+  for _, note_position in ipairs(note_positions) do
+    total_width = math.max(total_width, note_position.x + note_position.width + 1)
+  end
+
+  local rendered = canvas.mk_canvas(total_width, total_height - 1)
+
+  local function set_char(x, y, char)
+    if x < 0 or y < 0 then
+      return
+    end
+    canvas.increase_size(rendered, x, y)
+    rendered[x][y] = char
+  end
+
+  local function draw_actor_box(center_x, top_y, label)
+    local lines = text.split_label_lines(label)
+    local max_width = text.max_line_width(label)
+    local box_width = max_width + 4
+    local box_height = #lines + 2
+    local left_x = center_x - math.floor(box_width / 2)
+
+    set_char(left_x, top_y, TL)
+    for x = 1, box_width - 2 do
+      set_char(left_x + x, top_y, H)
+    end
+    set_char(left_x + box_width - 1, top_y, TR)
+
+    for line_index, line in ipairs(lines) do
+      local row = top_y + line_index
+      set_char(left_x, row, V)
+      set_char(left_x + box_width - 1, row, V)
+      local line_start = left_x + 2 + math.floor((max_width - text.char_len(line)) / 2)
+      canvas.draw_text(rendered, { x = line_start, y = row }, line, true)
+    end
+
+    local bottom_y = top_y + box_height - 1
+    set_char(left_x, bottom_y, BL)
+    for x = 1, box_width - 2 do
+      set_char(left_x + x, bottom_y, H)
+    end
+    set_char(left_x + box_width - 1, bottom_y, BR)
+  end
+
+  for index = 1, #diagram.actors do
+    local x = lifeline_x[index]
+    for y = actor_box_height, footer_y do
+      set_char(x, y, V)
+    end
+  end
+
+  for index, actor in ipairs(diagram.actors) do
+    draw_actor_box(lifeline_x[index], 0, actor.label)
+    draw_actor_box(lifeline_x[index], footer_y, actor.label)
+    set_char(lifeline_x[index], actor_box_height - 1, JT)
+    set_char(lifeline_x[index], footer_y, JB)
+  end
+
+  for message_index, message in ipairs(diagram.messages) do
+    local from_index = actor_indexes[message.from]
+    local to_index = actor_indexes[message.to]
+    local from_x = lifeline_x[from_index]
+    local to_x = lifeline_x[to_index]
+    local is_self = from_index == to_index
+    local line_char = message.line_style == "dashed" and "╌" or H
+    local arrow_char = message.arrow_head == "filled" and "▶" or "▷"
+    local reverse_arrow_char = message.arrow_head == "filled" and "◀" or "◁"
+
+    if is_self then
+      local arrow_y = message_arrow_y[message_index]
+      local loop_width = 4
+      set_char(from_x, arrow_y, JL)
+      for x = from_x + 1, from_x + loop_width - 1 do
+        set_char(x, arrow_y, line_char)
+      end
+      set_char(from_x + loop_width, arrow_y, "┐")
+      set_char(from_x + loop_width, arrow_y + 1, V)
+
+      local message_lines = text.split_label_lines(message.label)
+      for line_index, line in ipairs(message_lines) do
+        canvas.draw_text(rendered, { x = from_x + loop_width + 2, y = arrow_y + line_index }, line, true)
+      end
+
+      set_char(from_x, arrow_y + #message_lines + 1, reverse_arrow_char)
+      for x = from_x + 1, from_x + loop_width - 1 do
+        set_char(x, arrow_y + #message_lines + 1, line_char)
+      end
+      set_char(from_x + loop_width, arrow_y + #message_lines + 1, "┘")
+    else
+      local label_y = message_label_y[message_index]
+      local arrow_y = message_arrow_y[message_index]
+      local left_to_right = from_x < to_x
+      local middle_x = math.floor((from_x + to_x) / 2)
+
+      for line_index, line in ipairs(text.split_label_lines(message.label)) do
+        local label_start = middle_x - math.floor(text.char_len(line) / 2)
+        canvas.draw_text(rendered, { x = label_start, y = label_y + line_index - 1 }, line, true)
+      end
+
+      if left_to_right then
+        for x = from_x + 1, to_x - 1 do
+          set_char(x, arrow_y, line_char)
+        end
+        set_char(to_x, arrow_y, arrow_char)
+      else
+        for x = to_x + 1, from_x - 1 do
+          set_char(x, arrow_y, line_char)
+        end
+        set_char(to_x, arrow_y, reverse_arrow_char)
+      end
+    end
+  end
+
+  local function dashed_horizontal_char()
+    return "╌"
+  end
+
+  for block_index, block in ipairs(diagram.blocks) do
+    local top_y = block_start_y[block_index]
+    local bottom_y = block_end_y[block_index]
+    if top_y and bottom_y then
+      local min_lifeline = total_width
+      local max_lifeline = 0
+      for message_index = block.start_index + 1, block.end_index + 1 do
+        local message = diagram.messages[message_index]
+        if message then
+          local from_position = actor_indexes[message.from]
+          local to_position = actor_indexes[message.to]
+          min_lifeline = math.min(min_lifeline, lifeline_x[math.min(from_position, to_position)])
+          max_lifeline = math.max(max_lifeline, lifeline_x[math.max(from_position, to_position)])
+        end
+      end
+
+      local left_x = math.max(0, min_lifeline - 4)
+      local right_x = math.min(total_width - 1, max_lifeline + 4)
+
+      set_char(left_x, top_y, TL)
+      for x = left_x + 1, right_x - 1 do
+        set_char(x, top_y, H)
+      end
+      set_char(right_x, top_y, TR)
+
+      local header_label = block.label ~= "" and string.format("%s [%s]", block.type, block.label) or block.type
+      for line_index, line in ipairs(text.split_label_lines(header_label)) do
+        if top_y + line_index - 1 < bottom_y then
+          canvas.draw_text(rendered, { x = left_x + 1, y = top_y + line_index - 1 }, line, true)
+        end
+      end
+
+      set_char(left_x, bottom_y, BL)
+      for x = left_x + 1, right_x - 1 do
+        set_char(x, bottom_y, H)
+      end
+      set_char(right_x, bottom_y, BR)
+
+      for y = top_y + 1, bottom_y - 1 do
+        set_char(left_x, y, V)
+        set_char(right_x, y, V)
+      end
+
+      for divider_index, divider in ipairs(block.dividers) do
+        local y = divider_y[string.format("%d:%d", block_index, divider_index)]
+        if y then
+          set_char(left_x, y, JL)
+          for x = left_x + 1, right_x - 1 do
+            set_char(x, y, dashed_horizontal_char())
+          end
+          set_char(right_x, y, JR)
+          if divider.label ~= "" then
+            canvas.draw_text(rendered, { x = left_x + 1, y = y }, string.format("[%s]", divider.label), true)
+          end
+        end
+      end
+    end
+  end
+
+  for _, note_position in ipairs(note_positions) do
+    local x = note_position.x
+    local y = note_position.y
+    local width = note_position.width
+    local height = note_position.height
+    canvas.increase_size(rendered, x + width, y + height)
+
+    set_char(x, y, TL)
+    for offset = 1, width - 2 do
+      set_char(x + offset, y, H)
+    end
+    set_char(x + width - 1, y, TR)
+
+    for line_index, line in ipairs(note_position.lines) do
+      local row = y + line_index
+      set_char(x, row, V)
+      set_char(x + width - 1, row, V)
+      canvas.draw_text(rendered, { x = x + 2, y = row }, line, true)
+    end
+
+    local bottom_y = y + height - 1
+    set_char(x, bottom_y, BL)
+    for offset = 1, width - 2 do
+      set_char(x + offset, bottom_y, H)
+    end
+    set_char(x + width - 1, bottom_y, BR)
+  end
+
+  local lines = canvas.canvas_to_lines(rendered)
+  parser.append_unsupported_lines(lines, diagram.warnings)
+  return lines
 end
 
 local M = {}
 M.render = render
+M.parse_sequence_diagram = parse_sequence_diagram
 return M

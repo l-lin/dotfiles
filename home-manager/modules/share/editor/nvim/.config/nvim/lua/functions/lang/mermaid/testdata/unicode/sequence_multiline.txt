@@ -1,0 +1,24 @@
+sequenceDiagram
+  participant A as Actor<br>One
+  participant B
+  A->>B: Line1<br>Line2
+  Note over A,B: Shared<br>Note
+---
+ ┌───────┐    ┌───┐   
+ │ Actor │    │ B │   
+ │  One  │    └───┘   
+ └───┬───┘      ┬     
+     │          │     
+     │  Line1   │     
+     │  Line2   │     
+     │──────────▶     
+     │          │     
+     ┌────────┐ │     
+     │ Shared │ │     
+     │ Note   │ │     
+     └────────┘ │     
+     │          │     
+ ┌───┴───┐    ┌─┴─┐   
+ │ Actor │    │ B │   
+ │  One  │    └───┘   
+ └───────┘

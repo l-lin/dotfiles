@@ -4,76 +4,65 @@ if type(describe) ~= "function" then
 end
 
 local sequence = require("functions.lang.mermaid.sequence")
+local testdata = require("functions.lang.mermaid.testdata")
+
+local function then_rendered_output_matches_fixture(fixture_name)
+  local fixture = testdata.load_golden(fixture_name)
+
+  local actual_lines = assert(sequence.render(fixture.mermaid))
+  local actual = table.concat(actual_lines, "\n")
+  local expected = fixture.expected
+
+  assert.are.equal(testdata.normalize_whitespace(expected), testdata.normalize_whitespace(actual))
+end
 
 describe("mermaid.sequence.render", function()
-  local function then_actual_contains_line(actual, expected_line)
-    for _, line in ipairs(actual) do
-      if line == expected_line then
-        return
-      end
-    end
-    error("missing expected line: " .. expected_line)
+  local upstream_fixtures = {
+    "seq_basic",
+    "seq_multiple_messages",
+    "seq_self_message",
+    "sequence_multiline",
+  }
+
+  for _, fixture_name in ipairs(upstream_fixtures) do
+    it(string.format("GIVEN upstream fixture `%s` WHEN rendering THEN output matches the Unicode snapshot", fixture_name), function()
+      then_rendered_output_matches_fixture(fixture_name)
+    end)
   end
 
-  it("GIVEN a simple sequence WHEN rendering THEN it keeps the preview diagram-like", function()
+  it("GIVEN explicit activation syntax outside the upstream subset WHEN rendering THEN it preserves supported messages and appends raw unsupported lines", function()
     local source = table.concat({
       "sequenceDiagram",
-      "    participant John",
-      "    participant Alice",
-      "    John -->> Alice: Hi Alice, I can hear you!",
-      "    John -->> Alice: I feel great!",
+      "  participant A",
+      "  participant B",
+      "  autonumber",
+      "  A->>B: Hello",
+      "  activate B",
+      "  B-->>A: Hi",
+      "  deactivate B",
     }, "\n")
 
-    local actual = sequence.render(source)
+    local actual = assert(sequence.render(source))
     local expected = {
-      "+------+     +-------+",
-      "| John |     | Alice |",
-      "+--+---+     +---+---+",
-      "   |             |",
-      "   | Hi Alice, I can hear you!",
-      "   +............>|",
-      "   |             |",
-      "   | I feel great!",
-      "   +............>|",
-      "   |             |",
+      " ┌───┐      ┌───┐",
+      " │ A │      │ B │",
+      " └─┬─┘      └─┬─┘",
+      "   │          │",
+      "   │  Hello   │",
+      "   │──────────▶",
+      "   │          │",
+      "   │   Hi     │",
+      "   ◀╌╌╌╌╌╌╌╌╌╌│",
+      "   │          │",
+      " ┌─┴─┐      ┌─┴─┐",
+      " │ A │      │ B │",
+      " └───┘      └───┘",
+      "",
+      "[unsupported: autonumber]",
+      "[unsupported: activate B]",
+      "[unsupported: deactivate B]",
     }
 
-    assert.are.same(expected, actual)
-  end)
-
-  it("GIVEN a checkout sequence with aliases and activations WHEN rendering THEN it shows numbered messages, fragment labels, and activation lanes", function()
-    local source = table.concat({
-      "sequenceDiagram",
-      "    autonumber",
-      "    actor Customer",
-      "    participant Shop as Web Shop",
-      "    participant Pay as Payment Service",
-      "    participant Bank",
-      "",
-      "    Customer->>Shop: Place order",
-      "    activate Shop",
-      "    Shop->>Pay: Create payment request",
-      "    activate Pay",
-      "    Pay->>Bank: Authorize card",
-      "    Bank-->>Pay: Authorization result",
-      "    alt Payment approved",
-      "        Pay-->>Shop: Payment confirmed",
-      "        Shop-->>Customer: Show receipt",
-      "    else Payment declined",
-      "        Pay-->>Shop: Payment failed",
-      "        Shop-->>Customer: Ask for another card",
-      "    end",
-      "    deactivate Pay",
-      "    deactivate Shop",
-    }, "\n")
-
-    local actual = sequence.render(source)
-
-    then_actual_contains_line(actual, "+----------+     +----------+     +-----------------+     +------+")
-    then_actual_contains_line(actual, "| Customer |     | Web Shop |     | Payment Service |     | Bank |")
-    then_actual_contains_line(actual, "[alt] Payment approved")
-    then_actual_contains_line(actual, "[else] Payment declined")
-    then_actual_contains_line(actual, "     |                !                    !                 |")
-    assert.is_nil(table.concat(actual, "\n"):match("%[unsupported:"))
+    assert.are.equal(testdata.normalize_whitespace(table.concat(expected, "\n")), testdata.normalize_whitespace(table.concat(actual, "\n")))
   end)
 end)
