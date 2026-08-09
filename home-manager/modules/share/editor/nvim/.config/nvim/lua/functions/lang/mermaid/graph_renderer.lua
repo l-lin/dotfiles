@@ -98,6 +98,14 @@ local function get_opposite(direction)
   return Middle
 end
 
+local function is_state_pseudostate(shape)
+  return shape == "state-start" or shape == "state-end"
+end
+
+local function get_state_pseudostate_symbol(shape)
+  return shape == "state-end" and "◉" or "●"
+end
+
 local function get_corners(shape)
   return SHAPE_CORNERS[shape] or SHAPE_CORNERS.rectangle
 end
@@ -161,11 +169,11 @@ local function get_shape_dimensions(shape, label, padding)
     }
   end
 
-  if shape == "state-start" or shape == "state-end" then
+  if is_state_pseudostate(shape) then
     return {
-      width = 5,
+      width = 3,
       height = 3,
-      grid_columns = { 1, 3, 1 },
+      grid_columns = { 1, 1, 1 },
       grid_rows = { 1, 1, 1 },
     }
   end
@@ -207,24 +215,11 @@ local function get_box_attachment_point(direction, dimensions, base_coord)
 end
 
 local function get_shape_attachment_point(shape, direction, dimensions, base_coord)
-  if shape == "state-start" or shape == "state-end" then
+  if is_state_pseudostate(shape) then
     local width = dimensions.width
     local height = dimensions.height
     local center_x = base_coord.x + math.floor(width / 2)
     local center_y = base_coord.y + math.floor(height / 2)
-
-    if direction_eq(direction, Up) then
-      return { x = center_x, y = base_coord.y }
-    end
-    if direction_eq(direction, Down) then
-      return { x = center_x, y = base_coord.y + height - 1 }
-    end
-    if direction_eq(direction, Left) then
-      return { x = base_coord.x, y = center_y }
-    end
-    if direction_eq(direction, Right) then
-      return { x = base_coord.x + width - 1, y = center_y }
-    end
     return { x = center_x, y = center_y }
   end
 
@@ -248,11 +243,17 @@ local function draw_node(node, graph)
   local width = (graph.column_width[grid_coord.x] or 0) + (graph.column_width[grid_coord.x + 1] or 0)
   local height = (graph.row_height[grid_coord.y] or 0) + (graph.row_height[grid_coord.y + 1] or 0)
   local box = canvas.mk_canvas(math.max(width, 0), math.max(height, 0))
+  local max_x = width
+  local max_y = height
+
+  if is_state_pseudostate(node.shape) then
+    box[math.floor(max_x / 2)][math.floor(max_y / 2)] = get_state_pseudostate_symbol(node.shape)
+    return box
+  end
+
   local corners = get_corners(node.shape)
   local h_char = node.shape == "state-end" and "═" or "─"
   local v_char = node.shape == "state-end" and "║" or "│"
-  local max_x = width
-  local max_y = height
 
   for x = 1, max_x - 1 do
     box[x][0] = h_char
@@ -1618,7 +1619,10 @@ local function draw_corners(graph, path)
   return result
 end
 
-local function draw_path(graph, path, style)
+local get_node_attachment_point
+
+local function draw_path(graph, edge)
+  local path = edge.path
   local target_canvas = canvas.copy_canvas(graph.canvas)
   local previous_coord = path[1]
   local lines_drawn = {}
@@ -1626,12 +1630,16 @@ local function draw_path(graph, path, style)
 
   for index = 2, #path do
     local next_coord = path[index]
-    local previous_drawing = grid_to_drawing_coord(graph, previous_coord)
-    local next_drawing = grid_to_drawing_coord(graph, next_coord)
+    local previous_drawing = index == 2 and is_state_pseudostate(edge.from.shape)
+        and get_node_attachment_point(graph, edge.from, edge.start_dir)
+      or grid_to_drawing_coord(graph, previous_coord)
+    local next_drawing = index == #path and is_state_pseudostate(edge.to.shape)
+        and get_node_attachment_point(graph, edge.to, edge.end_dir)
+      or grid_to_drawing_coord(graph, next_coord)
 
     if not drawing_coord_equals(previous_drawing, next_drawing) then
       local direction = determine_direction(previous_coord, next_coord)
-      local segment = draw_line(target_canvas, previous_drawing, next_drawing, 1, -1, style)
+      local segment = draw_line(target_canvas, previous_drawing, next_drawing, 1, -1, edge.style)
       if #segment == 0 then
         segment[1] = previous_drawing
       end
@@ -1651,7 +1659,7 @@ local function draw_arrow(graph, edge)
   end
 
   local label_canvas = draw_arrow_label(graph, edge)
-  local path_canvas, lines_drawn, directions = draw_path(graph, edge.path, edge.style)
+  local path_canvas, lines_drawn, directions = draw_path(graph, edge)
   local box_start_canvas = draw_box_start(graph, edge.path, lines_drawn[1] or {}, edge.from.shape)
   local arrow_end_canvas = edge.has_arrow_end
       and draw_arrow_head(graph, lines_drawn[#lines_drawn] or {}, directions[#directions] or edge.end_dir)
@@ -1679,7 +1687,7 @@ local function draw_arrow(graph, edge)
   return path_canvas, box_start_canvas, arrow_end_canvas, arrow_start_canvas, corners_canvas, label_canvas
 end
 
-local function get_node_attachment_point(graph, node, direction)
+get_node_attachment_point = function(graph, node, direction)
   local grid_coord = node.grid_coord
   local width = (graph.column_width[grid_coord.x] or 0) + (graph.column_width[grid_coord.x + 1] or 0) + 1
   local height = (graph.row_height[grid_coord.y] or 0) + (graph.row_height[grid_coord.y + 1] or 0) + 1
@@ -2059,6 +2067,24 @@ local function draw_graph(graph)
   end
 end
 
+local function trim_empty_margin_lines(lines)
+  local start_index = 1
+  while start_index <= #lines and lines[start_index] == "" do
+    start_index = start_index + 1
+  end
+
+  local end_index = #lines
+  while end_index >= start_index and lines[end_index] == "" do
+    end_index = end_index - 1
+  end
+
+  local trimmed = {}
+  for index = start_index, end_index do
+    trimmed[#trimmed + 1] = lines[index]
+  end
+  return trimmed
+end
+
 local function render_graph(parsed)
   local graph = convert_graph(parsed)
   if #graph.nodes == 0 then
@@ -2070,7 +2096,7 @@ local function render_graph(parsed)
   if graph.parsed_direction == "BT" then
     canvas.flip_canvas_vertically(graph.canvas)
   end
-  return canvas.canvas_to_lines(graph.canvas)
+  return trim_empty_margin_lines(canvas.canvas_to_lines(graph.canvas))
 end
 
 local M = {}

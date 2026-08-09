@@ -101,8 +101,14 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup("markdown_keymap"),
   pattern = { "text", "plaintex", "typst", "gitcommit", "markdown", "codecompanion", "markdown", "text", "markdown.snacks_picker_preview", "markdown.gh" },
-  callback = function()
+  callback = function(args)
     vim.keymap.set("i", "<M-c>", require("functions.lang.markdown").insert_codeblock, { buffer = true, desc = "Add codeblock" })
+    vim.keymap.set("n", "K", require("functions.lang.mermaid").handle_markdown_k, {
+      buffer = args.buf,
+      desc = "Open or focus Mermaid ASCII popup",
+      noremap = true,
+      silent = true,
+    })
   end,
 })
 

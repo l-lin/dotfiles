@@ -29,6 +29,20 @@ describe("mermaid.state.render", function()
     end)
   end
 
+  it("GIVEN a simple lifecycle WHEN rendering state pseudostates THEN start and end stay round circles instead of boxed nodes", function()
+    local source = table.concat({
+      "stateDiagram-v2",
+      "  [*] --> Still",
+      "  Still --> [*]",
+    }, "\n")
+
+    local actual = assert(state.render(source))
+    local expected = { "●", "◉" }
+
+    assert.are.same(expected[1], actual[1]:gsub("^%s+", ""))
+    assert.are.same(expected[2], actual[#actual]:gsub("^%s+", ""))
+  end)
+
   it("GIVEN unsupported state note syntax WHEN rendering THEN it preserves the supported state graph and appends raw unsupported lines", function()
     local source = table.concat({
       "stateDiagram-v2",
@@ -41,9 +55,8 @@ describe("mermaid.state.render", function()
 
     local actual = assert(state.render(source))
     local expected = {
-      "●──────●",
-      "│      │",
-      "●──────●",
+      "   ●",
+      "    │",
       "    │",
       "    │",
       "    │",
@@ -58,10 +71,9 @@ describe("mermaid.state.render", function()
       "    │",
       "    │",
       "    │",
+      "    │",
       "    ▼",
-      "╔══════╗",
-      "║      ║",
-      "╚══════╝",
+      "   ◉",
       "",
       "[unsupported: note right of Paid]",
       "[unsupported: Payment can be card]",
