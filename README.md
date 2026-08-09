@@ -424,3 +424,4 @@ Most of the documentation you will search are the following:
 - https://gitlab.com/usmcamp0811/dotfiles
 - https://gitlab.com/librephoenix/nixos-config
 - https://github.com/ryan4yin/nix-darwin-kickstarter
+- https://github.com/dmmulroy/.dotfiles/tree/main
