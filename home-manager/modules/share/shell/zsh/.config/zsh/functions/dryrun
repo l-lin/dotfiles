@@ -1,0 +1,8 @@
+#!/usr/bin/env zsh
+#
+# Dry run a command. Useful to print the command that require complex argument
+# and need to debug the expanded variables.
+# src: https://lobste.rs/s/0mjyep/shell_exclamation_mark_is_not_for_yelling#c_mq4agr
+#
+
+echo "$@"
