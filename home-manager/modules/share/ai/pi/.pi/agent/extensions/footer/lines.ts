@@ -95,8 +95,8 @@ export function buildDirectoryLine(
     ? theme.fg("dim", ICONS["damage-control-enabled"])
     : theme.fg("error", ICONS["damage-control-disabled"]);
   const mcpIcon = state.mcpAdapterEnabled
-    ? theme.fg("dim", ICONS["mcp-enabled"])
-    : theme.fg("error", ICONS["mcp-disabled"]);
+    ? theme.fg("error", ICONS["mcp-enabled"])
+    : theme.fg("dim", ICONS["mcp-disabled"]);
   const directory = theme.fg("dim", `${ICONS["cwd"]} ${pwd}`);
   const cwdLeft = `${sandboxIcon} ${damageControlIcon} ${mcpIcon} ${directory}`;
   const branchRight = branch
