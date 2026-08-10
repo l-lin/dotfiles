@@ -1,79 +1,6 @@
 local parser = require("functions.lang.mermaid.parser")
 local text = require("functions.lang.mermaid.text")
-
----Checks if a list contains a specific value.
----@param list any[] a list of values to search through
----@param wanted any the value to search for in the list
----@return boolean true if the list contains the wanted value, false otherwise
-local function has_value(list, wanted)
-  for _, value in ipairs(list) do
-    if value == wanted then
-      return true
-    end
-  end
-  return false
-end
-
----Tracks a node ID in the current subgraph if there is one.
----@param subgraph_stack table[] a stack of subgraph tables
----@param node_id string the ID of the node to track
-local function track_in_subgraph(subgraph_stack, node_id)
-  if #subgraph_stack == 0 then
-    return
-  end
-
-  local current = subgraph_stack[#subgraph_stack]
-  if not has_value(current.node_ids, node_id) then
-    current.node_ids[#current.node_ids + 1] = node_id
-  end
-end
-
----Removes a node from the graph and its order list.
----@param graph table the graph table containing nodes and node_order
----@param node_id string the ID of the node to remove
-local function remove_node(graph, node_id)
-  if not graph.nodes[node_id] then
-    return
-  end
-
-  graph.nodes[node_id] = nil
-  for index = #graph.node_order, 1, -1 do
-    if graph.node_order[index] == node_id then
-      table.remove(graph.node_order, index)
-      break
-    end
-  end
-end
-
----Registers a state node in the graph and tracks it in the current subgraph
----if applicable.
----@param graph table the graph table containing nodes and node_order
----@param composite_stack table[] a stack of composite state tables
----@param node table the node table to register, containing at least an 'id' field
-local function register_state_node(graph, composite_stack, node)
-  if not graph.nodes[node.id] then
-    graph.nodes[node.id] = node
-    graph.node_order[#graph.node_order + 1] = node.id
-  end
-  track_in_subgraph(composite_stack, node.id)
-end
-
----Ensures that a state node exists in the graph, creating it if necessary,
----and tracks it in the current subgraph if applicable.
----@param graph table the graph table containing nodes and node_order
----@param composite_stack table[] a stack of composite state tables
----@param state_id string the ID of the state node to ensure exists
-local function ensure_state_node(graph, composite_stack, state_id)
-  if not graph.nodes[state_id] then
-    register_state_node(graph, composite_stack, {
-      id = state_id,
-      label = state_id,
-      shape = "rounded",
-    })
-  elseif #composite_stack > 0 then
-    track_in_subgraph(composite_stack, state_id)
-  end
-end
+local graph_helpers = require("functions.lang.mermaid.graph")
 
 ---Parses a list of lines representing a Mermaid state diagram and constructs
 ---a graph representation.
@@ -163,7 +90,7 @@ local function parse(lines)
         children = {},
       }
       composite_state_ids[composite_id] = true
-      remove_node(graph, composite_id)
+      graph_helpers.remove_node(graph, composite_id)
       goto continue
     end
 
@@ -183,7 +110,7 @@ local function parse(lines)
 
     local state_alias_label, state_alias_id = line:match('^state%s+"([^"]+)"%s+as%s+([^%s]+)%s*$')
     if state_alias_id then
-      register_state_node(graph, composite_stack, {
+      graph_helpers.register_state_node(graph, composite_stack, {
         id = state_alias_id,
         label = text.normalize_br_tags(state_alias_label),
         shape = "rounded",
@@ -211,25 +138,25 @@ local function parse(lines)
         if normalized_source == "[*]" then
           start_count = start_count + 1
           normalized_source = start_count == 1 and "_start" or ("_start" .. start_count)
-          register_state_node(graph, composite_stack, {
+          graph_helpers.register_state_node(graph, composite_stack, {
             id = normalized_source,
             label = "",
             shape = "state-start",
           })
         elseif not composite_state_ids[normalized_source] then
-          ensure_state_node(graph, composite_stack, normalized_source)
+          graph_helpers.ensure_state_node(graph, composite_stack, normalized_source)
         end
 
         if normalized_target == "[*]" then
           end_count = end_count + 1
           normalized_target = end_count == 1 and "_end" or ("_end" .. end_count)
-          register_state_node(graph, composite_stack, {
+          graph_helpers.register_state_node(graph, composite_stack, {
             id = normalized_target,
             label = "",
             shape = "state-end",
           })
         elseif not composite_state_ids[normalized_target] then
-          ensure_state_node(graph, composite_stack, normalized_target)
+          graph_helpers.ensure_state_node(graph, composite_stack, normalized_target)
         end
 
         graph.edges[#graph.edges + 1] = {
@@ -246,7 +173,7 @@ local function parse(lines)
 
     local described_state_id, described_state_label = line:match("^([^%s:]+)%s*:%s*(.+)$")
     if described_state_id and described_state_label then
-      register_state_node(graph, composite_stack, {
+      graph_helpers.register_state_node(graph, composite_stack, {
         id = described_state_id,
         label = text.normalize_br_tags(parser.trim(described_state_label)),
         shape = "rounded",

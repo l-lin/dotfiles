@@ -1,18 +1,13 @@
-dofile((debug.getinfo(1, "S").source:sub(2):match("^(.*)/[^/]+$")) .. "/spec_helper.lua")
-if type(describe) ~= "function" then
-  require("busted.runner")()
-end
-
-local flowchart = require("functions.lang.mermaid.flowchart")
+local flowchart_renderer = require("functions.lang.mermaid.flowchart.renderer")
 local testdata = require("functions.lang.mermaid.testdata")
 
 local function then_rendered_output_matches_fixture(fixture_name)
   local fixture = testdata.load_golden(fixture_name)
 
-  local actual_lines = assert(flowchart.render(fixture.mermaid))
+  local actual_lines = assert(flowchart_renderer.render(fixture.mermaid))
   local actual = table.concat(actual_lines, "\n")
-  local expected = fixture.expected
 
+  local expected = fixture.expected
   assert.are.equal(testdata.normalize_whitespace(expected), testdata.normalize_whitespace(actual))
 end
 
@@ -51,7 +46,7 @@ describe("mermaid.flowchart.render", function()
       "  B --> C",
     }, "\n")
 
-    local actual = assert(flowchart.render(source))
+    local actual = assert(flowchart_renderer.render(source))
     local expected = {
       "┌───┐",
       "│   │",
