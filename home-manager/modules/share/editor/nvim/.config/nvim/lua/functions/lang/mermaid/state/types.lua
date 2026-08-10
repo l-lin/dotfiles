@@ -1,0 +1,11 @@
+---@class dotfiles.mermaid.state.Graph
+---@field direction string the direction of the graph (e.g., "TD", "LR")
+---@field nodes table<string, table> a table mapping node IDs to node tables
+---@field node_order string[] an ordered list of node IDs
+---@field edges table a list of edge tables representing transitions between nodes
+---@field subgraphs table subgraphs a list of subgraph tables representing composite states
+---@field class_defs table a table mapping class names to class definition tables
+---@field class_assignments table a table mapping node IDs to class names
+---@field node_styles table a table mapping node IDs to style tables
+---@field link_styles table a table mapping link IDs to style tables
+---@field warnings table a list of warning messages

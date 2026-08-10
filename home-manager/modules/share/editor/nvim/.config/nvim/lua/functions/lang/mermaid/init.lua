@@ -1,7 +1,7 @@
 local parser = require("functions.lang.mermaid.parser")
 local flowchart = require("functions.lang.mermaid.flowchart")
 local sequence = require("functions.lang.mermaid.sequence")
-local state_renderer = require("functions.lang.mermaid.state")
+local state_renderer = require("functions.lang.mermaid.state.renderer")
 
 local state = {
   setup_done = false,
@@ -594,9 +594,6 @@ local function setup()
 
   state.setup_done = true
   vim.api.nvim_create_user_command("MermaidAsciiPreview", toggle_popup, {
-    desc = "Open or focus a Mermaid ASCII popup for the current block",
-  })
-  vim.api.nvim_create_user_command("MarkdownAsciiPreview", toggle_popup, {
     desc = "Open or focus a Mermaid ASCII popup for the current block",
   })
 end

@@ -66,6 +66,10 @@ local function compact_blank_lines(lines)
   return compacted
 end
 
+---Preprocesses the source by trimming whitespace, removing empty lines,
+---and ignoring comment lines starting with "%%".
+---@param source string The raw source code of the Mermaid diagram.
+---@return string[] A list of preprocessed lines.
 local function preprocess_source(source)
   local lines = {}
   for _, raw_line in ipairs(split_lines(source)) do
@@ -179,6 +183,7 @@ local function shallow_copy(values)
   return copied
 end
 
+-- NOTE: can be removed?
 local function has_value(list, wanted)
   for _, value in ipairs(list) do
     if value == wanted then
@@ -188,6 +193,7 @@ local function has_value(list, wanted)
   return false
 end
 
+-- NOTE: can be removed?
 local function track_in_subgraph(subgraph_stack, node_id)
   if #subgraph_stack == 0 then
     return
@@ -205,20 +211,6 @@ local function register_node(graph, subgraph_stack, node)
     graph.node_order[#graph.node_order + 1] = node.id
   end
   track_in_subgraph(subgraph_stack, node.id)
-end
-
-local function remove_node(graph, node_id)
-  if not graph.nodes[node_id] then
-    return
-  end
-
-  graph.nodes[node_id] = nil
-  for index = #graph.node_order, 1, -1 do
-    if graph.node_order[index] == node_id then
-      table.remove(graph.node_order, index)
-      break
-    end
-  end
 end
 
 local function parse_style_props(props_string)
@@ -486,7 +478,6 @@ local function parse_flowchart(lines)
 
   for index = 2, #lines do
     local line = lines[index]
-    local lowered = line:lower()
 
     local class_def_name, class_def_props = line:match("^classDef%s+([%w_]+)%s+(.+)$")
     if class_def_name and class_def_props then
@@ -619,215 +610,10 @@ local function parse_flowchart(lines)
   return graph
 end
 
-local function register_state_node(graph, composite_stack, node)
-  if not graph.nodes[node.id] then
-    graph.nodes[node.id] = node
-    graph.node_order[#graph.node_order + 1] = node.id
-  end
-  track_in_subgraph(composite_stack, node.id)
-end
-
-local function ensure_state_node(graph, composite_stack, state_id)
-  if not graph.nodes[state_id] then
-    register_state_node(graph, composite_stack, {
-      id = state_id,
-      label = state_id,
-      shape = "rounded",
-    })
-  elseif #composite_stack > 0 then
-    track_in_subgraph(composite_stack, state_id)
-  end
-end
-
-local function parse_state_diagram(lines)
-  local graph = {
-    direction = "TD",
-    nodes = {},
-    node_order = {},
-    edges = {},
-    subgraphs = {},
-    class_defs = {},
-    class_assignments = {},
-    node_styles = {},
-    link_styles = {},
-    warnings = {},
-  }
-
-  local composite_stack = {}
-  local composite_state_ids = {}
-  local start_count = 0
-  local end_count = 0
-
-  for index = 2, #lines do
-    local line = lines[index]
-
-    local inline_direction = line:match("^direction%s+(%S+)%s*$")
-    if inline_direction then
-      local normalized_inline_direction = inline_direction:upper()
-      if ({ TD = true, TB = true, LR = true, BT = true, RL = true })[normalized_inline_direction] then
-        if #composite_stack > 0 then
-          composite_stack[#composite_stack].direction = normalized_inline_direction
-        else
-          graph.direction = normalized_inline_direction
-        end
-        goto continue
-      end
-    end
-
-    local link_style_rest = line:match("^linkStyle%s+(.+)$")
-    if link_style_rest then
-      local target, props = link_style_rest:match("^(.-)%s+([%w%-]+:.*)$")
-      if target and props then
-        local style_props = parse_style_props(props)
-        local normalized_target = trim(target)
-        if normalized_target == "default" then
-          graph.link_styles.default = graph.link_styles.default or {}
-          for key, value in pairs(style_props) do
-            graph.link_styles.default[key] = value
-          end
-        else
-          for raw_index in normalized_target:gmatch("[^,%s]+") do
-            local numeric_index = tonumber(raw_index)
-            if numeric_index ~= nil then
-              graph.link_styles[numeric_index] = graph.link_styles[numeric_index] or {}
-              for key, value in pairs(style_props) do
-                graph.link_styles[numeric_index][key] = value
-              end
-            end
-          end
-        end
-        goto continue
-      end
-    end
-
-    local aliased_composite_label, aliased_composite_id = line:match('^state%s+"([^"]+)"%s+as%s+([^%s{]+)%s*{$')
-    local composite_id = aliased_composite_id
-    local composite_label = aliased_composite_label
-    if not composite_id then
-      composite_id = line:match("^state%s+([^%s{]+)%s*{$")
-      composite_label = composite_id
-    end
-
-    if composite_id then
-      composite_stack[#composite_stack + 1] = {
-        id = composite_id,
-        label = text.normalize_br_tags(composite_label),
-        node_ids = {},
-        children = {},
-      }
-      composite_state_ids[composite_id] = true
-      remove_node(graph, composite_id)
-      goto continue
-    end
-
-    if line == "}" then
-      local completed = table.remove(composite_stack)
-      if not completed then
-        add_warning(graph, line)
-      else
-        if #composite_stack > 0 then
-          composite_stack[#composite_stack].children[#composite_stack[#composite_stack].children + 1] = completed
-        else
-          graph.subgraphs[#graph.subgraphs + 1] = completed
-        end
-      end
-      goto continue
-    end
-
-    local state_alias_label, state_alias_id = line:match('^state%s+"([^"]+)"%s+as%s+([^%s]+)%s*$')
-    if state_alias_id then
-      register_state_node(graph, composite_stack, {
-        id = state_alias_id,
-        label = text.normalize_br_tags(state_alias_label),
-        shape = "rounded",
-      })
-      goto continue
-    end
-
-    local before_arrow, after_arrow = line:match("^(.-)%-%->%s*(.+)$")
-    if before_arrow and after_arrow then
-      local source_id = trim(before_arrow)
-      local target_segment = trim(after_arrow)
-      local target_id = target_segment
-      local raw_label = nil
-
-      local matched_target_id, matched_label = target_segment:match("^(.-)%s*:%s*(.+)$")
-      if matched_target_id and matched_label then
-        target_id = trim(matched_target_id)
-        raw_label = trim(matched_label)
-      end
-
-      if source_id ~= "" and target_id ~= "" then
-        local normalized_source = source_id
-        local normalized_target = target_id
-
-        if normalized_source == "[*]" then
-          start_count = start_count + 1
-          normalized_source = start_count == 1 and "_start" or ("_start" .. start_count)
-          register_state_node(graph, composite_stack, {
-            id = normalized_source,
-            label = "",
-            shape = "state-start",
-          })
-        elseif not composite_state_ids[normalized_source] then
-          ensure_state_node(graph, composite_stack, normalized_source)
-        end
-
-        if normalized_target == "[*]" then
-          end_count = end_count + 1
-          normalized_target = end_count == 1 and "_end" or ("_end" .. end_count)
-          register_state_node(graph, composite_stack, {
-            id = normalized_target,
-            label = "",
-            shape = "state-end",
-          })
-        elseif not composite_state_ids[normalized_target] then
-          ensure_state_node(graph, composite_stack, normalized_target)
-        end
-
-        graph.edges[#graph.edges + 1] = {
-          source = normalized_source,
-          target = normalized_target,
-          label = raw_label and text.normalize_br_tags(raw_label) or nil,
-          style = "solid",
-          has_arrow_start = false,
-          has_arrow_end = true,
-        }
-        goto continue
-      end
-    end
-
-    local described_state_id, described_state_label = line:match("^([^%s:]+)%s*:%s*(.+)$")
-    if described_state_id and described_state_label then
-      register_state_node(graph, composite_stack, {
-        id = described_state_id,
-        label = text.normalize_br_tags(trim(described_state_label)),
-        shape = "rounded",
-      })
-      goto continue
-    end
-
-    add_warning(graph, line)
-
-    ::continue::
-  end
-
-  if #composite_stack > 0 then
-    add_warning(graph, "unterminated state block")
-  end
-
-  return graph
-end
-
 local function parse_mermaid(source)
   local lines = preprocess_source(source)
   if #lines == 0 then
     return nil, "Empty mermaid diagram"
-  end
-
-  local lowered_header = lines[1]:lower()
-  if lowered_header == "statediagram" or lowered_header == "statediagram-v2" then
-    return parse_state_diagram(lines)
   end
 
   return parse_flowchart(lines)
@@ -842,4 +628,6 @@ M.find_mermaid_blocks = find_mermaid_blocks
 M.append_unsupported_lines = append_unsupported_lines
 M.parse_mermaid = parse_mermaid
 M.preprocess_source = preprocess_source
+M.add_warning = add_warning
+M.parse_style_props = parse_style_props
 return M

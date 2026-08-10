@@ -6,6 +6,7 @@ local function render(source)
     return nil, "unsupported diagram kind"
   end
 
+  -- TODO: move parse_mermaid here
   local graph, parse_error = parser.parse_mermaid(source)
   if not graph then
     return nil, parse_error

@@ -390,7 +390,7 @@ local function render(source)
   local last_half_box = half_boxes[#half_boxes] or 0
   local total_width = last_lifeline + last_half_box + 2
 
-  for message_index, message in ipairs(diagram.messages) do
+  for _, message in ipairs(diagram.messages) do
     if message.from == message.to then
       local actor_position = actor_indexes[message.from]
       total_width = math.max(total_width, lifeline_x[actor_position] + 8 + text.max_line_width(message.label))
