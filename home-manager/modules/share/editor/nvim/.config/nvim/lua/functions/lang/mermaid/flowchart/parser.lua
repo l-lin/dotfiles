@@ -115,21 +115,21 @@ end
 ---@param subgraph_stack table The stack of subgraphs to track the nodes in.
 ---@return dotfiles.mermaid.flowchart.ConsumeNodeGroupResult|nil The result containing the node identifiers and remaining text, or nil if no nodes were consumed.
 local function consume_node_group(text_value, graph, subgraph_stack)
-  local first = consume_node(parser.trim(text_value), graph, subgraph_stack)
+  local first = consume_node(text.trim(text_value), graph, subgraph_stack)
   if not first then
     return nil
   end
 
   local identifiers = { first.id }
-  local remaining = parser.trim(first.remaining)
+  local remaining = text.trim(first.remaining)
 
   while remaining:sub(1, 1) == "&" do
-    local next_node = consume_node(parser.trim(remaining:sub(2)), graph, subgraph_stack)
+    local next_node = consume_node(text.trim(remaining:sub(2)), graph, subgraph_stack)
     if not next_node then
       break
     end
     identifiers[#identifiers + 1] = next_node.id
-    remaining = parser.trim(next_node.remaining)
+    remaining = text.trim(next_node.remaining)
   end
 
   return {
@@ -170,7 +170,7 @@ end
 ---@param text_value string The text value to consume the arrow from.
 ---@return dotfiles.mermaid.flowchart.ConsumeArrowResult|nil A table containing the arrow's label, style, arrow start/end flags
 local function consume_arrow(text_value)
-  local remaining = parser.trim(text_value)
+  local remaining = text.trim(text_value)
   local has_arrow_start = false
 
   if remaining:sub(1, 1) == "<" then
@@ -188,7 +188,7 @@ local function consume_arrow(text_value)
         if not label_end then
           return nil
         end
-        local raw_label = parser.trim(rest:sub(2, label_end - 1))
+        local raw_label = text.trim(rest:sub(2, label_end - 1))
         if raw_label ~= "" then
           edge_label = text.normalize_br_tags(raw_label)
         end
@@ -201,7 +201,7 @@ local function consume_arrow(text_value)
         style = arrow_style_from_op(operator),
         has_arrow_start = has_arrow_start,
         has_arrow_end = operator:sub(-1) == ">",
-        remaining = parser.trim(rest),
+        remaining = text.trim(rest),
       }
     end
   end
@@ -236,7 +236,7 @@ local function consume_arrow(text_value)
           style = text_arrow_style_from_ops(open_operator, best_close),
           has_arrow_start = has_arrow_start,
           has_arrow_end = best_close:sub(-1) == ">",
-          remaining = parser.trim(after_open:sub(best_position + 1 + #best_close)),
+          remaining = text.trim(after_open:sub(best_position + 1 + #best_close)),
         }
       end
     end
@@ -279,7 +279,7 @@ local function parse_edge_line(line, graph, subgraph_stack)
     return false
   end
 
-  local remaining = parser.trim(first_group.remaining)
+  local remaining = text.trim(first_group.remaining)
   local previous_group = first_group.ids
   local parsed_arrow = false
 
@@ -294,7 +294,7 @@ local function parse_edge_line(line, graph, subgraph_stack)
       return false
     end
 
-    remaining = parser.trim(next_group.remaining)
+    remaining = text.trim(next_group.remaining)
 
     for _, source_id in ipairs(previous_group) do
       for _, target_id in ipairs(next_group.ids) do
@@ -323,16 +323,28 @@ end
 local function parse(lines)
   local keyword, direction = lines[1]:match("^(%S+)%s+(%S+)%s*$")
   if not keyword or not direction then
-    return nil, string.format('Invalid mermaid header: "%s". Expected "graph TD", "flowchart LR", "stateDiagram-v2", etc.', lines[1])
+    return nil,
+      string.format(
+        'Invalid mermaid header: "%s". Expected "graph TD", "flowchart LR", "stateDiagram-v2", etc.',
+        lines[1]
+      )
   end
 
   local lowered_keyword = keyword:lower()
   local normalized_direction = direction:upper()
   if lowered_keyword ~= "graph" and lowered_keyword ~= "flowchart" then
-    return nil, string.format('Invalid mermaid header: "%s". Expected "graph TD", "flowchart LR", "stateDiagram-v2", etc.', lines[1])
+    return nil,
+      string.format(
+        'Invalid mermaid header: "%s". Expected "graph TD", "flowchart LR", "stateDiagram-v2", etc.',
+        lines[1]
+      )
   end
   if not ({ TD = true, TB = true, LR = true, BT = true, RL = true })[normalized_direction] then
-    return nil, string.format('Invalid mermaid header: "%s". Expected "graph TD", "flowchart LR", "stateDiagram-v2", etc.', lines[1])
+    return nil,
+      string.format(
+        'Invalid mermaid header: "%s". Expected "graph TD", "flowchart LR", "stateDiagram-v2", etc.',
+        lines[1]
+      )
   end
 
   ---@type dotfiles.mermaid.flowchart.Graph
@@ -363,7 +375,7 @@ local function parse(lines)
     local class_targets, class_name = line:match("^class%s+([%w_,%-]+)%s+([%w_]+)$")
     if class_targets and class_name then
       for node_id in class_targets:gmatch("[^,]+") do
-        graph.class_assignments[parser.trim(node_id)] = class_name
+        graph.class_assignments[text.trim(node_id)] = class_name
       end
       goto continue
     end
@@ -372,7 +384,7 @@ local function parse(lines)
     if styled_targets and styled_props then
       local props = parser.parse_style_props(styled_props)
       for node_id in styled_targets:gmatch("[^,]+") do
-        local normalized_id = parser.trim(node_id)
+        local normalized_id = text.trim(node_id)
         graph.node_styles[normalized_id] = graph.node_styles[normalized_id] or {}
         for key, value in pairs(props) do
           graph.node_styles[normalized_id][key] = value
@@ -386,7 +398,7 @@ local function parse(lines)
       local target, props = link_style_rest:match("^(.-)%s+([%w%-]+:.*)$")
       if target and props then
         local style_props = parser.parse_style_props(props)
-        local normalized_target = parser.trim(target)
+        local normalized_target = text.trim(target)
         if normalized_target == "default" then
           graph.link_styles.default = graph.link_styles.default or {}
           for key, value in pairs(style_props) do
@@ -425,7 +437,7 @@ local function parse(lines)
         subgraph_id = bracket_id
         subgraph_label = text.normalize_br_tags(bracket_label)
       else
-        subgraph_label = text.normalize_br_tags(parser.trim(subgraph_rest))
+        subgraph_label = text.normalize_br_tags(text.trim(subgraph_rest))
         subgraph_id = text.slugify(subgraph_rest)
       end
 

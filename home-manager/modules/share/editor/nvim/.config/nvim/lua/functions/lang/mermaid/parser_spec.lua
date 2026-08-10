@@ -1,8 +1,3 @@
-dofile((debug.getinfo(1, "S").source:sub(2):match("^(.*)/[^/]+$")) .. "/spec_helper.lua")
-if type(describe) ~= "function" then
-  require("busted.runner")()
-end
-
 local parser = require("functions.lang.mermaid.parser")
 
 describe("mermaid.parser.find_mermaid_blocks", function()
@@ -35,12 +30,14 @@ describe("mermaid.parser.find_mermaid_blocks", function()
 end)
 
 describe("mermaid.parser.diagram_kind", function()
-  it("GIVEN supported headers WHEN detecting the diagram kind THEN it recognizes only the previewed Mermaid families", function()
-    assert.are.equal("flowchart", parser.diagram_kind("graph LR\nA --> B"))
-    assert.are.equal("flowchart", parser.diagram_kind("flowchart TD\nA --> B"))
-    assert.are.equal("sequence", parser.diagram_kind("sequenceDiagram\nA->>B: hi"))
-    assert.are.equal("state", parser.diagram_kind("stateDiagram-v2\nA --> B"))
-    assert.are.equal(nil, parser.diagram_kind("classDiagram\nA <|-- B"))
-  end)
+  it(
+    "GIVEN supported headers WHEN detecting the diagram kind THEN it recognizes only the previewed Mermaid families",
+    function()
+      assert.are.equal("flowchart", parser.diagram_kind("graph LR\nA --> B"))
+      assert.are.equal("flowchart", parser.diagram_kind("flowchart TD\nA --> B"))
+      assert.are.equal("sequence", parser.diagram_kind("sequenceDiagram\nA->>B: hi"))
+      assert.are.equal("state", parser.diagram_kind("stateDiagram-v2\nA --> B"))
+      assert.are.equal(nil, parser.diagram_kind("classDiagram\nA <|-- B"))
+    end
+  )
 end)
-

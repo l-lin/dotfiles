@@ -129,7 +129,7 @@ local function render(source)
     for _, note in ipairs(diagram.notes) do
       if note.after_index == message_index - 1 then
         cursor_y = cursor_y + 1
-        local note_lines = text.split_label_lines(note.text)
+        local note_lines = text.split_lines(note.text)
         local note_width = 4
         for _, note_line in ipairs(note_lines) do
           note_width = math.max(note_width, text.char_len(note_line) + 4)
@@ -201,7 +201,7 @@ local function render(source)
   end
 
   local function draw_actor_box(center_x, top_y, label)
-    local lines = text.split_label_lines(label)
+    local lines = text.split_lines(label)
     local max_width = text.max_line_width(label)
     local box_width = max_width + 4
     local box_height = #lines + 2
@@ -263,7 +263,7 @@ local function render(source)
       set_char(from_x + loop_width, arrow_y, "┐")
       set_char(from_x + loop_width, arrow_y + 1, V)
 
-      local message_lines = text.split_label_lines(message.label)
+      local message_lines = text.split_lines(message.label)
       for line_index, line in ipairs(message_lines) do
         canvas.draw_text(rendered, { x = from_x + loop_width + 2, y = arrow_y + line_index }, line, true)
       end
@@ -279,7 +279,7 @@ local function render(source)
       local left_to_right = from_x < to_x
       local middle_x = math.floor((from_x + to_x) / 2)
 
-      for line_index, line in ipairs(text.split_label_lines(message.label)) do
+      for line_index, line in ipairs(text.split_lines(message.label)) do
         local label_start = middle_x - math.floor(text.char_len(line) / 2)
         canvas.draw_text(rendered, { x = label_start, y = label_y + line_index - 1 }, line, true)
       end
@@ -328,7 +328,7 @@ local function render(source)
       set_char(right_x, top_y, TR)
 
       local header_label = block.label ~= "" and string.format("%s [%s]", block.type, block.label) or block.type
-      for line_index, line in ipairs(text.split_label_lines(header_label)) do
+      for line_index, line in ipairs(text.split_lines(header_label)) do
         if top_y + line_index - 1 < bottom_y then
           canvas.draw_text(rendered, { x = left_x + 1, y = top_y + line_index - 1 }, line, true)
         end

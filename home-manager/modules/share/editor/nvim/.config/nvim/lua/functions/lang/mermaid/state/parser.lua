@@ -53,7 +53,7 @@ local function parse(lines)
       local target, props = link_style_rest:match("^(.-)%s+([%w%-]+:.*)$")
       if target and props then
         local style_props = parser.parse_style_props(props)
-        local normalized_target = parser.trim(target)
+        local normalized_target = text.trim(target)
         if normalized_target == "default" then
           graph.link_styles.default = graph.link_styles.default or {}
           for key, value in pairs(style_props) do
@@ -120,15 +120,15 @@ local function parse(lines)
 
     local before_arrow, after_arrow = line:match("^(.-)%-%->%s*(.+)$")
     if before_arrow and after_arrow then
-      local source_id = parser.trim(before_arrow)
-      local target_segment = parser.trim(after_arrow)
+      local source_id = text.trim(before_arrow)
+      local target_segment = text.trim(after_arrow)
       local target_id = target_segment
       local raw_label = nil
 
       local matched_target_id, matched_label = target_segment:match("^(.-)%s*:%s*(.+)$")
       if matched_target_id and matched_label then
-        target_id = parser.trim(matched_target_id)
-        raw_label = parser.trim(matched_label)
+        target_id = text.trim(matched_target_id)
+        raw_label = text.trim(matched_label)
       end
 
       if source_id ~= "" and target_id ~= "" then
@@ -175,7 +175,7 @@ local function parse(lines)
     if described_state_id and described_state_label then
       graph_helpers.register_state_node(graph, composite_stack, {
         id = described_state_id,
-        label = text.normalize_br_tags(parser.trim(described_state_label)),
+        label = text.normalize_br_tags(text.trim(described_state_label)),
         shape = "rounded",
       })
       goto continue

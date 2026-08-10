@@ -1,8 +1,3 @@
-dofile((debug.getinfo(1, "S").source:sub(2):match("^(.*)/[^/]+$")) .. "/spec_helper.lua")
-if type(describe) ~= "function" then
-  require("busted.runner")()
-end
-
 local mermaid = require("functions.lang.mermaid")
 
 describe("mermaid.preview_lines_at_row", function()

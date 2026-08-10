@@ -227,7 +227,7 @@ local function get_shape_attachment_point(shape, direction, dimensions, base_coo
 end
 
 local function draw_centered_lines(box, width, height, label)
-  local lines = text.split_label_lines(label)
+  local lines = text.split_lines(label)
   local center_y = math.floor((height - 1) / 2)
   local start_y = center_y - math.floor((#lines - 1) / 2)
 
@@ -1505,7 +1505,7 @@ local function draw_text_on_line(target_canvas, drawing_line, label, is_upward_e
     middle_y = is_upward_edge and (middle_y + offset) or (middle_y - offset)
   end
 
-  local label_lines = text.split_label_lines(label)
+  local label_lines = text.split_lines(label)
   local start_y = middle_y - math.floor((#label_lines - 1) / 2)
   for index, line in ipairs(label_lines) do
     local start_x = middle_x - math.floor(text.char_len(line) / 2)
@@ -1947,7 +1947,7 @@ local function draw_subgraph_label(subgraph)
   end
 
   local label_canvas = canvas.mk_canvas(width, height)
-  for index, line in ipairs(text.split_label_lines(subgraph.name)) do
+  for index, line in ipairs(text.split_lines(subgraph.name)) do
     local line_width = text.char_len(line)
     local label_x = math.floor(width / 2) - math.floor(line_width / 2)
     if label_x < 1 then
