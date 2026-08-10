@@ -1,9 +1,4 @@
-dofile((debug.getinfo(1, "S").source:sub(2):match("^(.*)/[^/]+$")) .. "/spec_helper.lua")
-if type(describe) ~= "function" then
-  require("busted.runner")()
-end
-
-local sequence = require("functions.lang.mermaid.sequence")
+local sequence = require("functions.lang.mermaid.sequence.renderer")
 local testdata = require("functions.lang.mermaid.testdata")
 
 local function then_rendered_output_matches_fixture(fixture_name)

@@ -1,6 +1,6 @@
 local parser = require("functions.lang.mermaid.parser")
-local sequence = require("functions.lang.mermaid.sequence")
 local flowchart_renderer = require("functions.lang.mermaid.flowchart.renderer")
+local sequence_renderer = require("functions.lang.mermaid.sequence.renderer")
 local state_renderer = require("functions.lang.mermaid.state.renderer")
 
 local state = {
@@ -19,7 +19,7 @@ local function render(source)
     return flowchart_renderer.render(source)
   end
   if kind == "sequence" then
-    return sequence.render(source)
+    return sequence_renderer.render(source)
   end
   if kind == "state" then
     return state_renderer.render(source)
