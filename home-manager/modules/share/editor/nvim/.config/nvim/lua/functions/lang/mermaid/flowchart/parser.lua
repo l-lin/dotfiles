@@ -1,6 +1,5 @@
 local parser = require("functions.lang.mermaid.parser")
 local text = require("functions.lang.mermaid.text")
-local graph_helpers = require("functions.lang.mermaid.graph")
 
 local NODE_PATTERNS = {
   { pattern = "^([%w_%-]+)%(%(%((.-)%)%)%)", shape = "doublecircle" },
@@ -41,16 +40,44 @@ local TEXT_ARROW_CLOSERS = {
   "===",
 }
 
+---Adds a node ID to the current subgraph when one is active.
+---@param subgraph_stack dotfiles.mermaid.Subgraph[]
+---@param node_id string
+local function add_node_to_current_subgraph(subgraph_stack, node_id)
+  if #subgraph_stack == 0 then
+    return
+  end
+
+  local current_subgraph = subgraph_stack[#subgraph_stack]
+  current_subgraph.node_ids = current_subgraph.node_ids or {}
+  current_subgraph.node_id_set = current_subgraph.node_id_set or {}
+
+  if current_subgraph.node_id_set[node_id] then
+    return
+  end
+
+  for _, existing_node_id in ipairs(current_subgraph.node_ids) do
+    if existing_node_id == node_id then
+      current_subgraph.node_id_set[node_id] = true
+      return
+    end
+  end
+
+  current_subgraph.node_ids[#current_subgraph.node_ids + 1] = node_id
+  current_subgraph.node_id_set[node_id] = true
+end
+
 ---Registers a node in the graph and tracks it in the current subgraph stack.
----@param graph table The graph object to register the node in.
----@param subgraph_stack table The stack of subgraphs to track the node in.
----@param node table The node object to register, containing 'id', 'label', and '
+---@param graph dotfiles.mermaid.flowchart.Graph
+---@param subgraph_stack dotfiles.mermaid.Subgraph[]
+---@param node dotfiles.mermaid.Node
 local function register_node(graph, subgraph_stack, node)
   if not graph.nodes[node.id] then
     graph.nodes[node.id] = node
     graph.node_order[#graph.node_order + 1] = node.id
   end
-  graph_helpers.track_in_subgraph(subgraph_stack, node.id)
+
+  add_node_to_current_subgraph(subgraph_stack, node.id)
 end
 
 ---Consumes a node from the given text value, registers it in the graph, and
@@ -445,6 +472,7 @@ local function parse(lines)
         id = subgraph_id,
         label = subgraph_label,
         node_ids = {},
+        node_id_set = {},
         children = {},
       }
       goto continue
@@ -471,9 +499,11 @@ local function parse(lines)
       edges = array_copy(graph.edges),
       class_assignments = shallow_copy(graph.class_assignments),
       subgraph_node_ids = {},
+      subgraph_node_id_sets = {},
     }
     for stack_index, subgraph in ipairs(subgraph_stack) do
       snapshot.subgraph_node_ids[stack_index] = array_copy(subgraph.node_ids)
+      snapshot.subgraph_node_id_sets[stack_index] = shallow_copy(subgraph.node_id_set or {})
     end
 
     if not parse_edge_line(line, graph, subgraph_stack) then
@@ -483,6 +513,7 @@ local function parse(lines)
       graph.class_assignments = snapshot.class_assignments
       for stack_index, subgraph in ipairs(subgraph_stack) do
         subgraph.node_ids = snapshot.subgraph_node_ids[stack_index] or {}
+        subgraph.node_id_set = snapshot.subgraph_node_id_sets[stack_index] or {}
       end
       parser.add_warning(graph, line)
     end
@@ -499,4 +530,7 @@ end
 
 local M = {}
 M.parse = parse
+M._private = {
+  add_node_to_current_subgraph = add_node_to_current_subgraph,
+}
 return M

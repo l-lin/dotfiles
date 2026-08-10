@@ -18,10 +18,10 @@
 
 ---@class dotfiles.mermaid.flowchart.Graph
 ---@field direction string The direction of the graph (e.g., "TD", "LR").
----@field nodes table<string, table> A table of nodes
+---@field nodes table<string, dotfiles.mermaid.Node> A table of nodes
 ---@field node_order string[] An array of node IDs in the order they were added.@field node_order string[] An array of node identifiers in the order they were added.
 ---@field edges table[] An array of edges, where each edge is a table containing source, target, label, style, has_arrow_start, and has_arrow_end fields.
----@field subgraphs table[] An array of subgraphs, where each subgraph is a table
+---@field subgraphs dotfiles.mermaid.Subgraph[] An array of subgraphs, where each subgraph is a table
 ---@field class_defs table<string, table> A table of class definitions, where each key is a class name and the value is a table of style properties.
 ---@field class_assignments table<string, string> A table of class assignments, where each key
 ---@field node_styles table<string, table> A table of node styles, where each key is a node ID and the value is a table of style properties.

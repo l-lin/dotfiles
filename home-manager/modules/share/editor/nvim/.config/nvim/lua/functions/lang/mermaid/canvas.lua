@@ -41,7 +41,6 @@ local STRUCTURAL_CHARS = {
   ["◤"] = true,
   ["◥"] = true,
   ["▶"] = true,
-  ["▷"] = true,
   ["◀"] = true,
   ["◁"] = true,
   ["┄"] = true,

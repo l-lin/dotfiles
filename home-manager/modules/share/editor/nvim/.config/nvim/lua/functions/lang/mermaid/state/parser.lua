@@ -1,6 +1,6 @@
 local parser = require("functions.lang.mermaid.parser")
 local text = require("functions.lang.mermaid.text")
-local graph_helpers = require("functions.lang.mermaid.graph")
+local graph_builder = require("functions.lang.mermaid.state.graph_builder")
 
 ---Parses a list of lines representing a Mermaid state diagram and constructs
 ---a graph representation.
@@ -26,7 +26,7 @@ local function parse(lines)
     warnings = {},
   }
 
-  local composite_stack = {}
+  local subgraph_stack = {}
   local composite_state_ids = {}
   local start_count = 0
   local end_count = 0
@@ -39,8 +39,8 @@ local function parse(lines)
     if inline_direction then
       local normalized_inline_direction = inline_direction:upper()
       if ({ TD = true, TB = true, LR = true, BT = true, RL = true })[normalized_inline_direction] then
-        if #composite_stack > 0 then
-          composite_stack[#composite_stack].direction = normalized_inline_direction
+        if #subgraph_stack > 0 then
+          subgraph_stack[#subgraph_stack].direction = normalized_inline_direction
         else
           graph.direction = normalized_inline_direction
         end
@@ -83,24 +83,25 @@ local function parse(lines)
     end
 
     if composite_id then
-      composite_stack[#composite_stack + 1] = {
+      subgraph_stack[#subgraph_stack + 1] = {
         id = composite_id,
         label = text.normalize_br_tags(composite_label),
         node_ids = {},
+        node_id_set = {},
         children = {},
       }
       composite_state_ids[composite_id] = true
-      graph_helpers.remove_node(graph, composite_id)
+      graph_builder.remove_node_by_id(graph, composite_id)
       goto continue
     end
 
     if line == "}" then
-      local completed = table.remove(composite_stack)
+      local completed = table.remove(subgraph_stack)
       if not completed then
         parser.add_warning(graph, line)
       else
-        if #composite_stack > 0 then
-          composite_stack[#composite_stack].children[#composite_stack[#composite_stack].children + 1] = completed
+        if #subgraph_stack > 0 then
+          subgraph_stack[#subgraph_stack].children[#subgraph_stack[#subgraph_stack].children + 1] = completed
         else
           graph.subgraphs[#graph.subgraphs + 1] = completed
         end
@@ -110,7 +111,7 @@ local function parse(lines)
 
     local state_alias_label, state_alias_id = line:match('^state%s+"([^"]+)"%s+as%s+([^%s]+)%s*$')
     if state_alias_id then
-      graph_helpers.register_state_node(graph, composite_stack, {
+      graph_builder.add_node(graph, subgraph_stack, {
         id = state_alias_id,
         label = text.normalize_br_tags(state_alias_label),
         shape = "rounded",
@@ -138,25 +139,25 @@ local function parse(lines)
         if normalized_source == "[*]" then
           start_count = start_count + 1
           normalized_source = start_count == 1 and "_start" or ("_start" .. start_count)
-          graph_helpers.register_state_node(graph, composite_stack, {
+          graph_builder.add_node(graph, subgraph_stack, {
             id = normalized_source,
             label = "",
             shape = "state-start",
           })
         elseif not composite_state_ids[normalized_source] then
-          graph_helpers.ensure_state_node(graph, composite_stack, normalized_source)
+          graph_builder.ensure_node(graph, subgraph_stack, normalized_source)
         end
 
         if normalized_target == "[*]" then
           end_count = end_count + 1
           normalized_target = end_count == 1 and "_end" or ("_end" .. end_count)
-          graph_helpers.register_state_node(graph, composite_stack, {
+          graph_builder.add_node(graph, subgraph_stack, {
             id = normalized_target,
             label = "",
             shape = "state-end",
           })
         elseif not composite_state_ids[normalized_target] then
-          graph_helpers.ensure_state_node(graph, composite_stack, normalized_target)
+          graph_builder.ensure_node(graph, subgraph_stack, normalized_target)
         end
 
         graph.edges[#graph.edges + 1] = {
@@ -173,7 +174,7 @@ local function parse(lines)
 
     local described_state_id, described_state_label = line:match("^([^%s:]+)%s*:%s*(.+)$")
     if described_state_id and described_state_label then
-      graph_helpers.register_state_node(graph, composite_stack, {
+      graph_builder.add_node(graph, subgraph_stack, {
         id = described_state_id,
         label = text.normalize_br_tags(text.trim(described_state_label)),
         shape = "rounded",
@@ -186,7 +187,7 @@ local function parse(lines)
     ::continue::
   end
 
-  if #composite_stack > 0 then
+  if #subgraph_stack > 0 then
     parser.add_warning(graph, "unterminated state block")
   end
 

@@ -1,7 +1,87 @@
 local parser = require("functions.lang.mermaid.parser")
 local flowchart_parser = require("functions.lang.mermaid.flowchart.parser")
 
+local function given_subgraph(overrides)
+  local actual = {
+    id = "api",
+    label = "API",
+    node_ids = {},
+    node_id_set = {},
+    children = {},
+  }
+
+  if overrides then
+    for key, value in pairs(overrides) do
+      actual[key] = value
+    end
+  end
+
+  return actual
+end
+
 describe("mermaid.parser.parse_mermaid", function()
+  it("GIVEN no current subgraph WHEN adding a node id to the current subgraph THEN it does nothing", function()
+    local actual = {}
+
+    flowchart_parser._private.add_node_to_current_subgraph(actual, "C")
+
+    local expected = {}
+    assert.are.same(expected, actual)
+  end)
+
+  it("GIVEN a current subgraph WHEN adding a node id twice THEN it stores the id once", function()
+    local actual = { given_subgraph() }
+
+    flowchart_parser._private.add_node_to_current_subgraph(actual, "C")
+    flowchart_parser._private.add_node_to_current_subgraph(actual, "C")
+
+    local expected = {
+      given_subgraph({
+        node_ids = { "C" },
+        node_id_set = { C = true },
+      }),
+    }
+    assert.are.same(expected, actual)
+  end)
+
+  it("GIVEN a subgraph whose list already contains the node WHEN adding that node id THEN it repairs the set without duplicating the list", function()
+    local actual = {
+      given_subgraph({
+        node_ids = { "C" },
+      }),
+    }
+
+    flowchart_parser._private.add_node_to_current_subgraph(actual, "C")
+
+    local expected = {
+      given_subgraph({
+        node_ids = { "C" },
+        node_id_set = { C = true },
+      }),
+    }
+    assert.are.same(expected, actual)
+  end)
+
+  it("GIVEN nested subgraphs WHEN adding a node id to the current subgraph THEN only the top subgraph is updated", function()
+    local actual = {
+      given_subgraph({ id = "outer", label = "Outer" }),
+      given_subgraph({ id = "inner", label = "Inner" }),
+    }
+
+    flowchart_parser._private.add_node_to_current_subgraph(actual, "C")
+
+    local expected = {
+      given_subgraph({ id = "outer", label = "Outer" }),
+      given_subgraph({
+        id = "inner",
+        label = "Inner",
+        node_ids = { "C" },
+        node_id_set = { C = true },
+      }),
+    }
+    assert.are.same(expected, actual)
+  end)
+
   it("GIVEN a flowchart with upstream-supported metadata WHEN parsing THEN it keeps graph structure and style metadata", function()
     local lines = parser.preprocess_source(table.concat({
       "flowchart TD",

@@ -1,0 +1,12 @@
+---@class dotfiles.mermaid.Node
+---@field id string
+---@field label string
+---@field shape string
+
+---@class dotfiles.mermaid.Subgraph
+---@field id string
+---@field label string
+---@field node_ids string[]
+---@field node_id_set table<string, boolean>
+---@field children dotfiles.mermaid.Subgraph[]
+---@field direction string|nil
