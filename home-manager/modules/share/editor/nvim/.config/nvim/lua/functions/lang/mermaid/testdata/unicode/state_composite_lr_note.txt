@@ -12,12 +12,22 @@ stateDiagram-v2
   Fulfilment --> Delivered : courier confirms
   Delivered --> [*]
   Cancelled --> [*]
+  note right of Paid
+    Payment can be card,
+    wallet, or bank transfer
+  end note
 ---
-                                                                     ┌───────────────────────────────────────────────────────────┐
-                                                                     │                        Fulfilment                         │
-                                                                     │                                                           │
-                                                                     │                                                           │
-        ╭────────╮                                   ╭───────────╮   │         ╭─────────╮                   ╭─────────╮         │                ╭───────────╮
+                                                                      ┌──────────────────────────┐
+                                                                      │ Payment can be card,     │
+                                                           ┌┄┄┄┄┄┄┄┄┄┄┤ wallet, or bank transfer │
+                                                           ┆          └──────────────────────────┘
+                                                           ┆
+                                                           ┆
+                                                           ┆         ┌───────────────────────────────────────────────────────────┐
+                                                           ┆         │                        Fulfilment                         │
+                                                           ┆         │                                                           │
+                                                           ┆         │                                                           │
+        ╭────────╮                                   ╭─────┴─────╮   │         ╭─────────╮                   ╭─────────╮         │                ╭───────────╮
         │        │                                   │           │   │         │         │                   │         │         │                │           │
  ●─────►│ Placed │        ├────payment received─────►│    Paid   ├───┼─►●─────►│ Packing ├─handed to courier►│ Shipped ├─────►◉─courier confirms─►│ Delivered ├─────►◉
         │        │                                   │           │   │         │         │                   │         │         │                │           │

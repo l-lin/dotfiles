@@ -1,5 +1,7 @@
 local text = require("functions.lang.mermaid.text")
 
+local ERASE_CHAR = "\0"
+
 local STRUCTURAL_CHARS = {
   ["─"] = true,
   ["│"] = true,
@@ -152,7 +154,7 @@ local function is_structural_char(char)
 end
 
 local function is_text_char(char)
-  return char ~= " " and not is_structural_char(char)
+  return char ~= " " and char ~= ERASE_CHAR and not is_structural_char(char)
 end
 
 local function is_junction_char(char)
@@ -175,7 +177,11 @@ local function draw_text(canvas, start, value, force_overwrite)
     local x = start.x + index - 1
     local current = canvas[x][start.y]
     if force_overwrite or current == " " then
-      canvas[x][start.y] = char
+      if force_overwrite and char == " " then
+        canvas[x][start.y] = ERASE_CHAR
+      else
+        canvas[x][start.y] = char
+      end
     end
   end
 end
@@ -209,7 +215,9 @@ local function merge_canvases(base, offset, overlays)
           local target_y = y + offset.y
           local current = merged[target_x][target_y]
 
-          if is_junction_char(current) and is_junction_char(char) then
+          if char == ERASE_CHAR then
+            merged[target_x][target_y] = " "
+          elseif is_junction_char(current) and is_junction_char(char) then
             merged[target_x][target_y] = merge_junctions(current, char)
           elseif is_text_char(current) and is_text_char(char) then
             -- Preserve the earliest label text on collisions, mirroring the upstream renderer.
@@ -231,7 +239,7 @@ local function canvas_to_lines(canvas)
   for y = 0, max_y do
     local row = {}
     for x = 0, max_x do
-      row[#row + 1] = canvas[x][y]
+      row[#row + 1] = canvas[x][y] == ERASE_CHAR and " " or canvas[x][y]
     end
     lines[#lines + 1] = table.concat(row):gsub("%s+$", "")
   end

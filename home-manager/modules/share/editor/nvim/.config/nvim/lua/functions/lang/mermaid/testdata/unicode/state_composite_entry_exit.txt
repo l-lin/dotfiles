@@ -1,0 +1,23 @@
+stateDiagram-v2
+  direction LR
+  [*] --> Paid
+  Paid --> Fulfilment
+  state Fulfilment {
+    [*] --> Packing
+    Packing --> Shipped
+    Shipped --> [*]
+  }
+  Fulfilment --> Delivered
+  Delivered --> [*]
+---
+                   ┌─────────────────────────────────────────────┐
+                   │                 Fulfilment                  │
+                   │                                             │
+                   │                                             │
+        ╭──────╮   │         ╭─────────╮     ╭─────────╮         │   ╭───────────╮
+        │      │   │         │         │     │         │         │   │           │
+ ●─────►│ Paid ├───┼─►●─────►│ Packing ├────►│ Shipped ├─────►◉──┼──►│ Delivered ├─────►◉
+        │      │   │         │         │     │         │         │   │           │
+        ╰──────╯   │         ╰─────────╯     ╰─────────╯         │   ╰───────────╯
+                   │                                             │
+                   └─────────────────────────────────────────────┘

@@ -19,6 +19,7 @@ local function parse(lines)
     node_order = {},
     edges = {},
     subgraphs = {},
+    notes = {},
     class_defs = {},
     class_assignments = {},
     node_styles = {},
@@ -28,11 +29,39 @@ local function parse(lines)
 
   local subgraph_stack = {}
   local composite_state_ids = {}
+  local pending_note = nil
   local start_count = 0
   local end_count = 0
 
   for index = 2, #lines do
     local line = lines[index]
+
+    if pending_note then
+      if line:lower() == "end note" then
+        graph.notes[#graph.notes + 1] = {
+          position = pending_note.position,
+          state_id = pending_note.state_id,
+          text = table.concat(pending_note.lines, "\n"),
+        }
+        pending_note = nil
+      else
+        pending_note.lines[#pending_note.lines + 1] = text.normalize_br_tags(line)
+      end
+      goto continue
+    end
+
+    local note_position, note_state_id = line:match("^[Nn]ote%s+(left)%s+of%s+([^%s]+)%s*$")
+    if not note_position then
+      note_position, note_state_id = line:match("^[Nn]ote%s+(right)%s+of%s+([^%s]+)%s*$")
+    end
+    if note_position and note_state_id then
+      pending_note = {
+        position = note_position,
+        state_id = note_state_id,
+        lines = {},
+      }
+      goto continue
+    end
 
     local inline_direction = line:match("^direction%s+(%S+)%s*$")
 
@@ -185,6 +214,10 @@ local function parse(lines)
     parser.add_warning(graph, line)
 
     ::continue::
+  end
+
+  if pending_note then
+    parser.add_warning(graph, "unterminated note block")
   end
 
   if #subgraph_stack > 0 then

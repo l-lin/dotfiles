@@ -6,6 +6,8 @@ describe("mermaid.state.renderer", function()
     "state_basic",
     "state_cjk",
     "state_composite_lr",
+    "state_composite_entry_exit",
+    "state_composite_lr_note",
   }
 
   for _, fixture_name in ipairs(upstream_fixtures) do
@@ -41,7 +43,27 @@ describe("mermaid.state.renderer", function()
   )
 
   it(
-    "GIVEN unsupported state note syntax WHEN rendering THEN it preserves the supported state graph and appends raw unsupported lines",
+    "GIVEN labelled branching state transitions WHEN rendering THEN the outgoing branch stays connected to the source state",
+    function()
+      local source = table.concat({
+        "stateDiagram-v2",
+        "  direction LR",
+        "  [*] --> Placed",
+        "  Placed --> Paid : payment received",
+        "  Placed --> Cancelled : customer cancels",
+      }, "\n")
+
+      local actual = assert(state_renderer.render(source))
+      local actual_rendered = table.concat(actual, "\n")
+
+      assert.is_truthy(actual_rendered:match("payment received"))
+      assert.is_nil(actual_rendered:match("payment─received"))
+      assert.is_nil(actual_rendered:match("Placed │        ├"))
+    end
+  )
+
+  it(
+    "GIVEN a multiline state note WHEN rendering THEN it renders the note text instead of appending unsupported warnings",
     function()
       local source = table.concat({
         "stateDiagram-v2",
@@ -53,36 +75,12 @@ describe("mermaid.state.renderer", function()
       }, "\n")
 
       local actual = assert(state_renderer.render(source))
-      local expected = {
-        "   ●",
-        "    │",
-        "    │",
-        "    │",
-        "    │",
-        "    │",
-        "    ▼",
-        "╭──────╮",
-        "│      │",
-        "│ Paid │",
-        "│      │",
-        "╰───┬──╯",
-        "    │",
-        "    │",
-        "    │",
-        "    │",
-        "    │",
-        "    ▼",
-        "   ◉",
-        "",
-        "[unsupported: note right of Paid]",
-        "[unsupported: Payment can be card]",
-        "[unsupported: end note]",
-      }
+      local actual_rendered = table.concat(actual, "\n")
 
-      assert.are.equal(
-        testdata.normalize_whitespace(table.concat(expected, "\n")),
-        testdata.normalize_whitespace(table.concat(actual, "\n"))
-      )
+      assert.is_nil(actual_rendered:match("%[unsupported:"))
+      assert.is_truthy(actual_rendered:match("Payment can be card"))
+      assert.is_truthy(actual_rendered:match("┄"))
+      assert.is_truthy(actual_rendered:match("┆"))
     end
   )
 end)

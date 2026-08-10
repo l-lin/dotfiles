@@ -47,6 +47,34 @@ describe("mermaid.state.parser", function()
       assert.are.same({ "parse", "done" }, actual.subgraphs[1].node_ids)
       assert.are.equal("idle", actual.edges[2].label)
       assert.are.equal("提交", actual.edges[3].label)
+      assert.are.same({}, actual.notes)
+      assert.are.same({}, actual.warnings)
+    end
+  )
+
+  it(
+    "GIVEN a multiline state note WHEN parsing THEN it records the note instead of treating it as unsupported syntax",
+    function()
+      local lines = parser.preprocess_source(table.concat({
+        "stateDiagram-v2",
+        "  [*] --> Paid",
+        "  Paid --> [*]",
+        "  note right of Paid",
+        "    Payment can be card,",
+        "    wallet, or bank transfer",
+        "  end note",
+      }, "\n"))
+      local actual, err = assert(state_parser.parse(lines))
+      local expected = {
+        {
+          position = "right",
+          state_id = "Paid",
+          text = "Payment can be card,\nwallet, or bank transfer",
+        },
+      }
+
+      assert.is_nil(err)
+      assert.are.same(expected, actual.notes)
       assert.are.same({}, actual.warnings)
     end
   )

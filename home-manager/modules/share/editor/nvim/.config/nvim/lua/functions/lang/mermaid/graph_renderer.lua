@@ -391,6 +391,84 @@ local function deduplicate_subgraph_nodes(parsed_subgraphs, ascii_subgraphs, nod
   end
 end
 
+local function pick_subgraph_anchor_node_id(parsed_subgraph, parsed_nodes, preferred_shape, reverse)
+  if reverse then
+    for index = #parsed_subgraph.node_ids, 1, -1 do
+      local node_id = parsed_subgraph.node_ids[index]
+      local parsed_node = parsed_nodes[node_id]
+      if parsed_node and parsed_node.shape == preferred_shape then
+        return node_id
+      end
+    end
+
+    for index = #parsed_subgraph.children, 1, -1 do
+      local child_node_id = pick_subgraph_anchor_node_id(parsed_subgraph.children[index], parsed_nodes, preferred_shape, reverse)
+      if child_node_id then
+        return child_node_id
+      end
+    end
+
+    for index = #parsed_subgraph.node_ids, 1, -1 do
+      local node_id = parsed_subgraph.node_ids[index]
+      if parsed_nodes[node_id] then
+        return node_id
+      end
+    end
+
+    for index = #parsed_subgraph.children, 1, -1 do
+      local child_node_id = pick_subgraph_anchor_node_id(parsed_subgraph.children[index], parsed_nodes, nil, reverse)
+      if child_node_id then
+        return child_node_id
+      end
+    end
+
+    return nil
+  end
+
+  for _, node_id in ipairs(parsed_subgraph.node_ids) do
+    local parsed_node = parsed_nodes[node_id]
+    if parsed_node and parsed_node.shape == preferred_shape then
+      return node_id
+    end
+  end
+
+  for _, child in ipairs(parsed_subgraph.children) do
+    local child_node_id = pick_subgraph_anchor_node_id(child, parsed_nodes, preferred_shape, reverse)
+    if child_node_id then
+      return child_node_id
+    end
+  end
+
+  for _, node_id in ipairs(parsed_subgraph.node_ids) do
+    if parsed_nodes[node_id] then
+      return node_id
+    end
+  end
+
+  for _, child in ipairs(parsed_subgraph.children) do
+    local child_node_id = pick_subgraph_anchor_node_id(child, parsed_nodes, nil, reverse)
+    if child_node_id then
+      return child_node_id
+    end
+  end
+
+  return nil
+end
+
+local function build_subgraph_anchor_map(parsed_subgraphs, parsed_nodes, result)
+  result = result or {}
+
+  for _, parsed_subgraph in ipairs(parsed_subgraphs) do
+    result[parsed_subgraph.id] = {
+      entry_node_id = pick_subgraph_anchor_node_id(parsed_subgraph, parsed_nodes, "state-start", false),
+      exit_node_id = pick_subgraph_anchor_node_id(parsed_subgraph, parsed_nodes, "state-end", true),
+    }
+    build_subgraph_anchor_map(parsed_subgraph.children, parsed_nodes, result)
+  end
+
+  return result
+end
+
 local function convert_graph(parsed)
   local node_map = {}
   local nodes = {}
@@ -413,10 +491,24 @@ local function convert_graph(parsed)
     end
   end
 
+  local composite_anchor_by_id = build_subgraph_anchor_map(parsed.subgraphs, parsed.nodes)
+
   local edges = {}
   for _, parsed_edge in ipairs(parsed.edges) do
-    local from = node_map[parsed_edge.source]
-    local to = node_map[parsed_edge.target]
+    local resolved_source_id = parsed_edge.source
+    local resolved_target_id = parsed_edge.target
+    local source_anchor = composite_anchor_by_id[resolved_source_id]
+    local target_anchor = composite_anchor_by_id[resolved_target_id]
+
+    if not node_map[resolved_source_id] and source_anchor and source_anchor.exit_node_id then
+      resolved_source_id = source_anchor.exit_node_id
+    end
+    if not node_map[resolved_target_id] and target_anchor and target_anchor.entry_node_id then
+      resolved_target_id = target_anchor.entry_node_id
+    end
+
+    local from = node_map[resolved_source_id]
+    local to = node_map[resolved_target_id]
     if from and to then
       edges[#edges + 1] = {
         from = from,
@@ -429,6 +521,18 @@ local function convert_graph(parsed)
         style = parsed_edge.style,
         has_arrow_start = parsed_edge.has_arrow_start,
         has_arrow_end = parsed_edge.has_arrow_end,
+      }
+    end
+  end
+
+  local notes = {}
+  for _, parsed_note in ipairs(parsed.notes or {}) do
+    local anchor_node = node_map[parsed_note.state_id]
+    if anchor_node then
+      notes[#notes + 1] = {
+        node = anchor_node,
+        position = parsed_note.position,
+        text = parsed_note.text,
       }
     end
   end
@@ -447,6 +551,7 @@ local function convert_graph(parsed)
     column_width = {},
     row_height = {},
     subgraphs = subgraphs,
+    notes = notes,
     config = {
       padding_x = 5,
       padding_y = 5,
@@ -1488,7 +1593,7 @@ local function reverse_direction(direction)
   return get_opposite(direction)
 end
 
-local function draw_text_on_line(target_canvas, drawing_line, label, is_upward_edge)
+local function draw_text_on_line(target_canvas, drawing_line, label, is_upward_edge, force_overwrite)
   if #drawing_line < 2 then
     return
   end
@@ -1509,12 +1614,13 @@ local function draw_text_on_line(target_canvas, drawing_line, label, is_upward_e
   local start_y = middle_y - math.floor((#label_lines - 1) / 2)
   for index, line in ipairs(label_lines) do
     local start_x = middle_x - math.floor(text.char_len(line) / 2)
-    canvas.draw_text(target_canvas, { x = start_x, y = start_y + index - 1 }, line, false)
+    canvas.draw_text(target_canvas, { x = start_x, y = start_y + index - 1 }, line, force_overwrite == true)
   end
 end
 
 local function draw_arrow_label(graph, edge)
-  local label_canvas = canvas.copy_canvas(graph.canvas)
+  local max_x, max_y = canvas.get_canvas_size(graph.canvas)
+  local label_canvas = canvas.mk_canvas(max_x, max_y)
   if edge.text == "" or #edge.label_line == 0 then
     return label_canvas
   end
@@ -1531,7 +1637,7 @@ local function draw_arrow_label(graph, edge)
     end
   end
 
-  draw_text_on_line(label_canvas, drawing_line, edge.text, is_upward_edge)
+  draw_text_on_line(label_canvas, drawing_line, edge.text, is_upward_edge, true)
   return label_canvas
 end
 
@@ -1982,6 +2088,123 @@ local function sort_subgraphs_by_depth(subgraphs)
   return sorted
 end
 
+local function measure_state_note(note)
+  local note_lines = text.split_lines(note.text)
+  local note_width = 4
+  for _, note_line in ipairs(note_lines) do
+    note_width = math.max(note_width, text.char_len(note_line) + 4)
+  end
+  local note_height = #note_lines + 2
+  return note_lines, note_width, note_height
+end
+
+local function draw_state_note_box(note)
+  local note_lines, note_width, note_height = measure_state_note(note)
+  local note_canvas = canvas.mk_canvas(note_width - 1, note_height - 1)
+
+  for x = 1, note_width - 2 do
+    note_canvas[x][0] = "─"
+    note_canvas[x][note_height - 1] = "─"
+  end
+  for y = 1, note_height - 2 do
+    note_canvas[0][y] = "│"
+    note_canvas[note_width - 1][y] = "│"
+  end
+  note_canvas[0][0] = "┌"
+  note_canvas[note_width - 1][0] = "┐"
+  note_canvas[0][note_height - 1] = "└"
+  note_canvas[note_width - 1][note_height - 1] = "┘"
+
+  for index, note_line in ipairs(note_lines) do
+    canvas.draw_text(note_canvas, { x = 2, y = index }, note_line, true)
+  end
+
+  return note_canvas, note_width, note_height
+end
+
+local function resolve_state_note_offset(note, note_width, note_height)
+  local node_max_x = canvas.get_canvas_size(note.node.drawing)
+  local node_width = node_max_x + 1
+  local note_x = note.node.drawing_coord.x + node_width + 4
+
+  if note.position == "left" then
+    note_x = math.max(0, note.node.drawing_coord.x - note_width - 4)
+  end
+
+  return {
+    x = note_x,
+    y = math.max(0, note.node.drawing_coord.y - note_height - 6),
+  }
+end
+
+local function offset_graph_drawing(graph, offset_x, offset_y)
+  if offset_x == 0 and offset_y == 0 then
+    return
+  end
+
+  graph.offset_x = graph.offset_x + offset_x
+  graph.offset_y = graph.offset_y + offset_y
+
+  for _, subgraph in ipairs(graph.subgraphs) do
+    subgraph.min_x = subgraph.min_x + offset_x
+    subgraph.max_x = subgraph.max_x + offset_x
+    subgraph.min_y = subgraph.min_y + offset_y
+    subgraph.max_y = subgraph.max_y + offset_y
+  end
+
+  for _, node in ipairs(graph.nodes) do
+    if node.drawing_coord then
+      node.drawing_coord.x = node.drawing_coord.x + offset_x
+      node.drawing_coord.y = node.drawing_coord.y + offset_y
+    end
+  end
+end
+
+local function ensure_state_note_margin(graph)
+  local top_padding = 0
+
+  for _, note in ipairs(graph.notes or {}) do
+    if note.node.drawing_coord then
+      local _, _, note_height = measure_state_note(note)
+      local desired_y = note.node.drawing_coord.y - note_height - 6
+      if desired_y < 0 then
+        top_padding = math.max(top_padding, -desired_y + 2)
+      end
+    end
+  end
+
+  offset_graph_drawing(graph, 0, top_padding)
+end
+
+local function draw_state_note_connector(graph, note, note_offset, note_width, note_height)
+  local max_x, max_y = canvas.get_canvas_size(graph.canvas)
+  local connector_canvas = canvas.mk_canvas(max_x, max_y)
+  local node_max_x = canvas.get_canvas_size(note.node.drawing)
+  local node_width = node_max_x + 1
+  local start_y = note_offset.y + math.floor(note_height / 2)
+  local start_x = note.position == "left" and (note_offset.x + note_width - 1) or note_offset.x
+  local target_x = note.node.drawing_coord.x + math.floor(node_width / 2)
+  local target_y = note.node.drawing_coord.y
+
+  if start_x == target_x or target_y <= start_y then
+    return connector_canvas
+  end
+
+  local step = start_x < target_x and 1 or -1
+  for x = start_x + step, target_x - step, step do
+    connector_canvas[x][start_y] = "┄"
+  end
+
+  for y = start_y + 1, target_y - 1 do
+    connector_canvas[target_x][y] = "┆"
+  end
+
+  connector_canvas[start_x][start_y] = note.position == "left" and "├" or "┤"
+  connector_canvas[target_x][start_y] = start_x < target_x and "┐" or "┌"
+  connector_canvas[target_x][target_y] = "┴"
+  return connector_canvas
+end
+
 local function draw_graph(graph)
   for _, subgraph in ipairs(sort_subgraphs_by_depth(graph.subgraphs)) do
     local subgraph_canvas = draw_subgraph_box(subgraph)
@@ -2065,6 +2288,16 @@ local function draw_graph(graph)
       graph.canvas = canvas.merge_canvases(graph.canvas, offset, { label_canvas })
     end
   end
+
+  for _, note in ipairs(graph.notes or {}) do
+    if note.node.drawing and note.node.drawing_coord then
+      local note_canvas, note_width, note_height = draw_state_note_box(note)
+      local note_offset = resolve_state_note_offset(note, note_width, note_height)
+      graph.canvas = canvas.merge_canvases(graph.canvas, note_offset, { note_canvas })
+      local connector_canvas = draw_state_note_connector(graph, note, note_offset, note_width, note_height)
+      graph.canvas = canvas.merge_canvases(graph.canvas, { x = 0, y = 0 }, { connector_canvas })
+    end
+  end
 end
 
 local function trim_empty_margin_lines(lines)
@@ -2092,6 +2325,7 @@ local function render_graph(parsed)
   end
 
   create_mapping(graph)
+  ensure_state_note_margin(graph)
   draw_graph(graph)
   if graph.parsed_direction == "BT" then
     canvas.flip_canvas_vertically(graph.canvas)
