@@ -29,7 +29,7 @@ stateDiagram-v2
                                                            ┆         │                                                           │
         ╭────────╮                                   ╭─────┴─────╮   │         ╭─────────╮                   ╭─────────╮         │                ╭───────────╮
         │        │                                   │           │   │         │         │                   │         │         │                │           │
- ●─────►│ Placed │        ├────payment received─────►│    Paid   ├───┼─►●─────►│ Packing ├─handed to courier►│ Shipped ├─────►◉─courier confirms─►│ Delivered ├─────►◉
+ ●─────►│ Placed ├─────────────payment received─────►│    Paid   ├───┼─►●─────►│ Packing ├─handed to courier►│ Shipped ├─────►◉─courier confirms─►│ Delivered ├─────►◉
         │        │                                   │           │   │         │         │                   │         │         │                │           │
         ╰────┬───╯                                   ╰───────────╯   │         ╰─────────╯                   ╰─────────╯         │                ╰───────────╯
              │                                                       │                                                           │

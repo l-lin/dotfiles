@@ -1736,10 +1736,10 @@ local function draw_path(graph, edge)
 
   for index = 2, #path do
     local next_coord = path[index]
-    local previous_drawing = index == 2 and is_state_pseudostate(edge.from.shape)
+    local previous_drawing = index == 2
         and get_node_attachment_point(graph, edge.from, edge.start_dir)
       or grid_to_drawing_coord(graph, previous_coord)
-    local next_drawing = index == #path and is_state_pseudostate(edge.to.shape)
+    local next_drawing = index == #path
         and get_node_attachment_point(graph, edge.to, edge.end_dir)
       or grid_to_drawing_coord(graph, next_coord)
 
