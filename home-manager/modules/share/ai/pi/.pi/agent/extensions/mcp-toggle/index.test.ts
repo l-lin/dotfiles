@@ -53,11 +53,14 @@ function when_readingSavedSettingsFile(tempHome: string): unknown {
   return JSON.parse(fs.readFileSync(settingsPath, "utf8"));
 }
 
-function given_mcpAdapterTool(name: string): MockToolInfo {
+function given_mcpAdapterTool(
+  name: string,
+  source = "npm:pi-mcp-adapter",
+): MockToolInfo {
   return {
     name,
     sourceInfo: {
-      source: "npm:pi-mcp-adapter",
+      source,
     },
   };
 }
@@ -229,6 +232,29 @@ test("mcp-toggle GIVEN enabled adapter tools WHEN /mcp-toggle disables them THEN
     },
     setActiveToolsCalls: [["read"]],
   };
+
+  assert.deepEqual(actual, expected);
+});
+
+test("mcp-toggle GIVEN adapter tools from a versioned npm package source WHEN the session starts disabled THEN it removes the proxy tool from the active prompt", async (t) => {
+  given_savedSettingsFile(given_tempHome(t), {
+    extensionSettings: {
+      [MCP_ADAPTER_SETTINGS_KEY]: { enabled: false },
+    },
+  });
+  const { pi, setActiveToolsCalls, when_startingSession } = given_mockPi({
+    activeTools: ["read", "mcp"],
+    allTools: [
+      given_localTool("read"),
+      given_mcpAdapterTool("mcp", "npm:pi-mcp-adapter@2.11.0"),
+    ],
+  });
+
+  mcpToggleExtension(pi as never);
+  await when_startingSession(given_commandContext().ctx as never);
+
+  const actual = setActiveToolsCalls;
+  const expected = [["read"]];
 
   assert.deepEqual(actual, expected);
 });

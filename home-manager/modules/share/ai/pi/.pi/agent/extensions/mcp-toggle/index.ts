@@ -25,8 +25,14 @@ export function getMcpAdapterToolNames(
   allTools: Array<Pick<ToolInfo, "name" | "sourceInfo">>,
 ): string[] {
   return allTools
-    .filter((tool) => tool.sourceInfo.source === MCP_ADAPTER_SOURCE)
+    .filter((tool) => isMcpAdapterSource(tool.sourceInfo.source))
     .map((tool) => tool.name);
+}
+
+function isMcpAdapterSource(source: string): boolean {
+  return (
+    source === MCP_ADAPTER_SOURCE || source.startsWith(`${MCP_ADAPTER_SOURCE}@`)
+  );
 }
 
 export function applyMcpAdapterEnabledState(
