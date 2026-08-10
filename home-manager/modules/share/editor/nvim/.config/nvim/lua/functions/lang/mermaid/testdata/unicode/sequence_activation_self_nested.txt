@@ -1,0 +1,33 @@
+sequenceDiagram
+    participant App
+
+    activate App
+    App->>+App: Validate cart
+    App->>+App: Price items
+    App-->>-App: Prices ready
+    App-->>-App: Cart valid
+    deactivate App
+---
+ ┌─────┐
+ │ App │
+ └──┬──┘
+   ┌─┐
+   │ │ ├───┐
+   │ ┌─┐   │ Validate cart
+   │ │ ◀───┘
+   │ │ │
+   │ │ │ ├───┐
+   │ │ ┌─┐   │ Price items
+   │ │ │ ◀───┘
+   │ │ │ │
+   │ │ │ │ ├╌╌╌┐
+   │ │ │ │     │ Prices ready
+   │ │ │ │ ◀╌╌╌┘
+   │ │ └─┘
+   │ │ │ ├╌╌╌┐
+   │ │ │     │ Cart valid
+   │ │ │ ◀╌╌╌┘
+   └─└─┘
+ ┌──┴──┐
+ │ App │
+ └─────┘

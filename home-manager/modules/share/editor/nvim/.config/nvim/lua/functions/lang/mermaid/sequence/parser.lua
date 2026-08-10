@@ -79,6 +79,7 @@ local function parse(source)
     messages = {},
     blocks = {},
     notes = {},
+    events = {},
     warnings = {},
   }
 
@@ -144,19 +145,50 @@ local function parse(source)
           position = note_position,
           after_index = #diagram.messages - 1,
         }
+        diagram.events[#diagram.events + 1] = {
+          type = "note",
+          note_index = #diagram.notes,
+        }
         goto continue
       end
+    end
+
+    local activation_actor_id = line:match("^activate%s+([^%s]+)%s*$")
+    if activation_actor_id then
+      ensure_actor(diagram, activation_actor_id)
+      diagram.events[#diagram.events + 1] = {
+        type = "activation",
+        action = "activate",
+        actor_id = activation_actor_id,
+      }
+      goto continue
+    end
+
+    local deactivation_actor_id = line:match("^deactivate%s+([^%s]+)%s*$")
+    if deactivation_actor_id then
+      ensure_actor(diagram, deactivation_actor_id)
+      diagram.events[#diagram.events + 1] = {
+        type = "activation",
+        action = "deactivate",
+        actor_id = deactivation_actor_id,
+      }
+      goto continue
     end
 
     local block_keyword, block_label = line:match("^(%S+)%s*(.*)$")
     if block_keyword then
       local normalized_keyword = block_keyword == "break" and "break_" or block_keyword
       if BLOCK_TYPES[normalized_keyword] then
-        block_stack[#block_stack + 1] = {
+        local block = {
           type = block_keyword,
           label = text.normalize_br_tags(text.trim(block_label or "")),
           start_index = #diagram.messages,
           dividers = {},
+        }
+        block_stack[#block_stack + 1] = block
+        diagram.events[#diagram.events + 1] = {
+          type = "block_start",
+          block = block,
         }
         goto continue
       end
@@ -169,17 +201,21 @@ local function parse(source)
         index = #diagram.messages,
         label = text.normalize_br_tags(text.trim(divider_label or "")),
       }
+      diagram.events[#diagram.events + 1] = {
+        type = "block_divider",
+        block = current_block,
+        divider = current_block.dividers[#current_block.dividers],
+      }
       goto continue
     end
 
     if line == "end" and #block_stack > 0 then
       local completed = table.remove(block_stack)
-      diagram.blocks[#diagram.blocks + 1] = {
-        type = completed.type,
-        label = completed.label,
-        start_index = completed.start_index,
-        end_index = math.max(#diagram.messages - 1, completed.start_index),
-        dividers = completed.dividers,
+      completed.end_index = math.max(#diagram.messages - 1, completed.start_index)
+      diagram.blocks[#diagram.blocks + 1] = completed
+      diagram.events[#diagram.events + 1] = {
+        type = "block_end",
+        block = completed,
       }
       goto continue
     end
@@ -216,10 +252,16 @@ local function parse(source)
         }
         if activation_mark == "+" then
           message.activate = true
+          message.activate_actor = to_actor_id
         elseif activation_mark == "-" then
           message.deactivate = true
+          message.deactivate_actor = from_actor_id
         end
         diagram.messages[#diagram.messages + 1] = message
+        diagram.events[#diagram.events + 1] = {
+          type = "message",
+          message_index = #diagram.messages,
+        }
         goto continue
       end
     end

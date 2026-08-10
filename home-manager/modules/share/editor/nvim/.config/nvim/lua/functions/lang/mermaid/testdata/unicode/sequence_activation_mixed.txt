@@ -1,0 +1,32 @@
+sequenceDiagram
+    participant Client
+    participant API
+    participant Worker
+
+    Client->>+API: Start request
+    activate API
+    API->>+Worker: Dispatch job
+    Worker-->>-Worker: Job complete
+    API-->>Client: Response ready
+    deactivate API
+---
+┌────────┐            ┌─────┐         ┌────────┐
+│ Client │            │ API │         │ Worker │
+└────┬───┘            └──┬──┘         └────┬───┘
+     │                   │                 │
+     │  Start request    │                 │
+     │─────────────────▶ │                 │
+     │                  ┌─┐                │
+     │                  │ │ Dispatch job   │
+     │                  │ │ ─────────────▶ │
+     │                  │ │               ┌─┐
+     │                  │ │               │ │ ├╌╌╌┐
+     │                  │ │               │ │     │ Job complete
+     │                  │ │               │ │ ◀╌╌╌┘
+     │                  │ │               └─┘
+     │ Response ready   │ │                │
+     ◀╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌ │ │                │
+     │                  └─┘                │
+┌────┴───┐            ┌──┴──┐         ┌────┴───┐
+│ Client │            │ API │         │ Worker │
+└────────┘            └─────┘         └────────┘

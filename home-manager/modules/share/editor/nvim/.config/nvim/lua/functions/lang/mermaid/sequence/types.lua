@@ -4,5 +4,5 @@
 ---@field messages table[] List of messages in the diagram.
 ---@field blocks table[] List of blocks in the diagram.
 ---@field notes table[] List of notes in the diagram.
+---@field events table[] Ordered render events for messages, notes, blocks, and activations.
 ---@field warnings string[] List of warnings encountered during parsing.
-
