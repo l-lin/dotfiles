@@ -53,7 +53,7 @@ When rules conflict:
 - ALWAYS use `rg` for file content search (not grep).
 - ALWAYS use `gh` for GitHub operations.
 
-`.sandbox/` is LOCAL-ONLY and intentionally gitignored. Use it freely for `journals/`, `napkin.md`, task notes, and temporary scripts.
+`.sandbox/` is LOCAL-ONLY and intentionally gitignored. Use it freely for `journals/`, task notes, and temporary scripts.
 
 ## Development Principles
 
