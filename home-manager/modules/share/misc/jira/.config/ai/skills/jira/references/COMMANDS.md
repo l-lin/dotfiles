@@ -1,55 +1,57 @@
-# Jira CLI command patterns
+# Atlassian CLI Jira command patterns
 
-Verified against local `jira --help` and `jira issue {list,view,edit,comment add,move} --help` on 2026-07-28.
+Verified against local `acli --help`, `acli jira --help`, and `acli jira workitem {view,search,edit,comment create,comment list,transition} --help` on 2026-08-10.
 
 ## Inspect one issue
 
 ```bash
-jira issue view ISSUE-123 --comments 5
-jira issue view ISSUE-123 --raw
-jira open ISSUE-123
+acli jira workitem view ISSUE-123
+acli jira workitem view ISSUE-123 --fields key,summary,status,assignee,description
+acli jira workitem view ISSUE-123 --fields summary,comment --json
+acli jira workitem view ISSUE-123 --web
+acli jira workitem comment list --key ISSUE-123 --limit 5
 ```
 
 ## Find issues
 
 ```bash
-jira issue list --plain --columns key,summary,status,assignee
-jira issue list "feature request" --plain
-jira issue list -q 'assignee = currentUser() AND statusCategory != Done ORDER BY updated DESC' --plain
+acli jira workitem search --jql 'assignee = currentUser() AND statusCategory != Done ORDER BY updated DESC'
+acli jira workitem search --jql 'project = TEAM AND text ~ "feature request"' --fields key,summary,status,assignee
+acli jira workitem search --filter 10001 --limit 25 --json
+acli jira workitem search --jql 'project = TEAM' --count
 ```
 
 ## Edit fields
 
 ```bash
-jira issue edit ISSUE-123 -s"New summary" --no-input
-jira issue edit ISSUE-123 -b"New description" --no-input
-echo "Description from stdin" | jira issue edit ISSUE-123 -s"New summary" --no-input
+acli jira workitem edit --key ISSUE-123 --summary "New summary"
+acli jira workitem edit --key ISSUE-123 --description "New description" --yes
+acli jira workitem edit --key ISSUE-123 --description-file /path/to/description.md --yes
+acli jira workitem edit --key ISSUE-123 --assignee @me --labels bug,urgent --yes
 ```
 
 ## Add comments
 
 ```bash
-jira issue comment add ISSUE-123 "Single-line comment"
-jira issue comment add ISSUE-123 $'Line 1\n\nLine 2'
-jira issue comment add ISSUE-123 --template /path/to/comment.md
-echo "Comment from stdin" | jira issue comment add ISSUE-123
+acli jira workitem comment create --key ISSUE-123 --body "Single-line comment"
+acli jira workitem comment create --key ISSUE-123 --body $'Line 1\n\nLine 2'
+acli jira workitem comment create --key ISSUE-123 --body-file /path/to/comment.md
+acli jira workitem comment create --key ISSUE-123 --editor
 ```
 
-## Move an issue
+## Transition an issue
 
 ```bash
-jira issue move ISSUE-123 "Target State"
-jira issue move ISSUE-123 "Target State" --comment "Reason"
-jira issue move ISSUE-123 "Target State" --comment "Reason" -a "Jane Doe"
+acli jira workitem transition --key ISSUE-123 --status "In Progress"
+acli jira workitem transition --key ISSUE-123 --status "Done" --yes
 ```
 
-Transition names are workflow-specific. Use the exact name Jira exposes for that issue.
+Status names are workflow-specific. Use the exact status Jira exposes for that work item.
 
 ## Troubleshoot
 
 ```bash
-jira me
-jira serverinfo
-jira issue view ISSUE-123 --debug
-jira issue view ISSUE-123 -p PROJECT
+acli jira auth status
+acli jira auth login --web
+acli jira workitem view ISSUE-123 --json
 ```

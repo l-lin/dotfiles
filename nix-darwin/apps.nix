@@ -44,6 +44,8 @@
     };
 
     taps = [
+      # For acli: https://developer.atlassian.com/cloud/acli/guides/install-macos/
+      "atlassian/homebrew-acli"
       # For dox: https://github.com/bgreenwell/doxx
       #"bgreenwell/doxx"
       # For aerospace: https://github.com/nikitabobko/AeroSpace
@@ -55,6 +57,8 @@
     # `brew install`
     # To get the list of installed apps with brew: `brew list`
     brews = [
+      # Atlassian CLI: https://developer.atlassian.com/cloud/acli/guides/introduction/
+      "acli"
       # Automate deployment, configuration, and upgrading: https://www.ansible.com/
       "ansible"
       # Get stuff done with container-native workflows for Kubernetes: https://argoproj.io/
