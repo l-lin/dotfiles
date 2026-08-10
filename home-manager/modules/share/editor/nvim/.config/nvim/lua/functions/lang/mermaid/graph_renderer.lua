@@ -402,7 +402,8 @@ local function pick_subgraph_anchor_node_id(parsed_subgraph, parsed_nodes, prefe
     end
 
     for index = #parsed_subgraph.children, 1, -1 do
-      local child_node_id = pick_subgraph_anchor_node_id(parsed_subgraph.children[index], parsed_nodes, preferred_shape, reverse)
+      local child_node_id =
+        pick_subgraph_anchor_node_id(parsed_subgraph.children[index], parsed_nodes, preferred_shape, reverse)
       if child_node_id then
         return child_node_id
       end
@@ -654,6 +655,26 @@ local function has_incoming_edge_from_outside_subgraph(graph, node)
   return true
 end
 
+local function has_back_edge_to_outside_subgraph(graph, node)
+  local node_subgraph = get_node_subgraph(graph, node)
+  if not node_subgraph or not node.grid_coord then
+    return false
+  end
+
+  for _, edge in ipairs(graph.edges) do
+    if edge.from == node and edge.to.grid_coord and get_node_subgraph(graph, edge.to) ~= node_subgraph then
+      if graph.config.graph_direction == "LR" and edge.to.grid_coord.x <= node.grid_coord.x then
+        return true
+      end
+      if graph.config.graph_direction == "TD" and edge.to.grid_coord.y <= node.grid_coord.y then
+        return true
+      end
+    end
+  end
+
+  return false
+end
+
 local function set_column_width(graph, node)
   local dimensions = get_shape_dimensions(node.shape, node.display_label, graph.config.box_border_padding)
   local grid_coord = node.grid_coord
@@ -675,6 +696,11 @@ local function set_column_width(graph, node)
       padding = padding + 4
     end
     graph.row_height[grid_coord.y - 1] = math.max(graph.row_height[grid_coord.y - 1] or 0, padding)
+  end
+
+  if has_back_edge_to_outside_subgraph(graph, node) then
+    local path_row = grid_coord.y + 3
+    graph.row_height[path_row] = math.max(graph.row_height[path_row] or 0, graph.config.padding_y + 4)
   end
 end
 
@@ -942,8 +968,10 @@ end
 local function determine_path(graph, edge)
   local source_subgraph = get_node_subgraph(graph, edge.from)
   local target_subgraph = get_node_subgraph(graph, edge.to)
-  local effective_direction = source_subgraph and source_subgraph == target_subgraph and source_subgraph.direction or graph.config.graph_direction
-  local preferred_dir, preferred_opposite, alternative_dir, alternative_opposite = determine_start_and_end_dir(edge, effective_direction)
+  local effective_direction = source_subgraph and source_subgraph == target_subgraph and source_subgraph.direction
+    or graph.config.graph_direction
+  local preferred_dir, preferred_opposite, alternative_dir, alternative_opposite =
+    determine_start_and_end_dir(edge, effective_direction)
 
   local preferred_from = grid_coord_direction(edge.from.grid_coord, preferred_dir)
   local preferred_to = grid_coord_direction(edge.to.grid_coord, preferred_opposite)
@@ -1009,7 +1037,20 @@ local function determine_label_line(graph, edge)
       line = line,
       width = calculate_line_width(graph, line),
       index = index,
+      is_horizontal = line[1].y == line[2].y,
     }
+  end
+
+  local function sort_candidate_segments(candidates)
+    table.sort(candidates, function(left, right)
+      if left.is_horizontal ~= right.is_horizontal then
+        return left.is_horizontal
+      end
+      if left.width ~= right.width then
+        return left.width > right.width
+      end
+      return left.index > right.index
+    end)
   end
 
   local suitable = {}
@@ -1019,9 +1060,7 @@ local function determine_label_line(graph, edge)
     end
   end
 
-  table.sort(suitable, function(left, right)
-    return left.index > right.index
-  end)
+  sort_candidate_segments(suitable)
 
   local chosen = suitable[1]
   if not chosen then
@@ -1031,14 +1070,18 @@ local function determine_label_line(graph, edge)
         fallback[#fallback + 1] = segment
       end
     end
-    table.sort(fallback, function(left, right)
-      return left.index > right.index
-    end)
+    sort_candidate_segments(fallback)
     chosen = fallback[1]
   end
   if not chosen then
     table.sort(segments, function(left, right)
-      return left.width > right.width
+      if left.is_horizontal ~= right.is_horizontal then
+        return left.is_horizontal
+      end
+      if left.width ~= right.width then
+        return left.width > right.width
+      end
+      return left.index > right.index
     end)
     chosen = segments[1]
   end
@@ -1178,16 +1221,14 @@ local function route_bundled_edges(graph, bundle)
     bundle.shared_node_dir = direction == "TD" and Down or Right
 
     local target_coord = bundle.shared_node.grid_coord
-    local target_entry = direction == "TD"
-      and { x = target_coord.x + 1, y = target_coord.y }
+    local target_entry = direction == "TD" and { x = target_coord.x + 1, y = target_coord.y }
       or { x = target_coord.x, y = target_coord.y + 1 }
     local shared_path = get_path(graph.grid, junction, target_entry)
     bundle.shared_path = shared_path and merge_path(shared_path) or { junction, target_entry }
 
     for _, edge in ipairs(bundle.edges) do
       local source_coord = edge.from.grid_coord
-      local source_exit = direction == "TD"
-        and { x = source_coord.x + 1, y = source_coord.y + 2 }
+      local source_exit = direction == "TD" and { x = source_coord.x + 1, y = source_coord.y + 2 }
         or { x = source_coord.x + 2, y = source_coord.y + 1 }
       local path_to_junction = get_path(graph.grid, source_exit, junction)
       edge.path_to_junction = path_to_junction and merge_path(path_to_junction) or { source_exit, junction }
@@ -1206,16 +1247,14 @@ local function route_bundled_edges(graph, bundle)
     bundle.shared_node_dir = direction == "TD" and Up or Left
 
     local source_coord = bundle.shared_node.grid_coord
-    local source_exit = direction == "TD"
-      and { x = source_coord.x + 1, y = source_coord.y + 2 }
+    local source_exit = direction == "TD" and { x = source_coord.x + 1, y = source_coord.y + 2 }
       or { x = source_coord.x + 2, y = source_coord.y + 1 }
     local shared_path = get_path(graph.grid, source_exit, junction)
     bundle.shared_path = shared_path and merge_path(shared_path) or { source_exit, junction }
 
     for _, edge in ipairs(bundle.edges) do
       local target_coord = edge.to.grid_coord
-      local target_entry = direction == "TD"
-        and { x = target_coord.x + 1, y = target_coord.y }
+      local target_entry = direction == "TD" and { x = target_coord.x + 1, y = target_coord.y }
         or { x = target_coord.x, y = target_coord.y + 1 }
       local path_to_junction = get_path(graph.grid, junction, target_entry)
       edge.path_to_junction = path_to_junction and merge_path(path_to_junction) or { junction, target_entry }
@@ -1296,10 +1335,29 @@ local function calculate_subgraph_bounding_box(graph, subgraph)
     end
   end
 
-  subgraph.min_x = min_x - 2
-  subgraph.min_y = min_y - 4
-  subgraph.max_x = max_x + 2
-  subgraph.max_y = max_y + 2
+  min_x = min_x - 2
+  min_y = min_y - 4
+  max_x = max_x + 2
+  max_y = max_y + 2
+
+  local minimum_width = 4
+  for _, line in ipairs(text.split_lines(subgraph.name or "")) do
+    minimum_width = math.max(minimum_width, text.char_len(line) + 4)
+  end
+
+  local width = max_x - min_x
+  if width < minimum_width then
+    local extra_width = minimum_width - width
+    local left_extra = math.floor(extra_width / 2)
+    local right_extra = extra_width - left_extra
+    min_x = min_x - left_extra
+    max_x = max_x + right_extra
+  end
+
+  subgraph.min_x = min_x
+  subgraph.min_y = min_y
+  subgraph.max_x = max_x
+  subgraph.max_y = max_y
 end
 
 local function ensure_subgraph_spacing(graph)
@@ -1317,17 +1375,25 @@ local function ensure_subgraph_spacing(graph)
 
       if left.min_x < right.max_x and left.max_x > right.min_x then
         if left.max_y >= right.min_y - 1 and left.min_y < right.min_y then
-          right.min_y = left.max_y + 2
+          local offset = (left.max_y + 2) - right.min_y
+          right.min_y = right.min_y + offset
+          right.max_y = right.max_y + offset
         elseif right.max_y >= left.min_y - 1 and right.min_y < left.min_y then
-          left.min_y = right.max_y + 2
+          local offset = (right.max_y + 2) - left.min_y
+          left.min_y = left.min_y + offset
+          left.max_y = left.max_y + offset
         end
       end
 
       if left.min_y < right.max_y and left.max_y > right.min_y then
         if left.max_x >= right.min_x - 1 and left.min_x < right.min_x then
-          right.min_x = left.max_x + 2
+          local offset = (left.max_x + 2) - right.min_x
+          right.min_x = right.min_x + offset
+          right.max_x = right.max_x + offset
         elseif right.max_x >= left.min_x - 1 and right.min_x < left.min_x then
-          left.min_x = right.max_x + 2
+          local offset = (right.max_x + 2) - left.min_x
+          left.min_x = left.min_x + offset
+          left.max_x = left.max_x + offset
         end
       end
     end
@@ -1377,6 +1443,35 @@ local function offset_drawing_for_subgraphs(graph)
   end
 end
 
+local function ensure_canvas_fits_graph(graph)
+  local max_x, max_y = canvas.get_canvas_size(graph.canvas)
+
+  local function include_point(x, y)
+    max_x = math.max(max_x, x)
+    max_y = math.max(max_y, y)
+  end
+
+  for _, node in ipairs(graph.nodes) do
+    if node.drawing_coord and node.drawing then
+      local node_width, node_height = canvas.get_canvas_size(node.drawing)
+      include_point(node.drawing_coord.x + node_width, node.drawing_coord.y + node_height)
+    end
+  end
+
+  for _, subgraph in ipairs(graph.subgraphs) do
+    include_point(subgraph.max_x, subgraph.max_y)
+  end
+
+  for _, edge in ipairs(graph.edges) do
+    for _, coord in ipairs(edge.path) do
+      local drawing_coord = grid_to_drawing_coord(graph, coord)
+      include_point(drawing_coord.x, drawing_coord.y)
+    end
+  end
+
+  canvas.increase_size(graph.canvas, max_x, max_y)
+end
+
 local function create_mapping(graph)
   local highest_position_per_level = {}
   for index = 0, 100 do
@@ -1414,6 +1509,12 @@ local function create_mapping(graph)
     end
   end
 
+  if #root_nodes == 0 then
+    for _, node in ipairs(initial_roots) do
+      root_nodes[#root_nodes + 1] = node
+    end
+  end
+
   local has_external_roots = false
   local has_subgraph_roots_with_edges = false
   for _, node in ipairs(root_nodes) do
@@ -1442,8 +1543,7 @@ local function create_mapping(graph)
   end
 
   for _, node in ipairs(external_roots) do
-    local requested = graph.config.graph_direction == "LR"
-      and { x = 0, y = highest_position_per_level[0] }
+    local requested = graph.config.graph_direction == "LR" and { x = 0, y = highest_position_per_level[0] }
       or { x = highest_position_per_level[0], y = 0 }
     reserve_spot_in_grid(graph, node, requested)
     highest_position_per_level[0] = highest_position_per_level[0] + 4
@@ -1451,8 +1551,7 @@ local function create_mapping(graph)
 
   if should_separate and #subgraph_roots > 0 then
     for _, node in ipairs(subgraph_roots) do
-      local requested = graph.config.graph_direction == "LR"
-        and { x = 4, y = highest_position_per_level[4] }
+      local requested = graph.config.graph_direction == "LR" and { x = 4, y = highest_position_per_level[4] }
         or { x = highest_position_per_level[4], y = 4 }
       reserve_spot_in_grid(graph, node, requested)
       highest_position_per_level[4] = highest_position_per_level[4] + 4
@@ -1469,7 +1568,8 @@ local function create_mapping(graph)
           if not child.grid_coord then
             local parent_subgraph = get_node_subgraph(graph, node)
             local child_subgraph = get_node_subgraph(graph, child)
-            local edge_direction = parent_subgraph and parent_subgraph == child_subgraph and parent_subgraph.direction or graph.config.graph_direction
+            local edge_direction = parent_subgraph and parent_subgraph == child_subgraph and parent_subgraph.direction
+              or graph.config.graph_direction
             local child_level = edge_direction == "LR" and (grid_coord.x + 4) or (grid_coord.y + 4)
             local highest_position
             if edge_direction ~= graph.config.graph_direction then
@@ -1478,8 +1578,7 @@ local function create_mapping(graph)
               highest_position = highest_position_per_level[child_level] or 0
             end
 
-            local requested = edge_direction == "LR"
-              and { x = child_level, y = highest_position }
+            local requested = edge_direction == "LR" and { x = child_level, y = highest_position }
               or { x = highest_position, y = child_level }
             reserve_spot_in_grid(graph, child, requested, edge_direction)
             if edge_direction == graph.config.graph_direction then
@@ -1521,6 +1620,7 @@ local function create_mapping(graph)
   canvas.set_canvas_size_to_grid(graph.canvas, graph.column_width, graph.row_height)
   calculate_subgraph_bounding_boxes(graph)
   offset_drawing_for_subgraphs(graph)
+  ensure_canvas_fits_graph(graph)
 end
 
 local function draw_line(target_canvas, from, to, offset_from, offset_to, style)
@@ -1706,17 +1806,25 @@ local function draw_corners(graph, path)
     local next_direction = determine_direction(coord, path[index + 1])
 
     local corner = "+"
-    if (direction_eq(previous_direction, Right) and direction_eq(next_direction, Down))
-      or (direction_eq(previous_direction, Up) and direction_eq(next_direction, Left)) then
+    if
+      (direction_eq(previous_direction, Right) and direction_eq(next_direction, Down))
+      or (direction_eq(previous_direction, Up) and direction_eq(next_direction, Left))
+    then
       corner = "┐"
-    elseif (direction_eq(previous_direction, Right) and direction_eq(next_direction, Up))
-      or (direction_eq(previous_direction, Down) and direction_eq(next_direction, Left)) then
+    elseif
+      (direction_eq(previous_direction, Right) and direction_eq(next_direction, Up))
+      or (direction_eq(previous_direction, Down) and direction_eq(next_direction, Left))
+    then
       corner = "┘"
-    elseif (direction_eq(previous_direction, Left) and direction_eq(next_direction, Down))
-      or (direction_eq(previous_direction, Up) and direction_eq(next_direction, Right)) then
+    elseif
+      (direction_eq(previous_direction, Left) and direction_eq(next_direction, Down))
+      or (direction_eq(previous_direction, Up) and direction_eq(next_direction, Right))
+    then
       corner = "┌"
-    elseif (direction_eq(previous_direction, Left) and direction_eq(next_direction, Up))
-      or (direction_eq(previous_direction, Down) and direction_eq(next_direction, Right)) then
+    elseif
+      (direction_eq(previous_direction, Left) and direction_eq(next_direction, Up))
+      or (direction_eq(previous_direction, Down) and direction_eq(next_direction, Right))
+    then
       corner = "└"
     end
 
@@ -1736,11 +1844,9 @@ local function draw_path(graph, edge)
 
   for index = 2, #path do
     local next_coord = path[index]
-    local previous_drawing = index == 2
-        and get_node_attachment_point(graph, edge.from, edge.start_dir)
+    local previous_drawing = index == 2 and get_node_attachment_point(graph, edge.from, edge.start_dir)
       or grid_to_drawing_coord(graph, previous_coord)
-    local next_drawing = index == #path
-        and get_node_attachment_point(graph, edge.to, edge.end_dir)
+    local next_drawing = index == #path and get_node_attachment_point(graph, edge.to, edge.end_dir)
       or grid_to_drawing_coord(graph, next_coord)
 
     if not drawing_coord_equals(previous_drawing, next_drawing) then
@@ -1769,7 +1875,7 @@ local function draw_arrow(graph, edge)
   local box_start_canvas = draw_box_start(graph, edge.path, lines_drawn[1] or {}, edge.from.shape)
   local arrow_end_canvas = edge.has_arrow_end
       and draw_arrow_head(graph, lines_drawn[#lines_drawn] or {}, directions[#directions] or edge.end_dir)
-      or canvas.copy_canvas(graph.canvas)
+    or canvas.copy_canvas(graph.canvas)
 
   local arrow_start_canvas = canvas.copy_canvas(graph.canvas)
   if edge.has_arrow_start and #lines_drawn > 0 then
@@ -1832,17 +1938,25 @@ local function draw_bundled_edge_segment(graph, edge, bundle)
     local next_direction = determine_direction(coord, edge.path_to_junction[index + 1])
 
     local corner = "+"
-    if (direction_eq(previous_direction, Right) and direction_eq(next_direction, Down))
-      or (direction_eq(previous_direction, Up) and direction_eq(next_direction, Left)) then
+    if
+      (direction_eq(previous_direction, Right) and direction_eq(next_direction, Down))
+      or (direction_eq(previous_direction, Up) and direction_eq(next_direction, Left))
+    then
       corner = "┐"
-    elseif (direction_eq(previous_direction, Right) and direction_eq(next_direction, Up))
-      or (direction_eq(previous_direction, Down) and direction_eq(next_direction, Left)) then
+    elseif
+      (direction_eq(previous_direction, Right) and direction_eq(next_direction, Up))
+      or (direction_eq(previous_direction, Down) and direction_eq(next_direction, Left))
+    then
       corner = "┘"
-    elseif (direction_eq(previous_direction, Left) and direction_eq(next_direction, Down))
-      or (direction_eq(previous_direction, Up) and direction_eq(next_direction, Right)) then
+    elseif
+      (direction_eq(previous_direction, Left) and direction_eq(next_direction, Down))
+      or (direction_eq(previous_direction, Up) and direction_eq(next_direction, Right))
+    then
       corner = "┌"
-    elseif (direction_eq(previous_direction, Left) and direction_eq(next_direction, Up))
-      or (direction_eq(previous_direction, Down) and direction_eq(next_direction, Right)) then
+    elseif
+      (direction_eq(previous_direction, Left) and direction_eq(next_direction, Up))
+      or (direction_eq(previous_direction, Down) and direction_eq(next_direction, Right))
+    then
       corner = "└"
     end
 
@@ -1897,17 +2011,25 @@ local function draw_bundle_shared_path(graph, bundle)
     local previous_direction = determine_direction(bundle.shared_path[index - 1], coord)
     local next_direction = determine_direction(coord, bundle.shared_path[index + 1])
     local corner = "+"
-    if (direction_eq(previous_direction, Right) and direction_eq(next_direction, Down))
-      or (direction_eq(previous_direction, Up) and direction_eq(next_direction, Left)) then
+    if
+      (direction_eq(previous_direction, Right) and direction_eq(next_direction, Down))
+      or (direction_eq(previous_direction, Up) and direction_eq(next_direction, Left))
+    then
       corner = "┐"
-    elseif (direction_eq(previous_direction, Right) and direction_eq(next_direction, Up))
-      or (direction_eq(previous_direction, Down) and direction_eq(next_direction, Left)) then
+    elseif
+      (direction_eq(previous_direction, Right) and direction_eq(next_direction, Up))
+      or (direction_eq(previous_direction, Down) and direction_eq(next_direction, Left))
+    then
       corner = "┘"
-    elseif (direction_eq(previous_direction, Left) and direction_eq(next_direction, Down))
-      or (direction_eq(previous_direction, Up) and direction_eq(next_direction, Right)) then
+    elseif
+      (direction_eq(previous_direction, Left) and direction_eq(next_direction, Down))
+      or (direction_eq(previous_direction, Up) and direction_eq(next_direction, Right))
+    then
       corner = "┌"
-    elseif (direction_eq(previous_direction, Left) and direction_eq(next_direction, Up))
-      or (direction_eq(previous_direction, Down) and direction_eq(next_direction, Right)) then
+    elseif
+      (direction_eq(previous_direction, Left) and direction_eq(next_direction, Up))
+      or (direction_eq(previous_direction, Down) and direction_eq(next_direction, Right))
+    then
       corner = "└"
     end
     corners_canvas[drawing_coord.x][drawing_coord.y] = corner
@@ -1922,7 +2044,8 @@ local function draw_bundle_arrowhead(graph, bundle)
     return arrow_canvas
   end
 
-  local last_direction = determine_direction(bundle.shared_path[#bundle.shared_path - 1], bundle.shared_path[#bundle.shared_path])
+  local last_direction =
+    determine_direction(bundle.shared_path[#bundle.shared_path - 1], bundle.shared_path[#bundle.shared_path])
   local position = get_node_attachment_point(graph, bundle.shared_node, Up)
   position.y = position.y - 1
 
@@ -1941,7 +2064,10 @@ local function draw_bundled_edge_arrowhead(graph, edge)
     return arrow_canvas
   end
 
-  local last_direction = determine_direction(edge.path_to_junction[#edge.path_to_junction - 1], edge.path_to_junction[#edge.path_to_junction])
+  local last_direction = determine_direction(
+    edge.path_to_junction[#edge.path_to_junction - 1],
+    edge.path_to_junction[#edge.path_to_junction]
+  )
   local position = get_node_attachment_point(graph, edge.to, Up)
   position.y = position.y - 1
 
@@ -1982,7 +2108,8 @@ local function draw_junction_character(graph, bundle)
     if edge.path_to_junction and #edge.path_to_junction >= 2 then
       local junction_index = bundle.type == "fan-in" and #edge.path_to_junction or 1
       local adjacent_index = bundle.type == "fan-in" and (#edge.path_to_junction - 1) or 2
-      local arrival_direction = determine_direction(edge.path_to_junction[adjacent_index], edge.path_to_junction[junction_index])
+      local arrival_direction =
+        determine_direction(edge.path_to_junction[adjacent_index], edge.path_to_junction[junction_index])
       if direction_eq(arrival_direction, Down) then
         has_up = true
       elseif direction_eq(arrival_direction, Up) then
@@ -2229,7 +2356,8 @@ local function draw_graph(graph)
 
   for _, edge in ipairs(graph.edges) do
     if edge.bundle and edge.path_to_junction then
-      local path_canvas, box_start_canvas, _, _, corners_canvas, label_canvas = draw_bundled_edge_segment(graph, edge, edge.bundle)
+      local path_canvas, box_start_canvas, _, _, corners_canvas, label_canvas =
+        draw_bundled_edge_segment(graph, edge, edge.bundle)
       line_canvases[#line_canvases + 1] = path_canvas
       corner_canvases[#corner_canvases + 1] = corners_canvas
       box_start_canvases[#box_start_canvases + 1] = box_start_canvas
@@ -2250,7 +2378,8 @@ local function draw_graph(graph)
         arrow_end_canvases[#arrow_end_canvases + 1] = draw_bundled_edge_arrowhead(graph, edge)
       end
     else
-      local path_canvas, box_start_canvas, arrow_end_canvas, arrow_start_canvas, corners_canvas, label_canvas = draw_arrow(graph, edge)
+      local path_canvas, box_start_canvas, arrow_end_canvas, arrow_start_canvas, corners_canvas, label_canvas =
+        draw_arrow(graph, edge)
       line_canvases[#line_canvases + 1] = path_canvas
       corner_canvases[#corner_canvases + 1] = corners_canvas
       arrow_end_canvases[#arrow_end_canvases + 1] = arrow_end_canvas

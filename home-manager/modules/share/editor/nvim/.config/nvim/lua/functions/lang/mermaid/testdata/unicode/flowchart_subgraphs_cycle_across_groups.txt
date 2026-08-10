@@ -1,0 +1,31 @@
+flowchart LR
+    subgraph dev[Development]
+        Code[Write code]
+    end
+
+    subgraph ci[Continuous Integration]
+        Build[Build]
+    end
+
+    subgraph cd[Deployment]
+        Stage[Deploy]
+    end
+
+    Code --> Build
+    Build --> Stage
+    Stage --> Code
+---
+┌────────────────┐ ┌─────────────────────────┐ ┌─────────────┐
+│  Development   │ │ Continuous Integration  │ │ Deployment  │
+│                │ │                         │ │             │
+│                │ │                         │ │             │
+│ ┌────────────┐ │ │ ┌───────┐     ┌────────┐│ │             │
+│ │            │ │ │ │       │     │        ││ │             │
+│ │ Write code ├─┼─┼►│ Build ├────►│ Deploy ││ │             │
+│ │            │ │ │ │       │     │        ││ │             │
+│ └────────────┘ │ │ └───────┘     └────┬───┘│ │             │
+│        ▲       │ │                    │    │ │             │
+└────────┼───────┘ └────────────────────┼────┘ └─────────────┘
+         │                              │
+         │                              │
+         └──────────────────────────────┘

@@ -30,6 +30,10 @@ describe("mermaid.flowchart.render", function()
     "subgraph_complex_nested",
     "flowchart_multiline_node",
     "flowchart_multiline_edge",
+    "flowchart_subgraphs_development_ci_cd",
+    "flowchart_subgraphs_development_ci_cd_tb",
+    "flowchart_subgraphs_cycle_across_groups",
+    "flowchart_subgraphs_decision_back_edge",
   }
 
   for _, fixture_name in ipairs(upstream_fixtures) do
@@ -37,6 +41,19 @@ describe("mermaid.flowchart.render", function()
       then_rendered_output_matches_fixture(fixture_name)
     end)
   end
+
+  it("GIVEN a cross-subgraph decision loop fixture WHEN rendering THEN it keeps subgraph titles and branch labels", function()
+    local fixture = testdata.load_golden("flowchart_subgraphs_development_ci_cd")
+
+    local actual_lines = assert(flowchart_renderer.render(fixture.mermaid))
+    local actual = table.concat(actual_lines, "\n")
+
+    assert.is_truthy(actual:find("Development", 1, true))
+    assert.is_truthy(actual:find("Continuous Integration", 1, true))
+    assert.is_truthy(actual:find("Deployment", 1, true))
+    assert.is_truthy(actual:find("Yes", 1, true))
+    assert.is_truthy(actual:find("No", 1, true))
+  end)
 
   it("GIVEN unsupported flowchart syntax WHEN rendering THEN it keeps the partial diagram and appends one raw unsupported line per miss", function()
     local source = table.concat({

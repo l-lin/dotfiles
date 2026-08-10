@@ -1,0 +1,42 @@
+flowchart LR
+    subgraph ci[Continuous Integration]
+        Test[Run tests] --> Gate{Tests pass?}
+    end
+
+    subgraph cd[Deployment]
+        Stage[Deploy to staging]
+    end
+
+    subgraph dev[Development]
+        Fix[Fix failing tests]
+    end
+
+    Gate -->|Yes| Stage
+    Gate -->|No| Fix
+    Fix --> Test
+---
+┌───────────────────────────────────┐    ┌───────────────────────┐
+│      Continuous Integration       │    │      Deployment       │
+│                                   │    │                       │
+│                                   │    │                       │
+│ ┌───────────┐     ◇─────────────◇ │    │ ┌───────────────────┐ │
+│ │           │     │             │ │    │ │                   │ │
+│ │ Run tests ├────►│ Tests pass? ├─┼─Yes┼►│ Deploy to staging │ │
+│ │           │     │             │ │    │ │                   │ │
+│ └───────────┘     ◇──────┬──────◇ │    │ └───────────────────┘ │
+│       ▲                  │        │    │                       │
+└───────┼──────────────────┼────────┘    └───────────────────────┘
+        │                  │
+        │                  │
+        │                  │
+        │                  │             ┌───────────────────────┐
+        │                  │             │      Development      │
+        │                  │             │                       │
+        │                  │             │                       │
+        └──────────────────┼────────┐    │ ┌───────────────────┐ │
+                           │        │    │ │                   │ │
+                           └──────No┴────┼►┤ Fix failing tests │ │
+                                         │ │                   │ │
+                                         │ └───────────────────┘ │
+                                         │                       │
+                                         └───────────────────────┘
