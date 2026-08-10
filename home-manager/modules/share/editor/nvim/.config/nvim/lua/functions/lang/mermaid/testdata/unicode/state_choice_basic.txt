@@ -1,0 +1,26 @@
+stateDiagram
+  state battery_check <<choice>>
+  [*] --> battery_check
+  battery_check --> Low : low
+  battery_check --> High : high
+---
+             ●
+             │
+             │
+             │
+             │
+             │
+             │
+             ▼
+   ┌─────────◇──────────┐
+  low                 high
+   │                    │
+   │                    │
+   │                    │
+   │                    │
+   ▼                    ▼
+╭─────╮             ╭──────╮
+│     │             │      │
+│ Low │             │ High │
+│     │             │      │
+╰─────╯             ╰──────╯

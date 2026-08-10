@@ -6,7 +6,7 @@ describe("mermaid.state.parser", function()
     local actual, err = state_parser.parse({})
 
     assert.is_nil(actual)
-    assert.are.equal("Invalid state diagram: missing 'stateDiagram-v2' header", err)
+    assert.are.equal("Invalid state diagram: missing 'stateDiagram' or 'stateDiagram-v2' header", err)
   end)
 
   it(
@@ -75,6 +75,75 @@ describe("mermaid.state.parser", function()
 
       assert.is_nil(err)
       assert.are.same(expected, actual.notes)
+      assert.are.same({}, actual.warnings)
+    end
+  )
+
+  it(
+    "GIVEN stateDiagram pseudostates WHEN parsing THEN it records choice fork and join nodes without unsupported warnings",
+    function()
+      local lines = parser.preprocess_source(table.concat({
+        "stateDiagram",
+        "  state route <<choice>>",
+        "  state split <<fork>>",
+        "  state merge <<join>>",
+        "  [*] --> route",
+        "  route --> split",
+        "  split --> merge",
+        "  merge --> [*]",
+      }, "\n"))
+      local actual, err = assert(state_parser.parse(lines))
+
+      assert.is_nil(err)
+      assert.are.equal("state-choice", actual.nodes.route.shape)
+      assert.are.equal("", actual.nodes.route.label)
+      assert.are.equal("state-fork", actual.nodes.split.shape)
+      assert.are.equal("", actual.nodes.split.label)
+      assert.are.equal("state-join", actual.nodes.merge.shape)
+      assert.are.equal("", actual.nodes.merge.label)
+      assert.are.same({}, actual.warnings)
+    end
+  )
+
+  it(
+    "GIVEN a composite state with concurrent regions WHEN parsing THEN it records explicit region children in source order",
+    function()
+      local lines = parser.preprocess_source(table.concat({
+        "stateDiagram",
+        "  state Active {",
+        "    direction LR",
+        "    [*] --> Playing",
+        "    Playing --> Paused : pause",
+        "    Paused --> Playing : play",
+        "    --",
+        "    [*] --> ScreenOn",
+        "    ScreenOn --> ScreenDimmed : idle 30s",
+        "    ScreenDimmed --> ScreenOn : touch",
+        "  }",
+      }, "\n"))
+      local actual, err = assert(state_parser.parse(lines))
+      local expected_regions = {
+        {
+          kind = "region",
+          node_ids = { "_start", "Playing", "Paused" },
+          direction = nil,
+        },
+        {
+          kind = "region",
+          node_ids = { "_start2", "ScreenOn", "ScreenDimmed" },
+          direction = nil,
+        },
+      }
+
+      assert.is_nil(err)
+      assert.are.equal("LR", actual.subgraphs[1].direction)
+      assert.are.same({}, actual.subgraphs[1].node_ids)
+      assert.are.same(expected_regions[1].kind, actual.subgraphs[1].children[1].kind)
+      assert.are.same(expected_regions[1].node_ids, actual.subgraphs[1].children[1].node_ids)
+      assert.are.same(expected_regions[1].direction, actual.subgraphs[1].children[1].direction)
+      assert.are.same(expected_regions[2].kind, actual.subgraphs[1].children[2].kind)
+      assert.are.same(expected_regions[2].node_ids, actual.subgraphs[1].children[2].node_ids)
+      assert.are.same(expected_regions[2].direction, actual.subgraphs[1].children[2].direction)
       assert.are.same({}, actual.warnings)
     end
   )

@@ -8,6 +8,11 @@ describe("mermaid.state.renderer", function()
     "state_composite_lr",
     "state_composite_entry_exit",
     "state_composite_lr_note",
+    "state_choice_basic",
+    "state_choice_if_positive",
+    "state_concurrency_regions",
+    "state_fork_join_basic",
+    "state_choice_parallel_battery",
   }
 
   for _, fixture_name in ipairs(upstream_fixtures) do
@@ -81,6 +86,61 @@ describe("mermaid.state.renderer", function()
       assert.is_truthy(actual_rendered:match("Payment can be card"))
       assert.is_truthy(actual_rendered:match("┄"))
       assert.is_truthy(actual_rendered:match("┆"))
+    end
+  )
+
+  it(
+    "GIVEN choice concurrency fork and join syntax WHEN rendering THEN it stops appending unsupported warnings for those constructs",
+    function()
+      local source = table.concat({
+        "stateDiagram",
+        "  state route <<choice>>",
+        "  state split <<fork>>",
+        "  state merge <<join>>",
+        "  [*] --> route",
+        "  route --> split : yes",
+        "  route --> merge : no",
+        "  split --> merge",
+        "  state Active {",
+        "    [*] --> Left",
+        "    --",
+        "    [*] --> Right",
+        "  }",
+      }, "\n")
+
+      local actual = assert(state_renderer.render(source))
+      local actual_rendered = table.concat(actual, "\n")
+
+      assert.is_nil(actual_rendered:match("%[unsupported:"))
+      assert.is_truthy(actual_rendered:match("◇") or actual_rendered:match("◆"))
+      assert.is_truthy(actual_rendered:match("━") or actual_rendered:match("┃"))
+      assert.is_truthy(actual_rendered:match("┄") or actual_rendered:match("┆") or actual_rendered:match("┌"))
+    end
+  )
+
+  it(
+    "GIVEN an edge into and out of a composite state WHEN rendering THEN the external arrows attach to the composite border instead of directly to inner pseudostates",
+    function()
+      local source = table.concat({
+        "stateDiagram-v2",
+        "  direction LR",
+        "  [*] --> Paid",
+        "  Paid --> Fulfilment",
+        "  state Fulfilment {",
+        "    [*] --> Packing",
+        "    Packing --> Shipped",
+        "    Shipped --> [*]",
+        "  }",
+        "  Fulfilment --> Delivered",
+        "  Delivered --> [*]",
+      }, "\n")
+
+      local actual = assert(state_renderer.render(source))
+      local actual_rendered = table.concat(actual, "\n")
+
+      assert.is_nil(actual_rendered:match("►●"))
+      assert.is_nil(actual_rendered:match("◉──┼"))
+      assert.is_truthy(actual_rendered:match("Fulfilment"))
     end
   )
 end)

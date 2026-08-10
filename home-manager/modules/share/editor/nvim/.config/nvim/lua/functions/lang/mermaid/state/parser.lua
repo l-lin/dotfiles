@@ -2,14 +2,79 @@ local parser = require("functions.lang.mermaid.parser")
 local text = require("functions.lang.mermaid.text")
 local graph_builder = require("functions.lang.mermaid.state.graph_builder")
 
+local function is_state_header(line)
+  return line:match("^stateDiagram%s*$") or line:match("^stateDiagram%-v2%s*$")
+end
+
+local function normalize_direction(raw_direction)
+  if not raw_direction then
+    return nil
+  end
+
+  local normalized_direction = raw_direction:upper()
+  if ({ TD = true, TB = true, LR = true, BT = true, RL = true })[normalized_direction] then
+    return normalized_direction
+  end
+
+  return nil
+end
+
+local function begin_composite_state(subgraph_stack, composite_id, composite_label)
+  subgraph_stack[#subgraph_stack + 1] = {
+    id = composite_id,
+    label = text.normalize_br_tags(composite_label),
+    kind = "composite",
+    node_ids = {},
+    node_id_set = {},
+    children = {},
+    regions = {},
+    active_region = nil,
+  }
+end
+
+local function begin_region(composite_state, node_ids, node_id_set, children)
+  local region_index = #composite_state.regions + 1
+  local region = {
+    id = string.format("%s__region%d", composite_state.id, region_index),
+    label = "",
+    kind = "region",
+    node_ids = node_ids or {},
+    node_id_set = node_id_set or {},
+    children = children or {},
+  }
+
+  composite_state.regions[region_index] = region
+  composite_state.children[#composite_state.children + 1] = region
+  composite_state.active_region = region
+  return region
+end
+
+local function ensure_concurrent_regions(composite_state)
+  if #composite_state.regions == 0 then
+    local first_region_node_ids = composite_state.node_ids
+    local first_region_node_id_set = composite_state.node_id_set
+    local first_region_children = composite_state.children
+
+    composite_state.node_ids = {}
+    composite_state.node_id_set = {}
+    composite_state.children = {}
+
+    begin_region(composite_state, first_region_node_ids, first_region_node_id_set, first_region_children)
+    begin_region(composite_state)
+    return
+  end
+
+  begin_region(composite_state)
+end
+
 ---Parses a list of lines representing a Mermaid state diagram and constructs
 ---a graph representation.
 ---@param lines string[] a list of lines from the Mermaid state diagram
 ---@return dotfiles.mermaid.state.Graph|nil a graph representation containing nodes, edges, subgraphs, and other properties
 ---@return string|nil an error message if the input is invalid, or nil if parsing was successful
 local function parse(lines)
-  if #lines < 1 or not lines[1]:match("^stateDiagram%-v2%s*$") then
-    return nil, "Invalid state diagram: missing 'stateDiagram-v2' header"
+  if #lines < 1 or not is_state_header(lines[1]) then
+    return nil, "Invalid state diagram: missing 'stateDiagram' or 'stateDiagram-v2' header"
   end
 
   ---@type dotfiles.mermaid.state.Graph
@@ -32,6 +97,11 @@ local function parse(lines)
   local pending_note = nil
   local start_count = 0
   local end_count = 0
+  local pseudostate_shapes = {
+    choice = "state-choice",
+    fork = "state-fork",
+    join = "state-join",
+  }
 
   for index = 2, #lines do
     local line = lines[index]
@@ -63,18 +133,14 @@ local function parse(lines)
       goto continue
     end
 
-    local inline_direction = line:match("^direction%s+(%S+)%s*$")
-
+    local inline_direction = normalize_direction(line:match("^direction%s+(%S+)%s*$"))
     if inline_direction then
-      local normalized_inline_direction = inline_direction:upper()
-      if ({ TD = true, TB = true, LR = true, BT = true, RL = true })[normalized_inline_direction] then
-        if #subgraph_stack > 0 then
-          subgraph_stack[#subgraph_stack].direction = normalized_inline_direction
-        else
-          graph.direction = normalized_inline_direction
-        end
-        goto continue
+      if #subgraph_stack > 0 then
+        subgraph_stack[#subgraph_stack].direction = inline_direction
+      else
+        graph.direction = inline_direction
       end
+      goto continue
     end
 
     local link_style_rest = line:match("^linkStyle%s+(.+)$")
@@ -112,13 +178,7 @@ local function parse(lines)
     end
 
     if composite_id then
-      subgraph_stack[#subgraph_stack + 1] = {
-        id = composite_id,
-        label = text.normalize_br_tags(composite_label),
-        node_ids = {},
-        node_id_set = {},
-        children = {},
-      }
+      begin_composite_state(subgraph_stack, composite_id, composite_label)
       composite_state_ids[composite_id] = true
       graph_builder.remove_node_by_id(graph, composite_id)
       goto continue
@@ -130,12 +190,35 @@ local function parse(lines)
         parser.add_warning(graph, line)
       else
         if #subgraph_stack > 0 then
-          subgraph_stack[#subgraph_stack].children[#subgraph_stack[#subgraph_stack].children + 1] = completed
+          graph_builder.add_child_to_current_subgraph(subgraph_stack, completed)
         else
           graph.subgraphs[#graph.subgraphs + 1] = completed
         end
       end
       goto continue
+    end
+
+    if line == "--" then
+      local current_subgraph = subgraph_stack[#subgraph_stack]
+      if current_subgraph and current_subgraph.kind == "composite" then
+        ensure_concurrent_regions(current_subgraph)
+      else
+        parser.add_warning(graph, line)
+      end
+      goto continue
+    end
+
+    local pseudostate_id, pseudostate_kind = line:match("^state%s+([^%s]+)%s+<<([%a]+)>>%s*$")
+    if pseudostate_id and pseudostate_kind then
+      local pseudostate_shape = pseudostate_shapes[pseudostate_kind:lower()]
+      if pseudostate_shape then
+        graph_builder.add_node(graph, subgraph_stack, {
+          id = pseudostate_id,
+          label = "",
+          shape = pseudostate_shape,
+        })
+        goto continue
+      end
     end
 
     local state_alias_label, state_alias_id = line:match('^state%s+"([^"]+)"%s+as%s+([^%s]+)%s*$')

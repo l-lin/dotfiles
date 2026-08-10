@@ -98,12 +98,30 @@ local function get_opposite(direction)
   return Middle
 end
 
+local function is_state_circle_pseudostate(shape)
+  return shape == "state-start" or shape == "state-end" or shape == "state-choice"
+end
+
+local function is_state_bar(shape)
+  return shape == "state-fork" or shape == "state-join"
+end
+
 local function is_state_pseudostate(shape)
-  return shape == "state-start" or shape == "state-end"
+  return is_state_circle_pseudostate(shape) or is_state_bar(shape)
+end
+
+local function is_branching_pseudostate(shape)
+  return shape == "state-choice" or shape == "state-fork"
 end
 
 local function get_state_pseudostate_symbol(shape)
-  return shape == "state-end" and "◉" or "●"
+  if shape == "state-end" then
+    return "◉"
+  end
+  if shape == "state-choice" then
+    return "◇"
+  end
+  return "●"
 end
 
 local function get_corners(shape)
@@ -169,7 +187,29 @@ local function get_shape_dimensions(shape, label, padding)
     }
   end
 
-  if is_state_pseudostate(shape) then
+  return get_box_dimensions(label, padding)
+end
+
+local function get_bar_dimensions(layout_direction)
+  if layout_direction == "LR" then
+    return {
+      width = 3,
+      height = 7,
+      grid_columns = { 1, 1, 1 },
+      grid_rows = { 2, 3, 2 },
+    }
+  end
+
+  return {
+    width = 7,
+    height = 3,
+    grid_columns = { 2, 3, 2 },
+    grid_rows = { 1, 1, 1 },
+  }
+end
+
+local function get_node_dimensions(node, graph)
+  if is_state_circle_pseudostate(node.shape) then
     return {
       width = 3,
       height = 3,
@@ -178,7 +218,11 @@ local function get_shape_dimensions(shape, label, padding)
     }
   end
 
-  return get_box_dimensions(label, padding)
+  if is_state_bar(node.shape) then
+    return get_bar_dimensions(node.layout_direction or graph.config.graph_direction)
+  end
+
+  return get_shape_dimensions(node.shape, node.display_label, graph.config.box_border_padding)
 end
 
 local function get_box_attachment_point(direction, dimensions, base_coord)
@@ -214,12 +258,37 @@ local function get_box_attachment_point(direction, dimensions, base_coord)
   return { x = center_x, y = center_y }
 end
 
-local function get_shape_attachment_point(shape, direction, dimensions, base_coord)
-  if is_state_pseudostate(shape) then
+local function get_shape_attachment_point(node, direction, dimensions, base_coord)
+  if is_state_circle_pseudostate(node.shape) then
     local width = dimensions.width
     local height = dimensions.height
     local center_x = base_coord.x + math.floor(width / 2)
     local center_y = base_coord.y + math.floor(height / 2)
+    return { x = center_x, y = center_y }
+  end
+
+  if is_state_bar(node.shape) then
+    local width = dimensions.width
+    local height = dimensions.height
+    local center_x = base_coord.x + math.floor(width / 2)
+    local center_y = base_coord.y + math.floor(height / 2)
+
+    if node.layout_direction == "LR" then
+      if direction_eq(direction, Up) or direction_eq(direction, UpperLeft) or direction_eq(direction, UpperRight) then
+        return { x = center_x, y = base_coord.y }
+      end
+      if direction_eq(direction, Down) or direction_eq(direction, LowerLeft) or direction_eq(direction, LowerRight) then
+        return { x = center_x, y = base_coord.y + height - 1 }
+      end
+      return { x = center_x, y = center_y }
+    end
+
+    if direction_eq(direction, Left) or direction_eq(direction, UpperLeft) or direction_eq(direction, LowerLeft) then
+      return { x = base_coord.x, y = center_y }
+    end
+    if direction_eq(direction, Right) or direction_eq(direction, UpperRight) or direction_eq(direction, LowerRight) then
+      return { x = base_coord.x + width - 1, y = center_y }
+    end
     return { x = center_x, y = center_y }
   end
 
@@ -246,8 +315,23 @@ local function draw_node(node, graph)
   local max_x = width
   local max_y = height
 
-  if is_state_pseudostate(node.shape) then
+  if is_state_circle_pseudostate(node.shape) then
     box[math.floor(max_x / 2)][math.floor(max_y / 2)] = get_state_pseudostate_symbol(node.shape)
+    return box
+  end
+
+  if is_state_bar(node.shape) then
+    if node.layout_direction == "LR" then
+      local center_x = math.floor(max_x / 2)
+      for y = 0, max_y do
+        box[center_x][y] = "┃"
+      end
+    else
+      local center_y = math.floor(max_y / 2)
+      for x = 0, max_x do
+        box[x][center_y] = "━"
+      end
+    end
     return box
   end
 
@@ -284,7 +368,9 @@ local function convert_subgraph(parsed_subgraph, parent, node_map, all_subgraphs
   end
 
   local subgraph = {
+    id = parsed_subgraph.id,
     name = parsed_subgraph.label,
+    kind = parsed_subgraph.kind,
     nodes = {},
     parent = parent,
     children = {},
@@ -522,6 +608,8 @@ local function convert_graph(parsed)
         style = parsed_edge.style,
         has_arrow_start = parsed_edge.has_arrow_start,
         has_arrow_end = parsed_edge.has_arrow_end,
+        source_composite_id = source_anchor and parsed_edge.source or nil,
+        target_composite_id = target_anchor and parsed_edge.target or nil,
       }
     end
   end
@@ -544,6 +632,13 @@ local function convert_graph(parsed)
   end
   deduplicate_subgraph_nodes(parsed.subgraphs, subgraphs, node_map)
 
+  local subgraph_by_id = {}
+  for _, subgraph in ipairs(subgraphs) do
+    if subgraph.id then
+      subgraph_by_id[subgraph.id] = subgraph
+    end
+  end
+
   return {
     nodes = nodes,
     edges = edges,
@@ -552,6 +647,7 @@ local function convert_graph(parsed)
     column_width = {},
     row_height = {},
     subgraphs = subgraphs,
+    subgraph_by_id = subgraph_by_id,
     notes = notes,
     config = {
       padding_x = 5,
@@ -583,14 +679,18 @@ end
 
 local function get_effective_direction(graph, node)
   local subgraph = get_node_subgraph(graph, node)
-  if subgraph and subgraph.direction then
-    return subgraph.direction
+  while subgraph do
+    if subgraph.direction then
+      return subgraph.direction
+    end
+    subgraph = subgraph.parent
   end
   return graph.config.graph_direction
 end
 
 local function reserve_spot_in_grid(graph, node, requested, effective_direction)
   local direction = effective_direction or get_effective_direction(graph, node)
+  node.layout_direction = direction
 
   if graph.grid[grid_key(requested)] then
     if direction == "LR" then
@@ -676,7 +776,7 @@ local function has_back_edge_to_outside_subgraph(graph, node)
 end
 
 local function set_column_width(graph, node)
-  local dimensions = get_shape_dimensions(node.shape, node.display_label, graph.config.box_border_padding)
+  local dimensions = get_node_dimensions(node, graph)
   local grid_coord = node.grid_coord
 
   for offset = 0, 2 do
@@ -965,13 +1065,43 @@ local function determine_start_and_end_dir(edge, graph_direction)
   return preferred_dir, preferred_opposite, alternative_dir, alternative_opposite
 end
 
+local function determine_branching_pseudostate_dirs(edge, effective_direction)
+  if not is_branching_pseudostate(edge.from.shape) then
+    return nil
+  end
+
+  if effective_direction == "LR" then
+    if edge.to.grid_coord.y < edge.from.grid_coord.y then
+      return Up, Left, Right, Left
+    end
+    if edge.to.grid_coord.y > edge.from.grid_coord.y then
+      return Down, Left, Right, Left
+    end
+    return Right, Left, Right, Left
+  end
+
+  if edge.to.grid_coord.x < edge.from.grid_coord.x then
+    return Left, Up, Down, Up
+  end
+  if edge.to.grid_coord.x > edge.from.grid_coord.x then
+    return Right, Up, Down, Up
+  end
+  return Down, Up, Down, Up
+end
+
 local function determine_path(graph, edge)
   local source_subgraph = get_node_subgraph(graph, edge.from)
   local target_subgraph = get_node_subgraph(graph, edge.to)
-  local effective_direction = source_subgraph and source_subgraph == target_subgraph and source_subgraph.direction
+  local effective_direction = source_subgraph
+      and source_subgraph == target_subgraph
+      and get_effective_direction(graph, edge.from)
     or graph.config.graph_direction
   local preferred_dir, preferred_opposite, alternative_dir, alternative_opposite =
-    determine_start_and_end_dir(edge, effective_direction)
+    determine_branching_pseudostate_dirs(edge, effective_direction)
+  if not preferred_dir then
+    preferred_dir, preferred_opposite, alternative_dir, alternative_opposite =
+      determine_start_and_end_dir(edge, effective_direction)
+  end
 
   local preferred_from = grid_coord_direction(edge.from.grid_coord, preferred_dir)
   local preferred_to = grid_coord_direction(edge.to.grid_coord, preferred_opposite)
@@ -1027,6 +1157,12 @@ end
 
 local function determine_label_line(graph, edge)
   if edge.text == "" then
+    return
+  end
+
+  if is_branching_pseudostate(edge.from.shape) then
+    edge.branch_label = true
+    edge.label_line = {}
     return
   end
 
@@ -1115,6 +1251,9 @@ local function analyze_edge_bundles(graph)
 
     for _, edge in ipairs(edges) do
       if edge.style ~= first_style or edge.text ~= "" or edge.from == edge.to then
+        return false
+      end
+      if is_state_pseudostate(edge.from.shape) or is_state_pseudostate(edge.to.shape) then
         return false
       end
       local from_subgraph = get_node_subgraph(graph, edge.from)
@@ -1335,10 +1474,14 @@ local function calculate_subgraph_bounding_box(graph, subgraph)
     end
   end
 
-  min_x = min_x - 2
-  min_y = min_y - 4
-  max_x = max_x + 2
-  max_y = max_y + 2
+  local horizontal_padding = subgraph.kind == "region" and 1 or 2
+  local top_padding = subgraph.kind == "region" and 2 or 4
+  local bottom_padding = subgraph.kind == "region" and 1 or 2
+
+  min_x = min_x - horizontal_padding
+  min_y = min_y - top_padding
+  max_x = max_x + horizontal_padding
+  max_y = max_y + bottom_padding
 
   local minimum_width = 4
   for _, line in ipairs(text.split_lines(subgraph.name or "")) do
@@ -1443,6 +1586,112 @@ local function offset_drawing_for_subgraphs(graph)
   end
 end
 
+local function point_inside_subgraph(subgraph, point)
+  return point.x >= subgraph.min_x
+    and point.x <= subgraph.max_x
+    and point.y >= subgraph.min_y
+    and point.y <= subgraph.max_y
+end
+
+local function get_subgraph_attachment_point(subgraph, direction)
+  return get_box_attachment_point(direction, {
+    width = subgraph.max_x - subgraph.min_x,
+    height = subgraph.max_y - subgraph.min_y,
+  }, {
+    x = subgraph.min_x,
+    y = subgraph.min_y,
+  })
+end
+
+local function prepare_subgraph_edge_attachments(graph)
+  for _, edge in ipairs(graph.edges) do
+    local draw_path = {}
+    for index, coord in ipairs(edge.path) do
+      draw_path[index] = coord
+    end
+
+    local first_index = 1
+    local last_index = #draw_path
+    local source_subgraph = edge.source_composite_id and graph.subgraph_by_id[edge.source_composite_id] or nil
+    local target_subgraph = edge.target_composite_id and graph.subgraph_by_id[edge.target_composite_id] or nil
+
+    if source_subgraph then
+      edge.start_attachment_override = get_subgraph_attachment_point(source_subgraph, edge.start_dir)
+      while
+        first_index <= last_index
+        and point_inside_subgraph(source_subgraph, grid_to_drawing_coord(graph, draw_path[first_index]))
+      do
+        first_index = first_index + 1
+      end
+    else
+      edge.start_attachment_override = nil
+    end
+
+    if target_subgraph then
+      edge.end_attachment_override = get_subgraph_attachment_point(target_subgraph, edge.end_dir)
+      while
+        last_index >= first_index
+        and point_inside_subgraph(target_subgraph, grid_to_drawing_coord(graph, draw_path[last_index]))
+      do
+        last_index = last_index - 1
+      end
+    else
+      edge.end_attachment_override = nil
+    end
+
+    if first_index > last_index or (last_index - first_index + 1) < 2 then
+      edge.draw_path = edge.path
+    else
+      edge.draw_path = {}
+      for index = first_index, last_index do
+        edge.draw_path[#edge.draw_path + 1] = draw_path[index]
+      end
+    end
+  end
+end
+
+local function get_branch_label_origin(graph, edge)
+  local path = edge.draw_path or edge.path
+  local label_width = text.char_len(edge.text)
+
+  if (edge.start_dir == Left or edge.start_dir == Right) and #path >= 3 then
+    local branch_turn = grid_to_drawing_coord(graph, path[2])
+    return {
+      x = math.max(0, branch_turn.x - math.floor(label_width / 2)),
+      y = branch_turn.y + 1,
+    }
+  end
+
+  if (edge.start_dir == Up or edge.start_dir == Down) and #path >= 3 then
+    local branch_turn = grid_to_drawing_coord(graph, path[2])
+    return {
+      x = branch_turn.x + 2,
+      y = math.max(0, branch_turn.y - 1),
+    }
+  end
+
+  local anchor = edge.start_attachment_override
+  if not anchor then
+    local grid_coord = edge.from.grid_coord
+    local dimensions = {
+      width = (graph.column_width[grid_coord.x] or 0) + (graph.column_width[grid_coord.x + 1] or 0) + 1,
+      height = (graph.row_height[grid_coord.y] or 0) + (graph.row_height[grid_coord.y + 1] or 0) + 1,
+    }
+    anchor = get_shape_attachment_point(edge.from, edge.start_dir, dimensions, edge.from.drawing_coord)
+  end
+
+  if edge.start_dir == Left then
+    return { x = math.max(0, anchor.x - label_width - 2), y = anchor.y + 1 }
+  end
+  if edge.start_dir == Right then
+    return { x = anchor.x + 2, y = anchor.y + 1 }
+  end
+  if edge.start_dir == Up then
+    return { x = anchor.x + 2, y = math.max(0, anchor.y - 1) }
+  end
+  return { x = anchor.x + 2, y = anchor.y + 1 }
+end
+
 local function ensure_canvas_fits_graph(graph)
   local max_x, max_y = canvas.get_canvas_size(graph.canvas)
 
@@ -1463,9 +1712,19 @@ local function ensure_canvas_fits_graph(graph)
   end
 
   for _, edge in ipairs(graph.edges) do
-    for _, coord in ipairs(edge.path) do
+    for _, coord in ipairs(edge.draw_path or edge.path) do
       local drawing_coord = grid_to_drawing_coord(graph, coord)
       include_point(drawing_coord.x, drawing_coord.y)
+    end
+    if edge.start_attachment_override then
+      include_point(edge.start_attachment_override.x, edge.start_attachment_override.y)
+    end
+    if edge.end_attachment_override then
+      include_point(edge.end_attachment_override.x, edge.end_attachment_override.y)
+    end
+    if edge.branch_label and edge.text ~= "" then
+      local label_origin = get_branch_label_origin(graph, edge)
+      include_point(label_origin.x + text.char_len(edge.text), label_origin.y)
     end
   end
 
@@ -1478,15 +1737,54 @@ local function create_mapping(graph)
     highest_position_per_level[index] = 0
   end
 
-  local nodes_found = {}
-  local initial_roots = {}
+  local uses_state_regions_or_pseudostates = false
+  local has_branching_pseudostates = false
   for _, node in ipairs(graph.nodes) do
-    if not nodes_found[node.name] then
-      initial_roots[#initial_roots + 1] = node
+    if node.shape == "state-choice" or node.shape == "state-fork" or node.shape == "state-join" then
+      uses_state_regions_or_pseudostates = true
+      if is_branching_pseudostate(node.shape) then
+        has_branching_pseudostates = true
+      end
+      break
     end
-    nodes_found[node.name] = true
-    for _, child in ipairs(get_children(graph, node)) do
-      nodes_found[child.name] = true
+  end
+  if not uses_state_regions_or_pseudostates then
+    for _, subgraph in ipairs(graph.subgraphs) do
+      if subgraph.kind == "region" then
+        uses_state_regions_or_pseudostates = true
+        break
+      end
+    end
+  end
+
+  local initial_roots = {}
+  if uses_state_regions_or_pseudostates then
+    local incoming_edges = {}
+    for _, edge in ipairs(graph.edges) do
+      incoming_edges[edge.to] = (incoming_edges[edge.to] or 0) + 1
+    end
+
+    for _, node in ipairs(graph.nodes) do
+      if not incoming_edges[node] then
+        initial_roots[#initial_roots + 1] = node
+      end
+    end
+  else
+    local nodes_found = {}
+    for _, node in ipairs(graph.nodes) do
+      if not nodes_found[node.name] then
+        initial_roots[#initial_roots + 1] = node
+      end
+      nodes_found[node.name] = true
+      for _, child in ipairs(get_children(graph, node)) do
+        nodes_found[child.name] = true
+      end
+    end
+  end
+
+  if #initial_roots == 0 then
+    for _, node in ipairs(graph.nodes) do
+      initial_roots[#initial_roots + 1] = node
     end
   end
 
@@ -1542,18 +1840,22 @@ local function create_mapping(graph)
     external_roots = root_nodes
   end
 
+  local root_lane_offset = has_branching_pseudostates and 4 or 0
+
   for _, node in ipairs(external_roots) do
-    local requested = graph.config.graph_direction == "LR" and { x = 0, y = highest_position_per_level[0] }
-      or { x = highest_position_per_level[0], y = 0 }
-    reserve_spot_in_grid(graph, node, requested)
+    local root_direction = get_effective_direction(graph, node)
+    local requested = root_direction == "LR" and { x = 0, y = highest_position_per_level[0] + root_lane_offset }
+      or { x = highest_position_per_level[0] + root_lane_offset, y = 0 }
+    reserve_spot_in_grid(graph, node, requested, root_direction)
     highest_position_per_level[0] = highest_position_per_level[0] + 4
   end
 
   if should_separate and #subgraph_roots > 0 then
     for _, node in ipairs(subgraph_roots) do
-      local requested = graph.config.graph_direction == "LR" and { x = 4, y = highest_position_per_level[4] }
+      local root_direction = get_effective_direction(graph, node)
+      local requested = root_direction == "LR" and { x = 4, y = highest_position_per_level[4] }
         or { x = highest_position_per_level[4], y = 4 }
-      reserve_spot_in_grid(graph, node, requested)
+      reserve_spot_in_grid(graph, node, requested, root_direction)
       highest_position_per_level[4] = highest_position_per_level[4] + 4
     end
   end
@@ -1564,24 +1866,39 @@ local function create_mapping(graph)
     for _, node in ipairs(graph.nodes) do
       if node.grid_coord then
         local grid_coord = node.grid_coord
-        for _, child in ipairs(get_children(graph, node)) do
+        local children = get_children(graph, node)
+        for child_index, child in ipairs(children) do
           if not child.grid_coord then
             local parent_subgraph = get_node_subgraph(graph, node)
             local child_subgraph = get_node_subgraph(graph, child)
-            local edge_direction = parent_subgraph and parent_subgraph == child_subgraph and parent_subgraph.direction
+            local same_subgraph = parent_subgraph and parent_subgraph == child_subgraph
+            local edge_direction = same_subgraph and get_effective_direction(graph, node)
               or graph.config.graph_direction
             local child_level = edge_direction == "LR" and (grid_coord.x + 4) or (grid_coord.y + 4)
             local highest_position
-            if edge_direction ~= graph.config.graph_direction then
+            if same_subgraph then
+              highest_position = edge_direction == "LR" and grid_coord.y or grid_coord.x
+            elseif
+              edge_direction ~= graph.config.graph_direction or (has_branching_pseudostates and #children == 1)
+            then
               highest_position = edge_direction == "LR" and grid_coord.y or grid_coord.x
             else
               highest_position = highest_position_per_level[child_level] or 0
             end
 
+            if is_branching_pseudostate(node.shape) then
+              local branch_base = edge_direction == "LR" and grid_coord.y or grid_coord.x
+              local branch_offset = (#children - 1) * 4
+              highest_position = branch_base - branch_offset + ((child_index - 1) * 8)
+              if highest_position < 0 then
+                highest_position = (child_index - 1) * 8
+              end
+            end
+
             local requested = edge_direction == "LR" and { x = child_level, y = highest_position }
               or { x = highest_position, y = child_level }
             reserve_spot_in_grid(graph, child, requested, edge_direction)
-            if edge_direction == graph.config.graph_direction then
+            if edge_direction == graph.config.graph_direction and not is_branching_pseudostate(node.shape) then
               highest_position_per_level[child_level] = highest_position + 4
             end
             placed_count = placed_count + 1
@@ -1620,6 +1937,7 @@ local function create_mapping(graph)
   canvas.set_canvas_size_to_grid(graph.canvas, graph.column_width, graph.row_height)
   calculate_subgraph_bounding_boxes(graph)
   offset_drawing_for_subgraphs(graph)
+  prepare_subgraph_edge_attachments(graph)
   ensure_canvas_fits_graph(graph)
 end
 
@@ -1721,7 +2039,17 @@ end
 local function draw_arrow_label(graph, edge)
   local max_x, max_y = canvas.get_canvas_size(graph.canvas)
   local label_canvas = canvas.mk_canvas(max_x, max_y)
-  if edge.text == "" or #edge.label_line == 0 then
+  if edge.text == "" then
+    return label_canvas
+  end
+
+  if edge.branch_label then
+    local label_origin = get_branch_label_origin(graph, edge)
+    canvas.draw_text(label_canvas, label_origin, edge.text, true)
+    return label_canvas
+  end
+
+  if #edge.label_line == 0 then
     return label_canvas
   end
 
@@ -1743,7 +2071,7 @@ end
 
 local function draw_box_start(graph, path, first_line, source_shape)
   local result = canvas.copy_canvas(graph.canvas)
-  if source_shape == "state-start" or source_shape == "state-end" or #path < 2 then
+  if is_state_pseudostate(source_shape) or #path < 2 then
     return result
   end
 
@@ -1836,7 +2164,7 @@ end
 local get_node_attachment_point
 
 local function draw_path(graph, edge)
-  local path = edge.path
+  local path = edge.draw_path or edge.path
   local target_canvas = canvas.copy_canvas(graph.canvas)
   local previous_coord = path[1]
   local lines_drawn = {}
@@ -1844,9 +2172,11 @@ local function draw_path(graph, edge)
 
   for index = 2, #path do
     local next_coord = path[index]
-    local previous_drawing = index == 2 and get_node_attachment_point(graph, edge.from, edge.start_dir)
+    local previous_drawing = index == 2
+        and (edge.start_attachment_override or get_node_attachment_point(graph, edge.from, edge.start_dir))
       or grid_to_drawing_coord(graph, previous_coord)
-    local next_drawing = index == #path and get_node_attachment_point(graph, edge.to, edge.end_dir)
+    local next_drawing = index == #path
+        and (edge.end_attachment_override or get_node_attachment_point(graph, edge.to, edge.end_dir))
       or grid_to_drawing_coord(graph, next_coord)
 
     if not drawing_coord_equals(previous_drawing, next_drawing) then
@@ -1865,14 +2195,15 @@ local function draw_path(graph, edge)
 end
 
 local function draw_arrow(graph, edge)
-  if #edge.path == 0 then
+  local path = edge.draw_path or edge.path
+  if #path == 0 then
     local empty = canvas.copy_canvas(graph.canvas)
     return empty, empty, empty, empty, empty, empty
   end
 
   local label_canvas = draw_arrow_label(graph, edge)
   local path_canvas, lines_drawn, directions = draw_path(graph, edge)
-  local box_start_canvas = draw_box_start(graph, edge.path, lines_drawn[1] or {}, edge.from.shape)
+  local box_start_canvas = draw_box_start(graph, path, lines_drawn[1] or {}, edge.from.shape)
   local arrow_end_canvas = edge.has_arrow_end
       and draw_arrow_head(graph, lines_drawn[#lines_drawn] or {}, directions[#directions] or edge.end_dir)
     or canvas.copy_canvas(graph.canvas)
@@ -1895,7 +2226,7 @@ local function draw_arrow(graph, edge)
     arrow_start_canvas = draw_arrow_head(graph, { first_point, arrow_position }, start_direction)
   end
 
-  local corners_canvas = draw_corners(graph, edge.path)
+  local corners_canvas = draw_corners(graph, path)
   return path_canvas, box_start_canvas, arrow_end_canvas, arrow_start_canvas, corners_canvas, label_canvas
 end
 
@@ -1903,7 +2234,7 @@ get_node_attachment_point = function(graph, node, direction)
   local grid_coord = node.grid_coord
   local width = (graph.column_width[grid_coord.x] or 0) + (graph.column_width[grid_coord.x + 1] or 0) + 1
   local height = (graph.row_height[grid_coord.y] or 0) + (graph.row_height[grid_coord.y + 1] or 0) + 1
-  return get_shape_attachment_point(node.shape, direction, { width = width, height = height }, node.drawing_coord)
+  return get_shape_attachment_point(node, direction, { width = width, height = height }, node.drawing_coord)
 end
 
 local function draw_bundled_edge_segment(graph, edge, bundle)
@@ -2157,13 +2488,16 @@ local function draw_subgraph_box(subgraph)
   end
 
   local subgraph_canvas = canvas.mk_canvas(width, height)
+  local h_char = subgraph.kind == "region" and "┄" or "─"
+  local v_char = subgraph.kind == "region" and "┆" or "│"
+
   for x = 1, width - 1 do
-    subgraph_canvas[x][0] = "─"
-    subgraph_canvas[x][height] = "─"
+    subgraph_canvas[x][0] = h_char
+    subgraph_canvas[x][height] = h_char
   end
   for y = 1, height - 1 do
-    subgraph_canvas[0][y] = "│"
-    subgraph_canvas[width][y] = "│"
+    subgraph_canvas[0][y] = v_char
+    subgraph_canvas[width][y] = v_char
   end
   subgraph_canvas[0][0] = "┌"
   subgraph_canvas[width][0] = "┐"
@@ -2175,7 +2509,7 @@ end
 local function draw_subgraph_label(subgraph)
   local width = subgraph.max_x - subgraph.min_x
   local height = subgraph.max_y - subgraph.min_y
-  if width <= 0 or height <= 0 then
+  if width <= 0 or height <= 0 or subgraph.name == "" then
     return canvas.mk_canvas(0, 0), { x = 0, y = 0 }
   end
 

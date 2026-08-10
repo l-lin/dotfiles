@@ -1,12 +1,14 @@
 ---@class dotfiles.mermaid.Node
----@field id string
----@field label string
----@field shape string
+---@field id string the node's unique identifier
+---@field label string the node's label
+---@field shape string the node's shape (e.g., "rectangle", "circle", "diamond")
 
 ---@class dotfiles.mermaid.Subgraph
----@field id string
----@field label string
----@field node_ids string[]
----@field node_id_set table<string, boolean>
----@field children dotfiles.mermaid.Subgraph[]
----@field direction string|nil
+---@field id string the subgraph's unique identifier
+---@field label string the subgraph's label
+---@field kind string|nil the kind of subgraph (e.g., "subgraph", "cluster")
+---@field active_region dotfiles.mermaid.Subgraph|nil the currently active region within the subgraph
+---@field node_ids string[] the IDs of the nodes within the subgraph
+---@field node_id_set table<string, boolean> a set of node IDs for quick lookup
+---@field children dotfiles.mermaid.Subgraph[] the child subgraphs
+---@field direction string|nil the direction of the subgraph (e.g., "TB", "LR")

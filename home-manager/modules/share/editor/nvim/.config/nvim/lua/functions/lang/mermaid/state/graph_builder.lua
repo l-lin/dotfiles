@@ -1,12 +1,24 @@
+---Returns the current container for new members.
+---@param subgraph_stack dotfiles.mermaid.Subgraph[]
+---@return dotfiles.mermaid.Subgraph|nil
+local function get_current_container(subgraph_stack)
+  if #subgraph_stack == 0 then
+    return nil
+  end
+
+  local current_subgraph = subgraph_stack[#subgraph_stack]
+  return current_subgraph.active_region or current_subgraph
+end
+
 ---Adds a node ID to the current subgraph when one is active.
 ---@param subgraph_stack dotfiles.mermaid.Subgraph[]
 ---@param node_id string
 local function add_node_to_current_subgraph(subgraph_stack, node_id)
-  if #subgraph_stack == 0 then
+  local current_subgraph = get_current_container(subgraph_stack)
+  if not current_subgraph then
     return
   end
 
-  local current_subgraph = subgraph_stack[#subgraph_stack]
   current_subgraph.node_ids = current_subgraph.node_ids or {}
   current_subgraph.node_id_set = current_subgraph.node_id_set or {}
 
@@ -23,6 +35,19 @@ local function add_node_to_current_subgraph(subgraph_stack, node_id)
 
   current_subgraph.node_ids[#current_subgraph.node_ids + 1] = node_id
   current_subgraph.node_id_set[node_id] = true
+end
+
+---Adds a child subgraph to the current container.
+---@param subgraph_stack dotfiles.mermaid.Subgraph[]
+---@param child_subgraph dotfiles.mermaid.Subgraph
+local function add_child_to_current_subgraph(subgraph_stack, child_subgraph)
+  local current_subgraph = get_current_container(subgraph_stack)
+  if not current_subgraph then
+    return
+  end
+
+  current_subgraph.children = current_subgraph.children or {}
+  current_subgraph.children[#current_subgraph.children + 1] = child_subgraph
 end
 
 ---Removes a node from the graph and every matching node-order entry.
@@ -73,7 +98,9 @@ local function ensure_node(graph, subgraph_stack, node_id)
 end
 
 local M = {}
+M.get_current_container = get_current_container
 M.add_node_to_current_subgraph = add_node_to_current_subgraph
+M.add_child_to_current_subgraph = add_child_to_current_subgraph
 M.remove_node_by_id = remove_node_by_id
 M.add_node = add_node
 M.ensure_node = ensure_node
