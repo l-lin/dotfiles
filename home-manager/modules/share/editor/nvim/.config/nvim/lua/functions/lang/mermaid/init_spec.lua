@@ -17,7 +17,7 @@ describe("mermaid.preview_lines_at_row", function()
     local expected = {
       "┌───┐     ┌───┐",
       "│   │     │   │",
-      "│ A ├────►│ B │",
+      "│ A ├────│ B │",
       "│   │     │   │",
       "└───┘     └───┘",
     }
@@ -62,7 +62,7 @@ describe("mermaid.build_popup_request_at_row", function()
     local expected_lines = {
       "┌───┐     ┌───┐",
       "│   │     │   │",
-      "│ A ├────►│ B │",
+      "│ A ├────│ B │",
       "│   │     │   │",
       "└───┘     └───┘",
     }
@@ -95,7 +95,7 @@ describe("mermaid.build_popup_request_at_row", function()
     local expected_lines = {
       "┌───┐     ┌───┐",
       "│   │     │   │",
-      "│ A ├────►│ B │",
+      "│ A ├────│ B │",
       "│   │     │   │",
       "└───┘     └───┘",
     }

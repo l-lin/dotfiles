@@ -139,7 +139,7 @@ describe("mermaid.state.renderer", function()
       local actual = assert(state_renderer.render(source))
       local actual_rendered = table.concat(actual, "\n")
 
-      assert.is_nil(actual_rendered:match("►●"))
+      assert.is_nil(actual_rendered:match("●"))
       assert.is_nil(actual_rendered:match("◉──┼"))
       assert.is_truthy(actual_rendered:match("Fulfilment"))
     end

@@ -23,7 +23,7 @@ flowchart LR
 │                                          │ │                                                 │ │                                                                            │
 │ ┌────────────┐     ┌───────────────────┐ │ │ ┌───────┐     ┌───────────┐     ◇─────────────◇ │ │ ┌───────────────────┐     ┌─────────────────┐     ┌──────────────────────┐ │
 │ │            │     │                   │ │ │ │       │     │           │     │             │ │ │ │                   │     │                 │     │                      │ │
-│ │ Write code ├────►│ Open pull request ├─┼─┼►│ Build ├────►│ Run tests ├────►│ Tests pass? ├─Yes►│ Deploy to staging ├────►│ Manual approval ├────►│ Deploy to production │ │
+│ │ Write code ├────│ Open pull request ├─┼─┼│ Build ├────│ Run tests ├────│ Tests pass? ├─Yes│ Deploy to staging ├────│ Manual approval ├────│ Deploy to production │ │
 │ │            │     │                   │ │ │ │       │     │           │     │             │ │ │ │                   │     │                 │     │                      │ │
 │ └────────────┘     └───────────────────┘ │ │ └───────┘     └───────────┘     ◇──────┬──────◇ │ │ └───────────────────┘     └─────────────────┘     └──────────────────────┘ │
 │        ▲                                 │ │                                        │        │ │                                                                            │

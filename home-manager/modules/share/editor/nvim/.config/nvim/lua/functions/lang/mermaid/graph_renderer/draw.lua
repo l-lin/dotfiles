@@ -39,8 +39,6 @@ local function draw_centered_lines(width, height, label)
 end
 
 ---Draw a node into its own local canvas, including pseudostates, bars, and boxed labels.
----@param graph dotfiles.mermaid.graph_renderer.LayoutGraph the fully laid out graph that provides node sizing information.
----@param node dotfiles.mermaid.graph_renderer.LayoutNode the node to render into a standalone canvas.
 ---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph
 ---@param node dotfiles.mermaid.graph_renderer.LayoutNode
 ---@param rendered_size { width: integer, height: integer }
@@ -443,10 +441,10 @@ local function arrowhead_glyph(direction)
     return "▼"
   end
   if geometry.same_direction(direction, Directions.left) then
-    return "◄"
+    return ""
   end
   if geometry.same_direction(direction, Directions.right) then
-    return "►"
+    return ""
   end
   if geometry.same_direction(direction, Directions.upper_right) then
     return "◥"
