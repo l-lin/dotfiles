@@ -1,5 +1,7 @@
 ---
+name: nudge
 description: Nudge AI agent with annotations put in the codebase
+disable-model-invocation: true
 ---
 
 ## Core workflow
@@ -18,5 +20,3 @@ description: Nudge AI agent with annotations put in the codebase
 - Comments in successive lines should be considered a single suggestion/question
 - Comments may be related - ensure you understand how the comments relate before acting
 - Ignore occurrences in strings or code; only act on actual comments
-
-$ARGUMENTS

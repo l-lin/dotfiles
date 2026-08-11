@@ -1,6 +1,7 @@
 ---
 name: datadog-pup
 description: Use when interacting with Datadog resources using the `pup` CLI, especially for APM traces, metrics, monitors, notebooks, and synthetic tests.
+disable-model-invocation: false
 ---
 
 1. Scope first. Confirm the org and team before broad queries or lists.

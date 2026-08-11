@@ -1,6 +1,7 @@
 ---
 name: learning-opportunities
 description: Use when finishing a feature or bugfix with new files, modules, schema changes, refactors, design decisions, or unfamiliar patterns, or when the user asks to learn, practice, understand the reasoning, or says "teach me", "help me understand", "walk me through", or "quiz me".
+disable-model-invocation: false
 ---
 
 # Learning Opportunities

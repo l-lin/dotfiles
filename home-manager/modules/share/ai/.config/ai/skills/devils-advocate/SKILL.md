@@ -1,6 +1,7 @@
 ---
 name: devils-advocate
 description: Use when pressure-testing a plan, architecture, code change, or AI-generated proposal before committing, especially when hidden assumptions, production risks, or failure modes may be underexplored.
+disable-model-invocation: false
 ---
 
 Be fair first. Be hard on risk. Be clear at the end.

@@ -1,6 +1,7 @@
 ---
 name: continuous-learning
 description: "Review a finished session for reusable knowledge, then, with user consent, update shared skills and project AGENTS.md guidance."
+disable-model-invocation: false
 ---
 
 # Continuous Learning

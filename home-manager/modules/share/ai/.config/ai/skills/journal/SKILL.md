@@ -1,6 +1,7 @@
 ---
 name: journal
 description: "Use at session start, after context compaction, and before session end. Owns session journals in `.sandbox/journals/`: when to create one, what prior context to read, what to log, and how to leave a resumable handoff"
+disable-model-invocation: false
 ---
 
 Journal is session memory. It is not a runbook and not generalized reusable learning.

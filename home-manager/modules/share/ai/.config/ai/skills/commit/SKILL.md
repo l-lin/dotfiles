@@ -1,5 +1,7 @@
 ---
-description: Git commit
+name: commit
+description: Use when commiting changes
+disable-model-invocation: true
 ---
 
 Create a git commit for the current changes using a concise Conventional Commits-style subject.
@@ -59,5 +61,3 @@ Structure your response as follows:
 - chore: maintenance, dependencies
 - perf: performance
 - ci: CI/CD
-
-$ARGUMENTS

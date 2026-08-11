@@ -1,6 +1,7 @@
 ---
 name: kibana-elasticsearch
 description: Use when querying Elasticsearch through the Kibana console proxy, especially for log investigations, field-based filtering, or error triage from job or application logs.
+disable-model-invocation: false
 ---
 
 1. Check access first. Verify `ES_API_KEY` and `KIBANA_URL` are set without printing their values. If Cloudflare Access may apply, verify `cloudflared` is available and authenticated. If access is missing, stop and ask the user to fix it before querying.

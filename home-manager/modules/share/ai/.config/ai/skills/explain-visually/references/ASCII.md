@@ -1,12 +1,4 @@
----
-description: Generate Markdown visual explanations with ASCII diagrams for systems, code changes, plans, data, and technical concepts. Use for terminal-friendly diagrams, architecture overviews, diff or plan reviews, project recaps, and other text-first visual explanations.
----
-
 Generate Markdown documents that explain systems, code changes, plans, data, and technical concepts using ASCII diagrams and plain text structure. Use this command when the user wants a repo-friendly, copy/paste-friendly, terminal-readable visual explanation.
-
-## Input
-
-$ARGUMENTS
 
 ## Delivery rules
 

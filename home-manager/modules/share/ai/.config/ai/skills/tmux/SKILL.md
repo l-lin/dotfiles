@@ -1,6 +1,7 @@
 ---
 name: tmux
 description: "Use when you need a persistent terminal environment for long-running processes, programs requiring a TTY, REPLs, debuggers, TUI apps, or concurrent terminals — while the agent continues executing other commands."
+disable-model-invocation: false
 ---
 
 # tmux (agent automation) skill

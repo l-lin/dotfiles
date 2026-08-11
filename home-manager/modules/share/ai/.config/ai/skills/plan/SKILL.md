@@ -1,7 +1,7 @@
 ---
+name: plan
 description: Interview the user relentlessly about a plan or design until reaching shared understanding, resolving each branch of the decision tree.
 disable-model-invocation: true
-argument-hint: "<topic>"
 ---
 
 Interview me relentlessly about every aspect of this plan until we reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one-by-one. For each question, provide your recommended answer.
@@ -18,5 +18,3 @@ Then write the final plan to `.sandbox/plans/YYYY-MM-DD-JIRA-XXXX-description.md
 - Examples:
   - with ticket: `2025-01-08-JIRA-1478-parent-child-tracking.md`
   - without ticket: `2025-01-08-improve-error-handling.md`
-
-$ARGUMENTS

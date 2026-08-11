@@ -1,6 +1,7 @@
 ---
-description: Create GitHub Pull Request with `gh` CLI.
-argument-hint: "[additional-info]"
+name: gh-pr
+description: Use when creating GitHub Pull Request.
+disable-model-invocation: true
 ---
 
 Create or update a PR description with `gh` CLI with a clear, reviewer-friendly description. Follow the `clear-writing` skill for the prose.
@@ -38,5 +39,3 @@ Use a `mermaid` blocks. Skip this section otherwise.
 - **Diagram**: add only when it clarifies; mermaid preferred
 - **Notes**: flag non-obvious decisions, edge cases, and where reviewers should focus
 - **Concise**: no one wants to read wall of texts, be concise
-
-$ARGUMENTS

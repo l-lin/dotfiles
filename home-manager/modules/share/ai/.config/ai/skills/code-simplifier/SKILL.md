@@ -1,6 +1,7 @@
 ---
 name: code-simplifier
 description: Use when simplifying recently touched code without changing behavior, especially when asked to "simplify code", "clean up code", "refactor for clarity", or "improve readability".
+disable-model-invocation: false
 ---
 
 Simplify recent code. Preserve behavior. Follow project standards.
