@@ -7,7 +7,9 @@
   home.packages = with pkgs; [
     gh
     # Github Cli extension to display a dashboard with pull requests and issues: https://github.com/dlvhdr/gh-dash.
-    gh-dash
+    #gh-dash
+    # GitHub CLI extension to use stacked PRs: https://github.github.com/gh-stack/
+    #gh-stack
   ];
 
   # Symlink ~/.config/zsh/completions/_gh
