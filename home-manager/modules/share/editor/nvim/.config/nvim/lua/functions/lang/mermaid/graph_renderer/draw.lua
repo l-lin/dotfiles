@@ -41,6 +41,41 @@ end
 ---Draw a node into its own local canvas, including pseudostates, bars, and boxed labels.
 ---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph the fully laid out graph that provides node sizing information.
 ---@param node dotfiles.mermaid.graph_renderer.LayoutNode the node to render into a standalone canvas.
+---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph
+---@param node dotfiles.mermaid.graph_renderer.LayoutNode
+---@param rendered_size { width: integer, height: integer }
+---@return dotfiles.mermaid.graph_renderer.DrawingCoord
+local function pseudostate_symbol_center(graph, node, rendered_size)
+  local center = geometry.shape_attachment_point(node, Directions.middle, rendered_size, { x = 0, y = 0 })
+  if rendered_size.width % 2 ~= 0 then
+    return center
+  end
+
+  if node.shape == "state-end" and graph.innermost_subgraph_by_node[node] == nil then
+    center.x = math.max(0, center.x - 1)
+    return center
+  end
+
+  if node.shape == "state-start" then
+    local node_subgraph = graph.innermost_subgraph_by_node[node]
+    if node_subgraph and node_subgraph.kind == "region" and rendered_size.height > 3 then
+      center.x = math.max(0, center.x - 1)
+      return center
+    end
+
+    for _, edge in ipairs(graph.edges) do
+      if edge.from == node and edge.target_composite_id then
+        if geometry.same_direction(edge.start_dir, Directions.down) or geometry.same_direction(edge.start_dir, Directions.up) then
+          center.x = math.max(0, center.x - 1)
+          return center
+        end
+      end
+    end
+  end
+
+  return center
+end
+
 ---@return dotfiles.mermaid.Canvas canvas a canvas containing only this node's rendered glyphs.
 local function draw_node_canvas(graph, node)
   local rendered_size = layout.node_render_size(graph, node)
@@ -49,22 +84,21 @@ local function draw_node_canvas(graph, node)
   local box = canvas.mk_canvas(math.max(width - 1, 0), math.max(height - 1, 0))
   local max_x = width - 1
   local max_y = height - 1
+  local center = pseudostate_symbol_center(graph, node, rendered_size)
 
   if geometry.is_state_circle_pseudostate(node.shape) then
-    box[math.floor(max_x / 2)][math.floor(max_y / 2)] = geometry.state_pseudostate_symbol(node.shape)
+    box[center.x][center.y] = geometry.state_pseudostate_symbol(node.shape)
     return box
   end
 
   if geometry.is_state_bar(node.shape) then
     if node.layout_direction == "LR" then
-      local center_x = math.floor(max_x / 2)
       for y = 0, max_y do
-        box[center_x][y] = "┃"
+        box[center.x][y] = "┃"
       end
     else
-      local center_y = math.floor(max_y / 2)
       for x = 0, max_x do
-        box[x][center_y] = "━"
+        box[x][center.y] = "━"
       end
     end
     return box
@@ -302,6 +336,23 @@ local function draw_arrow_label(graph, edge)
     return label_canvas
   end
 
+  if edge.source_composite_id and edge.start_attachment_override then
+    if geometry.same_direction(edge.start_dir, Directions.right) then
+      canvas.draw_text(label_canvas, {
+        x = edge.start_attachment_override.x + 3,
+        y = edge.start_attachment_override.y,
+      }, edge.text, true)
+      return label_canvas
+    end
+    if geometry.same_direction(edge.start_dir, Directions.left) then
+      canvas.draw_text(label_canvas, {
+        x = math.max(0, edge.start_attachment_override.x - text.char_len(edge.text) - 2),
+        y = edge.start_attachment_override.y,
+      }, edge.text, true)
+      return label_canvas
+    end
+  end
+
   if #edge.label_line == 0 then
     return label_canvas
   end
@@ -325,15 +376,22 @@ local function draw_arrow_label(graph, edge)
 end
 
 ---Draw the junction glyph where an edge exits a boxed source node.
+---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph the laid out graph that provides the source node's forward layout direction.
 ---@param base_canvas dotfiles.mermaid.Canvas the base canvas to copy before adding the source junction glyph.
+---@param edge dotfiles.mermaid.graph_renderer.LayoutEdge the edge whose source border may need a junction glyph.
 ---@param path dotfiles.mermaid.graph_renderer.GridPath the routed edge path in grid coordinates.
 ---@param first_line dotfiles.mermaid.graph_renderer.DrawingLine the first rendered segment of the edge path.
----@param source_shape string the source node shape, used to skip pseudostates that do not need box junctions.
 ---@return dotfiles.mermaid.Canvas canvas a copy of the base canvas with the source box junction glyph applied.
-local function draw_box_start(base_canvas, path, first_line, source_shape)
+local function draw_box_start(graph, base_canvas, edge, path, first_line)
   local result = canvas.copy_canvas(base_canvas)
-  if geometry.is_state_pseudostate(source_shape) or #path < 2 then
+  if geometry.is_state_pseudostate(edge.from.shape) or #path < 2 then
     return result
+  end
+
+  for _, other_edge in ipairs(graph.edges) do
+    if other_edge ~= edge and other_edge.from == edge.to and other_edge.to == edge.from and #path > 2 then
+      return result
+    end
   end
 
   local from = first_line[1]
@@ -347,6 +405,30 @@ local function draw_box_start(base_canvas, path, first_line, source_shape)
   elseif geometry.same_direction(direction, Directions.right) then
     result[from.x - 1][from.y] = "├"
   end
+  return result
+end
+
+---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph
+---@param base_canvas dotfiles.mermaid.Canvas
+---@param edge dotfiles.mermaid.graph_renderer.LayoutEdge
+---@return dotfiles.mermaid.Canvas
+local function draw_box_end(graph, base_canvas, edge)
+  local result = canvas.copy_canvas(base_canvas)
+  if geometry.is_state_pseudostate(edge.to.shape) then
+    return result
+  end
+
+  local target = edge.end_attachment_override or layout.node_attachment_point(graph, edge.to, edge.end_dir)
+  if geometry.same_direction(edge.end_dir, Directions.up) then
+    result[target.x][target.y] = "┴"
+  elseif geometry.same_direction(edge.end_dir, Directions.down) then
+    result[target.x][target.y] = "┬"
+  elseif geometry.same_direction(edge.end_dir, Directions.left) then
+    result[target.x][target.y] = "┤"
+  elseif geometry.same_direction(edge.end_dir, Directions.right) then
+    result[target.x][target.y] = "├"
+  end
+
   return result
 end
 
@@ -460,10 +542,20 @@ local function draw_arrow(graph, base_canvas, edge)
 
   local label_canvas = draw_arrow_label(graph, edge)
   local path_canvas, lines_drawn, directions = draw_path(graph, base_canvas, edge)
-  local box_start_canvas = draw_box_start(base_canvas, path, lines_drawn[1] or {}, edge.from.shape)
-  local arrow_end_canvas = edge.has_arrow_end
+  local box_start_canvas = draw_box_start(graph, base_canvas, edge, path, lines_drawn[1] or {})
+  local clips_through_side_boundary = (
+      edge.source_composite_id
+      and (geometry.same_direction(edge.start_dir, Directions.left) or geometry.same_direction(edge.start_dir, Directions.right))
+    )
+    or (
+      edge.target_composite_id
+      and (geometry.same_direction(edge.end_dir, Directions.left) or geometry.same_direction(edge.end_dir, Directions.right))
+    )
+  local should_draw_end_arrow = edge.has_arrow_end and not clips_through_side_boundary
+  local arrow_end_canvas = should_draw_end_arrow
       and draw_arrow_head(base_canvas, lines_drawn[#lines_drawn] or {}, directions[#directions] or edge.end_dir)
-    or canvas.copy_canvas(base_canvas)
+    or ((edge.source_composite_id and clips_through_side_boundary and edge.text ~= "") and draw_box_end(graph, base_canvas, edge)
+      or canvas.copy_canvas(base_canvas))
 
   local arrow_start_canvas = canvas.copy_canvas(base_canvas)
   if edge.has_arrow_start and #lines_drawn > 0 then
@@ -807,7 +899,6 @@ local function draw_state_note_connector(graph, note)
 
   connector_canvas[start_x][start_y] = note.position == "left" and "├" or "┤"
   connector_canvas[target_x][start_y] = start_x < target_x and "┐" or "┌"
-  connector_canvas[target_x][target_y] = "┴"
   return connector_canvas
 end
 

@@ -32,6 +32,29 @@ local function get_effective_direction(graph, node)
   return graph.config.graph_direction
 end
 
+---Check whether an edge points at a concurrent composite whose internal entry anchor should not drive structural placement.
+---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph the layout graph that owns the composite lookup table.
+---@param edge dotfiles.mermaid.graph_renderer.LayoutEdge the edge to classify.
+---@return boolean is_non_structural true when the edge targets a concurrent composite boundary rather than a specific internal child flow.
+local function targets_concurrent_composite(graph, edge)
+  if not edge.target_composite_id then
+    return false
+  end
+
+  local target_subgraph = graph.subgraph_by_id[edge.target_composite_id]
+  if not target_subgraph then
+    return false
+  end
+
+  for _, child in ipairs(target_subgraph.children) do
+    if child.kind == "region" then
+      return true
+    end
+  end
+
+  return false
+end
+
 ---Collect every outgoing edge that starts at the given node.
 ---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph the layout graph whose edges should be scanned.
 ---@param node dotfiles.mermaid.graph_renderer.LayoutNode the source node whose outgoing edges should be returned.
@@ -78,7 +101,7 @@ local function has_incoming_edge_from_outside_subgraph(graph, node)
 
   local has_external_edge = false
   for _, edge in ipairs(graph.edges) do
-    if edge.to == node then
+    if edge.to == node and not targets_concurrent_composite(graph, edge) then
       local source_subgraph = get_node_subgraph(graph, edge.from)
       if source_subgraph ~= node_subgraph then
         has_external_edge = true
@@ -95,7 +118,7 @@ local function has_incoming_edge_from_outside_subgraph(graph, node)
     if other_node ~= node and other_node.grid_coord then
       local other_external = false
       for _, edge in ipairs(graph.edges) do
-        if edge.to == other_node then
+        if edge.to == other_node and not targets_concurrent_composite(graph, edge) then
           local source_subgraph = get_node_subgraph(graph, edge.from)
           if source_subgraph ~= node_subgraph then
             other_external = true
@@ -502,6 +525,28 @@ local function determine_branching_pseudostate_dirs(edge, effective_direction)
   return Directions.down, Directions.up, Directions.down, Directions.up
 end
 
+---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph
+---@param edge dotfiles.mermaid.graph_renderer.LayoutEdge
+---@param effective_direction dotfiles.mermaid.graph_renderer.GraphDirection
+---@return dotfiles.mermaid.graph_renderer.Direction|nil
+---@return dotfiles.mermaid.graph_renderer.Direction|nil
+---@return dotfiles.mermaid.graph_renderer.Direction|nil
+---@return dotfiles.mermaid.graph_renderer.Direction|nil
+local function determine_state_end_dirs(graph, edge, effective_direction)
+  if edge.to.shape ~= "state-end" then
+    return nil
+  end
+
+  local from_grid = assert(edge.from.grid_coord)
+  local to_grid = assert(edge.to.grid_coord)
+
+  if effective_direction == "LR" and to_grid.x < from_grid.x and to_grid.y > from_grid.y then
+    return Directions.down, Directions.up, Directions.left, Directions.up
+  end
+
+  return nil
+end
+
 ---Choose and assign the routed path and attachment directions for a single edge.
 ---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph the layout graph whose grid occupancy and direction rules guide routing.
 ---@param edge dotfiles.mermaid.graph_renderer.LayoutEdge the edge whose path and attachment directions should be populated.
@@ -514,6 +559,13 @@ local function determine_path(graph, edge)
     or graph.config.graph_direction
   local preferred_dir, preferred_opposite, alternative_dir, alternative_opposite =
     determine_branching_pseudostate_dirs(edge, effective_direction)
+  local uses_state_end_dirs = false
+
+  if not preferred_dir or not preferred_opposite or not alternative_dir or not alternative_opposite then
+    preferred_dir, preferred_opposite, alternative_dir, alternative_opposite =
+      determine_state_end_dirs(graph, edge, effective_direction)
+    uses_state_end_dirs = preferred_dir ~= nil
+  end
 
   if not preferred_dir or not preferred_opposite or not alternative_dir or not alternative_opposite then
     preferred_dir, preferred_opposite, alternative_dir, alternative_opposite =
@@ -531,7 +583,7 @@ local function determine_path(graph, edge)
   if preferred_path and alternative_path then
     preferred_path = merge_path(preferred_path)
     alternative_path = merge_path(alternative_path)
-    if #preferred_path <= #alternative_path then
+    if uses_state_end_dirs or #preferred_path <= #alternative_path then
       edge.start_dir = preferred_dir
       edge.end_dir = preferred_opposite
       edge.path = preferred_path
@@ -654,7 +706,11 @@ local function determine_label_line(graph, edge)
   local min_x = math.min(chosen.line[1].x, chosen.line[2].x)
   local max_x = math.max(chosen.line[1].x, chosen.line[2].x)
   local middle_x = min_x + math.floor((max_x - min_x) / 2)
-  graph.column_width[middle_x] = math.max(graph.column_width[middle_x] or 0, text.char_len(edge.text) + 2)
+  local label_padding = 2
+  if edge.source_composite_id and geometry.same_direction(edge.start_dir, Directions.right) then
+    label_padding = 6
+  end
+  graph.column_width[middle_x] = math.max(graph.column_width[middle_x] or 0, text.char_len(edge.text) + label_padding)
   edge.label_line = chosen.line
 end
 
@@ -669,7 +725,7 @@ local function analyze_edge_bundles(graph)
   local bundles = {}
   local bundled_edges = {}
 
-  local function can_bundle(edges)
+  local function can_bundle(edges, bundle_type)
     if #edges < 2 then
       return false
     end
@@ -690,6 +746,19 @@ local function analyze_edge_bundles(graph)
       if from_subgraph ~= first_from or to_subgraph ~= first_to or from_subgraph ~= to_subgraph then
         return false
       end
+
+      local from_grid = edge.from.grid_coord
+      local to_grid = edge.to.grid_coord
+      if not from_grid or not to_grid then
+        return false
+      end
+
+      if bundle_type == "fan-in" and from_grid.y >= to_grid.y then
+        return false
+      end
+      if bundle_type == "fan-out" and to_grid.y <= from_grid.y then
+        return false
+      end
     end
 
     return true
@@ -704,7 +773,7 @@ local function analyze_edge_bundles(graph)
   end
 
   for target, edges in pairs(edges_by_target) do
-    if can_bundle(edges) then
+    if can_bundle(edges, "fan-in") then
       local already_bundled = false
       for _, edge in ipairs(edges) do
         if bundled_edges[edge] then
@@ -745,7 +814,7 @@ local function analyze_edge_bundles(graph)
   end
 
   for source, edges in pairs(edges_by_source) do
-    if can_bundle(edges) then
+    if can_bundle(edges, "fan-out") then
       local others = {}
       for _, edge in ipairs(edges) do
         others[#others + 1] = edge.to
@@ -877,5 +946,6 @@ local M = {}
 M.get_effective_direction = get_effective_direction
 M.get_children = get_children
 M.node_in_subgraph = node_in_subgraph
+M.targets_concurrent_composite = targets_concurrent_composite
 M.prepare_edge_routes = prepare_edge_routes
 return M

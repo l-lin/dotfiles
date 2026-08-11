@@ -11,9 +11,9 @@ stateDiagram
              │
              │
              │
-             ▼
+  low        ▼        high
    ┌─────────◇──────────┐
-  low                 high
+   │                    │
    │                    │
    │                    │
    │                    │

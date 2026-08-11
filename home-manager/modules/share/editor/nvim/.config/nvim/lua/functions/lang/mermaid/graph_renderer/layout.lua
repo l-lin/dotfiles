@@ -282,7 +282,9 @@ local function place_nodes(graph)
   if uses_state_regions_or_pseudostates then
     local incoming_edges = {}
     for _, edge in ipairs(graph.edges) do
-      incoming_edges[edge.to] = (incoming_edges[edge.to] or 0) + 1
+      if not routing.targets_concurrent_composite(graph, edge) then
+        incoming_edges[edge.to] = (incoming_edges[edge.to] or 0) + 1
+      end
     end
 
     for _, node in ipairs(graph.nodes) do
@@ -317,7 +319,11 @@ local function place_nodes(graph)
     else
       local external_incoming = false
       for _, edge in ipairs(graph.edges) do
-        if edge.to == node and graph.innermost_subgraph_by_node[edge.from] ~= node_subgraph then
+        if
+          edge.to == node
+          and not routing.targets_concurrent_composite(graph, edge)
+          and graph.innermost_subgraph_by_node[edge.from] ~= node_subgraph
+        then
           external_incoming = true
           break
         end
@@ -345,20 +351,23 @@ local function place_nodes(graph)
       has_external_roots = true
     end
   end
-  local should_separate = graph.config.graph_direction == "LR" and has_external_roots and has_subgraph_roots_with_edges
-
   local external_roots = {}
   local subgraph_roots = {}
-  if should_separate then
-    for _, node in ipairs(root_nodes) do
-      if routing.node_in_subgraph(graph, node) then
-        subgraph_roots[#subgraph_roots + 1] = node
-      else
-        external_roots[#external_roots + 1] = node
-      end
+  for _, node in ipairs(root_nodes) do
+    if routing.node_in_subgraph(graph, node) then
+      subgraph_roots[#subgraph_roots + 1] = node
+    else
+      external_roots[#external_roots + 1] = node
     end
-  else
+  end
+
+  local should_separate = has_external_roots
+    and has_subgraph_roots_with_edges
+    and (graph.config.graph_direction == "LR" or #subgraph_roots > 1)
+
+  if not should_separate then
     external_roots = root_nodes
+    subgraph_roots = {}
   end
 
   local root_lane_offset = has_branching_pseudostates and 4 or 0
@@ -372,12 +381,19 @@ local function place_nodes(graph)
   end
 
   if should_separate and #subgraph_roots > 0 then
+    local separated_td_x = highest_position_per_level[0] + root_lane_offset
+
     for _, node in ipairs(subgraph_roots) do
       local root_direction = routing.get_effective_direction(graph, node)
-      local requested = root_direction == "LR" and { x = 4, y = highest_position_per_level[4] }
-        or { x = highest_position_per_level[4], y = 4 }
+      local requested
+      if root_direction == "LR" then
+        requested = { x = 4, y = highest_position_per_level[4] }
+        highest_position_per_level[4] = highest_position_per_level[4] + 4
+      else
+        requested = { x = separated_td_x, y = 4 }
+        separated_td_x = separated_td_x + 4
+      end
       reserve_spot_in_grid(graph, node, requested, root_direction)
-      highest_position_per_level[4] = highest_position_per_level[4] + 4
     end
   end
 
@@ -712,13 +728,53 @@ end
 ---@param direction dotfiles.mermaid.graph_renderer.Direction the direction in which the attachment point should be calculated (e.g., "up", "down", "left", "right")
 ---@return dotfiles.mermaid.graph_renderer.DrawingCoord drawing_coord the calculated attachment point on the subgraph's boundary, based on its bounding box and the specified direction
 local function subgraph_attachment_point(subgraph, direction)
-  return geometry.box_attachment_point(direction, {
-    width = subgraph.max_x - subgraph.min_x,
-    height = subgraph.max_y - subgraph.min_y,
-  }, {
-    x = subgraph.min_x,
-    y = subgraph.min_y,
-  })
+  local center_x = subgraph.min_x + math.floor((subgraph.max_x - subgraph.min_x) / 2)
+  local center_y = subgraph.min_y + math.floor((subgraph.max_y - subgraph.min_y) / 2)
+
+  if geometry.same_direction(direction, geometry.Directions.up) then
+    return { x = center_x, y = subgraph.min_y }
+  end
+  if geometry.same_direction(direction, geometry.Directions.down) then
+    return { x = center_x, y = subgraph.max_y }
+  end
+  if geometry.same_direction(direction, geometry.Directions.left) then
+    return { x = subgraph.min_x, y = center_y }
+  end
+  if geometry.same_direction(direction, geometry.Directions.right) then
+    return { x = subgraph.max_x, y = center_y }
+  end
+  if geometry.same_direction(direction, geometry.Directions.upper_left) then
+    return { x = subgraph.min_x, y = subgraph.min_y }
+  end
+  if geometry.same_direction(direction, geometry.Directions.upper_right) then
+    return { x = subgraph.max_x, y = subgraph.min_y }
+  end
+  if geometry.same_direction(direction, geometry.Directions.lower_left) then
+    return { x = subgraph.min_x, y = subgraph.max_y }
+  end
+  if geometry.same_direction(direction, geometry.Directions.lower_right) then
+    return { x = subgraph.max_x, y = subgraph.max_y }
+  end
+
+  return { x = center_x, y = center_y }
+end
+
+---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph
+---@param subgraph dotfiles.mermaid.graph_renderer.LayoutSubgraph
+---@param direction dotfiles.mermaid.graph_renderer.Direction
+---@param node dotfiles.mermaid.graph_renderer.LayoutNode
+---@return dotfiles.mermaid.graph_renderer.DrawingCoord
+local function aligned_subgraph_attachment_point(graph, subgraph, direction, node)
+  local attachment = subgraph_attachment_point(subgraph, direction)
+
+  if geometry.same_direction(direction, geometry.Directions.left)
+    or geometry.same_direction(direction, geometry.Directions.right)
+  then
+    local node_attachment = node_attachment_point(graph, node, direction)
+    attachment.y = node_attachment.y
+  end
+
+  return attachment
 end
 
 ---Prepare the edge attachments for subgraphs in the graph, ensuring that
@@ -738,7 +794,13 @@ local function prepare_subgraph_edge_attachments(graph)
     local target_subgraph = edge.target_composite_id and graph.subgraph_by_id[edge.target_composite_id] or nil
 
     if source_subgraph then
-      edge.start_attachment_override = subgraph_attachment_point(source_subgraph, edge.start_dir)
+      edge.start_attachment_override = aligned_subgraph_attachment_point(graph, source_subgraph, edge.start_dir, edge.from)
+      if geometry.same_direction(edge.start_dir, geometry.Directions.down) then
+        edge.start_attachment_override.y = edge.start_attachment_override.y - 1
+      elseif geometry.same_direction(edge.start_dir, geometry.Directions.up) then
+        edge.start_attachment_override.y = edge.start_attachment_override.y + 1
+      end
+
       while
         first_index <= last_index
         and point_inside_subgraph(source_subgraph, grid_to_drawing_coord(graph, draw_path[first_index]))
@@ -750,7 +812,7 @@ local function prepare_subgraph_edge_attachments(graph)
     end
 
     if target_subgraph then
-      edge.end_attachment_override = subgraph_attachment_point(target_subgraph, edge.end_dir)
+      edge.end_attachment_override = aligned_subgraph_attachment_point(graph, target_subgraph, edge.end_dir, edge.to)
       while
         last_index >= first_index
         and point_inside_subgraph(target_subgraph, grid_to_drawing_coord(graph, draw_path[last_index]))
@@ -842,14 +904,21 @@ end
 ---@param edge dotfiles.mermaid.graph_renderer.LayoutEdge the edge for which to calculate the branch label origin
 ---@return dotfiles.mermaid.graph_renderer.DrawingCoord drawing_coord the calculated drawing coordinates for the branch label's origin, based on the edge's drawing path and direction
 local function get_branch_label_origin(graph, edge)
-  local path = edge.draw_path or edge.path
+  local path = edge.path
+  if edge.draw_path and #edge.draw_path >= 3 then
+    path = edge.draw_path
+  end
   local label_width = text.char_len(edge.text)
 
   if (edge.start_dir == geometry.Directions.left or edge.start_dir == geometry.Directions.right) and #path >= 3 then
     local branch_turn = grid_to_drawing_coord(graph, path[2])
+    local label_y = branch_turn.y + 1
+    if graph.config and graph.config.graph_direction == "TD" then
+      label_y = math.max(0, branch_turn.y - 1)
+    end
     return {
       x = math.max(0, branch_turn.x - math.floor(label_width / 2)),
-      y = branch_turn.y + 1,
+      y = label_y,
     }
   end
 

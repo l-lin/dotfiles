@@ -67,6 +67,32 @@ local function ensure_concurrent_regions(composite_state)
   begin_region(composite_state)
 end
 
+---@param subgraph_stack dotfiles.mermaid.Subgraph[]
+---@param kind "start"|"end"
+---@return string
+local function scoped_pseudostate_id(subgraph_stack, kind)
+  local current_container = graph_builder.get_current_container(subgraph_stack)
+  if not current_container then
+    return kind == "start" and "_start" or "_end"
+  end
+
+  return string.format("%s__%s", current_container.id, kind)
+end
+
+---@param graph dotfiles.mermaid.state.Graph
+---@param subgraph_stack dotfiles.mermaid.Subgraph[]
+---@param kind "start"|"end"
+---@return string
+local function ensure_scoped_pseudostate(graph, subgraph_stack, kind)
+  local node_id = scoped_pseudostate_id(subgraph_stack, kind)
+  graph_builder.add_node(graph, subgraph_stack, {
+    id = node_id,
+    label = "",
+    shape = kind == "start" and "state-start" or "state-end",
+  })
+  return node_id
+end
+
 ---Parses a list of lines representing a Mermaid state diagram and constructs
 ---a graph representation.
 ---@param lines string[] a list of lines from the Mermaid state diagram
@@ -96,7 +122,6 @@ local function parse(lines)
   local composite_state_ids = {}
   local pending_note = nil
   local start_count = 0
-  local end_count = 0
   local pseudostate_shapes = {
     choice = "state-choice",
     fork = "state-fork",
@@ -261,13 +286,7 @@ local function parse(lines)
         end
 
         if normalized_target == "[*]" then
-          end_count = end_count + 1
-          normalized_target = end_count == 1 and "_end" or ("_end" .. end_count)
-          graph_builder.add_node(graph, subgraph_stack, {
-            id = normalized_target,
-            label = "",
-            shape = "state-end",
-          })
+          normalized_target = ensure_scoped_pseudostate(graph, subgraph_stack, "end")
         elseif not composite_state_ids[normalized_target] then
           graph_builder.ensure_node(graph, subgraph_stack, normalized_target)
         end

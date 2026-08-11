@@ -106,6 +106,28 @@ describe("mermaid.state.parser", function()
   )
 
   it(
+    "GIVEN multiple terminal transitions in the same scope WHEN parsing THEN they share one end pseudostate node",
+    function()
+      local lines = parser.preprocess_source(table.concat({
+        "stateDiagram-v2",
+        "  [*] --> Still",
+        "  Still --> [*]",
+        "  Still --> Moving",
+        "  Moving --> Crash",
+        "  Crash --> [*]",
+      }, "\n"))
+      local actual, err = assert(state_parser.parse(lines))
+
+      assert.is_nil(err)
+      assert.are.equal("state-end", actual.nodes._end.shape)
+      assert.are.equal("_end", actual.edges[2].target)
+      assert.are.equal("_end", actual.edges[5].target)
+      assert.is_nil(actual.nodes._end2)
+      assert.are.same({}, actual.warnings)
+    end
+  )
+
+  it(
     "GIVEN a composite state with concurrent regions WHEN parsing THEN it records explicit region children in source order",
     function()
       local lines = parser.preprocess_source(table.concat({

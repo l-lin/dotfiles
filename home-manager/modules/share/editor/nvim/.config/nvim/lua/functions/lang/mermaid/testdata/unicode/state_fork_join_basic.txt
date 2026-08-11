@@ -8,7 +8,7 @@ stateDiagram
   B --> merge
   merge --> [*]
 ---
-               ●
+                ●
                 │
                 │
                 │

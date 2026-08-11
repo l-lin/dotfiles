@@ -166,4 +166,30 @@ describe("mermaid.graph_renderer.route", function()
       assert.are.same({}, actual.edges[1].label_line)
     end
   )
+
+  it(
+    "GIVEN a fan-out where one target is above the source WHEN preparing routes THEN it keeps separate edge routes instead of forcing a downward bundle",
+    function()
+      local given_config = helpers.given_layout_config("TD")
+      local given_still = helpers.given_layout_node("Still", "Still", "rounded", { x = 0, y = 4 }, given_config)
+      local given_moving = helpers.given_layout_node("Moving", "Moving", "rounded", { x = 4, y = 8 }, given_config)
+      local given_crash = helpers.given_layout_node("Crash", "Crash", "rounded", { x = 0, y = 12 }, given_config)
+      local actual = helpers.given_layout_graph(
+        { given_still, given_moving, given_crash },
+        {
+          helpers.given_layout_edge(given_moving, given_still, ""),
+          helpers.given_layout_edge(given_moving, given_crash, ""),
+        },
+        "TD"
+      )
+
+      route.prepare_edge_routes(actual)
+
+      assert.is_nil(actual.edges[1].bundle)
+      assert.are.same(geometry.Directions.up, actual.edges[1].start_dir)
+      assert.are.same(geometry.Directions.right, actual.edges[1].end_dir)
+      assert.is_nil(actual.edges[2].bundle)
+      assert.is_true(#actual.edges[2].path >= 2)
+    end
+  )
 end)

@@ -8,6 +8,7 @@ describe("mermaid.state.renderer", function()
     "state_composite_lr",
     "state_composite_entry_exit",
     "state_composite_lr_note",
+    "state_composite_named",
     "state_choice_basic",
     "state_choice_if_positive",
     "state_concurrency_regions",
