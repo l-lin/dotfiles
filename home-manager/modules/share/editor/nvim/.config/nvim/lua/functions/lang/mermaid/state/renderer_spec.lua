@@ -4,16 +4,16 @@ local testdata = require("functions.lang.mermaid.testdata")
 describe("mermaid.state.renderer", function()
   local upstream_fixtures = {
     "state_basic",
-    "state_cjk",
-    "state_composite_lr",
-    "state_composite_entry_exit",
-    "state_composite_lr_note",
-    "state_composite_named",
     "state_choice_basic",
     "state_choice_if_positive",
+    "state_choice_parallel_battery",
+    "state_cjk",
+    "state_composite_entry_exit",
+    "state_composite_lr_note",
+    "state_composite_lr",
+    "state_composite_named",
     "state_concurrency_regions",
     "state_fork_join_basic",
-    "state_choice_parallel_battery",
   }
 
   for _, fixture_name in ipairs(upstream_fixtures) do

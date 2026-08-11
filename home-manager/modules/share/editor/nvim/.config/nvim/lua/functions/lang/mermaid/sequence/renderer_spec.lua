@@ -13,13 +13,13 @@ end
 
 describe("mermaid.sequence.render", function()
   local upstream_fixtures = {
-    "seq_basic",
-    "seq_multiple_messages",
-    "seq_self_message",
-    "sequence_multiline",
     "sequence_activation_alt",
-    "sequence_activation_self_nested",
     "sequence_activation_mixed",
+    "sequence_activation_self_nested",
+    "sequence_basic",
+    "sequence_multiline",
+    "sequence_multiple_messages",
+    "sequence_self_message",
   }
 
   for _, fixture_name in ipairs(upstream_fixtures) do
