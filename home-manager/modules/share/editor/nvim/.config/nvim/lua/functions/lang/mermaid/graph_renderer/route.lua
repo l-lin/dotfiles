@@ -159,6 +159,39 @@ local function has_back_edge_to_outside_subgraph(graph, node)
   return false
 end
 
+---Calculate how much extra left-side room a node needs for an external entry.
+---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph the layout graph whose edges and subgraphs should be inspected.
+---@param node dotfiles.mermaid.graph_renderer.LayoutNode the node to test for a left-entry edge from outside its subgraph.
+---@return integer extra_padding the additional padding columns needed before the node.
+local function left_entry_padding_from_outside_subgraph(graph, node)
+  local node_subgraph = get_node_subgraph(graph, node)
+  if not node_subgraph or node_subgraph.kind ~= nil or graph.config.graph_direction ~= "LR" then
+    return 0
+  end
+
+  local has_matching_entry = false
+  local has_labeled_entry = false
+  for _, edge in ipairs(graph.edges) do
+    if edge.to == node and edge.from.grid_coord and edge.from.grid_coord.x < node.grid_coord.x then
+      local source_subgraph = get_node_subgraph(graph, edge.from)
+      if source_subgraph ~= node_subgraph then
+        has_matching_entry = true
+        has_labeled_entry = has_labeled_entry or edge.text ~= ""
+      end
+    end
+  end
+
+  if not has_matching_entry then
+    return 0
+  end
+
+  if has_labeled_entry then
+    return #node_subgraph.nodes > 1 and 3 or 2
+  end
+
+  return #node_subgraph.nodes > 1 and 1 or 0
+end
+
 ---Reserve grid column and row space for a node and the padding its edges may require.
 ---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph the layout graph whose row and column budgets should be updated.
 ---@param node dotfiles.mermaid.graph_renderer.LayoutNode the placed node whose footprint and padding should be reserved.
@@ -174,7 +207,8 @@ local function set_column_width(graph, node)
   end
 
   if grid_coord.x > 0 then
-    graph.column_width[grid_coord.x - 1] = math.max(graph.column_width[grid_coord.x - 1] or 0, graph.config.padding_x)
+    local padding = graph.config.padding_x + left_entry_padding_from_outside_subgraph(graph, node)
+    graph.column_width[grid_coord.x - 1] = math.max(graph.column_width[grid_coord.x - 1] or 0, padding)
   end
 
   if grid_coord.y > 0 then
@@ -188,6 +222,20 @@ local function set_column_width(graph, node)
   if has_back_edge_to_outside_subgraph(graph, node) then
     local path_row = grid_coord.y + 3
     graph.row_height[path_row] = math.max(graph.row_height[path_row] or 0, graph.config.padding_y + 4)
+
+    if graph.config.graph_direction == "TD" then
+      for _, edge in ipairs(graph.edges) do
+        if
+          edge.from == node
+          and edge.text ~= ""
+          and get_node_subgraph(graph, edge.to) ~= get_node_subgraph(graph, node)
+        then
+          local path_column = grid_coord.x + 3
+          graph.column_width[path_column] = math.max(graph.column_width[path_column] or 0, graph.config.padding_x - 1)
+          break
+        end
+      end
+    end
   end
 end
 

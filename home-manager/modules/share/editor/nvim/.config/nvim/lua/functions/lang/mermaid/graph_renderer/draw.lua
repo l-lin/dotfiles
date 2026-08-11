@@ -63,7 +63,10 @@ local function pseudostate_symbol_center(graph, node, rendered_size)
 
     for _, edge in ipairs(graph.edges) do
       if edge.from == node and edge.target_composite_id then
-        if geometry.same_direction(edge.start_dir, Directions.down) or geometry.same_direction(edge.start_dir, Directions.up) then
+        if
+          geometry.same_direction(edge.start_dir, Directions.down)
+          or geometry.same_direction(edge.start_dir, Directions.up)
+        then
           center.x = math.max(0, center.x - 1)
           return center
         end
@@ -319,6 +322,31 @@ local function label_points(drawing_line, label, is_upward_edge)
 end
 
 ---Draw the text overlay for an edge, including branch labels and multi-line centered labels.
+---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph
+---@param edge dotfiles.mermaid.graph_renderer.LayoutEdge
+---@return dotfiles.mermaid.graph_renderer.DrawingCoord|nil
+local function external_left_entry_label_origin(graph, edge)
+  local target_subgraph = graph.innermost_subgraph_by_node[edge.to]
+  if not target_subgraph or target_subgraph.kind == "region" then
+    return nil
+  end
+
+  local source_subgraph = graph.innermost_subgraph_by_node[edge.from]
+  if source_subgraph == target_subgraph or not geometry.same_direction(edge.end_dir, Directions.left) then
+    return nil
+  end
+
+  local extra_left_shift = 1
+  if geometry.same_direction(edge.start_dir, Directions.right) and #target_subgraph.nodes == 1 then
+    extra_left_shift = 2
+  end
+
+  return {
+    x = math.max(0, target_subgraph.min_x - text.char_len(edge.text) - extra_left_shift),
+    y = layout.node_attachment_point(graph, edge.to, edge.end_dir).y,
+  }
+end
+
 ---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph the laid out graph that provides label placement coordinates.
 ---@param edge dotfiles.mermaid.graph_renderer.LayoutEdge the edge whose label text should be rendered.
 ---@return dotfiles.mermaid.Canvas label_canvas a canvas containing only the edge label overlay.
@@ -351,6 +379,12 @@ local function draw_arrow_label(graph, edge)
     end
   end
 
+  local target_label_origin = external_left_entry_label_origin(graph, edge)
+  if target_label_origin then
+    canvas.draw_text(label_canvas, target_label_origin, edge.text, true)
+    return label_canvas
+  end
+
   if #edge.label_line == 0 then
     return label_canvas
   end
@@ -373,6 +407,24 @@ local function draw_arrow_label(graph, edge)
   return label_canvas
 end
 
+---Check whether another edge already arrives at the source node on the same side this edge wants to leave.
+---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph the laid out graph whose edges should be scanned.
+---@param edge dotfiles.mermaid.graph_renderer.LayoutEdge the edge whose source side should be checked for competing arrivals.
+---@return boolean has_matching_arrival true when another edge targets the same node from the same border side.
+local function has_incoming_edge_on_start_side(graph, edge)
+  for _, other_edge in ipairs(graph.edges) do
+    if
+      other_edge ~= edge
+      and other_edge.to == edge.from
+      and geometry.same_direction(other_edge.end_dir, edge.start_dir)
+    then
+      return true
+    end
+  end
+
+  return false
+end
+
 ---Draw the junction glyph where an edge exits a boxed source node.
 ---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph the laid out graph that provides the source node's forward layout direction.
 ---@param base_canvas dotfiles.mermaid.Canvas the base canvas to copy before adding the source junction glyph.
@@ -390,6 +442,10 @@ local function draw_box_start(graph, base_canvas, edge, path, first_line)
     if other_edge ~= edge and other_edge.from == edge.to and other_edge.to == edge.from and #path > 2 then
       return result
     end
+  end
+
+  if edge.from.shape == "rectangle" and has_incoming_edge_on_start_side(graph, edge) then
+    return result
   end
 
   local from = first_line[1]
@@ -542,18 +598,27 @@ local function draw_arrow(graph, base_canvas, edge)
   local path_canvas, lines_drawn, directions = draw_path(graph, base_canvas, edge)
   local box_start_canvas = draw_box_start(graph, base_canvas, edge, path, lines_drawn[1] or {})
   local clips_through_side_boundary = (
-      edge.source_composite_id
-      and (geometry.same_direction(edge.start_dir, Directions.left) or geometry.same_direction(edge.start_dir, Directions.right))
+    edge.source_composite_id
+    and (
+      geometry.same_direction(edge.start_dir, Directions.left)
+      or geometry.same_direction(edge.start_dir, Directions.right)
     )
+  )
     or (
       edge.target_composite_id
-      and (geometry.same_direction(edge.end_dir, Directions.left) or geometry.same_direction(edge.end_dir, Directions.right))
+      and (
+        geometry.same_direction(edge.end_dir, Directions.left)
+        or geometry.same_direction(edge.end_dir, Directions.right)
+      )
     )
   local should_draw_end_arrow = edge.has_arrow_end and not clips_through_side_boundary
   local arrow_end_canvas = should_draw_end_arrow
       and draw_arrow_head(base_canvas, lines_drawn[#lines_drawn] or {}, directions[#directions] or edge.end_dir)
-    or ((edge.source_composite_id and clips_through_side_boundary and edge.text ~= "") and draw_box_end(graph, base_canvas, edge)
-      or canvas.copy_canvas(base_canvas))
+    or (
+      (edge.source_composite_id and clips_through_side_boundary and edge.text ~= "")
+        and draw_box_end(graph, base_canvas, edge)
+      or canvas.copy_canvas(base_canvas)
+    )
 
   local arrow_start_canvas = canvas.copy_canvas(base_canvas)
   if edge.has_arrow_start and #lines_drawn > 0 then
@@ -811,10 +876,11 @@ local function draw_subgraph_box(subgraph)
 end
 
 ---Draw a subgraph label and return the graph-space offset where it should be merged.
+---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph the laid out graph that owns the subgraph.
 ---@param subgraph dotfiles.mermaid.graph_renderer.LayoutSubgraph the subgraph whose label text should be rendered.
 ---@return dotfiles.mermaid.Canvas label_canvas a canvas containing the subgraph label text.
 ---@return dotfiles.mermaid.graph_renderer.DrawingCoord offset the graph-space coordinate where the label canvas should be merged.
-local function draw_subgraph_label(subgraph)
+local function draw_subgraph_label(graph, subgraph)
   local width = subgraph.max_x - subgraph.min_x
   local height = subgraph.max_y - subgraph.min_y
   if width <= 0 or height <= 0 or subgraph.name == "" then
@@ -824,7 +890,9 @@ local function draw_subgraph_label(subgraph)
   local label_canvas = canvas.mk_canvas(width, height)
   for index, line in ipairs(text.split_lines(subgraph.name)) do
     local line_width = text.char_len(line)
-    local label_x = math.floor(width / 2) - math.floor(line_width / 2)
+    local label_x = (graph.config.graph_direction == "LR" and subgraph.kind == nil)
+        and math.ceil((width - line_width) / 2)
+      or math.floor((width - line_width) / 2)
     if label_x < 1 then
       label_x = 1
     end
@@ -997,7 +1065,7 @@ local function draw_graph(graph)
 
   for _, subgraph in ipairs(graph.subgraphs) do
     if #subgraph.nodes > 0 then
-      local label_canvas, offset = draw_subgraph_label(subgraph)
+      local label_canvas, offset = draw_subgraph_label(graph, subgraph)
       target_canvas = canvas.merge_canvases(target_canvas, offset, { label_canvas })
     end
   end

@@ -521,6 +521,92 @@ end
 ---padding or spacing defined in the graph's configuration. The resulting
 ---bounding box is stored in the subgraph's `min_x`, `min_y`, `max_x`, and
 ---`max_y` fields.
+---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph
+---@param subgraph dotfiles.mermaid.graph_renderer.LayoutSubgraph
+---@return boolean
+local function external_left_entry_padding(graph, subgraph)
+  if subgraph.kind ~= nil then
+    return 0
+  end
+
+  local nodes_in_subgraph = {}
+  for _, node in ipairs(subgraph.nodes) do
+    nodes_in_subgraph[node] = true
+  end
+
+  local has_matching_entry = false
+  local has_labeled_entry = false
+  for _, edge in ipairs(graph.edges) do
+    if nodes_in_subgraph[edge.to] then
+      local source_subgraph = graph.innermost_subgraph_by_node[edge.from]
+      if source_subgraph ~= subgraph and geometry.same_direction(edge.end_dir, geometry.Directions.left) then
+        has_matching_entry = true
+        has_labeled_entry = has_labeled_entry or edge.text ~= ""
+      end
+    end
+  end
+
+  if not has_matching_entry then
+    return 0
+  end
+
+  if has_labeled_entry then
+    return 2
+  end
+
+  return #subgraph.nodes > 1 and 1 or 0
+end
+
+---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph
+---@param subgraph dotfiles.mermaid.graph_renderer.LayoutSubgraph
+---@return boolean
+local function has_labeled_external_left_entry(graph, subgraph)
+  if subgraph.kind ~= nil or #subgraph.nodes <= 1 then
+    return false
+  end
+
+  local nodes_in_subgraph = {}
+  for _, node in ipairs(subgraph.nodes) do
+    nodes_in_subgraph[node] = true
+  end
+
+  for _, edge in ipairs(graph.edges) do
+    if nodes_in_subgraph[edge.to] and edge.text ~= "" then
+      local source_subgraph = graph.innermost_subgraph_by_node[edge.from]
+      if source_subgraph ~= subgraph and geometry.same_direction(edge.end_dir, geometry.Directions.left) then
+        return true
+      end
+    end
+  end
+
+  return false
+end
+
+---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph
+---@param subgraph dotfiles.mermaid.graph_renderer.LayoutSubgraph
+---@return boolean
+local function has_labeled_external_right_touch(graph, subgraph)
+  if subgraph.kind ~= nil or graph.config.graph_direction ~= "TD" then
+    return false
+  end
+
+  local nodes_in_subgraph = {}
+  for _, node in ipairs(subgraph.nodes) do
+    nodes_in_subgraph[node] = true
+  end
+
+  for _, edge in ipairs(graph.edges) do
+    if nodes_in_subgraph[edge.to] and edge.text ~= "" then
+      local source_subgraph = graph.innermost_subgraph_by_node[edge.from]
+      if source_subgraph ~= subgraph and geometry.same_direction(edge.end_dir, geometry.Directions.right) then
+        return true
+      end
+    end
+  end
+
+  return false
+end
+
 ---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph the working layout graph containing the subgraph and its child nodes
 ---@param subgraph dotfiles.mermaid.graph_renderer.LayoutSubgraph the subgraph for which to calculate the bounding box
 local function calculate_subgraph_bounding_box(graph, subgraph)
@@ -559,10 +645,20 @@ local function calculate_subgraph_bounding_box(graph, subgraph)
   local horizontal_padding = subgraph.kind == "region" and 1 or 2
   local top_padding = subgraph.kind == "region" and 2 or 4
   local bottom_padding = subgraph.kind == "region" and 1 or 2
+  local left_padding = horizontal_padding
+  local right_padding = horizontal_padding
 
-  min_x = min_x - horizontal_padding
+  left_padding = left_padding + external_left_entry_padding(graph, subgraph)
+  if has_labeled_external_left_entry(graph, subgraph) then
+    right_padding = right_padding + 1
+  end
+  if has_labeled_external_right_touch(graph, subgraph) then
+    right_padding = right_padding + 1
+  end
+
+  min_x = min_x - left_padding
   min_y = min_y - top_padding
-  max_x = max_x + horizontal_padding
+  max_x = max_x + right_padding
   max_y = max_y + bottom_padding
 
   local minimum_width = 4
@@ -592,6 +688,35 @@ end
 ---to create sufficient spacing between them, ensuring that they do not
 ---visually collide in the rendered output.
 ---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph the working layout graph containing the subgraphs to check for overlaps
+---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph
+---@param left dotfiles.mermaid.graph_renderer.LayoutSubgraph
+---@param right dotfiles.mermaid.graph_renderer.LayoutSubgraph
+---@return integer
+local function horizontal_gap_between_root_subgraphs(graph, left, right)
+  local desired_gap = 2
+  if graph.config.graph_direction ~= "LR" then
+    return desired_gap
+  end
+
+  local left_nodes = {}
+  for _, node in ipairs(left.nodes) do
+    left_nodes[node] = true
+  end
+
+  local right_nodes = {}
+  for _, node in ipairs(right.nodes) do
+    right_nodes[node] = true
+  end
+
+  for _, edge in ipairs(graph.edges) do
+    if left_nodes[edge.from] and right_nodes[edge.to] and edge.text ~= "" then
+      desired_gap = math.max(desired_gap, text.char_len(edge.text) + 1)
+    end
+  end
+
+  return desired_gap
+end
+
 local function ensure_subgraph_spacing(graph)
   local root_subgraphs = {}
   for _, subgraph in ipairs(graph.subgraphs) do
@@ -618,14 +743,21 @@ local function ensure_subgraph_spacing(graph)
       end
 
       if left.min_y < right.max_y and left.max_y > right.min_y then
-        if left.max_x >= right.min_x - 1 and left.min_x < right.min_x then
-          local offset = (left.max_x + 2) - right.min_x
-          right.min_x = right.min_x + offset
-          right.max_x = right.max_x + offset
-        elseif right.max_x >= left.min_x - 1 and right.min_x < left.min_x then
-          local offset = (right.max_x + 2) - left.min_x
-          left.min_x = left.min_x + offset
-          left.max_x = left.max_x + offset
+        local desired_gap = horizontal_gap_between_root_subgraphs(graph, left, right)
+        if left.min_x < right.min_x then
+          local current_gap = right.min_x - left.max_x
+          if current_gap < desired_gap then
+            local offset = desired_gap - current_gap
+            right.min_x = right.min_x + offset
+            right.max_x = right.max_x + offset
+          end
+        elseif right.min_x < left.min_x then
+          local current_gap = left.min_x - right.max_x
+          if current_gap < desired_gap then
+            local offset = desired_gap - current_gap
+            left.min_x = left.min_x + offset
+            left.max_x = left.max_x + offset
+          end
         end
       end
     end
@@ -767,7 +899,8 @@ end
 local function aligned_subgraph_attachment_point(graph, subgraph, direction, node)
   local attachment = subgraph_attachment_point(subgraph, direction)
 
-  if geometry.same_direction(direction, geometry.Directions.left)
+  if
+    geometry.same_direction(direction, geometry.Directions.left)
     or geometry.same_direction(direction, geometry.Directions.right)
   then
     local node_attachment = node_attachment_point(graph, node, direction)
@@ -794,7 +927,8 @@ local function prepare_subgraph_edge_attachments(graph)
     local target_subgraph = edge.target_composite_id and graph.subgraph_by_id[edge.target_composite_id] or nil
 
     if source_subgraph then
-      edge.start_attachment_override = aligned_subgraph_attachment_point(graph, source_subgraph, edge.start_dir, edge.from)
+      edge.start_attachment_override =
+        aligned_subgraph_attachment_point(graph, source_subgraph, edge.start_dir, edge.from)
       if geometry.same_direction(edge.start_dir, geometry.Directions.down) then
         edge.start_attachment_override.y = edge.start_attachment_override.y - 1
       elseif geometry.same_direction(edge.start_dir, geometry.Directions.up) then
