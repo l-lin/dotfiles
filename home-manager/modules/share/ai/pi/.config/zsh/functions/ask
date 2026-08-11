@@ -17,5 +17,5 @@ if !type -q pi &>/dev/null; then
   return
 fi
 
-pi --model 'llama-cpp/ornith1.0' -p "/direct-answer $@"
+pi --model 'llama-cpp/ornith1.0' -p "/skill:direct-answer $@"
 return

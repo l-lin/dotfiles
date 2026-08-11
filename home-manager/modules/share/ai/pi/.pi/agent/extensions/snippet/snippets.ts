@@ -64,11 +64,9 @@ export const SNIPPETS: SnippetDef[] = [
       "Load the Hunk skill and use it for this review. Run `hunk skill path` to get the skill path.",
   },
   {
-    trigger: "$wait-what",
-    description:
-      "Restate the last message in plain human language, with no jargon.",
-    expansion:
-      "Restate your last message. Stop using jargon and speak coherently. State it more simply and concisely, like one human talking to another.",
+    trigger: "$test-at-the-end",
+    description: "",
+    expansion: "Run the full test suite once at the end. Use `ask-user-question` tool if there are any points to clarify.",
   },
 
   // ── When we're trying to understand something ──────────────────────
