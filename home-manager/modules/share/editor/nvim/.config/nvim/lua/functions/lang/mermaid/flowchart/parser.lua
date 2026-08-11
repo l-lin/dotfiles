@@ -347,6 +347,11 @@ local function parse_edge_line(line, graph, subgraph_stack)
   return parsed_arrow or #previous_group > 0
 end
 
+---Parses the given lines of a Mermaid flowchart, extracting the graph's direction,
+---nodes, edges, subgraphs, class definitions, and styles.
+---@param lines string[] The lines of the Mermaid flowchart to parse.
+---@return dotfiles.mermaid.flowchart.Graph|nil The parsed graph object, or nil if an error occurred.
+---@return string|nil An error message if an error occurred, or nil if successful.
 local function parse(lines)
   local keyword, direction = lines[1]:match("^(%S+)%s+(%S+)%s*$")
   if not keyword or not direction then
