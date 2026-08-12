@@ -24,8 +24,8 @@ gui:
   showNumstatInFilesView: true
 git:
   mainBranches: [master, main, develop]
-  pagers:
-    - pager: delta --${config.theme.polarity} --paging=never
+  diffRenderers:
+    - command: delta --${config.theme.polarity} --paging=never
   # If true, parse emoji strings in commit messages e.g. render :rocket: as 🚀
   # (This should really be under 'gui', not 'git')
   parseEmoji: true
