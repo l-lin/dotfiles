@@ -1,0 +1,3 @@
+[tools]
+# A `gofmt`-style command-line formatter for PostgreSQL SQL: https://github.com/dimitri/sqlfmt/tree/main
+"go:github.com/dimitri/sqlfmt/cmd/sqlfmt" = "latest"
