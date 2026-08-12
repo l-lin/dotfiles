@@ -57,7 +57,6 @@ When rules conflict:
 
 ## Development Principles
 
-- **TDD first**: red/green. Tests define requirements; when behavior is unclear, adjust the tests, don't guess.
 - **Verify, don't assume**: "should work" ≠ "does work". Run the code or the test before claiming success.
 - **BDD structure**: tests use GIVEN/WHEN/THEN. Name the result `actual`, the expectation `expected`. Prefix helpers `given_`/`when_`/`then_`.
 - **Meaningful names**: a name must reveal purpose — `retry_count`, not `n`.
