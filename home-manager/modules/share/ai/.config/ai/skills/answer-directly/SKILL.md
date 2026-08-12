@@ -1,5 +1,5 @@
 ---
-name: direct-answer
+name: answer-directly
 description: Direct answer
 disable-model-invocation: true
 ---

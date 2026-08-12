@@ -6,19 +6,15 @@ export interface TipRule {
 export const TIP_RULES: readonly TipRule[] = [
   {
     match: /\bplan\b/i,
-    tip: "run /skill:devils-advocate or /replan or /visual-explainer",
+    tip: "run /skill:devils-advocate or /skill:explain-visually",
   },
   {
     match: /\bimplement\b/i,
-    tip: "run /self-review or /code-reviewer or /judge-code",
+    tip: "run /skill:self-review or /skill:review-code",
   },
   {
     match: /\bcommit\b/i,
-    tip: "run /gh-pr",
-  },
-  {
-    match: /\bhandoff\b/i,
-    tip: "run /pickup",
+    tip: "run /skill:create-gh-pr",
   },
 ] as const;
 

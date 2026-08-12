@@ -1,5 +1,5 @@
 ---
-name: crafting-skills
+name: craft-skills
 description: Use when creating or updating skills in `~/.config/ai/skills`, especially when a `SKILL.md` has a weak trigger, tangled structure, poor steering, or bloated wording.
 disable-model-invocation: true
 ---

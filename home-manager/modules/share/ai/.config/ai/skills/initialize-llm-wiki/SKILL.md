@@ -1,5 +1,5 @@
 ---
-name: llm-wiki
+name: initialize-llm-wiki
 description: Use when initializing a new personal knowledge base (wiki) from the LLM Wiki pattern — a structured markdown repo where the LLM incrementally builds and maintains interlinked pages between raw sources and a persistent wiki layer
 disable-model-invocation: true
 ---
