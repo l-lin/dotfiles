@@ -4,9 +4,12 @@ description: Investigate a question against high-trust primary sources and captu
 disable-model-invocation: true
 ---
 
-1. Investigate the question against **primary sources** — official docs, source code, specs, first-party APIs — not a secondary write-up of them. Follow every claim back to the source that owns it.
-2. Write the findings to a single Markdown file, citing each claim's source, 
-3. Save it in `.sandbox/researches/YYYY-MM-DD-JIRA-XXXX-description.md` where:
+Investigate the question against **primary sources** — official docs, source code, specs, first-party APIs — not a secondary write-up of them. Follow every claim back to the source that owns it.
+
+Use `ask-user-question` tool to reletenlessly interview me about every aspect of what I want until we reach a shared understanding.
+
+Write the findings to a single Markdown file, citing each claim's source.
+Save it in `.sandbox/researches/YYYY-MM-DD-JIRA-XXXX-description.md` where:
   - YYYY-MM-DD is today's date
   - JIRA-XXXX is the ticket number (omit if no ticket)
   - description is a brief kebab-case description
