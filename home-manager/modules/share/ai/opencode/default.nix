@@ -39,10 +39,6 @@ in {
       }
     );
     "opencode/AGENTS.md".source = ../.config/ai/system-prompt.md;
-    "opencode/command" = {
-      source = ../.config/ai/commands;
-      recursive = true;
-    };
     "opencode/skill" = {
       source = ../.config/ai/skills;
       recursive = true;

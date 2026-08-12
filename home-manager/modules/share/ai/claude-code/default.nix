@@ -24,10 +24,6 @@
         source = ./.claude/mcp;
         recursive = true;
       };
-      ".claude/commands" = {
-        source = ../.config/ai/commands;
-        recursive = true;
-      };
       ".claude/skills" = {
         source = ../.config/ai/skills;
         recursive = true;
