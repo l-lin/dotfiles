@@ -1,12 +1,12 @@
 ---
 name: devils-advocate
 description: Use when pressure-testing a plan, architecture, code change, or AI-generated proposal before committing, especially when hidden assumptions, production risks, or failure modes may be underexplored.
-disable-model-invocation: false
+disable-model-invocation: true
 ---
 
 Be fair first. Be hard on risk. Be clear at the end.
 
-1. Set the review target from `$ARGUMENTS`. If no target is provided, review the uncommitted changes. If the risk level or context is unclear, ask one brief question before you judge.
+1. Set the review target. If no target is provided, review the uncommitted changes. If the risk level or context is unclear, ask one brief question before you judge.
 2. Steel-man first. In 2 to 3 sentences, say what the current approach gets right, what constraint it respects, and under what condition it would be reasonable.
 3. Challenge only the highest-value risks. Use `references/questioning-frameworks.md` for pre-mortem, inversion, and Socratic probing. Use `references/blind-spots.md` for common engineering misses. Use `references/ai-blind-spots.md` when the thing under review was generated or heavily shaped by AI.
 4. Surface concerns only when they pass the "so what?" test. Focus on the consequences of ignoring the issue: outage, security exposure, data loss, costly rework, or user harm. Drop nitpicks.
