@@ -145,10 +145,37 @@ export class AwesomeEditor extends CustomEditor {
     data = normalizeExtendedSequences(data);
 
     if (this.editorMode === "emacs") {
-      this.handleStandardInputMode(data);
+      this.handleEmacsInputMode(data);
       return;
     }
 
+    this.handleVimInputMode(data);
+  }
+
+  private handleEmacsInputMode(data: string): void {
+    const placeholderInput = this.preparePlaceholderInput(data);
+    if (placeholderInput.handled) {
+      return;
+    }
+
+    if (this.handleSnippetExpansionShortcut(data)) {
+      return;
+    }
+
+    if (this.handleEmacsShortcuts(data)) {
+      return;
+    }
+
+    super.handleInput(data);
+
+    if (data === "$" && !(this as any).autocompleteState) {
+      (this as any).tryTriggerAutocomplete();
+    }
+
+    this.reconcilePlaceholderInput(placeholderInput.snapshot);
+  }
+
+  private handleVimInputMode(data: string): void {
     if (matchesKey(data, "escape")) return this.handleEscape();
 
     if (this.viMode === "insert") {
@@ -186,23 +213,19 @@ export class AwesomeEditor extends CustomEditor {
     this.handleNormalMode(data);
   }
 
-  private handleStandardInputMode(data: string): void {
-    const placeholderInput = this.preparePlaceholderInput(data);
-    if (placeholderInput.handled) {
-      return;
+  private handleEmacsShortcuts(data: string): boolean {
+    if (matchesKey(data, Key.alt("c")) || data === "\x1bc") {
+      this.insertFencedCodeblock();
+      return true;
     }
+    return false;
+  }
 
-    if (this.handleSnippetExpansionShortcut(data)) {
-      return;
-    }
-
-    super.handleInput(data);
-
-    if (data === "$" && !(this as any).autocompleteState) {
-      (this as any).tryTriggerAutocomplete();
-    }
-
-    this.reconcilePlaceholderInput(placeholderInput.snapshot);
+  private insertFencedCodeblock() {
+    this.insertTextAtCursor("```\n```");
+    const cursor = this.getCursor();
+    // 4th column because ``` takes 3 columns
+    this.setCursorPosition(cursor.line - 1, 3);
   }
 
   // ─── Placeholder navigation ──────────────────────────────────────────────────

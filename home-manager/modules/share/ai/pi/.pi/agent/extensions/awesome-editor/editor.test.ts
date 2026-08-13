@@ -374,3 +374,53 @@ test("awesome-editor GIVEN a large placeholder paste WHEN the editor uses a past
 
   assert.deepEqual(actual, expected);
 });
+
+test("awesome-editor GIVEN emacs mode and empty input WHEN alt-c is pressed THEN fenced codeblock is inserted and cursor is moved", () => {
+  const editor = given_editor("emacs");
+
+  editor.handleInput("\x1bc");
+  const actual = {
+    text: editor.getText(),
+    cursor: editor.getCursor(),
+  };
+
+  const expected = {
+    text: "```\n```",
+    cursor: { line: 0, col: 3 },
+  };
+  assert.deepEqual(actual, expected);
+});
+
+test("awesome-editor GIVEN emacs mode and some input WHEN alt-c is pressed after a trailing newline THEN fenced codeblock is inserted and cursor is moved", () => {
+  const editor = given_editor("emacs");
+
+  when_typing(editor, "this is the first line\n");
+  editor.handleInput("\x1bc");
+  const actual = {
+    text: editor.getText(),
+    cursor: editor.getCursor(),
+  };
+
+  const expected = {
+    text: "this is the first line\n```\n```",
+    cursor: { line: 1, col: 3 },
+  };
+  assert.deepEqual(actual, expected);
+});
+
+test("awesome-editor GIVEN emacs mode and some input WHEN alt-c is pressed mid text THEN fenced codeblock is inserted and cursor is moved", () => {
+  const editor = given_editor("emacs");
+
+  when_typing(editor, "this is a mid-sentence");
+  editor.handleInput("\x1bc");
+  const actual = {
+    text: editor.getText(),
+    cursor: editor.getCursor(),
+  };
+
+  const expected = {
+    text: "this is a mid-sentence```\n```",
+    cursor: { line: 0, col: 3 },
+  };
+  assert.deepEqual(actual, expected);
+});
