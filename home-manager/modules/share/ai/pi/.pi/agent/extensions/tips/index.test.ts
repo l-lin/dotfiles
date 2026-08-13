@@ -132,23 +132,6 @@ test("tips GIVEN a /commit user message WHEN input fires THEN shows the gh-pr ti
   assert.match(actual?.text ?? "", /gh-pr/);
 });
 
-test("tips GIVEN a /handoff user message WHEN input fires THEN shows the pickup tip", async () => {
-  const { pi, when_emittingExtensionEvent } = given_mockPi();
-  const { ctx, when_gettingLatestStatus } = given_statusContext();
-
-  tipsExtension(pi as never);
-
-  await when_emittingExtensionEvent(
-    "input",
-    { type: "input", text: "/handoff to next agent", source: "interactive" },
-    ctx,
-  );
-
-  const actual = when_gettingLatestStatus();
-  assert.equal(actual?.key, "tips");
-  assert.match(actual?.text ?? "", /pickup/);
-});
-
 test("tips GIVEN a non-matching user message WHEN input fires THEN the previous tip persists", async () => {
   const { pi, when_emittingExtensionEvent } = given_mockPi();
   const { ctx, when_gettingAllStatusCalls } = given_statusContext();

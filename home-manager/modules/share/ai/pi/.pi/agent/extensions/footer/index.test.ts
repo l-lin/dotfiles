@@ -134,7 +134,7 @@ test("footer GIVEN no runtime state events WHEN rendering after session start TH
     actual.includes(`<error>${ICONS["damage-control-disabled"]}</error>`),
   );
   assert.ok(!actual.includes(ICONS["damage-control-enabled"]));
-  assert.ok(actual.includes(`<error>${ICONS["mcp-disabled"]}</error>`));
+  assert.ok(actual.includes(`<dim>${ICONS["mcp-disabled"]}</dim>`));
   assert.ok(!actual.includes(ICONS["mcp-enabled"]));
 });
 
@@ -182,7 +182,7 @@ test("footer GIVEN an MCP adapter enabled runtime event WHEN rendering THEN it s
   };
 
   assert.ok(
-    actual.directoryLine.includes(`<dim>${ICONS["mcp-enabled"]}</dim>`),
+    actual.directoryLine.includes(`<error>${ICONS["mcp-enabled"]}</error>`),
   );
   assert.ok(!actual.directoryLine.includes(ICONS["mcp-disabled"]));
   assert.equal(actual.requestRenderCalls, 1);

@@ -66,7 +66,8 @@ export const SNIPPETS: SnippetDef[] = [
   {
     trigger: "$test-at-the-end",
     description: "",
-    expansion: "Run the full test suite once at the end. Use `ask-user-question` tool if there are any points to clarify.",
+    expansion:
+      "Run the full test suite once at the end. Use `ask-user-question` tool if there are any points to clarify.",
   },
 
   // ── When we're trying to understand something ──────────────────────

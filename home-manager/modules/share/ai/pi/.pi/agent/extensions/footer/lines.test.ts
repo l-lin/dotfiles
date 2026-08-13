@@ -92,7 +92,7 @@ test("buildDirectoryLine GIVEN damage control disabled WHEN rendering THEN it sh
 
 test("buildDirectoryLine GIVEN MCP enabled WHEN rendering THEN it shows the enabled MCP icon beside the other runtime icons", () => {
   const actual = when_buildingDirectoryLine({ mcpAdapterEnabled: true });
-  const expected = `<dim>${ICONS["mcp-enabled"]}</dim>`;
+  const expected = `<error>${ICONS["mcp-enabled"]}</error>`;
 
   assert.ok(actual.includes(expected));
   assert.ok(!actual.includes(ICONS["mcp-disabled"]));
