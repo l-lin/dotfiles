@@ -40,7 +40,7 @@ alias lg="lazygit"
 alias wip="git add --all && git commit --no-verify -m wip"
 # ai
 alias ai='CC_LAYOUT_OVERRIDE=buffer nvim +"CodeCompanionChat adapter=copilot model=claude-opus-4.5"'
-alias pir='pi --append-system-prompt ~/.config/ai/pp-system-prompt.md --exclude-tools "edit,write"'
+alias pir='pi --system-prompt ~/.config/ai/pp-system-prompt.md --append-system-prompt "" --no-context-files'
 # mise
 alias mr="mise run"
 alias mw="mise watch"
