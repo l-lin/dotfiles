@@ -73,17 +73,12 @@ When rules conflict:
 
 ## Session workflow
 
-At session start, run this sequence load the `journal` skill and follow it:
-- The skill decides whether this session needs a journal file.
-- It owns startup orientation, related-journal reads, file naming, ongoing entries, supersession markers, compaction recovery, and handoff quality.
-
 At session end, run this sequence:
 
-1. Follow the `journal` skill to leave a resumable handoff when the session was non-trivial.
-2. Did the session produce durable knowledge (reusable technique, pitfall, debugging flow, tool pattern, repo-specific rule)? If no → step 4.
-3. Ask with the `ask-user-question` tool: "Capture <one-line summary> as reusable learning?" Options: "Yes, review and save" / "No, skip".
+1. Did the session produce durable knowledge (reusable technique, pitfall, debugging flow, tool pattern, repo-specific rule)? If no → step 4.
+2. Ask with the `ask-user-question` tool: "Capture <one-line summary> as reusable learning?" Options: "Yes, review and save" / "No, skip".
    - Yes → load the `continuous-learning` skill and follow it.
-   - No → step 4.
-4. Ask with the `ask-user-question` tool: offer one brief exercise based on the session's work.
+   - No → step 3.
+3. Ask with the `ask-user-question` tool: offer one brief exercise based on the session's work.
    - Yes → load the `learning-opportunities` skill and follow it.
    - No → end the session.
