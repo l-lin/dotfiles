@@ -7,6 +7,9 @@ Generate self-contained HTML pages that explain systems, code changes, plans, da
 - Write files to `.sandbox/diagrams/YYYY-MM-DD-description/` or the explicit eval output path. Use descriptive filenames.
 - Open generated pages in the browser when running normally.
 - The final page must be a complete self-contained HTML document, including embedded CSS and any needed JS.
+- Include an in-page quiz with exactly five multiple-choice questions.
+- Make the quiz medium difficulty: the reader should need to understand the substance of the explanation, not memorize trivia.
+- Each question must give immediate feedback after selection: whether the answer was correct, why, and what detail in the explanation matters.
 
 ## Choose the representation
 
@@ -55,6 +58,16 @@ Use slides only when explicitly requested or when a command asks for slides. Sli
 - Before writing HTML, inventory the source and map every source item to slides.
 - Do not drop content to fit a fixed slide count. Add slides instead.
 
+## Quiz requirements
+
+Build the quiz into the HTML page itself.
+
+- Use exactly five multiple-choice questions.
+- Test the explanation's key ideas, behavior, tradeoffs, risks, implementation shape, or sequence, depending on the topic.
+- Avoid gotchas, naming trivia, and details the reader could answer without understanding the material.
+- Make the interaction obvious and lightweight: radio buttons or buttons are fine.
+- After a choice, show whether it was correct and give short feedback tied to the explanation.
+
 ## Final checklist
 
 Before delivery, verify:
@@ -67,4 +80,5 @@ Before delivery, verify:
 - tables preserve rows/columns and wrap long text;
 - Mermaid diagrams use `diagram-shell` with zoom/pan/expand;
 - slides fit one viewport, include carousel dots, and preserve source coverage;
+- pages include a five-question interactive multiple-choice quiz with answer feedback;
 - visual hierarchy makes the main idea obvious in the first viewport;

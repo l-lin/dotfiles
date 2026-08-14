@@ -8,6 +8,8 @@ Generate Markdown documents that explain systems, code changes, plans, data, and
 - Keep the document self-contained: all explanation, legend, assumptions, and diagram labels live in the Markdown file.
 - Put every ASCII diagram inside fenced code blocks.
 - If a table would become unreadable in plain Markdown, replace it with a compact list plus an ASCII matrix or diagram rather than switching to HTML.
+- Prepare a five-question medium-difficulty multiple-choice quiz that tests real understanding of the explanation.
+- Do not put the quiz into the Markdown file. Ask it directly with the `ask-user-question` tool after presenting the document.
 
 ## Choose the representation
 
@@ -44,6 +46,15 @@ Generate Markdown documents that explain systems, code changes, plans, data, and
 - Keep code, paths, commands, and identifiers in backticks.
 - Make the file easy to review in git: stable ordering, short wrapped prose, no decorative filler.
 
+## Quiz requirements
+
+Ask the quiz in chat with `ask-user-question` instead of embedding it in the file.
+
+- Use exactly five multiple-choice questions.
+- Make them medium difficulty, focused on the substance of the explanation.
+- Avoid gotchas, file-name trivia, and questions answerable from a skim.
+- Ask one question at a time so you can respond with whether the answer was correct and give brief feedback before moving on.
+
 ## Final checklist
 
 Before delivery, verify:
@@ -54,4 +65,5 @@ Before delivery, verify:
 - alignment survives normal monospace rendering;
 - the main idea is obvious from the first screenful;
 - long labels are explained outside the diagram;
+- explanations keep the file quiz-free and use `ask-user-question` for the five-question interactive quiz;
 - the document is self-contained and does not rely on HTML, CSS, or JS.

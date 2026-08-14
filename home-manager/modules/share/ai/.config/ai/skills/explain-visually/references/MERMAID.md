@@ -7,6 +7,8 @@ Generate a Markdown document that explains the user's topic with Mermaid diagram
 - Write files to `.sandbox/diagrams/YYYY-MM-DD-description.md`. Use descriptive filenames ending in `.md`.
 - Keep the document self-contained: include context, assumptions, legends, and takeaways in the Markdown file.
 - Add only the Mermaid diagrams needed to make the explanation clearer than plain prose.
+- Prepare a five-question medium-difficulty multiple-choice quiz that tests real understanding of the explanation.
+- Do not put the quiz into the Markdown file. Ask it directly with the `ask-user-question` tool after presenting the document.
 
 ## Choose the representation
 
@@ -40,6 +42,15 @@ Generate a Markdown document that explains the user's topic with Mermaid diagram
 - Keep code, paths, commands, and identifiers in backticks.
 - Make the file stable in git: no decorative filler, no gratuitous reordering.
 
+## Quiz requirements
+
+Ask the quiz in chat with `ask-user-question` instead of embedding it in the file.
+
+- Use exactly five multiple-choice questions.
+- Make them medium difficulty, focused on the substance of the explanation.
+- Avoid gotchas, file-name trivia, and questions answerable from a skim.
+- Ask one question at a time so you can respond with whether the answer was correct and give brief feedback before moving on.
+
 ## Final checklist
 
 Before delivery, verify:
@@ -49,4 +60,5 @@ Before delivery, verify:
 - every Mermaid diagram is inside a fenced `mermaid` block;
 - the main idea is obvious from the first screenful;
 - labels match the source material;
+- explanations keep the file quiz-free and use `ask-user-question` for the five-question interactive quiz;
 - the document is self-contained and does not rely on HTML, CSS, or JS.
