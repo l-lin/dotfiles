@@ -6,14 +6,14 @@
       "apiKey": "none",
       "models": [
         {
-          "id": "ornith1.0",
-          "contextWindow": 65536,
+          "id": "qwen3.8",
+          "contextWindow": 131072,
           "input": ["text", "image"],
           "reasoning": true
         },
         {
           "id": "qwen3.6",
-          "contextWindow": 262144,
+          "contextWindow": 131072,
           "input": ["text", "image"],
           "reasoning": true
         }
