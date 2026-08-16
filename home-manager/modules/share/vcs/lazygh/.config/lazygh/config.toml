@@ -2,7 +2,18 @@
 repository_style = "name"
 
 [story_review]
-agent_command = ["pi", "--models", "llama-cpp/ornith1.0", "--no-session", "-p", "@{{prompt_file}}"]
+agent_command = [
+  "pi",
+  "--model", "github-copilot/gpt-5.4",
+  "--no-session",
+  "--no-context-files",
+  "--no-skills",
+  "--no-extensions",
+  "--thinking", "off",
+  "--system-prompt", "''",
+  "--append-system-prompt", "''",
+  "-p", "@{{prompt_file}}",
+]
 
 [keymaps.global]
 open_actions_popup = "alt+a"
