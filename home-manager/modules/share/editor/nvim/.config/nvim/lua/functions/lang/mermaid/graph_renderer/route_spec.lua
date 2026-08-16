@@ -138,6 +138,36 @@ describe("mermaid.graph_renderer.route", function()
     end
   )
 
+  it(
+    "GIVEN a lower-right target with another node in the corridor WHEN preparing routes THEN it prefers the single-turn path over a same-length dogleg",
+    function()
+      local given_config = helpers.given_layout_config("TD")
+      local given_source = helpers.given_layout_node("Choice", "Choice", "diamond", { x = 0, y = 0 }, given_config)
+      local given_middle = helpers.given_layout_node("Middle", "Middle", "rectangle", { x = 4, y = 4 }, given_config)
+      local given_target = helpers.given_layout_node("Target", "Target", "rectangle", { x = 8, y = 4 }, given_config)
+      local actual = helpers.given_layout_graph(
+        { given_source, given_middle, given_target },
+        {
+          helpers.given_layout_edge(given_source, given_middle, "state"),
+          helpers.given_layout_edge(given_source, given_target, "sequence"),
+        },
+        "TD"
+      )
+
+      route.prepare_edge_routes(actual)
+
+      local actual_edge = actual.edges[2]
+      local expected_path = {
+        { x = 2, y = 1 },
+        { x = 9, y = 1 },
+        { x = 9, y = 4 },
+      }
+
+      assert.are.same(expected_path, actual_edge.path)
+      assert.is_nil(actual_edge.has_branch_label)
+    end
+  )
+
   it("GIVEN an unlabelled edge WHEN preparing routes THEN no label segment is reserved", function()
     local given_graph = helpers.given_route_graph()
     given_graph.edges[1].text = ""

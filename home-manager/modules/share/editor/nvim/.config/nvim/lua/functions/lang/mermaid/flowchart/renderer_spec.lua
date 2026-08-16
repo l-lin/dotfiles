@@ -16,6 +16,7 @@ describe("mermaid.flowchart.render", function()
     "flowchart_ampersand_lhs_and_rhs",
     "flowchart_back_reference_from_child",
     "flowchart_backlink_from_top",
+    "flowchart_crossed_branches_mermaid_pipeline",
     "flowchart_duplicate_labels",
     "flowchart_graph_bt_direction",
     "flowchart_multiline_edge",
@@ -54,6 +55,38 @@ describe("mermaid.flowchart.render", function()
     assert.is_truthy(actual:find("Yes", 1, true))
     assert.is_truthy(actual:find("No", 1, true))
   end)
+
+  it(
+    "GIVEN a top-down flowchart decision with multiple right-side branches WHEN rendering THEN the branch labels stay separated from the crossed routes",
+    function()
+      local fixture = testdata.load_golden("flowchart_crossed_branches_mermaid_pipeline")
+
+      local actual_lines = assert(flowchart_renderer.render(fixture.mermaid))
+      local actual_diagram_line
+      local actual_state_line
+      local actual_sequence_line
+
+      for index, line in ipairs(actual_lines) do
+        if line:find("diagram kind?", 1, true) then
+          actual_diagram_line = index
+        end
+        if actual_state_line == nil and line:find("state", 1, true) and not line:find("state/renderer.lua", 1, true) then
+          actual_state_line = index
+        end
+        if
+          actual_sequence_line == nil
+          and line:find("sequence", 1, true)
+          and not line:find("sequence/renderer.lua", 1, true)
+        then
+          actual_sequence_line = index
+        end
+      end
+
+      assert.is_truthy(actual_lines[actual_diagram_line]:find("├────────────────┬", 1, true))
+      assert.is_true(actual_state_line < actual_diagram_line)
+      assert.is_true(actual_sequence_line < actual_diagram_line)
+    end
+  )
 
   it("GIVEN unsupported flowchart syntax WHEN rendering THEN it keeps the partial diagram and appends one raw unsupported line per miss", function()
     local source = table.concat({

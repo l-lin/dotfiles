@@ -336,7 +336,7 @@ local MOVE_STEPS = {
 ---Estimate the remaining routing cost between two grid coordinates.
 ---@param left dotfiles.mermaid.graph_renderer.GridCoord the current grid coordinate in the path search.
 ---@param right dotfiles.mermaid.graph_renderer.GridCoord the destination grid coordinate in the path search.
----@return integer estimated_cost the heuristic distance used to prioritize A* exploration.
+---@return integer estimated_cost the heuristic distance used to bias the queue toward the goal.
 local function heuristic(left, right)
   local abs_x = math.abs(left.x - right.x)
   local abs_y = math.abs(left.y - right.y)
@@ -346,28 +346,103 @@ local function heuristic(left, right)
   return abs_x + abs_y + 1
 end
 
+---@param grid table<string, dotfiles.mermaid.graph_renderer.LayoutNode>
+---@param from dotfiles.mermaid.graph_renderer.GridCoord
+---@param to dotfiles.mermaid.graph_renderer.GridCoord
+---@return { min_x: integer, max_x: integer, min_y: integer, max_y: integer }
+local function routing_bounds(grid, from, to)
+  local min_x = math.min(from.x, to.x)
+  local max_x = math.max(from.x, to.x)
+  local min_y = math.min(from.y, to.y)
+  local max_y = math.max(from.y, to.y)
+
+  for key in pairs(grid) do
+    local x, y = key:match("^(%-?%d+),(%-?%d+)$")
+    if x and y then
+      min_x = math.min(min_x, tonumber(x))
+      max_x = math.max(max_x, tonumber(x))
+      min_y = math.min(min_y, tonumber(y))
+      max_y = math.max(max_y, tonumber(y))
+    end
+  end
+
+  local margin = 12
+  return {
+    min_x = math.max(0, min_x - margin),
+    max_x = max_x + margin,
+    min_y = math.max(0, min_y - margin),
+    max_y = max_y + margin,
+  }
+end
+
+---@param coord dotfiles.mermaid.graph_renderer.GridCoord
+---@param bounds { min_x: integer, max_x: integer, min_y: integer, max_y: integer }
+---@return boolean
+local function within_bounds(coord, bounds)
+  return coord.x >= bounds.min_x and coord.x <= bounds.max_x and coord.y >= bounds.min_y and coord.y <= bounds.max_y
+end
+
 ---Check whether a grid coordinate is available for routing.
 ---@param grid table<string, dotfiles.mermaid.graph_renderer.LayoutNode> the occupancy map of placed layout nodes.
 ---@param coord dotfiles.mermaid.graph_renderer.GridCoord the grid coordinate to test for availability.
+---@param bounds { min_x: integer, max_x: integer, min_y: integer, max_y: integer } the finite routing window for this path search.
 ---@return boolean is_free true when the coordinate is in bounds and unoccupied by a node.
-local function is_free_in_grid(grid, coord)
-  if coord.x < 0 or coord.y < 0 then
+local function is_free_in_grid(grid, coord, bounds)
+  if not within_bounds(coord, bounds) then
     return false
   end
   return grid[geometry.grid_key(coord)] == nil
 end
 
----Find a walkable grid path between two coordinates with A* search.
+---@param coord dotfiles.mermaid.graph_renderer.GridCoord
+---@param arrival_direction_id string
+---@return string
+local function path_state_key(coord, arrival_direction_id)
+  return string.format("%s|%s", geometry.grid_key(coord), arrival_direction_id)
+end
+
+---@param left { steps: integer, turns: integer }
+---@param right { steps: integer, turns: integer }|nil
+---@return boolean
+local function score_is_better(left, right)
+  if not right then
+    return true
+  end
+  if left.steps ~= right.steps then
+    return left.steps < right.steps
+  end
+  return left.turns < right.turns
+end
+
+---@param score { steps: integer, turns: integer }
+---@return integer
+local function score_priority(score)
+  return score.steps * 1000 + score.turns
+end
+
+---Find a walkable grid path between two coordinates, preferring fewer turns when the step count ties.
 ---@param grid table<string, dotfiles.mermaid.graph_renderer.LayoutNode> the occupancy map of placed layout nodes.
 ---@param from dotfiles.mermaid.graph_renderer.GridCoord the grid coordinate where the search should begin.
 ---@param to dotfiles.mermaid.graph_renderer.GridCoord the grid coordinate the search should reach.
+---@param preferred_direction dotfiles.mermaid.graph_renderer.Direction|nil the direction that should be treated as the straight-ahead continuation from the starting attachment.
 ---@return dotfiles.mermaid.graph_renderer.GridPath|nil path the discovered path from start to end, or nil when no route exists.
-local function get_path(grid, from, to)
+local function get_path(grid, from, to, preferred_direction)
+  local bounds = routing_bounds(grid, from, to)
+  local start_direction_id = preferred_direction and preferred_direction.id or "start"
+  local start_key = path_state_key(from, start_direction_id)
   local priority_queue = MinHeap.new()
-  priority_queue:push({ coord = from, priority = 0 })
+  priority_queue:push({
+    coord = from,
+    arrival_direction_id = start_direction_id,
+    priority = heuristic(from, to),
+  })
 
-  local cost_so_far = { [geometry.grid_key(from)] = 0 }
-  local came_from = { [geometry.grid_key(from)] = false }
+  ---@type table<string, { steps: integer, turns: integer }>
+  local score_by_state = { [start_key] = { steps = 0, turns = 0 } }
+  ---@type table<string, string|false>
+  local came_from = { [start_key] = false }
+  ---@type table<string, dotfiles.mermaid.graph_renderer.GridCoord>
+  local coord_by_state = { [start_key] = from }
 
   while priority_queue:length() > 0 do
     local next_item = priority_queue:pop()
@@ -376,38 +451,54 @@ local function get_path(grid, from, to)
     end
 
     local current = next_item.coord
+    local current_key = path_state_key(current, next_item.arrival_direction_id)
+    local current_score = score_by_state[current_key]
+    if not current_score then
+      goto continue_queue
+    end
+
     if geometry.same_grid_coord(current, to) then
       local path = {}
-      local cursor = current
-      while cursor do
-        table.insert(path, 1, cursor)
-        local previous = came_from[geometry.grid_key(cursor)]
-        cursor = previous or nil
+      local cursor_key = current_key
+      while cursor_key do
+        table.insert(path, 1, assert(coord_by_state[cursor_key]))
+        local previous_key = came_from[cursor_key]
+        cursor_key = previous_key or nil
       end
       return path
     end
 
-    local current_cost = cost_so_far[geometry.grid_key(current)]
     for _, movement in ipairs(MOVE_STEPS) do
       local next_coord = { x = current.x + movement.x, y = current.y + movement.y }
-      if (not is_free_in_grid(grid, next_coord)) and not geometry.same_grid_coord(next_coord, to) then
-        goto continue
+      if (not is_free_in_grid(grid, next_coord, bounds)) and not geometry.same_grid_coord(next_coord, to) then
+        goto continue_move
       end
 
-      local new_cost = current_cost + 1
-      local next_key = geometry.grid_key(next_coord)
-      local existing_cost = cost_so_far[next_key]
-      if existing_cost == nil or new_cost < existing_cost then
-        cost_so_far[next_key] = new_cost
+      local next_direction = geometry.determine_direction(current, next_coord)
+      local next_score = {
+        steps = current_score.steps + 1,
+        turns = current_score.turns,
+      }
+      if next_item.arrival_direction_id ~= "start" and next_item.arrival_direction_id ~= next_direction.id then
+        next_score.turns = next_score.turns + 1
+      end
+
+      local next_key = path_state_key(next_coord, next_direction.id)
+      if score_is_better(next_score, score_by_state[next_key]) then
+        score_by_state[next_key] = next_score
         priority_queue:push({
           coord = next_coord,
-          priority = new_cost + heuristic(next_coord, to),
+          arrival_direction_id = next_direction.id,
+          priority = score_priority(next_score) + heuristic(next_coord, to),
         })
-        came_from[next_key] = current
+        came_from[next_key] = current_key
+        coord_by_state[next_key] = next_coord
       end
 
-      ::continue::
+      ::continue_move::
     end
+
+    ::continue_queue::
   end
 
   return nil
@@ -539,14 +630,14 @@ local function determine_start_and_end_dir(edge, graph_direction)
   return preferred_dir, preferred_opposite, alternative_dir, alternative_opposite
 end
 
----Choose attachment directions for edges that leave branching pseudostates.
+---Choose attachment directions for edges that leave branching state pseudostates.
 ---@param edge dotfiles.mermaid.graph_renderer.LayoutEdge the edge whose branching source may need custom attachment directions.
 ---@param effective_direction dotfiles.mermaid.graph_renderer.GraphDirection the routing direction that applies around the source node.
 ---@return dotfiles.mermaid.graph_renderer.Direction|nil preferred_dir the preferred direction to leave the source node, or nil when special handling is not needed.
 ---@return dotfiles.mermaid.graph_renderer.Direction|nil preferred_opposite the preferred direction to enter the target node, or nil when special handling is not needed.
 ---@return dotfiles.mermaid.graph_renderer.Direction|nil alternative_dir the fallback direction to leave the source node, or nil when special handling is not needed.
 ---@return dotfiles.mermaid.graph_renderer.Direction|nil alternative_opposite the fallback direction to enter the target node, or nil when special handling is not needed.
-local function determine_branching_pseudostate_dirs(edge, effective_direction)
+local function determine_branching_source_dirs(edge, effective_direction)
   if not geometry.is_branching_pseudostate(edge.from.shape) then
     return nil
   end
@@ -606,7 +697,7 @@ local function determine_path(graph, edge)
       and get_effective_direction(graph, edge.from)
     or graph.config.graph_direction
   local preferred_dir, preferred_opposite, alternative_dir, alternative_opposite =
-    determine_branching_pseudostate_dirs(edge, effective_direction)
+    determine_branching_source_dirs(edge, effective_direction)
   local uses_state_end_dirs = false
 
   if not preferred_dir or not preferred_opposite or not alternative_dir or not alternative_opposite then
@@ -622,11 +713,11 @@ local function determine_path(graph, edge)
 
   local preferred_from = geometry.move_grid_coord(assert(edge.from.grid_coord), preferred_dir)
   local preferred_to = geometry.move_grid_coord(assert(edge.to.grid_coord), preferred_opposite)
-  local preferred_path = get_path(graph.grid, preferred_from, preferred_to)
+  local preferred_path = get_path(graph.grid, preferred_from, preferred_to, preferred_dir)
 
   local alternative_from = geometry.move_grid_coord(assert(edge.from.grid_coord), alternative_dir)
   local alternative_to = geometry.move_grid_coord(assert(edge.to.grid_coord), alternative_opposite)
-  local alternative_path = get_path(graph.grid, alternative_from, alternative_to)
+  local alternative_path = get_path(graph.grid, alternative_from, alternative_to, alternative_dir)
 
   if preferred_path and alternative_path then
     preferred_path = merge_path(preferred_path)
@@ -676,6 +767,39 @@ local function calculate_line_width(graph, line)
   return total
 end
 
+---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph
+---@param edge dotfiles.mermaid.graph_renderer.LayoutEdge
+---@return boolean
+local function should_use_branch_label(graph, edge)
+  if geometry.is_branching_pseudostate(edge.from.shape) then
+    return true
+  end
+
+  if edge.from.shape ~= "diamond" or graph.config.graph_direction ~= "TD" then
+    return false
+  end
+
+  local source_grid = edge.from.grid_coord
+  local target_grid = edge.to.grid_coord
+  if not source_grid or not target_grid or target_grid.x == source_grid.x then
+    return false
+  end
+
+  local labeled_outgoing_count = 0
+  local lateral_labeled_count = 0
+  for _, outgoing_edge in ipairs(get_edges_from_node(graph, edge.from)) do
+    local outgoing_target = outgoing_edge.to.grid_coord
+    if outgoing_edge.text ~= "" then
+      labeled_outgoing_count = labeled_outgoing_count + 1
+      if outgoing_target and outgoing_target.x ~= source_grid.x then
+        lateral_labeled_count = lateral_labeled_count + 1
+      end
+    end
+  end
+
+  return labeled_outgoing_count >= 3 and lateral_labeled_count >= 2
+end
+
 ---Pick the best path segment to host an edge label and reserve the needed width.
 ---@param graph dotfiles.mermaid.graph_renderer.LayoutGraph the layout graph whose column widths may be expanded for the label.
 ---@param edge dotfiles.mermaid.graph_renderer.LayoutEdge the edge whose label placement should be determined.
@@ -684,7 +808,7 @@ local function determine_label_line(graph, edge)
     return
   end
 
-  if geometry.is_branching_pseudostate(edge.from.shape) then
+  if should_use_branch_label(graph, edge) then
     edge.has_branch_label = true
     edge.label_line = {}
     return
