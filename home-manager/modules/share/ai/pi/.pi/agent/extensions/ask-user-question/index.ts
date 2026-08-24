@@ -65,13 +65,14 @@ export default function (pi: ExtensionAPI) {
 
       const text = result.answers
         .map((a) => {
-          const label = questions.find((q) => q.id === a.id)?.label ?? a.id;
+          const question = questions.find((q) => q.id === a.id);
+          const prompt = question?.prompt ?? question?.label ?? a.id;
           if (a.wasCustom) {
-            return `${label}: user wrote: ${a.label}`;
+            return `${prompt}: user wrote: ${a.label}`;
           }
 
           const optionIndex = a.index != null ? `${a.index}. ` : "";
-          return `${label}: user selected: ${optionIndex}${a.label}`;
+          return `${prompt}: user selected: ${optionIndex}${a.label}`;
         })
         .join("\n");
 

@@ -3,70 +3,115 @@
 import type {
   AgentToolResult,
   Theme,
-  ThemeColor,
   ToolRenderResultOptions,
 } from "@earendil-works/pi-coding-agent";
 import { Text } from "@earendil-works/pi-tui";
-import type { Question, Result } from "./types.js";
+import type { Answer, Question, Result } from "./types.js";
 
-/**
- * Truncate plain text to maxWidth, then apply a theme color.
- *
- * We truncate before applying ANSI codes so that `theme.fg` wraps only clean
- * text — otherwise embedded resets cause background color bleed on light themes.
- */
-function styledTruncate(
-  theme: Theme,
-  colorKey: ThemeColor,
-  text: string,
-  maxWidth: number,
-  ellipsis = "...",
+function getQuestionForAnswer(
+  questions: Question[],
+  answer: Answer,
+): Question | undefined {
+  return questions.find((question) => question.id === answer.id);
+}
+
+function getQuestionText(
+  question: Question | undefined,
+  answer: Answer,
 ): string {
-  if (maxWidth <= 0) return "";
-  if (maxWidth <= ellipsis.length) return ellipsis.slice(0, maxWidth);
-  const truncated =
-    text.length <= maxWidth
-      ? text
-      : text.slice(0, maxWidth - ellipsis.length) + ellipsis;
-  return theme.fg(colorKey, truncated);
+  return (
+    question?.prompt || question?.label || answer.id || "(missing question)"
+  );
+}
+
+function getAnswerText(answer: Answer): string {
+  const answerLabel =
+    answer.label || answer.value || answer.id || "(missing answer)";
+  return answer.wasCustom ? `(wrote) ${answerLabel}` : answerLabel;
+}
+
+function renderCollapsedResult(result: Result, theme: Theme): string {
+  return result.answers
+    .map((answer) => {
+      const question = getQuestionForAnswer(result.questions, answer);
+      const prompt = getQuestionText(question, answer);
+      const selectedAnswer = getAnswerText(answer);
+      const prefix = theme.fg("accent", `✓ ${prompt}:`);
+      const value = theme.fg("text", ` ${selectedAnswer}`);
+      return `${prefix}${value}`;
+    })
+    .join("\n");
+}
+
+function renderExpandedResult(result: Result, theme: Theme): string {
+  return result.answers
+    .map((answer, index) => {
+      const question = getQuestionForAnswer(result.questions, answer);
+      const prompt = getQuestionText(question, answer);
+      const selectedAnswer = getAnswerText(answer);
+      const options = question?.options ?? [];
+
+      const lines = [
+        theme.fg("success", `✓ Question ${index + 1}`),
+        `${theme.fg("dim", "  Prompt: ")}${theme.fg("text", prompt)}`,
+      ];
+
+      if (options.length > 0) {
+        lines.push(theme.fg("dim", "  Options:"));
+        options.forEach((option) => {
+          const isSelected = !answer.wasCustom && option.value === answer.value;
+          const marker = isSelected
+            ? theme.fg("success", "    ✓ ")
+            : theme.fg("muted", "      ");
+          const optionLabel = theme.fg(
+            isSelected ? "accent" : "text",
+            option.label || option.value || "(missing answer)",
+          );
+          lines.push(`${marker}${optionLabel}`);
+          if (option.description) {
+            lines.push(
+              `${theme.fg("muted", "      ")}${theme.fg("muted", option.description)}`,
+            );
+          }
+        });
+      }
+
+      return lines.join("\n");
+    })
+    .join("\n\n");
 }
 
 export function renderCall(args: any, theme: Theme): Text {
-  const qs = (args.questions as Question[]) || [];
-  let text = theme.fg("toolTitle", theme.bold("ask-user-question "));
-  text += theme.fg(
-    "muted",
-    `${qs.length} question${qs.length !== 1 ? "s" : ""}`,
-  );
-  const labels = qs.map((q) => q.label || q.id).join(", ");
-  if (labels) text += styledTruncate(theme, "dim", ` ${labels}`, 40);
+  const questions = (args.questions as Question[]) || [];
+  const text =
+    theme.fg("toolTitle", theme.bold("ask-user-question ")) +
+    theme.fg(
+      "muted",
+      `${questions.length} question${questions.length !== 1 ? "s" : ""}`,
+    );
+
   return new Text(text, 0, 0);
 }
 
 export function renderResult(
   result: AgentToolResult<Result>,
-  _opts: ToolRenderResultOptions,
+  opts: ToolRenderResultOptions,
   theme: Theme,
 ): Text {
-  const d = result.details as Result | undefined;
-  if (!d) {
+  const details = result.details as Result | undefined;
+  if (!details) {
     const text =
       result.content[0]?.type === "text" ? result.content[0].text : "";
     return new Text(text, 0, 0);
   }
-  if (d.cancelled) return new Text(theme.fg("warning", "Cancelled"), 0, 0);
-  return new Text(
-    d.answers
-      .map((a) => {
-        const display = a.wasCustom
-          ? `${theme.fg("muted", "(wrote) ")}${a.label}`
-          : a.index
-            ? `${a.index}. ${a.label}`
-            : a.label;
-        return `${theme.fg("success", "✓ ")}${theme.fg("accent", a.id)}: ${display}`;
-      })
-      .join("\n"),
-    0,
-    0,
-  );
+
+  if (details.cancelled) {
+    return new Text(theme.fg("warning", "Cancelled"), 0, 0);
+  }
+
+  const text = opts.expanded
+    ? renderExpandedResult(details, theme)
+    : renderCollapsedResult(details, theme);
+
+  return new Text(text, 0, 0);
 }
