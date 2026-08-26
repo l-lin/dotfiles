@@ -4,14 +4,15 @@ description: Use when creating GitHub Pull Request.
 disable-model-invocation: true
 ---
 
-Create a PR description with `gh` CLI with a clear, reviewer-friendly description. Follow the `clear-writing` skill for the prose.
+Create a PR description with `gh` CLI with a clear, reviewer-friendly description.
 
 ## Workflow
 
 1. Find the Jira ticket in the branch name (e.g. `FEAT-456-add-auth`)
 2. Invoke the `jira` skill to fetch the Jira url
-3. Draft the description with the template below
-4. Create the PR as a draft or update PR description
+3. Load `clear-writing` skill
+4. Draft the description with the template below
+5. Create the PR as a draft or update PR description
 
 ## PR Description Template
 
