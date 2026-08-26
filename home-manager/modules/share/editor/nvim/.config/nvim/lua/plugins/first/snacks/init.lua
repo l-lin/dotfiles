@@ -144,6 +144,37 @@ local function deduplicate_lsp_items(item, ctx)
   return item
 end
 
+---@param path string|nil
+---@return boolean
+local function is_java_or_kotlin_test_file(path)
+  return path ~= nil and path:match("(Test|IT)%.(java|kt)$") ~= nil
+end
+
+---@type snacks.picker.transform
+local function demote_java_or_kotlin_test_files(item)
+  if is_java_or_kotlin_test_file(item.file or item.text) then
+    item.score_mul = 0.5
+  end
+  return item
+end
+
+---@param ... snacks.picker.transform
+---@return snacks.picker.transform
+local function chain_item_transforms(...)
+  local transforms = { ... }
+
+  return function(item, ctx)
+    for _, transform in ipairs(transforms) do
+      local actual = transform(item, ctx)
+      if actual == false then
+        return false
+      end
+      item = type(actual) == "table" and actual or item
+    end
+    return item
+  end
+end
+
 local function setup()
   local gh_diff_tree = require("plugins.first.snacks.gh_diff_tree")
   local gh_pr_authored = require("plugins.first.snacks.gh_pr_authored")
@@ -207,6 +238,8 @@ local function setup()
       sources = {
         files = {
           focus = "input",
+          matcher = { sort_empty = true },
+          transform = demote_java_or_kotlin_test_files,
           actions = {
             edit_file = edit_file,
             switch_to_grep = switch_to_grep,
@@ -227,6 +260,8 @@ local function setup()
         },
         git_files = {
           focus = "input",
+          matcher = { sort_empty = true },
+          transform = demote_java_or_kotlin_test_files,
           actions = {
             edit_file = edit_file,
             switch_to_grep = switch_to_grep,
@@ -396,8 +431,8 @@ local function setup()
           },
         },
         select = { focus = "input" },
-        lsp_definitions = { transform = deduplicate_lsp_items },
-        lsp_references = { transform = deduplicate_lsp_items },
+        lsp_definitions = { transform = chain_item_transforms(deduplicate_lsp_items, demote_java_or_kotlin_test_files) },
+        lsp_references = { transform = chain_item_transforms(deduplicate_lsp_items, demote_java_or_kotlin_test_files) },
       },
       win = {
         input = {
