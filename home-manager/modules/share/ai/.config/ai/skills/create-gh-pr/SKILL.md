@@ -10,7 +10,7 @@ Create a PR description with `gh` CLI with a clear, reviewer-friendly descriptio
 
 1. Find the Jira ticket in the branch name (e.g. `FEAT-456-add-auth`)
 2. Invoke the `jira` skill to fetch the Jira url
-3. Load `clear-writing` skill
+3. Load `clear-writing` skill and use simple words
 4. Draft the description with the template below
 5. Create the PR as a draft or update PR description
 
@@ -19,12 +19,12 @@ Create a PR description with `gh` CLI with a clear, reviewer-friendly descriptio
 ```
 ## [JIRA-123](https://atlassian.net/browse/JIRA-123)
 
-One paragraph: what this PR does and why.
+Description of what this PR does and why. Use bullet points.
 
 ### Diagram
 
-Optional. Add only if a picture clarifies the change (flow, sequence, component map).
-Use a `mermaid` blocks. Skip this section otherwise.
+Add picture to clarify the change (flow, sequence, component map).
+Use a `mermaid` blocks.
 
 ### Notes for reviewers
 
