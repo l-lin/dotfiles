@@ -53,6 +53,8 @@ Ask the quiz in chat with `ask-user-question` instead of embedding it in the fil
 - Use exactly five multiple-choice questions.
 - Make them medium difficulty, focused on the substance of the explanation.
 - Avoid gotchas, file-name trivia, and questions answerable from a skim.
+- Do not make the correct answer easy to spot by length, detail, or tone. Vary option lengths across all choices, and make distractors plausible.
+- When one option needs extra specificity, balance the set by giving similar specificity to at least one distractor.
 - Ask one question at a time so you can respond with whether the answer was correct and give brief feedback before moving on.
 
 ## Final checklist
@@ -66,4 +68,5 @@ Before delivery, verify:
 - the main idea is obvious from the first screenful;
 - long labels are explained outside the diagram;
 - explanations keep the file quiz-free and use `ask-user-question` for the five-question interactive quiz;
+- correct quiz answers are not systematically longer or more detailed than distractors;
 - the document is self-contained and does not rely on HTML, CSS, or JS.

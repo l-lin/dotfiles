@@ -65,6 +65,8 @@ Build the quiz into the HTML page itself.
 - Use exactly five multiple-choice questions.
 - Test the explanation's key ideas, behavior, tradeoffs, risks, implementation shape, or sequence, depending on the topic.
 - Avoid gotchas, naming trivia, and details the reader could answer without understanding the material.
+- Do not make the correct answer easy to spot by length, detail, or tone. Vary option lengths across all choices, and make distractors plausible.
+- When one option needs extra specificity, balance the set by giving similar specificity to at least one distractor.
 - Make the interaction obvious and lightweight: radio buttons or buttons are fine.
 - After a choice, show whether it was correct and give short feedback tied to the explanation.
 
@@ -81,4 +83,5 @@ Before delivery, verify:
 - Mermaid diagrams use `diagram-shell` with zoom/pan/expand;
 - slides fit one viewport, include carousel dots, and preserve source coverage;
 - pages include a five-question interactive multiple-choice quiz with answer feedback;
+- correct quiz answers are not systematically longer or more detailed than distractors;
 - visual hierarchy makes the main idea obvious in the first viewport;

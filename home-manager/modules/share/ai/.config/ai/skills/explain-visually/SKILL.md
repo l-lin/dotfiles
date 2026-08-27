@@ -6,10 +6,9 @@ disable-model-invocation: true
 
 Explain the topic with visual cues.
 
-1. Check whether the user explicitly chose `ascii`, `html`, or `mermaid`.
+1. Check whether the user explicitly chose `ascii` or `html`
 2. If not, default to `ASCII`.
 3. Apply the matching reference:
    - `ascii`: `./references/ASCII.md`
    - `html`: `./references/HTML.md`
-   - `mermaid`: `./references/MERMAID.md`
 4. Do not ask which format to use unless the user explicitly wants an interactive choice.
