@@ -78,14 +78,14 @@ local function todo(ctx)
     table.insert(t, "- [ ] [[1o1 - " .. month .. "]]")
   end
   if day_of_week == "5" then
-    table.insert(t, "- [ ] update [[career progress]] with `/project-checkpoint`")
+    table.insert(t, "- [ ] update [[career progress]] with `/skill:review-projects`")
     table.insert(t, "- [ ] [[workday]]: enter your time")
   end
   if day_of_week == "6" then
-    table.insert(t, "- [ ] run weekly AI skill evaluation with `/weekly-ai-skills-review`")
+    table.insert(t, "- [ ] run weekly AI skill evaluation with `/skill:review-weekly-ai-skills`")
   end
   if day_of_week == "7" then
-    table.insert(t, "- [ ] [[" .. month .. "]]: weekly journal with `/weekly`")
+    table.insert(t, "- [ ] [[" .. month .. "]]: weekly journal with `/skill:review-week`")
     table.insert(t, "- [ ] update main quests")
   end
 
