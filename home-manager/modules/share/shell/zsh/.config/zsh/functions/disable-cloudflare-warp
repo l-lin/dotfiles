@@ -1,0 +1,32 @@
+#!/usr/bin/env zsh
+#
+# Keep Cloudflare WARP disconnected by checking its status every second.
+#
+
+if ! command -v warp-cli >/dev/null 2>&1; then
+  print -u2 'warp-cli is not installed'
+  exit 1
+fi
+
+print 'Watching Cloudflare WARP. Press Ctrl-C to stop.'
+
+while true; do
+  status_json="$(warp-cli --json status 2>/dev/null)"
+
+  if [[ -z "$status_json" ]]; then
+    print -u2 'Could not read Cloudflare WARP status'
+    sleep 1
+    continue
+  fi
+
+  case "$status_json" in
+    *'"status": "Disconnected"'*)
+      ;;
+    *)
+      warp-cli disconnect >/dev/null 2>&1 || print -u2 'Could not disconnect Cloudflare WARP'
+      ;;
+  esac
+
+  sleep 1
+done
+
