@@ -42,6 +42,10 @@ This repo contains local Pi extensions. In practice, each top-level directory wi
    Do instead: extend the nearest existing pattern before inventing a new one.
 5. **Shared snippet triggers are hyphenated, and discovery is separate from expansion.**
    Do instead: allow `-` when parsing snippet prefixes in `awesome-editor/`, keep fuzzy autocomplete changes local there, and leave exact send-time replacement in `snippet/` alone unless expansion semantics must change.
+6. **Use Pi overlays and cursor-aware editor insertion for modal workflows.**
+   Do instead: build terminal dialogs with `ctx.ui.custom(..., { overlay: true })` and call `ctx.ui.pasteToEditor(...)` before the overlay's `done()` callback so the close-triggered render shows the inserted text while Pi preserves the composer cursor.
+7. **Keep extension-only settings under Pi's shared settings file.**
+   Do instead: store them under `extensionSettings` in `~/.pi/agent/settings.json` and preserve sibling settings when updating the file.
 
 ## When you add, remove, or rename an extension
 
