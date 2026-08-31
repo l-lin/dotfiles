@@ -50,5 +50,13 @@
   },
   "packages": [
     "npm:pi-mcp-adapter@2.11.0"
+  ],
+  "enabledModels": [
+    "github-copilot/gpt-5.6-luna",
+    "github-copilot/gpt-5.6-terra",
+    "github-copilot/claude-opus-5",
+    "github-copilot/claude-sonnet-5",
+    "github-copilot/claude-haiku-4-5",
+    "llama-cpp/qwen3.6"
   ]
 }
