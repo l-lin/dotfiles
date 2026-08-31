@@ -2,7 +2,7 @@
   "lastChangelogVersion": "0.84.4",
   "theme": "light",
   "defaultProvider": "llama-cpp",
-  "defaultModel": "ornith1.0",
+  "defaultModel": "qwen3.6",
   "enableInstallTelemetry": false,
   "enableAnalytics": false,
   "outputPad": 0,
@@ -14,7 +14,7 @@
     "~/.config/ai/commands"
   ],
   "quietStartup": true,
-  "defaultThinkingLevel": "high",
+  "defaultThinkingLevel": "medium",
   "compaction": {
     "enabled": false
   },
@@ -36,7 +36,7 @@
       "keybind": "alt-m"
     },
     "sandbox": {
-      "enabled": true
+      "enabled": false
     },
     "damageControl": {
       "enabled": true
