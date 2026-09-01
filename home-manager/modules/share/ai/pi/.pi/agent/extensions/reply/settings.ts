@@ -1,4 +1,3 @@
-import type { KeyId } from "@earendil-works/pi-tui";
 import type { ReplyKeymap } from "./component.js";
 
 export const REPLY_KEYMAP: ReplyKeymap = {
@@ -41,4 +40,12 @@ export const REPLY_KEYMAP: ReplyKeymap = {
   tillBackward: "shift+t",
   repeatForward: ";",
   repeatBackward: ",",
+
+  // Text search.
+  searchForward: "/",
+  searchBackward: "?",
+  searchNext: "n",
+  searchPrevious: "shift+n",
+  wordSearchForward: "*",
+  wordSearchBackward: "#",
 };

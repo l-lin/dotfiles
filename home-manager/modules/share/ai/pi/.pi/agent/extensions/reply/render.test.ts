@@ -42,6 +42,8 @@ function given_renderer(
       hasCommentInput: false,
       focused: false,
       ...state,
+      searchMatches: state.searchMatches ?? [],
+      currentSearchMatch: state.currentSearchMatch ?? null,
     },
   );
 }
@@ -97,6 +99,40 @@ test("reply renderer GIVEN a source line WHEN building rows THEN omits the line-
 
   assert.match(actual, /^one +$/);
   assert.doesNotMatch(actual, /│/);
+});
+
+test("reply renderer GIVEN search matches WHEN building source rows THEN highlights every match and distinguishes the current one", () => {
+  const theme = {
+    ...given_theme(),
+    bg(color: string, text: string) {
+      return color === "searchMatchBg" ? `[search]${text}[/search]` : text;
+    },
+    fg(color: string, text: string) {
+      return color === "searchMatchText" ? `[current]${text}[/current]` : text;
+    },
+  };
+  const renderer = new ReplyRenderer(
+    theme as never,
+    createSourceDocument("foo bar foo"),
+    [],
+    {
+      cursor: { line: 0, grapheme: 0 },
+      activeSelection: null,
+      searchMatches: [
+        { start: 0, end: 3 },
+        { start: 8, end: 11 },
+      ],
+      currentSearchMatch: { start: 8, end: 11 },
+      hasCommentInput: false,
+      focused: false,
+    },
+  );
+
+  const actual = renderer.buildDisplayRows(30)[0]!.content;
+
+  assert.match(actual, /\[search\]f\[\/search\]/);
+  assert.match(actual, /\[search\]o\[\/search\]\[search\]o/);
+  assert.match(actual, /\[current\]\[search\]f\[\/search\]\[\/current\]/);
 });
 
 test("reply renderer GIVEN tab and wide graphemes WHEN converting columns THEN uses terminal display cells", () => {

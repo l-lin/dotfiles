@@ -71,6 +71,13 @@ function then_cursor(component: ReplyComponent): {
   };
 }
 
+function then_render_text(component: ReplyComponent): string {
+  return component
+    .render(50)
+    .join("\n")
+    .replace(/\x1b\[[0-9;]*m/gu, "");
+}
+
 test("reply component GIVEN a source message WHEN selecting characters and submitting a comment THEN returns the annotated blocks on save", () => {
   const { component, getResult } = given_component("hello\nworld");
 
@@ -398,6 +405,221 @@ test("reply component GIVEN a pending g sequence WHEN receiving gj THEN uses dis
   const expected = { line: 1, grapheme: 0 };
 
   assert.deepEqual(actual, expected);
+});
+
+test("reply component GIVEN repeated literal text WHEN searching live THEN shows the count and navigates with n and N", () => {
+  const { component } = given_component("foo bar foo");
+
+  component.handleInput("/");
+  const actualEmptyPrompt = component.render(50).join("\n");
+  assert.match(actualEmptyPrompt, /\/\x1b\[7m \x1b\[27m/);
+  when_typing(component, "foo");
+  component.handleInput("\r");
+
+  const actualFirst = {
+    cursor: then_cursor(component),
+    render: then_render_text(component),
+  };
+  component.handleInput("n");
+  const actualSecond = {
+    cursor: then_cursor(component),
+    render: then_render_text(component),
+  };
+  component.handleInput("N");
+  const actualPrevious = then_cursor(component);
+  const expected = {
+    firstCursor: { line: 0, grapheme: 0 },
+    secondCursor: { line: 0, grapheme: 8 },
+    previousCursor: { line: 0, grapheme: 0 },
+  };
+
+  assert.deepEqual(actualFirst.cursor, expected.firstCursor);
+  assert.equal(actualFirst.render.includes("/foo [1/2]"), true);
+  assert.deepEqual(actualSecond.cursor, expected.secondCursor);
+  assert.equal(actualSecond.render.includes("/foo [2/2]"), true);
+  assert.deepEqual(actualPrevious, expected.previousCursor);
+});
+
+test("reply component GIVEN an empty search prompt WHEN Enter is pressed THEN clears the search", () => {
+  const { component } = given_component("foo bar");
+
+  component.handleInput("/");
+  component.handleInput("\r");
+
+  const actual = then_render_text(component);
+
+  assert.equal(actual.includes("/"), false);
+});
+
+test("reply component GIVEN an accepted search WHEN an empty replacement is submitted THEN clears the previous search", () => {
+  const { component } = given_component("foo bar");
+
+  when_typing(component, "/foo");
+  component.handleInput("\r");
+  component.handleInput("/");
+  component.handleInput("\r");
+
+  const actual = then_render_text(component);
+
+  assert.equal(actual.includes("/foo"), false);
+});
+
+test("reply component GIVEN a search with no results WHEN typing live THEN shows a dash index over zero matches", () => {
+  const { component } = given_component("foo bar");
+
+  when_typing(component, "/missing");
+
+  const actual = then_render_text(component);
+  const expected = "/missing [-/0]";
+
+  assert.equal(actual.includes(expected), true);
+});
+
+test("reply component GIVEN a backward search WHEN typing a newline escape THEN searches the full raw source", () => {
+  const { component } = given_component("first\nsecond first");
+
+  when_typing(component, "/\\nse");
+  component.handleInput("\r");
+  component.handleInput("G");
+  component.handleInput("$");
+  when_typing(component, "?first");
+  component.handleInput("\r");
+
+  const actual = {
+    cursor: then_cursor(component),
+    render: then_render_text(component),
+  };
+  const expected = {
+    cursor: { line: 1, grapheme: 7 },
+    status: "?first [2/2]",
+  };
+
+  assert.deepEqual(actual.cursor, expected.cursor);
+  assert.equal(actual.render.includes(expected.status), true);
+});
+
+test("reply component GIVEN an accepted search WHEN cancelling a replacement search THEN restores the cursor and prior search", () => {
+  const { component } = given_component("foo bar foo");
+
+  when_typing(component, "/foo");
+  component.handleInput("\r");
+  component.handleInput("l");
+  when_typing(component, "/bar");
+  assert.deepEqual(then_cursor(component), { line: 0, grapheme: 4 });
+  component.handleInput("\x1b");
+
+  const actual = {
+    cursor: then_cursor(component),
+    render: then_render_text(component),
+  };
+  const expectedCursor = { line: 0, grapheme: 1 };
+
+  assert.deepEqual(actual.cursor, expectedCursor);
+  assert.equal(actual.render.includes("/foo [1/2]"), true);
+  assert.equal(actual.render.includes("/bar"), false);
+});
+
+test("reply component GIVEN a keyword under the cursor WHEN using star and hash THEN searches the current word with Vim directions", () => {
+  const { component } = given_component("foo bar foo");
+
+  component.handleInput("*");
+  const actualStar = {
+    cursor: then_cursor(component),
+    render: then_render_text(component),
+  };
+  component.handleInput("n");
+  component.handleInput("#");
+  const actualHash = {
+    cursor: then_cursor(component),
+    render: then_render_text(component),
+  };
+
+  assert.deepEqual(actualStar.cursor, { line: 0, grapheme: 0 });
+  assert.equal(actualStar.render.includes("/foo [1/2]"), true);
+  assert.deepEqual(actualHash.cursor, { line: 0, grapheme: 8 });
+  assert.equal(actualHash.render.includes("?foo [2/2]"), true);
+});
+
+test("reply component GIVEN a cursor on punctuation WHEN using star THEN leaves the previous search unchanged", () => {
+  const { component } = given_component("foo-bar");
+
+  when_typing(component, "lll");
+  component.handleInput("*");
+
+  const actual = {
+    cursor: then_cursor(component),
+    render: then_render_text(component),
+  };
+
+  assert.deepEqual(actual.cursor, { line: 0, grapheme: 3 });
+  assert.equal(actual.render.includes("[-/"), false);
+});
+
+test("reply component GIVEN a visual selection WHEN searching live THEN keeps its anchor while moving the endpoint", () => {
+  const { component } = given_component("foo bar foo");
+
+  component.handleInput("v");
+  component.handleInput("l");
+  when_typing(component, "/bar");
+
+  const actual = {
+    cursor: then_cursor(component),
+    mode: (component as unknown as { mode: string }).mode,
+    anchor: (
+      component as unknown as {
+        visualAnchor: { line: number; grapheme: number };
+      }
+    ).visualAnchor,
+  };
+  const expected = {
+    cursor: { line: 0, grapheme: 4 },
+    mode: "visual",
+    anchor: { line: 0, grapheme: 0 },
+  };
+
+  assert.deepEqual(actual, expected);
+});
+
+test("reply component GIVEN an annotation WHEN searching live THEN keeps the comment box visible with the search prompt", () => {
+  const { component } = given_component("foo bar");
+
+  component.handleInput("v");
+  component.handleInput("l");
+  component.handleInput("\x1bc");
+  when_typing(component, "Review this");
+  component.handleInput("\r");
+  when_typing(component, "/bar");
+
+  const actual = then_render_text(component);
+
+  assert.match(actual, /Review this/);
+  assert.equal(actual.includes("/bar [1/1]"), true);
+});
+
+test("reply component GIVEN a refresh callback WHEN Ctrl-R is pressed THEN replaces the source and clears the draft", () => {
+  const tui = given_tui();
+  let refreshed = false;
+  const component = new ReplyComponent(
+    tui.tui as never,
+    given_theme() as never,
+    "old text",
+    REPLY_KEYMAP,
+    () => {},
+    undefined,
+    () => {
+      refreshed = true;
+      return "new text";
+    },
+  );
+
+  when_typing(component, "/old");
+  component.handleInput("\x12");
+
+  const actual = then_render_text(component);
+
+  assert.equal(refreshed, true);
+  assert.match(actual, /new text/);
+  assert.doesNotMatch(actual, /old text/);
 });
 
 test("reply component GIVEN an unsupported g sequence WHEN receiving the second key THEN processes that key normally", () => {

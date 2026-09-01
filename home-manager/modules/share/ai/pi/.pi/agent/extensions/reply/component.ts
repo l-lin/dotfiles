@@ -11,10 +11,19 @@ import {
 } from "@earendil-works/pi-tui";
 import {
   createSourceDocument,
+  cursorOffset,
+  cursorPositionAtSearchMatch,
+  decodeSearchQuery,
+  findKeywordAtCursor,
+  findKeywordSearchMatches,
+  findLiteralSearchMatches,
   formatAnnotatedText,
   getSelectionRange,
+  searchMatchContainsCursor,
   type Annotation,
   type CursorPosition,
+  type SearchDirection,
+  type SearchMatch,
   type SourceDocument,
   type VisualMode,
 } from "./model.js";
@@ -64,6 +73,12 @@ export interface ReplyKeymap {
   tillBackward: KeyId;
   repeatForward: KeyId;
   repeatBackward: KeyId;
+  searchForward: KeyId;
+  searchBackward: KeyId;
+  searchNext: KeyId;
+  searchPrevious: KeyId;
+  wordSearchForward: KeyId;
+  wordSearchBackward: KeyId;
 }
 
 export interface ReplyComponentResult {
@@ -75,16 +90,40 @@ type CommentInputState = {
   input: Input;
 };
 
+type SearchState = {
+  query: string;
+  prefix: "/" | "?";
+  direction: SearchDirection;
+  matches: SearchMatch[];
+  currentIndex: number;
+};
+
+type SearchInputState = {
+  input: Input;
+  direction: SearchDirection;
+  prefix: "/" | "?";
+  before: SearchSnapshot;
+};
+
+type SearchSnapshot = {
+  cursor: CursorPosition;
+  preferredColumn: number | null;
+  mode: "normal" | "visual";
+  visualAnchor: CursorPosition | null;
+  search: SearchState | null;
+};
+
 export class ReplyComponent implements Component, Focusable {
   focused = false;
 
   private readonly tui: TUI;
   private readonly theme: Theme;
   private readonly done: (result: ReplyComponentResult) => void;
-  private readonly document: SourceDocument;
+  private document: SourceDocument;
   private readonly keymap: ReplyKeymap;
   private readonly annotations: Annotation[] = [];
   private readonly onSave?: (text: string) => void;
+  private readonly onRefresh?: () => string | null;
 
   private cursor: CursorPosition = { line: 0, grapheme: 0 };
   private preferredColumn: number | null = null;
@@ -92,6 +131,8 @@ export class ReplyComponent implements Component, Focusable {
   private visualMode: VisualMode = "character";
   private visualAnchor: CursorPosition | null = null;
   private commentInput: CommentInputState | null = null;
+  private searchInput: SearchInputState | null = null;
+  private search: SearchState | null = null;
   private pendingG = false;
   private pendingCharMotion: CharMotion | null = null;
   private lastCharMotion: LastCharMotion | null = null;
@@ -105,6 +146,7 @@ export class ReplyComponent implements Component, Focusable {
     keymap: ReplyKeymap,
     done: (result: ReplyComponentResult) => void,
     onSave?: (text: string) => void,
+    onRefresh?: () => string | null,
   ) {
     this.tui = tui;
     this.theme = theme;
@@ -112,9 +154,19 @@ export class ReplyComponent implements Component, Focusable {
     this.keymap = keymap;
     this.done = done;
     this.onSave = onSave;
+    this.onRefresh = onRefresh;
   }
 
   handleInput(data: string): void {
+    if (this.searchInput) {
+      if (matchesKey(data, this.keymap.open)) {
+        this.restart();
+      } else {
+        this.handleSearchInput(data);
+      }
+      return;
+    }
+
     if (this.pendingG) {
       this.handlePendingG(data);
       return;
@@ -133,6 +185,26 @@ export class ReplyComponent implements Component, Focusable {
     if (this.commentInput) {
       this.commentInput.input.handleInput(data);
       this.tui.requestRender();
+      return;
+    }
+
+    if (matchesKey(data, this.keymap.searchForward)) {
+      this.beginSearch("forward", "/");
+      return;
+    }
+
+    if (matchesKey(data, this.keymap.searchBackward)) {
+      this.beginSearch("backward", "?");
+      return;
+    }
+
+    if (matchesKey(data, this.keymap.wordSearchForward)) {
+      this.searchWord("forward");
+      return;
+    }
+
+    if (matchesKey(data, this.keymap.wordSearchBackward)) {
+      this.searchWord("backward");
       return;
     }
 
@@ -248,6 +320,9 @@ export class ReplyComponent implements Component, Focusable {
         : renderedInput;
       lines.push(this.frameLine(` # ${inputLine}`, innerWidth));
     }
+    const searchStatus = this.renderSearchStatus(innerWidth);
+    if (searchStatus !== null)
+      lines.push(this.frameLine(searchStatus, innerWidth));
     lines.push(this.bottomBorder(innerWidth));
     return lines;
   }
@@ -261,12 +336,23 @@ export class ReplyComponent implements Component, Focusable {
   }
 
   private restart(): void {
+    const refreshedSource = this.onRefresh
+      ? this.onRefresh()
+      : this.document.text;
+    if (refreshedSource === null) {
+      this.done({ action: "cancel" });
+      return;
+    }
+
+    this.document = createSourceDocument(refreshedSource);
     this.annotations.length = 0;
     this.cursor = { line: 0, grapheme: 0 };
     this.preferredColumn = null;
     this.mode = "normal";
     this.visualAnchor = null;
     this.commentInput = null;
+    this.searchInput = null;
+    this.search = null;
     this.pendingG = false;
     this.pendingCharMotion = null;
     this.lastCharMotion = null;
@@ -277,8 +363,220 @@ export class ReplyComponent implements Component, Focusable {
   private getViewportHeight(): number {
     const terminalRows = this.tui.terminal.rows;
     const frameRows = Math.floor(terminalRows * 0.85);
-    const fixedRows = this.commentInput ? 3 : 2;
+    const fixedRows =
+      2 +
+      (this.commentInput ? 1 : 0) +
+      (this.renderSearchStatus(this.lastInnerWidth) !== null ? 1 : 0);
     return Math.max(1, frameRows - fixedRows);
+  }
+
+  private handleSearchInput(data: string): void {
+    const searchInput = this.searchInput;
+    if (!searchInput) return;
+
+    const before = searchInput.input.getValue();
+    searchInput.input.handleInput(encodePastedNewlines(data));
+    if (!this.searchInput) return;
+
+    const query = searchInput.input.getValue();
+    if (query.length === 0) {
+      this.restoreSearchSnapshot(searchInput.before);
+    } else if (query !== before) {
+      this.updateLiveSearch(query);
+    }
+    this.tui.requestRender();
+  }
+
+  private beginSearch(direction: SearchDirection, prefix: "/" | "?"): void {
+    const input = new Input();
+    input.focused = this.focused;
+    const searchInput: SearchInputState = {
+      input,
+      direction,
+      prefix,
+      before: this.createSearchSnapshot(),
+    };
+    input.onSubmit = (query) => {
+      if (query.length === 0) {
+        this.clearSearch();
+        return;
+      }
+      this.updateLiveSearch(query);
+      this.searchInput = null;
+      this.tui.requestRender();
+    };
+    input.onEscape = () => this.cancelSearch();
+    this.searchInput = searchInput;
+    this.tui.requestRender();
+  }
+
+  private cancelSearch(): void {
+    const searchInput = this.searchInput;
+    if (!searchInput) return;
+    this.searchInput = null;
+    this.restoreSearchSnapshot(searchInput.before);
+    this.tui.requestRender();
+  }
+
+  private clearSearch(): void {
+    this.searchInput = null;
+    this.search = null;
+    this.tui.requestRender();
+  }
+
+  private updateLiveSearch(query: string): void {
+    const searchInput = this.searchInput;
+    if (!searchInput) return;
+
+    const decodedQuery = decodeSearchQuery(query);
+    const matches = findLiteralSearchMatches(this.document.text, decodedQuery);
+    const currentIndex = this.findSearchMatchIndex(
+      matches,
+      searchInput.direction,
+      cursorOffset(this.document, searchInput.before.cursor),
+      true,
+    );
+    this.search = {
+      query,
+      prefix: searchInput.prefix,
+      direction: searchInput.direction,
+      matches,
+      currentIndex,
+    };
+    if (currentIndex >= 0) this.moveToSearchMatch(matches[currentIndex]!);
+  }
+
+  private repeatSearch(direction: "same" | "opposite"): void {
+    if (!this.search || this.search.matches.length === 0) return;
+
+    const searchDirection =
+      direction === "same"
+        ? this.search.direction
+        : this.search.direction === "forward"
+          ? "backward"
+          : "forward";
+    const currentIndex = this.findSearchMatchIndex(
+      this.search.matches,
+      searchDirection,
+      cursorOffset(this.document, this.cursor),
+      false,
+    );
+    if (currentIndex < 0) return;
+
+    this.search.currentIndex = currentIndex;
+    this.moveToSearchMatch(this.search.matches[currentIndex]!);
+  }
+
+  private searchWord(direction: SearchDirection): void {
+    const keyword = findKeywordAtCursor(this.document, this.cursor);
+    if (keyword === null) return;
+
+    const matches = findKeywordSearchMatches(this.document, keyword);
+    const currentIndex = matches.findIndex((match) =>
+      searchMatchContainsCursor(this.document, match, this.cursor),
+    );
+    if (currentIndex < 0) return;
+
+    this.search = {
+      query: keyword,
+      prefix: direction === "forward" ? "/" : "?",
+      direction,
+      matches,
+      currentIndex,
+    };
+    this.moveToSearchMatch(matches[currentIndex]!);
+    this.tui.requestRender();
+  }
+
+  private findSearchMatchIndex(
+    matches: readonly SearchMatch[],
+    direction: SearchDirection,
+    offset: number,
+    includeCurrent: boolean,
+  ): number {
+    if (matches.length === 0) return -1;
+
+    if (includeCurrent) {
+      const currentIndex = matches.findIndex(
+        (match) => match.start <= offset && offset < match.end,
+      );
+      if (currentIndex >= 0) return currentIndex;
+    }
+
+    if (direction === "forward") {
+      const comparison = includeCurrent
+        ? (match: SearchMatch) => match.start >= offset
+        : (match: SearchMatch) => match.start > offset;
+      const nextIndex = matches.findIndex(comparison);
+      return nextIndex >= 0 ? nextIndex : 0;
+    }
+
+    const comparison = includeCurrent
+      ? (match: SearchMatch) => match.start <= offset
+      : (match: SearchMatch) => match.start < offset;
+    for (let index = matches.length - 1; index >= 0; index--) {
+      if (comparison(matches[index]!)) return index;
+    }
+    return matches.length - 1;
+  }
+
+  private moveToSearchMatch(match: SearchMatch): void {
+    this.cursor = cursorPositionAtSearchMatch(this.document, match);
+    this.preferredColumn = null;
+  }
+
+  private createSearchSnapshot(): SearchSnapshot {
+    return {
+      cursor: { ...this.cursor },
+      preferredColumn: this.preferredColumn,
+      mode: this.mode,
+      visualAnchor: this.visualAnchor ? { ...this.visualAnchor } : null,
+      search: this.cloneSearch(this.search),
+    };
+  }
+
+  private restoreSearchSnapshot(snapshot: SearchSnapshot): void {
+    this.cursor = { ...snapshot.cursor };
+    this.preferredColumn = snapshot.preferredColumn;
+    this.mode = snapshot.mode;
+    this.visualAnchor = snapshot.visualAnchor
+      ? { ...snapshot.visualAnchor }
+      : null;
+    this.search = this.cloneSearch(snapshot.search);
+  }
+
+  private cloneSearch(search: SearchState | null): SearchState | null {
+    return search
+      ? { ...search, matches: search.matches.map((match) => ({ ...match })) }
+      : null;
+  }
+
+  private renderSearchStatus(width: number): string | null {
+    const searchInput = this.searchInput;
+    if (searchInput) {
+      const query = searchInput.input.getValue();
+      const prefix = searchInput.prefix;
+      if (query.length === 0) {
+        const renderedInput =
+          searchInput.input.render(Math.max(3, width - prefix.length))[0] ?? "";
+        return `${prefix}${stripInputPrompt(renderedInput)}`;
+      }
+
+      const search = this.search;
+      if (!search) return null;
+      const index =
+        search.currentIndex < 0 ? "-" : String(search.currentIndex + 1);
+      const count = `[${index}/${search.matches.length}]`;
+      const queryWidth = Math.max(1, width - prefix.length - count.length - 1);
+      const renderedInput = searchInput.input.render(queryWidth + 2)[0] ?? "";
+      const renderedQuery = stripInputPrompt(renderedInput).replace(/ +$/u, "");
+      return `${prefix}${renderedQuery}${count}`;
+    }
+
+    if (!this.search) return null;
+    const index =
+      this.search.currentIndex < 0 ? "-" : String(this.search.currentIndex + 1);
+    return `${this.search.prefix}${this.search.query} [${index}/${this.search.matches.length}]`;
   }
 
   private handlePendingG(data: string): void {
@@ -343,6 +641,10 @@ export class ReplyComponent implements Component, Focusable {
       this.moveWord("backward", "start");
     else if (matchesKey(data, this.keymap.wordEnd))
       this.moveWord("forward", "end");
+    else if (matchesKey(data, this.keymap.searchNext))
+      this.repeatSearch("same");
+    else if (matchesKey(data, this.keymap.searchPrevious))
+      this.repeatSearch("opposite");
     else if (matchesKey(data, this.keymap.lineStart)) this.moveToColumn(0);
     else if (matchesKey(data, this.keymap.firstNonBlank))
       this.moveToColumn(firstNonBlankColumn(this.currentLineGraphemes()));
@@ -621,6 +923,11 @@ export class ReplyComponent implements Component, Focusable {
               this.visualMode,
             )
           : null,
+      searchMatches: this.search?.matches ?? [],
+      currentSearchMatch:
+        this.search && this.search.currentIndex >= 0
+          ? this.search.matches[this.search.currentIndex]!
+          : null,
       hasCommentInput: this.commentInput !== null,
       focused: this.focused,
     });
@@ -669,4 +976,18 @@ export class ReplyComponent implements Component, Focusable {
       this.theme.fg("border", "│")
     );
   }
+}
+
+function stripInputPrompt(renderedInput: string): string {
+  return renderedInput.startsWith("> ")
+    ? renderedInput.slice(2)
+    : renderedInput;
+}
+
+function encodePastedNewlines(data: string): string {
+  return data.replace(
+    /\x1b\[200~([\s\S]*?)\x1b\[201~/g,
+    (_match, content: string) =>
+      `\x1b[200~${content.replace(/\r\n?|\n/g, "\\n")}\x1b[201~`,
+  );
 }

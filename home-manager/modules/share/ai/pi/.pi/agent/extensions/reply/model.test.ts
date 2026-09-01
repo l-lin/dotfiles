@@ -2,6 +2,11 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   createSourceDocument,
+  cursorPositionAtSearchMatch,
+  decodeSearchQuery,
+  findKeywordAtCursor,
+  findKeywordSearchMatches,
+  findLiteralSearchMatches,
   formatAnnotatedText,
   fromAssistantContent,
   getSelectionRange,
@@ -69,4 +74,59 @@ test("reply model GIVEN annotations created out of source order WHEN formatting 
   const expected = "> another\n\nSecond comment\n\n> this\n\nFirst comment";
 
   assert.equal(actual, expected);
+});
+
+test("reply model GIVEN an escaped search query WHEN decoding it THEN converts newline escapes and preserves escaped backslashes", () => {
+  const actual = decodeSearchQuery(String.raw`before\nafter\\n`);
+  const expected = "before\nafter\\n";
+
+  assert.equal(actual, expected);
+});
+
+test("reply model GIVEN mixed-case raw text WHEN finding literal searches THEN applies ASCII smart case and Vim non-overlapping progression", () => {
+  const document = createSourceDocument("Foo foo FOO\nfoofoo");
+
+  const actual = findLiteralSearchMatches(document.text, "foo");
+  const expected = [
+    { start: 0, end: 3 },
+    { start: 4, end: 7 },
+    { start: 8, end: 11 },
+    { start: 12, end: 15 },
+    { start: 15, end: 18 },
+  ];
+
+  assert.deepEqual(actual, expected);
+});
+
+test("reply model GIVEN an uppercase search query WHEN finding literal searches THEN keeps matching case-sensitive", () => {
+  const actual = findLiteralSearchMatches("Foo foo FOO", "Foo");
+  const expected = [{ start: 0, end: 3 }];
+
+  assert.deepEqual(actual, expected);
+});
+
+test("reply model GIVEN a keyword under the cursor WHEN finding word searches THEN returns complete keyword occurrences only", () => {
+  const document = createSourceDocument("foo foobar foo");
+
+  const actual = {
+    keyword: findKeywordAtCursor(document, { line: 0, grapheme: 1 }),
+    matches: findKeywordSearchMatches(document, "foo"),
+  };
+  const expected = {
+    keyword: "foo",
+    matches: [
+      { start: 0, end: 3 },
+      { start: 11, end: 14 },
+    ],
+  };
+
+  assert.deepEqual(actual, expected);
+});
+
+test("reply model GIVEN a search match beginning with a newline WHEN mapping it to a cursor THEN lands on the first visible matched grapheme", () => {
+  const document = createSourceDocument("first\nsecond");
+  const actual = cursorPositionAtSearchMatch(document, { start: 5, end: 8 });
+  const expected = { line: 1, grapheme: 0 };
+
+  assert.deepEqual(actual, expected);
 });

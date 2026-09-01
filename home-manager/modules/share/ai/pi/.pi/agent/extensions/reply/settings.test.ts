@@ -33,6 +33,12 @@ test("reply settings GIVEN the built-in keymap WHEN reading it THEN returns ever
     tillBackward: "shift+t",
     repeatForward: ";",
     repeatBackward: ",",
+    searchForward: "/",
+    searchBackward: "?",
+    searchNext: "n",
+    searchPrevious: "shift+n",
+    wordSearchForward: "*",
+    wordSearchBackward: "#",
   };
 
   assert.deepEqual(actual, expected);

@@ -24,6 +24,13 @@ export interface SourceDocument {
   lines: SourceLine[];
 }
 
+export type SearchDirection = "forward" | "backward";
+
+export interface SearchMatch {
+  start: number;
+  end: number;
+}
+
 export interface SelectionRange {
   start: number;
   end: number;
@@ -103,6 +110,193 @@ export function createSourceDocument(text: string): SourceDocument {
   return { text: internalText, lines };
 }
 
+export function decodeSearchQuery(query: string): string {
+  let decoded = "";
+  for (let index = 0; index < query.length; index++) {
+    const character = query[index]!;
+    if (character !== "\\") {
+      decoded += character;
+      continue;
+    }
+
+    const next = query[index + 1];
+    if (next === "n") {
+      decoded += "\n";
+      index++;
+    } else if (next === "\\") {
+      decoded += "\\";
+      index++;
+    } else {
+      decoded += character;
+    }
+  }
+  return decoded;
+}
+
+export function findLiteralSearchMatches(
+  text: string,
+  query: string,
+): SearchMatch[] {
+  if (query.length === 0) return [];
+
+  const foldedText = foldAsciiCase(text, query);
+  const foldedQuery = foldAsciiCase(query, query);
+  const starts = [...graphemeSegmenter.segment(text)].map(
+    (segment) => segment.index,
+  );
+  const matches: SearchMatch[] = [];
+  let startIndex = 0;
+
+  while (startIndex < starts.length) {
+    const start = starts[startIndex]!;
+    if (!foldedText.startsWith(foldedQuery, start)) {
+      startIndex++;
+      continue;
+    }
+
+    const end = start + query.length;
+    matches.push({ start, end });
+    // Vim's literal search advances past a match before looking for the next
+    // one, so a match cannot overlap the previous match.
+    while (startIndex < starts.length && starts[startIndex]! < end) {
+      startIndex++;
+    }
+  }
+
+  return matches;
+}
+
+export function findKeywordAtCursor(
+  document: SourceDocument,
+  cursor: CursorPosition,
+): string | null {
+  const line = document.lines[cursor.line];
+  if (!line) return null;
+
+  const grapheme = line.graphemes[cursor.grapheme];
+  if (!grapheme || !isKeywordGrapheme(grapheme.text)) return null;
+
+  let start = cursor.grapheme;
+  while (start > 0 && isKeywordGrapheme(line.graphemes[start - 1]!.text)) {
+    start--;
+  }
+
+  let end = cursor.grapheme + 1;
+  while (
+    end < line.graphemes.length &&
+    isKeywordGrapheme(line.graphemes[end]!.text)
+  ) {
+    end++;
+  }
+
+  return line.graphemes
+    .slice(start, end)
+    .map((grapheme) => grapheme.text)
+    .join("");
+}
+
+export function findKeywordSearchMatches(
+  document: SourceDocument,
+  keyword: string,
+): SearchMatch[] {
+  return findLiteralSearchMatches(document.text, keyword).filter(
+    (match) =>
+      !isKeywordCodeUnit(document.text[match.start - 1]) &&
+      !isKeywordCodeUnit(document.text[match.end]),
+  );
+}
+
+export function cursorOffset(
+  document: SourceDocument,
+  cursor: CursorPosition,
+): number {
+  const line = document.lines[cursor.line];
+  if (!line) return 0;
+  const grapheme = line.graphemes[cursor.grapheme];
+  return line.start + (grapheme?.start ?? 0);
+}
+
+export function cursorPositionAtSearchMatch(
+  document: SourceDocument,
+  match: SearchMatch,
+): CursorPosition {
+  for (let lineIndex = 0; lineIndex < document.lines.length; lineIndex++) {
+    const line = document.lines[lineIndex]!;
+    for (
+      let graphemeIndex = 0;
+      graphemeIndex < line.graphemes.length;
+      graphemeIndex++
+    ) {
+      const grapheme = line.graphemes[graphemeIndex]!;
+      const start = line.start + grapheme.start;
+      const end = line.start + grapheme.end;
+      if (start < match.end && end > match.start) {
+        return { line: lineIndex, grapheme: graphemeIndex };
+      }
+    }
+  }
+
+  return cursorPositionAtOffset(document, match.start);
+}
+
+export function searchMatchContainsCursor(
+  document: SourceDocument,
+  match: SearchMatch,
+  cursor: CursorPosition,
+): boolean {
+  const offset = cursorOffset(document, cursor);
+  return offset >= match.start && offset < match.end;
+}
+
+function cursorPositionAtOffset(
+  document: SourceDocument,
+  offset: number,
+): CursorPosition {
+  const boundedOffset = Math.max(0, Math.min(offset, document.text.length));
+  for (let lineIndex = 0; lineIndex < document.lines.length; lineIndex++) {
+    const line = document.lines[lineIndex]!;
+    const lineEnd = line.start + line.text.length;
+    if (boundedOffset < lineEnd) {
+      const graphemeIndex = line.graphemes.findIndex(
+        (grapheme) => line.start + grapheme.end > boundedOffset,
+      );
+      return {
+        line: lineIndex,
+        grapheme:
+          graphemeIndex === -1
+            ? Math.max(0, line.graphemes.length - 1)
+            : graphemeIndex,
+      };
+    }
+    if (boundedOffset === lineEnd && lineIndex < document.lines.length - 1) {
+      return { line: lineIndex + 1, grapheme: 0 };
+    }
+  }
+
+  const lastLine = document.lines.length - 1;
+  return {
+    line: Math.max(0, lastLine),
+    grapheme: Math.max(
+      0,
+      (document.lines[lastLine]?.graphemes.length ?? 1) - 1,
+    ),
+  };
+}
+
+function foldAsciiCase(text: string, query: string): string {
+  return /[A-Z]/.test(query)
+    ? text
+    : text.replace(/[A-Z]/g, (character) => character.toLowerCase());
+}
+
+function isKeywordGrapheme(text: string): boolean {
+  return text.length === 1 && isKeywordCodeUnit(text);
+}
+
+function isKeywordCodeUnit(character: string | undefined): boolean {
+  return character !== undefined && /^[A-Za-z0-9_]$/.test(character);
+}
+
 export function getSelectionRange(
   document: SourceDocument,
   anchor: CursorPosition,
@@ -142,7 +336,7 @@ export function getSelectionRange(
 }
 
 export function selectionContainsOffset(
-  selection: SelectionRange,
+  selection: Pick<SelectionRange, "start" | "end">,
   start: number,
   end: number,
 ): boolean {

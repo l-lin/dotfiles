@@ -27,14 +27,31 @@ export default function replyExtension(pi: ExtensionAPI): void {
       let insertionError: unknown;
       const result = await ctx.ui.custom<ReplyComponentResult | undefined>(
         (tui, theme, _keybindings, done) =>
-          new ReplyComponent(tui, theme, source, keymap, done, (text) => {
-            try {
-              // Insert before closing so the overlay's render includes the updated editor.
-              ctx.ui.pasteToEditor(text);
-            } catch (error) {
-              insertionError = error;
-            }
-          }),
+          new ReplyComponent(
+            tui,
+            theme,
+            source,
+            keymap,
+            done,
+            (text) => {
+              try {
+                // Insert before closing so the overlay's render includes the updated editor.
+                ctx.ui.pasteToEditor(text);
+              } catch (error) {
+                insertionError = error;
+              }
+            },
+            () => {
+              const refreshedSource = getLastAssistantSource(ctx);
+              if (refreshedSource === null) {
+                ctx.ui.notify(
+                  "No text in the last assistant message to reply to.",
+                  "error",
+                );
+              }
+              return refreshedSource;
+            },
+          ),
         {
           overlay: true,
           overlayOptions: {

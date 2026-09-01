@@ -5,6 +5,7 @@ import {
   selectionContainsOffset,
   type Annotation,
   type CursorPosition,
+  type SearchMatch,
   type SelectionRange,
   type SourceDocument,
   type SourceLine,
@@ -29,6 +30,8 @@ type CommentDisplayRow = {
 export interface ReplyRenderState {
   cursor: CursorPosition;
   activeSelection: SelectionRange | null;
+  searchMatches: readonly SearchMatch[];
+  currentSearchMatch: SearchMatch | null;
   hasCommentInput: boolean;
   focused: boolean;
 }
@@ -154,6 +157,14 @@ export class ReplyRenderer {
         !this.state.hasCommentInput &&
         this.state.cursor.line === lineIndex &&
         this.state.cursor.grapheme === index;
+      const searchMatch = this.state.searchMatches.find((candidate) =>
+        selectionContainsOffset(candidate, globalStart, globalEnd),
+      );
+      const isCurrentSearchMatch =
+        searchMatch !== undefined &&
+        this.state.currentSearchMatch !== null &&
+        searchMatch.start === this.state.currentSearchMatch.start &&
+        searchMatch.end === this.state.currentSearchMatch.end;
 
       const displayText =
         grapheme.text === "\t"
@@ -161,7 +172,14 @@ export class ReplyRenderer {
           : grapheme.text;
       let styled = displayText;
       if (annotation) styled = this.theme.underline(styled);
-      if (selected) styled = this.theme.bg("selectedBg", styled);
+      if (selected) {
+        styled = this.theme.bg("selectedBg", styled);
+      } else if (searchMatch) {
+        styled = this.theme.bg("searchMatchBg", styled);
+        if (isCurrentSearchMatch) {
+          styled = this.theme.fg("searchMatchText", styled);
+        }
+      }
       if (isCursor) {
         const cursorContent = styled || " ";
         styled = `${this.cursorMarker()}${ANSI_REVERSE_ON}${cursorContent}${ANSI_REVERSE_OFF}`;
