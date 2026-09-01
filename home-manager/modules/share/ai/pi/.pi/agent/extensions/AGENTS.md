@@ -46,6 +46,8 @@ This repo contains local Pi extensions. In practice, each top-level directory wi
    Do instead: build terminal dialogs with `ctx.ui.custom(..., { overlay: true })` and call `ctx.ui.pasteToEditor(...)` before the overlay's `done()` callback so the close-triggered render shows the inserted text while Pi preserves the composer cursor.
 7. **Keep extension-only settings under Pi's shared settings file.**
    Do instead: store them under `extensionSettings` in `~/.pi/agent/settings.json` and preserve sibling settings when updating the file.
+8. **Keep wrapped-row motion aligned with rendering.**
+   Do instead: reuse `ReplyRenderer.buildDisplayRows(...)` and filter out comment rows instead of duplicating the wrapping algorithm.
 
 ## When you add, remove, or rename an extension
 

@@ -273,6 +273,38 @@ export function graphemeAtOrBeforeColumn(
   return line.graphemes.length - 1;
 }
 
+export function displayRowColumn(
+  line: SourceLine,
+  row: Pick<SourceDisplayRow, "startGrapheme">,
+  graphemeIndex: number,
+): number {
+  return cellColumn(line, graphemeIndex) - cellColumn(line, row.startGrapheme);
+}
+
+export function graphemeAtOrBeforeDisplayColumn(
+  line: SourceLine,
+  row: Pick<SourceDisplayRow, "startGrapheme" | "endGrapheme">,
+  targetColumn: number,
+): number {
+  if (row.startGrapheme >= row.endGrapheme) return row.startGrapheme;
+
+  const rowStartColumn = cellColumn(line, row.startGrapheme);
+  const desiredColumn = Math.max(0, targetColumn);
+  let column = rowStartColumn;
+  let selected = row.startGrapheme;
+
+  for (let index = row.startGrapheme; index < row.endGrapheme; index++) {
+    const width = cellWidth(line.graphemes[index]!.text, column);
+    const relativeColumn = column - rowStartColumn;
+    if (relativeColumn > desiredColumn) break;
+    selected = index;
+    if (desiredColumn < relativeColumn + width) return index;
+    column += width;
+  }
+
+  return selected;
+}
+
 function wrapPlainText(text: string, width: number): string[] {
   const segmenter = new Intl.Segmenter(undefined, { granularity: "grapheme" });
   const lines: string[] = [];

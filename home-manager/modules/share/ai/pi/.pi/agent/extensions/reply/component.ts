@@ -28,7 +28,9 @@ import {
 import type { CharMotion, LastCharMotion } from "../vim/types.js";
 import {
   cellColumn,
+  displayRowColumn,
   graphemeAtOrBeforeColumn,
+  graphemeAtOrBeforeDisplayColumn,
   ReplyRenderer,
   type DisplayRow,
 } from "./render.js";
@@ -273,6 +275,12 @@ export class ReplyComponent implements Component, Focusable {
       return;
     }
 
+    if (data === "j" || data === "k") {
+      this.moveDisplayRow(data === "j" ? 1 : -1);
+      this.tui.requestRender();
+      return;
+    }
+
     // A non-g key cancels the sequence, then starts its own normal command.
     this.handleInput(data);
   }
@@ -322,11 +330,11 @@ export class ReplyComponent implements Component, Focusable {
   }
 
   private moveHorizontal(direction: -1 | 1): void {
+    this.preferredColumn = null;
     const line = this.document.lines[this.cursor.line]!;
     const next = this.cursor.grapheme + direction;
     if (next >= 0 && next < line.graphemes.length) {
       this.cursor.grapheme = next;
-      this.preferredColumn = null;
     }
   }
 
@@ -406,6 +414,52 @@ export class ReplyComponent implements Component, Focusable {
     this.cursor = {
       line: nextLine,
       grapheme: graphemeAtOrBeforeColumn(targetLine, targetColumn),
+    };
+    this.preferredColumn = targetColumn;
+  }
+
+  private moveDisplayRow(direction: -1 | 1): void {
+    const renderer = this.createRenderer();
+    const sourceRows = renderer
+      .buildDisplayRows(this.lastInnerWidth)
+      .filter(
+        (row): row is Extract<DisplayRow, { kind: "source" }> =>
+          row.kind === "source",
+      );
+    const currentRowIndex = sourceRows.findIndex(
+      (row) =>
+        row.line === this.cursor.line &&
+        (row.startGrapheme === row.endGrapheme
+          ? this.cursor.grapheme === 0
+          : this.cursor.grapheme >= row.startGrapheme &&
+            this.cursor.grapheme < row.endGrapheme),
+    );
+    if (currentRowIndex < 0) return;
+
+    const targetRowIndex = Math.max(
+      0,
+      Math.min(sourceRows.length - 1, currentRowIndex + direction),
+    );
+    if (targetRowIndex === currentRowIndex) return;
+
+    const currentRow = sourceRows[currentRowIndex]!;
+    const targetRow = sourceRows[targetRowIndex]!;
+    const currentLine = this.document.lines[this.cursor.line]!;
+    const currentColumn = displayRowColumn(
+      currentLine,
+      currentRow,
+      this.cursor.grapheme,
+    );
+    const targetColumn = this.preferredColumn ?? currentColumn;
+    const targetLine = this.document.lines[targetRow.line]!;
+
+    this.cursor = {
+      line: targetRow.line,
+      grapheme: graphemeAtOrBeforeDisplayColumn(
+        targetLine,
+        targetRow,
+        targetColumn,
+      ),
     };
     this.preferredColumn = targetColumn;
   }

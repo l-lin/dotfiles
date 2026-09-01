@@ -3,7 +3,9 @@ import test from "node:test";
 import { createSourceDocument, type Annotation } from "./model.js";
 import {
   cellColumn,
+  displayRowColumn,
   graphemeAtOrBeforeColumn,
+  graphemeAtOrBeforeDisplayColumn,
   ReplyRenderer,
   type ReplyRenderState,
 } from "./render.js";
@@ -100,6 +102,29 @@ test("reply renderer GIVEN tab and wide graphemes WHEN converting columns THEN u
     afterTab: 4,
     beforeWideCharacter: 1,
     atWideCharacter: 2,
+  };
+
+  assert.deepEqual(actual, expected);
+});
+
+test("reply renderer GIVEN wrapped source rows WHEN mapping display columns THEN preserves row-relative positions and clamps short rows", () => {
+  const renderer = given_renderer("abcdefghij");
+  const rows = renderer
+    .buildDisplayRows(10)
+    .filter((row) => row.kind === "source");
+  const line = createSourceDocument("abcdefghij").lines[0]!;
+  const firstRow = rows[0]!;
+  const secondRow = rows[1]!;
+
+  const actual = {
+    currentColumn: displayRowColumn(line, secondRow, 7),
+    targetAtColumn: graphemeAtOrBeforeDisplayColumn(line, firstRow, 2),
+    targetPastEnd: graphemeAtOrBeforeDisplayColumn(line, firstRow, 20),
+  };
+  const expected = {
+    currentColumn: 2,
+    targetAtColumn: 2,
+    targetPastEnd: 4,
   };
 
   assert.deepEqual(actual, expected);

@@ -252,7 +252,143 @@ test("reply component GIVEN multiple source lines WHEN using gg and G THEN jumps
   assert.deepEqual(actualAtFirst, expectedAtFirst);
 });
 
-test("reply component GIVEN a pending g sequence WHEN receiving another motion THEN cancels g and processes that motion", () => {
+test("reply component GIVEN a wrapped source line WHEN using gj and gk THEN moves by display rows and preserves the screen column", () => {
+  const { component } = given_component("abcdefghij");
+  component.render(12);
+
+  when_typing(component, "lllllll");
+  when_typing(component, "gk");
+  const actualAtFirstRow = then_cursor(component);
+  when_typing(component, "gj");
+  const actualAtSecondRow = then_cursor(component);
+  const expectedAtFirstRow = { line: 0, grapheme: 2 };
+  const expectedAtSecondRow = { line: 0, grapheme: 7 };
+
+  assert.deepEqual(actualAtFirstRow, expectedAtFirstRow);
+  assert.deepEqual(actualAtSecondRow, expectedAtSecondRow);
+});
+
+test("reply component GIVEN character visual mode WHEN using gj THEN extends the source selection across wrapped rows", () => {
+  const { component, getResult } = given_component("abcdefghij");
+  component.render(12);
+
+  component.handleInput("v");
+  component.handleInput("g");
+  component.handleInput("j");
+  component.handleInput("\x1bc");
+  when_typing(component, "Review this");
+  component.handleInput("\r");
+  component.handleInput("\x13");
+
+  const actual = getResult();
+  const expected = {
+    action: "save",
+    text: "> abcdef\n\nReview this",
+  };
+
+  assert.deepEqual(actual, expected);
+});
+
+test("reply component GIVEN line visual mode WHEN using gj within one logical line THEN selects the whole logical line", () => {
+  const { component, getResult } = given_component("abcdefghij");
+  component.render(12);
+
+  component.handleInput("V");
+  when_typing(component, "gj");
+  component.handleInput("\x1bc");
+  when_typing(component, "Review this line");
+  component.handleInput("\r");
+  component.handleInput("\x13");
+
+  const actual = getResult();
+  const expected = {
+    action: "save",
+    text: "> abcdefghij\n\nReview this line",
+  };
+
+  assert.deepEqual(actual, expected);
+});
+
+test("reply component GIVEN a short target display row WHEN using gj and gk THEN clamps temporarily and restores the preferred column", () => {
+  const { component } = given_component("abcdefghij\nx");
+  component.render(12);
+
+  when_typing(component, "llll");
+  when_typing(component, "gj");
+  const actualAtWrappedRow = then_cursor(component);
+  when_typing(component, "gj");
+  const actualAtShortLine = then_cursor(component);
+  when_typing(component, "gk");
+  const actualAfterReturning = then_cursor(component);
+  const expectedAtWrappedRow = { line: 0, grapheme: 9 };
+  const expectedAtShortLine = { line: 1, grapheme: 0 };
+  const expectedAfterReturning = { line: 0, grapheme: 9 };
+
+  assert.deepEqual(actualAtWrappedRow, expectedAtWrappedRow);
+  assert.deepEqual(actualAtShortLine, expectedAtShortLine);
+  assert.deepEqual(actualAfterReturning, expectedAfterReturning);
+});
+
+test("reply component GIVEN a saved comment box WHEN using gj THEN skips its rendered rows", () => {
+  const { component } = given_component("abcdefghij\nnext");
+
+  component.handleInput("v");
+  component.handleInput("\x1bc");
+  when_typing(component, "Review this");
+  component.handleInput("\r");
+  component.render(12);
+
+  when_typing(component, "gjgj");
+  const actual = then_cursor(component);
+  const expected = { line: 1, grapheme: 0 };
+
+  assert.deepEqual(actual, expected);
+});
+
+test("reply component GIVEN comment input WHEN typing gj and gk THEN keeps those keys as comment text", () => {
+  const { component } = given_component("hello");
+
+  component.handleInput("v");
+  component.handleInput("\x1bc");
+  when_typing(component, "gjgk");
+  component.handleInput("\r");
+
+  const actual = component.render(50).join("\n");
+  assert.match(actual, /gjgk/);
+});
+
+test("reply component GIVEN a blank logical line WHEN using gj and gk THEN treats it as one row without losing the preferred column", () => {
+  const { component } = given_component("abcdefghij\n\nklmnop");
+  component.render(12);
+
+  when_typing(component, "llll");
+  when_typing(component, "gjgj");
+  const actualAtBlankLine = then_cursor(component);
+  when_typing(component, "gj");
+  const actualAtNextLine = then_cursor(component);
+  const expectedAtBlankLine = { line: 1, grapheme: 0 };
+  const expectedAtNextLine = { line: 2, grapheme: 4 };
+
+  assert.deepEqual(actualAtBlankLine, expectedAtBlankLine);
+  assert.deepEqual(actualAtNextLine, expectedAtNextLine);
+});
+
+test("reply component GIVEN display-row motion at the source edges WHEN using gj and gk THEN clamps without wrapping around", () => {
+  const { component } = given_component("first\nsecond");
+
+  when_typing(component, "gk");
+  const actualAtFirst = then_cursor(component);
+  component.handleInput("G");
+  when_typing(component, "gj");
+  const actualAtLast = then_cursor(component);
+  const expectedAtFirst = { line: 0, grapheme: 0 };
+  const expectedAtLast = { line: 1, grapheme: 0 };
+
+  assert.deepEqual(actualAtFirst, expectedAtFirst);
+  assert.deepEqual(actualAtLast, expectedAtLast);
+});
+
+test("reply component GIVEN a pending g sequence WHEN receiving gj THEN uses display-row motion instead of ordinary j", () => {
   const { component } = given_component("first\nsecond");
 
   component.handleInput("g");
@@ -260,6 +396,18 @@ test("reply component GIVEN a pending g sequence WHEN receiving another motion T
 
   const actual = then_cursor(component);
   const expected = { line: 1, grapheme: 0 };
+
+  assert.deepEqual(actual, expected);
+});
+
+test("reply component GIVEN an unsupported g sequence WHEN receiving the second key THEN processes that key normally", () => {
+  const { component, getResult } = given_component("first");
+
+  component.handleInput("g");
+  component.handleInput("q");
+
+  const actual = getResult();
+  const expected = { action: "cancel" };
 
   assert.deepEqual(actual, expected);
 });
