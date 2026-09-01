@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { visibleWidth } from "@earendil-works/pi-tui";
 import { ReplyComponent } from "./component.js";
-import { DEFAULT_REPLY_KEYMAP } from "./settings.js";
+import { REPLY_KEYMAP } from "./settings.js";
 
 function given_tui(rows = 24) {
   let renderRequests = 0;
@@ -43,7 +43,7 @@ function given_component(source: string, rows = 24) {
     tui.tui as never,
     given_theme() as never,
     source,
-    DEFAULT_REPLY_KEYMAP,
+    REPLY_KEYMAP,
     (result) => {
       actualResult = result;
     },
@@ -153,7 +153,7 @@ test("reply component GIVEN an annotation WHEN saving THEN invokes the insertion
     tui.tui as never,
     given_theme() as never,
     "hello",
-    DEFAULT_REPLY_KEYMAP,
+    REPLY_KEYMAP,
     (result) => {
       actualResult = result;
     },
@@ -202,7 +202,7 @@ test("reply component GIVEN an annotation WHEN rendering the source THEN underli
     tui.tui as never,
     theme as never,
     "hello",
-    DEFAULT_REPLY_KEYMAP,
+    REPLY_KEYMAP,
     () => {},
   );
 
@@ -254,7 +254,7 @@ test("reply component GIVEN multiple source lines WHEN using gg and G THEN jumps
 
 test("reply component GIVEN a wrapped source line WHEN using gj and gk THEN moves by display rows and preserves the screen column", () => {
   const { component } = given_component("abcdefghij");
-  component.render(12);
+  component.render(7);
 
   when_typing(component, "lllllll");
   when_typing(component, "gk");
@@ -270,7 +270,7 @@ test("reply component GIVEN a wrapped source line WHEN using gj and gk THEN move
 
 test("reply component GIVEN character visual mode WHEN using gj THEN extends the source selection across wrapped rows", () => {
   const { component, getResult } = given_component("abcdefghij");
-  component.render(12);
+  component.render(7);
 
   component.handleInput("v");
   component.handleInput("g");
@@ -291,7 +291,7 @@ test("reply component GIVEN character visual mode WHEN using gj THEN extends the
 
 test("reply component GIVEN line visual mode WHEN using gj within one logical line THEN selects the whole logical line", () => {
   const { component, getResult } = given_component("abcdefghij");
-  component.render(12);
+  component.render(7);
 
   component.handleInput("V");
   when_typing(component, "gj");
@@ -311,7 +311,7 @@ test("reply component GIVEN line visual mode WHEN using gj within one logical li
 
 test("reply component GIVEN a short target display row WHEN using gj and gk THEN clamps temporarily and restores the preferred column", () => {
   const { component } = given_component("abcdefghij\nx");
-  component.render(12);
+  component.render(7);
 
   when_typing(component, "llll");
   when_typing(component, "gj");
@@ -336,7 +336,7 @@ test("reply component GIVEN a saved comment box WHEN using gj THEN skips its ren
   component.handleInput("\x1bc");
   when_typing(component, "Review this");
   component.handleInput("\r");
-  component.render(12);
+  component.render(7);
 
   when_typing(component, "gjgj");
   const actual = then_cursor(component);
@@ -359,7 +359,7 @@ test("reply component GIVEN comment input WHEN typing gj and gk THEN keeps those
 
 test("reply component GIVEN a blank logical line WHEN using gj and gk THEN treats it as one row without losing the preferred column", () => {
   const { component } = given_component("abcdefghij\n\nklmnop");
-  component.render(12);
+  component.render(7);
 
   when_typing(component, "llll");
   when_typing(component, "gjgj");

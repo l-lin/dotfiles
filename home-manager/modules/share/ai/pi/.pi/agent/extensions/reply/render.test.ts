@@ -82,12 +82,21 @@ test("reply renderer GIVEN a wrapped source line WHEN finding the cursor row THE
   const renderer = given_renderer("abcdef", [], {
     cursor: { line: 0, grapheme: 4 },
   });
-  const rows = renderer.buildDisplayRows(9);
+  const rows = renderer.buildDisplayRows(4);
 
   const actual = renderer.findCursorRow(rows);
   const expected = 1;
 
   assert.equal(actual, expected);
+});
+
+test("reply renderer GIVEN a source line WHEN building rows THEN omits the line-number gutter", () => {
+  const renderer = given_renderer("one", [], { hasCommentInput: true });
+
+  const actual = renderer.buildDisplayRows(30)[0]!.content;
+
+  assert.match(actual, /^one +$/);
+  assert.doesNotMatch(actual, /│/);
 });
 
 test("reply renderer GIVEN tab and wide graphemes WHEN converting columns THEN uses terminal display cells", () => {
@@ -110,7 +119,7 @@ test("reply renderer GIVEN tab and wide graphemes WHEN converting columns THEN u
 test("reply renderer GIVEN wrapped source rows WHEN mapping display columns THEN preserves row-relative positions and clamps short rows", () => {
   const renderer = given_renderer("abcdefghij");
   const rows = renderer
-    .buildDisplayRows(10)
+    .buildDisplayRows(5)
     .filter((row) => row.kind === "source");
   const line = createSourceDocument("abcdefghij").lines[0]!;
   const firstRow = rows[0]!;

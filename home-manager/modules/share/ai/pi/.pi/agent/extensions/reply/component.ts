@@ -39,7 +39,9 @@ export interface ReplyKeymap {
   open: KeyId;
   save: KeyId;
   close: KeyId;
+  escape: KeyId;
   comment: KeyId;
+  visualSwapCursor: KeyId;
   left: KeyId;
   down: KeyId;
   up: KeyId;
@@ -48,6 +50,20 @@ export interface ReplyKeymap {
   halfPageDown: KeyId;
   characterVisual: KeyId;
   lineVisual: KeyId;
+  lineMotionPrefix: KeyId;
+  lastLine: KeyId;
+  wordForward: KeyId;
+  wordBackward: KeyId;
+  wordEnd: KeyId;
+  lineStart: KeyId;
+  firstNonBlank: KeyId;
+  lineEnd: KeyId;
+  findForward: KeyId;
+  findBackward: KeyId;
+  tillForward: KeyId;
+  tillBackward: KeyId;
+  repeatForward: KeyId;
+  repeatBackward: KeyId;
 }
 
 export interface ReplyComponentResult {
@@ -182,7 +198,10 @@ export class ReplyComponent implements Component, Focusable {
       return;
     }
 
-    if (this.mode === "visual" && data === "o") {
+    if (
+      this.mode === "visual" &&
+      matchesKey(data, this.keymap.visualSwapCursor)
+    ) {
       this.swapVisualCursor();
       return;
     }
@@ -264,19 +283,25 @@ export class ReplyComponent implements Component, Focusable {
 
   private handlePendingG(data: string): void {
     this.pendingG = false;
-    if (matchesKey(data, "escape")) {
+    if (matchesKey(data, this.keymap.escape)) {
       this.tui.requestRender();
       return;
     }
 
-    if (data === "g") {
+    if (matchesKey(data, this.keymap.lineMotionPrefix)) {
       this.moveToLine(0);
       this.tui.requestRender();
       return;
     }
 
-    if (data === "j" || data === "k") {
-      this.moveDisplayRow(data === "j" ? 1 : -1);
+    if (matchesKey(data, this.keymap.down)) {
+      this.moveDisplayRow(1);
+      this.tui.requestRender();
+      return;
+    }
+
+    if (matchesKey(data, this.keymap.up)) {
+      this.moveDisplayRow(-1);
       this.tui.requestRender();
       return;
     }
@@ -288,7 +313,11 @@ export class ReplyComponent implements Component, Focusable {
   private handlePendingCharMotion(data: string): void {
     const motion = this.pendingCharMotion;
     this.pendingCharMotion = null;
-    if (!motion || matchesKey(data, "escape") || !isPrintableAscii(data)) {
+    if (
+      !motion ||
+      matchesKey(data, this.keymap.escape) ||
+      !isPrintableAscii(data)
+    ) {
       this.tui.requestRender();
       return;
     }
@@ -304,29 +333,46 @@ export class ReplyComponent implements Component, Focusable {
     else if (matchesKey(data, this.keymap.up)) this.moveVertical(-1);
     else if (matchesKey(data, this.keymap.halfPageUp)) this.scrollHalfPage(-1);
     else if (matchesKey(data, this.keymap.halfPageDown)) this.scrollHalfPage(1);
-    else if (data === "g") this.pendingG = true;
-    else if (data === "G") this.moveToLine(this.document.lines.length - 1);
-    else if (data === "w") this.moveWord("forward", "start");
-    else if (data === "b") this.moveWord("backward", "start");
-    else if (data === "e") this.moveWord("forward", "end");
-    else if (data === "0") this.moveToColumn(0);
-    else if (data === "_")
+    else if (matchesKey(data, this.keymap.lineMotionPrefix))
+      this.pendingG = true;
+    else if (matchesKey(data, this.keymap.lastLine))
+      this.moveToLine(this.document.lines.length - 1);
+    else if (matchesKey(data, this.keymap.wordForward))
+      this.moveWord("forward", "start");
+    else if (matchesKey(data, this.keymap.wordBackward))
+      this.moveWord("backward", "start");
+    else if (matchesKey(data, this.keymap.wordEnd))
+      this.moveWord("forward", "end");
+    else if (matchesKey(data, this.keymap.lineStart)) this.moveToColumn(0);
+    else if (matchesKey(data, this.keymap.firstNonBlank))
       this.moveToColumn(firstNonBlankColumn(this.currentLineGraphemes()));
-    else if (data === "$")
+    else if (matchesKey(data, this.keymap.lineEnd))
       this.moveToColumn(this.currentLineGraphemes().length - 1);
-    else if (data === "f" || data === "F" || data === "t" || data === "T") {
-      this.pendingCharMotion = data;
-    } else if (data === ";" || data === ",") {
-      if (!this.lastCharMotion) return false;
-      const motion =
-        data === ";"
+    else {
+      const charMotion = this.getCharMotion(data);
+      if (charMotion) this.pendingCharMotion = charMotion;
+      else if (
+        matchesKey(data, this.keymap.repeatForward) ||
+        matchesKey(data, this.keymap.repeatBackward)
+      ) {
+        if (!this.lastCharMotion) return false;
+        const motion = matchesKey(data, this.keymap.repeatForward)
           ? this.lastCharMotion.motion
           : reverseCharMotion(this.lastCharMotion.motion);
-      this.executeCharMotion(motion, this.lastCharMotion.char, false);
-    } else return false;
+        this.executeCharMotion(motion, this.lastCharMotion.char, false);
+      } else return false;
+    }
 
     this.tui.requestRender();
     return true;
+  }
+
+  private getCharMotion(data: string): CharMotion | null {
+    if (matchesKey(data, this.keymap.findForward)) return "f";
+    if (matchesKey(data, this.keymap.findBackward)) return "F";
+    if (matchesKey(data, this.keymap.tillForward)) return "t";
+    if (matchesKey(data, this.keymap.tillBackward)) return "T";
+    return null;
   }
 
   private moveHorizontal(direction: -1 | 1): void {

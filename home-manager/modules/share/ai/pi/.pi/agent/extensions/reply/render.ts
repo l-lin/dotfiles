@@ -89,9 +89,7 @@ export class ReplyRenderer {
     lineIndex: number,
     width: number,
   ): Array<{ start: number; end: number; content: string }> {
-    const lineNumberWidth = String(this.document.lines.length).length;
-    const prefixWidth = lineNumberWidth + 4;
-    const textWidth = Math.max(1, width - prefixWidth);
+    const textWidth = Math.max(1, width);
     const chunks: Array<{ start: number; end: number }> = [];
     let chunkStart = 0;
     let chunkCellWidth = 0;
@@ -113,26 +111,17 @@ export class ReplyRenderer {
       chunks.push({ start: 0, end: 0 });
     }
 
-    return chunks.map((chunk, chunkIndex) => {
-      const content = this.renderChunk(
-        line,
-        lineIndex,
-        chunk.start,
-        chunk.end,
-        width - prefixWidth,
-      );
-      const lineNumber = String(lineIndex + 1).padStart(lineNumberWidth);
-      const gutter =
-        chunkIndex === 0
-          ? ` ${lineNumber} `
-          : ` ${" ".repeat(lineNumberWidth)} `;
+    return chunks.map((chunk) => {
       return {
         start: chunk.start,
         end: chunk.end,
-        content:
-          this.theme.fg("dim", gutter) +
-          this.theme.fg("borderMuted", "│ ") +
-          content,
+        content: this.renderChunk(
+          line,
+          lineIndex,
+          chunk.start,
+          chunk.end,
+          width,
+        ),
       };
     });
   }

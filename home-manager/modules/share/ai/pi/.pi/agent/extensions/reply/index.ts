@@ -4,10 +4,10 @@ import type {
 } from "@earendil-works/pi-coding-agent";
 import { ReplyComponent, type ReplyComponentResult } from "./component.js";
 import { fromAssistantContent } from "./model.js";
-import { loadReplyKeymap } from "./settings.js";
+import { REPLY_KEYMAP } from "./settings.js";
 
 export default function replyExtension(pi: ExtensionAPI): void {
-  const keymap = loadReplyKeymap();
+  const keymap = REPLY_KEYMAP;
   const openKey = keymap.open;
 
   pi.registerShortcut(openKey, {
