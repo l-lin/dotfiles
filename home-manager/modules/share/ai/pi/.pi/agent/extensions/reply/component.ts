@@ -41,6 +41,7 @@ import {
   displayRowColumn,
   graphemeAtOrBeforeColumn,
   graphemeAtOrBeforeDisplayColumn,
+  renderMarkdownDocument,
   ReplyRenderer,
   type DisplayRow,
 } from "./render.js";
@@ -97,6 +98,7 @@ type SearchState = {
   query: string;
   prefix: "/" | "?";
   direction: SearchDirection;
+  kind: "literal" | "word";
   matches: SearchMatch[];
   currentIndex: number;
 };
@@ -116,13 +118,45 @@ type SearchSnapshot = {
   search: SearchState | null;
 };
 
+type SearchStateSnapshot = {
+  query: string;
+  prefix: "/" | "?";
+  direction: SearchDirection;
+  kind: "literal" | "word";
+  matchOrdinals: number[];
+  currentMatchOrdinal: number | null;
+};
+
+type DisplayStateSnapshot = {
+  cursorOrdinal: number;
+  preferredColumn: number | null;
+  mode: "normal" | "visual";
+  visualAnchorOrdinal: number | null;
+  annotations: Array<{
+    annotation: Annotation;
+    startOrdinal: number;
+    endOrdinal: number;
+  }>;
+  search: SearchStateSnapshot | null;
+  searchInputBefore: {
+    cursorOrdinal: number;
+    preferredColumn: number | null;
+    mode: "normal" | "visual";
+    visualAnchorOrdinal: number | null;
+    search: SearchStateSnapshot | null;
+  } | null;
+};
+
 export class ReplyComponent implements Component, Focusable {
   focused = false;
 
   private readonly tui: TUI;
   private readonly theme: Theme;
   private readonly done: (result: ReplyComponentResult) => void;
+  private rawSourceText: string;
   private document: SourceDocument;
+  private renderedLines: readonly string[] = [];
+  private renderedWidth: number | null = null;
   private readonly keymap: ReplyKeymap;
   private readonly annotations: Annotation[] = [];
   private nextAnnotationId = 1;
@@ -154,11 +188,13 @@ export class ReplyComponent implements Component, Focusable {
   ) {
     this.tui = tui;
     this.theme = theme;
+    this.rawSourceText = sourceText;
     this.document = createSourceDocument(sourceText);
     this.keymap = keymap;
     this.done = done;
     this.onSave = onSave;
     this.onRefresh = onRefresh;
+    this.ensureRenderedDocument(this.markdownWidth(this.lastInnerWidth));
   }
 
   handleInput(data: string): void {
@@ -309,6 +345,7 @@ export class ReplyComponent implements Component, Focusable {
 
     const innerWidth = outerWidth - 2;
     this.lastInnerWidth = innerWidth;
+    this.ensureRenderedDocument(this.markdownWidth(innerWidth));
     const viewportHeight = this.getViewportHeight();
     const renderer = this.createRenderer();
     const displayRows = renderer.buildDisplayRows(innerWidth);
@@ -331,7 +368,11 @@ export class ReplyComponent implements Component, Focusable {
     const lines: string[] = [this.topBorder(innerWidth)];
     for (const row of visibleRows) {
       const content =
-        row.kind === "source" && row.line === -1 ? "" : row.content;
+        row.kind === "source" && row.line === -1
+          ? ""
+          : row.kind === "source"
+            ? ` ${row.content}`
+            : row.content;
       lines.push(this.frameLine(content, innerWidth));
     }
     if (this.commentInput) {
@@ -350,6 +391,7 @@ export class ReplyComponent implements Component, Focusable {
   }
 
   invalidate(): void {
+    this.renderedWidth = null;
     this.tui.requestRender();
   }
 
@@ -360,13 +402,16 @@ export class ReplyComponent implements Component, Focusable {
   private restart(): void {
     const refreshedSource = this.onRefresh
       ? this.onRefresh()
-      : this.document.text;
+      : this.rawSourceText;
     if (refreshedSource === null) {
       this.done({ action: "cancel" });
       return;
     }
 
+    this.rawSourceText = refreshedSource;
     this.document = createSourceDocument(refreshedSource);
+    this.renderedLines = [];
+    this.renderedWidth = null;
     this.annotations.length = 0;
     this.nextAnnotationId = 1;
     this.cursor = { line: 0, grapheme: 0 };
@@ -380,6 +425,7 @@ export class ReplyComponent implements Component, Focusable {
     this.pendingCharMotion = null;
     this.lastCharMotion = null;
     this.scrollTop = 0;
+    this.ensureRenderedDocument(this.markdownWidth(this.lastInnerWidth));
     this.tui.requestRender();
   }
 
@@ -463,6 +509,7 @@ export class ReplyComponent implements Component, Focusable {
       query,
       prefix: searchInput.prefix,
       direction: searchInput.direction,
+      kind: "literal",
       matches,
       currentIndex,
     };
@@ -504,6 +551,7 @@ export class ReplyComponent implements Component, Focusable {
       query: keyword,
       prefix: direction === "forward" ? "/" : "?",
       direction,
+      kind: "word",
       matches,
       currentIndex,
     };
@@ -960,26 +1008,206 @@ export class ReplyComponent implements Component, Focusable {
     return null;
   }
 
-  private createRenderer(): ReplyRenderer {
-    return new ReplyRenderer(this.theme, this.document, this.annotations, {
-      cursor: this.cursor,
-      activeSelection:
-        this.mode === "visual" && this.visualAnchor
-          ? getSelectionRange(
-              this.document,
-              this.visualAnchor,
-              this.cursor,
-              this.visualMode,
+  private markdownWidth(innerWidth: number): number {
+    return Math.max(3, innerWidth);
+  }
+
+  private ensureRenderedDocument(width: number): void {
+    if (this.renderedWidth === width) return;
+
+    const previousDocument = this.document;
+    const snapshot = this.captureDisplayState(previousDocument);
+    const rendered = renderMarkdownDocument(this.rawSourceText, width);
+    this.document = rendered.document;
+    this.renderedLines = rendered.renderedLines;
+    this.renderedWidth = width;
+    this.restoreDisplayState(snapshot);
+  }
+
+  private captureDisplayState(document: SourceDocument): DisplayStateSnapshot {
+    return {
+      cursorOrdinal: visibleGraphemeOrdinal(
+        document,
+        cursorOffset(document, this.cursor),
+      ),
+      preferredColumn: this.preferredColumn,
+      mode: this.mode,
+      visualAnchorOrdinal: this.visualAnchor
+        ? visibleGraphemeOrdinal(
+            document,
+            cursorOffset(document, this.visualAnchor),
+          )
+        : null,
+      annotations: this.annotations.map((annotation) => ({
+        annotation,
+        startOrdinal: visibleGraphemeOrdinal(document, annotation.start),
+        endOrdinal: visibleGraphemeOrdinal(document, annotation.end),
+      })),
+      search: this.captureSearchState(document, this.search),
+      searchInputBefore: this.searchInput
+        ? this.captureSearchSnapshot(document, this.searchInput.before)
+        : null,
+    };
+  }
+
+  private restoreDisplayState(snapshot: DisplayStateSnapshot): void {
+    this.cursor = cursorAtVisibleOrdinal(this.document, snapshot.cursorOrdinal);
+    this.preferredColumn = snapshot.preferredColumn;
+    this.mode = snapshot.mode;
+    this.visualAnchor =
+      snapshot.visualAnchorOrdinal === null
+        ? null
+        : cursorAtVisibleOrdinal(this.document, snapshot.visualAnchorOrdinal);
+
+    for (const annotationState of snapshot.annotations) {
+      const annotation = annotationState.annotation;
+      annotation.start = boundaryOffsetAtVisibleOrdinal(
+        this.document,
+        annotationState.startOrdinal,
+      );
+      annotation.end = boundaryOffsetAtVisibleOrdinal(
+        this.document,
+        annotationState.endOrdinal,
+      );
+      annotation.text = this.document.text.slice(
+        annotation.start,
+        annotation.end,
+      );
+    }
+
+    this.search = this.restoreSearchState(snapshot.search);
+    if (this.searchInput && snapshot.searchInputBefore) {
+      this.searchInput.before = this.restoreDisplaySearchSnapshot(
+        snapshot.searchInputBefore,
+      );
+    }
+  }
+
+  private captureSearchState(
+    document: SourceDocument,
+    search: SearchState | null,
+  ): SearchStateSnapshot | null {
+    if (!search) return null;
+
+    return {
+      query: search.query,
+      prefix: search.prefix,
+      direction: search.direction,
+      kind: search.kind,
+      matchOrdinals: search.matches.map((match) =>
+        visibleGraphemeOrdinal(document, match.start),
+      ),
+      currentMatchOrdinal:
+        search.currentIndex >= 0
+          ? visibleGraphemeOrdinal(
+              document,
+              search.matches[search.currentIndex]!.start,
             )
           : null,
-      searchMatches: this.search?.matches ?? [],
-      currentSearchMatch:
-        this.search && this.search.currentIndex >= 0
-          ? this.search.matches[this.search.currentIndex]!
-          : null,
-      hasCommentInput: this.commentInput !== null,
-      focused: this.focused,
-    });
+    };
+  }
+
+  private captureSearchSnapshot(
+    document: SourceDocument,
+    snapshot: SearchSnapshot,
+  ): NonNullable<DisplayStateSnapshot["searchInputBefore"]> {
+    return {
+      cursorOrdinal: visibleGraphemeOrdinal(
+        document,
+        cursorOffset(document, snapshot.cursor),
+      ),
+      preferredColumn: snapshot.preferredColumn,
+      mode: snapshot.mode,
+      visualAnchorOrdinal: snapshot.visualAnchor
+        ? visibleGraphemeOrdinal(
+            document,
+            cursorOffset(document, snapshot.visualAnchor),
+          )
+        : null,
+      search: this.captureSearchState(document, snapshot.search),
+    };
+  }
+
+  private restoreSearchState(
+    snapshot: SearchStateSnapshot | null,
+  ): SearchState | null {
+    if (!snapshot) return null;
+
+    const allMatches =
+      snapshot.kind === "word"
+        ? findKeywordSearchMatches(this.document, snapshot.query)
+        : findLiteralSearchMatches(
+            this.document.text,
+            decodeSearchQuery(snapshot.query),
+          );
+    const matches = snapshot.matchOrdinals
+      .map((ordinal) =>
+        allMatches.find(
+          (match) =>
+            visibleGraphemeOrdinal(this.document, match.start) === ordinal,
+        ),
+      )
+      .filter((match): match is SearchMatch => match !== undefined);
+    const currentIndex =
+      snapshot.currentMatchOrdinal === null
+        ? -1
+        : matches.findIndex(
+            (match) =>
+              visibleGraphemeOrdinal(this.document, match.start) ===
+              snapshot.currentMatchOrdinal,
+          );
+
+    return {
+      query: snapshot.query,
+      prefix: snapshot.prefix,
+      direction: snapshot.direction,
+      kind: snapshot.kind,
+      matches,
+      currentIndex,
+    };
+  }
+
+  private restoreDisplaySearchSnapshot(
+    snapshot: NonNullable<DisplayStateSnapshot["searchInputBefore"]>,
+  ): SearchSnapshot {
+    return {
+      cursor: cursorAtVisibleOrdinal(this.document, snapshot.cursorOrdinal),
+      preferredColumn: snapshot.preferredColumn,
+      mode: snapshot.mode,
+      visualAnchor:
+        snapshot.visualAnchorOrdinal === null
+          ? null
+          : cursorAtVisibleOrdinal(this.document, snapshot.visualAnchorOrdinal),
+      search: this.restoreSearchState(snapshot.search),
+    };
+  }
+
+  private createRenderer(): ReplyRenderer {
+    return new ReplyRenderer(
+      this.theme,
+      this.document,
+      this.annotations,
+      {
+        cursor: this.cursor,
+        activeSelection:
+          this.mode === "visual" && this.visualAnchor
+            ? getSelectionRange(
+                this.document,
+                this.visualAnchor,
+                this.cursor,
+                this.visualMode,
+              )
+            : null,
+        searchMatches: this.search?.matches ?? [],
+        currentSearchMatch:
+          this.search && this.search.currentIndex >= 0
+            ? this.search.matches[this.search.currentIndex]!
+            : null,
+        hasCommentInput: this.commentInput !== null,
+        focused: this.focused,
+      },
+      this.renderedLines,
+    );
   }
 
   private keepCursorVisible(
@@ -1025,6 +1253,64 @@ export class ReplyComponent implements Component, Focusable {
       this.theme.fg("border", "│")
     );
   }
+}
+
+function visibleGraphemeOrdinal(
+  document: SourceDocument,
+  offset: number,
+): number {
+  const boundedOffset = Math.max(0, Math.min(offset, document.text.length));
+  let ordinal = 0;
+
+  for (const line of document.lines) {
+    for (const grapheme of line.graphemes) {
+      if (line.start + grapheme.start >= boundedOffset) return ordinal;
+      ordinal++;
+    }
+  }
+
+  return ordinal;
+}
+
+function boundaryOffsetAtVisibleOrdinal(
+  document: SourceDocument,
+  ordinal: number,
+): number {
+  const target = Math.max(0, ordinal);
+  let current = 0;
+
+  for (const line of document.lines) {
+    for (const grapheme of line.graphemes) {
+      if (current === target) return line.start + grapheme.start;
+      current++;
+    }
+  }
+
+  return document.text.length;
+}
+
+function cursorAtVisibleOrdinal(
+  document: SourceDocument,
+  ordinal: number,
+): CursorPosition {
+  const target = Math.max(0, ordinal);
+  let current = 0;
+  let last: CursorPosition = { line: 0, grapheme: 0 };
+
+  for (let lineIndex = 0; lineIndex < document.lines.length; lineIndex++) {
+    const line = document.lines[lineIndex]!;
+    for (
+      let graphemeIndex = 0;
+      graphemeIndex < line.graphemes.length;
+      graphemeIndex++
+    ) {
+      last = { line: lineIndex, grapheme: graphemeIndex };
+      if (current === target) return last;
+      current++;
+    }
+  }
+
+  return last;
 }
 
 function stripInputPrompt(renderedInput: string): string {

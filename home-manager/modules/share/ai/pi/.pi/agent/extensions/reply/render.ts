@@ -1,7 +1,13 @@
-import type { Theme } from "@earendil-works/pi-coding-agent";
-import { CURSOR_MARKER, visibleWidth } from "@earendil-works/pi-tui";
+import { getMarkdownTheme, type Theme } from "@earendil-works/pi-coding-agent";
+import {
+  CURSOR_MARKER,
+  Markdown,
+  stripTerminalSequences,
+  visibleWidth,
+} from "@earendil-works/pi-tui";
 import {
   annotationLines,
+  createSourceDocument,
   selectionContainsOffset,
   type Annotation,
   type CursorPosition,
@@ -39,6 +45,11 @@ export interface ReplyRenderState {
 const ANSI_REVERSE_ON = "\x1b[7m";
 const ANSI_REVERSE_OFF = "\x1b[27m";
 const TAB_SIZE = 4;
+const ANSI_SEQUENCE_RE =
+  /\x1b(?:\[[0-?]*[ -/]*[@-~]|\][^\x07]*(?:\x07|\x1b\\)|P[^\x1b]*(?:\x1b\\)|_[^\x1b]*(?:\x1b\\))/gu;
+const renderedGraphemeSegmenter = new Intl.Segmenter(undefined, {
+  granularity: "grapheme",
+});
 
 export class ReplyRenderer {
   constructor(
@@ -46,6 +57,7 @@ export class ReplyRenderer {
     private readonly document: SourceDocument,
     private readonly annotations: readonly Annotation[],
     private readonly state: ReplyRenderState,
+    private readonly renderedLines?: readonly string[],
   ) {}
 
   buildDisplayRows(width: number): DisplayRow[] {
@@ -56,7 +68,18 @@ export class ReplyRenderer {
       lineIndex++
     ) {
       const line = this.document.lines[lineIndex]!;
-      for (const row of this.renderSourceLine(line, lineIndex, width)) {
+      const renderedLine = this.renderedLines?.[lineIndex];
+      const sourceRows =
+        renderedLine === undefined
+          ? this.renderSourceLine(line, lineIndex, width)
+          : [
+              {
+                start: 0,
+                end: line.graphemes.length,
+                content: this.renderRenderedLine(renderedLine, line, lineIndex),
+              },
+            ];
+      for (const row of sourceRows) {
         rows.push({
           kind: "source",
           line: lineIndex,
@@ -127,6 +150,104 @@ export class ReplyRenderer {
         ),
       };
     });
+  }
+
+  private renderRenderedLine(
+    renderedLine: string,
+    line: SourceLine,
+    lineIndex: number,
+  ): string {
+    let content = "";
+    let trailing = "";
+    let graphemeIndex = 0;
+
+    const appendVisibleText = (text: string): void => {
+      for (const segment of renderedGraphemeSegmenter.segment(text)) {
+        const target =
+          graphemeIndex < line.graphemes.length ? "content" : "trailing";
+        if (target === "content") {
+          content += this.renderGrapheme(
+            line,
+            lineIndex,
+            graphemeIndex,
+            segment.segment,
+          );
+        } else {
+          trailing += segment.segment;
+        }
+        graphemeIndex++;
+      }
+    };
+
+    let lastIndex = 0;
+    for (const match of renderedLine.matchAll(ANSI_SEQUENCE_RE)) {
+      appendVisibleText(renderedLine.slice(lastIndex, match.index));
+      const target =
+        graphemeIndex < line.graphemes.length ? "content" : "trailing";
+      if (target === "content") content += match[0];
+      else trailing += match[0];
+      lastIndex = match.index + match[0].length;
+    }
+    appendVisibleText(renderedLine.slice(lastIndex));
+
+    if (
+      !this.state.hasCommentInput &&
+      this.state.cursor.line === lineIndex &&
+      this.state.cursor.grapheme >= line.graphemes.length
+    ) {
+      content += `${this.cursorMarker()}${ANSI_REVERSE_ON} ${ANSI_REVERSE_OFF}`;
+      trailing = removeFirstVisibleGrapheme(trailing);
+    }
+
+    return content + trailing;
+  }
+
+  private renderGrapheme(
+    line: SourceLine,
+    lineIndex: number,
+    index: number,
+    displayText: string,
+  ): string {
+    const grapheme = line.graphemes[index]!;
+    const globalStart = line.start + grapheme.start;
+    const globalEnd = line.start + grapheme.end;
+    const annotation = this.annotations.find((candidate) =>
+      selectionContainsOffset(candidate, globalStart, globalEnd),
+    );
+    const selected = this.state.activeSelection
+      ? selectionContainsOffset(
+          this.state.activeSelection,
+          globalStart,
+          globalEnd,
+        )
+      : false;
+    const isCursor =
+      !this.state.hasCommentInput &&
+      this.state.cursor.line === lineIndex &&
+      this.state.cursor.grapheme === index;
+    const searchMatch = this.state.searchMatches.find((candidate) =>
+      selectionContainsOffset(candidate, globalStart, globalEnd),
+    );
+    const isCurrentSearchMatch =
+      searchMatch !== undefined &&
+      this.state.currentSearchMatch !== null &&
+      searchMatch.start === this.state.currentSearchMatch.start &&
+      searchMatch.end === this.state.currentSearchMatch.end;
+
+    let styled = displayText;
+    if (annotation) styled = this.theme.underline(styled);
+    if (selected) {
+      styled = this.theme.bg("selectedBg", styled);
+    } else if (searchMatch) {
+      styled = this.theme.bg("searchMatchBg", styled);
+      if (isCurrentSearchMatch) {
+        styled = this.theme.fg("searchMatchText", styled);
+      }
+    }
+    if (isCursor) {
+      styled = `${this.cursorMarker()}${ANSI_REVERSE_ON}${styled}${ANSI_REVERSE_OFF}`;
+    }
+    return styled;
   }
 
   private renderChunk(
@@ -249,6 +370,60 @@ export class ReplyRenderer {
 
   private cursorMarker(): string {
     return this.state.focused ? CURSOR_MARKER : "";
+  }
+}
+
+export function renderMarkdownDocument(
+  sourceText: string,
+  width: number,
+): { document: SourceDocument; renderedLines: string[] } {
+  const renderedLines = new Markdown(sourceText, 1, 0, getMarkdownTheme())
+    .render(Math.max(3, width))
+    .map((line) => removeLastVisibleGrapheme(removeFirstVisibleGrapheme(line)));
+  const plainText = renderedLines
+    .map((line) => stripTerminalSequences(line).replace(/ +$/u, ""))
+    .join("\n");
+
+  return {
+    document: createSourceDocument(plainText),
+    renderedLines,
+  };
+}
+
+function removeFirstVisibleGrapheme(text: string): string {
+  return removeVisibleGrapheme(text, "first");
+}
+
+function removeLastVisibleGrapheme(text: string): string {
+  return removeVisibleGrapheme(text, "last");
+}
+
+function removeVisibleGrapheme(
+  text: string,
+  position: "first" | "last",
+): string {
+  const parts: Array<{ ansi: boolean; text: string }> = [];
+  let lastIndex = 0;
+
+  for (const match of text.matchAll(ANSI_SEQUENCE_RE)) {
+    appendText(text.slice(lastIndex, match.index));
+    parts.push({ ansi: true, text: match[0] });
+    lastIndex = match.index + match[0].length;
+  }
+  appendText(text.slice(lastIndex));
+
+  const targetIndex =
+    position === "first"
+      ? parts.findIndex((part) => !part.ansi)
+      : parts.findLastIndex((part) => !part.ansi);
+  if (targetIndex < 0) return text;
+  parts.splice(targetIndex, 1);
+  return parts.map((part) => part.text).join("");
+
+  function appendText(segment: string): void {
+    for (const grapheme of renderedGraphemeSegmenter.segment(segment)) {
+      parts.push({ ansi: false, text: grapheme.segment });
+    }
   }
 }
 

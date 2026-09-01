@@ -1,11 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { initTheme } from "@earendil-works/pi-coding-agent";
 import { createSourceDocument, type Annotation } from "./model.js";
 import {
   cellColumn,
   displayRowColumn,
   graphemeAtOrBeforeColumn,
   graphemeAtOrBeforeDisplayColumn,
+  renderMarkdownDocument,
   ReplyRenderer,
   type ReplyRenderState,
 } from "./render.js";
@@ -47,6 +49,43 @@ function given_renderer(
     },
   );
 }
+
+test("reply renderer GIVEN Markdown source WHEN rendering THEN uses Pi's Markdown rows and removes only renderer padding", () => {
+  initTheme("dark", false);
+
+  const actual = renderMarkdownDocument(
+    "# Title\n\n- first\n- second\n\n```ts\nconst value = 1;\n```",
+    30,
+  );
+  const expected =
+    "Title\n\n- first\n- second\n\n```ts\n  const value = 1;\n```";
+
+  assert.equal(actual.document.text, expected);
+  assert.equal(actual.renderedLines.length, actual.document.lines.length);
+});
+
+test("reply renderer GIVEN native Markdown styling and a selection WHEN building rows THEN preserves both styles", () => {
+  const annotations: Annotation[] = [];
+  const renderer = new ReplyRenderer(
+    given_theme() as never,
+    createSourceDocument("Hello"),
+    annotations,
+    {
+      cursor: { line: 0, grapheme: 0 },
+      activeSelection: { start: 0, end: 1, text: "H" },
+      searchMatches: [],
+      currentSearchMatch: null,
+      hasCommentInput: false,
+      focused: false,
+    },
+    ["\x1b[1mHello\x1b[22m"],
+  );
+
+  const actual = renderer.buildDisplayRows(30)[0]!.content;
+
+  assert.match(actual, /\x1b\[1m\x1b\[7m\[selected\]H\[\/selected\]/);
+  assert.match(actual, /ello\x1b\[22m/);
+});
 
 test("reply renderer GIVEN an annotation ending on a source line WHEN building rows THEN places its comment box after that line", () => {
   const annotations: Annotation[] = [

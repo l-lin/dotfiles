@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { initTheme } from "@earendil-works/pi-coding-agent";
 import { visibleWidth } from "@earendil-works/pi-tui";
 import { ReplyComponent } from "./component.js";
 import { REPLY_KEYMAP } from "./settings.js";
@@ -81,6 +82,53 @@ function then_render_text(component: ReplyComponent): string {
     .join("\n")
     .replace(/\x1b\[[0-9;]*m/gu, "");
 }
+
+test("reply component GIVEN Markdown content WHEN rendering THEN uses Pi's native Markdown formatting", () => {
+  initTheme("dark", false);
+  const { component } = given_component(
+    "# Heading\n\nA **bold** paragraph.\n\n- first\n- second",
+  );
+
+  const actual = then_render_text(component);
+
+  assert.match(actual, /│ Heading +│/);
+  assert.match(actual, /│ A bold paragraph\. +│/);
+  assert.match(actual, /│ - first +│/);
+  assert.doesNotMatch(actual, /# Heading/);
+});
+
+test("reply component GIVEN bold Markdown WHEN selecting visible text THEN saves the rendered text", () => {
+  initTheme("dark", false);
+  const { component, getResult } = given_component("**hello**");
+
+  component.handleInput("v");
+  component.handleInput("l");
+  component.handleInput("\x1bc");
+  when_typing(component, "Review this");
+  component.handleInput("\r");
+  component.handleInput("\x13");
+
+  const actual = getResult();
+  const expected = {
+    action: "save",
+    text: "> he\n\nReview this",
+  };
+
+  assert.deepEqual(actual, expected);
+});
+
+test("reply component GIVEN Markdown reflow WHEN rendering at a new width THEN keeps the cursor on its visible character", () => {
+  initTheme("dark", false);
+  const { component } = given_component("abcdefghij");
+  component.render(7);
+  when_typing(component, "gj");
+
+  component.render(20);
+
+  const actual = then_cursor(component);
+  const expected = { line: 0, grapheme: 3 };
+  assert.deepEqual(actual, expected);
+});
 
 test("reply component GIVEN a source message WHEN selecting characters and submitting a comment THEN returns the annotated blocks on save", () => {
   const { component, getResult } = given_component("hello\nworld");
@@ -394,7 +442,7 @@ test("reply component GIVEN a wrapped source line WHEN using gj and gk THEN move
   when_typing(component, "gj");
   const actualAtSecondRow = then_cursor(component);
   const expectedAtFirstRow = { line: 0, grapheme: 2 };
-  const expectedAtSecondRow = { line: 0, grapheme: 7 };
+  const expectedAtSecondRow = { line: 1, grapheme: 2 };
 
   assert.deepEqual(actualAtFirstRow, expectedAtFirstRow);
   assert.deepEqual(actualAtSecondRow, expectedAtSecondRow);
@@ -415,7 +463,7 @@ test("reply component GIVEN character visual mode WHEN using gj THEN extends the
   const actual = getResult();
   const expected = {
     action: "save",
-    text: "> abcdef\n\nReview this",
+    text: "> abc\n> d\n\nReview this",
   };
 
   assert.deepEqual(actual, expected);
@@ -435,15 +483,15 @@ test("reply component GIVEN line visual mode WHEN using gj within one logical li
   const actual = getResult();
   const expected = {
     action: "save",
-    text: "> abcdefghij\n\nReview this line",
+    text: "> abc\n> def\n\nReview this line",
   };
 
   assert.deepEqual(actual, expected);
 });
 
 test("reply component GIVEN a short target display row WHEN using gj and gk THEN clamps temporarily and restores the preferred column", () => {
-  const { component } = given_component("abcdefghij\nx");
-  component.render(7);
+  const { component } = given_component("abcdefg\nx");
+  component.render(11);
 
   when_typing(component, "llll");
   when_typing(component, "gj");
@@ -452,9 +500,9 @@ test("reply component GIVEN a short target display row WHEN using gj and gk THEN
   const actualAtShortLine = then_cursor(component);
   when_typing(component, "gk");
   const actualAfterReturning = then_cursor(component);
-  const expectedAtWrappedRow = { line: 0, grapheme: 9 };
+  const expectedAtWrappedRow = { line: 1, grapheme: 0 };
   const expectedAtShortLine = { line: 1, grapheme: 0 };
-  const expectedAfterReturning = { line: 0, grapheme: 9 };
+  const expectedAfterReturning = { line: 0, grapheme: 4 };
 
   assert.deepEqual(actualAtWrappedRow, expectedAtWrappedRow);
   assert.deepEqual(actualAtShortLine, expectedAtShortLine);
@@ -472,7 +520,7 @@ test("reply component GIVEN a saved comment box WHEN using gj THEN skips its ren
 
   when_typing(component, "gjgj");
   const actual = then_cursor(component);
-  const expected = { line: 1, grapheme: 0 };
+  const expected = { line: 2, grapheme: 0 };
 
   assert.deepEqual(actual, expected);
 });
@@ -490,7 +538,7 @@ test("reply component GIVEN comment input WHEN typing gj and gk THEN keeps those
 });
 
 test("reply component GIVEN a blank logical line WHEN using gj and gk THEN treats it as one row without losing the preferred column", () => {
-  const { component } = given_component("abcdefghij\n\nklmnop");
+  const { component } = given_component("abcdef\n\nklmnop");
   component.render(7);
 
   when_typing(component, "llll");
@@ -498,8 +546,8 @@ test("reply component GIVEN a blank logical line WHEN using gj and gk THEN treat
   const actualAtBlankLine = then_cursor(component);
   when_typing(component, "gj");
   const actualAtNextLine = then_cursor(component);
-  const expectedAtBlankLine = { line: 1, grapheme: 0 };
-  const expectedAtNextLine = { line: 2, grapheme: 4 };
+  const expectedAtBlankLine = { line: 2, grapheme: 0 };
+  const expectedAtNextLine = { line: 3, grapheme: 2 };
 
   assert.deepEqual(actualAtBlankLine, expectedAtBlankLine);
   assert.deepEqual(actualAtNextLine, expectedAtNextLine);
