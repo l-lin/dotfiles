@@ -48,6 +48,8 @@ This repo contains local Pi extensions. In practice, each top-level directory wi
    Do instead: store them under `extensionSettings` in `~/.pi/agent/settings.json` and preserve sibling settings when updating the file.
 8. **Keep wrapped-row motion aligned with rendering.**
    Do instead: reuse `ReplyRenderer.buildDisplayRows(...)` and filter out comment rows instead of duplicating the wrapping algorithm.
+9. **Place prefills explicitly in Pi TUI inputs.**
+   Do instead: after `Input.setValue(...)`, send the raw Ctrl-E sequence (`\x05`) when the caret must start at the end, because `setValue` preserves the existing caret position.
 
 ## When you add, remove, or rename an extension
 

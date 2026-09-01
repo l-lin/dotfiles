@@ -61,6 +61,10 @@ function when_typing(component: ReplyComponent, text: string): void {
   for (const character of text) component.handleInput(character);
 }
 
+function when_backspacing(component: ReplyComponent, text: string): void {
+  for (const _character of text) component.handleInput("\x7f");
+}
+
 function then_cursor(component: ReplyComponent): {
   line: number;
   grapheme: number;
@@ -150,6 +154,127 @@ test("reply component GIVEN a saved comment WHEN rendering THEN shows a full-wid
   assert.match(actual, /│╭─ #1 .*╮│/);
   assert.match(actual, /││ A comment .*││/);
   assert.match(actual, /│╰─+╯│/);
+});
+
+test("reply component GIVEN an annotation WHEN editing it with Alt+E THEN saves the replacement and keeps its range", () => {
+  const { component, getResult } = given_component("hello");
+
+  component.handleInput("v");
+  component.handleInput("l");
+  component.handleInput("\x1bc");
+  when_typing(component, "A comment");
+  component.handleInput("\r");
+  component.handleInput("\x1be");
+  component.handleInput("!");
+  component.handleInput("\r");
+  component.handleInput("\x13");
+
+  const actual = getResult();
+  const expected = {
+    action: "save",
+    text: "> he\n\nA comment!",
+  };
+  assert.deepEqual(actual, expected);
+});
+
+test("reply component GIVEN an annotation WHEN cancelling or submitting an empty edit THEN keeps the original comment", () => {
+  const { component, getResult } = given_component("hello");
+
+  component.handleInput("v");
+  component.handleInput("l");
+  component.handleInput("\x1bc");
+  when_typing(component, "A comment");
+  component.handleInput("\r");
+  component.handleInput("\x1be");
+  component.handleInput("\x1b");
+  component.handleInput("\x1be");
+  when_backspacing(component, "A comment");
+  component.handleInput("\r");
+  component.handleInput("\x13");
+
+  const actual = getResult();
+  const expected = {
+    action: "save",
+    text: "> he\n\nA comment",
+  };
+  assert.deepEqual(actual, expected);
+});
+
+test("reply component GIVEN overlapping annotations WHEN editing THEN edits the newest matching annotation first", () => {
+  const { component, getResult } = given_component("hello");
+
+  component.handleInput("v");
+  component.handleInput("l");
+  component.handleInput("\x1bc");
+  when_typing(component, "First");
+  component.handleInput("\r");
+  component.handleInput("h");
+  component.handleInput("v");
+  component.handleInput("l");
+  component.handleInput("\x1bc");
+  when_typing(component, "Second");
+  component.handleInput("\r");
+  component.handleInput("\x1be");
+  component.handleInput("!");
+  component.handleInput("\r");
+  component.handleInput("\x13");
+
+  const actual = getResult();
+  const expected = {
+    action: "save",
+    text: "> he\n\nFirst\n\n> he\n\nSecond!",
+  };
+  assert.deepEqual(actual, expected);
+});
+
+test("reply component GIVEN an annotation WHEN deleting it with Alt+D THEN removes its comment and underline without confirmation", () => {
+  const { component } = given_component("hello");
+
+  component.handleInput("v");
+  component.handleInput("l");
+  component.handleInput("\x1bc");
+  when_typing(component, "A comment");
+  component.handleInput("\r");
+  assert.match(component.render(50).join("\n"), /\x1b\[4m/);
+
+  component.handleInput("\x1bd");
+
+  const actual = component.render(50).join("\n");
+  assert.doesNotMatch(actual, /A comment/);
+  assert.doesNotMatch(actual, /\x1b\[4m/);
+});
+
+test("reply component GIVEN no annotation under the cursor WHEN using edit or delete THEN does nothing", () => {
+  const { component, getResult } = given_component("hello");
+  const before = component.render(50).join("\n");
+
+  component.handleInput("\x1be");
+  component.handleInput("\x1bd");
+
+  const actual = {
+    render: component.render(50).join("\n"),
+    result: getResult(),
+  };
+  const expected = { render: before, result: undefined };
+  assert.deepEqual(actual, expected);
+});
+
+test("reply component GIVEN an annotation WHEN the cursor leaves its range THEN edit and delete are no-ops", () => {
+  const { component } = given_component("hello");
+
+  component.handleInput("v");
+  component.handleInput("l");
+  component.handleInput("\x1bc");
+  when_typing(component, "A comment");
+  component.handleInput("\r");
+  component.handleInput("l");
+  const before = component.render(50).join("\n");
+
+  component.handleInput("\x1be");
+  component.handleInput("\x1bd");
+
+  const actual = component.render(50).join("\n");
+  assert.equal(actual, before);
 });
 
 test("reply component GIVEN an annotation WHEN saving THEN invokes the insertion callback before closing", () => {

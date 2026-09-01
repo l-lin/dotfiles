@@ -19,6 +19,7 @@ import {
   findLiteralSearchMatches,
   formatAnnotatedText,
   getSelectionRange,
+  selectionContainsOffset,
   searchMatchContainsCursor,
   type Annotation,
   type CursorPosition,
@@ -50,6 +51,8 @@ export interface ReplyKeymap {
   close: KeyId;
   escape: KeyId;
   comment: KeyId;
+  edit: KeyId;
+  delete: KeyId;
   visualSwapCursor: KeyId;
   left: KeyId;
   down: KeyId;
@@ -122,6 +125,7 @@ export class ReplyComponent implements Component, Focusable {
   private document: SourceDocument;
   private readonly keymap: ReplyKeymap;
   private readonly annotations: Annotation[] = [];
+  private nextAnnotationId = 1;
   private readonly onSave?: (text: string) => void;
   private readonly onRefresh?: () => string | null;
 
@@ -185,6 +189,24 @@ export class ReplyComponent implements Component, Focusable {
     if (this.commentInput) {
       this.commentInput.input.handleInput(data);
       this.tui.requestRender();
+      return;
+    }
+
+    if (this.mode === "normal" && matchesKey(data, this.keymap.edit)) {
+      const annotation = this.findAnnotationAtCursor();
+      if (annotation) this.openCommentInput(annotation);
+      return;
+    }
+
+    if (this.mode === "normal" && matchesKey(data, this.keymap.delete)) {
+      const annotation = this.findAnnotationAtCursor();
+      if (!annotation) return;
+
+      const annotationIndex = this.annotations.indexOf(annotation);
+      if (annotationIndex >= 0) {
+        this.annotations.splice(annotationIndex, 1);
+        this.tui.requestRender();
+      }
       return;
     }
 
@@ -346,6 +368,7 @@ export class ReplyComponent implements Component, Focusable {
 
     this.document = createSourceDocument(refreshedSource);
     this.annotations.length = 0;
+    this.nextAnnotationId = 1;
     this.cursor = { line: 0, grapheme: 0 };
     this.preferredColumn = null;
     this.mode = "normal";
@@ -867,48 +890,74 @@ export class ReplyComponent implements Component, Focusable {
     this.tui.requestRender();
   }
 
-  private openCommentInput(): void {
-    if (!this.visualAnchor) return;
-    const selection = getSelectionRange(
-      this.document,
-      this.visualAnchor,
-      this.cursor,
-      this.visualMode,
-    );
+  private openCommentInput(annotation: Annotation | null = null): void {
+    const selection = annotation
+      ? annotation
+      : this.visualAnchor
+        ? getSelectionRange(
+            this.document,
+            this.visualAnchor,
+            this.cursor,
+            this.visualMode,
+          )
+        : null;
     if (!selection || selection.start === selection.end) {
-      this.exitVisual();
+      if (!annotation) this.exitVisual();
       this.tui.requestRender();
       return;
     }
 
     const input = new Input();
     input.focused = this.focused;
+    if (annotation) {
+      input.setValue(annotation.comment);
+      input.handleInput("\x05");
+    }
     input.onSubmit = (comment) => {
       if (comment.trim().length === 0) {
         this.commentInput = null;
-        this.mode = "visual";
+        this.mode = annotation ? "normal" : "visual";
         this.tui.requestRender();
         return;
       }
 
-      this.annotations.push({
-        id: this.annotations.length + 1,
-        start: selection.start,
-        end: selection.end,
-        text: selection.text,
-        comment,
-      });
+      if (annotation) {
+        annotation.comment = comment;
+      } else {
+        this.annotations.push({
+          id: this.nextAnnotationId++,
+          start: selection.start,
+          end: selection.end,
+          text: selection.text,
+          comment,
+        });
+      }
       this.commentInput = null;
-      this.exitVisual();
+      if (annotation) this.mode = "normal";
+      else this.exitVisual();
       this.tui.requestRender();
     };
     input.onEscape = () => {
       this.commentInput = null;
-      this.mode = "visual";
+      this.mode = annotation ? "normal" : "visual";
       this.tui.requestRender();
     };
     this.commentInput = { input };
     this.tui.requestRender();
+  }
+
+  private findAnnotationAtCursor(): Annotation | null {
+    const line = this.document.lines[this.cursor.line];
+    const grapheme = line?.graphemes[this.cursor.grapheme];
+    if (!line || !grapheme) return null;
+
+    const start = line.start + grapheme.start;
+    const end = line.start + grapheme.end;
+    for (let index = this.annotations.length - 1; index >= 0; index--) {
+      const annotation = this.annotations[index]!;
+      if (selectionContainsOffset(annotation, start, end)) return annotation;
+    }
+    return null;
   }
 
   private createRenderer(): ReplyRenderer {
