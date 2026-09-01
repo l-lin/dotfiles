@@ -2,16 +2,14 @@
  * Vim mode types, key maps, and escape sequences.
  */
 
+import type { CharMotion } from "../../vim/types.js";
+
 export type Mode = "normal" | "insert";
-export type CharMotion = "f" | "F" | "t" | "T";
+export type { CharMotion, LastCharMotion } from "../../vim/types.js";
+
 export type PendingMotion = CharMotion | null;
 export type PendingOperator = "d" | "c" | null;
 export type PendingG = "g" | null;
-
-export interface LastCharMotion {
-  motion: CharMotion;
-  char: string;
-}
 
 /** Normal mode key → escape sequence (null = handled in code, not via sendInput) */
 export const NORMAL_KEYS: Record<string, string | null> = {

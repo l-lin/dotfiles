@@ -424,3 +424,105 @@ test("awesome-editor GIVEN emacs mode and some input WHEN alt-c is pressed mid t
   };
   assert.deepEqual(actual, expected);
 });
+
+test("awesome-editor GIVEN vi mode and indented lines WHEN using gg and G THEN jumps to Vim first-nonblank columns", () => {
+  const editor = given_editor("vi");
+  editor.setText("  first\none\n  last");
+  editor.handleInput("\x1b");
+
+  editor.handleInput("G");
+  const actualAtLast = editor.getCursor();
+  editor.handleInput("g");
+  editor.handleInput("g");
+  const actualAtFirst = editor.getCursor();
+  const expectedAtLast = { line: 2, col: 2 };
+  const expectedAtFirst = { line: 0, col: 2 };
+
+  assert.deepEqual(actualAtLast, expectedAtLast);
+  assert.deepEqual(actualAtFirst, expectedAtFirst);
+});
+
+test("awesome-editor GIVEN vi mode and Vim word units WHEN using w, b, and e THEN shares reply word navigation", () => {
+  const editor = given_editor("vi");
+  editor.setText("one.two  three");
+  editor.handleInput("\x1b");
+  editor.handleInput("0");
+
+  editor.handleInput("w");
+  const actualAfterFirstW = editor.getCursor();
+  editor.handleInput("w");
+  const actualAfterSecondW = editor.getCursor();
+  editor.handleInput("b");
+  const actualAfterB = editor.getCursor();
+  editor.handleInput("0");
+  editor.handleInput("e");
+  const actualAfterE = editor.getCursor();
+  const expectedAfterFirstW = { line: 0, col: 3 };
+  const expectedAfterSecondW = { line: 0, col: 4 };
+  const expectedAfterB = { line: 0, col: 3 };
+  const expectedAfterE = { line: 0, col: 2 };
+
+  assert.deepEqual(actualAfterFirstW, expectedAfterFirstW);
+  assert.deepEqual(actualAfterSecondW, expectedAfterSecondW);
+  assert.deepEqual(actualAfterB, expectedAfterB);
+  assert.deepEqual(actualAfterE, expectedAfterE);
+});
+
+test("awesome-editor GIVEN vi mode and repeated targets WHEN using f/t with repeats THEN shares Vim character motions", () => {
+  const editor = given_editor("vi");
+  editor.setText("aXbXcXbX");
+  editor.handleInput("\x1b");
+  editor.handleInput("0");
+
+  editor.handleInput("f");
+  editor.handleInput("b");
+  const actualFind = editor.getCursor();
+  editor.handleInput(";");
+  const actualRepeat = editor.getCursor();
+  editor.handleInput(",");
+  const actualReverse = editor.getCursor();
+  editor.handleInput("0");
+  editor.handleInput("t");
+  editor.handleInput("b");
+  const actualTill = editor.getCursor();
+  editor.handleInput(";");
+  const actualTillRepeat = editor.getCursor();
+  const expectedFind = { line: 0, col: 2 };
+  const expectedRepeat = { line: 0, col: 6 };
+  const expectedReverse = { line: 0, col: 2 };
+  editor.handleInput("F");
+  editor.handleInput("b");
+  const actualBackwardFind = editor.getCursor();
+  editor.handleInput("$");
+  editor.handleInput("T");
+  editor.handleInput("b");
+  const actualBackwardTill = editor.getCursor();
+  const expectedTill = { line: 0, col: 1 };
+  const expectedTillRepeat = { line: 0, col: 5 };
+  const expectedBackwardFind = { line: 0, col: 2 };
+  const expectedBackwardTill = { line: 0, col: 7 };
+
+  assert.deepEqual(actualFind, expectedFind);
+  assert.deepEqual(actualRepeat, expectedRepeat);
+  assert.deepEqual(actualReverse, expectedReverse);
+  assert.deepEqual(actualTill, expectedTill);
+  assert.deepEqual(actualTillRepeat, expectedTillRepeat);
+  assert.deepEqual(actualBackwardFind, expectedBackwardFind);
+  assert.deepEqual(actualBackwardTill, expectedBackwardTill);
+});
+
+test("awesome-editor GIVEN a pending g sequence WHEN receiving another motion THEN cancels g and processes that motion", () => {
+  const editor = given_editor("vi");
+  editor.setText("first\nsecond\nthird");
+  editor.handleInput("\x1b");
+  editor.handleInput("g");
+  editor.handleInput("g");
+
+  editor.handleInput("g");
+  editor.handleInput("j");
+
+  const actual = editor.getCursor();
+  const expected = { line: 1, col: 0 };
+
+  assert.deepEqual(actual, expected);
+});

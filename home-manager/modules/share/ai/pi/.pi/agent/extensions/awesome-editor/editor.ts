@@ -47,9 +47,11 @@ import {
   ESC_DOWN,
 } from "./vim/types.js";
 import {
-  reverseCharMotion,
   findCharMotionTarget,
   findWordMotionTarget,
+  firstNonBlankColumn,
+  isPrintableAscii,
+  reverseCharMotion,
 } from "./vim/motions.js";
 
 /**
@@ -778,7 +780,8 @@ export class AwesomeEditor extends CustomEditor {
   }
 
   private handleEscape(): void {
-    if (this.pendingMotion || this.pendingOperator) {
+    if (this.pendingG || this.pendingMotion || this.pendingOperator) {
+      this.pendingG = null;
       this.pendingMotion = null;
       this.pendingOperator = null;
       return;
@@ -794,19 +797,23 @@ export class AwesomeEditor extends CustomEditor {
   // ─── Pending state handlers ──────────────────────────────────────────────────
 
   private handlePendingMotion(data: string): void {
-    if (data.length === 1 && data.charCodeAt(0) >= 32) {
-      if (this.pendingOperator === "d") {
-        this.deleteWithCharMotion(this.pendingMotion!, data);
-        this.pendingOperator = null;
-      } else if (this.pendingOperator === "c") {
-        this.deleteWithCharMotion(this.pendingMotion!, data);
-        this.pendingOperator = null;
-        this.viMode = "insert";
-      } else {
-        this.executeCharMotion(this.pendingMotion!, data);
-      }
-    }
+    const motion = this.pendingMotion;
     this.pendingMotion = null;
+    if (!motion || !isPrintableAscii(data)) {
+      this.pendingOperator = null;
+      return;
+    }
+
+    if (this.pendingOperator === "d") {
+      this.deleteWithCharMotion(motion, data);
+      this.pendingOperator = null;
+    } else if (this.pendingOperator === "c") {
+      this.deleteWithCharMotion(motion, data);
+      this.pendingOperator = null;
+      this.viMode = "insert";
+    } else {
+      this.executeCharMotion(motion, data);
+    }
   }
 
   private handlePendingDelete(data: string): void {
@@ -848,9 +855,13 @@ export class AwesomeEditor extends CustomEditor {
 
   private handlePendingG(data: string): void {
     this.pendingG = null;
-    // gg → jump to first line
-    if (data === "g") this.moveToLine(0);
-    // Any other key: cancel silently (vim behaviour)
+    if (data === "g") {
+      this.moveToLine(0);
+      return;
+    }
+
+    // A non-g key cancels the sequence, then starts its own normal command.
+    this.handleNormalMode(data);
   }
 
   // ─── Normal mode dispatch ────────────────────────────────────────────────────
@@ -874,6 +885,10 @@ export class AwesomeEditor extends CustomEditor {
     if (this.handleCharMotionRepeat(data)) return;
     if (this.handleGCommand(data)) return;
     if (this.handleWordMotion(data)) return;
+    if (data === "_") {
+      this.moveToFirstNonBlank();
+      return;
+    }
     if (data in NORMAL_KEYS) {
       this.handleMappedKey(data);
       return;
@@ -1003,7 +1018,7 @@ export class AwesomeEditor extends CustomEditor {
     const line = this.getLines()[this.getCursor().line] ?? "";
     const col = this.getCursor().col;
     const targetCol = findCharMotionTarget(
-      line,
+      line.split(""),
       col,
       motion,
       targetChar,
@@ -1026,24 +1041,47 @@ export class AwesomeEditor extends CustomEditor {
     for (let i = 0; i < Math.abs(delta); i++) super.handleInput(seq);
   }
 
-  /** Move cursor to the start of the given line (0-indexed). */
+  /** Move cursor to the first nonblank unit of the given line (0-indexed). */
   private moveToLine(targetLine: number): void {
     const currentLine = this.getCursor().line;
     const delta = targetLine - currentLine;
     const seq = delta > 0 ? ESC_DOWN : ESC_UP;
     for (let i = 0; i < Math.abs(delta); i++) super.handleInput(seq);
-    // Move to start of line
+
+    this.moveToFirstNonBlank(targetLine);
+  }
+
+  private moveToFirstNonBlank(targetLine = this.getCursor().line): void {
     super.handleInput(CTRL_A);
+    const line = this.getLines()[targetLine] ?? "";
+    const targetColumn = firstNonBlankColumn(line.split(""));
+    this.moveCursorBy(targetColumn);
   }
 
   private moveWord(
     direction: "forward" | "backward",
     target: "start" | "end",
   ): void {
-    const line = this.getLines()[this.getCursor().line] ?? "";
-    const col = this.getCursor().col;
-    const targetCol = findWordMotionTarget(line, col, direction, target);
-    if (targetCol !== col) this.moveCursorBy(targetCol - col);
+    const cursor = this.getCursor();
+    const targetPosition = findWordMotionTarget(
+      this.getMotionLines(),
+      { line: cursor.line, column: cursor.col },
+      direction,
+      target,
+    );
+    const deltaLine = targetPosition.line - cursor.line;
+    if (deltaLine !== 0) {
+      const seq = deltaLine > 0 ? ESC_DOWN : ESC_UP;
+      for (let i = 0; i < Math.abs(deltaLine); i++) super.handleInput(seq);
+      super.handleInput(CTRL_A);
+      this.moveCursorBy(targetPosition.column);
+    } else {
+      this.moveCursorBy(targetPosition.column - cursor.col);
+    }
+  }
+
+  private getMotionLines(): string[][] {
+    return this.getLines().map((line) => line.split(""));
   }
 
   // ─── Delete helpers ──────────────────────────────────────────────────────────
@@ -1054,22 +1092,25 @@ export class AwesomeEditor extends CustomEditor {
   }
 
   private deleteWithMotion(motion: string): boolean {
-    const line = this.getLines()[this.getCursor().line] ?? "";
-    const col = this.getCursor().col;
+    const cursor = this.getCursor();
+    const line = this.getLines()[cursor.line] ?? "";
     let targetCol: number | null = null;
     let inclusive = false;
 
     switch (motion) {
       case "w":
-        targetCol = findWordMotionTarget(line, col, "forward", "start");
-        break;
-      case "e":
-        targetCol = findWordMotionTarget(line, col, "forward", "end");
-        inclusive = true;
-        break;
       case "b":
-        targetCol = findWordMotionTarget(line, col, "backward", "start");
+      case "e": {
+        const target = findWordMotionTarget(
+          [line.split("")],
+          { line: 0, column: cursor.col },
+          motion === "b" ? "backward" : "forward",
+          motion === "b" || motion === "w" ? "start" : "end",
+        );
+        targetCol = target.column;
+        inclusive = motion === "e";
         break;
+      }
       case "$":
         targetCol = line.length;
         break;
@@ -1079,14 +1120,19 @@ export class AwesomeEditor extends CustomEditor {
       default:
         return false;
     }
-    this.deleteRange(col, targetCol, inclusive);
+    this.deleteRange(cursor.col, targetCol, inclusive);
     return true;
   }
 
   private deleteWithCharMotion(motion: CharMotion, targetChar: string): void {
     const line = this.getLines()[this.getCursor().line] ?? "";
     const col = this.getCursor().col;
-    const targetCol = findCharMotionTarget(line, col, motion, targetChar);
+    const targetCol = findCharMotionTarget(
+      line.split(""),
+      col,
+      motion,
+      targetChar,
+    );
     if (targetCol === null) return;
     this.lastCharMotion = { motion, char: targetChar };
     this.deleteRange(col, targetCol, true);

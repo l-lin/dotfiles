@@ -19,6 +19,14 @@ import {
   type VisualMode,
 } from "./model.js";
 import {
+  findCharMotionTarget,
+  findWordMotionTarget,
+  firstNonBlankColumn,
+  isPrintableAscii,
+  reverseCharMotion,
+} from "../vim/motions.js";
+import type { CharMotion, LastCharMotion } from "../vim/types.js";
+import {
   cellColumn,
   graphemeAtOrBeforeColumn,
   ReplyRenderer,
@@ -66,6 +74,9 @@ export class ReplyComponent implements Component, Focusable {
   private visualMode: VisualMode = "character";
   private visualAnchor: CursorPosition | null = null;
   private commentInput: CommentInputState | null = null;
+  private pendingG = false;
+  private pendingCharMotion: CharMotion | null = null;
+  private lastCharMotion: LastCharMotion | null = null;
   private scrollTop = 0;
   private lastInnerWidth = 80;
 
@@ -86,6 +97,16 @@ export class ReplyComponent implements Component, Focusable {
   }
 
   handleInput(data: string): void {
+    if (this.pendingG) {
+      this.handlePendingG(data);
+      return;
+    }
+
+    if (this.pendingCharMotion) {
+      this.handlePendingCharMotion(data);
+      return;
+    }
+
     if (matchesKey(data, this.keymap.open)) {
       this.restart();
       return;
@@ -159,6 +180,11 @@ export class ReplyComponent implements Component, Focusable {
       return;
     }
 
+    if (this.mode === "visual" && data === "o") {
+      this.swapVisualCursor();
+      return;
+    }
+
     if (this.handleMovement(data)) return;
   }
 
@@ -220,6 +246,9 @@ export class ReplyComponent implements Component, Focusable {
     this.mode = "normal";
     this.visualAnchor = null;
     this.commentInput = null;
+    this.pendingG = false;
+    this.pendingCharMotion = null;
+    this.lastCharMotion = null;
     this.scrollTop = 0;
     this.tui.requestRender();
   }
@@ -231,6 +260,35 @@ export class ReplyComponent implements Component, Focusable {
     return Math.max(1, frameRows - fixedRows);
   }
 
+  private handlePendingG(data: string): void {
+    this.pendingG = false;
+    if (matchesKey(data, "escape")) {
+      this.tui.requestRender();
+      return;
+    }
+
+    if (data === "g") {
+      this.moveToLine(0);
+      this.tui.requestRender();
+      return;
+    }
+
+    // A non-g key cancels the sequence, then starts its own normal command.
+    this.handleInput(data);
+  }
+
+  private handlePendingCharMotion(data: string): void {
+    const motion = this.pendingCharMotion;
+    this.pendingCharMotion = null;
+    if (!motion || matchesKey(data, "escape") || !isPrintableAscii(data)) {
+      this.tui.requestRender();
+      return;
+    }
+
+    this.executeCharMotion(motion, data);
+    this.tui.requestRender();
+  }
+
   private handleMovement(data: string): boolean {
     if (matchesKey(data, this.keymap.left)) this.moveHorizontal(-1);
     else if (matchesKey(data, this.keymap.right)) this.moveHorizontal(1);
@@ -238,7 +296,26 @@ export class ReplyComponent implements Component, Focusable {
     else if (matchesKey(data, this.keymap.up)) this.moveVertical(-1);
     else if (matchesKey(data, this.keymap.halfPageUp)) this.scrollHalfPage(-1);
     else if (matchesKey(data, this.keymap.halfPageDown)) this.scrollHalfPage(1);
-    else return false;
+    else if (data === "g") this.pendingG = true;
+    else if (data === "G") this.moveToLine(this.document.lines.length - 1);
+    else if (data === "w") this.moveWord("forward", "start");
+    else if (data === "b") this.moveWord("backward", "start");
+    else if (data === "e") this.moveWord("forward", "end");
+    else if (data === "0") this.moveToColumn(0);
+    else if (data === "_")
+      this.moveToColumn(firstNonBlankColumn(this.currentLineGraphemes()));
+    else if (data === "$")
+      this.moveToColumn(this.currentLineGraphemes().length - 1);
+    else if (data === "f" || data === "F" || data === "t" || data === "T") {
+      this.pendingCharMotion = data;
+    } else if (data === ";" || data === ",") {
+      if (!this.lastCharMotion) return false;
+      const motion =
+        data === ";"
+          ? this.lastCharMotion.motion
+          : reverseCharMotion(this.lastCharMotion.motion);
+      this.executeCharMotion(motion, this.lastCharMotion.char, false);
+    } else return false;
 
     this.tui.requestRender();
     return true;
@@ -251,6 +328,71 @@ export class ReplyComponent implements Component, Focusable {
       this.cursor.grapheme = next;
       this.preferredColumn = null;
     }
+  }
+
+  private currentLineGraphemes(): string[] {
+    return this.document.lines[this.cursor.line]!.graphemes.map(
+      (grapheme) => grapheme.text,
+    );
+  }
+
+  private moveToColumn(column: number): void {
+    const line = this.document.lines[this.cursor.line]!;
+    this.cursor.grapheme = Math.max(
+      0,
+      Math.min(column, Math.max(0, line.graphemes.length - 1)),
+    );
+    this.preferredColumn = null;
+  }
+
+  private moveToLine(line: number): void {
+    const targetLine = Math.max(
+      0,
+      Math.min(line, this.document.lines.length - 1),
+    );
+    const target = this.document.lines[targetLine]!;
+    this.cursor = {
+      line: targetLine,
+      grapheme: firstNonBlankColumn(
+        target.graphemes.map((grapheme) => grapheme.text),
+      ),
+    };
+    this.preferredColumn = null;
+  }
+
+  private moveWord(
+    direction: "forward" | "backward",
+    target: "start" | "end",
+  ): void {
+    const motion = findWordMotionTarget(
+      this.document.lines.map((line) =>
+        line.graphemes.map((grapheme) => grapheme.text),
+      ),
+      { line: this.cursor.line, column: this.cursor.grapheme },
+      direction,
+      target,
+    );
+    this.cursor = { line: motion.line, grapheme: motion.column };
+    this.preferredColumn = null;
+  }
+
+  private executeCharMotion(
+    motion: CharMotion,
+    targetChar: string,
+    saveMotion = true,
+  ): void {
+    const line = this.currentLineGraphemes();
+    const target = findCharMotionTarget(
+      line,
+      this.cursor.grapheme,
+      motion,
+      targetChar,
+      !saveMotion,
+    );
+    if (target === null) return;
+
+    if (saveMotion) this.lastCharMotion = { motion, char: targetChar };
+    this.moveToColumn(target);
   }
 
   private moveVertical(direction: -1 | 1): void {
@@ -311,6 +453,16 @@ export class ReplyComponent implements Component, Focusable {
   private exitVisual(): void {
     this.mode = "normal";
     this.visualAnchor = null;
+  }
+
+  private swapVisualCursor(): void {
+    if (!this.visualAnchor) return;
+
+    const anchor = this.visualAnchor;
+    this.visualAnchor = { ...this.cursor };
+    this.cursor = { ...anchor };
+    this.preferredColumn = null;
+    this.tui.requestRender();
   }
 
   private openCommentInput(): void {

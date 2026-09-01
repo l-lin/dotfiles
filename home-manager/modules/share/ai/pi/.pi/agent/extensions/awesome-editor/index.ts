@@ -6,7 +6,8 @@
  *   i / a / A / I  enter insert mode
  *   o / O          open line below / above
  *   hjkl           navigation
- *   0 / $          line start / end
+ *   gg / G         first / last line
+ *   0 / _ / $      line start / first nonblank / end
  *   w / b / e      word navigation
  *   x              delete char
  *   D              delete to end of line

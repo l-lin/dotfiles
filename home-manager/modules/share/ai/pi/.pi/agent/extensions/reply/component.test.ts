@@ -61,6 +61,16 @@ function when_typing(component: ReplyComponent, text: string): void {
   for (const character of text) component.handleInput(character);
 }
 
+function then_cursor(component: ReplyComponent): {
+  line: number;
+  grapheme: number;
+} {
+  return {
+    ...(component as unknown as { cursor: { line: number; grapheme: number } })
+      .cursor,
+  };
+}
+
 test("reply component GIVEN a source message WHEN selecting characters and submitting a comment THEN returns the annotated blocks on save", () => {
   const { component, getResult } = given_component("hello\nworld");
 
@@ -224,6 +234,204 @@ test("reply component GIVEN a line-wise selection WHEN saving a comment THEN quo
     action: "save",
     text: "> one\n> two\n\nReview both lines",
   };
+  assert.deepEqual(actual, expected);
+});
+
+test("reply component GIVEN multiple source lines WHEN using gg and G THEN jumps to Vim's first nonblank columns", () => {
+  const { component } = given_component("  first\none\n  last");
+
+  component.handleInput("G");
+  const actualAtLast = then_cursor(component);
+  component.handleInput("g");
+  component.handleInput("g");
+  const actualAtFirst = then_cursor(component);
+  const expectedAtLast = { line: 2, grapheme: 2 };
+  const expectedAtFirst = { line: 0, grapheme: 2 };
+
+  assert.deepEqual(actualAtLast, expectedAtLast);
+  assert.deepEqual(actualAtFirst, expectedAtFirst);
+});
+
+test("reply component GIVEN a pending g sequence WHEN receiving another motion THEN cancels g and processes that motion", () => {
+  const { component } = given_component("first\nsecond");
+
+  component.handleInput("g");
+  component.handleInput("j");
+
+  const actual = then_cursor(component);
+  const expected = { line: 1, grapheme: 0 };
+
+  assert.deepEqual(actual, expected);
+});
+
+test("reply component GIVEN Vim word units WHEN using w, b, and e THEN moves across keyword and punctuation runs", () => {
+  const { component } = given_component("one.two  three");
+
+  component.handleInput("w");
+  const actualAfterFirstW = then_cursor(component);
+  component.handleInput("w");
+  const actualAfterSecondW = then_cursor(component);
+  component.handleInput("b");
+  const actualAfterB = then_cursor(component);
+  component.handleInput("0");
+  component.handleInput("e");
+  const actualAfterE = then_cursor(component);
+  const expectedAfterFirstW = { line: 0, grapheme: 3 };
+  const expectedAfterSecondW = { line: 0, grapheme: 4 };
+  const expectedAfterB = { line: 0, grapheme: 3 };
+  const expectedAfterE = { line: 0, grapheme: 2 };
+
+  assert.deepEqual(actualAfterFirstW, expectedAfterFirstW);
+  assert.deepEqual(actualAfterSecondW, expectedAfterSecondW);
+  assert.deepEqual(actualAfterB, expectedAfterB);
+  assert.deepEqual(actualAfterE, expectedAfterE);
+});
+
+test("reply component GIVEN an indented source line WHEN using 0, _, and $ THEN moves to Vim line edges", () => {
+  const { component } = given_component("  first");
+
+  component.handleInput("_");
+  const actualNonblank = then_cursor(component);
+  component.handleInput("$");
+  const actualEnd = then_cursor(component);
+  component.handleInput("0");
+  const actualStart = then_cursor(component);
+  const expectedNonblank = { line: 0, grapheme: 2 };
+  const expectedEnd = { line: 0, grapheme: 6 };
+  const expectedStart = { line: 0, grapheme: 0 };
+
+  assert.deepEqual(actualNonblank, expectedNonblank);
+  assert.deepEqual(actualEnd, expectedEnd);
+  assert.deepEqual(actualStart, expectedStart);
+});
+
+test("reply component GIVEN repeated characters on one line WHEN using f/t and repeats THEN searches without crossing lines", () => {
+  const { component } = given_component("aXbXcXbX\nmissing b");
+
+  component.handleInput("f");
+  component.handleInput("b");
+  const actualFind = then_cursor(component);
+  component.handleInput(";");
+  const actualRepeat = then_cursor(component);
+  component.handleInput(",");
+  const actualReverse = then_cursor(component);
+  component.handleInput("0");
+  component.handleInput("t");
+  component.handleInput("b");
+  const actualTill = then_cursor(component);
+  component.handleInput(";");
+  const actualTillRepeat = then_cursor(component);
+  const expectedFind = { line: 0, grapheme: 2 };
+  const expectedRepeat = { line: 0, grapheme: 6 };
+  const expectedReverse = { line: 0, grapheme: 2 };
+  component.handleInput("F");
+  component.handleInput("b");
+  const actualBackwardFind = then_cursor(component);
+  component.handleInput("$");
+  component.handleInput("T");
+  component.handleInput("b");
+  const actualBackwardTill = then_cursor(component);
+  const expectedTill = { line: 0, grapheme: 1 };
+  const expectedTillRepeat = { line: 0, grapheme: 5 };
+  const expectedBackwardFind = { line: 0, grapheme: 2 };
+  const expectedBackwardTill = { line: 0, grapheme: 7 };
+
+  assert.deepEqual(actualFind, expectedFind);
+  assert.deepEqual(actualRepeat, expectedRepeat);
+  assert.deepEqual(actualReverse, expectedReverse);
+  assert.deepEqual(actualTill, expectedTill);
+  assert.deepEqual(actualTillRepeat, expectedTillRepeat);
+  assert.deepEqual(actualBackwardFind, expectedBackwardFind);
+  assert.deepEqual(actualBackwardTill, expectedBackwardTill);
+});
+
+test("reply component GIVEN a successful find WHEN a later find fails THEN preserves the repeat motion", () => {
+  const { component } = given_component("aXbX");
+
+  component.handleInput("f");
+  component.handleInput("b");
+  component.handleInput("0");
+  component.handleInput("f");
+  component.handleInput("z");
+  component.handleInput(";");
+
+  const actual = then_cursor(component);
+  const expected = { line: 0, grapheme: 2 };
+
+  assert.deepEqual(actual, expected);
+});
+
+test("reply component GIVEN a failed repeated find WHEN navigating back THEN comma still reverses the remembered search", () => {
+  const { component } = given_component("bXbXb");
+
+  component.handleInput("f");
+  component.handleInput("b");
+  component.handleInput(";");
+  component.handleInput(";");
+  component.handleInput("h");
+  component.handleInput(",");
+
+  const actual = then_cursor(component);
+  const expected = { line: 0, grapheme: 2 };
+
+  assert.deepEqual(actual, expected);
+});
+
+test("reply component GIVEN a pending find motion WHEN receiving invalid input or Escape THEN cancels without moving or closing", () => {
+  const { component, getResult } = given_component("hello");
+
+  component.handleInput("f");
+  component.handleInput("é");
+  const actualAfterInvalid = then_cursor(component);
+  component.handleInput("f");
+  component.handleInput("\x1b");
+  const actualAfterEscape = then_cursor(component);
+  const actualResult = getResult();
+  const expected = { line: 0, grapheme: 0 };
+
+  assert.deepEqual(actualAfterInvalid, expected);
+  assert.deepEqual(actualAfterEscape, expected);
+  assert.equal(actualResult, undefined);
+});
+
+test("reply component GIVEN a character visual selection WHEN o is pressed THEN swaps the active cursor and anchor", () => {
+  const { component, getResult } = given_component("hello");
+
+  component.handleInput("v");
+  component.handleInput("l");
+  component.handleInput("o");
+  component.handleInput("l");
+  component.handleInput("l");
+  component.handleInput("\x1bc");
+  when_typing(component, "Review the middle");
+  component.handleInput("\r");
+  component.handleInput("\x13");
+
+  const actual = getResult();
+  const expected = {
+    action: "save",
+    text: "> el\n\nReview the middle",
+  };
+
+  assert.deepEqual(actual, expected);
+});
+
+test("reply component GIVEN a character visual selection WHEN jumping with G THEN keeps the anchor for annotation", () => {
+  const { component, getResult } = given_component("one\ntwo\nthree");
+
+  component.handleInput("v");
+  component.handleInput("G");
+  component.handleInput("\x1bc");
+  when_typing(component, "Review the opening");
+  component.handleInput("\r");
+  component.handleInput("\x13");
+
+  const actual = getResult();
+  const expected = {
+    action: "save",
+    text: "> one\n> two\n> t\n\nReview the opening",
+  };
+
   assert.deepEqual(actual, expected);
 });
 
