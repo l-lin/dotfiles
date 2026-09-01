@@ -1,0 +1,106 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import { createSourceDocument, type Annotation } from "./model.js";
+import {
+  cellColumn,
+  graphemeAtOrBeforeColumn,
+  ReplyRenderer,
+  type ReplyRenderState,
+} from "./render.js";
+
+function given_theme() {
+  return {
+    fg(_color: string, text: string) {
+      return text;
+    },
+    bg(_color: string, text: string) {
+      return `[selected]${text}[/selected]`;
+    },
+    bold(text: string) {
+      return text;
+    },
+    underline(text: string) {
+      return `[underlined]${text}[/underlined]`;
+    },
+  };
+}
+
+function given_renderer(
+  source: string,
+  annotations: readonly Annotation[] = [],
+  state: Partial<ReplyRenderState> = {},
+): ReplyRenderer {
+  return new ReplyRenderer(
+    given_theme() as never,
+    createSourceDocument(source),
+    annotations,
+    {
+      cursor: { line: 0, grapheme: 0 },
+      activeSelection: null,
+      hasCommentInput: false,
+      focused: false,
+      ...state,
+    },
+  );
+}
+
+test("reply renderer GIVEN an annotation ending on a source line WHEN building rows THEN places its comment box after that line", () => {
+  const annotations: Annotation[] = [
+    { id: 1, start: 0, end: 3, text: "one", comment: "Review this" },
+  ];
+  const renderer = given_renderer("one\ntwo", annotations);
+
+  const actual = renderer.buildDisplayRows(30);
+  const expected = ["source", "comment", "comment", "comment", "source"];
+
+  assert.deepEqual(
+    actual.map((row) => row.kind),
+    expected,
+  );
+  assert.match(actual[2]!.content, /Review this/);
+});
+
+test("reply renderer GIVEN an annotated visual selection under the cursor WHEN building rows THEN keeps annotation and selection styles", () => {
+  const annotations: Annotation[] = [
+    { id: 1, start: 0, end: 1, text: "a", comment: "Review this" },
+  ];
+  const renderer = given_renderer("abcd", annotations, {
+    cursor: { line: 0, grapheme: 1 },
+    activeSelection: { start: 1, end: 3, text: "bc" },
+  });
+
+  const actual = renderer.buildDisplayRows(30)[0]!.content;
+
+  assert.match(actual, /\[underlined\]a\[\/underlined\]/);
+  assert.match(actual, /\x1b\[7m\[selected\]b\[\/selected\]\x1b\[27m/);
+  assert.match(actual, /\[selected\]c\[\/selected\]/);
+});
+
+test("reply renderer GIVEN a wrapped source line WHEN finding the cursor row THEN returns the wrapped row containing the cursor", () => {
+  const renderer = given_renderer("abcdef", [], {
+    cursor: { line: 0, grapheme: 4 },
+  });
+  const rows = renderer.buildDisplayRows(9);
+
+  const actual = renderer.findCursorRow(rows);
+  const expected = 1;
+
+  assert.equal(actual, expected);
+});
+
+test("reply renderer GIVEN tab and wide graphemes WHEN converting columns THEN uses terminal display cells", () => {
+  const line = createSourceDocument("a\t中").lines[0]!;
+
+  const actual = {
+    afterTab: cellColumn(line, 2),
+    beforeWideCharacter: graphemeAtOrBeforeColumn(line, 3),
+    atWideCharacter: graphemeAtOrBeforeColumn(line, 4),
+  };
+  const expected = {
+    afterTab: 4,
+    beforeWideCharacter: 1,
+    atWideCharacter: 2,
+  };
+
+  assert.deepEqual(actual, expected);
+});

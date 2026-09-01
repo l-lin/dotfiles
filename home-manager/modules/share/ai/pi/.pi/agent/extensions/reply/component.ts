@@ -1,6 +1,5 @@
 import type { Theme } from "@earendil-works/pi-coding-agent";
 import {
-  CURSOR_MARKER,
   Input,
   matchesKey,
   truncateToWidth,
@@ -11,17 +10,20 @@ import {
   type TUI,
 } from "@earendil-works/pi-tui";
 import {
-  annotationLines,
   createSourceDocument,
   formatAnnotatedText,
   getSelectionRange,
-  selectionContainsOffset,
   type Annotation,
   type CursorPosition,
   type SourceDocument,
-  type SourceLine,
   type VisualMode,
 } from "./model.js";
+import {
+  cellColumn,
+  graphemeAtOrBeforeColumn,
+  ReplyRenderer,
+  type DisplayRow,
+} from "./render.js";
 
 export interface ReplyKeymap {
   open: KeyId;
@@ -43,34 +45,9 @@ export interface ReplyComponentResult {
   text?: string;
 }
 
-type DisplayRow = SourceDisplayRow | CommentDisplayRow;
-
-type SourceDisplayRow = {
-  kind: "source";
-  line: number;
-  startGrapheme: number;
-  endGrapheme: number;
-  content: string;
-};
-
-type CommentDisplayRow = {
-  kind: "comment";
-  annotationId: number;
-  content: string;
-};
-
 type CommentInputState = {
-  annotation: {
-    start: number;
-    end: number;
-    text: string;
-  };
   input: Input;
 };
-
-const ANSI_REVERSE_ON = "\x1b[7m";
-const ANSI_REVERSE_OFF = "\x1b[27m";
-const TAB_SIZE = 4;
 
 export class ReplyComponent implements Component, Focusable {
   focused = false;
@@ -139,7 +116,7 @@ export class ReplyComponent implements Component, Focusable {
       if (this.annotations.length === 0) {
         this.done({ action: "cancel" });
       } else {
-        const text = this.formatAnnotations();
+        const text = formatAnnotatedText(this.annotations);
         this.onSave?.(text);
         this.done({ action: "save", text });
       }
@@ -192,8 +169,9 @@ export class ReplyComponent implements Component, Focusable {
     const innerWidth = outerWidth - 2;
     this.lastInnerWidth = innerWidth;
     const viewportHeight = this.getViewportHeight();
-    const displayRows = this.buildDisplayRows(innerWidth);
-    this.keepCursorVisible(displayRows, viewportHeight);
+    const renderer = this.createRenderer();
+    const displayRows = renderer.buildDisplayRows(innerWidth);
+    this.keepCursorVisible(renderer, displayRows, viewportHeight);
 
     const visibleRows = displayRows.slice(
       this.scrollTop,
@@ -254,18 +232,13 @@ export class ReplyComponent implements Component, Focusable {
   }
 
   private handleMovement(data: string): boolean {
-    // AI: keep the first milestone to the requested motions so broader Vim commands can be added independently.
-    let handled = true;
-
     if (matchesKey(data, this.keymap.left)) this.moveHorizontal(-1);
     else if (matchesKey(data, this.keymap.right)) this.moveHorizontal(1);
     else if (matchesKey(data, this.keymap.down)) this.moveVertical(1);
     else if (matchesKey(data, this.keymap.up)) this.moveVertical(-1);
     else if (matchesKey(data, this.keymap.halfPageUp)) this.scrollHalfPage(-1);
     else if (matchesKey(data, this.keymap.halfPageDown)) this.scrollHalfPage(1);
-    else handled = false;
-
-    if (!handled) return false;
+    else return false;
 
     this.tui.requestRender();
     return true;
@@ -285,19 +258,20 @@ export class ReplyComponent implements Component, Focusable {
     if (nextLine < 0 || nextLine >= this.document.lines.length) return;
 
     const currentLine = this.document.lines[this.cursor.line]!;
-    const currentColumn = this.cellColumn(currentLine, this.cursor.grapheme);
+    const currentColumn = cellColumn(currentLine, this.cursor.grapheme);
     const targetLine = this.document.lines[nextLine]!;
     const targetColumn = this.preferredColumn ?? currentColumn;
     this.cursor = {
       line: nextLine,
-      grapheme: this.graphemeAtOrBeforeColumn(targetLine, targetColumn),
+      grapheme: graphemeAtOrBeforeColumn(targetLine, targetColumn),
     };
     this.preferredColumn = targetColumn;
   }
 
   private scrollHalfPage(direction: -1 | 1): void {
     const currentLine = this.document.lines[this.cursor.line]!;
-    const rows = this.buildDisplayRows(this.lastInnerWidth);
+    const renderer = this.createRenderer();
+    const rows = renderer.buildDisplayRows(this.lastInnerWidth);
     const step = Math.max(1, Math.floor(this.getViewportHeight() / 2));
     this.scrollTop = Math.max(
       0,
@@ -307,7 +281,7 @@ export class ReplyComponent implements Component, Focusable {
       ),
     );
 
-    const sourceRow = this.findCursorRow(rows);
+    const sourceRow = renderer.findCursorRow(rows);
     if (sourceRow >= 0) {
       const targetRow = Math.max(
         0,
@@ -317,11 +291,10 @@ export class ReplyComponent implements Component, Focusable {
       if (targetSource?.kind === "source") {
         const targetLine = this.document.lines[targetSource.line]!;
         const targetColumn =
-          this.preferredColumn ??
-          this.cellColumn(currentLine, this.cursor.grapheme);
+          this.preferredColumn ?? cellColumn(currentLine, this.cursor.grapheme);
         this.cursor = {
           line: targetSource.line,
-          grapheme: this.graphemeAtOrBeforeColumn(targetLine, targetColumn),
+          grapheme: graphemeAtOrBeforeColumn(targetLine, targetColumn),
         };
         this.preferredColumn = targetColumn;
       }
@@ -380,215 +353,33 @@ export class ReplyComponent implements Component, Focusable {
       this.mode = "visual";
       this.tui.requestRender();
     };
-    this.commentInput = { annotation: selection, input };
+    this.commentInput = { input };
     this.tui.requestRender();
   }
 
-  private buildDisplayRows(width: number): DisplayRow[] {
-    const rows: DisplayRow[] = [];
-    for (
-      let lineIndex = 0;
-      lineIndex < this.document.lines.length;
-      lineIndex++
-    ) {
-      const line = this.document.lines[lineIndex]!;
-      for (const row of this.renderSourceLine(line, lineIndex, width)) {
-        rows.push({
-          kind: "source",
-          line: lineIndex,
-          startGrapheme: row.start,
-          endGrapheme: row.end,
-          content: row.content,
-        });
-      }
-
-      const comments = this.annotations.filter(
-        (annotation) =>
-          annotationLines(this.document, annotation).end === lineIndex,
-      );
-      for (const annotation of comments) {
-        rows.push(...this.renderComment(annotation, width));
-      }
-    }
-    return rows;
-  }
-
-  private renderSourceLine(
-    line: SourceLine,
-    lineIndex: number,
-    width: number,
-  ): Array<{ start: number; end: number; content: string }> {
-    const lineNumberWidth = String(this.document.lines.length).length;
-    const prefixWidth = lineNumberWidth + 4;
-    const textWidth = Math.max(1, width - prefixWidth);
-    const chunks: Array<{ start: number; end: number }> = [];
-    let chunkStart = 0;
-    let chunkCellWidth = 0;
-
-    for (let index = 0; index < line.graphemes.length; index++) {
-      const grapheme = line.graphemes[index]!;
-      const nextWidth = this.cellWidth(grapheme.text, chunkCellWidth);
-      if (chunkCellWidth > 0 && chunkCellWidth + nextWidth > textWidth) {
-        chunks.push({ start: chunkStart, end: index });
-        chunkStart = index;
-        chunkCellWidth = 0;
-      }
-      chunkCellWidth += this.cellWidth(grapheme.text, chunkCellWidth);
-    }
-
-    if (line.graphemes.length > 0) {
-      chunks.push({ start: chunkStart, end: line.graphemes.length });
-    } else {
-      chunks.push({ start: 0, end: 0 });
-    }
-
-    return chunks.map((chunk, chunkIndex) => {
-      const content = this.renderChunk(
-        line,
-        lineIndex,
-        chunk.start,
-        chunk.end,
-        width - prefixWidth,
-      );
-      const lineNumber = String(lineIndex + 1).padStart(lineNumberWidth);
-      const gutter =
-        chunkIndex === 0
-          ? ` ${lineNumber} `
-          : ` ${" ".repeat(lineNumberWidth)} `;
-      return {
-        start: chunk.start,
-        end: chunk.end,
-        content:
-          this.theme.fg("dim", gutter) +
-          this.theme.fg("borderMuted", "│ ") +
-          content,
-      };
+  private createRenderer(): ReplyRenderer {
+    return new ReplyRenderer(this.theme, this.document, this.annotations, {
+      cursor: this.cursor,
+      activeSelection:
+        this.mode === "visual" && this.visualAnchor
+          ? getSelectionRange(
+              this.document,
+              this.visualAnchor,
+              this.cursor,
+              this.visualMode,
+            )
+          : null,
+      hasCommentInput: this.commentInput !== null,
+      focused: this.focused,
     });
   }
 
-  private renderChunk(
-    line: SourceLine,
-    lineIndex: number,
-    start: number,
-    end: number,
-    width: number,
-  ): string {
-    const activeSelection = this.getActiveSelection();
-    let output = "";
-    let cellColumn = 0;
-
-    for (let index = start; index < end; index++) {
-      const grapheme = line.graphemes[index]!;
-      const globalStart = line.start + grapheme.start;
-      const globalEnd = line.start + grapheme.end;
-      const annotation = this.annotations.find((candidate) =>
-        selectionContainsOffset(candidate, globalStart, globalEnd),
-      );
-      const selected = activeSelection
-        ? selectionContainsOffset(activeSelection, globalStart, globalEnd)
-        : false;
-      const isCursor =
-        this.commentInput === null &&
-        this.cursor.line === lineIndex &&
-        this.cursor.grapheme === index;
-
-      const displayText =
-        grapheme.text === "\t"
-          ? " ".repeat(this.cellWidth(grapheme.text, cellColumn))
-          : grapheme.text;
-      let styled = displayText;
-      if (annotation) styled = this.theme.underline(styled);
-      if (selected) styled = this.theme.bg("selectedBg", styled);
-      if (isCursor) {
-        const cursorContent = styled || " ";
-        styled = `${this.cursorMarker()}${ANSI_REVERSE_ON}${cursorContent}${ANSI_REVERSE_OFF}`;
-      }
-      output += styled;
-      cellColumn += this.cellWidth(grapheme.text, cellColumn);
-    }
-
-    if (
-      this.commentInput === null &&
-      this.cursor.line === lineIndex &&
-      this.cursor.grapheme >= end &&
-      end === line.graphemes.length
-    ) {
-      output += `${this.cursorMarker()}${ANSI_REVERSE_ON} ${ANSI_REVERSE_OFF}`;
-      cellColumn++;
-    }
-
-    return output + " ".repeat(Math.max(0, width - cellColumn));
-  }
-
-  private renderComment(annotation: Annotation, width: number): DisplayRow[] {
-    const label = `#${annotation.id}`;
-    const topPrefix = `╭─ ${label} `;
-    const topFill = "─".repeat(
-      Math.max(0, width - visibleWidth(topPrefix) - 1),
-    );
-    const commentLines = wrapPlainText(
-      annotation.comment,
-      Math.max(1, width - 4),
-    );
-    const rows: DisplayRow[] = [
-      {
-        kind: "comment",
-        annotationId: annotation.id,
-        content:
-          this.theme.fg("borderMuted", "╭─ ") +
-          this.theme.fg("muted", label) +
-          this.theme.fg("borderMuted", ` ${topFill}╮`),
-      },
-    ];
-
-    for (const line of commentLines) {
-      const padding = " ".repeat(Math.max(0, width - 3 - visibleWidth(line)));
-      rows.push({
-        kind: "comment",
-        annotationId: annotation.id,
-        content:
-          this.theme.fg("borderMuted", "│") +
-          " " +
-          this.theme.fg("muted", line) +
-          padding +
-          this.theme.fg("borderMuted", "│"),
-      });
-    }
-
-    rows.push({
-      kind: "comment",
-      annotationId: annotation.id,
-      content: this.theme.fg(
-        "borderMuted",
-        `╰${"─".repeat(Math.max(0, width - 2))}╯`,
-      ),
-    });
-    return rows;
-  }
-
-  private getActiveSelection() {
-    if (this.mode !== "visual" || !this.visualAnchor) return null;
-    return getSelectionRange(
-      this.document,
-      this.visualAnchor,
-      this.cursor,
-      this.visualMode,
-    );
-  }
-
-  private findCursorRow(rows: DisplayRow[]): number {
-    return rows.findIndex(
-      (row) =>
-        row.kind === "source" &&
-        row.line === this.cursor.line &&
-        (row.startGrapheme === row.endGrapheme ||
-          (this.cursor.grapheme >= row.startGrapheme &&
-            this.cursor.grapheme < row.endGrapheme)),
-    );
-  }
-
-  private keepCursorVisible(rows: DisplayRow[], viewportHeight: number): void {
-    const cursorRow = this.findCursorRow(rows);
+  private keepCursorVisible(
+    renderer: ReplyRenderer,
+    rows: DisplayRow[],
+    viewportHeight: number,
+  ): void {
+    const cursorRow = renderer.findCursorRow(rows);
     if (cursorRow < 0) return;
     if (cursorRow < this.scrollTop) this.scrollTop = cursorRow;
     if (cursorRow >= this.scrollTop + viewportHeight) {
@@ -598,10 +389,6 @@ export class ReplyComponent implements Component, Focusable {
       0,
       Math.min(this.scrollTop, Math.max(0, rows.length - viewportHeight)),
     );
-  }
-
-  private formatAnnotations(): string {
-    return formatAnnotatedText(this.annotations);
   }
 
   private topBorder(width: number): string {
@@ -630,56 +417,4 @@ export class ReplyComponent implements Component, Focusable {
       this.theme.fg("border", "│")
     );
   }
-
-  private cursorMarker(): string {
-    return this.focused ? CURSOR_MARKER : "";
-  }
-
-  private cellColumn(line: SourceLine, graphemeIndex: number): number {
-    let column = 0;
-    for (let index = 0; index < graphemeIndex; index++) {
-      column += this.cellWidth(line.graphemes[index]!.text, column);
-    }
-    return column;
-  }
-
-  private cellWidth(text: string, column: number): number {
-    if (text === "\t") return TAB_SIZE - (column % TAB_SIZE);
-    return visibleWidth(text);
-  }
-
-  private graphemeAtOrBeforeColumn(
-    line: SourceLine,
-    targetColumn: number,
-  ): number {
-    if (line.graphemes.length === 0) return 0;
-    let column = 0;
-    let index = 0;
-    for (; index < line.graphemes.length; index++) {
-      const width = this.cellWidth(line.graphemes[index]!.text, column);
-      if (column + width > targetColumn) return index;
-      column += width;
-    }
-    return line.graphemes.length - 1;
-  }
-}
-
-function wrapPlainText(text: string, width: number): string[] {
-  const segmenter = new Intl.Segmenter(undefined, { granularity: "grapheme" });
-  const lines: string[] = [];
-  let line = "";
-  let lineWidth = 0;
-
-  for (const segment of segmenter.segment(text)) {
-    const segmentWidth = visibleWidth(segment.segment);
-    if (line && lineWidth + segmentWidth > width) {
-      lines.push(line);
-      line = "";
-      lineWidth = 0;
-    }
-    line += segment.segment;
-    lineWidth += segmentWidth;
-  }
-  lines.push(line);
-  return lines;
 }
