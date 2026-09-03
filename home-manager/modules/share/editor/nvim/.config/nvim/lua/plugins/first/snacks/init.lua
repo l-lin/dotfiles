@@ -161,8 +161,9 @@ end
 
 ---@type snacks.picker.transform
 local function demote_test_files(item)
-  if is_test_file(item.file or item.text) then
-    item.score_mul = 0.5
+  local test_file = is_test_file(item.file or item.text)
+  item.test_file_rank = test_file and 1 or 0
+  if test_file then
     item.filename_hl = "NonText"
   end
   return item
@@ -248,6 +249,9 @@ local function setup()
     notify = { enabled = false },
     picker = {
       enabled = true,
+      sort = {
+        fields = { "test_file_rank", "score:desc", "#text", "idx" },
+      },
       layouts = {
         vertical = {
           reverse = true,
@@ -465,6 +469,7 @@ local function setup()
         },
         grep = {
           format = with_test_file_highlight(Snacks.picker.format.file),
+          matcher = { sort_empty = true },
           transform = demote_test_files,
           actions = {
             append_file_search = append_file_search,
