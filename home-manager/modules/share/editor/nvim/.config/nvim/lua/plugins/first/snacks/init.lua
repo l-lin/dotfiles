@@ -146,7 +146,7 @@ end
 
 ---@param path string|nil
 ---@return boolean
-local function is_java_or_kotlin_test_file(path)
+local function is_test_file(path)
   if path == nil then
     return false
   end
@@ -155,11 +155,13 @@ local function is_java_or_kotlin_test_file(path)
     or path:match("IT%.java$") ~= nil
     or path:match("Test%.kt$") ~= nil
     or path:match("IT%.kt$") ~= nil
+    or path:match("_test%.rb$") ~= nil
+    or path:match("_spec%.rb$") ~= nil
 end
 
 ---@type snacks.picker.transform
-local function demote_java_or_kotlin_test_files(item)
-  if is_java_or_kotlin_test_file(item.file or item.text) then
+local function demote_test_files(item)
+  if is_test_file(item.file or item.text) then
     item.score_mul = 0.5
     item.filename_hl = "NonText"
   end
@@ -211,7 +213,7 @@ end
 local function with_test_file_highlight(formatter)
   return function(item, picker)
     local highlights = formatter(item, picker)
-    if not is_java_or_kotlin_test_file(item.file) then
+    if not is_test_file(item.file) then
       return highlights
     end
     return apply_test_file_highlight(highlights)
@@ -283,7 +285,7 @@ local function setup()
           focus = "input",
           format = with_test_file_highlight(Snacks.picker.format.file),
           matcher = { sort_empty = true },
-          transform = demote_java_or_kotlin_test_files,
+          transform = demote_test_files,
           actions = {
             edit_file = edit_file,
             switch_to_grep = switch_to_grep,
@@ -306,7 +308,7 @@ local function setup()
           focus = "input",
           format = with_test_file_highlight(Snacks.picker.format.file),
           matcher = { sort_empty = true },
-          transform = demote_java_or_kotlin_test_files,
+          transform = demote_test_files,
           actions = {
             edit_file = edit_file,
             switch_to_grep = switch_to_grep,
@@ -463,7 +465,7 @@ local function setup()
         },
         grep = {
           format = with_test_file_highlight(Snacks.picker.format.file),
-          transform = demote_java_or_kotlin_test_files,
+          transform = demote_test_files,
           actions = {
             append_file_search = append_file_search,
             append_file_type = append_file_type,
@@ -481,37 +483,37 @@ local function setup()
         lsp_declarations = {
           format = with_test_file_highlight(Snacks.picker.format.file),
           matcher = { sort_empty = true },
-          transform = chain_item_transforms(demote_java_or_kotlin_test_files, deduplicate_lsp_items),
+          transform = chain_item_transforms(demote_test_files, deduplicate_lsp_items),
         },
         lsp_definitions = {
           format = with_test_file_highlight(Snacks.picker.format.file),
           matcher = { sort_empty = true },
-          transform = chain_item_transforms(demote_java_or_kotlin_test_files, deduplicate_lsp_items),
+          transform = chain_item_transforms(demote_test_files, deduplicate_lsp_items),
         },
         lsp_implementations = {
           format = with_test_file_highlight(Snacks.picker.format.file),
           matcher = { sort_empty = true },
-          transform = chain_item_transforms(demote_java_or_kotlin_test_files, deduplicate_lsp_items),
+          transform = chain_item_transforms(demote_test_files, deduplicate_lsp_items),
         },
         lsp_incoming_calls = {
           format = with_test_file_highlight(Snacks.picker.format.lsp_symbol),
           matcher = { sort_empty = true },
-          transform = demote_java_or_kotlin_test_files,
+          transform = demote_test_files,
         },
         lsp_outgoing_calls = {
           format = with_test_file_highlight(Snacks.picker.format.lsp_symbol),
           matcher = { sort_empty = true },
-          transform = demote_java_or_kotlin_test_files,
+          transform = demote_test_files,
         },
         lsp_references = {
           format = with_test_file_highlight(Snacks.picker.format.file),
           matcher = { sort_empty = true },
-          transform = chain_item_transforms(demote_java_or_kotlin_test_files, deduplicate_lsp_items),
+          transform = chain_item_transforms(demote_test_files, deduplicate_lsp_items),
         },
         lsp_type_definitions = {
           format = with_test_file_highlight(Snacks.picker.format.file),
           matcher = { sort_empty = true },
-          transform = chain_item_transforms(demote_java_or_kotlin_test_files, deduplicate_lsp_items),
+          transform = chain_item_transforms(demote_test_files, deduplicate_lsp_items),
         },
       },
       win = {
