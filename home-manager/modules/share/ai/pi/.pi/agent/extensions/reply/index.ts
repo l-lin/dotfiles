@@ -1,6 +1,7 @@
-import type {
-  ExtensionAPI,
-  ExtensionContext,
+import {
+  copyToClipboard,
+  type ExtensionAPI,
+  type ExtensionContext,
 } from "@earendil-works/pi-coding-agent";
 import { ReplyComponent, type ReplyComponentResult } from "./component.js";
 import { fromAssistantContent } from "./model.js";
@@ -50,6 +51,10 @@ export default function replyExtension(pi: ExtensionAPI): void {
                 );
               }
               return refreshedSource;
+            },
+            (text) => copyToClipboard(text),
+            () => {
+              ctx.ui.notify("Could not copy selection to clipboard.", "error");
             },
           ),
         {

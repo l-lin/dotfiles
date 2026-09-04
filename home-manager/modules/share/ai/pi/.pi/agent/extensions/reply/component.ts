@@ -19,12 +19,14 @@ import {
   findLiteralSearchMatches,
   formatAnnotatedText,
   getSelectionRange,
+  normalizePlatformLineEndings,
   selectionContainsOffset,
   searchMatchContainsCursor,
   type Annotation,
   type CursorPosition,
   type SearchDirection,
   type SearchMatch,
+  type SelectionRange,
   type SourceDocument,
   type VisualMode,
 } from "./model.js";
@@ -52,6 +54,8 @@ export interface ReplyKeymap {
   close: KeyId;
   escape: KeyId;
   comment: KeyId;
+  yank: KeyId;
+  lineYank: KeyId;
   edit: KeyId;
   delete: KeyId;
   visualSwapCursor: KeyId;
@@ -110,6 +114,14 @@ type SearchInputState = {
   before: SearchSnapshot;
 };
 
+type PendingYank =
+  | { kind: "operator" }
+  | { kind: "g" }
+  | { kind: "char"; motion: CharMotion }
+  | { kind: "text-object"; outer: boolean };
+
+type YankCallback = (text: string) => void | Promise<void>;
+
 type SearchSnapshot = {
   cursor: CursorPosition;
   preferredColumn: number | null;
@@ -145,6 +157,10 @@ type DisplayStateSnapshot = {
     visualAnchorOrdinal: number | null;
     search: SearchStateSnapshot | null;
   } | null;
+  yankHighlight: {
+    startOrdinal: number;
+    endOrdinal: number;
+  } | null;
 };
 
 export class ReplyComponent implements Component, Focusable {
@@ -162,6 +178,8 @@ export class ReplyComponent implements Component, Focusable {
   private nextAnnotationId = 1;
   private readonly onSave?: (text: string) => void;
   private readonly onRefresh?: () => string | null;
+  private readonly onYank?: YankCallback;
+  private readonly onYankError?: (error: unknown) => void;
 
   private cursor: CursorPosition = { line: 0, grapheme: 0 };
   private preferredColumn: number | null = null;
@@ -173,7 +191,15 @@ export class ReplyComponent implements Component, Focusable {
   private search: SearchState | null = null;
   private pendingG = false;
   private pendingCharMotion: CharMotion | null = null;
+  private pendingYank: PendingYank | null = null;
   private lastCharMotion: LastCharMotion | null = null;
+  private yankHighlight: SelectionRange | null = null;
+  private yankHighlightTimer: ReturnType<typeof setTimeout> | null = null;
+  private yankHighlightGeneration = 0;
+  private yankOperationId = 0;
+  private latestSuccessfulYankId = 0;
+  private yankSessionId = 0;
+  private disposed = false;
   private scrollTop = 0;
   private lastInnerWidth = 80;
 
@@ -185,6 +211,8 @@ export class ReplyComponent implements Component, Focusable {
     done: (result: ReplyComponentResult) => void,
     onSave?: (text: string) => void,
     onRefresh?: () => string | null,
+    onYank?: YankCallback,
+    onYankError?: (error: unknown) => void,
   ) {
     this.tui = tui;
     this.theme = theme;
@@ -194,6 +222,8 @@ export class ReplyComponent implements Component, Focusable {
     this.done = done;
     this.onSave = onSave;
     this.onRefresh = onRefresh;
+    this.onYank = onYank;
+    this.onYankError = onYankError;
     this.ensureRenderedDocument(this.markdownWidth(this.lastInnerWidth));
   }
 
@@ -204,6 +234,11 @@ export class ReplyComponent implements Component, Focusable {
       } else {
         this.handleSearchInput(data);
       }
+      return;
+    }
+
+    if (this.pendingYank) {
+      this.handlePendingYank(data);
       return;
     }
 
@@ -276,8 +311,28 @@ export class ReplyComponent implements Component, Focusable {
       return;
     }
 
+    if (
+      this.mode === "visual" &&
+      (matchesKey(data, this.keymap.yank) ||
+        matchesKey(data, this.keymap.lineYank))
+    ) {
+      this.yankVisualSelection();
+      return;
+    }
+
     if (this.mode === "visual" && matchesKey(data, this.keymap.comment)) {
       this.openCommentInput();
+      return;
+    }
+
+    if (this.mode === "normal" && matchesKey(data, this.keymap.lineYank)) {
+      this.startYank(this.linewiseSelection(this.cursor), false);
+      return;
+    }
+
+    if (this.mode === "normal" && matchesKey(data, this.keymap.yank)) {
+      this.pendingYank = { kind: "operator" };
+      this.tui.requestRender();
       return;
     }
 
@@ -396,6 +451,9 @@ export class ReplyComponent implements Component, Focusable {
   }
 
   dispose(): void {
+    this.disposed = true;
+    this.yankSessionId++;
+    this.clearYankHighlight();
     this.commentInput = null;
   }
 
@@ -423,7 +481,10 @@ export class ReplyComponent implements Component, Focusable {
     this.search = null;
     this.pendingG = false;
     this.pendingCharMotion = null;
+    this.pendingYank = null;
     this.lastCharMotion = null;
+    this.clearYankHighlight();
+    this.yankSessionId++;
     this.scrollTop = 0;
     this.ensureRenderedDocument(this.markdownWidth(this.lastInnerWidth));
     this.tui.requestRender();
@@ -648,6 +709,413 @@ export class ReplyComponent implements Component, Focusable {
     const index =
       this.search.currentIndex < 0 ? "-" : String(this.search.currentIndex + 1);
     return `${this.search.prefix}${this.search.query} [${index}/${this.search.matches.length}]`;
+  }
+
+  private handlePendingYank(data: string): void {
+    const pending = this.pendingYank;
+    if (!pending) return;
+
+    if (matchesKey(data, this.keymap.escape)) {
+      this.pendingYank = null;
+      this.tui.requestRender();
+      return;
+    }
+
+    if (pending.kind === "operator") {
+      if (matchesKey(data, this.keymap.yank)) {
+        this.pendingYank = null;
+        this.startYank(this.linewiseSelection(this.cursor), false);
+        return;
+      }
+      if (matchesKey(data, this.keymap.lineMotionPrefix)) {
+        this.pendingYank = { kind: "g" };
+        this.tui.requestRender();
+        return;
+      }
+      if (data === "i" || data === "a") {
+        this.pendingYank = { kind: "text-object", outer: data === "a" };
+        this.tui.requestRender();
+        return;
+      }
+
+      const charMotion = this.getCharMotion(data);
+      if (charMotion) {
+        this.pendingYank = { kind: "char", motion: charMotion };
+        this.tui.requestRender();
+        return;
+      }
+
+      this.pendingYank = null;
+      const selection = this.selectionForYankMotion(data);
+      if (selection !== undefined) {
+        this.startYank(selection, false);
+        return;
+      }
+
+      // A non-motion key cancels the sequence, then starts its own command.
+      this.handleInput(data);
+      return;
+    }
+
+    if (pending.kind === "g") {
+      this.pendingYank = null;
+      if (matchesKey(data, this.keymap.lineMotionPrefix)) {
+        this.startYank(
+          this.linewiseSelection(
+            this.previewMotion(() => {
+              this.moveToLine(0);
+            }),
+          ),
+          false,
+        );
+        return;
+      }
+      if (matchesKey(data, this.keymap.down)) {
+        const destination = this.previewMotion(() => {
+          this.moveDisplayRow(1);
+        });
+        this.startYank(
+          sameCursor(this.cursor, destination)
+            ? null
+            : this.characterwiseSelection(this.cursor, destination),
+          false,
+        );
+        return;
+      }
+      if (matchesKey(data, this.keymap.up)) {
+        const destination = this.previewMotion(() => {
+          this.moveDisplayRow(-1);
+        });
+        this.startYank(
+          sameCursor(this.cursor, destination)
+            ? null
+            : this.characterwiseSelection(this.cursor, destination),
+          false,
+        );
+        return;
+      }
+
+      this.handleInput(data);
+      return;
+    }
+
+    if (pending.kind === "char") {
+      this.pendingYank = null;
+      if (!isPrintableAscii(data)) {
+        this.tui.requestRender();
+        return;
+      }
+
+      const target = findCharMotionTarget(
+        this.currentLineGraphemes(),
+        this.cursor.grapheme,
+        pending.motion,
+        data,
+      );
+      if (target === null) {
+        this.tui.requestRender();
+        return;
+      }
+
+      this.startYank(
+        this.characterwiseSelection(this.cursor, {
+          line: this.cursor.line,
+          grapheme: target,
+        }),
+        false,
+        () => {
+          this.lastCharMotion = { motion: pending.motion, char: data };
+        },
+      );
+      return;
+    }
+
+    this.pendingYank = null;
+    if (!matchesKey(data, this.keymap.wordForward)) {
+      this.handleInput(data);
+      return;
+    }
+
+    this.startYank(this.wordObjectSelection(pending.outer), false);
+  }
+
+  private selectionForYankMotion(
+    data: string,
+  ): SelectionRange | null | undefined {
+    if (matchesKey(data, this.keymap.left)) {
+      if (this.cursor.grapheme === 0) return null;
+      const previous = {
+        line: this.cursor.line,
+        grapheme: this.cursor.grapheme - 1,
+      };
+      return this.graphemeSelection(previous);
+    }
+    if (matchesKey(data, this.keymap.right)) {
+      return this.graphemeSelection(this.cursor);
+    }
+    if (matchesKey(data, this.keymap.down)) {
+      const destination = this.previewMotion(() => this.moveVertical(1));
+      return sameCursor(this.cursor, destination)
+        ? null
+        : this.linewiseSelection(destination);
+    }
+    if (matchesKey(data, this.keymap.up)) {
+      const destination = this.previewMotion(() => this.moveVertical(-1));
+      return sameCursor(this.cursor, destination)
+        ? null
+        : this.linewiseSelection(destination);
+    }
+    if (matchesKey(data, this.keymap.lastLine)) {
+      return this.linewiseSelection(
+        this.previewMotion(() =>
+          this.moveToLine(this.document.lines.length - 1),
+        ),
+      );
+    }
+    if (matchesKey(data, this.keymap.wordForward)) {
+      return this.wordMotionSelection("forward", "start");
+    }
+    if (matchesKey(data, this.keymap.wordBackward)) {
+      return this.wordMotionSelection("backward", "start");
+    }
+    if (matchesKey(data, this.keymap.wordEnd)) {
+      return this.wordMotionSelection("forward", "end");
+    }
+    if (matchesKey(data, this.keymap.lineStart)) {
+      const target = this.previewMotion(() => this.moveToColumn(0));
+      return this.backwardSelection(target, this.cursor);
+    }
+    if (matchesKey(data, this.keymap.firstNonBlank)) {
+      return this.linewiseSelection(this.cursor);
+    }
+    if (matchesKey(data, this.keymap.lineEnd)) {
+      return this.characterwiseSelection(
+        this.cursor,
+        this.previewMotion(() =>
+          this.moveToColumn(this.currentLineGraphemes().length - 1),
+        ),
+      );
+    }
+
+    return undefined;
+  }
+
+  private wordMotionSelection(
+    direction: "forward" | "backward",
+    target: "start" | "end",
+  ): SelectionRange | null {
+    const start = { ...this.cursor };
+    const destination = this.previewMotion(() =>
+      this.moveWord(direction, target),
+    );
+    const startOffset = cursorOffset(this.document, start);
+    const destinationOffset = cursorOffset(this.document, destination);
+
+    if (target === "start" && direction === "backward") {
+      return this.selectionFromOffsets(destinationOffset, startOffset);
+    }
+    if (target === "start") {
+      const end =
+        !sameCursor(start, destination) &&
+        isWordStart(this.document, destination)
+          ? destinationOffset
+          : graphemeEndOffset(this.document, destination);
+      return this.selectionFromOffsets(startOffset, end);
+    }
+
+    return this.selectionFromOffsets(
+      startOffset,
+      graphemeEndOffset(this.document, destination),
+    );
+  }
+
+  private wordObjectSelection(outer: boolean): SelectionRange | null {
+    const line = this.document.lines[this.cursor.line];
+    if (!line || line.graphemes.length === 0) return null;
+
+    const kind = wordKind(line.graphemes[this.cursor.grapheme]!.text);
+    let start = this.cursor.grapheme;
+    let end = this.cursor.grapheme + 1;
+    while (start > 0 && wordKind(line.graphemes[start - 1]!.text) === kind)
+      start--;
+    while (
+      end < line.graphemes.length &&
+      wordKind(line.graphemes[end]!.text) === kind
+    )
+      end++;
+
+    let startOffset = line.start + line.graphemes[start]!.start;
+    let endOffset = line.start + line.graphemes[end - 1]!.end;
+
+    if (outer && kind !== "whitespace") {
+      if (
+        end < line.graphemes.length &&
+        wordKind(line.graphemes[end]!.text) === "whitespace"
+      ) {
+        while (
+          end < line.graphemes.length &&
+          wordKind(line.graphemes[end]!.text) === "whitespace"
+        )
+          end++;
+        endOffset = line.start + line.graphemes[end - 1]!.end;
+      } else {
+        while (
+          start > 0 &&
+          wordKind(line.graphemes[start - 1]!.text) === "whitespace"
+        )
+          start--;
+        startOffset = line.start + line.graphemes[start]!.start;
+      }
+    } else if (outer && kind === "whitespace") {
+      const hasFollowingUnit = end < line.graphemes.length;
+      while (
+        end < line.graphemes.length &&
+        wordKind(line.graphemes[end]!.text) !== "whitespace"
+      )
+        end++;
+      if (hasFollowingUnit) {
+        endOffset = line.start + line.graphemes[end - 1]!.end;
+      } else {
+        const nextWord = this.firstNonWhitespaceUnit(this.cursor.line + 1);
+        if (nextWord) endOffset = graphemeEndOffset(this.document, nextWord);
+      }
+    }
+
+    return this.selectionFromOffsets(startOffset, endOffset);
+  }
+
+  private firstNonWhitespaceUnit(startLine: number): CursorPosition | null {
+    for (
+      let lineIndex = startLine;
+      lineIndex < this.document.lines.length;
+      lineIndex++
+    ) {
+      const line = this.document.lines[lineIndex]!;
+      const grapheme = line.graphemes.findIndex(
+        (candidate) => wordKind(candidate.text) !== "whitespace",
+      );
+      if (grapheme >= 0) return { line: lineIndex, grapheme };
+    }
+    return null;
+  }
+
+  private previewMotion(move: () => void): CursorPosition {
+    const previousCursor = { ...this.cursor };
+    const previousPreferredColumn = this.preferredColumn;
+    move();
+    const destination = { ...this.cursor };
+    this.cursor = previousCursor;
+    this.preferredColumn = previousPreferredColumn;
+    return destination;
+  }
+
+  private linewiseSelection(
+    destination: CursorPosition,
+  ): SelectionRange | null {
+    return getSelectionRange(this.document, this.cursor, destination, "line");
+  }
+
+  private characterwiseSelection(
+    start: CursorPosition,
+    destination: CursorPosition,
+  ): SelectionRange | null {
+    return getSelectionRange(this.document, start, destination, "character");
+  }
+
+  private backwardSelection(
+    destination: CursorPosition,
+    current: CursorPosition,
+  ): SelectionRange | null {
+    return this.selectionFromOffsets(
+      cursorOffset(this.document, destination),
+      cursorOffset(this.document, current),
+    );
+  }
+
+  private graphemeSelection(position: CursorPosition): SelectionRange | null {
+    const line = this.document.lines[position.line];
+    const grapheme = line?.graphemes[position.grapheme];
+    if (!line || !grapheme) return null;
+    return this.selectionFromOffsets(
+      line.start + grapheme.start,
+      line.start + grapheme.end,
+    );
+  }
+
+  private selectionFromOffsets(
+    start: number,
+    end: number,
+  ): SelectionRange | null {
+    if (end <= start) return null;
+    return { start, end, text: this.document.text.slice(start, end) };
+  }
+
+  private yankVisualSelection(): void {
+    if (!this.visualAnchor) return;
+    const selection = getSelectionRange(
+      this.document,
+      this.visualAnchor,
+      this.cursor,
+      this.visualMode,
+    );
+    if (!selection || selection.start === selection.end) return;
+    this.startYank(selection, true);
+  }
+
+  private startYank(
+    selection: SelectionRange | null,
+    startedVisual: boolean,
+    onSuccess?: () => void,
+  ): void {
+    if (!selection || selection.start === selection.end) return;
+
+    const operationId = ++this.yankOperationId;
+    const sessionId = this.yankSessionId;
+    const text = normalizePlatformLineEndings(selection.text);
+
+    void Promise.resolve()
+      .then(() => this.onYank?.(text))
+      .then(
+        () => {
+          if (this.disposed || sessionId !== this.yankSessionId) return;
+          onSuccess?.();
+          if (startedVisual) this.exitVisual();
+          if (operationId >= this.latestSuccessfulYankId) {
+            this.latestSuccessfulYankId = operationId;
+            this.showYankHighlight(selection);
+          }
+          this.tui.requestRender();
+        },
+        (error: unknown) => {
+          if (this.disposed || sessionId !== this.yankSessionId) return;
+          if (operationId >= this.latestSuccessfulYankId)
+            this.clearYankHighlight();
+          if (startedVisual) this.exitVisual();
+          this.onYankError?.(error);
+          this.tui.requestRender();
+        },
+      );
+  }
+
+  private showYankHighlight(selection: SelectionRange): void {
+    this.clearYankHighlight();
+    this.yankHighlight = { ...selection };
+    const generation = this.yankHighlightGeneration;
+    this.yankHighlightTimer = setTimeout(() => {
+      if (this.disposed || generation !== this.yankHighlightGeneration) return;
+      this.yankHighlight = null;
+      this.yankHighlightTimer = null;
+      this.tui.requestRender();
+    }, 500);
+  }
+
+  private clearYankHighlight(): void {
+    this.yankHighlightGeneration++;
+    if (this.yankHighlightTimer !== null) {
+      clearTimeout(this.yankHighlightTimer);
+      this.yankHighlightTimer = null;
+    }
+    this.yankHighlight = null;
   }
 
   private handlePendingG(data: string): void {
@@ -1047,6 +1515,18 @@ export class ReplyComponent implements Component, Focusable {
       searchInputBefore: this.searchInput
         ? this.captureSearchSnapshot(document, this.searchInput.before)
         : null,
+      yankHighlight: this.yankHighlight
+        ? {
+            startOrdinal: visibleGraphemeOrdinal(
+              document,
+              this.yankHighlight.start,
+            ),
+            endOrdinal: visibleGraphemeOrdinal(
+              document,
+              this.yankHighlight.end,
+            ),
+          }
+        : null,
     };
   }
 
@@ -1058,6 +1538,18 @@ export class ReplyComponent implements Component, Focusable {
       snapshot.visualAnchorOrdinal === null
         ? null
         : cursorAtVisibleOrdinal(this.document, snapshot.visualAnchorOrdinal);
+    this.yankHighlight = snapshot.yankHighlight
+      ? this.selectionFromOffsets(
+          boundaryOffsetAtVisibleOrdinal(
+            this.document,
+            snapshot.yankHighlight.startOrdinal,
+          ),
+          endOffsetAtVisibleOrdinal(
+            this.document,
+            snapshot.yankHighlight.endOrdinal,
+          ),
+        )
+      : null;
 
     for (const annotationState of snapshot.annotations) {
       const annotation = annotationState.annotation;
@@ -1203,6 +1695,7 @@ export class ReplyComponent implements Component, Focusable {
           this.search && this.search.currentIndex >= 0
             ? this.search.matches[this.search.currentIndex]!
             : null,
+        yankHighlight: this.yankHighlight,
         hasCommentInput: this.commentInput !== null,
         focused: this.focused,
       },
@@ -1289,6 +1782,25 @@ function boundaryOffsetAtVisibleOrdinal(
   return document.text.length;
 }
 
+function endOffsetAtVisibleOrdinal(
+  document: SourceDocument,
+  ordinal: number,
+): number {
+  const target = Math.max(0, ordinal);
+  let current = 0;
+  let lastEnd = 0;
+
+  for (const line of document.lines) {
+    for (const grapheme of line.graphemes) {
+      if (current === target) return lastEnd;
+      lastEnd = line.start + grapheme.end;
+      current++;
+    }
+  }
+
+  return document.text.length;
+}
+
 function cursorAtVisibleOrdinal(
   document: SourceDocument,
   ordinal: number,
@@ -1311,6 +1823,41 @@ function cursorAtVisibleOrdinal(
   }
 
   return last;
+}
+
+function sameCursor(first: CursorPosition, second: CursorPosition): boolean {
+  return first.line === second.line && first.grapheme === second.grapheme;
+}
+
+function graphemeEndOffset(
+  document: SourceDocument,
+  position: CursorPosition,
+): number {
+  const line = document.lines[position.line];
+  const grapheme = line?.graphemes[position.grapheme];
+  return line && grapheme
+    ? line.start + grapheme.end
+    : cursorOffset(document, position);
+}
+
+function isWordStart(
+  document: SourceDocument,
+  position: CursorPosition,
+): boolean {
+  const line = document.lines[position.line];
+  const grapheme = line?.graphemes[position.grapheme];
+  if (!line || !grapheme || wordKind(grapheme.text) === "whitespace")
+    return false;
+  if (position.grapheme === 0) return true;
+  return (
+    wordKind(line.graphemes[position.grapheme - 1]!.text) !==
+    wordKind(grapheme.text)
+  );
+}
+
+function wordKind(unit: string): "keyword" | "other" | "whitespace" {
+  if (/^\s+$/u.test(unit)) return "whitespace";
+  return /^[A-Za-z0-9_]$/.test(unit) ? "keyword" : "other";
 }
 
 function stripInputPrompt(renderedInput: string): string {

@@ -87,6 +87,37 @@ test("reply renderer GIVEN native Markdown styling and a selection WHEN building
   assert.match(actual, /ello\x1b\[22m/);
 });
 
+test("reply renderer GIVEN a yank range WHEN building rows THEN highlights only the yanked graphemes with selected background", () => {
+  const theme = {
+    ...given_theme(),
+    bg(color: string, text: string) {
+      return color === "toolSuccessBg"
+        ? `[yank]${text}[/yank]`
+        : `[search]${text}[/search]`;
+    },
+  };
+  const renderer = new ReplyRenderer(
+    theme as never,
+    createSourceDocument("abcd"),
+    [],
+    {
+      cursor: { line: 0, grapheme: 0 },
+      activeSelection: null,
+      searchMatches: [],
+      currentSearchMatch: null,
+      yankHighlight: { start: 1, end: 2, text: "b" },
+      hasCommentInput: false,
+      focused: false,
+    },
+  );
+
+  const actual = renderer.buildDisplayRows(30)[0]!.content;
+
+  assert.match(actual, /\[yank\]b\[\/yank\]/);
+  assert.doesNotMatch(actual, /\[yank\]a\[\/yank\]/);
+  assert.doesNotMatch(actual, /\[yank\]d\[\/yank\]/);
+});
+
 test("reply renderer GIVEN an annotation ending on a source line WHEN building rows THEN places its comment box after that line", () => {
   const annotations: Annotation[] = [
     { id: 1, start: 0, end: 3, text: "one", comment: "Review this" },

@@ -38,6 +38,7 @@ export interface ReplyRenderState {
   activeSelection: SelectionRange | null;
   searchMatches: readonly SearchMatch[];
   currentSearchMatch: SearchMatch | null;
+  yankHighlight?: SelectionRange | null;
   hasCommentInput: boolean;
   focused: boolean;
 }
@@ -171,6 +172,7 @@ export class ReplyRenderer {
             lineIndex,
             graphemeIndex,
             segment.segment,
+            this.isYankHighlighted(line, graphemeIndex),
           );
         } else {
           trailing += segment.segment;
@@ -207,6 +209,7 @@ export class ReplyRenderer {
     lineIndex: number,
     index: number,
     displayText: string,
+    yankHighlighted = false,
   ): string {
     const grapheme = line.graphemes[index]!;
     const globalStart = line.start + grapheme.start;
@@ -236,7 +239,9 @@ export class ReplyRenderer {
 
     let styled = displayText;
     if (annotation) styled = this.theme.underline(styled);
-    if (selected) {
+    if (yankHighlighted) {
+      styled = this.theme.bg("toolSuccessBg", styled);
+    } else if (selected) {
       styled = this.theme.bg("selectedBg", styled);
     } else if (searchMatch) {
       styled = this.theme.bg("searchMatchBg", styled);
@@ -281,6 +286,7 @@ export class ReplyRenderer {
       const searchMatch = this.state.searchMatches.find((candidate) =>
         selectionContainsOffset(candidate, globalStart, globalEnd),
       );
+      const yankHighlighted = this.isYankHighlighted(line, index);
       const isCurrentSearchMatch =
         searchMatch !== undefined &&
         this.state.currentSearchMatch !== null &&
@@ -293,7 +299,9 @@ export class ReplyRenderer {
           : grapheme.text;
       let styled = displayText;
       if (annotation) styled = this.theme.underline(styled);
-      if (selected) {
+      if (yankHighlighted) {
+        styled = this.theme.bg("toolSuccessBg", styled);
+      } else if (selected) {
         styled = this.theme.bg("selectedBg", styled);
       } else if (searchMatch) {
         styled = this.theme.bg("searchMatchBg", styled);
@@ -320,6 +328,18 @@ export class ReplyRenderer {
     }
 
     return output + " ".repeat(Math.max(0, width - cellColumn));
+  }
+
+  private isYankHighlighted(line: SourceLine, index: number): boolean {
+    const highlight = this.state.yankHighlight;
+    const grapheme = line.graphemes[index];
+    if (!highlight || !grapheme) return false;
+
+    return selectionContainsOffset(
+      highlight,
+      line.start + grapheme.start,
+      line.start + grapheme.end,
+    );
   }
 
   private renderComment(annotation: Annotation, width: number): DisplayRow[] {

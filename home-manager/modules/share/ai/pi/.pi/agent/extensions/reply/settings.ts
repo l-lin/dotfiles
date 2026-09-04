@@ -9,6 +9,8 @@ export const REPLY_KEYMAP: ReplyKeymap = {
 
   // Visual selection and annotation.
   comment: "alt+c",
+  yank: "y",
+  lineYank: "shift+y",
   edit: "alt+e",
   delete: "alt+d",
   visualSwapCursor: "o",

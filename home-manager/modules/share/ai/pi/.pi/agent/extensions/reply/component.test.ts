@@ -37,7 +37,12 @@ function given_theme() {
   };
 }
 
-function given_component(source: string, rows = 24) {
+function given_component(
+  source: string,
+  rows = 24,
+  onYank?: (text: string) => void | Promise<void>,
+  onYankError?: (error: unknown) => void,
+) {
   const tui = given_tui(rows);
   let actualResult: unknown;
   const component = new ReplyComponent(
@@ -48,6 +53,10 @@ function given_component(source: string, rows = 24) {
     (result) => {
       actualResult = result;
     },
+    undefined,
+    undefined,
+    onYank,
+    onYankError,
   );
   return {
     component,
@@ -81,6 +90,10 @@ function then_render_text(component: ReplyComponent): string {
     .render(50)
     .join("\n")
     .replace(/\x1b\[[0-9;]*m/gu, "");
+}
+
+async function when_yank_settles(): Promise<void> {
+  await new Promise<void>((resolve) => setTimeout(resolve, 0));
 }
 
 test("reply component GIVEN Markdown content WHEN rendering THEN uses Pi's native Markdown formatting", () => {
@@ -188,6 +201,195 @@ test("reply component GIVEN a visual selection WHEN Enter or Alt+C is pressed TH
   const actual = component.render(50).join("\n");
   assert.match(actual, /│ # \x1b/);
   assert.doesNotMatch(actual, /Comment on the selected text/);
+});
+
+test("reply component GIVEN a visual selection WHEN y succeeds THEN copies it and exits visual mode", async () => {
+  const yanked: string[] = [];
+  const { component } = given_component("hello", 24, (text) => {
+    yanked.push(text);
+  });
+
+  component.handleInput("v");
+  component.handleInput("l");
+  component.handleInput("y");
+  await when_yank_settles();
+
+  const actual = {
+    yanked,
+    cursor: then_cursor(component),
+    mode: (component as unknown as { mode: string }).mode,
+    highlight: (component as unknown as { yankHighlight: unknown })
+      .yankHighlight,
+  };
+  assert.deepEqual(actual.yanked, ["he"]);
+  assert.deepEqual(actual.cursor, { line: 0, grapheme: 1 });
+  assert.equal(actual.mode, "normal");
+  assert.deepEqual(actual.highlight, { start: 0, end: 2, text: "he" });
+  component.dispose();
+});
+
+test("reply component GIVEN a successful yank WHEN the popup reflows THEN keeps the highlight on the same visible text", async () => {
+  const { component } = given_component("abcdefghij", 24, () => {});
+
+  component.handleInput("v");
+  component.handleInput("l");
+  component.handleInput("l");
+  component.handleInput("y");
+  await when_yank_settles();
+  component.render(7);
+
+  const actual = (component as unknown as { yankHighlight: { text: string } })
+    .yankHighlight.text;
+
+  assert.equal(actual, "abc");
+  component.dispose();
+});
+
+test("reply component GIVEN normal mode WHEN using yiw and yfe THEN copies Vim ranges without moving the cursor", async () => {
+  const yanked: string[] = [];
+  const { component } = given_component("one two", 24, (text) => {
+    yanked.push(text);
+  });
+
+  component.handleInput("y");
+  component.handleInput("i");
+  component.handleInput("w");
+  await when_yank_settles();
+  const actualAfterYiw = {
+    yanked: [...yanked],
+    cursor: then_cursor(component),
+  };
+
+  component.handleInput("0");
+  component.handleInput("y");
+  component.handleInput("f");
+  component.handleInput("e");
+  await when_yank_settles();
+  const actualAfterYfe = {
+    yanked: [...yanked],
+    cursor: then_cursor(component),
+  };
+
+  assert.deepEqual(actualAfterYiw, {
+    yanked: ["one"],
+    cursor: { line: 0, grapheme: 0 },
+  });
+  assert.deepEqual(actualAfterYfe, {
+    yanked: ["one", "one"],
+    cursor: { line: 0, grapheme: 0 },
+  });
+  component.dispose();
+});
+
+test("reply component GIVEN Vim line motions WHEN using yy, Y, and yj THEN copies linewise ranges with document newlines", async () => {
+  const yanked: string[] = [];
+  const { component } = given_component("one\ntwo\nthree", 24, (text) => {
+    yanked.push(text);
+  });
+
+  component.handleInput("y");
+  component.handleInput("y");
+  await when_yank_settles();
+  component.handleInput("Y");
+  await when_yank_settles();
+  component.handleInput("y");
+  component.handleInput("j");
+  await when_yank_settles();
+
+  assert.deepEqual(yanked, ["one\n", "one\n", "one\ntwo\n"]);
+  component.dispose();
+});
+
+test("reply component GIVEN Vim outer-word motion WHEN using yaw THEN includes adjacent whitespace", async () => {
+  const yanked: string[] = [];
+  const { component } = given_component("one  two", 24, (text) => {
+    yanked.push(text);
+  });
+
+  component.handleInput("y");
+  component.handleInput("a");
+  component.handleInput("w");
+  await when_yank_settles();
+
+  assert.deepEqual(yanked, ["one  "]);
+  component.dispose();
+});
+
+test("reply component GIVEN a successful yank find WHEN repeating the character motion THEN remembers the yank find", async () => {
+  const { component } = given_component("one two", 24, () => {});
+
+  component.handleInput("y");
+  component.handleInput("f");
+  component.handleInput("e");
+  await when_yank_settles();
+  component.handleInput(";");
+
+  assert.deepEqual(then_cursor(component), { line: 0, grapheme: 2 });
+  component.dispose();
+});
+
+test("reply component GIVEN a successful yank WHEN 500 milliseconds pass THEN clears the highlight and requests a render", async () => {
+  const { component, tui } = given_component("hello", 24, () => {});
+
+  component.handleInput("y");
+  component.handleInput("i");
+  component.handleInput("w");
+  await when_yank_settles();
+  const requestsBeforeExpiry = tui.getRenderRequests();
+  assert.notEqual(
+    (component as unknown as { yankHighlight: unknown }).yankHighlight,
+    null,
+  );
+
+  await new Promise<void>((resolve) => setTimeout(resolve, 550));
+
+  assert.equal(
+    (component as unknown as { yankHighlight: unknown }).yankHighlight,
+    null,
+  );
+  assert.equal(tui.getRenderRequests() > requestsBeforeExpiry, true);
+  component.dispose();
+});
+
+test("reply component GIVEN a clipboard failure WHEN visual y is used THEN notifies, exits visual mode, and clears the highlight", async () => {
+  const errors: unknown[] = [];
+  const { component } = given_component(
+    "hello",
+    24,
+    () => Promise.reject(new Error("clipboard unavailable")),
+    (error) => errors.push(error),
+  );
+
+  component.handleInput("v");
+  component.handleInput("l");
+  component.handleInput("y");
+  await when_yank_settles();
+
+  const actual = {
+    errors: errors.length,
+    mode: (component as unknown as { mode: string }).mode,
+    highlight: (component as unknown as { yankHighlight: unknown })
+      .yankHighlight,
+  };
+  assert.equal(actual.errors, 1);
+  assert.equal(actual.mode, "normal");
+  assert.equal(actual.highlight, null);
+  component.dispose();
+});
+
+test("reply component GIVEN a visual selection WHEN uppercase Y succeeds THEN copies the literal visual range", async () => {
+  const yanked: string[] = [];
+  const { component } = given_component("one\ntwo\nthree", 24, (text) => {
+    yanked.push(text);
+  });
+
+  component.handleInput("V");
+  component.handleInput("j");
+  component.handleInput("Y");
+  await when_yank_settles();
+
+  assert.deepEqual(yanked, ["one\ntwo\n"]);
+  component.dispose();
 });
 
 test("reply component GIVEN a saved comment WHEN rendering THEN shows a full-width padded bordered comment box", () => {

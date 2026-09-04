@@ -10,6 +10,8 @@ test("reply settings GIVEN the built-in keymap WHEN reading it THEN returns ever
     close: "q",
     escape: "escape",
     comment: "alt+c",
+    yank: "y",
+    lineYank: "shift+y",
     edit: "alt+e",
     delete: "alt+d",
     visualSwapCursor: "o",
