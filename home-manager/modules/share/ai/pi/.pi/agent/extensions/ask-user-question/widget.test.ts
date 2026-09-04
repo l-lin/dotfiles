@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { initTheme } from "@earendil-works/pi-coding-agent";
+import { stripTerminalSequences } from "@earendil-works/pi-tui";
 import { buildWidget } from "./widget.js";
 import type { Question, Result } from "./types.js";
 
@@ -37,6 +39,26 @@ function when_renderingQuestionnaire(
 
   return widget.render(width);
 }
+
+test("buildWidget GIVEN Markdown in a question prompt WHEN rendering the questionnaire THEN it displays formatted text instead of Markdown syntax", () => {
+  initTheme("dark", false);
+  const actual = when_renderingQuestionnaire(
+    [
+      {
+        id: "deployment",
+        label: "Deployment",
+        prompt: "# Choose a target\n\nDeploy to **production** or `staging`.",
+        options: [{ value: "production", label: "Production" }],
+      },
+    ],
+    80,
+  ).join("\n");
+  const visible = stripTerminalSequences(actual);
+
+  assert.match(visible, /Choose a target/);
+  assert.match(visible, /Deploy to production or staging\./);
+  assert.doesNotMatch(visible, /# Choose|\*\*production\*\*|`staging`/);
+});
 
 test("buildWidget GIVEN a long option description WHEN rendering the questionnaire THEN it wraps the description instead of truncating it", () => {
   const actual = when_renderingQuestionnaire(

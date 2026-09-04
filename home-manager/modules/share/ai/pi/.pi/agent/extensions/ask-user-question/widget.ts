@@ -1,10 +1,12 @@
 /** Interactive TUI widget factory for the ask-user-question tool. */
 
+import { getMarkdownTheme, type Theme } from "@earendil-works/pi-coding-agent";
 import {
   Editor,
   type EditorTheme,
   getKeybindings,
   Key,
+  Markdown,
   matchesKey,
   truncateToWidth,
   visibleWidth,
@@ -27,6 +29,21 @@ function addWrappedText(
 
   wrapTextWithAnsi(text, contentWidth).forEach((line, index) => {
     addLine(`${index === 0 ? firstPrefix : continuationPrefix}${line}`);
+  });
+}
+
+function addMarkdownText(
+  text: string,
+  width: number,
+  theme: Theme,
+  addLine: (line: string) => void,
+) {
+  const markdown = new Markdown(text, 0, 0, getMarkdownTheme(), {
+    color: (value) => theme.fg("text", value),
+  });
+
+  markdown.render(Math.max(1, width - 2)).forEach((line) => {
+    addLine(` ${line}`);
   });
 }
 
@@ -276,9 +293,7 @@ export function buildWidget(questions: Question[]) {
       }
 
       if (inputMode && question) {
-        wrapTextWithAnsi(question.prompt, width - 2).forEach((line) =>
-          addLine(theme.fg("text", ` ${line}`)),
-        );
+        addMarkdownText(question.prompt, width, theme, addLine);
         lines.push("");
         renderOptions(options, width, addLine);
         lines.push("");
@@ -310,9 +325,7 @@ export function buildWidget(questions: Question[]) {
               ),
         );
       } else if (question) {
-        wrapTextWithAnsi(question.prompt, width - 2).forEach((line) =>
-          addLine(theme.fg("text", ` ${line}`)),
-        );
+        addMarkdownText(question.prompt, width, theme, addLine);
         lines.push("");
         renderOptions(options, width, addLine);
       }
