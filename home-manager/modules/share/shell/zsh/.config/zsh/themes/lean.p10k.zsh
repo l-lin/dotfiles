@@ -1683,6 +1683,9 @@
   #               typed after changing current working directory.
   typeset -g POWERLEVEL9K_TRANSIENT_PROMPT=off
 
+  # Mark prompts and command output so tmux can select the last command.
+  typeset -g POWERLEVEL9K_TERM_SHELL_INTEGRATION=true
+
   # Instant prompt mode.
   #
   #   - off:     Disable instant prompt. Choose this if you've tried instant prompt and found
