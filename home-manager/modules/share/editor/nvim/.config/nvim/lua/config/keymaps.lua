@@ -47,6 +47,9 @@ vim.keymap.set("x", "<leader>fY", ":<C-u>lua require('functions.yank').yank_abso
 vim.keymap.set("x", "<M-S-y>", ":<C-u>lua require('functions.yank').yank_absolute_path_with_line_range()<CR>", { noremap = true, desc = "Copy absolute file path with line range" })
 -- special keymap to cut to black hole, so I don't lose what I yank to my register '+'
 vim.keymap.set({ "n", "v" }, "<M-d>", '"_d', { noremap = true })
+-- Paste the yanked text without overwriting the register with the selection.
+vim.keymap.set("x", "p", '"_dP', { noremap = true, desc = "Paste without overwriting the register" })
+vim.keymap.set("x", "P", '"_dP', { noremap = true, desc = "Paste without overwriting the register" })
 
 --
 --
