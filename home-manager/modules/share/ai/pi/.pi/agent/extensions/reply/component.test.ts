@@ -85,6 +85,10 @@ function then_cursor(component: ReplyComponent): {
   };
 }
 
+function then_scroll_top(component: ReplyComponent): number {
+  return (component as unknown as { scrollTop: number }).scrollTop;
+}
+
 function then_render_text(component: ReplyComponent): string {
   return component
     .render(50)
@@ -780,6 +784,167 @@ test("reply component GIVEN a pending g sequence WHEN receiving gj THEN uses dis
   const expected = { line: 1, grapheme: 0 };
 
   assert.deepEqual(actual, expected);
+});
+
+test("reply component GIVEN a tall reply WHEN using zz, zt, and zb THEN aligns the active display row without moving the cursor", () => {
+  const source = Array.from({ length: 15 }, (_, index) => `line ${index}`).join(
+    "\n",
+  );
+  const { component } = given_component(source, 10);
+  component.render(50);
+  when_typing(component, "jjjjjj");
+  const cursorBefore = then_cursor(component);
+
+  when_typing(component, "zz");
+  const actualCenter = then_scroll_top(component);
+  when_typing(component, "zt");
+  const actualTop = then_scroll_top(component);
+  when_typing(component, "zb");
+  const actualBottom = then_scroll_top(component);
+  const actual = {
+    center: actualCenter,
+    top: actualTop,
+    bottom: actualBottom,
+    cursor: then_cursor(component),
+  };
+  const expected = {
+    center: 3,
+    top: 6,
+    bottom: 1,
+    cursor: cursorBefore,
+  };
+
+  assert.deepEqual(actual, expected);
+});
+
+test("reply component GIVEN a reply at the scroll bounds WHEN using z commands THEN clamps the viewport to valid rows", () => {
+  const source = Array.from({ length: 15 }, (_, index) => `line ${index}`).join(
+    "\n",
+  );
+  const { component } = given_component(source, 10);
+  component.render(50);
+  component.handleInput("G");
+
+  when_typing(component, "zt");
+  const actualTop = then_scroll_top(component);
+  when_typing(component, "zb");
+  const actualBottom = then_scroll_top(component);
+  when_typing(component, "zz");
+  const actualCenter = then_scroll_top(component);
+
+  const actual = { top: actualTop, bottom: actualBottom, center: actualCenter };
+  const expected = { top: 9, bottom: 9, center: 9 };
+  assert.deepEqual(actual, expected);
+
+  const short = given_component("one\ntwo\nthree", 10);
+  short.component.render(50);
+  short.component.handleInput("G");
+  when_typing(short.component, "zz");
+  assert.equal(then_scroll_top(short.component), 0);
+});
+
+test("reply component GIVEN a wrapped reply WHEN using zt THEN anchors the cursor's exact display row", () => {
+  const { component } = given_component("abcdefghij", 5);
+  component.render(7);
+  when_typing(component, "gj");
+  const cursorBefore = then_cursor(component);
+
+  when_typing(component, "zt");
+
+  const actual = {
+    scrollTop: then_scroll_top(component),
+    cursor: then_cursor(component),
+  };
+  const expected = {
+    scrollTop: 1,
+    cursor: cursorBefore,
+  };
+  assert.deepEqual(actual, expected);
+});
+
+test("reply component GIVEN an annotated reply WHEN using zt in visual mode THEN counts annotation rows and preserves the selection", () => {
+  const { component } = given_component("one\ntwo\nthree\nfour\nfive\nsix", 8);
+  component.render(50);
+  component.handleInput("v");
+  component.handleInput("l");
+  component.handleInput("\x1bc");
+  when_typing(component, "Review this");
+  component.handleInput("\r");
+  when_typing(component, "jj");
+  const before = {
+    cursor: then_cursor(component),
+    anchor: {
+      ...(
+        component as unknown as {
+          visualAnchor: { line: number; grapheme: number };
+        }
+      ).visualAnchor,
+    },
+  };
+
+  when_typing(component, "zt");
+
+  const actual = {
+    scrollTop: then_scroll_top(component),
+    cursor: then_cursor(component),
+    anchor: {
+      ...(
+        component as unknown as {
+          visualAnchor: { line: number; grapheme: number };
+        }
+      ).visualAnchor,
+    },
+  };
+  const expected = {
+    scrollTop: 5,
+    ...before,
+  };
+  assert.deepEqual(actual, expected);
+});
+
+test("reply component GIVEN an explicit viewport position WHEN moving within view THEN keeps that position until visibility requires a change", () => {
+  const source = Array.from({ length: 15 }, (_, index) => `line ${index}`).join(
+    "\n",
+  );
+  const { component } = given_component(source, 10);
+  component.render(50);
+  when_typing(component, "jjjjjjzt");
+  component.handleInput("j");
+  component.render(50);
+
+  const actual = then_scroll_top(component);
+  const expected = 6;
+  assert.equal(actual, expected);
+});
+
+test("reply component GIVEN a pending z sequence WHEN receiving an unsupported key THEN reprocesses that key without window positioning", () => {
+  const { component } = given_component("first\nsecond", 5);
+  component.render(50);
+
+  component.handleInput("z");
+  component.handleInput("j");
+  const actualAfterInvalid = {
+    scrollTop: then_scroll_top(component),
+    cursor: then_cursor(component),
+  };
+  const expectedAfterInvalid = {
+    scrollTop: 0,
+    cursor: { line: 1, grapheme: 0 },
+  };
+
+  assert.deepEqual(actualAfterInvalid, expectedAfterInvalid);
+});
+
+test("reply component GIVEN comment input WHEN receiving z THEN keeps z as comment text", () => {
+  const { component } = given_component("hello");
+
+  component.handleInput("v");
+  component.handleInput("l");
+  component.handleInput("\x1bc");
+  component.handleInput("z");
+
+  const actual = component.render(50).join("\n");
+  assert.match(actual, /# z/);
 });
 
 test("reply component GIVEN repeated literal text WHEN searching live THEN shows the count and navigates with n and N", () => {

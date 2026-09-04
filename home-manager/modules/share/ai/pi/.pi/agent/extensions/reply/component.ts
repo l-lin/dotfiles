@@ -190,6 +190,7 @@ export class ReplyComponent implements Component, Focusable {
   private searchInput: SearchInputState | null = null;
   private search: SearchState | null = null;
   private pendingG = false;
+  private pendingZ = false;
   private pendingCharMotion: CharMotion | null = null;
   private pendingYank: PendingYank | null = null;
   private lastCharMotion: LastCharMotion | null = null;
@@ -227,7 +228,7 @@ export class ReplyComponent implements Component, Focusable {
     this.ensureRenderedDocument(this.markdownWidth(this.lastInnerWidth));
   }
 
-  handleInput(data: string): void {
+  handleInput(data: string, allowWindowCommands = true): void {
     if (this.searchInput) {
       if (matchesKey(data, this.keymap.open)) {
         this.restart();
@@ -249,6 +250,11 @@ export class ReplyComponent implements Component, Focusable {
 
     if (this.pendingCharMotion) {
       this.handlePendingCharMotion(data);
+      return;
+    }
+
+    if (this.pendingZ) {
+      this.handlePendingZ(data);
       return;
     }
 
@@ -391,7 +397,7 @@ export class ReplyComponent implements Component, Focusable {
       return;
     }
 
-    if (this.handleMovement(data)) return;
+    if (this.handleMovement(data, allowWindowCommands)) return;
   }
 
   render(width: number): string[] {
@@ -480,6 +486,7 @@ export class ReplyComponent implements Component, Focusable {
     this.searchInput = null;
     this.search = null;
     this.pendingG = false;
+    this.pendingZ = false;
     this.pendingCharMotion = null;
     this.pendingYank = null;
     this.lastCharMotion = null;
@@ -753,7 +760,7 @@ export class ReplyComponent implements Component, Focusable {
       }
 
       // A non-motion key cancels the sequence, then starts its own command.
-      this.handleInput(data);
+      this.handleInput(data, false);
       return;
     }
 
@@ -795,7 +802,7 @@ export class ReplyComponent implements Component, Focusable {
         return;
       }
 
-      this.handleInput(data);
+      this.handleInput(data, false);
       return;
     }
 
@@ -832,7 +839,7 @@ export class ReplyComponent implements Component, Focusable {
 
     this.pendingYank = null;
     if (!matchesKey(data, this.keymap.wordForward)) {
-      this.handleInput(data);
+      this.handleInput(data, false);
       return;
     }
 
@@ -1144,6 +1151,28 @@ export class ReplyComponent implements Component, Focusable {
     }
 
     // A non-g key cancels the sequence, then starts its own normal command.
+    this.handleInput(data, false);
+  }
+
+  private handlePendingZ(data: string): void {
+    this.pendingZ = false;
+    if (data === "z") {
+      this.positionViewport("center");
+      this.tui.requestRender();
+      return;
+    }
+    if (data === "t") {
+      this.positionViewport("top");
+      this.tui.requestRender();
+      return;
+    }
+    if (data === "b") {
+      this.positionViewport("bottom");
+      this.tui.requestRender();
+      return;
+    }
+
+    // An unsupported sequence cancels, then starts its own command.
     this.handleInput(data);
   }
 
@@ -1163,7 +1192,7 @@ export class ReplyComponent implements Component, Focusable {
     this.tui.requestRender();
   }
 
-  private handleMovement(data: string): boolean {
+  private handleMovement(data: string, allowWindowCommands: boolean): boolean {
     if (matchesKey(data, this.keymap.left)) this.moveHorizontal(-1);
     else if (matchesKey(data, this.keymap.right)) this.moveHorizontal(1);
     else if (matchesKey(data, this.keymap.down)) this.moveVertical(1);
@@ -1172,6 +1201,12 @@ export class ReplyComponent implements Component, Focusable {
     else if (matchesKey(data, this.keymap.halfPageDown)) this.scrollHalfPage(1);
     else if (matchesKey(data, this.keymap.lineMotionPrefix))
       this.pendingG = true;
+    else if (
+      allowWindowCommands &&
+      (this.mode === "normal" || this.mode === "visual") &&
+      data === "z"
+    )
+      this.pendingZ = true;
     else if (matchesKey(data, this.keymap.lastLine))
       this.moveToLine(this.document.lines.length - 1);
     else if (matchesKey(data, this.keymap.wordForward))
@@ -1349,6 +1384,23 @@ export class ReplyComponent implements Component, Focusable {
       ),
     };
     this.preferredColumn = targetColumn;
+  }
+
+  private positionViewport(alignment: "center" | "top" | "bottom"): void {
+    const renderer = this.createRenderer();
+    const rows = renderer.buildDisplayRows(this.lastInnerWidth);
+    const cursorRow = renderer.findCursorRow(rows);
+    if (cursorRow < 0) return;
+
+    const viewportHeight = this.getViewportHeight();
+    const maxScrollTop = Math.max(0, rows.length - viewportHeight);
+    const requestedScrollTop =
+      alignment === "top"
+        ? cursorRow
+        : alignment === "bottom"
+          ? cursorRow - viewportHeight + 1
+          : cursorRow - Math.floor(viewportHeight / 2);
+    this.scrollTop = Math.max(0, Math.min(maxScrollTop, requestedScrollTop));
   }
 
   private scrollHalfPage(direction: -1 | 1): void {
