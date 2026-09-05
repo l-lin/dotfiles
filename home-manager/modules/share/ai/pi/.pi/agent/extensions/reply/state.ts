@@ -10,6 +10,10 @@ import type {
 import type { CharMotion, LastCharMotion } from "../vim/types.js";
 import { createReplyLayout } from "./layout.js";
 
+export type PreferredColumn =
+  | { kind: "logical"; column: number }
+  | { kind: "display"; column: number };
+
 export type MotionPending =
   | { kind: "none" }
   | { kind: "g" }
@@ -38,7 +42,7 @@ export type SearchState = {
 
 export type SearchSnapshot = {
   cursor: CursorPosition;
-  preferredColumn: number | null;
+  preferredColumn: PreferredColumn | null;
   interaction: Extract<ReplyInteraction, { kind: "normal" | "visual" }>;
   search: SearchState | null;
 };
@@ -94,7 +98,7 @@ export interface ReplyModel {
   annotations: Annotation[];
   nextAnnotationId: number;
   cursor: CursorPosition;
-  preferredColumn: number | null;
+  preferredColumn: PreferredColumn | null;
   interaction: ReplyInteraction;
   search: SearchState | null;
   yank: YankFeedback;

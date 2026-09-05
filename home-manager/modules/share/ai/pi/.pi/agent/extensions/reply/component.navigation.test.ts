@@ -89,6 +89,22 @@ test("reply component GIVEN multiple source lines WHEN using gg and G THEN jumps
   assert.deepEqual(actualAtFirst, expectedAtFirst);
 });
 
+test("reply component GIVEN wrapped logical lines WHEN using j and k THEN moves by logical lines and preserves the logical column", () => {
+  const { component } = given_component("abcdefghij\nklmnopqrst");
+  component.render(7);
+
+  when_typing(component, "l");
+  when_typing(component, "j");
+  const actualAtNextLogicalLine = then_cursor(component);
+  when_typing(component, "k");
+  const actualAfterReturning = then_cursor(component);
+  const expectedAtNextLogicalLine = { line: 4, grapheme: 1 };
+  const expectedAfterReturning = { line: 0, grapheme: 1 };
+
+  assert.deepEqual(actualAtNextLogicalLine, expectedAtNextLogicalLine);
+  assert.deepEqual(actualAfterReturning, expectedAfterReturning);
+});
+
 test("reply component GIVEN a wrapped source line WHEN using gj and gk THEN moves by display rows and preserves the screen column", () => {
   const { component } = given_component("abcdefghij");
   component.render(7);

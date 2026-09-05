@@ -50,6 +50,7 @@ test("reply component GIVEN a wrapped logical line WHEN using y0 THEN copies to 
   });
   component.render(7);
 
+  component.handleInput("g");
   component.handleInput("j");
   component.handleInput("l");
   component.handleInput("y");

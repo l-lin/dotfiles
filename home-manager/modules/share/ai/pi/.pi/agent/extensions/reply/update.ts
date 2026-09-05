@@ -440,8 +440,8 @@ function handleMovement(
 ): ReplyEffect[] {
   if (matchesKey(data, context.keymap.left)) moveHorizontal(model, -1);
   else if (matchesKey(data, context.keymap.right)) moveHorizontal(model, 1);
-  else if (matchesKey(data, context.keymap.down)) moveVertical(model, 1);
-  else if (matchesKey(data, context.keymap.up)) moveVertical(model, -1);
+  else if (matchesKey(data, context.keymap.down)) moveLogicalLine(model, 1);
+  else if (matchesKey(data, context.keymap.up)) moveLogicalLine(model, -1);
   else if (matchesKey(data, context.keymap.halfPageUp))
     scrollHalfPage(model, -1, context.viewportHeight);
   else if (matchesKey(data, context.keymap.halfPageDown))
@@ -631,7 +631,7 @@ function createSearchSnapshot(model: ReplyModel): SearchSnapshot {
   const interaction = editingInteraction(model);
   return {
     cursor: { ...model.cursor },
-    preferredColumn: model.preferredColumn,
+    preferredColumn: clonePreferredColumn(model.preferredColumn),
     interaction: cloneEditingInteraction(interaction),
     search: cloneSearch(model.search),
   };
@@ -642,7 +642,7 @@ function restoreSearchSnapshot(
   snapshot: SearchSnapshot,
 ): void {
   model.cursor = { ...snapshot.cursor };
-  model.preferredColumn = snapshot.preferredColumn;
+  model.preferredColumn = clonePreferredColumn(snapshot.preferredColumn);
   model.interaction = cloneInteraction(snapshot.interaction);
   model.search = cloneSearch(snapshot.search);
 }
@@ -953,12 +953,20 @@ function cloneInteraction(interaction: ReplyInteraction): ReplyInteraction {
         prefix: interaction.prefix,
         before: {
           cursor: { ...interaction.before.cursor },
-          preferredColumn: interaction.before.preferredColumn,
+          preferredColumn: clonePreferredColumn(
+            interaction.before.preferredColumn,
+          ),
           interaction: cloneEditingInteraction(interaction.before.interaction),
           search: cloneSearch(interaction.before.search),
         },
       };
   }
+}
+
+function clonePreferredColumn(
+  preferredColumn: ReplyModel["preferredColumn"],
+): ReplyModel["preferredColumn"] {
+  return preferredColumn ? { ...preferredColumn } : null;
 }
 
 function cloneSearch(search: SearchState | null): SearchState | null {
@@ -1090,18 +1098,77 @@ function executeCharMotion(
   moveToColumn(model, target);
 }
 
-function moveVertical(model: ReplyModel, direction: -1 | 1): void {
-  const nextLine = model.cursor.line + direction;
-  if (nextLine < 0 || nextLine >= model.layout.document.lines.length) return;
-  const currentLine = model.layout.document.lines[model.cursor.line]!;
-  const currentColumn = cellColumn(currentLine, model.cursor.grapheme);
-  const targetLine = model.layout.document.lines[nextLine]!;
-  const targetColumn = model.preferredColumn ?? currentColumn;
-  model.cursor = {
-    line: nextLine,
-    grapheme: graphemeAtOrBeforeColumn(targetLine, targetColumn),
+function moveLogicalLine(model: ReplyModel, direction: -1 | 1): void {
+  const { logicalLineStartByLine, logicalLineEndByLine } = model.layout;
+  const currentStart =
+    logicalLineStartByLine[model.cursor.line] ?? model.cursor.line;
+  const currentEnd = logicalLineEndByLine[model.cursor.line] ?? model.cursor.line;
+  const targetLine = direction === 1 ? currentEnd + 1 : currentStart - 1;
+  if (
+    targetLine < 0 ||
+    targetLine >= model.layout.document.lines.length
+  )
+    return;
+
+  const targetStart = logicalLineStartByLine[targetLine] ?? targetLine;
+  const targetEnd = logicalLineEndByLine[targetLine] ?? targetLine;
+  const currentColumn = logicalLineColumn(model);
+  const targetColumn =
+    model.preferredColumn?.kind === "logical"
+      ? model.preferredColumn.column
+      : currentColumn;
+  model.cursor = cursorAtLogicalColumn(
+    model,
+    targetStart,
+    targetEnd,
+    targetColumn,
+  );
+  model.preferredColumn = { kind: "logical", column: targetColumn };
+}
+
+function logicalLineColumn(model: ReplyModel): number {
+  const startLine =
+    model.layout.logicalLineStartByLine[model.cursor.line] ?? model.cursor.line;
+  let column = 0;
+  for (let lineIndex = startLine; lineIndex < model.cursor.line; lineIndex++) {
+    const line = model.layout.document.lines[lineIndex]!;
+    column += cellColumn(line, line.graphemes.length);
+  }
+  return (
+    column +
+    cellColumn(
+      model.layout.document.lines[model.cursor.line]!,
+      model.cursor.grapheme,
+    )
+  );
+}
+
+function cursorAtLogicalColumn(
+  model: ReplyModel,
+  startLine: number,
+  endLine: number,
+  targetColumn: number,
+): CursorPosition {
+  let remainingColumn = Math.max(0, targetColumn);
+  for (let lineIndex = startLine; lineIndex <= endLine; lineIndex++) {
+    const line = model.layout.document.lines[lineIndex]!;
+    const lineWidth = cellColumn(line, line.graphemes.length);
+    const isLastLine = lineIndex === endLine;
+    if (!isLastLine && remainingColumn >= lineWidth) {
+      remainingColumn -= lineWidth;
+      continue;
+    }
+    return {
+      line: lineIndex,
+      grapheme: graphemeAtOrBeforeColumn(line, remainingColumn),
+    };
+  }
+
+  const lastLine = model.layout.document.lines[endLine]!;
+  return {
+    line: endLine,
+    grapheme: graphemeAtOrBeforeColumn(lastLine, remainingColumn),
   };
-  model.preferredColumn = targetColumn;
 }
 
 function moveDisplayRow(
@@ -1138,7 +1205,10 @@ function moveDisplayRow(
     currentRow,
     model.cursor.grapheme,
   );
-  const targetColumn = model.preferredColumn ?? currentColumn;
+  const targetColumn =
+    model.preferredColumn?.kind === "display"
+      ? model.preferredColumn.column
+      : currentColumn;
   const targetLine = model.layout.document.lines[targetRow.line]!;
   model.cursor = {
     line: targetRow.line,
@@ -1148,7 +1218,7 @@ function moveDisplayRow(
       targetColumn,
     ),
   };
-  model.preferredColumn = targetColumn;
+  model.preferredColumn = { kind: "display", column: targetColumn };
 }
 
 function positionViewport(
@@ -1196,12 +1266,14 @@ function scrollHalfPage(
   if (targetSource?.kind !== "source") return;
   const targetLine = model.layout.document.lines[targetSource.line]!;
   const targetColumn =
-    model.preferredColumn ?? cellColumn(currentLine, model.cursor.grapheme);
+    model.preferredColumn?.kind === "display"
+      ? model.preferredColumn.column
+      : cellColumn(currentLine, model.cursor.grapheme);
   model.cursor = {
     line: targetSource.line,
     grapheme: graphemeAtOrBeforeColumn(targetLine, targetColumn),
   };
-  model.preferredColumn = targetColumn;
+  model.preferredColumn = { kind: "display", column: targetColumn };
 }
 
 function createRenderer(model: ReplyModel): ReplyRenderer {
@@ -1311,13 +1383,17 @@ function selectionForYankMotion(
   if (matchesKey(data, context.keymap.right))
     return graphemeSelection(model, model.cursor);
   if (matchesKey(data, context.keymap.down)) {
-    const destination = previewMotion(model, () => moveVertical(model, 1));
+    const destination = previewMotion(model, () =>
+      moveLogicalLine(model, 1),
+    );
     return sameCursor(model.cursor, destination)
       ? null
       : linewiseSelection(model, destination);
   }
   if (matchesKey(data, context.keymap.up)) {
-    const destination = previewMotion(model, () => moveVertical(model, -1));
+    const destination = previewMotion(model, () =>
+      moveLogicalLine(model, -1),
+    );
     return sameCursor(model.cursor, destination)
       ? null
       : linewiseSelection(model, destination);

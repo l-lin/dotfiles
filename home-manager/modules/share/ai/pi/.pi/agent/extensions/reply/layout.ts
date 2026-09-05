@@ -12,6 +12,7 @@ import { renderMarkdownDocument } from "./render.js";
 import type {
   MotionPending,
   NormalPending,
+  PreferredColumn,
   ReplyInteraction,
   ReplyModel,
   SearchSnapshot,
@@ -52,14 +53,14 @@ type DisplayInteractionSnapshot =
 
 type DisplaySearchSnapshot = {
   cursorOrdinal: number;
-  preferredColumn: number | null;
+  preferredColumn: PreferredColumn | null;
   interaction: DisplayInteractionSnapshot;
   search: SearchStateSnapshot | null;
 };
 
 export interface ReplyDisplaySnapshot {
   cursorOrdinal: number;
-  preferredColumn: number | null;
+  preferredColumn: PreferredColumn | null;
   interaction: DisplayInteractionSnapshot;
   annotations: Array<{
     annotationId: number;
@@ -97,6 +98,12 @@ export function reflowReplyModel(model: ReplyModel, width: number): ReplyModel {
   return model;
 }
 
+function clonePreferredColumn(
+  preferredColumn: PreferredColumn | null,
+): PreferredColumn | null {
+  return preferredColumn ? { ...preferredColumn } : null;
+}
+
 export function captureDisplayState(model: ReplyModel): ReplyDisplaySnapshot {
   const document = model.layout.document;
   return {
@@ -104,7 +111,7 @@ export function captureDisplayState(model: ReplyModel): ReplyDisplaySnapshot {
       document,
       cursorOffset(document, model.cursor),
     ),
-    preferredColumn: model.preferredColumn,
+    preferredColumn: clonePreferredColumn(model.preferredColumn),
     interaction: captureInteraction(document, model.interaction),
     annotations: model.annotations.map((annotation) => ({
       annotationId: annotation.id,
@@ -137,7 +144,7 @@ export function restoreDisplayState(
 ): void {
   const document = model.layout.document;
   model.cursor = cursorAtVisibleOrdinal(document, snapshot.cursorOrdinal);
-  model.preferredColumn = snapshot.preferredColumn;
+  model.preferredColumn = clonePreferredColumn(snapshot.preferredColumn);
   model.interaction = restoreInteraction(document, snapshot.interaction);
   model.yank.highlight = snapshot.yankHighlight
     ? selectionFromOffsets(
@@ -293,7 +300,7 @@ function captureSearchSnapshot(
       document,
       cursorOffset(document, snapshot.cursor),
     ),
-    preferredColumn: snapshot.preferredColumn,
+    preferredColumn: clonePreferredColumn(snapshot.preferredColumn),
     interaction: captureInteraction(document, snapshot.interaction),
     search: captureSearchState(document, snapshot.search),
   };
@@ -315,7 +322,7 @@ function restoreSearchSnapshotFromDisplay(
 ): SearchSnapshot {
   return {
     cursor: cursorAtVisibleOrdinal(document, snapshot.cursorOrdinal),
-    preferredColumn: snapshot.preferredColumn,
+    preferredColumn: clonePreferredColumn(snapshot.preferredColumn),
     interaction: restoreInteraction(document, snapshot.interaction) as Extract<
       ReplyInteraction,
       { kind: "normal" | "visual" }
