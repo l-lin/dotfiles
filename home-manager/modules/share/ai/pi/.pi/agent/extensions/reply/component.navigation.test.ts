@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { initTheme } from "@earendil-works/pi-coding-agent";
 import {
   given_component,
   then_cursor,
@@ -102,6 +103,34 @@ test("reply component GIVEN wrapped logical lines WHEN using j and k THEN moves 
   const expectedAfterReturning = { line: 0, grapheme: 1 };
 
   assert.deepEqual(actualAtNextLogicalLine, expectedAtNextLogicalLine);
+  assert.deepEqual(actualAfterReturning, expectedAfterReturning);
+});
+
+test("reply component GIVEN wrapped Markdown table rows WHEN using j and k THEN treats table rows as logical lines and continues afterward", () => {
+  initTheme("dark", false);
+  const source = [
+    "Before",
+    "",
+    "| A | B | C |",
+    "|---|---|---|",
+    "| long | evidence with a lot of words that wraps | keep |",
+    "| second | another long evidence that wraps too | keep |",
+    "",
+    "### After",
+    "",
+    "text",
+  ].join("\n");
+  const { component } = given_component(source);
+  component.render(42);
+
+  when_typing(component, "jjjjjjjjjj");
+  const actualAtFollowingHeading = then_cursor(component);
+  when_typing(component, "k");
+  const actualAfterReturning = then_cursor(component);
+  const expectedAtFollowingHeading = { line: 14, grapheme: 0 };
+  const expectedAfterReturning = { line: 13, grapheme: 0 };
+
+  assert.deepEqual(actualAtFollowingHeading, expectedAtFollowingHeading);
   assert.deepEqual(actualAfterReturning, expectedAfterReturning);
 });
 

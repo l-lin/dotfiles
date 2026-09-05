@@ -47,7 +47,7 @@ This repo contains local Pi extensions. In practice, each top-level directory wi
 7. **Keep extension-only settings under Pi's shared settings file.**
    Do instead: store them under `extensionSettings` in `~/.pi/agent/settings.json` and preserve sibling settings when updating the file.
 8. **Keep wrapped-row motion aligned with rendering.**
-   Do instead: reuse `ReplyRenderer.buildDisplayRows(...)` and filter out comment rows instead of duplicating the wrapping algorithm.
+   Do instead: reuse `ReplyRenderer.buildDisplayRows(...)` and filter out comment rows instead of duplicating the wrapping algorithm. For Markdown tables, map rows from their box-drawing boundaries rather than text lengths because width-dependent column sizing changes the rendered text.
 9. **Place prefills explicitly in Pi TUI inputs.**
    Do instead: after `Input.setValue(...)`, send the raw Ctrl-E sequence (`\x05`) when the caret must start at the end, because `setValue` preserves the existing caret position.
 10. **Prefer TEA for stateful Pi extension workflows.**

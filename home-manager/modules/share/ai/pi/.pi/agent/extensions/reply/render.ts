@@ -386,20 +386,64 @@ function renderMarkdownLines(sourceText: string, width: number): string[] {
     .map((line) => removeLastVisibleGrapheme(removeFirstVisibleGrapheme(line)));
 }
 
+type TableBlock = { start: number; end: number };
+
 function mapLogicalLineBounds(
   logicalLines: readonly string[],
   document: SourceDocument,
 ): { startByLine: number[]; endByLine: number[] } {
   const startByLine = document.lines.map((_line, index) => index);
   const endByLine = document.lines.map((_line, index) => index);
+  const documentLines = document.lines.map((line) => line.text);
+  const documentTables = findTableBlocks(documentLines);
+  const logicalTables = findTableBlocks(logicalLines);
+  // Markdown changes table column widths during reflow, so text-length matching loses row boundaries.
+
+  if (documentTables.length !== logicalTables.length) {
+    mapTextLineBounds(logicalLines, documentLines, startByLine, endByLine, 0);
+    return { startByLine, endByLine };
+  }
+
+  let documentOffset = 0;
+  let logicalOffset = 0;
+  for (let index = 0; index < documentTables.length; index++) {
+    const documentTable = documentTables[index]!;
+    const logicalTable = logicalTables[index]!;
+    mapTextLineBounds(
+      logicalLines.slice(logicalOffset, logicalTable.start),
+      documentLines.slice(documentOffset, documentTable.start),
+      startByLine,
+      endByLine,
+      documentOffset,
+    );
+    mapTableLineBounds(documentTable, documentLines, startByLine, endByLine);
+    documentOffset = documentTable.end + 1;
+    logicalOffset = logicalTable.end + 1;
+  }
+
+  mapTextLineBounds(
+    logicalLines.slice(logicalOffset),
+    documentLines.slice(documentOffset),
+    startByLine,
+    endByLine,
+    documentOffset,
+  );
+  return { startByLine, endByLine };
+}
+
+function mapTextLineBounds(
+  logicalLines: readonly string[],
+  documentLines: readonly string[],
+  startByLine: number[],
+  endByLine: number[],
+  documentOffset: number,
+): void {
   let documentLineIndex = 0;
 
   for (const logicalLine of logicalLines) {
-    if (documentLineIndex >= document.lines.length) break;
+    if (documentLineIndex >= documentLines.length) break;
 
-    const logicalText = stripTerminalSequences(logicalLine)
-      .replace(/ +$/u, "")
-      .replace(/\s/gu, "");
+    const logicalText = normalizedLineText(logicalLine);
     if (logicalText.length === 0) {
       documentLineIndex++;
       continue;
@@ -408,13 +452,10 @@ function mapLogicalLineBounds(
     const firstDocumentLineIndex = documentLineIndex;
     let documentText = "";
     while (
-      documentLineIndex < document.lines.length &&
+      documentLineIndex < documentLines.length &&
       documentText.length < logicalText.length
     ) {
-      documentText += document.lines[documentLineIndex]!.text.replace(
-        /\s/gu,
-        "",
-      );
+      documentText += normalizedLineText(documentLines[documentLineIndex]!);
       documentLineIndex++;
     }
 
@@ -427,12 +468,78 @@ function mapLogicalLineBounds(
       index <= lastDocumentLineIndex;
       index++
     ) {
-      startByLine[index] = firstDocumentLineIndex;
-      endByLine[index] = lastDocumentLineIndex;
+      startByLine[documentOffset + index] =
+        documentOffset + firstDocumentLineIndex;
+      endByLine[documentOffset + index] =
+        documentOffset + lastDocumentLineIndex;
     }
   }
+}
 
-  return { startByLine, endByLine };
+function normalizedLineText(line: string): string {
+  return stripTerminalSequences(line).replace(/ +$/u, "").replace(/\s/gu, "");
+}
+
+function findTableBlocks(lines: readonly string[]): TableBlock[] {
+  const blocks: TableBlock[] = [];
+  for (let index = 0; index < lines.length; index++) {
+    if (!isTableTopLine(lines[index]!)) continue;
+    const end = lines.findIndex(
+      (line, candidate) => candidate > index && isTableBottomLine(line),
+    );
+    if (end < 0) continue;
+    if (!lines.slice(index, end + 1).some(isTableSeparatorLine)) continue;
+    blocks.push({ start: index, end });
+    index = end;
+  }
+  return blocks;
+}
+
+function mapTableLineBounds(
+  table: TableBlock,
+  lines: readonly string[],
+  startByLine: number[],
+  endByLine: number[],
+): void {
+  const groups: Array<{ start: number; end: number }> = [
+    { start: table.start, end: table.start },
+  ];
+  let groupStart = table.start + 1;
+
+  for (let index = groupStart; index <= table.end; index++) {
+    if (
+      !isTableSeparatorLine(lines[index]!) &&
+      !isTableBottomLine(lines[index]!)
+    ) {
+      continue;
+    }
+    if (groupStart < index) groups.push({ start: groupStart, end: index - 1 });
+    groups.push({ start: index, end: index });
+    groupStart = index + 1;
+  }
+
+  if (groupStart <= table.end) {
+    groups.push({ start: groupStart, end: table.end });
+  }
+
+  for (const group of groups) {
+    for (let index = group.start; index <= group.end; index++) {
+      startByLine[index] = group.start;
+      endByLine[index] = group.end;
+    }
+  }
+}
+
+function isTableTopLine(line: string): boolean {
+  return stripTerminalSequences(line).trimStart().startsWith("┌");
+}
+
+function isTableSeparatorLine(line: string): boolean {
+  return stripTerminalSequences(line).trimStart().startsWith("├");
+}
+
+function isTableBottomLine(line: string): boolean {
+  return stripTerminalSequences(line).trimStart().startsWith("└");
 }
 
 function removeFirstVisibleGrapheme(text: string): string {
