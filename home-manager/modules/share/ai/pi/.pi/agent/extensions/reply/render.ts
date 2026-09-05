@@ -167,12 +167,11 @@ export class ReplyRenderer {
         const target =
           graphemeIndex < line.graphemes.length ? "content" : "trailing";
         if (target === "content") {
-          content += this.renderGrapheme(
+          content += this.styleGrapheme(
             line,
             lineIndex,
             graphemeIndex,
             segment.segment,
-            this.isYankHighlighted(line, graphemeIndex),
           );
         } else {
           trailing += segment.segment;
@@ -204,12 +203,11 @@ export class ReplyRenderer {
     return content + trailing;
   }
 
-  private renderGrapheme(
+  private styleGrapheme(
     line: SourceLine,
     lineIndex: number,
     index: number,
     displayText: string,
-    yankHighlighted = false,
   ): string {
     const grapheme = line.graphemes[index]!;
     const globalStart = line.start + grapheme.start;
@@ -236,6 +234,7 @@ export class ReplyRenderer {
       this.state.currentSearchMatch !== null &&
       searchMatch.start === this.state.currentSearchMatch.start &&
       searchMatch.end === this.state.currentSearchMatch.end;
+    const yankHighlighted = this.isYankHighlighted(line, index);
 
     let styled = displayText;
     if (annotation) styled = this.theme.underline(styled);
@@ -250,7 +249,8 @@ export class ReplyRenderer {
       }
     }
     if (isCursor) {
-      styled = `${this.cursorMarker()}${ANSI_REVERSE_ON}${styled}${ANSI_REVERSE_OFF}`;
+      const cursorContent = styled || " ";
+      styled = `${this.cursorMarker()}${ANSI_REVERSE_ON}${cursorContent}${ANSI_REVERSE_OFF}`;
     }
     return styled;
   }
@@ -267,53 +267,11 @@ export class ReplyRenderer {
 
     for (let index = start; index < end; index++) {
       const grapheme = line.graphemes[index]!;
-      const globalStart = line.start + grapheme.start;
-      const globalEnd = line.start + grapheme.end;
-      const annotation = this.annotations.find((candidate) =>
-        selectionContainsOffset(candidate, globalStart, globalEnd),
-      );
-      const selected = this.state.activeSelection
-        ? selectionContainsOffset(
-            this.state.activeSelection,
-            globalStart,
-            globalEnd,
-          )
-        : false;
-      const isCursor =
-        !this.state.hasCommentInput &&
-        this.state.cursor.line === lineIndex &&
-        this.state.cursor.grapheme === index;
-      const searchMatch = this.state.searchMatches.find((candidate) =>
-        selectionContainsOffset(candidate, globalStart, globalEnd),
-      );
-      const yankHighlighted = this.isYankHighlighted(line, index);
-      const isCurrentSearchMatch =
-        searchMatch !== undefined &&
-        this.state.currentSearchMatch !== null &&
-        searchMatch.start === this.state.currentSearchMatch.start &&
-        searchMatch.end === this.state.currentSearchMatch.end;
-
       const displayText =
         grapheme.text === "\t"
           ? " ".repeat(cellWidth(grapheme.text, cellColumn))
           : grapheme.text;
-      let styled = displayText;
-      if (annotation) styled = this.theme.underline(styled);
-      if (yankHighlighted) {
-        styled = this.theme.bg("toolSuccessBg", styled);
-      } else if (selected) {
-        styled = this.theme.bg("selectedBg", styled);
-      } else if (searchMatch) {
-        styled = this.theme.bg("searchMatchBg", styled);
-        if (isCurrentSearchMatch) {
-          styled = this.theme.fg("searchMatchText", styled);
-        }
-      }
-      if (isCursor) {
-        const cursorContent = styled || " ";
-        styled = `${this.cursorMarker()}${ANSI_REVERSE_ON}${cursorContent}${ANSI_REVERSE_OFF}`;
-      }
-      output += styled;
+      output += this.styleGrapheme(line, lineIndex, index, displayText);
       cellColumn += cellWidth(grapheme.text, cellColumn);
     }
 

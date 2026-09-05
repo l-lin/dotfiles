@@ -1,4 +1,45 @@
-import type { ReplyKeymap } from "./component.js";
+import type { KeyId } from "@earendil-works/pi-tui";
+
+export interface ReplyKeymap {
+  open: KeyId;
+  save: KeyId;
+  close: KeyId;
+  escape: KeyId;
+  comment: KeyId;
+  yank: KeyId;
+  lineYank: KeyId;
+  edit: KeyId;
+  delete: KeyId;
+  visualSwapCursor: KeyId;
+  left: KeyId;
+  down: KeyId;
+  up: KeyId;
+  right: KeyId;
+  halfPageUp: KeyId;
+  halfPageDown: KeyId;
+  characterVisual: KeyId;
+  lineVisual: KeyId;
+  lineMotionPrefix: KeyId;
+  lastLine: KeyId;
+  wordForward: KeyId;
+  wordBackward: KeyId;
+  wordEnd: KeyId;
+  lineStart: KeyId;
+  firstNonBlank: KeyId;
+  lineEnd: KeyId;
+  findForward: KeyId;
+  findBackward: KeyId;
+  tillForward: KeyId;
+  tillBackward: KeyId;
+  repeatForward: KeyId;
+  repeatBackward: KeyId;
+  searchForward: KeyId;
+  searchBackward: KeyId;
+  searchNext: KeyId;
+  searchPrevious: KeyId;
+  wordSearchForward: KeyId;
+  wordSearchBackward: KeyId;
+}
 
 export const REPLY_KEYMAP: ReplyKeymap = {
   // Popup lifecycle.

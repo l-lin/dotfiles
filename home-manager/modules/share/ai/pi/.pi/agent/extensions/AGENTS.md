@@ -50,6 +50,10 @@ This repo contains local Pi extensions. In practice, each top-level directory wi
    Do instead: reuse `ReplyRenderer.buildDisplayRows(...)` and filter out comment rows instead of duplicating the wrapping algorithm.
 9. **Place prefills explicitly in Pi TUI inputs.**
    Do instead: after `Input.setValue(...)`, send the raw Ctrl-E sequence (`\x05`) when the caret must start at the end, because `setValue` preserves the existing caret position.
+10. **Prefer TEA for stateful Pi extension workflows.**
+    Do instead: model semantic state with tagged types, reducer messages, and ordered effects when practical, while keeping Pi/TUI inputs, callbacks, timers, clipboard access, and render requests in an imperative adapter.
+11. **Preserve state when rebuilding derived views.**
+    Do instead: snapshot user-visible positions, selections, and decorations before width-dependent or otherwise derived layout changes, then restore them against the rebuilt view.
 
 ## When you add, remove, or rename an extension
 
