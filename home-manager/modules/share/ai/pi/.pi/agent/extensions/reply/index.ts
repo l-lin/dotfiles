@@ -61,9 +61,9 @@ export default function replyExtension(pi: ExtensionAPI): void {
           overlay: true,
           overlayOptions: {
             anchor: "center",
-            width: "75%",
+            width: "95%",
             minWidth: 30,
-            maxHeight: "85%",
+            maxHeight: "95%",
             margin: 1,
           },
         },
