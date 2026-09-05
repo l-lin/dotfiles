@@ -159,6 +159,13 @@ local function is_test_file(path)
     or path:match("_spec%.rb$") ~= nil
 end
 
+---@type snacks.picker.preview
+local function readonly_file_preview(ctx)
+  ctx.item = vim.deepcopy(ctx.item)
+  ctx.item.buf = nil
+  return Snacks.picker.preview.file(ctx)
+end
+
 ---@type snacks.picker.transform
 local function demote_test_files(item)
   local test_file = is_test_file(item.file or item.text)
@@ -484,7 +491,6 @@ local function setup()
             },
           },
         },
-        select = { focus = "input" },
         lsp_declarations = {
           format = with_test_file_highlight(Snacks.picker.format.file),
           matcher = { sort_empty = true },
@@ -512,6 +518,7 @@ local function setup()
         },
         lsp_references = {
           format = with_test_file_highlight(Snacks.picker.format.file),
+          preview = readonly_file_preview,
           matcher = { sort_empty = true },
           transform = chain_item_transforms(demote_test_files, deduplicate_lsp_items),
         },
@@ -520,6 +527,7 @@ local function setup()
           matcher = { sort_empty = true },
           transform = chain_item_transforms(demote_test_files, deduplicate_lsp_items),
         },
+        select = { focus = "input" },
       },
       win = {
         input = {
