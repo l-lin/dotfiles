@@ -5,7 +5,7 @@ disable-model-invocation: true
 ---
 
 Review my last 7 days of `pi` sessions and evaluate every skill in `~/.config/ai/skills/`.
-Use session evidence and counts where helpful.
+Use session evidence and counts where helpful. Exclude the current review session from evidence counts to avoid self-contamination from inspecting or loading the skills under review.
 Judge required or default-loaded skills separately from manual skills.
 For skills with `disable-model-invocation: true`, do not treat lack of automatic loading as a failure. Judge them by whether explicit invocations were appropriate, whether they changed the workflow in a useful way, and whether the extra token or tool cost paid off.
 For skills without `disable-model-invocation: true`, weigh token cost, false positives, missed triggers, and real value.
