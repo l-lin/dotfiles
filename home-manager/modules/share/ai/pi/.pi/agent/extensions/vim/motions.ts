@@ -7,6 +7,7 @@ import type {
 
 export type MotionLine = readonly string[];
 export type MotionDocument = readonly MotionLine[];
+export type WordKind = "keyword" | "other" | "whitespace";
 
 export function reverseCharMotion(motion: CharMotion): CharMotion {
   return ({ f: "F", F: "f", t: "T", T: "t" } as const)[motion];
@@ -99,20 +100,20 @@ function findForwardWordStart(
   const line = lines[lineIndex] ?? [];
 
   if (line.length > 0) {
-    const currentKind = wordKind(line[column]!);
+    const currentKind = classifyWordUnit(line[column]!);
     let nextColumn = column + 1;
 
     if (currentKind !== "whitespace") {
       while (
         nextColumn < line.length &&
-        wordKind(line[nextColumn]!) === currentKind
+        classifyWordUnit(line[nextColumn]!) === currentKind
       ) {
         nextColumn++;
       }
     } else {
       while (
         nextColumn < line.length &&
-        wordKind(line[nextColumn]!) === "whitespace"
+        classifyWordUnit(line[nextColumn]!) === "whitespace"
       ) {
         nextColumn++;
       }
@@ -147,11 +148,12 @@ function findBackwardWordStart(
 
   if (line.length > 0) {
     let previousColumn = column - 1;
-    if (wordKind(line[column]!) !== "whitespace") {
+    if (classifyWordUnit(line[column]!) !== "whitespace") {
       previousColumn = column - 1;
       if (
         previousColumn >= 0 &&
-        wordKind(line[previousColumn]!) === wordKind(line[column]!)
+        classifyWordUnit(line[previousColumn]!) ===
+          classifyWordUnit(line[column]!)
       ) {
         return {
           line: lineIndex,
@@ -162,7 +164,7 @@ function findBackwardWordStart(
 
     while (
       previousColumn >= 0 &&
-      wordKind(line[previousColumn]!) === "whitespace"
+      classifyWordUnit(line[previousColumn]!) === "whitespace"
     ) {
       previousColumn--;
     }
@@ -186,7 +188,7 @@ function findBackwardWordStart(
     let previousColumn = previousLine.length - 1;
     while (
       previousColumn >= 0 &&
-      wordKind(previousLine[previousColumn]!) === "whitespace"
+      classifyWordUnit(previousLine[previousColumn]!) === "whitespace"
     ) {
       previousColumn--;
     }
@@ -209,12 +211,12 @@ function findForwardWordEnd(
   const line = lines[lineIndex] ?? [];
 
   if (line.length > 0) {
-    const currentKind = wordKind(line[column]!);
+    const currentKind = classifyWordUnit(line[column]!);
     if (currentKind !== "whitespace") {
       let end = column;
       while (
         end + 1 < line.length &&
-        wordKind(line[end + 1]!) === currentKind
+        classifyWordUnit(line[end + 1]!) === currentKind
       ) {
         end++;
       }
@@ -245,7 +247,7 @@ function firstNonWhitespaceAtOrAfter(
   start: number,
 ): number | null {
   for (let column = Math.max(0, start); column < line.length; column++) {
-    if (wordKind(line[column]!) !== "whitespace") return column;
+    if (classifyWordUnit(line[column]!) !== "whitespace") return column;
   }
   return null;
 }
@@ -255,20 +257,21 @@ function endOfWord(
   start: number,
   lineIndex: number,
 ): MotionPosition {
-  const kind = wordKind(line[start]!);
+  const kind = classifyWordUnit(line[start]!);
   let end = start;
-  while (end + 1 < line.length && wordKind(line[end + 1]!) === kind) end++;
+  while (end + 1 < line.length && classifyWordUnit(line[end + 1]!) === kind)
+    end++;
   return { line: lineIndex, column: end };
 }
 
 function startOfWord(line: MotionLine, column: number): number {
-  const kind = wordKind(line[column]!);
+  const kind = classifyWordUnit(line[column]!);
   let start = column;
-  while (start > 0 && wordKind(line[start - 1]!) === kind) start--;
+  while (start > 0 && classifyWordUnit(line[start - 1]!) === kind) start--;
   return start;
 }
 
-function wordKind(unit: string): "keyword" | "other" | "whitespace" {
+export function classifyWordUnit(unit: string): WordKind {
   if (isWhitespace(unit)) return "whitespace";
   return /^[A-Za-z0-9_]$/.test(unit) ? "keyword" : "other";
 }

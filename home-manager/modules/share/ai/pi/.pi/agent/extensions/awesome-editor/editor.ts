@@ -20,6 +20,7 @@ import {
 } from "@earendil-works/pi-tui";
 
 import { withSnippets } from "./snippets.js";
+import type { CharMotion, LastCharMotion } from "../vim/types.js";
 import type { AwesomeEditorMode } from "./settings.js";
 import { SNIPPETS, type SnippetDef } from "../snippet/snippets.js";
 import {
@@ -29,11 +30,9 @@ import {
 } from "../snippet/tabstops.js";
 import {
   type Mode,
-  type CharMotion,
   type PendingMotion,
   type PendingOperator,
   type PendingG,
-  type LastCharMotion,
   NORMAL_KEYS,
   CHAR_MOTION_KEYS,
   ESC_LEFT,
@@ -45,14 +44,14 @@ import {
   NEWLINE,
   ESC_UP,
   ESC_DOWN,
-} from "./vim/types.js";
+} from "./vim-state.js";
 import {
   findCharMotionTarget,
   findWordMotionTarget,
   firstNonBlankColumn,
   isPrintableAscii,
   reverseCharMotion,
-} from "./vim/motions.js";
+} from "../vim/motions.js";
 
 /**
  * Normalize CSI-u extended sequences to legacy format for both Ctrl and Alt modifiers.

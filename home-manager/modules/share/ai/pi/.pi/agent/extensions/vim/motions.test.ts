@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  classifyWordUnit,
   findCharMotionTarget,
   findWordMotionTarget,
   firstNonBlankColumn,
@@ -132,6 +133,19 @@ test("vim motions GIVEN line boundaries WHEN resolving starts and ASCII find inp
     rejectsUnicode: false,
     rejectsControl: false,
   };
+
+  assert.deepEqual(actual, expected);
+});
+
+test("vim motions GIVEN word units WHEN classifying them THEN uses Vim keyword, punctuation, and whitespace groups", () => {
+  const actual = [
+    classifyWordUnit("a"),
+    classifyWordUnit("_"),
+    classifyWordUnit("."),
+    classifyWordUnit(" "),
+    classifyWordUnit("\t"),
+  ];
+  const expected = ["keyword", "keyword", "other", "whitespace", "whitespace"];
 
   assert.deepEqual(actual, expected);
 });

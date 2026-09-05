@@ -54,6 +54,8 @@ This repo contains local Pi extensions. In practice, each top-level directory wi
     Do instead: model semantic state with tagged types, reducer messages, and ordered effects when practical, while keeping Pi/TUI inputs, callbacks, timers, clipboard access, and render requests in an imperative adapter.
 11. **Preserve state when rebuilding derived views.**
     Do instead: snapshot user-visible positions, selections, and decorations before width-dependent or otherwise derived layout changes, then restore them against the rebuilt view.
+12. **Keep shared Vim primitives pure and unit-agnostic.**
+    Do instead: put motion algorithms and word classification in `vim/`, while keeping cursor models, keymaps, pending command state, rendering, and host effects in each extension.
 
 ## When you add, remove, or rename an extension
 

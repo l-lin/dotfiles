@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { AwesomeEditor } from "./editor.js";
 import { withSnippets } from "./snippets.js";
-import { CTRL_E, ESC_LEFT } from "./vim/types.js";
+import { CTRL_E, ESC_LEFT } from "./vim-state.js";
 
 type SnippetSuggestion = {
   items: Array<{ value: string; label: string }>;

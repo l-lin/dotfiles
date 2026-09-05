@@ -25,6 +25,7 @@ import {
   firstNonBlankColumn,
   isPrintableAscii,
   reverseCharMotion,
+  classifyWordUnit,
 } from "../vim/motions.js";
 import type { CharMotion } from "../vim/types.js";
 import {
@@ -1102,12 +1103,10 @@ function moveLogicalLine(model: ReplyModel, direction: -1 | 1): void {
   const { logicalLineStartByLine, logicalLineEndByLine } = model.layout;
   const currentStart =
     logicalLineStartByLine[model.cursor.line] ?? model.cursor.line;
-  const currentEnd = logicalLineEndByLine[model.cursor.line] ?? model.cursor.line;
+  const currentEnd =
+    logicalLineEndByLine[model.cursor.line] ?? model.cursor.line;
   const targetLine = direction === 1 ? currentEnd + 1 : currentStart - 1;
-  if (
-    targetLine < 0 ||
-    targetLine >= model.layout.document.lines.length
-  )
+  if (targetLine < 0 || targetLine >= model.layout.document.lines.length)
     return;
 
   const targetStart = logicalLineStartByLine[targetLine] ?? targetLine;
@@ -1383,17 +1382,13 @@ function selectionForYankMotion(
   if (matchesKey(data, context.keymap.right))
     return graphemeSelection(model, model.cursor);
   if (matchesKey(data, context.keymap.down)) {
-    const destination = previewMotion(model, () =>
-      moveLogicalLine(model, 1),
-    );
+    const destination = previewMotion(model, () => moveLogicalLine(model, 1));
     return sameCursor(model.cursor, destination)
       ? null
       : linewiseSelection(model, destination);
   }
   if (matchesKey(data, context.keymap.up)) {
-    const destination = previewMotion(model, () =>
-      moveLogicalLine(model, -1),
-    );
+    const destination = previewMotion(model, () => moveLogicalLine(model, -1));
     return sameCursor(model.cursor, destination)
       ? null
       : linewiseSelection(model, destination);
@@ -1494,14 +1489,17 @@ function wordObjectSelection(
 ): SelectionRange | null {
   const line = model.layout.document.lines[model.cursor.line];
   if (!line || line.graphemes.length === 0) return null;
-  const kind = wordKind(line.graphemes[model.cursor.grapheme]!.text);
+  const kind = classifyWordUnit(line.graphemes[model.cursor.grapheme]!.text);
   let start = model.cursor.grapheme;
   let end = model.cursor.grapheme + 1;
-  while (start > 0 && wordKind(line.graphemes[start - 1]!.text) === kind)
+  while (
+    start > 0 &&
+    classifyWordUnit(line.graphemes[start - 1]!.text) === kind
+  )
     start--;
   while (
     end < line.graphemes.length &&
-    wordKind(line.graphemes[end]!.text) === kind
+    classifyWordUnit(line.graphemes[end]!.text) === kind
   )
     end++;
   let startOffset = line.start + line.graphemes[start]!.start;
@@ -1509,18 +1507,18 @@ function wordObjectSelection(
   if (outer && kind !== "whitespace") {
     if (
       end < line.graphemes.length &&
-      wordKind(line.graphemes[end]!.text) === "whitespace"
+      classifyWordUnit(line.graphemes[end]!.text) === "whitespace"
     ) {
       while (
         end < line.graphemes.length &&
-        wordKind(line.graphemes[end]!.text) === "whitespace"
+        classifyWordUnit(line.graphemes[end]!.text) === "whitespace"
       )
         end++;
       endOffset = line.start + line.graphemes[end - 1]!.end;
     } else {
       while (
         start > 0 &&
-        wordKind(line.graphemes[start - 1]!.text) === "whitespace"
+        classifyWordUnit(line.graphemes[start - 1]!.text) === "whitespace"
       )
         start--;
       startOffset = line.start + line.graphemes[start]!.start;
@@ -1529,7 +1527,7 @@ function wordObjectSelection(
     const hasFollowingUnit = end < line.graphemes.length;
     while (
       end < line.graphemes.length &&
-      wordKind(line.graphemes[end]!.text) !== "whitespace"
+      classifyWordUnit(line.graphemes[end]!.text) !== "whitespace"
     )
       end++;
     if (hasFollowingUnit) endOffset = line.start + line.graphemes[end - 1]!.end;
@@ -1552,7 +1550,7 @@ function firstNonWhitespaceUnit(
   ) {
     const line = model.layout.document.lines[lineIndex]!;
     const grapheme = line.graphemes.findIndex(
-      (candidate) => wordKind(candidate.text) !== "whitespace",
+      (candidate) => classifyWordUnit(candidate.text) !== "whitespace",
     );
     if (grapheme >= 0) return { line: lineIndex, grapheme };
   }
@@ -1587,18 +1585,13 @@ function graphemeEndOffset(
 function isWordStart(model: ReplyModel, position: CursorPosition): boolean {
   const line = model.layout.document.lines[position.line];
   const grapheme = line?.graphemes[position.grapheme];
-  if (!line || !grapheme || wordKind(grapheme.text) === "whitespace")
+  if (!line || !grapheme || classifyWordUnit(grapheme.text) === "whitespace")
     return false;
   if (position.grapheme === 0) return true;
   return (
-    wordKind(line.graphemes[position.grapheme - 1]!.text) !==
-    wordKind(grapheme.text)
+    classifyWordUnit(line.graphemes[position.grapheme - 1]!.text) !==
+    classifyWordUnit(grapheme.text)
   );
-}
-
-function wordKind(unit: string): "keyword" | "other" | "whitespace" {
-  if (/^\s+$/u.test(unit)) return "whitespace";
-  return /^[A-Za-z0-9_]$/.test(unit) ? "keyword" : "other";
 }
 
 function findAnnotationAtCursor(model: ReplyModel): Annotation | null {

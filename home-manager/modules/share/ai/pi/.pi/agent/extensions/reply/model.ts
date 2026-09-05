@@ -1,4 +1,5 @@
 import os from "node:os";
+import { classifyWordUnit } from "../vim/motions.js";
 
 export type VisualMode = "character" | "line";
 
@@ -290,11 +291,11 @@ function foldAsciiCase(text: string, query: string): string {
 }
 
 function isKeywordGrapheme(text: string): boolean {
-  return text.length === 1 && isKeywordCodeUnit(text);
+  return classifyWordUnit(text) === "keyword";
 }
 
 function isKeywordCodeUnit(character: string | undefined): boolean {
-  return character !== undefined && /^[A-Za-z0-9_]$/.test(character);
+  return character !== undefined && classifyWordUnit(character) === "keyword";
 }
 
 export function getSelectionRange(

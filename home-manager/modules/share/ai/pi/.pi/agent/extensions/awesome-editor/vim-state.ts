@@ -2,10 +2,9 @@
  * Vim mode types, key maps, and escape sequences.
  */
 
-import type { CharMotion } from "../../vim/types.js";
+import type { CharMotion } from "../vim/types.js";
 
 export type Mode = "normal" | "insert";
-export type { CharMotion, LastCharMotion } from "../../vim/types.js";
 
 export type PendingMotion = CharMotion | null;
 export type PendingOperator = "d" | "c" | null;
