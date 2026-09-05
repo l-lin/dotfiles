@@ -23,6 +23,46 @@ test("reply component GIVEN a successful yank WHEN the popup reflows THEN keeps 
   component.dispose();
 });
 
+test("reply component GIVEN a wrapped logical line WHEN using y$ THEN copies from the cursor to its logical line end", async () => {
+  const yanked: string[] = [];
+  const { component } = given_component("abcdefghij", 24, (text) => {
+    yanked.push(text);
+  });
+  component.render(7);
+
+  component.handleInput("l");
+  component.handleInput("l");
+  component.handleInput("y");
+  component.handleInput("$");
+  await when_yank_settles();
+
+  const actual = yanked;
+  const expected = ["cdefghij"];
+
+  assert.deepEqual(actual, expected);
+  component.dispose();
+});
+
+test("reply component GIVEN a wrapped logical line WHEN using y0 THEN copies to its logical line start without the cursor", async () => {
+  const yanked: string[] = [];
+  const { component } = given_component("abcdefghij", 24, (text) => {
+    yanked.push(text);
+  });
+  component.render(7);
+
+  component.handleInput("j");
+  component.handleInput("l");
+  component.handleInput("y");
+  component.handleInput("0");
+  await when_yank_settles();
+
+  const actual = yanked;
+  const expected = ["abcd"];
+
+  assert.deepEqual(actual, expected);
+  component.dispose();
+});
+
 test("reply component GIVEN normal mode WHEN using yiw and yfe THEN copies Vim ranges without moving the cursor", async () => {
   const yanked: string[] = [];
   const { component } = given_component("one two", 24, (text) => {

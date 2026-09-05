@@ -1273,17 +1273,6 @@ function characterwiseSelection(
   );
 }
 
-function backwardSelection(
-  model: ReplyModel,
-  destination: CursorPosition,
-): SelectionRange | null {
-  return selectionFromOffsets(
-    model,
-    cursorOffset(model.layout.document, destination),
-    cursorOffset(model.layout.document, model.cursor),
-  );
-}
-
 function graphemeSelection(
   model: ReplyModel,
   position: CursorPosition,
@@ -1348,22 +1337,52 @@ function selectionForYankMotion(
   if (matchesKey(data, context.keymap.wordEnd))
     return wordMotionSelection(model, "forward", "end");
   if (matchesKey(data, context.keymap.lineStart))
-    return backwardSelection(
-      model,
-      previewMotion(model, () => moveToColumn(model, 0)),
-    );
+    return logicalLineStartSelection(model);
   if (matchesKey(data, context.keymap.firstNonBlank))
     return linewiseSelection(model, model.cursor);
   if (matchesKey(data, context.keymap.lineEnd)) {
-    return characterwiseSelection(
-      model,
-      model.cursor,
-      previewMotion(model, () =>
-        moveToColumn(model, currentLineGraphemes(model).length - 1),
-      ),
-    );
+    return logicalLineEndSelection(model);
   }
   return undefined;
+}
+
+function logicalLineStartSelection(model: ReplyModel): SelectionRange | null {
+  const document = model.layout.document;
+  const end = cursorOffset(document, model.cursor);
+  const startLineIndex =
+    model.layout.logicalLineStartByLine[model.cursor.line] ?? model.cursor.line;
+  const startLine = document.lines[startLineIndex];
+  const currentLine = document.lines[model.cursor.line];
+  if (!startLine || !currentLine || end <= startLine.start) return null;
+
+  const text = [
+    ...document.lines
+      .slice(startLineIndex, model.cursor.line)
+      .map((line) => line.text),
+    document.text.slice(currentLine.start, end),
+  ].join("");
+  return { start: startLine.start, end, text };
+}
+
+function logicalLineEndSelection(model: ReplyModel): SelectionRange | null {
+  const document = model.layout.document;
+  const startLine = document.lines[model.cursor.line];
+  if (!startLine || startLine.graphemes.length === 0) return null;
+
+  const endLineIndex =
+    model.layout.logicalLineEndByLine[model.cursor.line] ?? model.cursor.line;
+  const endLine = document.lines[endLineIndex] ?? startLine;
+  const start = cursorOffset(document, model.cursor);
+  const end = endLine.start + endLine.text.length;
+  const text = [
+    document.text.slice(start, startLine.start + startLine.text.length),
+    ...document.lines
+      .slice(model.cursor.line + 1, endLineIndex + 1)
+      .map((line) => line.text),
+  ].join("");
+
+  if (end <= start) return null;
+  return { start, end, text };
 }
 
 function wordMotionSelection(

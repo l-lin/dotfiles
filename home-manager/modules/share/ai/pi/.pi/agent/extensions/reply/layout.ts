@@ -81,6 +81,8 @@ export function createReplyLayout(
     width: normalizedWidth,
     document: rendered.document,
     renderedLines: rendered.renderedLines,
+    logicalLineStartByLine: rendered.logicalLineStartByLine,
+    logicalLineEndByLine: rendered.logicalLineEndByLine,
   };
 }
 

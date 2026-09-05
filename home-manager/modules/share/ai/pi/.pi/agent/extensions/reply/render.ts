@@ -354,18 +354,85 @@ export class ReplyRenderer {
 export function renderMarkdownDocument(
   sourceText: string,
   width: number,
-): { document: SourceDocument; renderedLines: string[] } {
-  const renderedLines = new Markdown(sourceText, 1, 0, getMarkdownTheme())
-    .render(Math.max(3, width))
-    .map((line) => removeLastVisibleGrapheme(removeFirstVisibleGrapheme(line)));
+): {
+  document: SourceDocument;
+  renderedLines: string[];
+  logicalLineStartByLine: number[];
+  logicalLineEndByLine: number[];
+} {
+  const renderedLines = renderMarkdownLines(sourceText, Math.max(3, width));
+  const logicalLines = renderMarkdownLines(
+    sourceText,
+    Math.max(80, sourceText.length + 4, width),
+  );
   const plainText = renderedLines
     .map((line) => stripTerminalSequences(line).replace(/ +$/u, ""))
     .join("\n");
+  const document = createSourceDocument(plainText);
+
+  const logicalLineBounds = mapLogicalLineBounds(logicalLines, document);
 
   return {
-    document: createSourceDocument(plainText),
+    document,
     renderedLines,
+    logicalLineStartByLine: logicalLineBounds.startByLine,
+    logicalLineEndByLine: logicalLineBounds.endByLine,
   };
+}
+
+function renderMarkdownLines(sourceText: string, width: number): string[] {
+  return new Markdown(sourceText, 1, 0, getMarkdownTheme())
+    .render(width)
+    .map((line) => removeLastVisibleGrapheme(removeFirstVisibleGrapheme(line)));
+}
+
+function mapLogicalLineBounds(
+  logicalLines: readonly string[],
+  document: SourceDocument,
+): { startByLine: number[]; endByLine: number[] } {
+  const startByLine = document.lines.map((_line, index) => index);
+  const endByLine = document.lines.map((_line, index) => index);
+  let documentLineIndex = 0;
+
+  for (const logicalLine of logicalLines) {
+    if (documentLineIndex >= document.lines.length) break;
+
+    const logicalText = stripTerminalSequences(logicalLine)
+      .replace(/ +$/u, "")
+      .replace(/\s/gu, "");
+    if (logicalText.length === 0) {
+      documentLineIndex++;
+      continue;
+    }
+
+    const firstDocumentLineIndex = documentLineIndex;
+    let documentText = "";
+    while (
+      documentLineIndex < document.lines.length &&
+      documentText.length < logicalText.length
+    ) {
+      documentText += document.lines[documentLineIndex]!.text.replace(
+        /\s/gu,
+        "",
+      );
+      documentLineIndex++;
+    }
+
+    const lastDocumentLineIndex = Math.max(
+      firstDocumentLineIndex,
+      documentLineIndex - 1,
+    );
+    for (
+      let index = firstDocumentLineIndex;
+      index <= lastDocumentLineIndex;
+      index++
+    ) {
+      startByLine[index] = firstDocumentLineIndex;
+      endByLine[index] = lastDocumentLineIndex;
+    }
+  }
+
+  return { startByLine, endByLine };
 }
 
 function removeFirstVisibleGrapheme(text: string): string {

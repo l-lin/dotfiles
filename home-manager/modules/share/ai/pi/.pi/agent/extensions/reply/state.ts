@@ -69,6 +69,8 @@ export interface ReplyLayout {
   width: number;
   document: SourceDocument;
   renderedLines: readonly string[];
+  logicalLineStartByLine: readonly number[];
+  logicalLineEndByLine: readonly number[];
 }
 
 export interface YankFeedback {
