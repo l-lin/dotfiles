@@ -211,7 +211,14 @@
       "  );",
       "}"
     ],
-    "description": "description"
+    "description": "Java: test pojo"
+  },
+  "testdummy": {
+    "prefix": "testdummy",
+    "body": [
+      "@Test void dummy() {}"
+    ],
+    "description": "Java: dummy test"
   }
 }
 
