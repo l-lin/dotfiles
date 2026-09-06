@@ -36,7 +36,7 @@
       "keybind": "alt-m"
     },
     "sandbox": {
-      "enabled": false
+      "enabled": true
     },
     "damageControl": {
       "enabled": true
