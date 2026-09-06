@@ -16,8 +16,22 @@ local function setup()
     vim.cmd("Git")
 
     local line_count = vim.api.nvim_buf_line_count(0)
-    if line_count >= 6 then
-      vim.api.nvim_win_set_cursor(0, { 6, 0 })
+    if line_count >= 5 then
+      -- In vim-fugitive, what is displayed when there are some unstaged / staged files:
+      --
+      --   1. Head: main
+      --   2. Rebase: origin/main
+      --   3. Help: g?
+      --   4.
+      --   5. Unstaged (2) / Staged (2)
+      --   6. M home-manager/modules/share/editor/nvim/.config/nvim/lua/plugins/vcs/vim-fugitive.lua 
+      --
+      -- Line 2 is not present sometimes (idk why), so the cursor to move is either line 5 or 6.
+      local target_line = 5
+      if vim.api.nvim_buf_get_lines(0, 1, 2, false)[1]:match("^Rebase:") then
+        target_line = 6
+      end
+      vim.api.nvim_win_set_cursor(0, { target_line, 0 })
     end
   end, { silent = true, noremap = true, desc = "git status (Alt+0)" })
   -- stylua: ignore start
