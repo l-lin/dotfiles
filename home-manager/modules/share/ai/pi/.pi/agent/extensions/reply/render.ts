@@ -45,6 +45,8 @@ export interface ReplyRenderState {
 
 const ANSI_REVERSE_ON = "\x1b[7m";
 const ANSI_REVERSE_OFF = "\x1b[27m";
+const REPLY_HIGHLIGHT_BACKGROUND = "\x1b[48;2;249;234;179m";
+const ANSI_BACKGROUND_OFF = "\x1b[49m";
 const TAB_SIZE = 4;
 const ANSI_SEQUENCE_RE =
   /\x1b(?:\[[0-?]*[ -/]*[@-~]|\][^\x07]*(?:\x07|\x1b\\)|P[^\x1b]*(?:\x1b\\)|_[^\x1b]*(?:\x1b\\))/gu;
@@ -239,11 +241,11 @@ export class ReplyRenderer {
     let styled = displayText;
     if (annotation) styled = this.theme.underline(styled);
     if (yankHighlighted) {
-      styled = this.theme.bg("toolSuccessBg", styled);
+      styled = withReplyHighlightBackground(styled);
     } else if (selected) {
       styled = this.theme.bg("selectedBg", styled);
     } else if (searchMatch) {
-      styled = this.theme.bg("searchMatchBg", styled);
+      styled = withReplyHighlightBackground(styled);
       if (isCurrentSearchMatch) {
         styled = this.theme.fg("searchMatchText", styled);
       }
@@ -540,6 +542,10 @@ function isTableSeparatorLine(line: string): boolean {
 
 function isTableBottomLine(line: string): boolean {
   return stripTerminalSequences(line).trimStart().startsWith("└");
+}
+
+function withReplyHighlightBackground(text: string): string {
+  return `${REPLY_HIGHLIGHT_BACKGROUND}${text}${ANSI_BACKGROUND_OFF}`;
 }
 
 function removeFirstVisibleGrapheme(text: string): string {

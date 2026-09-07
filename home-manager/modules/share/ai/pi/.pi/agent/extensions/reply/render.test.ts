@@ -87,17 +87,9 @@ test("reply renderer GIVEN native Markdown styling and a selection WHEN building
   assert.match(actual, /ello\x1b\[22m/);
 });
 
-test("reply renderer GIVEN a yank range WHEN building rows THEN highlights only the yanked graphemes with selected background", () => {
-  const theme = {
-    ...given_theme(),
-    bg(color: string, text: string) {
-      return color === "toolSuccessBg"
-        ? `[yank]${text}[/yank]`
-        : `[search]${text}[/search]`;
-    },
-  };
+test("reply renderer GIVEN a yank range WHEN building rows THEN highlights only the yanked graphemes with the reply highlight background", () => {
   const renderer = new ReplyRenderer(
-    theme as never,
+    given_theme() as never,
     createSourceDocument("abcd"),
     [],
     {
@@ -113,9 +105,9 @@ test("reply renderer GIVEN a yank range WHEN building rows THEN highlights only 
 
   const actual = renderer.buildDisplayRows(30)[0]!.content;
 
-  assert.match(actual, /\[yank\]b\[\/yank\]/);
-  assert.doesNotMatch(actual, /\[yank\]a\[\/yank\]/);
-  assert.doesNotMatch(actual, /\[yank\]d\[\/yank\]/);
+  assert.match(actual, /\x1b\[48;2;249;234;179mb\x1b\[49m/);
+  assert.doesNotMatch(actual, /\x1b\[48;2;249;234;179ma/);
+  assert.doesNotMatch(actual, /\x1b\[48;2;249;234;179md/);
 });
 
 test("reply renderer GIVEN an annotation ending on a source line WHEN building rows THEN places its comment box after that line", () => {
@@ -171,12 +163,9 @@ test("reply renderer GIVEN a source line WHEN building rows THEN omits the line-
   assert.doesNotMatch(actual, /│/);
 });
 
-test("reply renderer GIVEN search matches WHEN building source rows THEN highlights every match and distinguishes the current one", () => {
+test("reply renderer GIVEN search matches WHEN building source rows THEN highlights every match with the reply highlight background and distinguishes the current one", () => {
   const theme = {
     ...given_theme(),
-    bg(color: string, text: string) {
-      return color === "searchMatchBg" ? `[search]${text}[/search]` : text;
-    },
     fg(color: string, text: string) {
       return color === "searchMatchText" ? `[current]${text}[/current]` : text;
     },
@@ -200,9 +189,12 @@ test("reply renderer GIVEN search matches WHEN building source rows THEN highlig
 
   const actual = renderer.buildDisplayRows(30)[0]!.content;
 
-  assert.match(actual, /\[search\]f\[\/search\]/);
-  assert.match(actual, /\[search\]o\[\/search\]\[search\]o/);
-  assert.match(actual, /\[current\]\[search\]f\[\/search\]\[\/current\]/);
+  assert.match(actual, /\x1b\[48;2;249;234;179mf\x1b\[49m/);
+  assert.match(actual, /\x1b\[48;2;249;234;179mo\x1b\[49m/);
+  assert.match(
+    actual,
+    /\[current\]\x1b\[48;2;249;234;179mf\x1b\[49m\[\/current\]/,
+  );
 });
 
 test("reply renderer GIVEN tab and wide graphemes WHEN converting columns THEN uses terminal display cells", () => {

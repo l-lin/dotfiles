@@ -865,7 +865,7 @@ function yankSucceeded(
     {
       type: "schedule-yank-highlight-clear",
       generation: model.yank.generation,
-      delayMs: 500,
+      delayMs: 250,
     },
     ...requestRender(),
   ];
