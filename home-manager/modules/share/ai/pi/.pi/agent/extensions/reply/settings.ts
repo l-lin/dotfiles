@@ -8,6 +8,8 @@ export interface ReplyKeymap {
   comment: KeyId;
   yank: KeyId;
   lineYank: KeyId;
+  innerTextObject: KeyId;
+  outerTextObject: KeyId;
   edit: KeyId;
   delete: KeyId;
   visualSwapCursor: KeyId;
@@ -20,6 +22,10 @@ export interface ReplyKeymap {
   characterVisual: KeyId;
   lineVisual: KeyId;
   lineMotionPrefix: KeyId;
+  viewportPositionPrefix: KeyId;
+  viewportCenter: KeyId;
+  viewportTop: KeyId;
+  viewportBottom: KeyId;
   lastLine: KeyId;
   wordForward: KeyId;
   wordBackward: KeyId;
@@ -52,6 +58,8 @@ export const REPLY_KEYMAP: ReplyKeymap = {
   comment: "alt+c",
   yank: "y",
   lineYank: "shift+y",
+  innerTextObject: "i",
+  outerTextObject: "a",
   edit: "alt+e",
   delete: "alt+d",
   visualSwapCursor: "o",
@@ -68,6 +76,10 @@ export const REPLY_KEYMAP: ReplyKeymap = {
 
   // Line movement.
   lineMotionPrefix: "g",
+  viewportPositionPrefix: "z",
+  viewportCenter: "z",
+  viewportTop: "t",
+  viewportBottom: "b",
   lastLine: "shift+g",
   lineStart: "0",
   firstNonBlank: "_",

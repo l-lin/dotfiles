@@ -16,13 +16,13 @@ export type PreferredColumn =
 
 export type MotionPending =
   | { kind: "none" }
-  | { kind: "g" }
-  | { kind: "z" }
+  | { kind: "line-motion" }
+  | { kind: "viewport-position" }
   | { kind: "char"; motion: CharMotion };
 
 export type YankPending =
   | { kind: "operator" }
-  | { kind: "g" }
+  | { kind: "line-motion" }
   | { kind: "char"; motion: CharMotion }
   | { kind: "text-object"; outer: boolean };
 

@@ -309,7 +309,7 @@ function handlePendingMotion(
   setMotionPending(model, { kind: "none" });
 
   if (matchesKey(data, context.keymap.escape)) return requestRender();
-  if (pending.kind === "g") {
+  if (pending.kind === "line-motion") {
     if (matchesKey(data, context.keymap.lineMotionPrefix)) {
       moveToLine(model, 0);
       return requestRender();
@@ -333,13 +333,16 @@ function handlePendingMotion(
     executeCharMotion(model, pending.motion, data);
     return requestRender();
   }
-  if (pending.kind === "z") {
-    if (data === "z") positionViewport(model, "center", context.viewportHeight);
-    else if (data === "t")
+  if (pending.kind === "viewport-position") {
+    if (matchesKey(data, context.keymap.viewportCenter)) {
+      positionViewport(model, "center", context.viewportHeight);
+    } else if (matchesKey(data, context.keymap.viewportTop)) {
       positionViewport(model, "top", context.viewportHeight);
-    else if (data === "b")
+    } else if (matchesKey(data, context.keymap.viewportBottom)) {
       positionViewport(model, "bottom", context.viewportHeight);
-    else return handleKey(model, { type: "key", data }, context);
+    } else {
+      return handleKey(model, { type: "key", data }, context);
+    }
     return requestRender();
   }
 
@@ -370,13 +373,23 @@ function handlePendingYank(
       return beginYank(model, linewiseSelection(model, model.cursor), false);
     }
     if (matchesKey(data, context.keymap.lineMotionPrefix)) {
-      model.interaction.pending = { kind: "yank", yank: { kind: "g" } };
-      return requestRender();
-    }
-    if (data === "i" || data === "a") {
       model.interaction.pending = {
         kind: "yank",
-        yank: { kind: "text-object", outer: data === "a" },
+        yank: { kind: "line-motion" },
+      };
+      return requestRender();
+    }
+    if (matchesKey(data, context.keymap.innerTextObject)) {
+      model.interaction.pending = {
+        kind: "yank",
+        yank: { kind: "text-object", outer: false },
+      };
+      return requestRender();
+    }
+    if (matchesKey(data, context.keymap.outerTextObject)) {
+      model.interaction.pending = {
+        kind: "yank",
+        yank: { kind: "text-object", outer: true },
       };
       return requestRender();
     }
@@ -400,7 +413,7 @@ function handlePendingYank(
     );
   }
 
-  if (pending.kind === "g") {
+  if (pending.kind === "line-motion") {
     setNormalPending(model);
     if (matchesKey(data, context.keymap.lineMotionPrefix)) {
       const destination = previewMotion(model, () => moveToLine(model, 0));
@@ -484,13 +497,13 @@ function handleMovement(
   else if (matchesKey(data, context.keymap.halfPageDown))
     scrollHalfPage(model, 1, context.viewportHeight);
   else if (matchesKey(data, context.keymap.lineMotionPrefix))
-    setMotionPending(model, { kind: "g" });
+    setMotionPending(model, { kind: "line-motion" });
   else if (
     allowWindowCommands &&
     (isNormal(model) || isVisual(model)) &&
-    data === "z"
+    matchesKey(data, context.keymap.viewportPositionPrefix)
   )
-    setMotionPending(model, { kind: "z" });
+    setMotionPending(model, { kind: "viewport-position" });
   else if (matchesKey(data, context.keymap.lastLine))
     moveToLine(model, model.layout.document.lines.length - 1);
   else if (matchesKey(data, context.keymap.wordForward))
