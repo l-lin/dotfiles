@@ -159,31 +159,6 @@ function handleKey(
     return [];
   }
 
-  if (model.interaction.kind === "normal") {
-    if (model.interaction.pending.kind === "yank") {
-      return handlePendingYank(model, data, context);
-    }
-    if (model.interaction.pending.kind === "motion") {
-      return handlePendingMotion(model, data, context);
-    }
-  } else if (model.interaction.pending.kind !== "none") {
-    return handlePendingMotion(model, data, context);
-  }
-
-  if (isNormal(model) && matchesKey(data, context.keymap.edit)) {
-    const annotation = findAnnotationAtCursor(model);
-    if (annotation) return openComment(model, annotation);
-    return [];
-  }
-
-  if (isNormal(model) && matchesKey(data, context.keymap.delete)) {
-    const annotation = findAnnotationAtCursor(model);
-    if (!annotation) return [];
-    const index = model.annotations.indexOf(annotation);
-    if (index >= 0) model.annotations.splice(index, 1);
-    return requestRender();
-  }
-
   if (matchesKey(data, context.keymap.searchForward)) {
     return beginSearch(model, "forward", "/");
   }
@@ -197,36 +172,62 @@ function handleKey(
     return searchWord(model, "backward");
   }
 
-  if (matchesKey(data, context.keymap.close) || matchesKey(data, context.keymap.escape)) {
-    if (isVisual(model)) {
-      setNormal(model);
-      return requestRender();
-    }
-    return [{ type: "close", result: { action: "cancel" } }];
+  if (isNormal(model)) {
+    return handleKeyForNormalMode(model, data, allowWindowCommands, context);
+  }
+  if (isVisual(model)) {
+    return handleKeyForVisualMode(model, data, allowWindowCommands, context);
+  }
+
+  return [];
+}
+
+function handleKeyForNormalMode(
+  model: ReplyModel & {
+    interaction: Extract<ReplyInteraction, { kind: "normal" }>;
+  },
+  data: string,
+  allowWindowCommands: boolean,
+  context: UpdateContext,
+): ReplyEffect[] {
+  if (model.interaction.pending.kind === "yank") {
+    return handlePendingYank(model, data, context);
+  }
+  if (model.interaction.pending.kind === "motion") {
+    return handlePendingMotion(model, data, context);
   }
 
   if (
-    isVisual(model) &&
-    (matchesKey(data, context.keymap.yank) ||
-      matchesKey(data, context.keymap.lineYank))
+    matchesKey(data, context.keymap.close) ||
+    matchesKey(data, context.keymap.escape)
   ) {
-    return beginYankVisual(model);
+    return [{ type: "close", result: { action: "cancel" } }];
   }
 
-  if (isVisual(model) && matchesKey(data, context.keymap.comment)) {
-    return openComment(model);
+  if (matchesKey(data, context.keymap.edit)) {
+    const annotation = findAnnotationAtCursor(model);
+    if (annotation) return openComment(model, annotation);
+    return [];
   }
 
-  if (isNormal(model) && matchesKey(data, context.keymap.lineYank)) {
+  if (matchesKey(data, context.keymap.delete)) {
+    const annotation = findAnnotationAtCursor(model);
+    if (!annotation) return [];
+    const index = model.annotations.indexOf(annotation);
+    if (index >= 0) model.annotations.splice(index, 1);
+    return requestRender();
+  }
+
+  if (matchesKey(data, context.keymap.lineYank)) {
     return beginYank(model, linewiseSelection(model, model.cursor), false);
   }
 
-  if (isNormal(model) && matchesKey(data, context.keymap.yank)) {
+  if (matchesKey(data, context.keymap.yank)) {
     model.interaction.pending = { kind: "yank", yank: { kind: "operator" } };
     return requestRender();
   }
 
-  if (isNormal(model) && matchesKey(data, context.keymap.save)) {
+  if (matchesKey(data, context.keymap.save)) {
     if (model.annotations.length === 0) {
       return [{ type: "close", result: { action: "cancel" } }];
     }
@@ -237,25 +238,60 @@ function handleKey(
     ];
   }
 
-  if (isNormal(model) && matchesKey(data, context.keymap.characterVisual)) {
+  if (matchesKey(data, context.keymap.characterVisual)) {
     enterVisual(model, "character");
     return requestRender();
   }
-  if (isNormal(model) && matchesKey(data, context.keymap.lineVisual)) {
+  if (matchesKey(data, context.keymap.lineVisual)) {
     enterVisual(model, "line");
     return requestRender();
   }
-  if (isVisual(model) && matchesKey(data, context.keymap.characterVisual)) {
+
+  return handleMovement(model, data, allowWindowCommands, context);
+}
+
+function handleKeyForVisualMode(
+  model: ReplyModel & {
+    interaction: Extract<ReplyInteraction, { kind: "visual" }>;
+  },
+  data: string,
+  allowWindowCommands: boolean,
+  context: UpdateContext,
+): ReplyEffect[] {
+  if (model.interaction.pending.kind !== "none") {
+    return handlePendingMotion(model, data, context);
+  }
+
+  if (
+    matchesKey(data, context.keymap.close) ||
+    matchesKey(data, context.keymap.escape)
+  ) {
+    setNormal(model);
+    return requestRender();
+  }
+
+  if (
+    matchesKey(data, context.keymap.yank) ||
+    matchesKey(data, context.keymap.lineYank)
+  ) {
+    return beginYankVisual(model);
+  }
+
+  if (matchesKey(data, context.keymap.comment)) {
+    return openComment(model);
+  }
+
+  if (matchesKey(data, context.keymap.characterVisual)) {
     if (model.interaction.visualMode === "character") setNormal(model);
     else model.interaction.visualMode = "character";
     return requestRender();
   }
-  if (isVisual(model) && matchesKey(data, context.keymap.lineVisual)) {
+  if (matchesKey(data, context.keymap.lineVisual)) {
     if (model.interaction.visualMode === "line") setNormal(model);
     else model.interaction.visualMode = "line";
     return requestRender();
   }
-  if (isVisual(model) && matchesKey(data, context.keymap.visualSwapCursor)) {
+  if (matchesKey(data, context.keymap.visualSwapCursor)) {
     swapVisualCursor(model);
     return requestRender();
   }
