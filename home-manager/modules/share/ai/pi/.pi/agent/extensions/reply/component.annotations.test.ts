@@ -7,6 +7,7 @@ import {
   given_theme,
   given_tui,
   then_cursor,
+  then_mode,
   then_scroll_top,
   then_visual_anchor,
   when_backspacing,
@@ -33,15 +34,19 @@ test("reply component GIVEN a source message WHEN selecting characters and submi
   assert.deepEqual(actual, expected);
 });
 
-test("reply component GIVEN normal and visual modes WHEN q or Esc is pressed THEN q cancels and Esc does nothing outside comment input", () => {
+test("reply component GIVEN normal and visual modes WHEN q or Esc is pressed THEN both exit visual mode and q still cancels normally", () => {
   const { component, getResult } = given_component("hello");
 
+  component.handleInput("v");
+  component.handleInput("l");
   component.handleInput("\x1b");
+  assert.equal(then_mode(component), "normal");
   assert.equal(getResult(), undefined);
 
   component.handleInput("v");
   component.handleInput("l");
   component.handleInput("q");
+  assert.equal(then_mode(component), "normal");
   assert.equal(getResult(), undefined);
 
   component.handleInput("q");

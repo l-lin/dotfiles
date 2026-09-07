@@ -197,7 +197,7 @@ function handleKey(
     return searchWord(model, "backward");
   }
 
-  if (matchesKey(data, context.keymap.close)) {
+  if (matchesKey(data, context.keymap.close) || matchesKey(data, context.keymap.escape)) {
     if (isVisual(model)) {
       setNormal(model);
       return requestRender();
