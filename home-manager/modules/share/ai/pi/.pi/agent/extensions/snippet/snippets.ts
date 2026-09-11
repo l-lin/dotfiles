@@ -50,7 +50,7 @@ export const SNIPPETS: SnippetDef[] = [
   {
     trigger: "$concise",
     description: "Be concise",
-    expansion: "Respond in 3 bullet points.",
+    expansion: "(Re)State it more simply and concisely, like one human talking to another. Don't use jargon and speak coherently.",
   },
   {
     trigger: "$commit",
