@@ -39,7 +39,7 @@ When the destination includes a skill, classify it as one of these types:
 - `tool-usage`
 - `domain`
 
-Use that type when naming the skill directory, for example `~/.config/ai/skills/debugging-postgres-connection-pool/SKILL.md`.
+Use that type when naming the skill directory, for example `.pi/skills/debugging-postgres-connection-pool/SKILL.md`.
 
 ## 3. Pause for consent
 
@@ -59,7 +59,7 @@ Wait for the user's answer. If they say no, stop. Do not create or edit anything
 ### 4.1 Skills
 
 - Search existing skills first. Update an existing skill when the new lesson extends it. Create a new skill only when the pattern is distinct.
-- Store skills in `.ai/skills/<type>-<short-description>/SKILL.md`.
+- Store skills in `.pi/skills/<type>-<short-description>/SKILL.md`, relative to current working directory.
 - Use the `writing-skill` skill to draft or revise skill content.
 - Use `clear-writing` for the prose.
 - Keep skills general, actionable, and free of project-only details better suited for `AGENTS.md`.
