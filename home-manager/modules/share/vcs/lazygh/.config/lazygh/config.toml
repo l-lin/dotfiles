@@ -27,11 +27,18 @@ comment_on_pull_request = "alt+c"
 [theme]
 preset = "grey"
 
+[pull_requests]
+refresh = "10m"
+
+[pull_requests.pasted_prs]
+auto_refresh = true
+
 [[pull_requests.searches]]
 label = "My PRs"
 flags = ["--author", "@me", "--state", "open", "--sort", "updated", "--order", "desc"]
+auto_refresh = false
 
 [[pull_requests.searches]]
 label = "My reviews"
 flags = ["--reviewed-by", "@me", "--limit", "100", "--state", "open", "--sort", "updated", "--order", "desc"]
-
+auto_refresh = true
