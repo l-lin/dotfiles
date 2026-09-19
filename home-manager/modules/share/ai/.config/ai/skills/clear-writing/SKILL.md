@@ -1,6 +1,6 @@
 ---
 name: clear-writing
-description: Use when writing or editing any prose humans will read — documentation, commit messages, error messages, UI text, reports, or explanations. Also use when user says "write clearly", "clear writing", or "improve writing".
+description: Use when asked to draft, edit, rewrite, reword, proofread, correct, summarize, or write documentation, commit messages, PR text, UI text, error messages, reports, or explanations. Also use when the user says "write clearly", "clear writing", or "improve writing".
 disable-model-invocation: false
 ---
 
