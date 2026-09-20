@@ -23,9 +23,6 @@
     "askUserQuestion": {
       "enabled": true
     },
-    "copilotUsage": {
-      "visible": false
-    },
     "webSearch": {
       "enabled": true
     },
@@ -34,12 +31,6 @@
     },
     "modelSelector": {
       "keybind": "alt-m"
-    },
-    "sandbox": {
-      "enabled": true
-    },
-    "damageControl": {
-      "enabled": true
     },
     "awesomeEditor": {
       "mode": "emacs"

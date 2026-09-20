@@ -42,22 +42,8 @@ function loadFooterRuntime(): Promise<FooterRuntime> {
 
 export default function (pi: ExtensionAPI) {
   let currentTui: TUI | undefined;
-  const runtimeState = {
-    sandboxEnabled: false,
-    damageControlEnabled: false,
-  };
 
   pi.events.on("custom-tool:changed", () => {
-    currentTui?.requestRender();
-  });
-
-  pi.events.on("sandbox:state-changed", (enabled: unknown) => {
-    runtimeState.sandboxEnabled = enabled === true;
-    currentTui?.requestRender();
-  });
-
-  pi.events.on("damage-control:state-changed", (enabled: unknown) => {
-    runtimeState.damageControlEnabled = enabled === true;
     currentTui?.requestRender();
   });
 
@@ -86,15 +72,8 @@ export default function (pi: ExtensionAPI) {
             // Line 1: Stats (context, tools, cost | thinking, model)
             lines.push(runtime.buildStatsLine(width, theme, ctx, pi));
 
-            // Line 2: Directory and git branch (with sandbox and damage-control status icons)
-            lines.push(
-              runtime.buildDirectoryLine(
-                width,
-                theme,
-                footerData,
-                runtimeState,
-              ),
-            );
+            // Line 2: Directory and git branch
+            lines.push(runtime.buildDirectoryLine(width, theme, footerData));
 
             // Line 3: Extension statuses (if any)
             const statusLine = runtime.buildStatusLine(

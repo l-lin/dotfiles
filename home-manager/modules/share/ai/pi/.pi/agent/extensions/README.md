@@ -9,10 +9,8 @@ This directory contains local Pi extensions and shared support modules. Each ent
 | [`awesome-editor`](./awesome-editor/)       | Replaces the editor with configurable vi or emacs editing and snippet autocomplete.                                                                  |
 | [`context`](./context/)                     | Shows a TUI overview of loaded extensions, skills, project context files, and usage totals.                                                          |
 | [`reply`](./reply/)                         | Opens the latest assistant message in a Vim-style popup so you can annotate or yank selected text and insert review prompts into the composer.       |
-| [`damage-control`](./damage-control/)       | Blocks risky tool calls against local damage-control rules and asks for approval when a rule matches.                                                |
 | [`execution-timer`](./execution-timer/)     | Tracks each run and shows elapsed time with a simple tool-versus-agent breakdown.                                                                    |
 | [`footer`](./footer/)                       | Replaces the default footer with richer status, directory, and usage lines.                                                                          |
-| [`sandbox`](./sandbox/)                     | Wraps bash commands in OS-level sandboxing (macOS sandbox-exec, Linux bubblewrap) with configurable filesystem and network restrictions.             |
 | [`session-breakdown`](./session-breakdown/) | Analyzes Pi session history and shows activity, token, cost, and model trends in a TUI view.                                                         |
 | [`skill-breakdown`](./skill-breakdown/)     | Analyzes Pi session history and shows top skills, less-used skills, and per-project skill summaries over the last 7, 30, or 90 days.                 |
 | [`snippet`](./snippet/)                     | Leaves submitted prompts literal and keeps the shared snippet catalog available for `awesome-editor` `Ctrl-E` expansion.                             |
@@ -22,4 +20,3 @@ This directory contains local Pi extensions and shared support modules. Each ent
 | [`web-fetch`](./web-fetch/)                 | Fetches a URL as readable text or raw page content.                                                                                                  |
 | [`web-search`](./web-search/)               | Searches the web through Tavily, with filters and AI-generated summaries.                                                                            |
 | [`working-message`](./working-message/)     | Replaces the default working message with rotating sarcastic status text and elapsed time.                                                           |
-| [`yolo`](./yolo/)                           | Toggles `sandbox` and `damage-control` together, using the current `sandbox` state as the source of truth when they differ.                          |
