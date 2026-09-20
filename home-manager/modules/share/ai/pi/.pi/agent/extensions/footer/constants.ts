@@ -55,6 +55,5 @@ export interface SettingsStructure {
     askUserQuestion?: { enabled?: boolean };
     sandbox?: { enabled?: boolean };
     damageControl?: { enabled?: boolean };
-    mcpAdapter?: { enabled?: boolean };
   };
 }

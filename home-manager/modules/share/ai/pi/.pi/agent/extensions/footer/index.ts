@@ -23,7 +23,6 @@ export default function (pi: ExtensionAPI) {
   const runtimeState = {
     sandboxEnabled: false,
     damageControlEnabled: false,
-    mcpAdapterEnabled: false,
   };
 
   pi.events.on("custom-tool:changed", () => {
@@ -37,11 +36,6 @@ export default function (pi: ExtensionAPI) {
 
   pi.events.on("damage-control:state-changed", (enabled: unknown) => {
     runtimeState.damageControlEnabled = enabled === true;
-    currentTui?.requestRender();
-  });
-
-  pi.events.on("mcp-adapter:state-changed", (enabled: unknown) => {
-    runtimeState.mcpAdapterEnabled = enabled === true;
     currentTui?.requestRender();
   });
 
@@ -69,12 +63,7 @@ export default function (pi: ExtensionAPI) {
             );
 
             // Line 3: Extension statuses (if any)
-            const statusLine = buildStatusLine(
-              width,
-              theme,
-              footerData,
-              runtimeState,
-            );
+            const statusLine = buildStatusLine(width, theme, footerData);
             if (statusLine) {
               lines.push(statusLine);
             }

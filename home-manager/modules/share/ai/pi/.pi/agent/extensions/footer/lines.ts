@@ -25,7 +25,6 @@ import {
 export interface FooterRuntimeState {
   sandboxEnabled?: boolean;
   damageControlEnabled?: boolean;
-  mcpAdapterEnabled?: boolean;
 }
 
 export function buildStatsLine(
@@ -94,11 +93,8 @@ export function buildDirectoryLine(
   const damageControlIcon = state.damageControlEnabled
     ? theme.fg("dim", ICONS["damage-control-enabled"])
     : theme.fg("error", ICONS["damage-control-disabled"]);
-  const mcpIcon = state.mcpAdapterEnabled
-    ? theme.fg("error", ICONS["mcp-enabled"])
-    : theme.fg("dim", ICONS["mcp-disabled"]);
   const directory = theme.fg("dim", `${ICONS["cwd"]} ${pwd}`);
-  const cwdLeft = `${sandboxIcon} ${damageControlIcon} ${mcpIcon} ${directory}`;
+  const cwdLeft = `${sandboxIcon} ${damageControlIcon} ${directory}`;
   const branchRight = branch
     ? theme.fg("dim", `${ICONS["branch"]} ${branch}`)
     : "";
@@ -127,11 +123,10 @@ export function buildStatusLine(
   width: number,
   theme: Theme,
   footerData: ReadonlyFooterDataProvider,
-  state: FooterRuntimeState = {},
 ): string | null {
-  const statuses = Array.from(footerData.getExtensionStatuses().entries())
-    .filter(([key]) => state.mcpAdapterEnabled !== false || key !== "mcp")
-    .sort(([a], [b]) => a.localeCompare(b));
+  const statuses = Array.from(footerData.getExtensionStatuses().entries()).sort(
+    ([a], [b]) => a.localeCompare(b),
+  );
 
   if (statuses.length === 0) {
     return null;

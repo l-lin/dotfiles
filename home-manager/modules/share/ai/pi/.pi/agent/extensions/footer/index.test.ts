@@ -119,7 +119,7 @@ function when_renderingDirectoryLine(footerFactory: Function): string {
   return given_renderedFooter(footerFactory).when_renderingLines()[1];
 }
 
-test("footer GIVEN no runtime state events WHEN rendering after session start THEN it defaults to disabled sandbox, damage-control, and MCP icons", async () => {
+test("footer GIVEN no runtime state events WHEN rendering after session start THEN it defaults to disabled sandbox, damage-control icons", async () => {
   const { pi, when_startingSession } = given_mockPi();
   const { ctx, when_gettingFooterFactory } = given_footerContext();
 
@@ -134,8 +134,6 @@ test("footer GIVEN no runtime state events WHEN rendering after session start TH
     actual.includes(`<error>${ICONS["damage-control-disabled"]}</error>`),
   );
   assert.ok(!actual.includes(ICONS["damage-control-enabled"]));
-  assert.ok(actual.includes(`<dim>${ICONS["mcp-disabled"]}</dim>`));
-  assert.ok(!actual.includes(ICONS["mcp-enabled"]));
 });
 
 test("footer GIVEN a sandbox enabled runtime event WHEN rendering THEN it shows the enabled sandbox icon", async () => {
@@ -164,49 +162,4 @@ test("footer GIVEN a damage-control enabled runtime event before session start W
 
   assert.ok(actual.includes(`<dim>${ICONS["damage-control-enabled"]}</dim>`));
   assert.ok(!actual.includes(ICONS["damage-control-disabled"]));
-});
-
-test("footer GIVEN an MCP adapter enabled runtime event WHEN rendering THEN it shows the enabled MCP icon and requests a rerender", async () => {
-  const { pi, when_startingSession, when_emitting } = given_mockPi();
-  const { ctx, when_gettingFooterFactory } = given_footerContext();
-
-  footerExtension(pi as never);
-  await when_startingSession(ctx as never);
-
-  const renderedFooter = given_renderedFooter(when_gettingFooterFactory());
-  when_emitting("mcp-adapter:state-changed", true);
-
-  const actual = {
-    directoryLine: renderedFooter.when_renderingLines()[1],
-    requestRenderCalls: renderedFooter.when_gettingRequestRenderCalls(),
-  };
-
-  assert.ok(
-    actual.directoryLine.includes(`<error>${ICONS["mcp-enabled"]}</error>`),
-  );
-  assert.ok(!actual.directoryLine.includes(ICONS["mcp-disabled"]));
-  assert.equal(actual.requestRenderCalls, 1);
-});
-
-test("footer GIVEN MCP disabled and extension statuses WHEN rendering THEN it omits the mcp status entry but keeps the others", async () => {
-  const { pi, when_startingSession } = given_mockPi();
-  const { ctx, when_gettingFooterFactory } = given_footerContext();
-
-  footerExtension(pi as never);
-  await when_startingSession(ctx as never);
-
-  const renderedFooter = given_renderedFooter(
-    when_gettingFooterFactory(),
-    given_footerData(
-      new Map([
-        ["mcp", "mcp ready"],
-        ["sandbox", "sandbox on"],
-      ]),
-    ),
-  );
-
-  const actual = renderedFooter.when_renderingLines()[2] ?? "";
-
-  assert.ok(actual.includes("sandbox on"));
-  assert.ok(!actual.includes("mcp ready"));
 });

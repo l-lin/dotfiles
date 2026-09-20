@@ -41,9 +41,6 @@
     "damageControl": {
       "enabled": true
     },
-    "mcpAdapter": {
-      "enabled": false
-    },
     "awesomeEditor": {
       "mode": "emacs"
     }
