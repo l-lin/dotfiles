@@ -7,7 +7,7 @@
   "enableInstallTelemetry": false,
   "enableAnalytics": false,
   "outputPad": 0,
-  "treeFilterMode": "user-only",
+  "treeFilterMode": "no-tools",
   "skills": [
     "~/.config/ai/skills"
   ],
