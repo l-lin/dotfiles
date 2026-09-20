@@ -2,22 +2,52 @@ import type {
   ExtensionAPI,
   ExtensionContext,
 } from "@earendil-works/pi-coding-agent";
-import { BorderedLoader } from "@earendil-works/pi-coding-agent";
-import { formatCount } from "../session-breakdown/color-utils.js";
-import {
-  computeSkillBreakdown,
-  rangeSummary,
-  renderTopSkillsText,
-} from "./aggregation.js";
-import { SkillBreakdownComponent } from "./component.js";
-import { LOADER_BASE_MESSAGE } from "./constants.js";
 import type {
   SkillBreakdownData,
   SkillBreakdownProgressState,
 } from "./types.js";
 
+type SkillBreakdownRuntime = {
+  BorderedLoader: (typeof import("@earendil-works/pi-coding-agent"))["BorderedLoader"];
+  formatCount: (typeof import("../session-breakdown/color-utils.js"))["formatCount"];
+  computeSkillBreakdown: (typeof import("./aggregation.js"))["computeSkillBreakdown"];
+  rangeSummary: (typeof import("./aggregation.js"))["rangeSummary"];
+  renderTopSkillsText: (typeof import("./aggregation.js"))["renderTopSkillsText"];
+  SkillBreakdownComponent: (typeof import("./component.js"))["SkillBreakdownComponent"];
+  loaderBaseMessage: string;
+};
+
+let runtimePromise: Promise<SkillBreakdownRuntime> | undefined;
+
+function loadRuntime(): Promise<SkillBreakdownRuntime> {
+  if (runtimePromise) return runtimePromise;
+
+  const loading = Promise.all([
+    import("@earendil-works/pi-coding-agent"),
+    import("../session-breakdown/color-utils.js"),
+    import("./aggregation.js"),
+    import("./component.js"),
+    import("./constants.js"),
+  ]).then(([agent, colorUtils, aggregation, component, constants]) => ({
+    BorderedLoader: agent.BorderedLoader,
+    formatCount: colorUtils.formatCount,
+    computeSkillBreakdown: aggregation.computeSkillBreakdown,
+    rangeSummary: aggregation.rangeSummary,
+    renderTopSkillsText: aggregation.renderTopSkillsText,
+    SkillBreakdownComponent: component.SkillBreakdownComponent,
+    loaderBaseMessage: constants.LOADER_BASE_MESSAGE,
+  }));
+
+  const promise = loading.catch((error) => {
+    runtimePromise = undefined;
+    throw error;
+  });
+  runtimePromise = promise;
+  return promise;
+}
+
 function setBorderedLoaderMessage(
-  loader: BorderedLoader,
+  loader: InstanceType<SkillBreakdownRuntime["BorderedLoader"]>,
   message: string,
 ): void {
   const innerLoader = (loader as any)["loader"];
@@ -31,6 +61,17 @@ export default function skillBreakdownExtension(pi: ExtensionAPI) {
     description:
       "Interactive breakdown of skill usage over the last 7, 30, or 90 days",
     handler: async (_args: string, ctx: ExtensionContext) => {
+      const runtime = await loadRuntime();
+      const {
+        BorderedLoader,
+        computeSkillBreakdown,
+        formatCount,
+        loaderBaseMessage,
+        rangeSummary,
+        renderTopSkillsText,
+        SkillBreakdownComponent,
+      } = runtime;
+
       if (!ctx.hasUI) {
         const data = await computeSkillBreakdown();
         const range = data.ranges.get(30)!;
@@ -53,7 +94,7 @@ export default function skillBreakdownExtension(pi: ExtensionAPI) {
       let aborted = false;
       const data = await ctx.ui.custom<SkillBreakdownData | null>(
         (tui, theme, _kb, done) => {
-          const loader = new BorderedLoader(tui, theme, LOADER_BASE_MESSAGE);
+          const loader = new BorderedLoader(tui, theme, loaderBaseMessage);
           const startedAt = Date.now();
           const progress: SkillBreakdownProgressState = {
             phase: "scan",
@@ -66,12 +107,12 @@ export default function skillBreakdownExtension(pi: ExtensionAPI) {
           const renderMessage = (): string => {
             const elapsed = ((Date.now() - startedAt) / 1000).toFixed(1);
             if (progress.phase === "scan") {
-              return `${LOADER_BASE_MESSAGE}  scanning (${formatCount(progress.foundFiles)} files) · ${elapsed}s`;
+              return `${loaderBaseMessage}  scanning (${formatCount(progress.foundFiles)} files) · ${elapsed}s`;
             }
             if (progress.phase === "parse") {
-              return `${LOADER_BASE_MESSAGE}  parsing (${formatCount(progress.parsedFiles)}/${formatCount(progress.totalFiles)}) · ${elapsed}s`;
+              return `${loaderBaseMessage}  parsing (${formatCount(progress.parsedFiles)}/${formatCount(progress.totalFiles)}) · ${elapsed}s`;
             }
-            return `${LOADER_BASE_MESSAGE}  finalizing · ${elapsed}s`;
+            return `${loaderBaseMessage}  finalizing · ${elapsed}s`;
           };
 
           let intervalId: NodeJS.Timeout | null = null;

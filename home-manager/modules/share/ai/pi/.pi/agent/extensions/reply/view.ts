@@ -57,7 +57,7 @@ export function renderReplyView(
   }
 
   if (model.interaction.kind === "comment") {
-    // AI: render Pi's Input here so its IME cursor marker stays in the popup.
+    // render Pi's Input here so its IME cursor marker stays in the popup.
     const inputWidth = Math.max(1, innerWidth - 1);
     const renderedInput = context.promptInput?.render(inputWidth)[0] ?? "";
     lines.push(

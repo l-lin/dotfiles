@@ -18,20 +18,53 @@ import type {
 } from "@earendil-works/pi-coding-agent";
 import path from "node:path";
 import type { ContextViewData, SkillIndexEntry } from "./types.js";
-import { SKILL_LOADED_ENTRY } from "./types.js";
-import {
-  estimateTokens,
-  normalizeReadPath,
-  normalizeSkillName,
-  shortenPath,
-} from "./utils.js";
-import { buildSkillIndex, loadProjectContextFiles } from "./loaders.js";
-import {
-  getLoadedSkillsFromSession,
-  matchSkillForPath,
-  sumSessionUsage,
-} from "./session.js";
-import { ContextView, makePlainTextView } from "./view.js";
+
+const SKILL_LOADED_ENTRY = "context:skill_loaded";
+
+type ContextRuntime = {
+  estimateTokens: (typeof import("./utils.js"))["estimateTokens"];
+  normalizeReadPath: (typeof import("./utils.js"))["normalizeReadPath"];
+  normalizeSkillName: (typeof import("./utils.js"))["normalizeSkillName"];
+  shortenPath: (typeof import("./utils.js"))["shortenPath"];
+  buildSkillIndex: (typeof import("./loaders.js"))["buildSkillIndex"];
+  loadProjectContextFiles: (typeof import("./loaders.js"))["loadProjectContextFiles"];
+  getLoadedSkillsFromSession: (typeof import("./session.js"))["getLoadedSkillsFromSession"];
+  matchSkillForPath: (typeof import("./session.js"))["matchSkillForPath"];
+  sumSessionUsage: (typeof import("./session.js"))["sumSessionUsage"];
+  ContextView: (typeof import("./view.js"))["ContextView"];
+  makePlainTextView: (typeof import("./view.js"))["makePlainTextView"];
+};
+
+let runtimePromise: Promise<ContextRuntime> | undefined;
+
+function loadRuntime(): Promise<ContextRuntime> {
+  if (runtimePromise) return runtimePromise;
+
+  const loading = Promise.all([
+    import("./utils.js"),
+    import("./loaders.js"),
+    import("./session.js"),
+    import("./view.js"),
+  ]).then(([utils, loaders, session, view]) => ({
+    estimateTokens: utils.estimateTokens,
+    normalizeReadPath: utils.normalizeReadPath,
+    normalizeSkillName: utils.normalizeSkillName,
+    shortenPath: utils.shortenPath,
+    buildSkillIndex: loaders.buildSkillIndex,
+    loadProjectContextFiles: loaders.loadProjectContextFiles,
+    getLoadedSkillsFromSession: session.getLoadedSkillsFromSession,
+    matchSkillForPath: session.matchSkillForPath,
+    sumSessionUsage: session.sumSessionUsage,
+    ContextView: view.ContextView,
+    makePlainTextView: view.makePlainTextView,
+  }));
+
+  runtimePromise = loading.catch((error) => {
+    runtimePromise = undefined;
+    throw error;
+  });
+  return runtimePromise;
+}
 
 function formatExtensionName(sourcePath: string): string {
   if (sourcePath === "<unknown>") return sourcePath;
@@ -50,42 +83,52 @@ export default function contextExtension(pi: ExtensionAPI) {
   let cachedLoadedSkills = new Set<string>();
   let cachedSkillIndex: SkillIndexEntry[] = [];
 
-  const ensureCaches = (ctx: ExtensionContext) => {
+  const ensureCaches = async (
+    ctx: ExtensionContext,
+    runtime: ContextRuntime,
+  ) => {
     const sid = ctx.sessionManager.getSessionId();
     if (sid !== lastSessionId) {
       lastSessionId = sid;
-      cachedLoadedSkills = getLoadedSkillsFromSession(ctx);
-      cachedSkillIndex = buildSkillIndex(pi, ctx.cwd);
+      cachedLoadedSkills = runtime.getLoadedSkillsFromSession(ctx);
+      cachedSkillIndex = runtime.buildSkillIndex(pi, ctx.cwd);
     }
     if (cachedSkillIndex.length === 0) {
-      cachedSkillIndex = buildSkillIndex(pi, ctx.cwd);
+      cachedSkillIndex = runtime.buildSkillIndex(pi, ctx.cwd);
     }
   };
 
-  pi.on("tool_result", (event: ToolResultEvent, ctx: ExtensionContext) => {
-    const evt = event as any;
-    if (evt.toolName !== "read" || evt.isError) return;
+  pi.on(
+    "tool_result",
+    async (event: ToolResultEvent, ctx: ExtensionContext) => {
+      if (event.toolName !== "read" || event.isError) return;
 
-    const filePath = evt.input?.path;
-    if (typeof filePath !== "string") return;
+      const filePath = event.input?.path;
+      if (typeof filePath !== "string") return;
 
-    ensureCaches(ctx);
+      const runtime = await loadRuntime();
+      await ensureCaches(ctx, runtime);
 
-    const absolutePath = normalizeReadPath(filePath, ctx.cwd);
-    const skillName = matchSkillForPath(absolutePath, cachedSkillIndex);
+      const absolutePath = runtime.normalizeReadPath(filePath, ctx.cwd);
+      const skillName = runtime.matchSkillForPath(
+        absolutePath,
+        cachedSkillIndex,
+      );
 
-    if (skillName && !cachedLoadedSkills.has(skillName)) {
-      cachedLoadedSkills.add(skillName);
-      pi.appendEntry(SKILL_LOADED_ENTRY, {
-        name: skillName,
-        path: absolutePath,
-      });
-    }
-  });
+      if (skillName && !cachedLoadedSkills.has(skillName)) {
+        cachedLoadedSkills.add(skillName);
+        pi.appendEntry(SKILL_LOADED_ENTRY, {
+          name: skillName,
+          path: absolutePath,
+        });
+      }
+    },
+  );
 
   pi.registerCommand("cmd:context", {
     description: "Show loaded context overview",
     handler: async (_args, ctx: ExtensionCommandContext) => {
+      const runtime = await loadRuntime();
       const commands = pi.getCommands();
       const extensionCmds = commands.filter((c) => c.source === "extension");
       const skillCmds = commands.filter((c) => c.source === "skill");
@@ -102,25 +145,25 @@ export default function contextExtension(pi: ExtensionAPI) {
         .sort((a, b) => a.localeCompare(b));
 
       const skills = skillCmds
-        .map((c) => normalizeSkillName(c.name))
+        .map((c) => runtime.normalizeSkillName(c.name))
         .sort((a, b) => a.localeCompare(b));
 
       const skillDescTokens = skillCmds.reduce((acc, c) => {
         const blob = c.description
-          ? `${normalizeSkillName(c.name)}\n${c.description}`
-          : normalizeSkillName(c.name);
-        return acc + estimateTokens(blob);
+          ? `${runtime.normalizeSkillName(c.name)}\n${c.description}`
+          : runtime.normalizeSkillName(c.name);
+        return acc + runtime.estimateTokens(blob);
       }, 0);
 
-      const agentFiles = await loadProjectContextFiles(ctx.cwd);
+      const agentFiles = await runtime.loadProjectContextFiles(ctx.cwd);
       const agentFilesWithTokens = agentFiles.map((f) => ({
-        path: shortenPath(f.path, ctx.cwd),
+        path: runtime.shortenPath(f.path, ctx.cwd),
         tokens: f.tokens,
       }));
 
       const systemPrompt = ctx.getSystemPrompt();
       const systemPromptTokens = systemPrompt
-        ? estimateTokens(systemPrompt)
+        ? runtime.estimateTokens(systemPrompt)
         : 0;
 
       const usage = ctx.getContextUsage();
@@ -136,7 +179,7 @@ export default function contextExtension(pi: ExtensionAPI) {
       for (const name of activeToolNames) {
         const info = toolInfoByName.get(name);
         const blob = `${name}\n${info?.description ?? ""}`;
-        toolsTokens += estimateTokens(blob);
+        toolsTokens += runtime.estimateTokens(blob);
       }
       toolsTokens = Math.round(toolsTokens * TOOL_FUDGE);
 
@@ -145,11 +188,11 @@ export default function contextExtension(pi: ExtensionAPI) {
       const remainingTokens =
         ctxWindow > 0 ? Math.max(0, ctxWindow - effectiveTokens) : 0;
 
-      const sessionUsage = sumSessionUsage(ctx);
+      const sessionUsage = runtime.sumSessionUsage(ctx);
 
-      const loadedSkills = Array.from(getLoadedSkillsFromSession(ctx)).sort(
-        (a, b) => a.localeCompare(b),
-      );
+      const loadedSkills = Array.from(
+        runtime.getLoadedSkillsFromSession(ctx),
+      ).sort((a, b) => a.localeCompare(b));
 
       const viewData: ContextViewData = {
         usage: usage
@@ -180,7 +223,7 @@ export default function contextExtension(pi: ExtensionAPI) {
         pi.sendMessage(
           {
             customType: "context",
-            content: makePlainTextView(viewData),
+            content: runtime.makePlainTextView(viewData),
             display: true,
           },
           { triggerTurn: false },
@@ -190,7 +233,7 @@ export default function contextExtension(pi: ExtensionAPI) {
 
       await ctx.ui.custom<void>(
         (_tui, theme, _kb, done) => {
-          return new ContextView(theme, viewData, done);
+          return new runtime.ContextView(theme, viewData, done);
         },
         {
           overlay: true,

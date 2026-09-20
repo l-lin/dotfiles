@@ -3,8 +3,8 @@ import {
   type ExtensionAPI,
   type ExtensionContext,
 } from "@earendil-works/pi-coding-agent";
-import { ReplyComponent, type ReplyComponentResult } from "./component.js";
-import { fromAssistantContent } from "./model.js";
+import type { ReplyComponentResult } from "./component.js";
+import { fromAssistantContent } from "./content.js";
 import { REPLY_KEYMAP } from "./settings.js";
 
 export default function replyExtension(pi: ExtensionAPI): void {
@@ -24,6 +24,9 @@ export default function replyExtension(pi: ExtensionAPI): void {
         );
         return;
       }
+
+      // defer the large popup dependency graph until Ctrl+R is used.
+      const { ReplyComponent } = await import("./component.js");
 
       let insertionError: unknown;
       const result = await ctx.ui.custom<ReplyComponentResult | undefined>(

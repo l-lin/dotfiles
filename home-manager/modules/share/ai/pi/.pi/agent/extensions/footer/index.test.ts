@@ -100,12 +100,13 @@ function given_footerData(statuses: Map<string, string> = new Map()) {
   };
 }
 
-function given_renderedFooter(
+async function given_renderedFooter(
   footerFactory: Function,
   footerData = given_footerData(),
 ) {
   const tui = given_tui();
   const component = footerFactory(tui.tui, given_theme(), footerData);
+  await new Promise<void>((resolve) => setImmediate(resolve));
 
   return {
     when_renderingLines(width: number = 120) {
@@ -115,8 +116,10 @@ function given_renderedFooter(
   };
 }
 
-function when_renderingDirectoryLine(footerFactory: Function): string {
-  return given_renderedFooter(footerFactory).when_renderingLines()[1];
+async function when_renderingDirectoryLine(
+  footerFactory: Function,
+): Promise<string> {
+  return (await given_renderedFooter(footerFactory)).when_renderingLines()[1]!;
 }
 
 test("footer GIVEN no runtime state events WHEN rendering after session start THEN it defaults to disabled sandbox, damage-control icons", async () => {
@@ -126,7 +129,7 @@ test("footer GIVEN no runtime state events WHEN rendering after session start TH
   footerExtension(pi as never);
   await when_startingSession(ctx as never);
 
-  const actual = when_renderingDirectoryLine(when_gettingFooterFactory());
+  const actual = await when_renderingDirectoryLine(when_gettingFooterFactory());
 
   assert.ok(actual.includes(`<error>${ICONS["sandbox-disabled"]}</error>`));
   assert.ok(!actual.includes(ICONS["sandbox-enabled"]));
@@ -144,7 +147,7 @@ test("footer GIVEN a sandbox enabled runtime event WHEN rendering THEN it shows 
   await when_startingSession(ctx as never);
   when_emitting("sandbox:state-changed", true);
 
-  const actual = when_renderingDirectoryLine(when_gettingFooterFactory());
+  const actual = await when_renderingDirectoryLine(when_gettingFooterFactory());
 
   assert.ok(actual.includes(`<dim>${ICONS["sandbox-enabled"]}</dim>`));
   assert.ok(!actual.includes(ICONS["sandbox-disabled"]));
@@ -158,7 +161,7 @@ test("footer GIVEN a damage-control enabled runtime event before session start W
   when_emitting("damage-control:state-changed", true);
   await when_startingSession(ctx as never);
 
-  const actual = when_renderingDirectoryLine(when_gettingFooterFactory());
+  const actual = await when_renderingDirectoryLine(when_gettingFooterFactory());
 
   assert.ok(actual.includes(`<dim>${ICONS["damage-control-enabled"]}</dim>`));
   assert.ok(!actual.includes(ICONS["damage-control-disabled"]));

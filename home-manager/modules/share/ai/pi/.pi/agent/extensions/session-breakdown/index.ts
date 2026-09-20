@@ -1,36 +1,49 @@
-/**
- * /session-breakdown
- *
- * Interactive TUI that analyzes ~/.pi/agent/sessions (recursively, *.jsonl) and shows
- * last 7/30/90 days of:
- * - sessions/day
- * - messages/day
- * - tokens/day (if available)
- * - cost/day (if available)
- * - model breakdown (sessions/messages/tokens + cost)
- *
- * Graph:
- * - GitHub-contributions-style calendar (weeks x weekdays)
- * - Hue: weighted mix of popular model colors (weighted by the selected metric)
- * - Brightness: selected metric per day (log-scaled)
- *
- * src: https://github.com/mitsuhiko/agent-stuff/blob/6a304cfe34996bf9ffbadf0f849bb4f6f1cb5074/pi-extensions/session-breakdown.ts
- * Adapted to have light variant.
- */
-
 import type {
   ExtensionAPI,
   ExtensionContext,
 } from "@earendil-works/pi-coding-agent";
-import { BorderedLoader } from "@earendil-works/pi-coding-agent";
 import type { BreakdownData, BreakdownProgressState } from "./types.js";
-import { formatCount } from "./color-utils.js";
-import { computeBreakdown } from "./aggregation.js";
-import { rangeSummary } from "./renderer.js";
-import { BreakdownComponent } from "./component.js";
+
+type SessionBreakdownRuntime = {
+  BorderedLoader: (typeof import("@earendil-works/pi-coding-agent"))["BorderedLoader"];
+  formatCount: (typeof import("./color-utils.js"))["formatCount"];
+  computeBreakdown: (typeof import("./aggregation.js"))["computeBreakdown"];
+  rangeSummary: (typeof import("./renderer.js"))["rangeSummary"];
+  BreakdownComponent: (typeof import("./component.js"))["BreakdownComponent"];
+};
+
+let runtimePromise: Promise<SessionBreakdownRuntime> | undefined;
+
+function loadRuntime(): Promise<SessionBreakdownRuntime> {
+  if (runtimePromise) return runtimePromise;
+
+  const loading = Promise.all([
+    import("@earendil-works/pi-coding-agent"),
+    import("./color-utils.js"),
+    import("./aggregation.js"),
+    import("./renderer.js"),
+    import("./component.js"),
+  ]).then(([agent, colorUtils, aggregation, renderer, component]) => ({
+    BorderedLoader: agent.BorderedLoader,
+    formatCount: colorUtils.formatCount,
+    computeBreakdown: aggregation.computeBreakdown,
+    rangeSummary: renderer.rangeSummary,
+    BreakdownComponent: component.BreakdownComponent,
+  }));
+
+  const promise = loading.catch((error) => {
+    runtimePromise = undefined;
+    throw error;
+  });
+  runtimePromise = promise;
+  return promise;
+}
 
 /** BorderedLoader wraps an inner Loader that supports setMessage() but doesn't expose it publicly. */
-function setBorderedLoaderMessage(loader: BorderedLoader, message: string) {
+function setBorderedLoaderMessage(
+  loader: InstanceType<SessionBreakdownRuntime["BorderedLoader"]>,
+  message: string,
+) {
   const inner = (loader as any)["loader"]; // eslint-disable-line @typescript-eslint/no-explicit-any
   if (inner && typeof inner.setMessage === "function") {
     inner.setMessage(message);
@@ -42,6 +55,15 @@ export default function sessionBreakdownExtension(pi: ExtensionAPI) {
     description:
       "Interactive breakdown of last 7/30/90 days of ~/.pi session usage (sessions/messages/tokens + cost by model)",
     handler: async (_args, ctx: ExtensionContext) => {
+      const runtime = await loadRuntime();
+      const {
+        BorderedLoader,
+        BreakdownComponent,
+        computeBreakdown,
+        formatCount,
+        rangeSummary,
+      } = runtime;
+
       if (!ctx.hasUI) {
         // Non-interactive fallback: just notify.
         const data = await computeBreakdown(undefined);
