@@ -24,10 +24,10 @@
       "enabled": true
     },
     "webSearch": {
-      "enabled": true
+      "enabled": false
     },
     "webFetch": {
-      "enabled": true
+      "enabled": false
     },
     "modelSelector": {
       "keybind": "alt-m"
