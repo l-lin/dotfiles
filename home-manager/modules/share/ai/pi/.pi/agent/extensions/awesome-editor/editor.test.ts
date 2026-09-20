@@ -135,7 +135,7 @@ test("awesome-editor GIVEN a question-mark snippet trigger typed as its own toke
   editor.handleInput(CTRL_E);
 
   const expectedText =
-    "Use ask-user-question tool to reletenlessly interview me about every aspect of what I want until we reach a shared understanding.";
+    "Use ask-user-question tool to reletenlessly interview me about every aspect of what I want until we reach a shared understanding, one question at a time. Walk down each branch of the design tree, resolving dependencies between decisions one by one. For each question, provide your recommended answer and the main tradeoff. If a *fact* can be found by exploring the codebase, look it up rather than asking me.";
   const actual = {
     text: editor.getText(),
     cursor: editor.getCursor(),

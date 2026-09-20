@@ -23,7 +23,7 @@ export const SNIPPETS: SnippetDef[] = [
     trigger: "?q",
     description: "Ask for clarification points",
     expansion:
-      "Use ask-user-question tool to reletenlessly interview me about every aspect of what I want until we reach a shared understanding, one question at a time. Walk down each branch of the design tree, resolving dependencies between decisions one by one. For each question, provide your recommended answer and the main tradeoff. If a *fact* can be found by exploring the codebase, look it up rather than asking me."
+      "Use ask-user-question tool to reletenlessly interview me about every aspect of what I want until we reach a shared understanding, one question at a time. Walk down each branch of the design tree, resolving dependencies between decisions one by one. For each question, provide your recommended answer and the main tradeoff. If a *fact* can be found by exploring the codebase, look it up rather than asking me.",
   },
   {
     trigger: "$date",
@@ -50,7 +50,8 @@ export const SNIPPETS: SnippetDef[] = [
   {
     trigger: "$concise",
     description: "Be concise",
-    expansion: "(Re)State it more simply and concisely, like one human talking to another. Don't use jargon and speak coherently.",
+    expansion:
+      "(Re)State it more simply and concisely, like one human talking to another. Don't use jargon and speak coherently.",
   },
   {
     trigger: "$commit",
