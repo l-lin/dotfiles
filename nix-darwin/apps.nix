@@ -48,6 +48,8 @@
       "atlassian/homebrew-acli"
       # For dox: https://github.com/bgreenwell/doxx
       #"bgreenwell/doxx"
+      # For numr: https://github.com/nasedkinpv/numr
+      "nasedkinpv/tap"
       # For aerospace: https://github.com/nikitabobko/AeroSpace
       "nikitabobko/tap"
       # For xcodes: https://github.com/XcodesOrg/xcodes
@@ -83,6 +85,8 @@
       "llama.cpp"
       # 🐹 Deep clean and optimize your Mac: https://github.com/tw93/mole
       "mole"
+      # Natural-language text calculator with TUI/CLI: variables, units, currencies, and live exchange rates:https://github.com/nasedkinpv/numr 
+      "numr"
       # Customize themes, inject extensions, and unlock the full potential of your Spotify client: https://spicetify.app/
       "spicetify-cli"
       # Install and switch between multiple versions of Xcode: https://github.com/XcodesOrg/xcodes
