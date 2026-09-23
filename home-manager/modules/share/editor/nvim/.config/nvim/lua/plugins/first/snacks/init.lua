@@ -158,6 +158,8 @@ local function is_test_file(path)
     or path:match("_test%.rb$") ~= nil
     or path:match("_spec%.rb$") ~= nil
     or path:match("_test%.go$") ~= nil
+    or path:match("%.test%.ts$") ~= nil
+    or path:match("%.test%.tsx$") ~= nil
 end
 
 ---@type snacks.picker.preview
