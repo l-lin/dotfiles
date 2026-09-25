@@ -93,7 +93,6 @@ local function todo(ctx)
     table.insert(t, "- [ ] [[patient-subscription]]: run daily subscription AI analysis")
   end
 
-  table.insert(t, "- [ ] [[leetcode]]: do one exercise")
   local random_note = require("functions.lang.obsidian.random_note").pick("3-resources/technical-notes")
   if random_note ~= nil then
     table.insert(t, "- [ ] read [[" .. random_note.filename .. "]]")
