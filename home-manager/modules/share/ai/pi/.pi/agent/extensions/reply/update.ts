@@ -159,6 +159,17 @@ function handleKey(
     return [];
   }
 
+  if (getMotionPending(model)?.kind === "char") {
+    return handlePendingMotion(model, data, context);
+  }
+  if (
+    isNormal(model) &&
+    model.interaction.pending.kind === "yank" &&
+    model.interaction.pending.yank.kind === "char"
+  ) {
+    return handlePendingYank(model, data, context);
+  }
+
   if (matchesKey(data, context.keymap.searchForward)) {
     return beginSearch(model, "forward", "/");
   }

@@ -11,6 +11,7 @@ import {
   then_render_text,
   then_visual_anchor,
   when_typing,
+  when_yank_settles,
 } from "./test-helpers.js";
 
 test("reply component GIVEN repeated literal text WHEN searching live THEN shows the count and navigates with n and N", () => {
@@ -262,6 +263,60 @@ test("reply component GIVEN repeated characters on one line WHEN using f/t and r
   assert.deepEqual(actualTillRepeat, expectedTillRepeat);
   assert.deepEqual(actualBackwardFind, expectedBackwardFind);
   assert.deepEqual(actualBackwardTill, expectedBackwardTill);
+});
+
+test("reply component GIVEN a pending character motion WHEN / or ? is pressed THEN finds the literal character instead of opening search", () => {
+  const source = "a/x?y/a?z--";
+  const cases = [
+    { motion: "f", character: "/", expected: 1 },
+    { motion: "f", character: "?", expected: 3 },
+    { motion: "t", character: "/", expected: 0 },
+    { motion: "t", character: "?", expected: 2 },
+    { motion: "F", character: "/", expected: 5 },
+    { motion: "F", character: "?", expected: 7 },
+    { motion: "T", character: "/", expected: 6 },
+    { motion: "T", character: "?", expected: 8 },
+  ];
+
+  for (const { motion, character, expected } of cases) {
+    for (const visual of [false, true]) {
+      const { component } = given_component(source);
+      if (motion === "F" || motion === "T") component.handleInput("$");
+      if (visual) component.handleInput("v");
+      component.handleInput(motion);
+      component.handleInput(character);
+
+      const actual = then_cursor(component);
+      assert.deepEqual(
+        actual,
+        { line: 0, grapheme: expected },
+        `${visual ? "visual " : "normal "}${motion}${character}`,
+      );
+      assert.equal(then_mode(component), visual ? "visual" : "normal");
+      component.handleInput("l");
+      assert.deepEqual(then_cursor(component), {
+        line: 0,
+        grapheme: expected + 1,
+      });
+    }
+  }
+});
+
+test("reply component GIVEN a pending yank character motion WHEN / or ? is pressed THEN yanks through the literal character", async () => {
+  for (const character of ["/", "?"]) {
+    const yanked: string[] = [];
+    const { component } = given_component("a/b?c", 24, (text) => {
+      yanked.push(text);
+    });
+    when_typing(component, "yf");
+    component.handleInput(character);
+    await when_yank_settles();
+
+    const actual = yanked;
+    const expected = [character === "/" ? "a/" : "a/b?"];
+    assert.deepEqual(actual, expected);
+    component.dispose();
+  }
 });
 
 test("reply component GIVEN a failed repeated find WHEN navigating back THEN comma still reverses the remembered search", () => {
