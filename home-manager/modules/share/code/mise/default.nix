@@ -12,8 +12,7 @@
       # To know the version, you can use the command `mise ls-remote <tool>`.
       # NOTE: Each tool must register themselves by creating a
       # $XDG_CONFIG_HOME/mise/conf.d/<tool>.toml file.
-      tools = {
-      };
+      tools = {};
       settings = {
         # Enable experimental if you want to use the golang backend to install 3rd party tools.
         experimental = true;
