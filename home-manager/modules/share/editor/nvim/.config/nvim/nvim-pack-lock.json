@@ -107,7 +107,7 @@
       "src": "https://github.com/theHamsta/nvim-dap-virtual-text"
     },
     "nvim-grey": {
-      "rev": "9af41d00eb1b235d3c3ff62694a1df56dadb25c8",
+      "rev": "f103f2cb6c2ac848eaf588b6350aa8f0d35c401f",
       "src": "https://github.com/l-lin/nvim-grey"
     },
     "nvim-jdtls": {
