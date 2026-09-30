@@ -1,6 +1,5 @@
 {
-  "lastChangelogVersion": "0.87.1",
-  "theme": "light",
+  "lastChangelogVersion": "0.99.1",
   "defaultProvider": "github-copilot",
   "defaultModel": "gpt-6-luna",
   "defaultThinkingLevel": "xhigh",
@@ -39,7 +38,7 @@
   "packages": [],
   "enabledModels": [
     "github-copilot/gpt-6-luna",
-    "github-copilot/gpt-6-sol",
+    "github-copilot/gpt-6.1-sol",
     "github-copilot/gpt-6-astra",
     "anthropic/claude-opus-5-5",
     "anthropic/claude-sonnet-5",
