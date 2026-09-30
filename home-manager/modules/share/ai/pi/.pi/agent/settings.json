@@ -1,5 +1,6 @@
 {
   "lastChangelogVersion": "0.99.1",
+  "theme": "grey",
   "defaultProvider": "github-copilot",
   "defaultModel": "gpt-6-luna",
   "defaultThinkingLevel": "xhigh",

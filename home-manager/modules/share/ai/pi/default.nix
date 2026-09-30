@@ -17,6 +17,7 @@
     ".pi/agent/damage-control-rules.yml".source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/ai/pi/.pi/agent/damage-control-rules.yml";
     ".pi/agent/mcp.json".source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/ai/pi/.pi/agent/mcp.json";
 
+    ".pi/agent/themes".source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/ai/pi/.pi/agent/themes";
     ".pi/agent/APPEND_SYSTEM.md".source = ../.config/ai/system-prompt.md;
     ".pi/agent/extensions" = {
       source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/ai/pi/.pi/agent/extensions";
