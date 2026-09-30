@@ -7,6 +7,7 @@
 import {
   CustomEditor,
   type KeybindingsManager,
+  type Theme,
 } from "@earendil-works/pi-coding-agent";
 import {
   Key,
@@ -115,6 +116,7 @@ interface PlaceholderSnapshot {
 
 export class AwesomeEditor extends CustomEditor {
   private editorMode: AwesomeEditorMode;
+  private autocompleteWidth = 1;
   private viMode: Mode = "insert";
   private pendingMotion: PendingMotion = null;
   private pendingOperator: PendingOperator = null;
@@ -128,9 +130,27 @@ export class AwesomeEditor extends CustomEditor {
     tui: TUI,
     theme: EditorTheme,
     keybindings: KeybindingsManager,
+    activeTheme: Pick<Theme, "bg">,
     editorMode: AwesomeEditorMode = "vi",
   ) {
-    super(tui, theme, keybindings);
+    // Pi's autocomplete styles selected text but does not apply selectedBg.
+    super(
+      tui,
+      {
+        ...theme,
+        selectList: {
+          ...theme.selectList,
+          selectedText: (text) => {
+            const selectedText = theme.selectList.selectedText(text);
+            const padding = " ".repeat(
+              Math.max(0, this.autocompleteWidth - visibleWidth(selectedText)),
+            );
+            return activeTheme.bg("selectedBg", selectedText + padding);
+          },
+        },
+      },
+      keybindings,
+    );
     this.editorMode = editorMode;
   }
 
@@ -1159,6 +1179,9 @@ export class AwesomeEditor extends CustomEditor {
   // ─── Rendering ───────────────────────────────────────────────────────────────
 
   render(width: number): string[] {
+    const maxPadding = Math.max(0, Math.floor((width - 1) / 2));
+    const padding = Math.min(this.getPaddingX(), maxPadding);
+    this.autocompleteWidth = Math.max(1, width - padding * 2);
     const lines = super.render(width);
     if (this.editorMode === "emacs" || lines.length === 0) return lines;
     const label = this.getModeLabel();

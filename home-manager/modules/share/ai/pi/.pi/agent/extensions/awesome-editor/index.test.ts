@@ -7,6 +7,7 @@ import awesomeEditorExtension, {
   AWESOME_EDITOR_MODE_COMMAND,
 } from "./index.js";
 import { AWESOME_EDITOR_SETTINGS_KEY } from "./settings.js";
+import type { AwesomeEditor } from "./editor.js";
 
 type EditorFactory = (
   tui: unknown,
@@ -83,11 +84,18 @@ function given_mockPi() {
 
 function given_editorContext() {
   const notifications: Array<{ message: string; type?: string }> = [];
+  const backgroundCalls: Array<{ color: string; text: string }> = [];
   const setEditorComponentCalls: Array<EditorFactory | undefined> = [];
 
   return {
     ctx: {
       ui: {
+        theme: {
+          bg(color: string, text: string) {
+            backgroundCalls.push({ color, text });
+            return text;
+          },
+        },
         notify(message: string, type?: string) {
           notifications.push({ message, type });
         },
@@ -97,6 +105,7 @@ function given_editorContext() {
       },
     },
     notifications,
+    backgroundCalls,
     setEditorComponentCalls,
   };
 }
@@ -114,6 +123,7 @@ function given_editorFactory(
 function given_minimalTui() {
   return {
     requestRender() {},
+    terminal: { rows: 24 },
   };
 }
 
@@ -122,7 +132,12 @@ function given_minimalTheme() {
     borderColor(text: string) {
       return text;
     },
-    selectList: {},
+    selectList: {
+      selectedText: (text: string) => text,
+      description: (text: string) => text,
+      scrollInfo: (text: string) => text,
+      noMatch: (text: string) => text,
+    },
   };
 }
 
@@ -139,10 +154,7 @@ function when_creatingEditor(factory: EditorFactory) {
     given_minimalTui() as never,
     given_minimalTheme() as never,
     given_minimalAppKeybindings() as never,
-  ) as {
-    handleInput(data: string): void;
-    getText(): string;
-  };
+  ) as AwesomeEditor;
 }
 
 function when_typingEscapeThenA(editor: {
@@ -177,6 +189,36 @@ test("awesome-editor GIVEN no persisted mode WHEN the session starts THEN it ins
   const expected = "a";
 
   assert.equal(actual, expected);
+});
+
+test("awesome-editor GIVEN the active UI theme WHEN rendering autocomplete in the installed editor THEN it applies selectedBg to the selected row", async (t) => {
+  given_tempHome(t);
+  const { pi, when_startingSession } = given_mockPi();
+  const { ctx, backgroundCalls, setEditorComponentCalls } =
+    given_editorContext();
+  awesomeEditorExtension(pi as never);
+  await when_startingSession(ctx);
+  const editor = when_creatingEditor(
+    given_editorFactory(setEditorComponentCalls),
+  );
+  editor.setText("/");
+  (
+    editor as unknown as {
+      applyAutocompleteSuggestions(suggestions: unknown, state: string): void;
+    }
+  ).applyAutocompleteSuggestions(
+    {
+      items: [{ value: "settings" }, { value: "model" }],
+      prefix: "/",
+    },
+    "regular",
+  );
+
+  editor.render(40);
+  const actual = backgroundCalls;
+  const expected = [{ color: "selectedBg", text: "→ settings".padEnd(40) }];
+
+  assert.deepEqual(actual, expected);
 });
 
 test("awesome-editor GIVEN a persisted vi mode WHEN the session starts THEN it installs the existing vi editor behavior", async (t) => {

@@ -3,6 +3,7 @@ import test from "node:test";
 import { AwesomeEditor } from "./editor.js";
 import { withSnippets } from "./snippets.js";
 import { CTRL_E, ESC_LEFT } from "./vim-state.js";
+import { stripTerminalSequences, visibleWidth } from "@earendil-works/pi-tui";
 
 type SnippetSuggestion = {
   items: Array<{ value: string; label: string }>;
@@ -21,7 +22,12 @@ function given_minimalTheme() {
     borderColor(text: string) {
       return text;
     },
-    selectList: {},
+    selectList: {
+      selectedText: (text: string) => `\x1b[30m${text}\x1b[39m`,
+      description: (text: string) => text,
+      scrollInfo: (text: string) => text,
+      noMatch: (text: string) => text,
+    },
   };
 }
 
@@ -66,6 +72,11 @@ function given_editor(editorMode: "emacs" | "vi" = "emacs") {
     given_minimalTui() as never,
     given_minimalTheme() as never,
     given_minimalAppKeybindings() as never,
+    {
+      bg(_color, text) {
+        return `\x1b[48;2;230;230;230m${text}\x1b[49m`;
+      },
+    },
     editorMode,
   );
 }
@@ -123,6 +134,75 @@ function when_bracketedPasting(editor: AwesomeEditor, text: string): void {
 function given_placeholderSession(editor: AwesomeEditor) {
   return (editor as unknown as { placeholderSession: unknown })
     .placeholderSession;
+}
+
+for (const editorMode of ["emacs", "vi"] as const) {
+  for (const padding of [0, 2]) {
+    test(`awesome-editor GIVEN ${editorMode} mode and autocomplete with padding ${padding} WHEN rendering, navigating, and resizing THEN only the selected row has a full-width background`, () => {
+      const editor = given_editor(editorMode);
+      editor.setPaddingX(padding);
+      editor.setAutocompleteProvider(given_baseAutocompleteProvider() as never);
+      editor.setText("/");
+      (
+        editor as unknown as {
+          applyAutocompleteSuggestions(
+            suggestions: unknown,
+            state: string,
+          ): void;
+        }
+      ).applyAutocompleteSuggestions(
+        {
+          items: [
+            { value: "settings", description: "Open settings menu" },
+            { value: "model", label: "模型", description: "Select model" },
+          ],
+          prefix: "/",
+        },
+        "regular",
+      );
+
+      for (const width of [80, 20, 100]) {
+        for (const selectedValue of ["settings", "模型"]) {
+          const rows = editor.render(width).slice(3);
+          const selectedRow = rows.find((row) =>
+            stripTerminalSequences(row).includes("→ "),
+          )!;
+          const backgroundStart = "\x1b[48;2;230;230;230m";
+          const backgroundEnd = "\x1b[49m";
+          const highlightedText = selectedRow.slice(
+            selectedRow.indexOf(backgroundStart) + backgroundStart.length,
+            selectedRow.lastIndexOf(backgroundEnd),
+          );
+          const actual = {
+            highlightedRows: rows.filter((row) => row.includes(backgroundStart))
+              .length,
+            highlightedWidth: visibleWidth(highlightedText),
+            selectedValue: stripTerminalSequences(selectedRow).includes(
+              `→ ${selectedValue}`,
+            ),
+            rowWidths: rows.map(visibleWidth),
+            leftPadding: selectedRow.startsWith(
+              " ".repeat(padding) + backgroundStart,
+            ),
+            rightPadding: selectedRow.endsWith(
+              backgroundEnd + " ".repeat(padding),
+            ),
+          };
+          const expected = {
+            highlightedRows: 1,
+            highlightedWidth: width - padding * 2,
+            selectedValue: true,
+            rowWidths: [width, width],
+            leftPadding: true,
+            rightPadding: true,
+          };
+
+          assert.deepEqual(actual, expected);
+          editor.handleInput("\x1b[B");
+        }
+      }
+    });
+  }
 }
 
 test("awesome-editor GIVEN a question-mark snippet trigger typed as its own token WHEN pressing Ctrl-E THEN it expands the snippet", async () => {

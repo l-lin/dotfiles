@@ -48,12 +48,16 @@ export const AWESOME_EDITOR_MODE_COMMAND = "cmd:awesome-editor-mode";
 
 const AWESOME_EDITOR_MODE_OPTIONS: AwesomeEditorMode[] = ["vi", "emacs"];
 
-function createAwesomeEditorFactory(mode: AwesomeEditorMode) {
+function createAwesomeEditorFactory(
+  mode: AwesomeEditorMode,
+  ctx: Pick<ExtensionContext, "ui">,
+) {
   return (tui: unknown, theme: unknown, keybindings: unknown) =>
     new AwesomeEditor(
       tui as ConstructorParameters<typeof AwesomeEditor>[0],
       theme as ConstructorParameters<typeof AwesomeEditor>[1],
       keybindings as ConstructorParameters<typeof AwesomeEditor>[2],
+      ctx.ui.theme,
       mode,
     );
 }
@@ -62,7 +66,7 @@ function applyAwesomeEditorMode(
   ctx: Pick<ExtensionCommandContext, "ui"> | Pick<ExtensionContext, "ui">,
   mode: AwesomeEditorMode,
 ): void {
-  ctx.ui.setEditorComponent(createAwesomeEditorFactory(mode));
+  ctx.ui.setEditorComponent(createAwesomeEditorFactory(mode, ctx));
 }
 
 function parseAwesomeEditorMode(args: string): AwesomeEditorMode | null {
