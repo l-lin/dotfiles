@@ -66,6 +66,7 @@ export function buildWidget(questions: Question[]) {
     let inputMode = false;
     let inputQuestionId: string | null = null;
     let cachedLines: string[] | undefined;
+    let cachedWidth: number | undefined;
     const answers = new Map<string, Answer>();
 
     const editor = new Editor(tui, {
@@ -242,13 +243,18 @@ export function buildWidget(questions: Question[]) {
           `${optionNumber}${option.label}${suffix}`,
         );
 
-        addWrappedText(label, width, addLine, prefix, continuationPrefix);
+        const addOptionLine = (line: string) => {
+          const padding = " ".repeat(Math.max(0, width - visibleWidth(line)));
+          addLine(isSelected ? theme.bg("selectedBg", line + padding) : line);
+        };
+
+        addWrappedText(label, width, addOptionLine, prefix, continuationPrefix);
 
         if (option.description) {
           addWrappedText(
             theme.fg("muted", option.description),
             width,
-            addLine,
+            addOptionLine,
             continuationPrefix,
           );
         }
@@ -278,7 +284,7 @@ export function buildWidget(questions: Question[]) {
     };
 
     const render = (width: number): string[] => {
-      if (cachedLines) return cachedLines;
+      if (cachedLines && cachedWidth === width) return cachedLines;
 
       const lines: string[] = [];
       const addLine = (s: string) => lines.push(truncateToWidth(s, width));
@@ -344,6 +350,7 @@ export function buildWidget(questions: Question[]) {
       addLine(theme.fg("accent", "─".repeat(width)));
 
       cachedLines = lines;
+      cachedWidth = width;
       return lines;
     };
 

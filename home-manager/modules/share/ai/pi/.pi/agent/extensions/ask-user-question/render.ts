@@ -36,11 +36,12 @@ function renderCollapsedResult(result: Result, theme: Theme): string {
       const question = getQuestionForAnswer(result.questions, answer);
       const prompt = getQuestionText(question, answer);
       const selectedAnswer = getAnswerText(answer);
-      const prefix = theme.fg("accent", `✓ ${prompt}:`);
-      const value = theme.fg("text", ` ${selectedAnswer}`);
-      return `${prefix}${value}`;
+      const questionLine = theme.fg("accent", theme.bold(`✓ ${prompt}`));
+      const answerLine =
+        theme.fg("muted", "  Answer: ") + theme.fg("text", selectedAnswer);
+      return `${questionLine}\n${answerLine}`;
     })
-    .join("\n");
+    .join("\n\n");
 }
 
 function renderExpandedResult(result: Result, theme: Theme): string {
