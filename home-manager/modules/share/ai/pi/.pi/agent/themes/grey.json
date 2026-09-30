@@ -44,7 +44,7 @@
     "customMessageBg": "light_blue",
     "customMessageText": "black",
     "customMessageLabel": "blue",
-    "toolPendingBg": "light_yellow",
+    "toolPendingBg": "grey_bg_light",
     "toolSuccessBg": "light_green",
     "toolErrorBg": "light_red",
     "toolTitle": "black",
