@@ -1,6 +1,6 @@
 ---
 name: ingest-url
-description: Ingest a URL into the patient account wiki. Use when the user provides a URL (Atlassian/Confluence, web articles, documentation) and wants to add it to their research wiki. Handles fetching, markdown conversion, asset extraction, and runs the full wiki ingest workflow. Triggers on "ingest <url>", "add this to the wiki", or when user shares a URL in the context of wiki research.
+description: Ingest a URL into the wiki. Use when the user provides a URL (Atlassian/Confluence, web articles, documentation) and wants to add it to their research wiki. Handles fetching, markdown conversion, asset extraction, and runs the full wiki ingest workflow. Triggers on "ingest <url>", "add this to the wiki", or when user shares a URL in the context of wiki research.
 disable-model-invocation: true
 ---
 
@@ -12,8 +12,8 @@ Fetches content from a URL, converts it to markdown, extracts assets, saves to `
 
 | URL Pattern | Handler | Notes |
 |-------------|---------|-------|
-| `*.atlassian.net/wiki/*` | Atlassian MCP | Confluence pages |
-| `confluence.*` | Atlassian MCP | Self-hosted Confluence |
+| `*.atlassian.net/wiki/*` | `acli` (see `confluence` skill) | Confluence pages |
+| `confluence.*` | `acli` (see `confluence` skill) | Self-hosted Confluence; verify CLI support |
 | Everything else | `scripts/fetch-url.sh` | Uses defuddle for extraction |
 
 ## Workflow
@@ -21,10 +21,10 @@ Fetches content from a URL, converts it to markdown, extracts assets, saves to `
 ### Step 1: Detect URL Type and Fetch Content
 
 **For Atlassian/Confluence URLs:**
-1. Parse the page ID from the URL (format: `/wiki/spaces/SPACE/pages/PAGE_ID/title`)
-2. Use `mcp__claude_ai_Atlassian__getConfluencePage` to fetch the page content
-3. The response includes HTML body content and metadata
-4. Convert HTML to markdown manually (strip Confluence macros, preserve structure)
+1. Follow the `confluence` skill when available. Use `acli`, not Atlassian MCP.
+2. Parse the page ID from the URL (format: `/wiki/spaces/SPACE/pages/PAGE_ID/title`). If the URL does not expose a page ID, ask the user for it.
+3. Inspect the page with `acli confluence page view --id PAGE_ID`, then fetch its body and metadata with `acli confluence page view --id PAGE_ID --body-format storage --json`.
+4. Convert the storage-format HTML to markdown (strip Confluence macros, preserve structure).
 
 **For regular web URLs — use the bundled script:**
 
@@ -98,7 +98,7 @@ ingest https://confluence.company.com/wiki/spaces/HEALTH/pages/12345/FHIR-Integr
 ```
 
 **Claude does:**
-1. Detects Atlassian URL → uses MCP tools
+1. Detects Confluence URL → follows the `confluence` skill and uses `acli`
 2. Fetches page content and metadata
 3. Converts Confluence HTML to markdown
 4. Downloads embedded diagrams to `raw/assets/`
@@ -112,7 +112,7 @@ ingest https://confluence.company.com/wiki/spaces/HEALTH/pages/12345/FHIR-Integr
 ## Handling Edge Cases
 
 **Authentication required:**
-- For Atlassian: MCP tools handle auth automatically
+- For Confluence: check `acli confluence auth status` and follow the `confluence` skill for authentication. If `acli` cannot access the instance, report the blocker and ask for an export or manual copy-paste; do not fall back to Atlassian MCP.
 - For other sites: inform user, suggest manual copy-paste
 
 **Content too large:**
