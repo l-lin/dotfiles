@@ -61,7 +61,8 @@
   },
   "enabledPlugins": {
     "doctolib-productivity@doctolib": true,
-    "doctolib-postmortems@doctolib": true
+    "doctolib-postmortems@doctolib": true,
+    "doctolib-openspec@doctolib": true
   },
   "effortLevel": "medium",
   "showClearContextOnPlanAccept": true,
