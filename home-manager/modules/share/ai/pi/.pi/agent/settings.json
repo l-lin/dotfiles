@@ -1,42 +1,15 @@
 {
-  "lastChangelogVersion": "1.0.0",
-  "theme": "grey",
-  "defaultProvider": "github-copilot",
-  "defaultModel": "gpt-6.1-sol",
-  "defaultThinkingLevel": "medium",
-  "enableInstallTelemetry": false,
-  "enableAnalytics": false,
-  "outputPad": 0,
-  "treeFilterMode": "no-tools",
-  "skills": [
-    "~/.config/ai/skills"
-  ],
-  "prompts": [
-    "~/.config/ai/commands"
-  ],
-  "quietStartup": true,
+  "branchSummary": {
+    "skipPrompt": true
+  },
   "compaction": {
     "enabled": false
   },
-  "hideThinkingBlock": false,
-  "extensionSettings": {
-    "askUserQuestion": {
-      "enabled": true
-    },
-    "webSearch": {
-      "enabled": false
-    },
-    "webFetch": {
-      "enabled": false
-    },
-    "modelSelector": {
-      "keybind": "alt-m"
-    },
-    "awesomeEditor": {
-      "mode": "emacs"
-    }
-  },
-  "packages": [],
+  "defaultModel": "gpt-6.1-sol",
+  "defaultProvider": "github-copilot",
+  "defaultThinkingLevel": "medium",
+  "enableAnalytics": false,
+  "enableInstallTelemetry": false,
   "enabledModels": [
     "github-copilot/gpt-6-luna",
     "github-copilot/gpt-6.1-sol",
@@ -45,5 +18,36 @@
     "anthropic/claude-sonnet-5-5",
     "anthropic/claude-haiku-4-5",
     "llama-cpp/qwen3.6"
-  ]
+  ],
+  "extensionSettings": {
+    "askUserQuestion": {
+      "enabled": true
+    },
+    "awesomeEditor": {
+      "mode": "emacs"
+    },
+    "modelSelector": {
+      "keybind": "alt-m"
+    },
+    "webFetch": {
+      "enabled": false
+    },
+    "webSearch": {
+      "enabled": false
+    }
+  },
+  "hideThinkingBlock": false,
+  "lastChangelogVersion": "1.0.0",
+  "outputPad": 0,
+  "packages": [],
+  "prompts": [
+    "~/.config/ai/commands"
+  ],
+  "quietStartup": true,
+  "skills": [
+    "~/.config/ai/skills"
+  ],
+  "theme": "grey",
+  "treeFilterMode": "no-tools",
+  "tuiMode": "regular"
 }
