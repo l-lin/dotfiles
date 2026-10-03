@@ -8,6 +8,9 @@
   "defaultModel": "gpt-6.1-sol",
   "defaultProvider": "github-copilot",
   "defaultThinkingLevel": "medium",
+  "defaultTools": [
+    "+codemode"
+  ],
   "enableAnalytics": false,
   "enableInstallTelemetry": false,
   "enabledModels": [
