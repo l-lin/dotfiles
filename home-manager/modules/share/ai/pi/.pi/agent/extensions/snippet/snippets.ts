@@ -59,10 +59,9 @@ export const SNIPPETS: SnippetDef[] = [
     expansion: "Use conventional commit for each task/fix implemented.",
   },
   {
-    trigger: "$hunk",
-    description: "Use the Hunk skill for this review",
-    expansion:
-      "Load the Hunk skill and use it for this review. Run `hunk skill path` to get the skill path.",
+    trigger: "$big-picture",
+    description: "Use fewer words, big pictures",
+    expansion: "Use fewer words, big pictures.",
   },
   {
     trigger: "$test-at-the-end",
@@ -76,13 +75,13 @@ export const SNIPPETS: SnippetDef[] = [
     trigger: "$understanding-overview",
     description: "Overview + main debates/open questions",
     expansion:
-      "Give me an overview of ${1:topic}, then tell me what the main debates or open questions are.",
+      "Give me an overview of this topic, then tell me what the main debates or open questions are.",
   },
   {
     trigger: "$understanding-misconceptions",
     description: "Common misconceptions and why people hold them",
     expansion:
-      "What are the most common misconceptions about ${1:topic}, and why do people hold them?",
+      "What are the most common misconceptions about this topic, and why do people hold them?",
   },
   {
     trigger: "$understanding-next-steps",
@@ -94,15 +93,14 @@ export const SNIPPETS: SnippetDef[] = [
     trigger: "$understanding-beginner-questions",
     description: "Important questions a beginner wouldn't think to ask",
     expansion:
-      "What are the most important questions about ${1:topic} that a beginner wouldn't think to ask?",
+      "What are the most important questions about this topic that a beginner wouldn't think to ask?",
   },
 
   // ── When we're writing or building something ──────────────────────
   {
     trigger: "$writing-think-before",
     description: "Questions to think through before writing",
-    expansion:
-      "I'm going to write about ${1:topic}. Before I start, what questions should I be thinking through?",
+    expansion: "Before I start, what questions should I be thinking through?",
   },
   {
     trigger: "$writing-gaps",
