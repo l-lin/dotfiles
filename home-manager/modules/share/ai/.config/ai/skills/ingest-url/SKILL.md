@@ -12,8 +12,8 @@ Fetches content from a URL, converts it to markdown, extracts assets, saves to `
 
 | URL Pattern | Handler | Notes |
 |-------------|---------|-------|
-| `*.atlassian.net/wiki/*` | `acli` (see `confluence` skill) | Confluence pages |
-| `confluence.*` | `acli` (see `confluence` skill) | Self-hosted Confluence; verify CLI support |
+| `*.atlassian.net/wiki/*` | Atlassian MCP | Confluence Cloud pages |
+| `confluence.*` | Atlassian MCP | Verify instance access; request an export if unsupported |
 | Everything else | `scripts/fetch-url.sh` | Uses defuddle for extraction |
 
 ## Workflow
@@ -21,10 +21,11 @@ Fetches content from a URL, converts it to markdown, extracts assets, saves to `
 ### Step 1: Detect URL Type and Fetch Content
 
 **For Atlassian/Confluence URLs:**
-1. Follow the `confluence` skill when available. Use `acli`, not Atlassian MCP.
-2. Parse the page ID from the URL (format: `/wiki/spaces/SPACE/pages/PAGE_ID/title`). If the URL does not expose a page ID, ask the user for it.
-3. Inspect the page with `acli confluence page view --id PAGE_ID`, then fetch its body and metadata with `acli confluence page view --id PAGE_ID --body-format storage --json`.
-4. Convert the storage-format HTML to markdown (strip Confluence macros, preserve structure).
+1. Use Atlassian MCP directly.
+2. Parse the page ID from `/wiki/spaces/SPACE/pages/PAGE_ID/title` or the `pageId` query parameter. For `/wiki/x/TINY_ID` links, use `TINY_ID` as the page ID. If no ID is available, ask the user for it.
+3. Fetch the body and metadata with `getConfluencePage`, passing the site hostname as `cloudId`, the extracted `pageId`, and `contentFormat: "markdown"`. If the hostname is not accepted, use `getAccessibleAtlassianResources` to find the matching site's cloud ID and retry. Do not substitute another site.
+4. Preserve the returned markdown structure. If macros or assets are missing, fetch `contentFormat: "html"` to inspect them and convert relevant content to markdown.
+5. After category and slug selection, save the markdown with source URL and available metadata in YAML frontmatter to `raw/{category}/{slug}.md`. Download accessible embedded assets to `raw/assets/{slug}-*.{ext}` and update references to local paths.
 
 **For regular web URLs — use the bundled script:**
 
@@ -98,9 +99,9 @@ ingest https://confluence.company.com/wiki/spaces/HEALTH/pages/12345/FHIR-Integr
 ```
 
 **Claude does:**
-1. Detects Confluence URL → follows the `confluence` skill and uses `acli`
-2. Fetches page content and metadata
-3. Converts Confluence HTML to markdown
+1. Detects Confluence URL → uses Atlassian MCP
+2. Fetches page content and metadata with `getConfluencePage`
+3. Uses the returned markdown, fetching HTML if needed for macros or assets
 4. Downloads embedded diagrams to `raw/assets/`
 5. Asks: "This looks like a technical spec. Save to `raw/specs/fhir-integration-guide.md`?"
 6. After confirmation, saves the file
@@ -112,7 +113,7 @@ ingest https://confluence.company.com/wiki/spaces/HEALTH/pages/12345/FHIR-Integr
 ## Handling Edge Cases
 
 **Authentication required:**
-- For Confluence: check `acli confluence auth status` and follow the `confluence` skill for authentication. If `acli` cannot access the instance, report the blocker and ask for an export or manual copy-paste; do not fall back to Atlassian MCP.
+- For Confluence: ask the user to connect or reauthorize Atlassian MCP. If the instance is unsupported or the page remains inaccessible, report the blocker and ask for an export or manual copy-paste.
 - For other sites: inform user, suggest manual copy-paste
 
 **Content too large:**
