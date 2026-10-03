@@ -26,9 +26,6 @@
     "awesomeEditor": {
       "mode": "emacs"
     },
-    "modelSelector": {
-      "keybind": "alt-m"
-    },
     "webFetch": {
       "enabled": false
     },
