@@ -6,7 +6,7 @@
 { config, pkgs, ... }:
 let
   palette = config.lib.stylix.colors.withHashtag;
-  inherit (pkgs.stdenv) isDarwin;
+  inherit (pkgs.stdenv.hostPlatform) isDarwin;
 in {
   # k9s on macOS defaults to ~/Library/Application Support/k9s, but respects
   # $XDG_CONFIG_HOME at runtime. Pin it explicitly to avoid the mismatch.

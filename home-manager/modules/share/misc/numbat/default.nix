@@ -7,12 +7,12 @@
   home.packages = with pkgs; [ numbat ];
 
   # Symlink to ~/.config/numbat/config.toml.
-  xdg.configFile = pkgs.lib.mkIf (!pkgs.stdenv.isDarwin) {
+  xdg.configFile = pkgs.lib.mkIf (!pkgs.stdenv.hostPlatform.isDarwin) {
     "numbat/config.toml".source = ./.config/numbat/config.toml;
   };
 
   # Symlink to ~/Library/Application Support/numbat/config.toml for macOS support.
-  home.file = pkgs.lib.mkIf pkgs.stdenv.isDarwin {
+  home.file = pkgs.lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
     "Library/Application Support/numbat/config.toml".source = ./.config/numbat/config.toml;
   };
 }

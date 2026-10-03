@@ -7,7 +7,7 @@
 
 { config, inputs, lib, pkgs, ... }:
 let
-  inherit (pkgs.stdenv) isDarwin;
+  inherit (pkgs.stdenv.hostPlatform) isDarwin;
   # When decrypting a file with the corresponding identity, SOPS will look for a text file name keys.txt
   # located in a sops subdirectory of your user configuration directory.
   # On Linux, this would be $XDG_CONFIG_HOME/sops/age/keys.

@@ -4,7 +4,7 @@
 #
 
 { pkgs, ... }: {
-  home.packages = with pkgs; lib.optional (! stdenv.isDarwin) jetbrains.idea-oss;
+  home.packages = with pkgs; lib.optional (! stdenv.hostPlatform.isDarwin) jetbrains.idea-oss;
 
   # Symlink to ~/.ideavimrc
   home.file.".ideavimrc".source = ./.ideavimrc;

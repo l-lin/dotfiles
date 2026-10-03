@@ -36,7 +36,7 @@ auto_update     "yes"
 # }
 
 # Audio output configuration based on platform
-${if pkgs.stdenv.isDarwin then ''
+${if pkgs.stdenv.hostPlatform.isDarwin then ''
 audio_output {
  type "osx"
  name "CoreAudio"

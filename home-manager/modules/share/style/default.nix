@@ -53,7 +53,7 @@
       lazygit.enable = true;
       kitty.enable = true;
       kitty.variant256Colors = true;
-      rofi.enable = true;
+      rofi.enable = false;
       wezterm.enable = true;
     };
   };
