@@ -1,142 +1,47 @@
 ---
 name: tmux
-description: "Use when you need a persistent terminal environment for long-running processes, programs requiring a TTY, REPLs, debuggers, TUI apps, or concurrent terminals — while the agent continues executing other commands."
+description: Use when a task needs a persistent terminal, a TTY-only program, a REPL or debugger, or concurrent terminals while the agent runs other commands. Use ordinary command execution for short, noninteractive tasks.
 disable-model-invocation: false
 ---
 
-# tmux (agent automation) skill
+1. **Isolate.** Use only `ai-agent-sandbox` on the existing tmux server. Check that `tmux` is installed. Do not use alternate sockets (`-L`, `-S`), change global options (`-g`), or touch other sessions.
 
-## Purpose
+   ```sh
+   tmux has-session -t '=ai-agent-sandbox' 2>/dev/null \
+     || tmux new-session -d -s ai-agent-sandbox -n main
+   ```
 
-You are not teaching the human tmux. You are using tmux yourself as a controllable terminal multiplexer to:
+2. **Target.** Create a fresh window for each task, record its pane ID, and use that ID for every pane operation. Do not assume pane indexes or reuse a pane that may contain a running job. Set the working directory explicitly; use a clean Bash shell for the command examples below.
 
-- run long-lived processes (servers, watchers, debuggers)
-- interact with programs that need a TTY
-- keep state across multiple commands (REPLs, shells)
-- run multiple concurrent terminals (logs in one pane, debugger in another)
+   ```sh
+   pane=$(tmux new-window -d -P -F '#{pane_id}' \
+     -t '=ai-agent-sandbox' -c "$PWD" 'bash --noprofile --norc')
+   ```
 
-## Prime directive (don't trash the user's tmux)
+3. **Verify.** Send text literally, then send `Enter` separately. For a finite command, report its exit status and signal completion even when it fails. Check for `uuidgen` and a timeout utility before launching this example; replace `printf "ready\\n"` with the task command, keeping the status and signal suffix outside it.
 
-Use a **dedicated session** in the user's existing tmux server.
+   ```sh
+   command -v uuidgen >/dev/null || exit 1
+   wait_timeout=$(command -v timeout || command -v gtimeout) || exit 1
+   token="ai-agent-$(uuidgen)"
+   tmux send-keys -l -t "$pane" \
+     "bash -c 'printf \"ready\\n\"; status=\$?; printf \"EXIT:%s\\n\" \"\$status\"; tmux wait-for -S \"$token\"'"
+   tmux send-keys -t "$pane" Enter
+   "$wait_timeout" 30s tmux wait-for "$token"
+   tmux capture-pane -p -t "$pane" -S -200
+   ```
 
-- Session name: `ai-agent-sandbox`
-- Do NOT create a separate socket (`-L`) — work within the user's existing tmux server
-- Only manipulate `ai-agent-sandbox`, never touch user's other sessions
+   Choose a timeout suited to the task. A completion signal proves only that the wrapper finished; inspect `EXIT:` and the output to determine success. A timeout stops waiting, not the pane's job. Capture output and decide whether to continue or interrupt; do not blindly resend commands. If no timeout utility exists, use bounded polling instead of an unbounded `wait-for`.
 
-## Targets (tmux addressing)
+4. **Verify readiness.** Servers and interactive programs do not finish after each input. Use a bounded health probe for servers or bounded prompt polling for REPLs and debuggers. Inspect captured output before sending the next input. A fixed sleep is not evidence of readiness. Capture only includes retained terminal history, not a complete log.
 
-Always use explicit targets.
+5. **Preserve.** Leave jobs needed for the user's next step running and report their pane IDs, status, and how to inspect or stop them. Interrupt or remove only panes you created:
 
-- full target format: `ai-agent-sandbox:<window>.<pane>`
-- examples: `ai-agent-sandbox:main.1`, `ai-agent-sandbox:1.1`
+   ```sh
+   tmux send-keys -t "$pane" C-c
+   tmux capture-pane -p -t "$pane" -S -200
+   # After confirming the task no longer needs this pane:
+   tmux kill-pane -t "$pane"
+   ```
 
-**Check indexing first** — don't assume 0 or 1:
-```sh
-tmux display-message -p "#{base-index}"
-```
-
-## Standard workflow
-
-### 1) Ensure session exists
-
-```sh
-tmux start-server
-tmux has-session -t ai-agent-sandbox 2>/dev/null \
-  || tmux new-session -d -s ai-agent-sandbox -n main
-```
-
-### 2) Create panes/windows as needed
-
-```sh
-tmux split-window -t ai-agent-sandbox:main -h
-tmux select-layout -t ai-agent-sandbox:main even-horizontal
-```
-
-### 3) Send commands
-
-```sh
-tmux send-keys -t ai-agent-sandbox:main.1 "bash -lc 'rg -n \"TODO\" .'" C-m
-```
-
-- Prefer `bash -lc '…'` for a predictable shell environment
-- Keep the tmux string simple; let `bash -lc` handle quoting complexity
-
-### 4) Synchronize — never use `sleep`
-
-Use `tmux wait-for` for deterministic completion:
-
-```sh
-TOKEN="AI_AGENT_DONE_$$"
-
-# send command in pane, signal token on finish
-tmux send-keys -t ai-agent-sandbox:main.1 \
-  "bash -lc 'set -e; rg -n \"TODO\" .; tmux wait-for -S ${TOKEN}'" C-m
-
-# block until done
-tmux wait-for "${TOKEN}"
-```
-
-If the command might fail but you still need completion:
-
-```sh
-bash -lc 'set +e; <cmd>; echo EXIT:$?; tmux wait-for -S TOKEN'
-```
-
-### 5) Capture output
-
-```sh
-# last 200 lines
-tmux capture-pane -p -t ai-agent-sandbox:main.1 -S -200
-```
-
-For full buffer, increase history first:
-
-```sh
-tmux set-option -t ai-agent-sandbox -g history-limit 20000
-```
-
-## Common recipes
-
-### Long-lived server + health check
-
-```sh
-# start server in pane 1
-tmux send-keys -t ai-agent-sandbox:main.1 "bash -lc 'bin/dev'" C-m
-
-# check health in pane 2
-tmux send-keys -t ai-agent-sandbox:main.2 "bash -lc 'sleep 1; curl -fsS localhost:3000/health'" C-m
-```
-
-Stream logs to disk:
-
-```sh
-LOG=/tmp/ai-agent-tmux-main1.log
-: >"$LOG"
-tmux pipe-pane -o -t ai-agent-sandbox:main.1 "cat >> '$LOG'"
-```
-
-### Stop a stuck command
-
-```sh
-tmux send-keys -t ai-agent-sandbox:main.1 C-c
-```
-
-### Interactive REPL / debugger
-
-1. Start REPL in a pane
-2. Send lines via `send-keys`
-3. Capture output after each step
-4. Synchronize with `wait-for` or detect prompts via captured output
-
-## Guardrails
-
-- Never `tmux kill-server` — kill only your session
-- Always use explicit `-t <target>`
-- Never `tmux attach` unless the user asked for a live view
-- Don't rely on user keybindings; use the tmux CLI only
-
-## Cleanup
-
-```sh
-tmux kill-session -t ai-agent-sandbox
-```
+   Never kill the tmux server. Kill `ai-agent-sandbox` only if you created it and all its jobs are disposable. Do not attach unless the user requests a live view; use the CLI, not user keybindings.
