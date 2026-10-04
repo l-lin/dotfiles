@@ -1,10 +1,8 @@
 ---
 name: continuous-learning
 description: "Review a finished session for reusable knowledge, then, with user consent, update shared skills and project AGENTS.md guidance."
-disable-model-invocation: false
+disable-model-invocation: true
 ---
-
-# Continuous Learning
 
 ## 1. Reflect first
 
@@ -41,22 +39,9 @@ When the destination includes a skill, classify it as one of these types:
 
 Use that type when naming the skill directory, for example `.pi/skills/debugging-postgres-connection-pool/SKILL.md`.
 
-## 3. Pause for consent
+## 3. Update the right artifacts
 
-Before you create or update any skill or `AGENTS.md` file, ask the user whether they want the continuous-learning update.
-
-Prefer `ask-user-question` when available. Use a simple yes/no choice, for example:
-
-```markdown
-📚 Do you want me to capture reusable learnings from this session in skills and `AGENTS.md`?
-```
-
-**End your message immediately after the question.**
-Wait for the user's answer. If they say no, stop. Do not create or edit anything.
-
-## 4. Update the right artifacts
-
-### 4.1 Skills
+### 3.1 Skills
 
 - Search existing skills first. Update an existing skill when the new lesson extends it. Create a new skill only when the pattern is distinct.
 - Store skills in `.pi/skills/<type>-<short-description>/SKILL.md`, relative to current working directory.
@@ -64,7 +49,7 @@ Wait for the user's answer. If they say no, stop. Do not create or edit anything
 - Use `clear-writing` for the prose.
 - Keep skills general, actionable, and free of project-only details better suited for `AGENTS.md`.
 
-### 4.2 Project `AGENTS.md` files
+### 3.2 Project `AGENTS.md` files
 
 - Search for every project `AGENTS.md` with `fd -H '^AGENTS\.md$' .`.
 - A project can have several `AGENTS.md` files. Update every file whose scope applies to the work, not just the first match.
@@ -72,7 +57,7 @@ Wait for the user's answer. If they say no, stop. Do not create or edit anything
 - Keep entries durable, specific, and action-oriented. Match each file's local style.
 - Do not add session logs, generic system rules, or guidance already covered elsewhere.
 
-## 5. Quality gates
+## 4. Quality gates
 
 Before saving, verify:
 - the lesson matches what actually worked
@@ -80,7 +65,7 @@ Before saving, verify:
 - the wording is short, concrete, and human-readable
 - no secrets, internal URLs, PII, or one-off noise slipped in
 
-## 6. Report back
+## 5. Report back
 
 After the updates, tell the user:
 - which skill files you created or revised
