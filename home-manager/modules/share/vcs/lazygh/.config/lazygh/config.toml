@@ -35,7 +35,7 @@ auto_refresh = true
 
 [[pull_requests.searches]]
 label = "My PRs"
-flags = ["--sort", "updated", "--order", "desc", "--author", "@me", "--state", "open"]
+flags = ["--sort", "updated", "--order", "desc", "--state", "open", "--author", "@me"]
 auto_refresh = true
 
 [[pull_requests.searches]]
