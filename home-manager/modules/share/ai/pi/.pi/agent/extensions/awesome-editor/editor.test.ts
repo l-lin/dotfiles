@@ -229,14 +229,12 @@ test("awesome-editor GIVEN a question-mark snippet trigger typed as its own toke
 });
 
 test("awesome-editor GIVEN a snippet with one tabstop WHEN expanding it with Ctrl-E THEN it inserts bracketed placeholder text and moves the cursor inside the first field", async () => {
-  const editor = await given_editorWithSelectedSnippet(
-    "$understanding-overview",
-  );
+  const editor = await given_editorWithSelectedSnippet("$decision-regret");
 
   editor.handleInput(CTRL_E);
 
   const expectedText =
-    "Give me an overview of [topic], then tell me what the main debates or open questions are.";
+    "I'm leaning toward [option]. Give me three reasons I might regret this in a year.";
   const actual = {
     text: editor.getText(),
     cursor: editor.getCursor(),
@@ -245,7 +243,7 @@ test("awesome-editor GIVEN a snippet with one tabstop WHEN expanding it with Ctr
     text: expectedText,
     cursor: {
       line: 0,
-      col: expectedText.indexOf("topic"),
+      col: expectedText.indexOf("option"),
     },
   };
 
@@ -319,9 +317,7 @@ test("awesome-editor GIVEN untouched placeholders WHEN tabbing past them THEN it
 });
 
 test("awesome-editor GIVEN an active placeholder session WHEN the cursor moves off-road THEN it cancels placeholder mode", async () => {
-  const editor = await given_editorWithSelectedSnippet(
-    "$understanding-overview",
-  );
+  const editor = await given_editorWithSelectedSnippet("$decision-regret");
 
   editor.handleInput(CTRL_E);
   editor.handleInput(ESC_LEFT);
@@ -334,7 +330,7 @@ test("awesome-editor GIVEN an active placeholder session WHEN the cursor moves o
 
 test("awesome-editor GIVEN vi mode and an untouched placeholder WHEN Ghostty-style bracketed paste arrives THEN it replaces the whole field, preserves literal tabs, and still exits on Tab", async () => {
   const editor = await given_editorWithSelectedSnippet(
-    "$understanding-overview",
+    "$decision-regret",
     "vi",
   );
 
@@ -343,7 +339,7 @@ test("awesome-editor GIVEN vi mode and an untouched placeholder WHEN Ghostty-sty
   editor.handleInput("\t");
 
   const expectedText =
-    "Give me an overview of queue\tworkers, then tell me what the main debates or open questions are.";
+    "I'm leaning toward queue\tworkers. Give me three reasons I might regret this in a year.";
   const actual = {
     text: editor.getText(),
     cursor: editor.getCursor(),
@@ -359,9 +355,7 @@ test("awesome-editor GIVEN vi mode and an untouched placeholder WHEN Ghostty-sty
 });
 
 test("awesome-editor GIVEN an edited placeholder WHEN the cursor stays inside the field and a paste arrives THEN it inserts at the cursor and keeps placeholder navigation alive", async () => {
-  const editor = await given_editorWithSelectedSnippet(
-    "$understanding-overview",
-  );
+  const editor = await given_editorWithSelectedSnippet("$decision-regret");
 
   editor.handleInput(CTRL_E);
   when_typing(editor, "queues");
@@ -370,7 +364,7 @@ test("awesome-editor GIVEN an edited placeholder WHEN the cursor stays inside th
   editor.handleInput("\t");
 
   const expectedText =
-    "Give me an overview of queueing systems, then tell me what the main debates or open questions are.";
+    "I'm leaning toward queueing systems. Give me three reasons I might regret this in a year.";
   const actual = {
     text: editor.getText(),
     cursor: editor.getCursor(),
