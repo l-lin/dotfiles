@@ -2,7 +2,12 @@ import path from "node:path";
 import fs from "node:fs/promises";
 import { createReadStream, type Dirent } from "node:fs";
 import readline from "node:readline";
-import type { ModelKey, TodKey, ParsedSession } from "./types.js";
+import type {
+  ModelKey,
+  TodKey,
+  ParsedSession,
+  SessionActivity,
+} from "./types.js";
 import { DOW_NAMES, TOD_BUCKETS } from "./constants.js";
 import { toLocalDayKey, localMidnight, mondayIndex } from "./date-utils.js";
 
@@ -114,13 +119,15 @@ function extractTokensTotal(usage: any): number {
     readNum(usage?.promptTokens) ||
     readNum(usage?.prompt_tokens) ||
     readNum(usage?.inputTokens) ||
-    readNum(usage?.input_tokens);
+    readNum(usage?.input_tokens) ||
+    readNum(usage?.input);
   const b =
     readNum(usage?.completionTokens) ||
     readNum(usage?.completion_tokens) ||
     readNum(usage?.outputTokens) ||
-    readNum(usage?.output_tokens);
-  const sum = a + b;
+    readNum(usage?.output_tokens) ||
+    readNum(usage?.output);
+  const sum = a + b + readNum(usage?.cacheRead) + readNum(usage?.cacheWrite);
   return sum > 0 ? sum : 0;
 }
 
@@ -151,16 +158,7 @@ export async function walkSessionFiles(
       }
       if (!ent.isFile() || !ent.name.endsWith(".jsonl")) continue;
 
-      // Prefer filename timestamp, else fall back to mtime.
-      const startedAt = parseSessionStartFromFilename(ent.name);
-      if (startedAt) {
-        if (localMidnight(startedAt) >= startCutoffLocal) {
-          out.push(p);
-          if (onFound && out.length % 10 === 0) onFound(out.length);
-        }
-        continue;
-      }
-
+      // A resumed session can have recent usage despite an old filename.
       try {
         const st = await fs.stat(p);
         const approx = new Date(st.mtimeMs);
@@ -186,6 +184,7 @@ export async function parseSessionFile(
   let currentModel: ModelKey | null = null;
   let cwd: string | null = null;
 
+  const activities: SessionActivity[] = [];
   const modelsUsed = new Set<ModelKey>();
   let messages = 0;
   let tokens = 0;
@@ -232,19 +231,27 @@ export async function parseSessionFile(
         continue;
       }
 
-      if (obj?.type !== "message") continue;
+      const isMessage = obj?.type === "message";
+      if (
+        !isMessage &&
+        obj?.type !== "usage" &&
+        obj?.type !== "compaction" &&
+        obj?.type !== "branch_summary"
+      )
+        continue;
 
       const { provider, model, modelId, usage } =
         extractProviderModelAndUsage(obj);
       const mk =
-        modelKeyFromParts(provider, model) ??
-        modelKeyFromParts(provider, modelId) ??
+        modelKeyFromParts(provider, model ?? modelId) ??
         currentModel ??
         "unknown";
       modelsUsed.add(mk);
 
-      messages += 1;
-      messagesByModel.set(mk, (messagesByModel.get(mk) ?? 0) + 1);
+      if (isMessage) {
+        messages += 1;
+        messagesByModel.set(mk, (messagesByModel.get(mk) ?? 0) + 1);
+      }
 
       const tok = extractTokensTotal(usage);
       if (tok > 0) {
@@ -253,6 +260,27 @@ export async function parseSessionFile(
       }
 
       const cost = extractCostTotal(usage);
+      if (isMessage || tok > 0 || cost > 0) {
+        const timestamps = [obj?.timestamp, obj?.message?.timestamp, startedAt];
+        const timestamp = timestamps
+          .filter(
+            (value) =>
+              typeof value === "string" ||
+              typeof value === "number" ||
+              value instanceof Date,
+          )
+          .map((value) => new Date(value))
+          .find((value) => Number.isFinite(value.getTime()));
+        if (timestamp) {
+          activities.push({
+            timestamp,
+            model: mk,
+            messages: isMessage ? 1 : 0,
+            tokens: tok,
+            cost,
+          });
+        }
+      }
       if (cost > 0) {
         totalCost += cost;
         costByModel.set(mk, (costByModel.get(mk) ?? 0) + cost);
@@ -268,6 +296,7 @@ export async function parseSessionFile(
   const dow = DOW_NAMES[mondayIndex(startedAt)];
   const tod = todBucketForHour(startedAt.getHours());
   return {
+    activities,
     filePath,
     startedAt,
     dayKeyLocal,

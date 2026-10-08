@@ -4,7 +4,16 @@ export type DowKey = string; // "Mon", "Tue", etc.
 export type TodKey = string; // "after-midnight", "morning", "afternoon", "evening", "night"
 export type BreakdownView = "model" | "cwd" | "dow" | "tod";
 
+export interface SessionActivity {
+  timestamp: Date;
+  model: ModelKey;
+  messages: number;
+  tokens: number;
+  cost: number;
+}
+
 export interface ParsedSession {
+  activities: SessionActivity[];
   filePath: string;
   startedAt: Date;
   dayKeyLocal: string; // YYYY-MM-DD (local)

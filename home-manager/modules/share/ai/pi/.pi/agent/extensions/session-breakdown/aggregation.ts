@@ -29,7 +29,11 @@ import {
   addDaysLocal,
   mondayIndex,
 } from "./date-utils.js";
-import { walkSessionFiles, parseSessionFile } from "./session-parser.js";
+import {
+  walkSessionFiles,
+  parseSessionFile,
+  todBucketForHour,
+} from "./session-parser.js";
 
 export function buildRangeAgg(days: number, now: Date): RangeAgg {
   const end = localMidnight(now);
@@ -90,91 +94,97 @@ export function buildRangeAgg(days: number, now: Date): RangeAgg {
   };
 }
 
+function incrementMap<K>(map: Map<K, number>, key: K, amount = 1): void {
+  map.set(key, (map.get(key) ?? 0) + amount);
+}
+
 export function addSessionToRange(
   range: RangeAgg,
   session: ParsedSession,
 ): void {
-  const day = range.dayByKey.get(session.dayKeyLocal);
-  if (!day) return;
+  const activeDays = new Set<DayAgg>();
+  const models = new Set<ModelKey>();
+  const dows = new Set<DowKey>();
+  const tods = new Set<TodKey>();
+  const dayModels = new Map<DayAgg, Set<ModelKey>>();
+  const dayTods = new Map<DayAgg, Set<TodKey>>();
+  // Empty sessions still count on their creation day.
+  const activities =
+    session.activities.length > 0
+      ? session.activities
+      : [
+          {
+            timestamp: session.startedAt,
+            model: "unknown",
+            messages: 0,
+            tokens: 0,
+            cost: 0,
+          },
+        ];
 
+  for (const activity of activities) {
+    const day = range.dayByKey.get(toLocalDayKey(activity.timestamp));
+    if (!day) continue;
+    const dow = DOW_NAMES[mondayIndex(activity.timestamp)];
+    const tod = todBucketForHour(activity.timestamp.getHours());
+    const model = activity.model;
+    activeDays.add(day);
+    models.add(model);
+    dows.add(dow);
+    tods.add(tod);
+    if (!dayModels.has(day)) dayModels.set(day, new Set());
+    if (!dayTods.has(day)) dayTods.set(day, new Set());
+    dayModels.get(day)!.add(model);
+    dayTods.get(day)!.add(tod);
+
+    range.totalMessages += activity.messages;
+    range.totalTokens += activity.tokens;
+    range.totalCost += activity.cost;
+    day.messages += activity.messages;
+    day.tokens += activity.tokens;
+    day.totalCost += activity.cost;
+
+    incrementMap(day.messagesByModel, model, activity.messages);
+    incrementMap(range.modelMessages, model, activity.messages);
+    incrementMap(day.tokensByModel, model, activity.tokens);
+    incrementMap(range.modelTokens, model, activity.tokens);
+    incrementMap(day.costByModel, model, activity.cost);
+    incrementMap(range.modelCost, model, activity.cost);
+
+    if (session.cwd) {
+      incrementMap(day.messagesByCwd, session.cwd, activity.messages);
+      incrementMap(range.cwdMessages, session.cwd, activity.messages);
+      incrementMap(day.tokensByCwd, session.cwd, activity.tokens);
+      incrementMap(range.cwdTokens, session.cwd, activity.tokens);
+      incrementMap(day.costByCwd, session.cwd, activity.cost);
+      incrementMap(range.cwdCost, session.cwd, activity.cost);
+    }
+
+    incrementMap(range.dowMessages, dow, activity.messages);
+    incrementMap(range.dowTokens, dow, activity.tokens);
+    incrementMap(range.dowCost, dow, activity.cost);
+    incrementMap(day.messagesByTod, tod, activity.messages);
+    incrementMap(range.todMessages, tod, activity.messages);
+    incrementMap(day.tokensByTod, tod, activity.tokens);
+    incrementMap(range.todTokens, tod, activity.tokens);
+    incrementMap(day.costByTod, tod, activity.cost);
+    incrementMap(range.todCost, tod, activity.cost);
+  }
+
+  if (activeDays.size === 0) return;
+  // Count a session once per range, but once on each day/bucket where it was active.
   range.sessions += 1;
-  range.totalMessages += session.messages;
-  range.totalTokens += session.tokens;
-  range.totalCost += session.totalCost;
-  day.sessions += 1;
-  day.messages += session.messages;
-  day.tokens += session.tokens;
-  day.totalCost += session.totalCost;
-
-  // Sessions-per-model (presence)
-  for (const mk of session.modelsUsed) {
-    day.sessionsByModel.set(mk, (day.sessionsByModel.get(mk) ?? 0) + 1);
-    range.modelSessions.set(mk, (range.modelSessions.get(mk) ?? 0) + 1);
+  for (const model of models) incrementMap(range.modelSessions, model);
+  for (const dow of dows) incrementMap(range.dowSessions, dow);
+  for (const tod of tods) incrementMap(range.todSessions, tod);
+  if (session.cwd) incrementMap(range.cwdSessions, session.cwd);
+  for (const day of activeDays) {
+    day.sessions += 1;
+    for (const model of dayModels.get(day)!)
+      incrementMap(day.sessionsByModel, model);
+    for (const tod of dayTods.get(day)!) incrementMap(day.sessionsByTod, tod);
+    if (session.cwd) incrementMap(day.sessionsByCwd, session.cwd);
   }
-
-  // Messages-per-model
-  for (const [mk, n] of session.messagesByModel.entries()) {
-    day.messagesByModel.set(mk, (day.messagesByModel.get(mk) ?? 0) + n);
-    range.modelMessages.set(mk, (range.modelMessages.get(mk) ?? 0) + n);
-  }
-
-  // Tokens-per-model
-  for (const [mk, n] of session.tokensByModel.entries()) {
-    day.tokensByModel.set(mk, (day.tokensByModel.get(mk) ?? 0) + n);
-    range.modelTokens.set(mk, (range.modelTokens.get(mk) ?? 0) + n);
-  }
-
-  // Cost-per-model
-  for (const [mk, cost] of session.costByModel.entries()) {
-    day.costByModel.set(mk, (day.costByModel.get(mk) ?? 0) + cost);
-    range.modelCost.set(mk, (range.modelCost.get(mk) ?? 0) + cost);
-  }
-
-  // CWD aggregation
-  const cwd = session.cwd;
-  if (cwd) {
-    day.sessionsByCwd.set(cwd, (day.sessionsByCwd.get(cwd) ?? 0) + 1);
-    range.cwdSessions.set(cwd, (range.cwdSessions.get(cwd) ?? 0) + 1);
-    day.messagesByCwd.set(
-      cwd,
-      (day.messagesByCwd.get(cwd) ?? 0) + session.messages,
-    );
-    range.cwdMessages.set(
-      cwd,
-      (range.cwdMessages.get(cwd) ?? 0) + session.messages,
-    );
-    day.tokensByCwd.set(cwd, (day.tokensByCwd.get(cwd) ?? 0) + session.tokens);
-    range.cwdTokens.set(cwd, (range.cwdTokens.get(cwd) ?? 0) + session.tokens);
-    day.costByCwd.set(cwd, (day.costByCwd.get(cwd) ?? 0) + session.totalCost);
-    range.cwdCost.set(cwd, (range.cwdCost.get(cwd) ?? 0) + session.totalCost);
-  }
-
-  // Day-of-week aggregation
-  const dow = session.dow;
-  range.dowSessions.set(dow, (range.dowSessions.get(dow) ?? 0) + 1);
-  range.dowMessages.set(
-    dow,
-    (range.dowMessages.get(dow) ?? 0) + session.messages,
-  );
-  range.dowTokens.set(dow, (range.dowTokens.get(dow) ?? 0) + session.tokens);
-  range.dowCost.set(dow, (range.dowCost.get(dow) ?? 0) + session.totalCost);
-
-  // Time-of-day aggregation
-  const tod = session.tod;
-  day.sessionsByTod.set(tod, (day.sessionsByTod.get(tod) ?? 0) + 1);
-  day.messagesByTod.set(
-    tod,
-    (day.messagesByTod.get(tod) ?? 0) + session.messages,
-  );
-  day.tokensByTod.set(tod, (day.tokensByTod.get(tod) ?? 0) + session.tokens);
-  day.costByTod.set(tod, (day.costByTod.get(tod) ?? 0) + session.totalCost);
-  range.todSessions.set(tod, (range.todSessions.get(tod) ?? 0) + 1);
-  range.todMessages.set(
-    tod,
-    (range.todMessages.get(tod) ?? 0) + session.messages,
-  );
-  range.todTokens.set(tod, (range.todTokens.get(tod) ?? 0) + session.tokens);
-  range.todCost.set(tod, (range.todCost.get(tod) ?? 0) + session.totalCost);
 }
 
 export function sortMapByValueDesc<K extends string>(
@@ -402,13 +412,8 @@ export async function computeBreakdown(
     const session = await parseSessionFile(filePath, signal);
     if (!session) continue;
 
-    const sessionDay = localMidnight(session.startedAt);
     for (const d of RANGE_DAYS) {
-      const range = ranges.get(d)!;
-      const start = range.days[0].date;
-      const end = range.days[range.days.length - 1].date;
-      if (sessionDay < start || sessionDay > end) continue;
-      addSessionToRange(range, session);
+      addSessionToRange(ranges.get(d)!, session);
     }
   }
 
