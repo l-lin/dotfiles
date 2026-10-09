@@ -28,9 +28,7 @@ Use a `mermaid` blocks.
 
 ### Notes for reviewers
 
-- Focus areas: where reviewers should look most carefully
 - Trade-offs and rejected alternatives
-- Follow-up items
 ```
 
 ## Conventions
