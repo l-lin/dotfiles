@@ -51,7 +51,7 @@
       "version": "'harpoon2'"
     },
     "jira.nvim": {
-      "rev": "ed7a69ddd252b89a531710e1df8282ce2ec02876",
+      "rev": "12edf64b6cab32682b4f117db3b3d4d9af5ec9a9",
       "src": "https://codeberg.org/l-lin/jira.nvim"
     },
     "lazydev.nvim": {
