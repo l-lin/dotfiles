@@ -16,6 +16,7 @@
       settings = {
         # Enable experimental if you want to use the golang backend to install 3rd party tools.
         experimental = true;
+        task.quiet = true;
         trusted_config_paths = ["~/work" "~/perso"];
         # Tools can read the versions files used by other version managers
         # for example, .nvmrc in the case of node's nvm.
@@ -37,7 +38,7 @@
   home.sessionVariables = {
     # print only stdout/stderr from tasks and nothing from mise
     # src: https://mise.jdx.dev/configuration/settings.html#task_output
-    MISE_TASK_OUTPUT = "quiet";
+    MISE_TASK_OUTPUT = "interleave";
   };
   xdg.configFile = {
     "zsh/completions/_mise".source = ./.config/zsh/completions/_mise;
