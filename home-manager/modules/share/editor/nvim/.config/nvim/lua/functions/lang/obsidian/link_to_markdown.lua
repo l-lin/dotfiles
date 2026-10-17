@@ -15,8 +15,25 @@ local function extract_title_from_html(html)
     title = title:gsub("[\r\n]", "")
     -- Remove extra spaces
     title = title:gsub("^%s*(.-)%s*$", "%1")
-    -- Replace &amp; to &
-    title = title:gsub("&amp;", "&")
+    local entities = { amp = "&", quot = '"', apos = "'", lt = "<", gt = ">", nbsp = "\194\160" }
+    -- Decode once so escaped entity text such as &amp;quot; stays literal.
+    title = title:gsub("&(#?[%w]+);", function(entity)
+      if entity:sub(1, 1) ~= "#" then
+        return entities[entity]
+      end
+
+      local decimal = entity:match("^#(%d+)$")
+      local hexadecimal = entity:match("^#[xX](%x+)$")
+      local codepoint = decimal and tonumber(decimal, 10) or hexadecimal and tonumber(hexadecimal, 16)
+      if
+        codepoint
+        and codepoint > 0
+        and codepoint <= 0x10FFFF
+        and not (codepoint >= 0xD800 and codepoint <= 0xDFFF)
+      then
+        return vim.fn.nr2char(codepoint)
+      end
+    end)
     return title or nil
   end
 
