@@ -63,6 +63,16 @@ describe("paste URL as Markdown", function()
 
   local cases = {
     {
+      name = "decimal en dash in a page title",
+      title = "Sample Article &#8211; Example Site",
+      expected = "Sample Article – Example Site",
+    },
+    {
+      name = "numeric typographic punctuation",
+      title = "&#8220;Sample&#8221; &#x2013; Article&#8230;",
+      expected = "“Sample” – Article…",
+    },
+    {
       name = "hexadecimal apostrophe in a page title",
       title = "It&#x27;s a sample article | Example",
       expected = "It's a sample article | Example",

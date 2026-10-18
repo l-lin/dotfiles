@@ -1,3 +1,30 @@
+---@param title string
+---@return string
+local function sanitize_title(title)
+  title = title:gsub("[\r\n]", "")
+  title = title:gsub("^%s*(.-)%s*$", "%1")
+  local entities = { amp = "&", quot = '"', apos = "'", lt = "<", gt = ">", nbsp = "\194\160" }
+  -- Decode once so escaped entity text such as &amp;quot; stays literal.
+  title = title:gsub("&(#?[%w]+);", function(entity)
+    if entity:sub(1, 1) ~= "#" then
+      return entities[entity]
+    end
+
+    local decimal = entity:match("^#(%d+)$")
+    local hexadecimal = entity:match("^#[xX](%x+)$")
+    local codepoint = decimal and tonumber(decimal, 10) or hexadecimal and tonumber(hexadecimal, 16)
+    if
+      codepoint
+      and codepoint > 0
+      and codepoint <= 0x10FFFF
+      and not (codepoint >= 0xD800 and codepoint <= 0xDFFF)
+    then
+      return vim.fn.nr2char(codepoint)
+    end
+  end)
+  return title
+end
+
 ---Simple HTML title extraction using pattern matching
 ---@param html string the HTML content to extract the title from
 ---@return string|nil title the extracted title or nil if not found
@@ -9,35 +36,7 @@ local function extract_title_from_html(html)
   -- Look for <title>...</title> tags (case insensitive)
   local title = html:match("<[tT][iI][tT][lL][eE][^>]*>([^<]*)</[tT][iI][tT][lL][eE]>")
 
-  if title then
-    -- Sanitize
-    -- Remove newlines
-    title = title:gsub("[\r\n]", "")
-    -- Remove extra spaces
-    title = title:gsub("^%s*(.-)%s*$", "%1")
-    local entities = { amp = "&", quot = '"', apos = "'", lt = "<", gt = ">", nbsp = "\194\160" }
-    -- Decode once so escaped entity text such as &amp;quot; stays literal.
-    title = title:gsub("&(#?[%w]+);", function(entity)
-      if entity:sub(1, 1) ~= "#" then
-        return entities[entity]
-      end
-
-      local decimal = entity:match("^#(%d+)$")
-      local hexadecimal = entity:match("^#[xX](%x+)$")
-      local codepoint = decimal and tonumber(decimal, 10) or hexadecimal and tonumber(hexadecimal, 16)
-      if
-        codepoint
-        and codepoint > 0
-        and codepoint <= 0x10FFFF
-        and not (codepoint >= 0xD800 and codepoint <= 0xDFFF)
-      then
-        return vim.fn.nr2char(codepoint)
-      end
-    end)
-    return title or nil
-  end
-
-  return nil
+  return title and sanitize_title(title) or nil
 end
 
 ---Check if content is HTML by looking for HTML tags
