@@ -12,7 +12,7 @@ local function setup()
       date_format = "%Y-%m-%d",
       default_tags = { "journal/daily" },
       folder = "5-rituals/daily",
-      template = "template-daily.nvim.md",
+      template = "template-daily.md",
       workdays_only = false,
     },
     frontmatter = { enabled = false },
