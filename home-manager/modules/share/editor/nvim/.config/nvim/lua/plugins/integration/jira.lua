@@ -95,12 +95,15 @@ local function setup()
     keymaps = {
       input = {
         ["<M-a>"] = { "action_jira_list_actions", mode = { "i", "n" } },
+        ["<S-M-y>"] = { "action_jira_copy_url", mode = { "i", "n" } },
       },
       list = {
         ["<M-a>"] = "action_jira_list_actions",
+        ["<S-M-y>"] = "action_jira_copy_url",
       },
       preview = {
         ["<M-a>"] = "action_jira_list_actions",
+        ["<S-M-y>"] = "action_jira_copy_url",
       },
     },
   })
