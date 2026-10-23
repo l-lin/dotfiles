@@ -31,8 +31,10 @@ git:
   parseEmoji: true
 keybinding:
   universal:
-    prevPage: "<c-u>"
-    nextPage: "<c-d>"
+    quit: "<ctrl-c>"
+    return: [q, <esc>]
+    prevPage: "<ctrl-u>"
+    nextPage: "<ctrl-d>"
     gotoTop: "g"
     gotoBottom: "G"
   '';
