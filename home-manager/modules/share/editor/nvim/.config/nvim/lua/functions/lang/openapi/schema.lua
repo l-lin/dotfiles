@@ -189,91 +189,6 @@ local function example(schema, document, context, depth)
   return value
 end
 
----Recover the cursor's mapping/sequence path without relying on indentation widths.
----@param bufnr integer
----@return (string|integer)[] path
-local function cursor_path(bufnr)
-  local parser = vim.treesitter.get_parser(bufnr, "yaml")
-  parser:parse()
-  local cursor = vim.api.nvim_win_get_cursor(0)
-  local first = (vim.api.nvim_get_current_line():find("%S") or 1) - 1
-  local node = vim.treesitter.get_node({ bufnr = bufnr, pos = { cursor[1] - 1, math.max(cursor[2], first) } })
-  local path = {}
-  while node do
-    local kind = node:type()
-    if kind == "block_mapping_pair" or kind == "flow_pair" then
-      local key = node:field("key")[1]
-      if key then
-        local text = vim.treesitter.get_node_text(key, bufnr)
-        local decoded = text:match("^['\"]") and decode_yaml(text) or text
-        table.insert(path, 1, tostring(decoded))
-      end
-    elseif
-      kind == "block_sequence_item" or (node:parent() and node:parent():type() == "flow_sequence" and node:named())
-    then
-      local index = 1
-      local previous = node:prev_named_sibling()
-      while previous do
-        if previous:type() ~= "comment" then
-          index = index + 1
-        end
-        previous = previous:prev_named_sibling()
-      end
-      table.insert(path, 1, index)
-    end
-    node = node:parent()
-  end
-  return path
-end
-
----Identify schema roots and descend only through schema-bearing keywords.
----@param path (string|integer)[]
----@return integer|nil length of the nearest schema path
-local function schema_length(path)
-  local length
-  if path[1] == "components" and path[2] == "schemas" and path[3] then
-    length = 3
-  end
-  for index, key in ipairs(path) do
-    if
-      key == "schema"
-      and (
-        path[index - 1] == "application/json"
-        or tostring(path[index - 1]):match("%+json$")
-        or path[index - 2] == "parameters"
-        or path[index - 2] == "headers"
-      )
-    then
-      length = index
-    end
-  end
-  if not length then
-    return
-  end
-  local index = length + 1
-  while index <= #path do
-    local key = path[index]
-    if
-      (key == "properties" or key == "$defs" or key == "definitions" or key == "patternProperties") and path[index + 1]
-    then
-      length = index + 1
-      index = index + 2
-    elseif key == "items" or key == "additionalProperties" or key == "not" then
-      length = index
-      index = index + 1
-    elseif
-      (key == "allOf" or key == "oneOf" or key == "anyOf" or key == "prefixItems")
-      and type(path[index + 1]) == "number"
-    then
-      length = index + 1
-      index = index + 2
-    else
-      break
-    end
-  end
-  return length
-end
-
 ---Find a JSON body schema on request/response containers, including referenced containers.
 ---@param value OpenApiValue
 ---@param document OpenApiDocument
@@ -297,7 +212,7 @@ local function body_schema(value, document, context, depth)
     end
     return body_schema(target, owner, context, depth + 1)
   end
-  if type(value.schema) == "table" then
+  if type(value.schema) == "table" or value.example ~= nil or type(value.examples) == "table" then
     if value.example ~= nil then
       return { example = value.example }, document
     end
@@ -336,95 +251,10 @@ local function body_schema(value, document, context, depth)
   return nil, document
 end
 
----Create a payload from the nearest schema in an OpenAPI 3.x document.
----@param document OpenApiDocument
----@param path (string|integer)[] cursor path
----@return OpenApiValue|nil value nil means use ordinary LSP hover
----@return string[] notes
-function M.preview(document, path)
-  if type(document.value) ~= "table" or not tostring(document.value.openapi):match("^3%.") then
-    return nil, {}
-  end
-  ---@type OpenApiContext
-  local context = { documents = { [document.filename] = document }, notes = {}, active = {} }
-  local length = schema_length(path)
-  local value = document.value
-  if length then
-    for index = 1, length do
-      if type(value) ~= "table" then
-        return nil, {}
-      end
-      value = value[path[index]]
-    end
-  else
-    -- Only body-related locations may select a media type implicitly.
-    local body = path[1] == "components" and (path[2] == "requestBodies" or path[2] == "responses")
-    for _, key in ipairs(path) do
-      if key == "requestBody" or key == "responses" then
-        body = true
-      end
-    end
-    if not body then
-      return nil, {}
-    end
-    for index, key in ipairs(path) do
-      local media = path[index + 1]
-      if
-        key == "content"
-        and type(media) == "string"
-        and media ~= "application/json"
-        and not media:match("%+json$")
-      then
-        return nil, {}
-      end
-    end
-    local candidates = { value }
-    for _, key in ipairs(path) do
-      if type(value) ~= "table" then
-        break
-      end
-      value = value[key]
-      if value == nil then
-        break
-      end
-      candidates[#candidates + 1] = value
-    end
-    value = nil
-    for index = #candidates, 1, -1 do
-      value, document = body_schema(candidates[index], document, context, 0)
-      if value then
-        break
-      end
-    end
-  end
-  if value == nil then
-    if #context.notes > 0 then
-      return vim.NIL, context.notes
-    end
-    return nil, context.notes
-  end
-  return example(value, document, context, 0), context.notes
-end
-
----Show a focusable JSON example, preserving normal LSP hover outside OpenAPI schemas.
----@return nil
-function M.hover()
-  local bufnr = vim.api.nvim_get_current_buf()
-  local ok, value, notes = pcall(function()
-    local document = {
-      value = decode_yaml(table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), "\n")),
-      filename = vim.api.nvim_buf_get_name(bufnr),
-    }
-    return M.preview(document, cursor_path(bufnr))
-  end)
-  if not ok then
-    vim.notify("OpenAPI preview: " .. tostring(value), vim.log.levels.WARN)
-    return
-  end
-  if value == nil then
-    vim.lsp.buf.hover()
-    return
-  end
+---Format a JSON value without fx's raw-string output or terminal UI.
+---@param value OpenApiValue
+---@return string[] lines
+function M.format_json(value)
   local result = vim
     .system({ "fx", "--no-tui", "JSON.stringify(x, null, 2)" }, {
       stdin = vim.json.encode(value),
@@ -432,36 +262,15 @@ function M.hover()
     })
     :wait(2000)
   if result.code ~= 0 then
-    vim.notify("Cannot format OpenAPI example", vim.log.levels.WARN)
-    return
+    error("Cannot format OpenAPI example: " .. (result.stderr or "fx timed out"))
   end
-  local lines = vim.split(vim.trim(result.stdout), "\n", { plain = true })
-  local float_bufnr, win = vim.lsp.util.open_floating_preview(lines, "json", {
-    focus_id = "openapi-example",
-    border = "rounded",
-    max_width = 100,
-    max_height = math.max(1, math.floor(vim.o.lines * 0.7)),
-    title = " OpenAPI example (illustrative) ",
-  })
-  vim.bo[float_bufnr].filetype = "json"
-  -- Notes use virtual lines, leaving the JSON buffer valid and easy to copy.
-  local virtual = {}
-  for _, message in ipairs(notes) do
-    virtual[#virtual + 1] = { { message, "DiagnosticWarn" } }
-  end
-  local namespace = vim.api.nvim_create_namespace("openapi-example")
-  vim.api.nvim_buf_clear_namespace(float_bufnr, namespace, 0, -1)
-  if #virtual > 0 then
-    vim.api.nvim_buf_set_extmark(float_bufnr, namespace, #lines - 1, 0, { virt_lines = virtual })
-    vim.api.nvim_win_set_height(win, math.min(#lines + #notes, math.max(1, math.floor(vim.o.lines * 0.7))))
-  end
-  for _, key in ipairs({ "q", "<Esc>" }) do
-    vim.keymap.set("n", key, function()
-      if vim.api.nvim_win_is_valid(win) then
-        vim.api.nvim_win_close(win, true)
-      end
-    end, { buffer = float_bufnr, silent = true, desc = "Close OpenAPI example" })
-  end
+  return vim.split(vim.trim(result.stdout), "\n", { plain = true })
 end
+
+M.decode_yaml = decode_yaml
+M.resolve = resolve
+M.note = note
+M.example = example
+M.body_schema = body_schema
 
 return M

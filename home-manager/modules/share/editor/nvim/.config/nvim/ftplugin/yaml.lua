@@ -92,7 +92,7 @@ local function map_yaml_keys()
   end, {
     buffer = bufnr,
     silent = true,
-    desc = "Preview OpenAPI JSON example or LSP hover",
+    desc = "Preview OpenAPI HTTP/JSON examples or LSP hover",
   })
   vim.keymap.set("n", "gd", goto_ref_definition, {
     buffer = bufnr,
