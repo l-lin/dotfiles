@@ -54,7 +54,12 @@ in {
     # that conflicts with our xdg.configFile."nvim" symlink (recursive = true).
     # The magick package paths are set via LUA_PATH/LUA_CPATH env vars instead.
     #extraLuaPackages = ps: [ ps.magick ];
-    extraPackages = with pkgs; [ imagemagick ];
+    extraPackages = with pkgs; [
+      imagemagick
+      # Terminal JSON viewer & processor: https://fx.wtf/
+      # Parse OpenAPI YAML and format JSON example previews without opening a TUI.
+      fx
+    ];
 
     plugins = [
       # All other plugins are managed by lazy-nvim

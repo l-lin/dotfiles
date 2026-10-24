@@ -85,8 +85,15 @@ end
 ---@type integer
 local bufnr = vim.api.nvim_get_current_buf()
 
----Install the YAML definition override only in the buffer that loaded this ftplugin.
-local function map_definition()
+---Install YAML navigation and hover overrides only in the buffer that loaded this ftplugin.
+local function map_yaml_keys()
+  vim.keymap.set("n", "K", function()
+    require("functions.lang.openapi").hover()
+  end, {
+    buffer = bufnr,
+    silent = true,
+    desc = "Preview OpenAPI JSON example or LSP hover",
+  })
   vim.keymap.set("n", "gd", goto_ref_definition, {
     buffer = bufnr,
     silent = true,
@@ -94,13 +101,16 @@ local function map_definition()
   })
 end
 
+-- Example previews do not require an attached language server.
+map_yaml_keys()
+
 vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("YamlRefDefinition" .. bufnr, { clear = true }),
   buffer = bufnr,
   callback = function()
-    -- Wait for the shared LSP on_attach to finish so its gd mapping cannot replace ours.
+    -- Wait for shared LSP on_attach so its mappings cannot replace the YAML overrides.
     vim.schedule(function()
-      if vim.api.nvim_buf_is_valid(bufnr) then map_definition() end
+      if vim.api.nvim_buf_is_valid(bufnr) then map_yaml_keys() end
     end)
   end,
 })
