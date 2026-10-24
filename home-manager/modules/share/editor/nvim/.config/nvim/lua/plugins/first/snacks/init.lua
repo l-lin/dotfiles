@@ -648,6 +648,8 @@ local function setup()
   vim.keymap.set("n", "<leader>grP", review_pr_story_from_clipboard, { desc = "GitHub review Pull Request story from clipboard" })
   vim.keymap.set("n", "<leader>grr", review_pr, { desc = "Review PR diff" })
   vim.keymap.set("n", "<leader>grx", resume_review_pr, { desc = "Resume review PR diff" })
+  require("which-key").add({ mode = "n", { "<leader>gr", group = "github review" } })
+
   -- grep
   vim.keymap.set("n", "<leader>sb", function() Snacks.picker.lines() end, { desc = "Buffer Lines" })
   vim.keymap.set("n", "<leader>sB", function() Snacks.picker.grep_buffers() end, { desc = "Grep Open Buffers" })
