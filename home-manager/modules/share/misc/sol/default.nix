@@ -3,12 +3,13 @@
 # src: https://github.com/noperator/sol
 #
 
-{ outputs, systemSettings, ... }: {
-  home.packages = [ outputs.packages.${systemSettings.system}.sol ];
-
-  # Symlink ~/.config/zsh/plugins/sol/sol.plugin.zsh
-  xdg.configFile."zsh/plugins/sol" = {
-    source = ./.config/zsh/plugins/sol;
-    recursive = true;
-  };
-}
+{}
+# { outputs, systemSettings, ... }: {
+#   home.packages = [ outputs.packages.${systemSettings.system}.sol ];
+#
+#   # Symlink ~/.config/zsh/plugins/sol/sol.plugin.zsh
+#   xdg.configFile."zsh/plugins/sol" = {
+#     source = ./.config/zsh/plugins/sol;
+#     recursive = true;
+#   };
+# }

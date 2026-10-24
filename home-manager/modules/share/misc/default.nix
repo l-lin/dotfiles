@@ -9,7 +9,7 @@
     # Code search-and-replace tool: https://github.com/dalance/amber
     #amber
     # Client for cheat.sh: https://github.com/chubin/cheat.sh
-    cht-sh
+    #cht-sh
     # Syntax highlighting for diff: https://www.colordiff.org/
     #colordiff
     # Scan Nix files for dead code: https://github.com/astro/deadnix
@@ -70,7 +70,7 @@
     # Command to produce a depth indented directory listing: https://oldmanprogrammer.net/source.php?dir=projects/tree
     tree
     # Convert terminal recordings to animated gifs: https://github.com/icholy/ttygif
-    ttygif
+    #ttygif
     # An extraction utility for archives compressed in .zip format: http://www.info-zip.org/
     unzip
     # Modern watch command: https://github.com/sachaos/viddy

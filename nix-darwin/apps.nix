@@ -101,7 +101,7 @@
       # i3-like tiling window manager for macOS: https://github.com/nikitabobko/AeroSpace
       "nikitabobko/tap/aerospace"
       # Tools for building Android applications: https://developer.android.com/studio/
-      "android-studio"
+      #"android-studio"
       # Web security testing toolkit: https://portswigger.net/burp/
       #"burp-suite"
       # Web debugging Proxy application: https://www.charlesproxy.com/
@@ -121,7 +121,7 @@
       # Free cross-platform office suite, fresh version: https://www.libreoffice.org/
       "libreoffice"
       # MacOS menu bar app for launching iOS  and Android 🤖 emulators: https://github.com/okwasniewski/minisim
-      "minisim"
+      #"minisim"
       # Knowledge base that works on top of a local folder of plain text Markdown files: https://obsidian.md/
       "obsidian"
       # Get up and running with large language models locally: https://github.com/ollama/ollama

@@ -3,6 +3,7 @@
 # src: https://github.com/savannahostrowski/gruyere
 #
 
-{
-  xdg.configFile."mise/conf.d/gruyere.toml".source = ./.config/mise/conf.d/gruyere.toml;
-}
+{}
+# {
+#   xdg.configFile."mise/conf.d/gruyere.toml".source = ./.config/mise/conf.d/gruyere.toml;
+# }
