@@ -7,7 +7,7 @@ Generate illustrated HTML zines that explain systems, code changes, plans, data,
 - Open the generated zine in the browser when available. Report when browser verification is unavailable.
 - Make the zine readable both on screen and when printed. A PDF or foldable booklet is not required unless requested.
 - Include an in-page quiz with exactly five multiple-choice questions and immediate answer feedback.
-- Apply this reference directly; do not inherit the HTML reference's Mermaid or slide requirements.
+- Apply this reference directly; do not inherit the HTML reference's diagram interaction or slide requirements.
 
 ## Plan the story
 
@@ -75,6 +75,37 @@ Keep the selected palette and visual devices consistent throughout that zine, in
 - Preserve exact source identifiers, directions, conditions, and failure behavior. Distinguish verified facts from assumptions.
 - Let illustrations carry the explanation: show movement, contrast, dependencies, or consequences rather than adding generic clip art. Keep collage and texture subordinate to those teaching jobs. Split crowded diagrams into several panels instead of shrinking their labels.
 - Make the explanation understandable without the illustration alone: include visible captions and accessible descriptions for meaningful SVGs.
+
+## Pele diagrams
+
+- For Mermaid-syntax diagrams, use [Pele](https://pele.run/) to render inline SVG, not Mermaid.js. Keep bespoke SVG illustrations and comic-style scenes where they explain the topic better. See the [API](https://pele.run/api), [theming](https://pele.run/theming), and [compatibility](https://pele.run/compatibility) references.
+- Preserve offline delivery: embed the Pele browser bundle (`pele/global`) and source in the HTML, or embed pre-rendered SVG. Do not depend on a runtime CDN import.
+- Bind Pele's CSS variables to the zine's chosen paper, ink, spot colors, and system fonts. Mermaid `theme` and `themeVariables` do not apply; Pele uses its own layout, not Mermaid's ELK configuration. Avoid fixed colors in diagram `style`, `classDef`, and `linkStyle` statements because they override the inherited theme.
+- Define the palette and font tokens below using the selected edition's values, then apply this mapping to each diagram container:
+
+```css
+.zine-diagram {
+  --pele-bg: var(--paper);
+  --pele-fg: var(--ink);
+  --pele-muted: var(--ink);
+  --pele-line: var(--ink);
+  --pele-surface: var(--paper);
+  --pele-surface-alt: var(--paper);
+  --pele-border: var(--ink);
+  --pele-accent: var(--spot-1);
+  --pele-critical: var(--spot-2);
+  --pele-error: var(--spot-2);
+  --pele-font: var(--font-body);
+  --pele-font-mono: var(--font-mono);
+  --pele-radius: 0px;
+}
+```
+
+- For charts and color-coded categories, map `--pele-series-1` through `--pele-series-8` to the edition's ink and two spot colors, reusing colors as needed. Check text contrast against `--pele-bg`; keep meaning independent of color.
+- Prefer pre-rendered SVG so the explanation and print output remain available without JavaScript. Pass matching `fontFamily` and `fontFamilyMono` options to `render()` so label measurements match the page. Color changes apply without re-rendering.
+- If mounting dynamically, use `pele.mount(container, source, { zoom: false })` in a block container. It reads fonts from CSS and handles resizes and pending web fonts. Call `refresh()` after revealing a page or changing fonts. Include a static SVG fallback for JavaScript-disabled reading and printing.
+- Do not require zoom or expansion to read a panel. Split or reflow wide diagrams to meet the screen and print label-size rules below. Use `<br/>` in quoted flowchart labels, not escaped `\n`; arbitrary HTML labels are not supported.
+- Keep visible captions and accessible descriptions for generated SVGs. Scope diagram styling with `.zine-diagram` and Pele's `.pele-*` classes. In print, map paper to white and ink to dark text; preserve borders, arrows, and labels without background printing.
 
 ## Layout and style invariants
 
@@ -148,6 +179,7 @@ Before delivery, verify:
 - source facts, identifiers, assumptions, and caveats are preserved;
 - desktop shows a compact two-page spread, mobile shows one page, and no content overflows or gets clipped;
 - buttons and `j`/`k` navigate correctly without interfering with quiz controls, losing answers, or leaving focus on a hidden page;
+- Mermaid-syntax diagrams use Pele with the edition's palette and fonts through `--pele-*` variables, remain readable without zoom, and have static SVG available offline, without JavaScript, and in print;
 - meaningful illustrations have accessible descriptions, and controls work with the keyboard;
 - all five quiz questions give correct feedback, with no console errors;
 - print preview includes all pages regardless of the active spread and preserves content, page order, legible diagrams, and the quiz answer key;

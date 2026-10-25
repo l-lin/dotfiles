@@ -15,25 +15,48 @@ Generate self-contained HTML pages that explain systems, code changes, plans, da
 
 | Content | Default representation |
 |---|---|
-| Flowchart, pipeline, state machine, decision tree | Mermaid |
-| Sequence, ER/schema, class, C4, topology-focused architecture | Mermaid |
-| Text-heavy architecture, module internals, implementation plans | CSS grid cards, optionally with a Mermaid overview |
-| 15+ element architecture | Hybrid: small Mermaid overview + CSS detail cards |
+| Flowchart, pipeline, state machine, decision tree | Pele (Mermaid syntax) |
+| Sequence, ER/schema, class, C4, topology-focused architecture | Pele (Mermaid syntax) |
+| Text-heavy architecture, module internals, implementation plans | CSS grid cards, optionally with a Pele overview |
+| 15+ element architecture | Hybrid: small Pele overview + CSS detail cards |
 | Comparison/audit/status matrix | Semantic HTML `<table>` |
 | Timeline/roadmap | CSS timeline |
 | Dashboard/metrics | CSS grid + charts/KPIs |
 | Slide deck | `100dvh` slides using slide template patterns |
 
-## Mermaid invariants
+## Pele diagram invariants
 
-- Use `theme: 'base'` with custom `themeVariables` matching the page palette.
-- For complex diagrams use ELK layout when available.
-- Never use bare `<pre class="mermaid">`.
-- Every Mermaid diagram needs zoom in/out/reset/expand controls, Ctrl/Cmd+scroll zoom, drag panning, and click-to-expand.
+- Use [Pele](https://pele.run/) to render Mermaid syntax to inline SVG, not Mermaid.js. See the [API](https://pele.run/api), [theming](https://pele.run/theming), and [compatibility](https://pele.run/compatibility) references.
+- Keep the page self-contained: embed the Pele browser bundle (`pele/global`) and diagram source in the HTML, or embed pre-rendered SVG with the needed interaction JS. Do not depend on a runtime CDN import.
+- Bind Pele's CSS variables to the page palette and fonts on `.diagram-shell` so diagrams inherit the HTML theme. Color changes apply without re-rendering. Mermaid `theme` and `themeVariables` do not apply; Pele uses its own layout, not Mermaid's ELK configuration.
+- Avoid fixed colors in diagram `style`, `classDef`, and `linkStyle` statements; they override the inherited theme.
+- Never use bare `<pre class="mermaid">`. Mount into a block container inside `.diagram-shell` with `pele.mount(container, source, { zoom: true })`. For pre-rendered SVG, attach `pele.enableZoom(container, { always: true })`.
+- Every diagram needs zoom in/out/reset/expand controls, Ctrl/Cmd+scroll zoom, drag panning, and click-to-expand. Pele provides zoom controls and panning; add expand controls and click-to-expand separately. Call the mounted diagram's `refresh()` after moving it into an expanded view.
 - Prefer `flowchart TD` for complex diagrams. Use `LR` only for simple 3–4 node linear flows.
-- Use `<br/>` in quoted flowchart labels. Do not use escaped `\n` labels.
-- Never define page-level `.node`; Mermaid uses it internally. Use namespaced page classes such as `.ve-card`.
-- For 15+ elements, do not cram everything into one Mermaid diagram. Use the hybrid overview + cards pattern.
+- Use `<br/>` in quoted flowchart labels. Do not use escaped `\n` labels. Pele supports line breaks, bold, and italic, not arbitrary HTML labels.
+- Use namespaced page classes such as `.ve-card`; target diagram elements with Pele's `.pele-*` classes.
+- For 15+ elements, do not cram everything into one diagram. Use the hybrid overview + cards pattern.
+
+Map these variables to the page's existing tokens, using its accent and font token names in place of the example names:
+
+```css
+.diagram-shell {
+  --pele-bg: var(--bg);
+  --pele-fg: var(--text);
+  --pele-muted: var(--text-dim);
+  --pele-line: var(--text-dim);
+  --pele-surface: var(--surface);
+  --pele-surface-alt: var(--bg);
+  --pele-border: var(--border);
+  --pele-accent: var(--accent);
+  --pele-critical: var(--accent);
+  --pele-error: var(--accent);
+  --pele-font: var(--font-body);
+  --pele-font-mono: var(--font-mono);
+}
+```
+
+For charts and color-coded categories, map `--pele-series-1` through `--pele-series-8` to the page's accents, reusing colors as needed. Check text contrast against `--pele-bg`. Define the font tokens before mounting; `mount()` reads them from CSS and redraws after pending web fonts load. Call `refresh()` after changing fonts. When pre-rendering with `render()`, pass matching `fontFamily` and `fontFamilyMono` options so label measurements match the page.
 
 ## Layout and style invariants
 
@@ -80,7 +103,8 @@ Before delivery, verify:
 - no horizontal overflow at normal desktop width;
 - fonts load with fallbacks;
 - tables preserve rows/columns and wrap long text;
-- Mermaid diagrams use `diagram-shell` with zoom/pan/expand;
+- Mermaid syntax is rendered by Pele as inline SVG, with palette and fonts inherited from the page through `--pele-*` variables;
+- diagrams use `diagram-shell` with zoom/pan/expand and no runtime CDN dependency;
 - slides fit one viewport, include carousel dots, and preserve source coverage;
 - pages include a five-question interactive multiple-choice quiz with answer feedback;
 - correct quiz answers are not systematically longer or more detailed than distractors;
