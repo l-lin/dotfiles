@@ -52,7 +52,7 @@ in {
   xdg.configFile."tmux/plugins.conf".source = ./.config/tmux/plugins.conf;
   xdg.configFile."tmux/colorscheme.conf".text = ''
 # Colorscheme (must be set before other plugins)
-set -g @plugin 'l-lin/tmux-colorscheme'
+set -g @plugin 'https://codeberg.org/l-lin/tmux-colorscheme'
 set -g @tmux-colorscheme 'home-manager'
 set -g @tmux-colorscheme-show-pomodoro true
 set -g @tmux-colorscheme-show-upload-speed true
