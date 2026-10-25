@@ -35,7 +35,7 @@
     remote_context          # remote context to display to alert me I'm in not in local
     os_icon                 # os identifier
     dir                     # current directory
-    #vcs                    # git status
+    vcs                    # git status
     background_jobs         # presence of background jobs
     #direnv                 # direnv status (https://direnv.net/)
     # =========================[ Line #2 ]=========================
