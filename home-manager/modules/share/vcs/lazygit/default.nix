@@ -37,5 +37,7 @@ keybinding:
     nextPage: "<ctrl-d>"
     gotoTop: "g"
     gotoBottom: "G"
+
+    prevScreenMode: "-"
   '';
 }
