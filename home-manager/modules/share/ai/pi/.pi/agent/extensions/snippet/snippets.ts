@@ -51,7 +51,7 @@ export const SNIPPETS: SnippetDef[] = [
     trigger: "$concise",
     description: "Be concise",
     expansion:
-      "(Re)State it more simply and concisely, like one human talking to another. Don't use jargon and speak coherently.",
+      "State it more simply and concisely, like one human talking to another. Don't use jargon and speak coherently.",
   },
   {
     trigger: "$commit",
