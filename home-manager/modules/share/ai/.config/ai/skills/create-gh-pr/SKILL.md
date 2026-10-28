@@ -35,6 +35,6 @@ Use a `mermaid` blocks.
 
 - **Title**: conventional commits style — `<type>(JIRA-123): <description>`
 - **Summary**: state what and why; skip what the code does, the diff shows that
-- **Diagram**: add only when it clarifies; mermaid preferred
+- **Diagram**: add only when it clarifies; Mermaid preferred. Use left-to-right (`LR`) layout where supported (e.g. `flowchart LR`), not top-down (`TD`).
 - **Notes**: flag non-obvious decisions, edge cases, and where reviewers should focus
 - **Concise**: no one wants to read wall of texts, be concise
