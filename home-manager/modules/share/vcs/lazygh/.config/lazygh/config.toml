@@ -39,6 +39,6 @@ flags = ["--sort", "updated", "--order", "desc", "--state", "open", "--author", 
 auto_refresh = true
 
 [[pull_requests.searches]]
-label = "My reviews"
-flags = ["--reviewed-by", "@me", "--limit", "100", "--state", "open", "--sort", "updated", "--order", "desc"]
+label = "Assigned to me"
+flags = ["--assignee", "@me", "--limit", "100", "--state", "open", "--sort", "updated", "--order", "desc"]
 auto_refresh = true
