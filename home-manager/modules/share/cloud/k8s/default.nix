@@ -19,7 +19,7 @@
     # Colorizes kubectl output: https://github.com/kubecolor/kubecolor
     #kubecolor
     # Faster way to switch between clusters and namespaces in kubectl: https://github.com/ahmetb/kubectx
-    kubectx
+    #kubectx
     # The Kubernetes IDE: https://k8slens.dev/
     #lens
   ];
