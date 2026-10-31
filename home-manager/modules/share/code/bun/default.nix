@@ -3,6 +3,7 @@
 # src: https://bun.sh/
 #
 
-{ pkgs, ... }: {
-  home.packages = with pkgs; [ bun ];
-}
+{}
+# { pkgs, ... }: {
+#   home.packages = with pkgs; [ bun ];
+# }
