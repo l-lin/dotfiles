@@ -46,6 +46,5 @@
       source = ./.config/zsh/plugins/mise;
       recursive = true;
     };
-    "mise/conf.d/mise.toml".source = ./.config/mise/conf.d/mise.toml;
   };
 }
