@@ -5,7 +5,7 @@
 {
   imports = [
     ./claude-code
-    ./dust
+    # ./dust
     ./llama-cpp
     #./mlx
     #./ollama
