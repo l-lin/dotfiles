@@ -68,7 +68,7 @@ vim.lsp.enable({
   "fuzzy_ls",
   "html",
   "gopls",
-  "jdtls",
+  -- "jdtls",
   "jsonls",
   "kmp_lsp",
   "lemminx",
