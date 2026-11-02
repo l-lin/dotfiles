@@ -8,7 +8,9 @@ disable-model-invocation: false
 
 ## Overview
 
-Apply William Strunk Jr.'s _The Elements of Style_: write clearly, cut ruthlessly, say exactly what you mean.
+Apply William Strunk Jr.'s _The Elements of Style_ to organize information and remove unnecessary words. Preserve the intended meaning.
+
+When ASD-STE100 Simplified Technical English instructions apply, follow them before the style guidance in this skill. Follow the required vocabulary, sentence limits, and verb forms. Preserve code identifiers, commands, paths, and quoted text.
 
 ## Rules
 
@@ -38,14 +40,14 @@ Apply William Strunk Jr.'s _The Elements of Style_: write clearly, cut ruthlessl
 
 ### Custom rules
 
-- Preserve every idea and fact unless clarity demands a change
+- Preserve every idea and fact. Change the wording, not the meaning.
 - Keep paragraphs short (no more than three brief sentences)
-- Vary sentence length to avoid monotony
-- Replace jargon and complex words with plain, direct language; use contractions
+- Keep each sentence within the applicable word limit. Give one instruction per sentence.
+- Use plain, direct language. Keep necessary technical terms consistent. Do not use contractions.
 - Remove clichés, filler adverbs, and stock metaphors (e.g., "navigate," "journey," "roadmap")
 - Avoid bullet points unless essential for scan-ability
 - Never add a summary or recap at the end—finish on a crisp, final line
 - Do not use em dashes; use commas, periods, or rewrite as needed
-- Add dry humor or an idiom if it fits, but never sound like an infomercial
-- After rewriting, review and fix any sentence that still feels machine-made
+- Do not use idioms or figurative language. Use humor only where the communication instructions permit it.
+- After rewriting, check the meaning, structure, and wording against the applicable communication instructions.
 
