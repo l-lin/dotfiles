@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { renderFakeCursor } from "@earendil-works/pi-tui";
 import { ReplyComponent } from "./component.js";
 import { REPLY_KEYMAP } from "./settings.js";
 import {
@@ -19,7 +20,8 @@ test("reply component GIVEN repeated literal text WHEN searching live THEN shows
 
   component.handleInput("/");
   const actualEmptyPrompt = component.render(50).join("\n");
-  assert.match(actualEmptyPrompt, /\/\x1b\[7m \x1b\[27m/);
+  const expectedEmptyPrompt = `/${renderFakeCursor(" ")}`;
+  assert.equal(actualEmptyPrompt.includes(expectedEmptyPrompt), true);
   when_typing(component, "foo");
   component.handleInput("\r");
 

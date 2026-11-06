@@ -1,3 +1,4 @@
+import { stripTerminalSequences } from "@earendil-works/pi-tui";
 import { ReplyComponent } from "./component.js";
 import { REPLY_KEYMAP } from "./settings.js";
 import type { CursorPosition, SelectionRange } from "./model.js";
@@ -115,10 +116,7 @@ export function then_yank_highlight(
 }
 
 export function then_render_text(component: ReplyComponent): string {
-  return component
-    .render(50)
-    .join("\n")
-    .replace(/\x1b\[[0-9;]*m/gu, "");
+  return stripTerminalSequences(component.render(50).join("\n"));
 }
 
 export async function when_yank_settles(): Promise<void> {
