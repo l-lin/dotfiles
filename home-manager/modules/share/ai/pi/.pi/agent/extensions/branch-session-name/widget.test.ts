@@ -102,6 +102,7 @@ async function given_session_widget(name?: string, hasUI = true) {
     },
   } as unknown as ExtensionContext;
   branchSessionName({
+    registerCommand() {},
     on(
       event: string,
       handler: (event: unknown, ctx: ExtensionContext) => unknown,

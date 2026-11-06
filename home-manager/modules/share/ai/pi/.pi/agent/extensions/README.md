@@ -7,7 +7,7 @@ This directory contains local Pi extensions and shared support modules. Each ent
 | [`active-skills`](./active-skills/)             | Shows a widget with the `SKILL.md` files loaded in the current session.                                                                              |
 | [`ask-user-question`](./ask-user-question/)     | Adds an interactive TUI prompt for asking the user one or more multiple-choice questions.                                                            |
 | [`awesome-editor`](./awesome-editor/)           | Replaces the editor with configurable vi or emacs editing and snippet autocomplete.                                                                  |
-| [`branch-session-name`](./branch-session-name/) | Names new unnamed sessions from Git branches except main and master, and shows the session name above the editor.                                    |
+| [`branch-session-name`](./branch-session-name/) | Names sessions after non-main/master branches, resumes matching sessions at interactive startup, and shows the session name above the editor.        |
 | [`context`](./context/)                         | Shows a TUI overview of loaded extensions, skills, project context files, and usage totals.                                                          |
 | [`reply`](./reply/)                             | Opens the latest assistant message in a Vim-style popup so you can annotate or yank selected text and insert review prompts into the composer.       |
 | [`execution-timer`](./execution-timer/)         | Tracks each run and shows elapsed time with a simple tool-versus-agent breakdown.                                                                    |
