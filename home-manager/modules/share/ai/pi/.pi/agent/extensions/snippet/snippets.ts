@@ -64,6 +64,11 @@ export const SNIPPETS: SnippetDef[] = [
     expansion: "Use fewer words, big pictures.",
   },
   {
+    trigger: "$visual-cues",
+    description: "Visual cues",
+    expansion: "Use visual cues like ASCII diagrams.",
+  },
+  {
     trigger: "$test-at-the-end",
     description: "Run the tests at the end",
     expansion:
