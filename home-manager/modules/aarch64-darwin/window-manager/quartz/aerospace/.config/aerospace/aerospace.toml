@@ -215,10 +215,6 @@ automatically-unhide-macos-hidden-apps = false
     run = 'move-node-to-workspace 9'
 
 [[on-window-detected]]
-    if.app-name-regex-substring = 'com.jetbrains.intellij.ce'
-    run = 'move-node-to-workspace 0'
-
-[[on-window-detected]]
     if.app-name-regex-substring = 'finder'
     run = 'layout floating'
 
@@ -228,8 +224,4 @@ automatically-unhide-macos-hidden-apps = false
 
 [[on-window-detected]]
     if.app-id = 'io.mpv'
-    run = 'layout floating'
-
-[[on-window-detected]]
-    if.app-id = 'com.mitchellh.ghostty'
     run = 'layout floating'
