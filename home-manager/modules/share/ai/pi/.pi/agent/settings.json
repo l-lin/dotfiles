@@ -33,7 +33,7 @@
       "enabled": false
     },
     "webSearch": {
-      "enabled": false
+      "enabled": true
     }
   },
   "hideThinkingBlock": false,
@@ -47,6 +47,9 @@
   "skills": [
     "~/.config/ai/skills"
   ],
+  "terminal": {
+    "hyperlinks": false
+  },
   "theme": "grey",
   "treeFilterMode": "no-tools",
   "tuiMode": "regular"
