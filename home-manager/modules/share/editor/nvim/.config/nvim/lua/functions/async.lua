@@ -18,7 +18,7 @@ end
 
 ---Run the make program asynchronously and populate the quickfix list.
 local function make()
-  local lines = { "" }
+  local lines = {}
   local winnr = vim.fn.win_getid()
   local bufnr = vim.api.nvim_win_get_buf(winnr)
 
@@ -36,7 +36,12 @@ local function make()
   local function on_event(_, data, event)
     if event == "stdout" or event == "stderr" then
       if data then
-        vim.list_extend(lines, data)
+        -- remove empty lines from the output, so they don't get added to the quickfix list
+        for _, line in ipairs(data) do
+          if line ~= "" then
+            table.insert(lines, line)
+          end
+        end
       end
     end
 
@@ -53,6 +58,7 @@ local function make()
       if error_count == 0 then
         vim.notify(" Build completed successfully", vim.log.levels.INFO, { title = "Make" })
       else
+        vim.cmd("copen")
         vim.notify(
           string.format(" Build failed with %d error(s)", error_count),
           vim.log.levels.ERROR,
@@ -62,6 +68,7 @@ local function make()
     end
   end
 
+  vim.notify(" Compiling...", vim.log.levels.INFO, { title = "Make" })
   vim.fn.jobstart(cmd, {
     on_stderr = on_event,
     on_stdout = on_event,
