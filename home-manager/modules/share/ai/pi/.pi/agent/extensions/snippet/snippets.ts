@@ -86,6 +86,11 @@ export const SNIPPETS: SnippetDef[] = [
     expansion:
       "Handle the PR ${1:pr url} opened comments. Only make the changes.",
   },
+  {
+    trigger: "$irrefutable-proof",
+    description: "Ask for proof",
+    expansion: "Give me irrefutable proof that this works."
+  },
 
   // ── When we're trying to understand something ──────────────────────
   {
