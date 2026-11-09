@@ -89,7 +89,7 @@ export const SNIPPETS: SnippetDef[] = [
   {
     trigger: "$irrefutable-proof",
     description: "Ask for proof",
-    expansion: "Give me irrefutable proof that this works."
+    expansion: "Give me irrefutable proof that this works.",
   },
 
   // ── When we're trying to understand something ──────────────────────
