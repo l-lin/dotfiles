@@ -12,7 +12,7 @@ import {
   SessionManager,
   type CreateAgentSessionRuntimeFactory,
 } from "@earendil-works/pi-coding-agent";
-import branchSessionName from "./index.js";
+import sessionNameExtension from "./index.js";
 
 const exec = promisify(execFile);
 
@@ -55,7 +55,7 @@ test(
           noPromptTemplates: true,
           noContextFiles: true,
           extensionFactories: [
-            branchSessionName,
+            sessionNameExtension,
             (pi) => {
               pi.on("session_start", async (event) => {
                 starts.push(event.reason);

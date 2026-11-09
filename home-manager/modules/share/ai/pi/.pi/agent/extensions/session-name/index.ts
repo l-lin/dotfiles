@@ -6,7 +6,7 @@ import {
 } from "@earendil-works/pi-coding-agent";
 import { buildSessionNameLine } from "./widget.js";
 
-export default function branchSessionName(pi: ExtensionAPI) {
+export default function sessionName(pi: ExtensionAPI) {
   let pendingResume: { branch: string; sessionId: string } | undefined;
   let resumeImmediate: ReturnType<typeof setImmediate> | undefined;
   let active = true;
@@ -78,17 +78,15 @@ export default function branchSessionName(pi: ExtensionAPI) {
 
   function updateSessionWidget(ctx: ExtensionContext) {
     if (!ctx.hasUI) return;
-    const name = ctx.sessionManager.getSessionName();
-    if (!name?.trim()) {
-      ctx.ui.setWidget("session-name", undefined);
-      return;
-    }
-
     ctx.ui.setWidget(
       "session-name",
       (_tui, theme) => ({
         render(width: number): string[] {
-          const line = buildSessionNameLine(width, theme, name);
+          const line = buildSessionNameLine(
+            width,
+            theme,
+            ctx.sessionManager.getSessionName(),
+          );
           return line ? [line] : [];
         },
         invalidate() {},

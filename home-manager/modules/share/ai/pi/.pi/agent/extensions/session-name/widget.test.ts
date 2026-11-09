@@ -8,7 +8,7 @@ import type {
 } from "@earendil-works/pi-coding-agent";
 import type { Component, TUI } from "@earendil-works/pi-tui";
 import { visibleWidth } from "@earendil-works/pi-tui";
-import branchSessionName from "./index.js";
+import sessionNameExtension from "./index.js";
 import { buildSessionNameLine } from "./widget.js";
 
 const theme = {
@@ -101,7 +101,7 @@ async function given_session_widget(name?: string, hasUI = true) {
       },
     },
   } as unknown as ExtensionContext;
-  branchSessionName({
+  sessionNameExtension({
     registerCommand() {},
     on(
       event: string,
@@ -127,9 +127,9 @@ async function given_session_widget(name?: string, hasUI = true) {
       placement,
       updates,
     }),
-    when_renaming(value?: string) {
+    when_renaming(value?: string, emitEvent = true) {
       sessionName = value;
-      handlers.get("session_info_changed")!({}, ctx);
+      if (emitEvent) handlers.get("session_info_changed")!({}, ctx);
     },
     async when_starting(value?: string, reason = "reload") {
       sessionName = value;
@@ -180,6 +180,36 @@ test("GIVEN a session label WHEN renamed or cleared THEN the widget updates imme
   const expected = { renamed: ["  New name "], cleared: [], updates: 3 };
   assert.deepEqual(actual, expected);
 });
+
+for (const name of [undefined, "Old name"]) {
+  test(`GIVEN name ${JSON.stringify(name)} WHEN renamed without a session event THEN rendering uses the current name`, async () => {
+    // GIVEN
+    const session = await given_session_widget(name);
+
+    // WHEN
+    session.when_renaming("Custom name", false);
+    const renamed = session.when_rendering();
+    session.when_renaming(undefined, false);
+    const cleared = session.when_rendering();
+    session.when_renaming("Other custom name", false);
+    const restored = session.when_rendering();
+
+    // THEN
+    const actual = {
+      renamed: renamed.widget,
+      cleared: cleared.widget,
+      restored: restored.widget,
+      updates: restored.updates,
+    };
+    const expected = {
+      renamed: ["  Custom name "],
+      cleared: [],
+      restored: ["  Other custom name "],
+      updates: 1,
+    };
+    assert.deepEqual(actual, expected);
+  });
+}
 
 test("GIVEN a session label WHEN another session starts THEN the widget uses its name", async () => {
   const session = await given_session_widget("Old session");

@@ -12,7 +12,7 @@ import {
   type ExtensionContext,
   type SessionStartEvent,
 } from "@earendil-works/pi-coding-agent";
-import branchSessionName from "./index.js";
+import sessionNameExtension from "./index.js";
 
 const exec = promisify(execFile);
 
@@ -39,7 +39,7 @@ function given_session(
   const notices: unknown[] = [];
   const messages: unknown[] = [];
   let name = options.name;
-  branchSessionName({
+  sessionNameExtension({
     on(event: string, callback: Handler) {
       handlers.set(event, callback);
     },
@@ -160,7 +160,7 @@ for (const options of [
 }
 
 test("GIVEN a saved unnamed session WHEN startup occurs THEN naming does not run", async (t) => {
-  const directory = mkdtempSync(join(tmpdir(), "branch-session-name-"));
+  const directory = mkdtempSync(join(tmpdir(), "session-name-"));
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   const file = join(directory, "session.jsonl");
   writeFileSync(file, "");
@@ -219,7 +219,7 @@ test("GIVEN a named session WHEN another startup occurs THEN its name stays unch
 });
 
 test("GIVEN a Git repository WHEN sessions start from a subdirectory THEN Git supplies the branch", async (t) => {
-  const directory = mkdtempSync(join(tmpdir(), "branch-session-name-git-"));
+  const directory = mkdtempSync(join(tmpdir(), "session-name-git-"));
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   await exec("git", ["init", "--initial-branch=feature/ABC-123"], {
     cwd: directory,
