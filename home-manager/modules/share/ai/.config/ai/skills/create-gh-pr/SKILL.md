@@ -6,6 +6,13 @@ disable-model-invocation: true
 
 Create a PR description with `gh` CLI with a clear, reviewer-friendly description.
 
+## Scope
+
+- Only create the GitHub PR or update its description.
+- Do not run formatters, linters, tests, or other code checks.
+- Do not change project files.
+- Use existing information for the PR description. Do not claim that checks ran unless existing results confirm this.
+
 ## Workflow
 
 1. Find the Jira ticket in the branch name (e.g. `FEAT-456-add-auth`)
