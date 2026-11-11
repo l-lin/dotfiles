@@ -60,7 +60,7 @@ When rules conflict:
 
 - **Verify, don't assume**: "should work" ≠ "does work". Run the code or the test before claiming success.
 - **BDD structure**: tests use GIVEN/WHEN/THEN. Name the result `actual`, the expectation `expected`. Prefix helpers `given_`/`when_`/`then_`.
-- **Comment the why, not the what**: `# lock before read, job runner mutates concurrently`, never `# read the file`.
+- **Comment the why, not the what**: `# lock before read, job runner mutates concurrently`, never `# read the file`, and use visual cues like ASCII diagrams to convey the intent, as I don't like wall of texts.
 - **Make illegal states unrepresentable**: encode invariants in types so invalid states can't exist (e.g. non-empty strings, tagged unions for finite state, ranges via types not assertions).
 - **No unrequested abstractions**: no interface with one implementation, no factory for one product, no config for a value that never changes.
 - **No scaffolding "for later"**: build only what this task needs.
