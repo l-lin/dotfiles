@@ -16,7 +16,7 @@ Create a PR description with `gh` CLI with a clear, reviewer-friendly descriptio
 ## Workflow
 
 1. Find the Jira ticket in the branch name (e.g. `FEAT-456-add-auth`)
-2. Invoke the `jira` skill to fetch the Jira url
+2. Use the Atlassian MCP to fetch the Jira ticket URL
 3. Draft the description with the template below
   3.1. Invoke `clear-writing` skill for writing the PR description and use bullet points
   3.2. Create Mermaid diagrams (flow, sequence, component map, state)
