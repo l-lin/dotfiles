@@ -48,12 +48,19 @@ export function getModelInfo(ctx: any): string {
   return model ? `${model.provider}/${model.id}` : "no-model";
 }
 
-export function buildToolIcons(theme: Theme): string {
+export function buildToolIcons(theme: Theme, verdictEnabled?: boolean): string {
   const toolStatus = getToolStatus();
+  if (verdictEnabled !== undefined) toolStatus.set("verdict", verdictEnabled);
 
-  return TOOL_ORDER.map((tool) => {
-    const enabled = toolStatus.get(tool) ?? true;
-    const icon = enabled ? TOOL_ICONS[tool].enabled : TOOL_ICONS[tool].disabled;
-    return theme.fg("dim", icon);
-  }).join(" ");
+  return TOOL_ORDER.filter(
+    (tool) => tool !== "verdict" || verdictEnabled !== undefined,
+  )
+    .map((tool) => {
+      const enabled = toolStatus.get(tool) ?? true;
+      const icon = enabled
+        ? TOOL_ICONS[tool].enabled
+        : TOOL_ICONS[tool].disabled;
+      return theme.fg("dim", icon);
+    })
+    .join(" ");
 }

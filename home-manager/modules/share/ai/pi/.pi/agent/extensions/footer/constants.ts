@@ -26,12 +26,14 @@ export const TOOL_ICONS: Record<string, { enabled: string; disabled: string }> =
     "ask-user-question": { enabled: "󰍡", disabled: "󱙍" },
     "web-fetch": { enabled: "󰩄", disabled: "󱛮" },
     "web-search": { enabled: "󰖟", disabled: "󰪎" },
+    verdict: { enabled: "󰒘", disabled: "󰦞" },
   };
 
 export const TOOL_ORDER: Array<keyof typeof TOOL_ICONS> = [
   "ask-user-question",
   "web-fetch",
   "web-search",
+  "verdict",
 ];
 
 export type ThinkingLevel =

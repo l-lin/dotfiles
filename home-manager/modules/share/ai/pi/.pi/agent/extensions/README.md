@@ -17,6 +17,7 @@ This directory contains local Pi extensions and shared support modules. Each ent
 | [`snippet`](./snippet/)                     | Leaves submitted prompts literal and keeps the shared snippet catalog available for `awesome-editor` `Ctrl-E` expansion.                                  |
 | [`token-speed`](./token-speed/)             | Tracks assistant token speed and publishes live `tok/s` snapshots over the extension event bus.                                                           |
 | [`tool-settings`](./tool-settings/)         | Shared helpers for enable or disable toggles and persisted extension settings. It is support infrastructure, not a user-facing feature by itself.         |
+| [`verdict`](./verdict/)                     | Checks tool calls with permission rules and a classifier, with local Kev as the default.                                                                  |
 | [`vim`](./vim/)                             | Shared Vim motion primitives used by the `reply` and `awesome-editor` extensions. It is support infrastructure, not a user-facing feature by itself.      |
 | [`web-fetch`](./web-fetch/)                 | Fetches a URL as readable text or raw page content.                                                                                                       |
 | [`web-search`](./web-search/)               | Searches the web through Tavily, with filters and AI-generated summaries.                                                                                 |

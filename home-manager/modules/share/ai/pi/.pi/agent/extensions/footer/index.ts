@@ -1,10 +1,4 @@
-/**
- * A nicer footer
- *
- * Dependencies:
- *
- * - ../sandbox/
- */
+/** Show session data and extension status. */
 
 import type {
   ExtensionAPI,
@@ -12,6 +6,7 @@ import type {
   Theme,
 } from "@earendil-works/pi-coding-agent";
 import type { Component, TUI } from "@earendil-works/pi-tui";
+import type { FooterRuntimeState } from "./lines.js";
 
 // defer footer formatting modules until the TUI needs the custom footer.
 type FooterRuntime = {
@@ -42,8 +37,16 @@ function loadFooterRuntime(): Promise<FooterRuntime> {
 
 export default function (pi: ExtensionAPI) {
   let currentTui: TUI | undefined;
+  const runtimeState: FooterRuntimeState = {};
 
   pi.events.on("custom-tool:changed", () => {
+    currentTui?.requestRender();
+  });
+  pi.events.on("verdict:changed", (data) => {
+    if (!data || typeof data !== "object") return;
+    const enabled = (data as { enabled?: unknown }).enabled;
+    if (enabled !== undefined && typeof enabled !== "boolean") return;
+    runtimeState.verdictEnabled = enabled;
     currentTui?.requestRender();
   });
 
@@ -70,7 +73,9 @@ export default function (pi: ExtensionAPI) {
             const lines: string[] = [];
 
             // Line 1: Stats (context, tools, cost | thinking, model)
-            lines.push(runtime.buildStatsLine(width, theme, ctx, pi));
+            lines.push(
+              runtime.buildStatsLine(width, theme, ctx, pi, runtimeState),
+            );
 
             // Line 2: Directory and git branch
             lines.push(runtime.buildDirectoryLine(width, theme, footerData));
@@ -91,5 +96,6 @@ export default function (pi: ExtensionAPI) {
         };
       },
     );
+    pi.events.emit("verdict:request-status", {});
   });
 }

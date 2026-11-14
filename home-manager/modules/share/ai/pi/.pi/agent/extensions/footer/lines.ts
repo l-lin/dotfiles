@@ -23,8 +23,7 @@ import {
 } from "./data.js";
 
 export interface FooterRuntimeState {
-  sandboxEnabled?: boolean;
-  damageControlEnabled?: boolean;
+  verdictEnabled?: boolean;
 }
 
 export function buildStatsLine(
@@ -32,12 +31,13 @@ export function buildStatsLine(
   theme: Theme,
   ctx: any,
   pi: ExtensionAPI,
+  runtimeState: FooterRuntimeState = {},
 ): string {
   // Left side: context, tools, cost
   const contextData = getContextData(ctx);
   const leftParts: string[] = [];
 
-  const toolIcons = buildToolIcons(theme);
+  const toolIcons = buildToolIcons(theme, runtimeState.verdictEnabled);
   if (toolIcons) {
     leftParts.push(toolIcons);
   }
