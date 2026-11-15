@@ -237,7 +237,9 @@ test("GIVEN default debug settings WHEN a classifier allows THEN the tool appear
 test("GIVEN a rule decision without a reason WHEN a file tool runs THEN no debug notification appears", async () => {
   const harness = given_harness();
   for (const toolName of ["read", "write", "edit"]) {
-    const actual = await when_tool_call(harness, toolName, { path: "package.json" });
+    const actual = await when_tool_call(harness, toolName, {
+      path: "package.json",
+    });
     const expected = undefined;
     assert.equal(actual, expected);
   }
@@ -300,6 +302,24 @@ test("GIVEN debug enabled WHEN the classifier asks or denies THEN one notificati
   }
 });
 
+test("GIVEN action lengths near the limit WHEN debug formats them THEN only long actions are truncated", () => {
+  for (const length of [199, 200, 201, 20000]) {
+    const action = `bash: ${"x".repeat(length - 6)}`;
+    const actual = debugMessage(
+      {
+        verdict: "allow",
+        reason: "Allowed action",
+        source: "classifier",
+        degraded: false,
+      },
+      action,
+    );
+    const expectedAction = length > 200 ? `${action.slice(0, 199)}…` : action;
+    const expected = ` ${expectedAction}\n  (classifier): Allowed action`;
+    assert.equal(actual, expected);
+  }
+});
+
 test("GIVEN a protected path WHEN debug formats the decision THEN the path stays hidden", () => {
   const actual = debugMessage(
     {
@@ -321,7 +341,11 @@ test("GIVEN removed command rules WHEN a matching command runs THEN the classifi
   for (const choice of ["allow", "deny"] as const) {
     const harness = given_harness();
     harness.ctx.modelRegistry.classify = async () => {
-      harness.nativeCalls.push({ model: given_model(), context: {}, options: {} });
+      harness.nativeCalls.push({
+        model: given_model(),
+        context: {},
+        options: {},
+      });
       return given_answer(choice);
     };
     const actual = await when_tool_call(harness);

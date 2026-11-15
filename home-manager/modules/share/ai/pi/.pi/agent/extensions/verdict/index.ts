@@ -60,7 +60,9 @@ export function debugMessage(value: Verdict, action: string): string {
       ? `${action.split(":", 1)[0]}: [protected path]`
       : action;
 
-  return ` ${tool}\n ${result}`;
+  const preview = tool.length > 200 ? `${tool.slice(0, 199)}…` : tool;
+
+  return ` ${preview}\n ${result}`;
 }
 
 export default function verdict(pi: ExtensionAPI): void {
