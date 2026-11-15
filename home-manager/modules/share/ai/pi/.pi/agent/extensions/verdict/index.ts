@@ -60,7 +60,7 @@ export function debugMessage(value: Verdict, action: string): string {
       ? `${action.split(":", 1)[0]}: [protected path]`
       : action;
 
-  const preview = tool.length > 200 ? `${tool.slice(0, 199)}…` : tool;
+  const preview = tool.length > 190 ? `${tool.slice(0, 189)}…` : tool;
 
   return ` ${preview}\n ${result}`;
 }

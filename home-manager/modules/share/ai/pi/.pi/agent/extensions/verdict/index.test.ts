@@ -303,7 +303,7 @@ test("GIVEN debug enabled WHEN the classifier asks or denies THEN one notificati
 });
 
 test("GIVEN action lengths near the limit WHEN debug formats them THEN only long actions are truncated", () => {
-  for (const length of [199, 200, 201, 20000]) {
+  for (const length of [189, 190, 191, 20000]) {
     const action = `bash: ${"x".repeat(length - 6)}`;
     const actual = debugMessage(
       {
@@ -314,7 +314,7 @@ test("GIVEN action lengths near the limit WHEN debug formats them THEN only long
       },
       action,
     );
-    const expectedAction = length > 200 ? `${action.slice(0, 199)}…` : action;
+    const expectedAction = length > 190 ? `${action.slice(0, 189)}…` : action;
     const expected = ` ${expectedAction}\n  (classifier): Allowed action`;
     assert.equal(actual, expected);
   }
