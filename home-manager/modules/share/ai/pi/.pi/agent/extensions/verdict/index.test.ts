@@ -3,8 +3,10 @@ import { afterEach, beforeEach, test } from "node:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
+import { stripVTControlCharacters } from "node:util";
 import type { ClassifierResult } from "@earendil-works/pi-ai";
 import verdict, { debugMessage } from "./index.js";
+import { Text, visibleWidth } from "@earendil-works/pi-tui";
 import {
   classifyNative,
   composeVerdictLine,
@@ -302,21 +304,78 @@ test("GIVEN debug enabled WHEN the classifier asks or denies THEN one notificati
   }
 });
 
-test("GIVEN action lengths near the limit WHEN debug formats them THEN only long actions are truncated", () => {
-  for (const length of [189, 190, 191, 20000]) {
-    const action = `bash: ${"x".repeat(length - 6)}`;
-    const actual = debugMessage(
-      {
-        verdict: "allow",
-        reason: "Allowed action",
-        source: "classifier",
-        degraded: false,
-      },
-      action,
-    );
-    const expectedAction = length > 190 ? `${action.slice(0, 189)}…` : action;
-    const expected = ` ${expectedAction}\n  (classifier): Allowed action`;
-    assert.equal(actual, expected);
+test("GIVEN terminal widths WHEN debug formats actions THEN truncation uses the available columns", () => {
+  for (const width of [40, 80, 120, 240]) {
+    for (const length of [width - 4, width - 3, width - 2, 20000]) {
+      const action = `bash: ${"x".repeat(length - 6)}`;
+      const actual = debugMessage(
+        {
+          verdict: "allow",
+          reason: "Allowed action",
+          source: "classifier",
+          degraded: false,
+        },
+        action,
+        width,
+      );
+      const expectedAction =
+        length > width - 3 ? `${action.slice(0, width - 4)}…` : action;
+      const expected = ` ${expectedAction}\n  (classifier): Allowed action`;
+      assert.equal(stripVTControlCharacters(actual), expected);
+    }
+  }
+});
+
+test("GIVEN multiline and wide tool text WHEN notifications render THEN the tool occupies one row", () => {
+  for (const verdict of ["allow", "ask", "deny"] as const) {
+    for (const width of [40, 80, 120]) {
+      for (const action of [
+        "bash: ./mvnw -q verify\n -Dtest='ApplicationTest'\r\n\t-pl consent/adapter,bootstrap/scheduled-jobs -am",
+        `bash: ${"界😀e\u0301".repeat(80)}`,
+        "bash: echo\tvalue\nnext\rfinal",
+      ]) {
+        const message = debugMessage(
+          {
+            verdict,
+            reason: `classifier: ${verdict} 64% (confidence 46%; allow 23%, deny 12%)`,
+            source: "classifier",
+            degraded: false,
+          },
+          action,
+          width,
+        );
+        const prefix = verdict === "deny" ? "Warning: " : "";
+        const actual = new Text(`${prefix}${message}`, 1, 0).render(width);
+        const expected = 2;
+        assert.equal(actual.length, expected);
+        assert.ok(actual.every((line) => visibleWidth(line) <= width));
+        assert.doesNotMatch(message.split("\n")[0], /[\r\t]/);
+      }
+    }
+  }
+});
+
+test("GIVEN changing terminal widths WHEN tool calls run THEN debug uses current columns or an 80-column default", async () => {
+  const harness = given_harness();
+  const descriptor = Object.getOwnPropertyDescriptor(process.stdout, "columns");
+  try {
+    for (const width of [undefined, 0, 40, 120]) {
+      Object.defineProperty(process.stdout, "columns", {
+        configurable: true,
+        value: width,
+      });
+      await when_tool_call(harness, "bash", { command: "x".repeat(200) });
+      const actual = harness.notifications.at(-1)!.split("\n")[0];
+      const expected = (width || 80) - 2;
+      assert.equal(visibleWidth(actual), expected);
+      assert.ok(stripVTControlCharacters(actual).endsWith("…"));
+    }
+  } finally {
+    if (descriptor) {
+      Object.defineProperty(process.stdout, "columns", descriptor);
+    } else {
+      Reflect.deleteProperty(process.stdout, "columns");
+    }
   }
 });
 

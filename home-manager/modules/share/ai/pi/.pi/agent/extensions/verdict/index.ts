@@ -4,6 +4,7 @@ import type {
   ExtensionAPI,
   ExtensionContext,
 } from "@earendil-works/pi-coding-agent";
+import { truncateToWidth } from "@earendil-works/pi-tui";
 import { registerExtensionToggleCommand } from "../tool-settings/index.js";
 import {
   agentDirPath,
@@ -39,7 +40,11 @@ const DECISION_ICONS = {
   deny: "󰅙",
 } as const;
 
-export function debugMessage(value: Verdict, action: string): string {
+export function debugMessage(
+  value: Verdict,
+  action: string,
+  width = process.stdout.columns || 80,
+): string {
   const reason = value.reason.replace(
     /(?:jev|classifier): ((?:allow|ask|deny) \d+% \(confidence \d+%; [^)]+\))/g,
     (_match, scores: string) =>
@@ -60,9 +65,15 @@ export function debugMessage(value: Verdict, action: string): string {
       ? `${action.split(":", 1)[0]}: [protected path]`
       : action;
 
-  const preview = tool.length > 190 ? `${tool.slice(0, 189)}…` : tool;
+  // Notifications add two padding columns and a prefix for warnings.
+  const prefixWidth = value.verdict === "deny" ? "Warning: ".length : 0;
+  const preview = truncateToWidth(
+    ` ${tool.replace(/\s+/g, " ").trim()}`,
+    Math.max(0, width - 2 - prefixWidth),
+    "…",
+  );
 
-  return ` ${preview}\n ${result}`;
+  return `${preview}\n ${result}`;
 }
 
 export default function verdict(pi: ExtensionAPI): void {
