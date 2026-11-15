@@ -14,31 +14,23 @@ export const DEFAULT_CLASSIFIER = "verdict-local/kev";
 export interface VerdictSettings {
   enabled: boolean;
   debug: boolean;
-  allow: string[];
-  deny: string[];
   denyPaths: string[];
   ignoreTools: string[];
   builtinDenyFloor: boolean;
   classifierModel: string | null;
   audit: boolean;
   auditRedactSecrets: boolean;
-  notifyAllows: boolean;
   classifierMinConfidence: number | null;
   classifierFallbackModel: string | null;
   classifierFallbackMode: "shadow" | "enforce";
   codemodeNestedCalls: "gate" | "rules-only";
 }
 
-export type UserRules = Omit<VerdictSettings, "enabled" | "allow" | "deny"> & {
-  allow: RegExp[];
-  deny: RegExp[];
-};
+export type UserRules = Omit<VerdictSettings, "enabled">;
 
 export const DEFAULT_SETTINGS: VerdictSettings = {
   enabled: true,
   debug: true,
-  allow: [],
-  deny: [],
   denyPaths: [
     "~/.ssh/",
     "~/.profile",
@@ -51,9 +43,8 @@ export const DEFAULT_SETTINGS: VerdictSettings = {
   ignoreTools: ["ask-user-question"],
   builtinDenyFloor: true,
   classifierModel: null,
-  audit: false,
+  audit: true,
   auditRedactSecrets: true,
-  notifyAllows: false,
   classifierMinConfidence: null,
   classifierFallbackModel: null,
   classifierFallbackMode: "enforce",
@@ -71,9 +62,7 @@ export function loadUserRules(): {
 } {
   const raw = readExtensionSettings<VerdictSettings>(EXTENSION_KEY);
   const skipped: string[] = [];
-  const strings = (
-    key: "allow" | "deny" | "denyPaths" | "ignoreTools",
-  ): string[] => {
+  const strings = (key: "denyPaths" | "ignoreTools"): string[] => {
     const value = raw[key] ?? DEFAULT_SETTINGS[key];
 
     if (!Array.isArray(value)) {
@@ -92,24 +81,13 @@ export function loadUserRules(): {
       return [];
     });
   };
-  const compile = (key: "allow" | "deny"): RegExp[] =>
-    strings(key).flatMap((source) => {
-      try {
-        return [new RegExp(source)];
-      } catch {
-        skipped.push(`${key}: invalid expression ${source}`);
-
-        return [];
-      }
-    });
   const boolean = (
     key:
       | "enabled"
       | "debug"
       | "builtinDenyFloor"
       | "audit"
-      | "auditRedactSecrets"
-      | "notifyAllows",
+      | "auditRedactSecrets",
   ): boolean => {
     const value = raw[key];
 
@@ -177,15 +155,12 @@ export function loadUserRules(): {
     skipped,
     rules: {
       debug: boolean("debug"),
-      allow: compile("allow"),
-      deny: compile("deny"),
       denyPaths: strings("denyPaths"),
       ignoreTools: strings("ignoreTools"),
       builtinDenyFloor: boolean("builtinDenyFloor"),
       classifierModel: model("classifierModel"),
       audit: boolean("audit"),
       auditRedactSecrets: boolean("auditRedactSecrets"),
-      notifyAllows: boolean("notifyAllows"),
       classifierMinConfidence: validConfidence ? confidence : null,
       classifierFallbackModel: model("classifierFallbackModel"),
       classifierFallbackMode:

@@ -665,12 +665,6 @@ export function classifyByRules(
   const target = userRuleTarget(toolName, input, cwd);
 
   if (target !== null) {
-    for (const pattern of user.deny) {
-      if (pattern.test(target)) {
-        return { verdict: "deny", reason: `user deny rule: ${pattern.source}` };
-      }
-    }
-
     const matchesPathRules = hitDenyPaths(toolName, input, cwd, denyPathBases);
 
     if (matchesPathRules) {
@@ -680,12 +674,6 @@ export function classifyByRules(
           "user-declared protected path (denyPaths) [path withheld; see extensionSettings.verdict]",
         detail: matchesPathRules,
       };
-    }
-
-    for (const pattern of user.allow) {
-      if (pattern.test(target)) {
-        return { verdict: "allow", reason: "user allow rule" };
-      }
     }
   }
 

@@ -60,7 +60,7 @@ export function debugMessage(value: Verdict, action: string): string {
       ? `${action.split(":", 1)[0]}: [protected path]`
       : action;
 
-  return ` ${tool}\n 󰒘 : ${result}`;
+  return ` ${tool}\n ${result}`;
 }
 
 export default function verdict(pi: ExtensionAPI): void {
@@ -220,7 +220,6 @@ export default function verdict(pi: ExtensionAPI): void {
         `classifier: ${primarySpec()}`,
         `debug: ${debug() ? "enabled" : "disabled"}`,
         `danger rules: ${rules.builtinDenyFloor ? "enabled" : "disabled"}`,
-        `user rules: ${rules.allow.length} allow, ${rules.deny.length} deny`,
         `protected paths: ${rules.denyPaths.length}`,
         `exempt tools: ${rules.ignoreTools.length}`,
         `nested calls: ${rules.codemodeNestedCalls}`,
@@ -256,27 +255,14 @@ export default function verdict(pi: ExtensionAPI): void {
     action: string,
     ctx: ExtensionContext,
   ) {
-    if (debug()) {
+    if (debug() && value.reason.trim()) {
       ctx.ui.notify(
         debugMessage(value, action),
         value.verdict === "deny" ? "warning" : "info",
       );
     }
 
-    if (value.verdict === "allow") {
-      if (
-        !debug() &&
-        value.source === "classifier" &&
-        state.userRules.notifyAllows
-      ) {
-        ctx.ui.notify(
-          `verdict allow (${value.source}): ${value.reason}\n${action}`,
-          "info",
-        );
-      }
-
-      return undefined;
-    }
+    if (value.verdict === "allow") return undefined;
 
     if (value.verdict === "deny") {
       // Protected paths stay in the local dialog, not notifications or model block reasons.

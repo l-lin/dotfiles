@@ -209,7 +209,7 @@ test("GIVEN no verdict settings WHEN rules load THEN safe defaults apply without
   assert.equal(actual.enabled, expected.enabled);
   assert.deepEqual(actual.rules.denyPaths, expected.denyPaths);
   assert.deepEqual(actual.rules.ignoreTools, expected.ignoreTools);
-  assert.equal(actual.rules.audit, false);
+  assert.equal(actual.rules.audit, true);
   assert.equal(actual.rules.debug, true);
   assert.equal(actual.rules.classifierMinConfidence, null);
   assert.equal(fs.existsSync(agentDirPath()), false);
@@ -229,9 +229,20 @@ test("GIVEN default debug settings WHEN a classifier allows THEN the tool appear
   });
   const actual = harness.notifications;
   const expected = [
-    " bash: curl -I https://example.org\n 󰒘 :  64% ( 46% 󰋗 23% 󰅙 12%)",
+    " bash: curl -I https://example.org\n  64% ( 46% 󰋗 23% 󰅙 12%)",
   ];
   assert.deepEqual(actual, expected);
+});
+
+test("GIVEN a rule decision without a reason WHEN a file tool runs THEN no debug notification appears", async () => {
+  const harness = given_harness();
+  for (const toolName of ["read", "write", "edit"]) {
+    const actual = await when_tool_call(harness, toolName, { path: "package.json" });
+    const expected = undefined;
+    assert.equal(actual, expected);
+  }
+  assert.deepEqual(harness.notifications, []);
+  assert.equal(harness.nativeCalls.length, 0);
 });
 
 test("GIVEN debug disabled in settings WHEN a classifier allows THEN no debug notification appears", async () => {
@@ -265,8 +276,8 @@ test("GIVEN ask and deny scores WHEN debug formats them THEN each decision uses 
     );
     const expected =
       verdict === "ask"
-        ? " bash: echo synthetic\n 󰒘 : 󰋗 64% ( 46%  23% 󰅙 12%)"
-        : " bash: echo synthetic\n 󰒘 : 󰅙 64% ( 46%  23% 󰋗 12%)";
+        ? " bash: echo synthetic\n 󰋗 64% ( 46%  23% 󰅙 12%)"
+        : " bash: echo synthetic\n 󰅙 64% ( 46%  23% 󰋗 12%)";
     assert.equal(actual, expected);
   }
 });
@@ -285,7 +296,7 @@ test("GIVEN debug enabled WHEN the classifier asks or denies THEN one notificati
     assert.equal(actual?.block, expected);
     assert.equal(confirmed, verdict === "ask");
     assert.equal(harness.notifications.length, 1);
-    assert.match(harness.notifications[0], /^ bash: echo synthetic\n 󰒘 : /);
+    assert.match(harness.notifications[0], /^ bash: echo synthetic\n [󰋗󰅙]/u);
   }
 });
 
@@ -301,17 +312,23 @@ test("GIVEN a protected path WHEN debug formats the decision THEN the path stays
     "read: /secret/project/file.txt",
   );
   const expected =
-    " read: [protected path]\n 󰒘 : 󰋗 (protected-path): Protected path access requires approval";
+    " read: [protected path]\n 󰋗 (protected-path): Protected path access requires approval";
   assert.equal(actual, expected);
 });
 
-test("GIVEN conflicting user rules WHEN a matching command runs THEN user deny takes precedence", async () => {
+test("GIVEN removed command rules WHEN a matching command runs THEN the classifier controls the decision", async () => {
   given_settings({ allow: ["echo"], deny: ["echo"] });
-  const harness = given_harness();
-  const actual = await when_tool_call(harness);
-  const expected = true;
-  assert.equal(actual?.block, expected);
-  assert.equal(harness.nativeCalls.length, 0);
+  for (const choice of ["allow", "deny"] as const) {
+    const harness = given_harness();
+    harness.ctx.modelRegistry.classify = async () => {
+      harness.nativeCalls.push({ model: given_model(), context: {}, options: {} });
+      return given_answer(choice);
+    };
+    const actual = await when_tool_call(harness);
+    const expected = choice === "deny" ? true : undefined;
+    assert.equal(actual?.block, expected);
+    assert.equal(harness.nativeCalls.length, 1);
+  }
 });
 
 test("GIVEN headless artifact output WHEN the classifier asks THEN no special write exemption applies", async () => {
@@ -648,15 +665,17 @@ test("GIVEN headless settings tampering WHEN a tool runs THEN verdict restores s
 });
 
 test("GIVEN user-approved settings changes WHEN a tool runs THEN new rules wait until the next session", async () => {
-  given_settings({ enabled: true, deny: [] });
+  given_settings({ enabled: true, builtinDenyFloor: false });
   const harness = given_harness();
-  given_settings({ enabled: true, deny: ["echo"] });
-  const actual = await when_tool_call(harness);
+  given_settings({ enabled: true, builtinDenyFloor: true });
+  const input = { command: "sudo echo synthetic" };
+  const actual = await when_tool_call(harness, "bash", input);
   const expected = undefined;
   assert.equal(actual, expected);
   assert.equal(harness.nativeCalls.length, 1);
   harness.handlers.session_start({}, harness.ctx);
-  assert.equal((await when_tool_call(harness))?.block, true);
+  assert.equal((await when_tool_call(harness, "bash", input))?.block, true);
+  assert.equal(harness.nativeCalls.length, 1);
 });
 
 test("GIVEN installed module tampering WHEN enablement saves THEN only the settings baseline changes", () => {
