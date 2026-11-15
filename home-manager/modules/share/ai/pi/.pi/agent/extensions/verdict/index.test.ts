@@ -321,7 +321,7 @@ test("GIVEN terminal widths WHEN debug formats actions THEN truncation uses the 
       const expectedAction =
         length > width - 3 ? `${action.slice(0, width - 4)}…` : action;
       const expected = ` ${expectedAction}\n  (classifier): Allowed action`;
-      assert.equal(stripVTControlCharacters(actual), expected);
+      assert.equal(actual, expected);
     }
   }
 });
@@ -349,6 +349,7 @@ test("GIVEN multiline and wide tool text WHEN notifications render THEN the tool
         const expected = 2;
         assert.equal(actual.length, expected);
         assert.ok(actual.every((line) => visibleWidth(line) <= width));
+        assert.equal(message, stripVTControlCharacters(message));
         assert.doesNotMatch(message.split("\n")[0], /[\r\t]/);
       }
     }

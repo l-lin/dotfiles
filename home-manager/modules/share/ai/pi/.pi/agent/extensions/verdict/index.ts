@@ -1,4 +1,5 @@
 import { fileURLToPath } from "node:url";
+import { stripVTControlCharacters } from "node:util";
 import { classify } from "@earendil-works/pi-ai/api/typesafe-system-one";
 import type {
   ExtensionAPI,
@@ -73,7 +74,8 @@ export function debugMessage(
     "…",
   );
 
-  return `${preview}\n ${result}`;
+  // Truncation adds ANSI resets that would remove the notification theme color.
+  return `${stripVTControlCharacters(preview)}\n ${result}`;
 }
 
 export default function verdict(pi: ExtensionAPI): void {
