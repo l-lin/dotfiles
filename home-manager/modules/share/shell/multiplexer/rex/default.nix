@@ -17,7 +17,8 @@
 
   #
   # There's no settings files for now. So everything must be set directly in the GUI:
-  # - font-size: Rex → Settings → Terminal → Typography → Font size (18pt)
-  # - Rex → Settings → Themes → Import Theme
+  # - font-size: Rex > Settings > Terminal > Typography → Font size (18pt)
+  # - theme: Rex > Settings > Themes > Import Theme > Select "home-manager/modules/share/shell/multiplexer/rex/.config/rex/themes/grey"
+  # - pi cursor display: Rex Settings > Interface > Panes > Customize panes > Padding > Fill with program colors to Off
   #
 }
