@@ -1,5 +1,46 @@
-local directory = os.getenv("HOME") .. "/.cache/rex/nvim/"
+--
+-- Prefix and configuration
+--
+rex.bind("ctrl+q>r", "client.config.reload")
 
+--
+-- Font size
+--
+rex.bind("ctrl+shift+=", "client.font.increase")
+rex.bind("ctrl+shift+-", "client.font.decrease")
+rex.bind("ctrl+shift+0", "client.font.reset")
+
+--
+-- Sidebar
+--
+rex.bind("cmd+s", "client.sidebar.toggle")
+
+--
+-- Copy mode
+--
+---Yank the selected text/line and unselect immediately, without exiting copy mode.
+local function yank_and_unselect()
+	rex.client.queue("pane.copy")
+	-- Different modes ensure a selection exists before the final toggle clears it.
+	rex.client.queue("pane.copy_mode.select", { mode = "char" })
+	rex.client.queue("pane.copy_mode.select", { mode = "line" })
+	rex.client.queue("pane.copy_mode.select", { mode = "line" })
+end
+rex.action({
+	name = "copy_and_unselect",
+	title = "Copy and clear selection",
+	run = yank_and_unselect,
+})
+rex.bind("ctrl+q>b", "pane.copy_mode.enter")
+rex.bind("copy/y", "copy_and_unselect")
+rex.bind("ctrl+shift+c", "pane.copy")
+rex.bind("ctrl+shift+v", "pane.paste")
+
+
+--
+-- Panes
+--
+local nvim_cache_directory = os.getenv("HOME") .. "/.cache/rex/nvim/"
 local function add_pane_navigation()
   -- Simulate vim-tmux-navigation behavior.
   for key, direction in pairs({ h = "left", j = "down", k = "up", l = "right" }) do
@@ -17,7 +58,7 @@ local function add_pane_navigation()
                   .. 'return vim.api.nvim_get_current_win() ~= window and 1 or 0 end)()")'
               local result = rex.exec({
                   foreground.invoked_path or foreground.path or "nvim",
-                  "--server", directory .. ctx.block_id:gsub("^block:", "") .. ".sock",
+                  "--server", nvim_cache_directory .. ctx.block_id:gsub("^block:", "") .. ".sock",
                   "--remote-expr", expression,
               }, { timeout = 1 })
               if not result or result.code ~= 0 then
@@ -62,3 +103,30 @@ rex.bind("ctrl+q>o", "pane.focus_next")
 rex.bind("ctrl+q>;", "pane.focus_back.in_tab") -- ko
 rex.bind("ctrl+q>w", "pane.go_to")
 add_pane_navigation()
+
+--
+-- Sessions
+--
+rex.bind("ctrl+q>shift+9", "session.previous") -- ko
+rex.bind("ctrl+q>shift+0", "session.next") -- ko
+rex.bind("ctrl+q>shift+l", "session.back") -- ko
+rex.bind("ctrl+q>ctrl+shift+6", "session.back") -- ko
+rex.bind("ctrl+q>shift+4", "session.rename") -- c-$
+
+--
+-- Tabs
+--
+rex.bind("ctrl+q>c", "client.tab.new")
+rex.bind("ctrl+q>n", "client.tab.next")
+rex.bind("ctrl+q>p", "client.tab.previous")
+rex.bind("ctrl+q>l", "client.tab.back.in_session") -- ko
+rex.bind("ctrl+q>,", "client.tab.rename")
+rex.bind("ctrl+q>1", "client.tab.goto", { index = 1 })
+rex.bind("ctrl+q>2", "client.tab.goto", { index = 2 })
+rex.bind("ctrl+q>3", "client.tab.goto", { index = 3 })
+rex.bind("ctrl+q>4", "client.tab.goto", { index = 4 })
+rex.bind("ctrl+q>5", "client.tab.goto", { index = 5 })
+rex.bind("ctrl+q>6", "client.tab.goto", { index = 6 })
+rex.bind("ctrl+q>7", "client.tab.goto", { index = 7 })
+rex.bind("ctrl+q>8", "client.tab.goto", { index = 8 })
+rex.bind("ctrl+q>9", "client.tab.goto", { index = 9 })
