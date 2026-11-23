@@ -19,6 +19,7 @@ return
         noremap = true,
         silent = true,
       })
+      vim.keymap.set("n", "<S-F9>", "<F21>", { remap = true, silent = true, desc = "Run Nearest (Shift+F9)" })
     end,
   },
 }

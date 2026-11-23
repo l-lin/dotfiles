@@ -207,6 +207,7 @@ local function attach_keymaps(bufnr)
     jdtls.compile,
     { buffer = bufnr, noremap = true, silent = true, desc = "Compile (Ctrl+F9)" }
   )
+  vim.keymap.set("n", "<C-F9>", "<F33>", { buffer = bufnr, remap = true, silent = true, desc = "Compile (Ctrl+F9)" })
   vim.keymap.set(
     "n",
     "<M-C-O>",

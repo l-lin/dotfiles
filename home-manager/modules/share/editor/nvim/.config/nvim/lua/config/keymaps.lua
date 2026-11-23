@@ -30,6 +30,7 @@ vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize -2<cr>", { desc = "Increa
 --
 -- Same behavior as browsers (muscle memory).
 vim.keymap.set("n", "<F28>", "<cmd>bd<CR>", { noremap = true, silent = true, desc = "Close current buffer (Ctrl+F4)" })
+vim.keymap.set("n", "<C-F4>", "<cmd>bd<CR>", { noremap = true, silent = true, desc = "Close current buffer (Ctrl+F4)" })
 vim.keymap.set("n", "<leader>bb", "<cmd>e #<CR>", { noremap = true, silent = true, desc = "Switch to Other Buffer" })
 
 --
@@ -146,6 +147,7 @@ local diagnostic_goto = function(next, severity)
   end
 end
 vim.keymap.set("n", "<F25>", vim.diagnostic.open_float, { desc = "Line Diagnostics (Ctrl+F1)" })
+vim.keymap.set("n", "<C-F1>", vim.diagnostic.open_float, { desc = "Line Diagnostics (Ctrl+F1)" })
 vim.keymap.set("n", "<F2>", function () vim.diagnostic.jump({ count = 1 }) end, { desc = "Next diagnostic (F2)" })
 vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Line Diagnostics" })
 vim.keymap.set("n", "]d", diagnostic_goto(true), { desc = "Next Diagnostic" })

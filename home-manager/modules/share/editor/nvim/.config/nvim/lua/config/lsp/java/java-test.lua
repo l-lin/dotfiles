@@ -24,6 +24,8 @@ local function attach_keymaps(bufnr)
     jdtls.test_nearest_method(jdtls_test_opts)
   end, { buffer = bufnr, noremap = true, silent = true, desc = "Test method (Shift+F9)" })
 
+  vim.keymap.set("n", "<S-F9>", "<F21>", { buffer = bufnr, remap = true, silent = true, desc = "Test method (Shift+F9)" })
+
   local wk = require("which-key")
   wk.add({
     {

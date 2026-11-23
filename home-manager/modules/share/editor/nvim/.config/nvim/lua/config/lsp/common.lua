@@ -21,7 +21,9 @@ local function on_attach(client, bufnr)
   map(bufnr, "n", "gD", vim.lsp.buf.declaration, "Goto Declaration")
   map(bufnr, "n", "<leader>cr", vim.lsp.buf.rename, "Rename (Ctrl+F6)")
   map(bufnr, "n", "<F18>", vim.lsp.buf.rename, "Rename (Ctrl+F6)")
-  map(bufnr, { "n", "x" }, "<M-CR>", vim.lsp.buf.code_action, "Code action (Ctrl+Enter)")
+  map(bufnr, "n", "<C-F6>", vim.lsp.buf.rename, "Rename (Ctrl+F6)")
+  map(bufnr, { "n", "x" }, "<M-CR>", vim.lsp.buf.code_action, "Code action (Alt+Enter)")
+  map(bufnr, { "n", "x" }, "<C-CR>", vim.lsp.buf.code_action, "Code action (Ctrl+Enter)")
   map(bufnr, { "n", "x" }, "<leader>ca", vim.lsp.buf.code_action, "Code Action (Ctrl+Enter)")
 
   if package.loaded["snacks"] then

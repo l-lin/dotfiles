@@ -26,3 +26,4 @@ vim.keymap.set(
   { buffer = true, desc = "Re-run last test/command" }
 )
 vim.keymap.set("n", "<F33>", require("functions.async").make, { silent = true, noremap = true, desc = "Compile (Ctrl+F9)" })
+vim.keymap.set("n", "<C-F9>", "<F33>", { remap = true, silent = true, desc = "Compile (Ctrl+F9)" })

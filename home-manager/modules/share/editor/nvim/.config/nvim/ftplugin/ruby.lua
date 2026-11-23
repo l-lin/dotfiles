@@ -82,6 +82,7 @@ vim.keymap.set(
   end,
   { buffer = true, desc = "Run nearest test (Shift+F9)" }
 )
+vim.keymap.set("n", "<S-F9>", "<F21>", { buffer = true, remap = true, silent = true, desc = "Run nearest test (Shift+F9)" })
 vim.keymap.set(
   "n",
   "<leader>tr",

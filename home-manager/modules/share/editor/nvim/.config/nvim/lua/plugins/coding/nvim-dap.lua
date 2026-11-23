@@ -15,10 +15,13 @@ local function setup()
 
   vim.keymap.set("n", "<F9>", function() require("dap").continue() end, { desc = "Begin debug session (F9)", noremap = true, silent = true })
   vim.keymap.set("n", "<F32>", function() require("dap").toggle_breakpoint() end, { desc = "Toggle breakpoint (Ctrl+F8)", noremap = true, silent = true })
+  vim.keymap.set("n", "<C-F8>", "<F32>", { remap = true, silent = true, desc = "Toggle breakpoint (Ctrl+F8)" })
   vim.keymap.set("n", "<F8>", function() require("dap").step_over() end, { desc = "Step over (F8)", noremap = true, silent = true })
   vim.keymap.set("n", "<F7>", function() require("dap").step_into() end, { desc = "Step into (F7)", noremap = true, silent = true })
   vim.keymap.set("n", "<F20>", function() require("dap").step_out() end, { desc = "Step out (Shift+F8)", noremap = true, silent = true })
+  vim.keymap.set("n", "<S-F8>", "<F20>", { remap = true, silent = true, desc = "Step out (Shift+F8)" })
   vim.keymap.set("n", "<F26>", function() require("dap").terminate() end, { desc = "Terminate DAP (Ctrl+F2)" })
+  vim.keymap.set("n", "<C-F2>", "<F26>", { remap = true, silent = true, desc = "Terminate DAP (Ctrl+F2)" })
 end
 
 ---@type vim.pack.Spec[]
