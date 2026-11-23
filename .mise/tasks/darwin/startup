@@ -7,6 +7,9 @@ mise run home:apply
 mise run darwin:update
 unleash-the-keys
 
+# Avoid printing the last login message on terminal startup.
+touch ~/.hushlogin
+
 # Launch notes cron tasks.
 if [ -d "$HOME/perso/codeberg/notes" ]; then
   cd "$HOME/perso/codeberg/notes" || exit
