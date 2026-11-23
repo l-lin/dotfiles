@@ -14,9 +14,11 @@
   "enableAnalytics": false,
   "enableInstallTelemetry": false,
   "enabledModels": [
+    "github-copilot/gemini-4-neon",
     "github-copilot/gpt-6-luna",
     "github-copilot/gpt-6.1-sol",
-    "github-copilot/gpt-6-astra",
+    "github-copilot/gpt-6.2-sol",
+    "github-copilot/gpt-6.2-astra",
     "anthropic/claude-opus-5-5",
     "anthropic/claude-sonnet-5-5",
     "anthropic/claude-haiku-4-5",
