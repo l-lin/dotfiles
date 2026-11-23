@@ -82,3 +82,4 @@ rex.bind("cmd+s", "client.sidebar.toggle")
 
 require("ai")
 require("fzf")
+require("wd")
