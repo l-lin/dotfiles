@@ -51,7 +51,7 @@ local function open_fzf(ctx)
 end
 
 rex.action({ name = "open_fzf", title = "Find Files", run = open_fzf })
-rex.bind("ctrl+g", function(ctx)
+rex.bind("ctrl+q>ctrl+g", function(ctx)
 	-- Full-screen programs must receive their own key bindings.
 	local modes = rex.block.call(terminal, "modes", { block_id = ctx.block_id })
 	if not modes or modes.screen == "alternate" then
