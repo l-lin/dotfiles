@@ -3,7 +3,13 @@ import test from "node:test";
 import { AwesomeEditor } from "./editor.js";
 import { withSnippets } from "./snippets.js";
 import { CTRL_E, ESC_LEFT } from "./vim-state.js";
-import { stripTerminalSequences, visibleWidth } from "@earendil-works/pi-tui";
+import {
+  isKittyProtocolActive,
+  matchesKey,
+  setKittyProtocolActive,
+  stripTerminalSequences,
+  visibleWidth,
+} from "@earendil-works/pi-tui";
 
 type SnippetSuggestion = {
   items: Array<{ value: string; label: string }>;
@@ -33,7 +39,7 @@ function given_minimalTheme() {
 
 function given_minimalAppKeybindings() {
   return {
-    matches() {
+    matches(_data: string, _action: string) {
       return false;
     },
   };
@@ -67,11 +73,14 @@ function given_baseAutocompleteProvider() {
   };
 }
 
-function given_editor(editorMode: "emacs" | "vi" = "emacs") {
+function given_editor(
+  editorMode: "emacs" | "vi" = "emacs",
+  keybindings = given_minimalAppKeybindings(),
+) {
   return new AwesomeEditor(
     given_minimalTui() as never,
     given_minimalTheme() as never,
-    given_minimalAppKeybindings() as never,
+    keybindings as never,
     {
       bg(_color, text) {
         return `\x1b[48;2;230;230;230m${text}\x1b[49m`;
@@ -79,6 +88,78 @@ function given_editor(editorMode: "emacs" | "vi" = "emacs") {
     },
     editorMode,
   );
+}
+
+for (const editorMode of ["emacs", "vi"] as const) {
+  for (const kitty of [false, true]) {
+    test(`awesome-editor GIVEN ${editorMode} mode and Kitty mode ${kitty} WHEN pressing Alt+Enter THEN it calls the follow-up action without adding a newline`, (t) => {
+      const previousKitty = isKittyProtocolActive();
+      t.after(() => setKittyProtocolActive(previousKitty));
+      setKittyProtocolActive(kitty);
+      const editor = given_editor(editorMode, {
+        matches(data: string, action: string) {
+          return (
+            action === "app.message.followUp" && matchesKey(data, "alt+enter")
+          );
+        },
+      });
+      let followUps = 0;
+      editor.onAction("app.message.followUp", () => followUps++);
+      editor.setText("follow-up message");
+
+      editor.handleInput("\x1b[13;3u");
+
+      const actual = { followUps, text: editor.getText() };
+      const expected = { followUps: 1, text: "follow-up message" };
+      assert.deepEqual(actual, expected);
+    });
+  }
+}
+
+for (const editorMode of ["emacs", "vi"] as const) {
+  for (const kitty of [false, true]) {
+    for (const { key, action, sequence } of [
+      { key: "alt+p", action: "app.model.select", sequence: "\x1b[112;3u" },
+      { key: "alt+t", action: "app.session.tree", sequence: "\x1b[116;3u" },
+    ] as const) {
+      test(`awesome-editor GIVEN ${editorMode} mode and Kitty mode ${kitty} WHEN pressing ${key} THEN it calls ${action}`, (t) => {
+        const previousKitty = isKittyProtocolActive();
+        t.after(() => setKittyProtocolActive(previousKitty));
+        setKittyProtocolActive(kitty);
+        const editor = given_editor(editorMode, {
+          matches(data: string, candidate: string) {
+            return candidate === action && matchesKey(data, key);
+          },
+        });
+        let calls = 0;
+        editor.onAction(action, () => calls++);
+        editor.setText("draft");
+
+        editor.handleInput(kitty ? sequence : `\x1b${key.at(-1)}`);
+
+        const actual = { calls, text: editor.getText() };
+        const expected = { calls: 1, text: "draft" };
+        assert.deepEqual(actual, expected);
+      });
+    }
+  }
+
+  test(`awesome-editor GIVEN ${editorMode} mode and Kitty input WHEN pressing Ctrl+E THEN it expands the selected snippet`, async (t) => {
+    const previousKitty = isKittyProtocolActive();
+    t.after(() => setKittyProtocolActive(previousKitty));
+    setKittyProtocolActive(true);
+    const editor = await given_editorWithSelectedSnippet(
+      "$decision-regret",
+      editorMode,
+    );
+
+    editor.handleInput("\x1b[101;5u");
+
+    const actual = editor.getText();
+    const expected =
+      "I'm leaning toward [option]. Give me three reasons I might regret this in a year.";
+    assert.equal(actual, expected);
+  });
 }
 
 async function given_editorWithSelectedSnippet(

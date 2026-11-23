@@ -12,7 +12,6 @@ import {
 import {
   Key,
   matchesKey,
-  parseKey,
   truncateToWidth,
   visibleWidth,
   type AutocompleteProvider,
@@ -53,47 +52,6 @@ import {
   isPrintableAscii,
   reverseCharMotion,
 } from "../vim/motions.js";
-
-/**
- * Normalize CSI-u extended sequences to legacy format for both Ctrl and Alt modifiers.
- * Examples:
- *   "\x1b[101;5u" (Ctrl+E) → "\x05"
- *   "\x1b[65;4u" (Alt+Shift+A) → "\x1bA"
- */
-function normalizeExtendedSequences(data: string): string {
-  const csiMatch = data.match(/^\x1b\[(\d+);(\d+)u$/);
-  if (csiMatch) {
-    const code = parseInt(csiMatch[1]!, 10);
-    const modifiers = parseInt(csiMatch[2]!, 10);
-
-    // Alt (3) or Alt+Shift (4)
-    if (modifiers === 3 || modifiers === 4) {
-      return `\x1b${String.fromCharCode(code)}`;
-    }
-
-    // Ctrl (5)
-    if (modifiers === 5) {
-      const ctrlCode = code & 0x1f;
-      if (ctrlCode >= 1 && ctrlCode <= 31) {
-        return String.fromCharCode(ctrlCode);
-      }
-    }
-  }
-
-  // Fallback: check if it's a ctrl+<key> pattern
-  const key = parseKey(data);
-  if (key) {
-    const match = key.match(/^ctrl\+(.+)$/);
-    if (match && match[1]!.length === 1) {
-      const ctrlCode = match[1]!.charCodeAt(0) & 0x1f;
-      if (ctrlCode >= 1 && ctrlCode <= 31) {
-        return String.fromCharCode(ctrlCode);
-      }
-    }
-  }
-
-  return data;
-}
 
 interface PlaceholderRange {
   index: number;
@@ -161,10 +119,6 @@ export class AwesomeEditor extends CustomEditor {
   }
 
   handleInput(data: string): void {
-    // Normalize CSI-u extended sequences for both Ctrl and Alt modifiers
-    // so all downstream checks and readline passthrough use the expected bytes.
-    data = normalizeExtendedSequences(data);
-
     if (this.editorMode === "emacs") {
       this.handleEmacsInputMode(data);
       return;
@@ -1204,7 +1158,7 @@ export class AwesomeEditor extends CustomEditor {
   // ─── Snippet expansion ───────────────────────────────────────────────────────
 
   private handleSnippetExpansionShortcut(data: string): boolean {
-    if (data !== "\x05") {
+    if (!matchesKey(data, Key.ctrl("e"))) {
       return false;
     }
 
