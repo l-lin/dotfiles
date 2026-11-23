@@ -15,10 +15,6 @@ local function open_fzf(ctx)
   end
 
   local process = assert(rex.block.call(terminal, "process", { block_id = ctx.block_id }))
-  local name = process.foreground and process.foreground.name
-  if name == "nvim" or name == "vim" then
-    return false
-  end
   local cwd = process.foreground and process.foreground.cwd
     or process.ancestors and process.ancestors[1] and process.ancestors[1].cwd
     or process.child and process.child.cwd
@@ -51,11 +47,4 @@ local function open_fzf(ctx)
 end
 
 rex.action({ name = "open_fzf", title = "Find Files", run = open_fzf })
-rex.bind("ctrl+q>ctrl+g", function(ctx)
-  -- Full-screen programs must receive their own key bindings.
-  local modes = rex.block.call(terminal, "modes", { block_id = ctx.block_id })
-  if not modes or modes.screen == "alternate" then
-    return false
-  end
-  return open_fzf(ctx) ~= false
-end)
+rex.bind("ctrl+q>ctrl+g", "open_fzf")
