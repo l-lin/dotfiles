@@ -28,7 +28,11 @@ return {
       },
       diagnostics = {
         -- NOTE: You can add your own global variables here.
-        -- globals = { "LazyVim", "Snacks" },
+        globals = {
+          "rex",
+          -- "LazyVim",
+          -- "Snacks",
+        },
       },
     },
   },

@@ -1,0 +1,28 @@
+# Light palette from nvim-grey/colors/grey.lua.
+background = #f2f2f2
+foreground = #000000
+cursor-color = #000000
+cursor-text = #f2f2f2
+selection-background = #e6e6e6
+selection-foreground = #000000
+
+# ANSI standard colors
+palette = 0=#000000
+palette = 1=#c4331d
+palette = 2=#1c5708
+palette = 3=#b37f02
+palette = 4=#1561b8
+palette = 5=#5c21a5
+palette = 6=#007872
+palette = 7=#ffffff
+
+# ANSI bright colors match the standard colors in nvim-grey.
+palette = 8=#000000
+palette = 9=#c4331d
+palette = 10=#1c5708
+palette = 11=#b37f02
+palette = 12=#1561b8
+palette = 13=#5c21a5
+palette = 14=#007872
+palette = 15=#ffffff
+

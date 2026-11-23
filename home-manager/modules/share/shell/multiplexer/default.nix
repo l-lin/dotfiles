@@ -4,5 +4,8 @@
 #
 
 {
-  imports = [ ./tmux ];
+  imports = [
+    ./rex
+    ./tmux
+  ];
 }
