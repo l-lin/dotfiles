@@ -1,3 +1,7 @@
+if not vim.env.TMUX or vim.env.TMUX == "" then
+  return {}
+end
+
 vim.g.tmux_navigator_no_mappings = 1
 
 ---@type vim.pack.Spec

@@ -7,6 +7,7 @@ return {
   require("plugins.editor.mini-files"),
   require("plugins.editor.mini-pairs"),
   require("plugins.editor.mini-surround"),
+  require("plugins.editor.rex"),
   require("plugins.editor.tmux-navigator"),
   -- require("plugins.editor.todo-comments"),
   require("plugins.editor.translate"),

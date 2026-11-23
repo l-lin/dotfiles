@@ -20,5 +20,6 @@
   # - font-size: Rex > Settings > Terminal > Typography → Font size (18pt)
   # - theme: Rex > Settings > Themes > Import Theme > Select "home-manager/modules/share/shell/multiplexer/rex/.config/rex/themes/grey"
   # - pi cursor display: Rex Settings > Interface > Panes > Customize panes > Padding > Fill with program colors to Off
+  # - Go to Anything: Settings > Developer > Experimental Feature > New Quick Switcher
   #
 }
