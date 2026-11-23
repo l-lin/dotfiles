@@ -51,6 +51,8 @@ rex.bind("ctrl+alt+h", "pane.focus.left")
 rex.bind("ctrl+alt+j", "pane.focus.down")
 rex.bind("ctrl+alt+k", "pane.focus.up")
 rex.bind("ctrl+alt+l", "pane.focus.right")
+-- requires to enable `Go to Anything` from `Settings > Developer > Experimental Feature > New Quick Switcher`
+rex.bind("ctrl+q>ctrl+g", "pane.go_to")
 
 -- Copy mode and clipboard
 rex.bind("ctrl+q>b", "pane.copy_mode.enter")
