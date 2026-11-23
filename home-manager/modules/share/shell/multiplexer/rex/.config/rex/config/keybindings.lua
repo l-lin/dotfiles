@@ -20,22 +20,21 @@ rex.bind("cmd+s", "client.sidebar.toggle")
 --
 ---Yank the selected text/line and unselect immediately, without exiting copy mode.
 local function yank_and_unselect()
-	rex.client.queue("pane.copy")
-	-- Different modes ensure a selection exists before the final toggle clears it.
-	rex.client.queue("pane.copy_mode.select", { mode = "char" })
-	rex.client.queue("pane.copy_mode.select", { mode = "line" })
-	rex.client.queue("pane.copy_mode.select", { mode = "line" })
+  rex.client.queue("pane.copy")
+  -- Different modes ensure a selection exists before the final toggle clears it.
+  rex.client.queue("pane.copy_mode.select", { mode = "char" })
+  rex.client.queue("pane.copy_mode.select", { mode = "line" })
+  rex.client.queue("pane.copy_mode.select", { mode = "line" })
 end
 rex.action({
-	name = "copy_and_unselect",
-	title = "Copy and clear selection",
-	run = yank_and_unselect,
+  name = "copy_and_unselect",
+  title = "Copy and clear selection",
+  run = yank_and_unselect,
 })
 rex.bind("ctrl+q>b", "pane.copy_mode.enter")
 rex.bind("copy/y", "copy_and_unselect")
 rex.bind("ctrl+shift+c", "pane.copy")
 rex.bind("ctrl+shift+v", "pane.paste")
-
 
 --
 -- Panes
@@ -44,37 +43,41 @@ local nvim_cache_directory = os.getenv("HOME") .. "/.cache/rex/nvim/"
 local function add_pane_navigation()
   -- Simulate vim-tmux-navigation behavior.
   for key, direction in pairs({ h = "left", j = "down", k = "up", l = "right" }) do
-      rex.bind("ctrl+alt+" .. key, function(ctx)
-          local process = rex.block.call("com.superlogical.terminal", "process", { block_id = ctx.block_id })
-          if not process or not process.foreground then
-              return false
-          end
+    rex.bind("ctrl+alt+" .. key, function(ctx)
+      local process = rex.block.call("com.superlogical.terminal", "process", { block_id = ctx.block_id })
+      if not process or not process.foreground then
+        return false
+      end
 
-          local foreground = process.foreground
-          if foreground.name == "nvim" or foreground.name == ".nvim-wrapped" then
-              -- The editor must finish its split change before Rex can select another pane.
-              local expression = 'luaeval("(function() local window = vim.api.nvim_get_current_win(); '
-                  .. "vim.cmd.wincmd('" .. key .. "'); "
-                  .. 'return vim.api.nvim_get_current_win() ~= window and 1 or 0 end)()")'
-              local result = rex.exec({
-                  foreground.invoked_path or foreground.path or "nvim",
-                  "--server", nvim_cache_directory .. ctx.block_id:gsub("^block:", "") .. ".sock",
-                  "--remote-expr", expression,
-              }, { timeout = 1 })
-              if not result or result.code ~= 0 then
-                  rex.log("warn", "Neovim navigation failed. Restart Neovim to load config.rex.")
-                  return false
-              end
-              if result.stdout:match("^%s*1%s*$") then
-                  return true
-              end
-              if not result.stdout:match("^%s*0%s*$") then
-                  return false
-              end
-          end
+      local foreground = process.foreground
+      if foreground.name == "nvim" or foreground.name == ".nvim-wrapped" then
+        -- The editor must finish its split change before Rex can select another pane.
+        local expression = 'luaeval("(function() local window = vim.api.nvim_get_current_win(); '
+          .. "vim.cmd.wincmd('"
+          .. key
+          .. "'); "
+          .. 'return vim.api.nvim_get_current_win() ~= window and 1 or 0 end)()")'
+        local result = rex.exec({
+          foreground.invoked_path or foreground.path or "nvim",
+          "--server",
+          nvim_cache_directory .. ctx.block_id:gsub("^block:", "") .. ".sock",
+          "--remote-expr",
+          expression,
+        }, { timeout = 1 })
+        if not result or result.code ~= 0 then
+          rex.log("warn", "Neovim navigation failed. Restart Neovim to load config.rex.")
+          return false
+        end
+        if result.stdout:match("^%s*1%s*$") then
+          return true
+        end
+        if not result.stdout:match("^%s*0%s*$") then
+          return false
+        end
+      end
 
-          return rex.session.focus_direction({ session_id = ctx.session_id, direction = direction, wrap = false }) ~= nil
-      end)
+      return rex.session.focus_direction({ session_id = ctx.session_id, direction = direction, wrap = false }) ~= nil
+    end)
   end
 end
 
