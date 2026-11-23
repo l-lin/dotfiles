@@ -1,4 +1,4 @@
-local script = debug.getinfo(1, "S").source:gsub("^@", ""):gsub("%.lua$", ".zsh")
+local script = debug.getinfo(1, "S").source:gsub("^@", ""):gsub("init%.lua$", "navi.zsh")
 
 local function open_navi(ctx)
   local session_id, block_id = ctx.session_id, ctx.block_id

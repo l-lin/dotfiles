@@ -1,6 +1,6 @@
 local terminal = "com.superlogical.terminal"
 
-local script = debug.getinfo(1, "S").source:gsub("^@", ""):gsub("%.lua$", ".zsh")
+local script = debug.getinfo(1, "S").source:gsub("^@", ""):gsub("init%.lua$", "fzf.zsh")
 
 ---Opens a new layer with the fzf picker if the current block is not a full-screen program.
 ---@param ctx table The context of the action.

@@ -1,6 +1,6 @@
 local terminal = "com.superlogical.terminal"
 
-local script = debug.getinfo(1, "S").source:gsub("^@", ""):gsub("%.lua$", ".zsh")
+local script = debug.getinfo(1, "S").source:gsub("^@", ""):gsub("init%.lua$", "wd.zsh")
 
 ---Opens a new layer with the wd picker if the current block is a zsh shell.
 ---@param ctx table The context of the action.
