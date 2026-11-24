@@ -149,7 +149,7 @@ automatically-unhide-macos-hidden-apps = false
     cmd-shift-semicolon = 'mode service'
 
     # Applications
-    cmd-ctrl-t = 'exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c tmux -2 -u'
+    cmd-ctrl-t = 'exec-and-forget open -a /Applications/Rex.app'
     cmd-ctrl-o = '''exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c "NVIM_SCRATCH=1 nvim +startinsert +'set ft=markdown' +'set spell' +'set wrap'"'''
     cmd-e = 'exec-and-forget open -n -a /Applications/Ghostty.app --args -e zsh -c yazi'
     cmd-shift-e = 'exec-and-forget open ${HOME}'
