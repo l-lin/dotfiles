@@ -1,0 +1,22 @@
+[settings]
+# Suppress the following warning for now:
+# mise WARN  env value contains '$' which will be expanded in a future release. Set `env_shell_expand = true` to opt in or `env_shell_expand = false` to keep current behavior and suppress this warning.
+env_shell_expand = true
+
+# Enable experimental if you want to use the golang backend to install 3rd party tools.
+experimental = true
+
+# Tools can read the versions files used by other version managers
+# for example, .nvmrc in the case of node's nvm.
+idiomatic_version_file_enable_tools = ["java", "node", "ruby"]
+trusted_config_paths = ["~/work", "~/perso"]
+
+[settings.github]
+# Authenticate GitHub API requests via the gh CLI to avoid anonymous
+# rate limits (403). Must live in the GLOBAL config: mise ignores
+# `github.credential_command` set in project-local mise.toml files for
+# security reasons.
+credential_command = "gh auth token"
+
+[settings.task]
+quiet = true

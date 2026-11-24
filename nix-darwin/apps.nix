@@ -83,6 +83,8 @@
       "ghostscript"
       # LLM inference in C/C++: https://github.com/ggml-org/llama.cpp
       "llama.cpp"
+      # The front-end to your dev env: https://mise.jdx.dev/
+      "mise"
       # 🐹 Deep clean and optimize your Mac: https://github.com/tw93/mole
       "mole"
       # Natural-language text calculator with TUI/CLI: variables, units, currencies, and live exchange rates:https://github.com/nasedkinpv/numr 

@@ -3,37 +3,9 @@
 # src: https://mise.jdx.dev/
 #
 
-{
-  programs.mise = {
-    enable = true;
-    # src: https://mise.jdx.dev/configuration.html#global-config-config-mise-config-toml
-    globalConfig = {
-      # Dev tools to install globally.
-      # To know the version, you can use the command `mise ls-remote <tool>`.
-      # NOTE: Each tool must register themselves by creating a
-      # $XDG_CONFIG_HOME/mise/conf.d/<tool>.toml file.
-      tools = {};
-      settings = {
-        # Enable experimental if you want to use the golang backend to install 3rd party tools.
-        experimental = true;
-        task.quiet = true;
-        trusted_config_paths = ["~/work" "~/perso"];
-        # Tools can read the versions files used by other version managers
-        # for example, .nvmrc in the case of node's nvm.
-        idiomatic_version_file_enable_tools = ["java"  "node" "ruby"];
+{ config, symlinkRoot, ...}: {
 
-        # Suppress the following warning for now:
-        # mise WARN  env value contains '$' which will be expanded in a future release. Set `env_shell_expand = true` to opt in or `env_shell_expand = false` to keep current behavior and suppress this warning.
-        env_shell_expand = true;
-
-        # Authenticate GitHub API requests via the gh CLI to avoid anonymous
-        # rate limits (403). Must live in the GLOBAL config: mise ignores
-        # `github.credential_command` set in project-local mise.toml files for
-        # security reasons.
-        github.credential_command = "gh auth token";
-      };
-    };
-  };
+  xdg.configFile."mise/config.toml".source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/code/mise/.config/mise/config.toml";
 
   home.sessionVariables = {
     # print only stdout/stderr from tasks and nothing from mise
