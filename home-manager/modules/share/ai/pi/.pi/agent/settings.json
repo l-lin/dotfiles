@@ -5,7 +5,7 @@
   "compaction": {
     "enabled": false
   },
-  "defaultModel": "gpt-6.1-sol",
+  "defaultModel": "gpt-6.2-sol",
   "defaultProvider": "github-copilot",
   "defaultThinkingLevel": "medium",
   "defaultTools": [
