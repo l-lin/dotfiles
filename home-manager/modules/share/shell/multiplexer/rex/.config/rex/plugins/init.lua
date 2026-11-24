@@ -1,4 +1,5 @@
 require("plugins.ai")
+require("plugins.extrakto")
 require("plugins.fzf")
 require("plugins.navi")
 require("plugins.wd")
