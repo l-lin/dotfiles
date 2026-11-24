@@ -2,14 +2,14 @@ local terminal = "com.superlogical.terminal"
 
 local script = debug.getinfo(1, "S").source:gsub("^@", ""):gsub("init%.lua$", "fzf.zsh")
 
----Opens a new layer with the fzf picker if the current block is not a full-screen program.
 ---@param ctx table The context of the action.
-local function open_fzf(ctx)
+---@param mode 'files' | 'grep'
+local function open_fzf(ctx, mode)
   local description = assert(rex.session.describe_block({
     session_id = ctx.session_id,
     block_id = ctx.block_id,
   }))
-  -- Let fzf receive Ctrl-G instead of opening another picker.
+  -- Do not open a picker inside another picker.
   if description.block.label == "fzf" then
     return false
   end
@@ -40,11 +40,25 @@ local function open_fzf(ctx)
       options = {
         cwd = cwd,
         shell = "none",
-        command = { "zsh", "-i", script, ctx.session_id, ctx.block_id, zoomed_block_id },
+        command = { "zsh", "-i", script, ctx.session_id, ctx.block_id, zoomed_block_id, mode },
       },
     }),
   }))
 end
 
-rex.action({ name = "open_fzf", title = "Find Files", run = open_fzf })
+rex.action({
+  name = "open_fzf",
+  title = "Find Files",
+  run = function(ctx)
+    return open_fzf(ctx, "files")
+  end,
+})
+rex.action({
+  name = "open_fzf_grep",
+  title = "Search File Contents",
+  run = function(ctx)
+    return open_fzf(ctx, "grep")
+  end,
+})
 rex.bind("ctrl+q>ctrl+g", "open_fzf")
+rex.bind("ctrl+q>alt+g", "open_fzf_grep")
