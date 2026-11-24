@@ -77,7 +77,6 @@ update-home:
   else \
     home-manager switch -b bak --flake '.#{{NIX_PROFILE}}'; \
   fi
-  just create-symlinks
 
 # show home-manager news entries
 show-home-news:
