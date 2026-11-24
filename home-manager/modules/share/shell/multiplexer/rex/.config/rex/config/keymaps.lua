@@ -51,6 +51,12 @@ local function add_pane_navigation()
 
       local foreground = process.foreground
       if foreground.name == "nvim" or foreground.name == ".nvim-wrapped" then
+        if not foreground.pid then
+          return false
+        end
+
+        local block = ctx.block_id:gsub("^block:", "")
+        local socket = ("%s%s-%d.sock"):format(nvim_cache_directory, block, foreground.pid)
         -- The editor must finish its split change before Rex can select another pane.
         local expression = 'luaeval("(function() local window = vim.api.nvim_get_current_win(); '
           .. "vim.cmd.wincmd('"
@@ -60,12 +66,12 @@ local function add_pane_navigation()
         local result = rex.exec({
           foreground.invoked_path or foreground.path or "nvim",
           "--server",
-          nvim_cache_directory .. ctx.block_id:gsub("^block:", "") .. ".sock",
+          socket,
           "--remote-expr",
           expression,
         }, { timeout = 1 })
         if not result or result.code ~= 0 then
-          rex.log("warn", "Neovim navigation failed. Restart Neovim to load config.rex.")
+          rex.log("warn", "Neovim navigation failed. Restart Neovim to load the Rex integration.")
           return false
         end
         if result.stdout:match("^%s*1%s*$") then
@@ -110,10 +116,9 @@ add_pane_navigation()
 --
 -- Sessions
 --
-rex.bind("ctrl+q>shift+9", "session.previous") -- ko
-rex.bind("ctrl+q>shift+0", "session.next") -- ko
+rex.bind("ctrl+q>shift+9", "session.previous")
+rex.bind("ctrl+q>shift+0", "session.next")
 rex.bind("ctrl+q>shift+l", "session.back") -- ko
-rex.bind("ctrl+q>ctrl+shift+6", "session.back") -- ko
 rex.bind("ctrl+q>shift+4", "session.rename") -- c-$
 
 --
