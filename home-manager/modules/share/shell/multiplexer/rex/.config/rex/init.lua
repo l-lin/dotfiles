@@ -1,3 +1,3 @@
-require("config.keybindings")
-require("config.settings")
+require("config.keymaps")
+require("config.options")
 require("plugins")
