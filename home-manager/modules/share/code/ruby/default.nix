@@ -5,7 +5,7 @@
 # src: https://www.ruby-lang.org/en/
 #
 
-{
+{ config, symlinkRoot, ... }: {
   # home.sessionVariables = {
   #   # auto-detect Gemfile in the current or parent directory, to avoid prefixing
   #   # all ruby/gem commands with "bundle exec" src:
@@ -13,7 +13,7 @@
   #   RUBYGEMS_GEMDEPS = "-";
   # };
 
-  xdg.configFile."mise/conf.d/ruby.toml".source = ./.config/mise/conf.d/ruby.toml;
+  xdg.configFile."mise/conf.d/ruby.toml".source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/code/ruby/.config/mise/conf.d/ruby.toml";
 
   # NOTE: I currently don't need to publish any gems. So no need to set secrets.
   #xdg.configFile."zsh/secrets/.secrets.ruby".source = ./.config/zsh/secrets/.secrets.ruby;

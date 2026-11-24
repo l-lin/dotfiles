@@ -3,6 +3,6 @@
 # src: https://github.com/watchexec/watchexec
 #
 
-{
-  xdg.configFile."mise/conf.d/watchexec.toml".source = ./.config/mise/conf.d/watchexec.toml;
+{ config, symlinkRoot, ... }: {
+  xdg.configFile."mise/conf.d/watchexec.toml".source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/misc/watchexec/.config/mise/conf.d/watchexec.toml";
 }

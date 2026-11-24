@@ -3,6 +3,6 @@
 # src: https://nodejs.org/en
 #
 
-{
-  xdg.configFile."mise/conf.d/nodejs.toml".source = ./.config/mise/conf.d/nodejs.toml;
+{ config, symlinkRoot, ... }: {
+  xdg.configFile."mise/conf.d/nodejs.toml".source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/code/nodejs/.config/mise/conf.d/nodejs.toml";
 }

@@ -4,6 +4,6 @@
 # NOTE: Using mise instead, because python version management is hell.
 #
 
-{
-  xdg.configFile."mise/conf.d/python.toml".source = ./.config/mise/conf.d/python.toml;
+{ config, symlinkRoot, ... }: {
+  xdg.configFile."mise/conf.d/python.toml".source = config.lib.file.mkOutOfStoreSymlink "${symlinkRoot}/home-manager/modules/share/code/python/.config/mise/conf.d/python.toml";
 }
