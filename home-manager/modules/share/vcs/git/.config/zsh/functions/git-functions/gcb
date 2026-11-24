@@ -1,3 +1,53 @@
 #!/usr/bin/env zsh
+#
+# Select a Git branch with fzf. Press Ctrl-x to delete a branch.
+#
+# tmux: [popup: fzf -> git switch]
+# Rex:  [popup: fzf] -> [source pane: git switch]
+#
 
-tmux popup -E -d "$PWD" -w 80 -h 30 "git branch | sed 's/..//' | fzf --reverse --header 'C-x: delete' --bind 'ctrl-x:execute(git branch -d {})+reload(git branch | sed \"s/..//\")' | xargs -r git switch"
+branches="git branch | sed 's/..//'"
+fzf_options="--header 'C-x: delete' --bind 'ctrl-x:execute(git branch -d {})+reload(git branch | sed \"s/..//\")'"
+
+# A tmux pane inside Rex also has Rex environment variables.
+if [[ -n "$TMUX" ]]; then
+    exec tmux popup -E -d "$PWD" -w 80 -h 30 "$branches | fzf --reverse $fzf_options | xargs -r git switch"
+fi
+
+if [[ -z "$REX_SESSION" || -z "$REX_BLOCK" ]]; then
+    print -u2 'gcb: Run this command in tmux or Rex.'
+    exit 1
+fi
+
+# Pass the source session and pane IDs as $1 and $2.
+rex_picker='
+[[ -n "$REX_BIN_DIR" ]] && export PATH="$REX_BIN_DIR:$PATH"
+branch=$('"$branches"' | fzf --layout=default --no-height --no-tmux +m '"$fzf_options"')
+case $? in
+    0) ;;
+    1|130) exit 0 ;;  # No match or cancellation. Close without sending input.
+    *) exit $? ;;
+esac
+[[ -n "$branch" ]] || exit 0
+
+# Quote the branch name so that the source shell reads it as one argument.
+rex send -s "$1" -b "$2" -- "git switch -- ${(q)branch}" >/dev/null &&
+    rex send-key -s "$1" -b "$2" enter >/dev/null
+'
+
+# Use the source window in case focus moves to a different window.
+window_id=$(rex block inspect -s "$REX_SESSION" "$REX_BLOCK" --json | jq -er '.block.window_id') || exit 1
+
+# Top edge: [35% left | 30% popup | 35% right]
+# The popup uses 40% of the window height. Bounds are [x, y, width, height].
+jq -cn --arg window_id "$window_id" --arg cwd "$PWD" --arg picker "$rex_picker" \
+    --arg session "$REX_SESSION" --arg block "$REX_BLOCK" '{
+    window_id: $window_id,
+    bounds: [0.35, 0, 0.3, 0.4],
+    focus: true,
+    layout: {block: {
+        flavor: "com.superlogical.terminal.shell",
+        label: "gcb",
+        options: {cwd: $cwd, shell: "none", command: ["zsh", "-lc", $picker, "gcb", $session, $block]}
+    }}
+}' | rex api call -s "$REX_SESSION" session.new_layer - >/dev/null
