@@ -41,14 +41,18 @@ rex.bind("ctrl+shift+v", "pane.paste")
 --
 local nvim_cache_directory = os.getenv("HOME") .. "/.cache/rex/nvim/"
 local function add_pane_navigation()
-  -- Simulate vim-tmux-navigation behavior.
   for key, direction in pairs({ h = "left", j = "down", k = "up", l = "right" }) do
+    -- Ensure ctrl+alt+{h,j,k,l} works in copy mode, even if the pane is running Neovim.
+    rex.bind("copy/ctrl+alt+" .. key, "pane.focus." .. direction)
+
     rex.bind("ctrl+alt+" .. key, function(ctx)
       local process = rex.block.call("com.superlogical.terminal", "process", { block_id = ctx.block_id })
       if not process or not process.foreground then
         return false
       end
 
+      -- Make sure the pane is running Neovim before sending a remote command to it.
+      -- Simulate vim-tmux-navigation behavior.
       local foreground = process.foreground
       if foreground.name == "nvim" or foreground.name == ".nvim-wrapped" then
         if not foreground.pid then
