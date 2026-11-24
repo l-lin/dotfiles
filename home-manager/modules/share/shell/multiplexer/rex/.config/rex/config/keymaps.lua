@@ -111,6 +111,7 @@ rex.bind("ctrl+q>right", "pane.focus.right")
 rex.bind("ctrl+q>o", "pane.focus_next")
 rex.bind("ctrl+q>;", "pane.focus_back.in_tab") -- ko
 rex.bind("ctrl+q>w", "pane.go_to")
+rex.bind("ctrl+q>ctrl+w", "pane.go_to")
 add_pane_navigation()
 
 --
