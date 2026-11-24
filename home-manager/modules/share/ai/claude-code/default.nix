@@ -13,6 +13,7 @@
       # Enable experimental MCP-CLI for reduced token consumption.
       # https://github.com/anthropics/claude-code/issues/7336#issuecomment-3650620407
       ENABLE_EXPERIMENTAL_MCP_CLI = "true";
+      ANTHROPIC_MODEL = "claude-opus-5-5";
     };
 
     file = {
