@@ -54,7 +54,16 @@ export default function (pi: ExtensionAPI) {
         label: q.label ?? `Q${i + 1}`,
       }));
 
-      const result = await ctx.ui.custom<Result>(buildWidget(questions));
+      const inRex =
+        ctx.mode === "tui" && process.env.REX_SESSION && process.env.REX_BLOCK;
+      const result = await ctx.ui.custom<Result>(
+        buildWidget(questions),
+        inRex
+          ? {
+              blocked: { kind: "question", message: "Waiting for your answer" },
+            }
+          : undefined,
+      );
 
       if (result.cancelled) {
         return {
