@@ -120,6 +120,27 @@ local function fence_selected_text()
   vim.api.nvim_win_set_cursor(0, { start_row + 1, 0 })
 end
 
+---Convert the selected lines to a Markdown block quote.
+local function quote_selected_lines()
+  if vim.fn.mode() ~= "V" then
+    return
+  end
+
+  local anchor = vim.fn.line("v")
+  local cursor = vim.fn.line(".")
+  local start_row = math.min(anchor, cursor) - 1
+  local end_row = math.max(anchor, cursor)
+
+  local lines = vim.api.nvim_buf_get_lines(0, start_row, end_row, false)
+  for index, line in ipairs(lines) do
+    lines[index] = line == "" and ">" or "> " .. line
+  end
+
+  -- \27 is Escape (ASCII 27). Exit Visual mode before changing the lines.
+  vim.cmd.normal({ "\27", bang = true })
+  vim.api.nvim_buf_set_lines(0, start_row, end_row, false, lines)
+end
+
 local BOLD_MARKER = "**"
 local FULLY_BOLD_LINE_PATTERN = "^%*%*.*%*%*$"
 local BOLD_MARKER_WIDTH = #BOLD_MARKER
@@ -174,6 +195,7 @@ M.convert_or_toggle_task = convert_or_toggle_task
 M.smart_indent = smart_indent
 M.smart_dedent = smart_dedent
 M.fence_selected_text = fence_selected_text
+M.quote_selected_lines = quote_selected_lines
 M.bold_selected_text = bold_selected_text
 M.bold_current_line = bold_current_line
 M.bold_word_under_cursor = bold_word_under_cursor
