@@ -13,23 +13,17 @@ local function toggle_executable_permission()
   end
 end
 
----Execute the buffer as bash script in tmux split-window.
+---Run the buffer as an executable script in a new pane below.
 local function execute_bash_script()
-  local filename = vim.fn.expand("%")
+  local filename = vim.fn.expand("%:p")
   local first_line = vim.fn.getline(1)
-  -- Check if the bash script is valid by checking if it contains a shebang.
   if string.match(first_line, "^#!/") then
-    -- Properly escape the file name for shell commands
-    local escaped_file = vim.fn.shellescape(filename)
-    -- Make the file executable
-    vim.cmd("silent !chmod +x " .. escaped_file)
-
-    -- Execute the script on a new tmux pane below.
-    vim.cmd(
-      "silent !tmux split-window -v -l 20 'bash -c \"./"
-        .. escaped_file
-        .. "; echo; echo Press q to exit...; while true; do read -n 1 key; if [[ \\$key == \"q\" ]]; then exit; fi; done\"'"
-    )
+    local output = vim.fn.system({ "chmod", "+x", filename })
+    if vim.v.shell_error ~= 0 then
+      vim.notify(vim.trim(output), vim.log.levels.ERROR)
+      return
+    end
+    require("functions.pane").run(vim.fn.shellescape(filename))
   else
     vim.cmd("echo 'Not a script. Shebang line not found.'")
   end
@@ -38,8 +32,8 @@ end
 ---Check if the current working directory is a git repository.
 ---@return boolean
 local function is_git_repo()
-  local git_dir = vim.fn.finddir('.git', vim.fn.getcwd() .. ';')
-  return git_dir ~= ''
+  local git_dir = vim.fn.finddir(".git", vim.fn.getcwd() .. ";")
+  return git_dir ~= ""
 end
 
 local M = {}

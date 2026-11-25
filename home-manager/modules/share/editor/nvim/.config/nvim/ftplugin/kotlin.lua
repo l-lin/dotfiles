@@ -11,13 +11,13 @@ vim.keymap.set(
   "n",
   "<leader>ta",
   require("functions.lang.kotlin").execute_all_tests_with_maven,
-  { buffer = true, desc = "Execute Maven tests in a new tmux pane below" }
+  { buffer = true, desc = "Run Maven tests in a new pane below" }
 )
 vim.keymap.set(
   "n",
   "<leader>tn",
   require("functions.lang.kotlin").execute_nearest_test_with_maven,
-  { buffer = true, desc = "Execute nearest Maven test in a new tmux pane below" }
+  { buffer = true, desc = "Run the nearest Maven test in a new pane below" }
 )
 vim.keymap.set(
   "n",
@@ -25,5 +25,10 @@ vim.keymap.set(
   require("functions.lang.kotlin").rerun_last,
   { buffer = true, desc = "Re-run last test/command" }
 )
-vim.keymap.set("n", "<F33>", require("functions.async").make, { silent = true, noremap = true, desc = "Compile (Ctrl+F9)" })
+vim.keymap.set(
+  "n",
+  "<F33>",
+  require("functions.async").make,
+  { silent = true, noremap = true, desc = "Compile (Ctrl+F9)" }
+)
 vim.keymap.set("n", "<C-F9>", "<F33>", { remap = true, silent = true, desc = "Compile (Ctrl+F9)" })

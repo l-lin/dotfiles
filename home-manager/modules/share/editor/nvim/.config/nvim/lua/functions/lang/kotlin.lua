@@ -1,5 +1,7 @@
----@type string|nil
-local last_command = nil
+local pane = require("functions.pane")
+
+---@type fun()|nil
+local last_run = nil
 
 ---Extract package name from the first line of the file
 ---@return string|nil package_name The package name or nil if not found
@@ -60,7 +62,7 @@ local function build_test_name(include_method)
     if method_name == nil or not method_name then
       return nil
     end
-    return base_name .. "\\#" .. method_name
+    return base_name .. "#" .. method_name
   end
 
   return base_name
@@ -69,7 +71,7 @@ end
 ---@class dotfiles.kotlin.TestConfig
 ---@field include_method boolean Whether to include the method name
 
----Execute the nearest test method with maven on a new tmux pane below
+---Run Maven tests in a new pane below.
 ---@param config dotfiles.kotlin.TestConfig configuration options
 local function execute(config)
   local filename = vim.fn.expand("%:t")
@@ -84,31 +86,24 @@ local function execute(config)
     return
   end
 
-  local command_to_run = "./mvnw test -q -Dsurefire.failIfNoSpecifiedTests=false -Dtest=\\\"" .. full_test_name .. "\\\""
-
-  local success_log = 'echo -e \\"\\e[1;30;42m SUCCESS \\e[0m\\"'
-  -- `-l 20` specifies the size of the tmux pane, in this case 20 rows
- local tmux_cmd =  "silent !tmux split-window -v -l 20 '"
-    .. 'bash -i -c "'
-    .. 'echo \\"' .. command_to_run .. '\\"'
-    .. ' && ' .. command_to_run
-    .. ' && ' .. success_log
-    .. "; echo; echo Press q to exit...; while true; do read -n 1 key; if [[ \\$key == \"q\" ]]; then exit; fi; done\"'"
-  last_command = tmux_cmd
-  vim.cmd(tmux_cmd)
-end
-
----Re-run the last executed command.
-local function rerun_last()
-  if last_command then
-    vim.cmd(last_command)
-  else
-    vim.notify("No previous command to re-run.", vim.log.levels.WARN)
-  end
+  local command = "./mvnw test -q -Dsurefire.failIfNoSpecifiedTests=false "
+    .. vim.fn.shellescape("-Dtest=" .. full_test_name)
+  local script = "printf '%s\\n' "
+    .. vim.fn.shellescape(command)
+    .. " && "
+    .. command
+    .. [[ && printf '\033[1;30;42m SUCCESS \033[0m\n']]
+  last_run = pane.run(script, true)
 end
 
 local M = {}
-M.execute_all_tests_with_maven = function () execute({ include_method = false }) end
-M.execute_nearest_test_with_maven = function () execute({ include_method = true }) end
-M.rerun_last = function () rerun_last() end
+M.execute_all_tests_with_maven = function()
+  execute({ include_method = false })
+end
+M.execute_nearest_test_with_maven = function()
+  execute({ include_method = true })
+end
+M.rerun_last = function()
+  pane.rerun(last_run)
+end
 return M
