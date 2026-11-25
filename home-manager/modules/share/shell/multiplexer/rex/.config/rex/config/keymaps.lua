@@ -77,8 +77,8 @@ rex.bind("ctrl+q>shift+4", "session.rename") -- c-$
 -- Tabs
 --
 rex.bind("ctrl+q>c", "client.tab.new")
-rex.bind("ctrl+q>n", "client.tab.next")
-rex.bind("ctrl+q>p", "client.tab.previous")
+rex.bind("ctrl+q>shift+j", "client.tab.next")
+rex.bind("ctrl+q>shift+k", "client.tab.previous")
 rex.bind("ctrl+q>l", "client.tab.back.in_session") -- ko
 rex.bind("ctrl+q>,", "client.tab.rename")
 rex.bind("ctrl+q>1", "client.tab.goto", { index = 1 })
