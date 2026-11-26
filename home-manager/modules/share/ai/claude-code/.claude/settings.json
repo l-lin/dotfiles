@@ -61,11 +61,12 @@
   },
   "enabledPlugins": {
     "doctolib-productivity@doctolib": true,
-    "doctolib-openspec@doctolib": true
+    "doctolib-openspec@doctolib": true,
+    "daip-access-and-explore-data@doctolib": true
   },
   "effortLevel": "medium",
   "showClearContextOnPlanAccept": true,
   "tui": "fullscreen",
-  "theme": "light",
+  "theme": "auto",
   "autoCompactEnabled": false
 }
