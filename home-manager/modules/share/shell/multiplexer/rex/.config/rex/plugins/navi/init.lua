@@ -37,7 +37,7 @@ local function open_navi(ctx)
       options = {
         cwd = cwd,
         shell = "none",
-        command = { "zsh", "-i", script, session_id, block_id, zoomed_block_id },
+        command = { "zsh", script, session_id, block_id, zoomed_block_id },
       },
     }),
   }))

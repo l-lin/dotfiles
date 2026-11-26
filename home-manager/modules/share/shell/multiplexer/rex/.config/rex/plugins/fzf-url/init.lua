@@ -19,7 +19,7 @@ local function open_fzf_url(ctx)
   local view = assert(rex.session.view({ session_id = ctx.session_id }))
   for _, window in ipairs(view.windows or {}) do
     if window.window_id == block.window_id then
-      local command = { "zsh", "-i", script, ctx.session_id, ctx.block_id, window.zoomed_block_id or "" }
+      local command = { "zsh", script, ctx.session_id, ctx.block_id, window.zoomed_block_id or "" }
       for _, layer in ipairs(window.layers or {}) do
         if layer.kind == "tiled" then
           for _, pane in ipairs(layer.blocks or {}) do

@@ -40,7 +40,7 @@ local function open_fzf(ctx, mode)
       options = {
         cwd = cwd,
         shell = "none",
-        command = { "zsh", "-i", script, ctx.session_id, ctx.block_id, zoomed_block_id, mode },
+        command = { "zsh", script, ctx.session_id, ctx.block_id, zoomed_block_id, mode },
       },
     }),
   }))

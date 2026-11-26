@@ -41,7 +41,6 @@ local function open_wd(ctx)
         shell = "none",
         command = {
           "zsh",
-          "-i",
           script,
           ctx.session_id,
           ctx.block_id,
