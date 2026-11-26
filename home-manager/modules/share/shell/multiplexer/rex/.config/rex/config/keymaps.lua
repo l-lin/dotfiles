@@ -76,6 +76,7 @@ rex.action({
   end,
 })
 rex.bind("ctrl+q>l", "toggle_navigation")
+rex.bind("ctrl+q>ctrl+l", "toggle_navigation")
 
 --
 -- Sessions
