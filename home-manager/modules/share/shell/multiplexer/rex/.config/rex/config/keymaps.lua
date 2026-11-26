@@ -2,6 +2,7 @@
 -- Prefix and configuration
 --
 rex.bind("ctrl+q>r", "client.config.reload")
+rex.bind("ctrl+q>d", "client.notice.dismiss")
 
 --
 -- Font size
