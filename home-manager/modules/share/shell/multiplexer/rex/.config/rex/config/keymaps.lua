@@ -64,19 +64,40 @@ rex.bind("ctrl+q>right", "pane.focus.right")
 rex.bind("ctrl+q>o", "pane.focus_next")
 rex.bind("ctrl+q>w", "pane.go_to")
 rex.bind("ctrl+q>ctrl+w", "pane.go_to")
-local navigate_forward_by_client = {}
+-- The server keeps the focus history, so mouse and palette switches count too.
+-- Without a cursor, two calls in a row go back and return (like Alt-Tab).
+---@param ctx rex.action_context
+---@param request fun(window_id: string): table
+local function go_to_last(ctx, request)
+  local described = rex.session.describe_block({ block_id = ctx.block_id })
+  local landed = rex.call("focus_history.reverse", request(described.block.window_id))
+  if not landed or not landed.reversed then
+    return false
+  end
+  -- The server moves focus, but the client must show the session and tab.
+  rex.client.queue("session.select", { session_id = landed.session_id, window_id = landed.window_id })
+  return true
+end
 rex.action({
-  name = "toggle_navigation",
-  title = "Toggle Navigation Direction",
+  name = "last_tab",
+  title = "Go to Last Tab",
   run = function(ctx)
-    local client = ctx.client_id or ""
-    local forward = navigate_forward_by_client[client]
-    rex.client.queue(forward and "client.navigate.forward" or "client.navigate.back")
-    navigate_forward_by_client[client] = not forward
+    return go_to_last(ctx, function(window_id)
+      return { session_id = ctx.session_id, not_window_id = window_id }
+    end)
   end,
 })
-rex.bind("ctrl+q>l", "toggle_navigation")
-rex.bind("ctrl+q>ctrl+l", "toggle_navigation")
+rex.action({
+  name = "last_session",
+  title = "Go to Last Session",
+  run = function(ctx)
+    return go_to_last(ctx, function()
+      return { not_session_id = ctx.session_id }
+    end)
+  end,
+})
+rex.bind("ctrl+q>l", "last_tab")
+rex.bind("ctrl+q>shift+l", "last_session")
 
 --
 -- Sessions
