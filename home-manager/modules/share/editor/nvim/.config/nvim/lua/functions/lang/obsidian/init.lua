@@ -86,6 +86,10 @@ local function todo(ctx)
     table.insert(t, "- [ ] update main quests")
   end
 
+  if day_of_week ~= "6" and day_of_week ~= "7" then
+    table.insert(t, "- [ ] RECO-180: import FR accounts to cohort")
+  end
+
   local random_note = require("functions.lang.obsidian.random_note").pick("3-resources/technical-notes")
   if random_note ~= nil then
     table.insert(t, "- [ ] read [[" .. random_note.filename .. "]]")
