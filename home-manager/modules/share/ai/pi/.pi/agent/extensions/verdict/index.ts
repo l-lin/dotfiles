@@ -45,6 +45,7 @@ export function debugMessage(
   value: Verdict,
   action: string,
   width = process.stdout.columns || 80,
+  elapsedMs?: number,
 ): string {
   const reason = value.reason.replace(
     /(?:jev|classifier): ((?:allow|ask|deny) \d+% \(confidence \d+%; [^)]+\))/g,
@@ -56,10 +57,14 @@ export function debugMessage(
         )
         .replace(/[;,]/g, ""),
   );
-  const result =
+  const decision =
     reason === value.reason
       ? `${DECISION_ICONS[value.verdict]} (${value.source}): ${reason}`
       : reason;
+  const result =
+    elapsedMs === undefined
+      ? decision
+      : `${decision}  ${Math.round(elapsedMs)}ms`;
   // Protected paths appear only in the approval dialog.
   const tool =
     value.source === "protected-path"
@@ -269,10 +274,11 @@ export default function verdict(pi: ExtensionAPI): void {
     value: Verdict,
     action: string,
     ctx: ExtensionContext,
+    elapsedMs: number,
   ) {
     if (debug() && value.reason.trim()) {
       ctx.ui.notify(
-        debugMessage(value, action),
+        debugMessage(value, action, undefined, elapsedMs),
         value.verdict === "deny" ? "warning" : "info",
       );
     }
@@ -369,6 +375,7 @@ export default function verdict(pi: ExtensionAPI): void {
       }
     }
 
+    const startedAt = performance.now();
     const value = await adjudicate(
       state,
       {
@@ -388,6 +395,7 @@ export default function verdict(pi: ExtensionAPI): void {
         signal: ctx.signal,
       },
     );
+    const elapsedMs = performance.now() - startedAt;
     const warning = state.audit?.drainWarning();
 
     if (warning) {
@@ -395,7 +403,7 @@ export default function verdict(pi: ExtensionAPI): void {
     }
 
     try {
-      const presented = await presentVerdict(value, action, ctx);
+      const presented = await presentVerdict(value, action, ctx, elapsedMs);
 
       if (value.pendingAudit) {
         state.audit?.append({

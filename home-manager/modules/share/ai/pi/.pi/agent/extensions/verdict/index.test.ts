@@ -230,10 +230,27 @@ test("GIVEN default debug settings WHEN a classifier allows THEN the tool appear
     command: "curl -I https://example.org",
   });
   const actual = harness.notifications;
-  const expected = [
-    " bash: curl -I https://example.org\n  64% ( 46% 󰋗 23% 󰅙 12%)",
-  ];
-  assert.deepEqual(actual, expected);
+  assert.equal(actual.length, 1);
+  assert.match(
+    actual[0],
+    /^ bash: curl -I https:\/\/example\.org\n  64% \( 46% 󰋗 23% 󰅙 12%\)  \d+ms$/u,
+  );
+});
+
+test("GIVEN an elapsed time WHEN debug formats scores THEN the time follows the scores", () => {
+  const actual = debugMessage(
+    {
+      verdict: "allow",
+      reason: "classifier: allow 45% (confidence 17%; ask 35%, deny 20%)",
+      source: "classifier",
+      degraded: false,
+    },
+    "bash: echo synthetic",
+    80,
+    1.6,
+  );
+  const expected = " bash: echo synthetic\n  45% ( 17% 󰋗 35% 󰅙 20%)  2ms";
+  assert.equal(actual, expected);
 });
 
 test("GIVEN a rule decision without a reason WHEN a file tool runs THEN no debug notification appears", async () => {
