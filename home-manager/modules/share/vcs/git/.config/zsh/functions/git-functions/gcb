@@ -14,16 +14,17 @@ gcb_tmux() {
 }
 
 gcb_rex() {
-    # Pass the source session ID, pane ID, and zoom state ("1" or "0") as $1, $2, and $3.
+    # Pass the source pane ID and zoom state ("1" or "0") as $1 and $2.
+    # Rex accepts a full pane ID as a session selector.
     local rex_picker='
 [[ -n "$REX_BIN_DIR" ]] && export PATH="$REX_BIN_DIR:$PATH"
 # Restore focus (and zoom) before the floating layer closes, because Rex
 # focuses the last pane in layout order and clears zoom when a focused layer exits.
 restore_pane() {
-    rex focus -s "$1" "$2" >/dev/null 2>&1
-    [[ "$3" == 1 ]] && rex zoom -s "$1" "$2" --on >/dev/null 2>&1
+    rex focus -s "$1" "$1" >/dev/null 2>&1
+    [[ "$2" == 1 ]] && rex zoom -s "$1" "$1" --on >/dev/null 2>&1
 }
-trap '\''restore_pane "$1" "$2" "$3"'\'' EXIT
+trap '\''restore_pane "$1" "$2"'\'' EXIT
 
 branch=$('"$branches"' | fzf --layout=default --no-height --no-tmux +m '"$fzf_options"')
 case $? in
@@ -34,35 +35,35 @@ esac
 [[ -n "$branch" ]] || exit 0
 
 # Quote the branch name so that the source shell reads it as one argument.
-rex send -s "$1" -b "$2" -- "git switch -- ${(q)branch}" >/dev/null &&
-    rex send-key -s "$1" -b "$2" enter >/dev/null
+rex send -s "$1" -b "$1" -- "git switch -- ${(q)branch}" >/dev/null &&
+    rex send-key -s "$1" -b "$1" enter >/dev/null
 '
 
     # Use the source window in case focus moves to a different window.
     local window_id was_zoomed
-    window_id=$(rex block inspect -s "$REX_SESSION" "$REX_BLOCK" --json | jq -er '.block.window_id') || return 1
-    was_zoomed=$(rex session inspect "$REX_SESSION" --json | jq -r --arg wid "$window_id" --arg bid "$REX_BLOCK" \
+    window_id=$(rex block inspect -s "$REX_BLOCK" "$REX_BLOCK" --json | jq -er '.block.window_id') || return 1
+    was_zoomed=$(rex session inspect "$REX_BLOCK" --json | jq -r --arg wid "$window_id" --arg bid "$REX_BLOCK" \
         'if (.windows[] | select(.window_id == $wid) | .zoomed_block_id) == $bid then "1" else "0" end') || return 1
 
     # Top edge: [35% left | 30% popup | 35% right]
     # The popup uses 40% of the window height. Bounds are [x, y, width, height].
     jq -cn --arg window_id "$window_id" --arg cwd "$PWD" --arg picker "$rex_picker" \
-        --arg session "$REX_SESSION" --arg block "$REX_BLOCK" --arg zoomed "$was_zoomed" '{
+        --arg block "$REX_BLOCK" --arg zoomed "$was_zoomed" '{
         window_id: $window_id,
         bounds: [0.35, 0, 0.3, 0.4],
         focus: true,
         layout: {block: {
             flavor: "com.superlogical.terminal.shell",
             label: "gcb",
-            options: {cwd: $cwd, shell: "none", command: ["zsh", "-lc", $picker, "gcb", $session, $block, $zoomed]}
+            options: {cwd: $cwd, shell: "none", command: ["zsh", "-lc", $picker, "gcb", $block, $zoomed]}
         }}
-    }' | rex api call -s "$REX_SESSION" session.new_layer - >/dev/null
+    }' | rex api call -s "$REX_BLOCK" session.new_layer - >/dev/null
 }
 
 # A tmux pane inside Rex also has Rex environment variables.
 if [[ -n "$TMUX" ]]; then
     gcb_tmux
-elif [[ -n "$REX_SESSION" && -n "$REX_BLOCK" ]]; then
+elif [[ -n "$REX_BLOCK" ]]; then
     gcb_rex
 else
     print -u2 'gcb: Run this command in tmux or Rex.'

@@ -24,48 +24,29 @@ const blocked = {
   blocked: { kind: "question", message: "Waiting for your answer" },
 };
 
-for (const { location, session, block, mode, expected } of [
+for (const { location, block, mode, expected } of [
   {
     location: "a Rex terminal",
-    session: "session:test",
     block: "block:test",
     mode: "tui",
     expected: blocked,
   },
   { location: "a terminal outside Rex", mode: "tui", expected: undefined },
   {
-    location: "a terminal with only a Rex session",
-    session: "session:test",
-    mode: "tui",
-    expected: undefined,
-  },
-  {
-    location: "a terminal with only a Rex block",
-    block: "block:test",
-    mode: "tui",
-    expected: undefined,
-  },
-  {
     location: "Rex with Pi in RPC mode",
-    session: "session:test",
     block: "block:test",
     mode: "rpc",
     expected: undefined,
   },
 ]) {
   test(`GIVEN ${location} WHEN the tool opens a question THEN it sets blocked status only in a Rex TUI`, async (t) => {
-    for (const [key, value] of [
-      ["REX_SESSION", session],
-      ["REX_BLOCK", block],
-    ] as const) {
-      const previous = process.env[key];
-      t.after(() => {
-        if (previous === undefined) delete process.env[key];
-        else process.env[key] = previous;
-      });
-      if (value === undefined) delete process.env[key];
-      else process.env[key] = value;
-    }
+    const previous = process.env.REX_BLOCK;
+    t.after(() => {
+      if (previous === undefined) delete process.env.REX_BLOCK;
+      else process.env.REX_BLOCK = previous;
+    });
+    if (block === undefined) delete process.env.REX_BLOCK;
+    else process.env.REX_BLOCK = block;
 
     const custom = t.mock.fn(
       async (_factory: unknown, _options: unknown): Promise<Result> => ({

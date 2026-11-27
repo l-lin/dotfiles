@@ -29,12 +29,13 @@ local function run_in_tmux(args, cwd)
   launch(vim.list_extend(command, args))
 end
 
-local function run_in_rex(args, cwd, session, block)
+local function run_in_rex(args, cwd, block)
   local rex = "rex"
   if vim.fn.executable(rex) == 0 and vim.env.REX_BIN_DIR and vim.env.REX_BIN_DIR ~= "" then
     rex = vim.fs.joinpath(vim.env.REX_BIN_DIR, rex)
   end
-  local command = { rex, "split", "-s", session, "-b", block, "--split=below", "--ratio", "30", "--focus=false" }
+  -- Rex accepts a full pane ID as a session selector.
+  local command = { rex, "split", "-s", block, "-b", block, "--split=below", "--ratio", "30", "--focus=false" }
   vim.list_extend(command, { "-c", cwd, "--" })
   launch(vim.list_extend(command, args))
 end
@@ -56,11 +57,11 @@ done
   local args = { "bash", interactive and "-ic" or "-c", script }
 
   local function run()
-    local session, block = vim.env.REX_SESSION, vim.env.REX_BLOCK
+    local block = vim.env.REX_BLOCK
     if vim.env.TMUX and vim.env.TMUX ~= "" then
       run_in_tmux(args, cwd)
-    elseif session and session ~= "" and block and block ~= "" then
-      run_in_rex(args, cwd, session, block)
+    elseif block and block ~= "" then
+      run_in_rex(args, cwd, block)
     else
       vim.notify("Cannot open a pane. Run Neovim inside tmux or Rex.", vim.log.levels.ERROR)
     end

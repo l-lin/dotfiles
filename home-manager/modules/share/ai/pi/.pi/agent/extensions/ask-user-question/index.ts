@@ -54,8 +54,7 @@ export default function (pi: ExtensionAPI) {
         label: q.label ?? `Q${i + 1}`,
       }));
 
-      const inRex =
-        ctx.mode === "tui" && process.env.REX_SESSION && process.env.REX_BLOCK;
+      const inRex = ctx.mode === "tui" && process.env.REX_BLOCK;
       const result = await ctx.ui.custom<Result>(
         buildWidget(questions),
         inRex
