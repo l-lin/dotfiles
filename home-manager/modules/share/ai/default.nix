@@ -7,9 +7,7 @@
     ./claude-code
     # ./dust
     ./llama-cpp
-    #./mlx
     #./ollama
-    #./opencode
     ./openspec
     ./pi
   ];
