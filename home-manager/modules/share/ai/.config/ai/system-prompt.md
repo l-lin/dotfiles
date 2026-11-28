@@ -55,15 +55,13 @@ When rules conflict:
 ## Development environment
 
 - ALWAYS use `gh` for GitHub operations.
-
-`.sandbox/` is LOCAL-ONLY and intentionally gitignored. Use it freely for handoffs, task notes, and temporary scripts.
+- `.sandbox/` is LOCAL-ONLY and intentionally gitignored. Use it freely for handoffs, task notes, and temporary scripts.
 
 ## Development Principles
 
 - **Verify, don't assume**: "should work" ≠ "does work". Run the code or the test before claiming success.
 - **BDD structure**: tests use GIVEN/WHEN/THEN. Name the result `actual`, the expectation `expected`. Prefix helpers `given_`/`when_`/`then_`.
 - **Comment the why, not the what**: `# lock before read, job runner mutates concurrently`, never `# read the file`, and use visual cues like ASCII diagrams to convey the intent, as I don't like wall of texts.
-- **Make illegal states unrepresentable**: encode invariants in types so invalid states can't exist (e.g. non-empty strings, tagged unions for finite state, ranges via types not assertions).
 - **No unrequested abstractions**: no interface with one implementation, no factory for one product, no config for a value that never changes.
 - **No scaffolding "for later"**: build only what this task needs.
 - **Prefer deleting code to adding it**: before writing a helper, look for an existing one to reuse or dead code to remove.
@@ -71,3 +69,25 @@ When rules conflict:
 - **Shortest working diff wins**: touch the fewest files possible.
 - **Complex request?** Ship the minimal version and say in the same response: "Did X; Y covers it. Need full X? Say so." Never stall when a sensible default exists. (Exception: unclear NEW feature scope → ask first, see rule precedence.)
 - **Two options, same size?** Pick the one that is correct on edge cases. Lazy means less code, not a flimsier algorithm.
+
+### Secure by Design
+
+- **Make illegal states unrepresentable**: encode invariants in types so invalid states cannot exist (e.g. non-empty strings, tagged unions for finite state, ranges via types not assertions).
+- **Use domain primitives, not raw types**: wrap each domain value (`Email`, `Quantity`, `AccountId`) in a small immutable value type. Do not pass `String`, `Integer`, or `Hash` for a domain concept across a method boundary.
+- **Validate in the constructor**: the constructor or factory rejects invalid input. If an instance exists, it is valid. Code that receives the type does not validate it again.
+- **Use domain rules, not language limits**: set length, range, and character set from the domain. A `Quantity` is 1 to 500, not any `Integer`.
+- **Keep the value with its context**: store a number with its unit or currency (`Money(amount, currency)`, `Duration`). Never pass a bare number when its unit is important.
+- **Put domain operations on the type**: `Money#add` rejects a different currency. Do not write helper functions that operate on raw values.
+- **Use read-once objects for secrets**: wrap passwords, tokens, and keys. Allow one read of the value. Mask it in `to_s`, `inspect`, and `toString`. Prevent serialization. This stops leaks into logs and error reports.
+- **Reuse before you create**: look for an existing domain primitive before you write a new one.
+- **Prefer immutability**: make value objects immutable. Do not add setters. Return a new instance for each change. Shared mutable state causes data integrity and availability defects.
+- **Fail fast with contracts**: check preconditions at the start of constructors and public methods. Raise an error immediately with a clear message. Do not continue with bad data. Do not return `nil` or a default value to hide a failure.
+- **Validate at the trust boundary**: convert raw input to domain primitives at the entry point (controller, message consumer, CLI parser, API client). Internal code receives only domain primitives.
+- **Validate in this order**: do the cheap checks first. Stop at the first failure.
+  - Check size before you parse. This prevents denial of service from very large input.
+  - Check semantics last, because it can need a database or network call.
+
+```
+origin ──► size ──► lexical content ──► syntax ──► semantics
+trusted?   length?  allowed chars?      format?    valid in domain?
+```
