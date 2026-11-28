@@ -3,7 +3,7 @@ local terminal = "com.superlogical.terminal"
 local script = debug.getinfo(1, "S").source:gsub("^@", ""):gsub("init%.lua$", "fzf.zsh")
 
 ---@param ctx table The context of the action.
----@param mode 'files' | 'grep'
+---@param mode 'files' | 'grep' | 'cd'
 local function open_fzf(ctx, mode)
   local description = assert(rex.session.describe_block({
     session_id = ctx.session_id,
@@ -60,5 +60,13 @@ rex.action({
     return open_fzf(ctx, "grep")
   end,
 })
+rex.action({
+  name = "open_fzf_cd",
+  title = "cd into the selected directory",
+  run = function(ctx)
+    return open_fzf(ctx, "cd")
+  end
+})
 rex.bind("ctrl+q>ctrl+g", "open_fzf")
 rex.bind("ctrl+q>alt+g", "open_fzf_grep")
+rex.bind("ctrl+q>alt+c", "open_fzf_cd")

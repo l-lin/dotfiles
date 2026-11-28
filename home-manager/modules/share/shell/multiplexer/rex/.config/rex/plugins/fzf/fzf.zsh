@@ -20,6 +20,7 @@ local -a fzf_args=(--no-tmux --height=100% --scheme=path --bind=ctrl-z:ignore)
 
 # grep:  query -> rg -> fzf -> path:line:column:match
 # files:          fd -> fzf -> path<NUL>path<NUL>...
+# cd:             fd -> fzf -> path<NUL>path<NUL>...
 if [[ "$mode" == grep ]]; then
     # Let rg interpret the query. A query with no matches is not an error.
     local rg_command="${FZF_ALT_F_COMMAND:-rg --column --line-number --no-heading --color=always --smart-case --}"
@@ -30,9 +31,13 @@ if [[ "$mode" == grep ]]; then
         --delimiter : --with-nth 1,2,3 \
         --preview 'bat --color=always --highlight-line {2} -- {1} 2>/dev/null || cat -- {1}' \
         --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' </dev/null)
-else
+elif [[ "$mode" == files ]]; then
     selected=$(FZF_DEFAULT_COMMAND="${FZF_CTRL_T_COMMAND:-fd --type f --hidden --exclude .git}" \
         FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS-} ${FZF_CTRL_T_OPTS-}" \
+        fzf "${fzf_args[@]}" --multi --print0)
+elif [[ "$mode" == cd ]]; then
+    selected=$(FZF_DEFAULT_COMMAND="${FZF_ALT_C_COMMAND:-fd --type d --hidden --exclude .git}" \
+        FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS-} ${FZF_ALT_C_OPTS-}" \
         fzf "${fzf_args[@]}" --multi --print0)
 fi
 local exit_code=$?
@@ -49,6 +54,6 @@ esac
 local item input=""
 selected="${selected%$'\0'}"
 for item in "${(@0)selected}"; do
-    input+="${(q)item} "
+    input+="${(q)item}"
 done
 [[ -n "$input" ]] && rex send -s "$1" -b "$2" -- "$input"
