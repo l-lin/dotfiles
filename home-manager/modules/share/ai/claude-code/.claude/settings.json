@@ -66,7 +66,7 @@
   },
   "effortLevel": "medium",
   "showClearContextOnPlanAccept": true,
-  "tui": "fullscreen",
+  "tui": "default",
   "theme": "auto",
   "autoCompactEnabled": false
 }
